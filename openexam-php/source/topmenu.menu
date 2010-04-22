@@ -1,0 +1,15 @@
+<ul class="menu0">
+<?php
+$rootdir = ".";
+switch(basename(dirname($_SERVER['SCRIPT_NAME']))) {
+    case "admin":
+        $rootdir = "..";
+	break;
+}
+?>
+<li><a href="<?php echo "$rootdir/index.php\""; ?> class="menubarlink"><?php echo _("Start"); ?></a></li>
+<li><a href="<?php echo "$rootdir/exam.php\""; ?> class="menubarlink"><?php echo _("Examination"); ?></a></li>
+<li><a href="<?php echo "$rootdir/help.php\""; ?> class="menubarlink"><?php echo _("Help"); ?></a></li>
+<li><a href="<?php echo "$rootdir/about.php\""; ?> class="menubarlink"><?php echo _("About"); ?></a></li>
+<li><a href="<?php echo "$rootdir/admin/\""; ?> class="menubarlink"><?php echo _("Admin"); ?></a></li>
+</ul>

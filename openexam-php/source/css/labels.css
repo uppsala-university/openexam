@@ -1,0 +1,73 @@
+/* 
+ * Custom CSS for printing markup labels.
+ * 
+ * Author: Anders Lövgren
+ * Date:   2009-09-08
+ */
+
+html, body {
+	margin: 2px;
+}
+
+/* 
+ * The wrapper around each container.
+ */
+div.wrapper {
+	width: 500px;
+	border: 1px solid black;
+	background-color: #eeeeee;
+	padding: 3px;
+}
+
+/* 
+ * The container for one label.
+ */
+div.container {
+	width: 500px;
+	font-family: times new roman,serif;
+	font-size: 1.5em;
+}
+
+/*
+ * Space between containers.
+ */
+div.space {
+	height: 10px;
+}
+
+/* 
+ * The header of one label.
+ */
+div.header {
+	text-align: center;
+	background-color: black;
+	color: white;
+	font: normal bold 1.8em arial,monospace;
+}
+
+/* 
+ * The information section of one label.
+ */
+div.info {
+	border: 1px solid black;
+	padding-left: 10px;
+}
+
+/* 
+ * The section for miscellanous information.
+ */
+div.misc {
+	border: 1px solid black;
+	height: 80px;
+	padding-left: 10px;
+}
+
+/*
+ * The footer for each label.
+ */
+div.footer {
+	text-align: center;
+	background-color: #666666;
+	color: white;
+	font: normal bold 1.6em arial,monospace;	
+}
