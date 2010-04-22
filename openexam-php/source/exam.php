@@ -181,6 +181,16 @@ class ExaminationPage extends BasePage
 			    sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
 	    exit(1);
 	}
+	
+	$now = time();
+	$stime = strtotime($data->getExamStartTime());
+	$etime = strtotime($data->getExamEndTime());
+	
+	if(!($stime <= $now && $now <= $etime)) {
+	    ErrorPage::show(_("Active examination was not found!"),
+			    sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+	    exit(1);
+	}
     }
 
     // 
