@@ -286,6 +286,10 @@ class ExaminationPage extends BasePage
 	printf("<br /><br />\n");
 	printf("<input type=\"submit\" value=\"%s\" />\n", _("Save"));
 	printf("</form>\n");
+	
+	if(isset($_REQUEST['status']) && $_REQUEST['status'] == "ok") {
+	    printf("<p><img src=\"icons/nuvola/info.png\" /> " . _("Your answer has been successful saved in the database.") . "</p>\n");
+	}
     }
     
     // 
