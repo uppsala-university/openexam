@@ -44,7 +44,12 @@ $page->printLanguageSelect();
 </div>
 
 <div id="leftcolumn">
-<a href="http://www.uu.se"><img src="<?php printf("%s://www.uu.se/Logo/uulogo_white.gif", isset($_SERVER['HTTPS']) ? "https" : "http"); ?>" width="160" height="160" alt="Uppsala universitet" /></a>
+<a href="http://www.uu.se">
+  <!-- 
+	<img src="<?php printf("%s://www.uu.se/Logo/uulogo_white.gif", isset($_SERVER['HTTPS']) ? "https" : "http"); ?>" width="160" height="160" alt="Uppsala universitet" /> 
+    -->
+  <img src="images/uu_red/uulogo_white.gif" width="160" height="160" alt="Uppsala universitet" />
+</a>
 <!-- lyssna-knapp -->
 <div id="knapp">
 <form class="ISI_REMOVE" id="rs_form" name="rs_form" action="http://isi.phoneticom.com/cgi-bin/uursone" method="post" onsubmit="sayit()" target="rs">
