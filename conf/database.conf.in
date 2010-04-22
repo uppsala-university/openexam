@@ -1,0 +1,42 @@
+<?php  // -*- php -*-
+
+// 
+// Copyright (C) 2009 Computing Department BMC, 
+// Uppsala Biomedical Centre, Uppsala University.
+// 
+// File:   conf/database.conf
+// Author: Anders Lövgren
+// Date:   2009-06-25
+// 
+// Database configuration file. This application uses PEAR/MBD2, so you have
+// to install it together with the appropriate drivers for your RDBMS. 
+// 
+// Make sure that this file is not readable by anyone other than the web 
+// server and web server administrators (or the application owner).
+// 
+
+// 
+// The global DSN variable is either an array or an string. See the manual for
+// MDB2 for possible keys for the DSN. This variable is passed verbatime when
+// creating the MDB2 object, customize it as wanted.
+// 
+// A quicker and friendlier way (once you get used to it) to define the DSN is
+// to use a string that looks similar to a URL. The basic syntax is: 
+// phptype://username:password@hostspec/database
+// 
+// Example:
+// $GLOBALS['dsn'] = 'mysql://user:pass@localhost:3306/mdb2test';
+// 
+// More details on the DSN and more DSN string examples are available in the
+// PEAR manual at http://pear.php.net/manual/en/package.database.mdb2.intro-dsn.php. 
+// 
+
+$GLOBALS['dsn'] = array( 
+     'phptype'  => 'mysqli',		// Database driver
+     'hostspec' => 'localhost:3306',	// Hostname and port
+     'username' => 'user',
+     'password' => 'pass',
+     'database' => 'openexam'
+);
+
+?>

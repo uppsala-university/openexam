@@ -1,0 +1,150 @@
+/* Format as -*- C -*- code.
+ * 
+ * Custom CSS for openexam project.
+ * 
+ * Author: Anders Lövgren
+ * Date:   2009-08-16
+ */
+
+img {
+	border: 0px;
+}
+
+label
+{
+	width: 12em;
+	float: left;
+	text-align: right;
+	margin-right: 0.5em;
+	display: block
+}
+        
+.submit input
+{
+	margin-left: 8.5em;
+}
+
+div.lang-show {
+	margin: 0px;
+	padding: 0px;
+	float: right;
+}
+
+div.lang-show img {
+	vertical-align: middle;
+	padding-right: 3px;
+}
+
+div.lang-select {
+	position: absolute;
+	visibility: hidden;
+	z-index: 1;          /* always on top */
+	left: 820px;
+	top:  0px;
+	background-color: white;
+	border: 1px solid #aaaaaa;
+	padding: 5px;
+}
+
+#menuhead {
+        margin-left: 10px;
+	font-weight: bold;
+	color: #666666;
+	text-decoration: underline;
+}
+
+table td {
+	padding-left: 5px;
+}
+
+th a, th a:hover {
+	color: #000;
+}
+
+div.validator {
+	margin-top: 5px;
+}
+
+div.courses {
+	position: relative;
+	left: 25px;
+	top: 5px;
+	width: 560px;
+	background-color: #dddddd;
+	border: 1px solid #777777;
+	display: none;
+}
+
+div.invoice {
+	position: relative;
+	padding: 5px;
+	border: 1px solid #999999;
+}
+
+/*
+ * Links at right hand side in trees.
+ */
+span.links {
+	position: absolute;
+	left: 630px;
+	width: 340px;
+	text-align: right;
+}
+
+/*
+ * Use this class by inherit from span.links, like: <span class="links viewmode">
+ */
+span.viewmode {
+	top: 140px;	
+}
+
+tr:nth-child(even) {
+	background: #ffffcc;
+}
+
+tr:nth-child(odd) {
+	background: #efefef;
+}
+
+/*
+ * Style different types of list items.
+ */
+li.program,
+li.stage {
+	border-bottom: 1px solid #ffcccc;
+}
+li.semester,
+li.user,
+li.order {
+	border-bottom: 1px solid #ccccff;
+}
+li.course {
+	border-bottom: 1px solid #eeeeee;
+}
+
+/* 
+ * Wrap list items depending on nesting level (trees).
+ */
+ul.level1 {
+	width: 700px;
+}
+ul.level2 {
+	width: 600px;
+}
+ul.level3 {
+	width: 500px;
+}
+
+/* 
+ * The description of an examination.
+ */
+div.examination {
+	border: 1px solid gray;
+	padding: 10px;
+}
+div.examhead {
+	color: white;
+	background-color: gray;
+	font-size: 1.5em;
+	padding: 5px;
+}

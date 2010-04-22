@@ -1,0 +1,109 @@
+/*Toppmeny*/
+#topmenu {
+	float:right;
+	width:350px;
+	height: 0px;
+}
+
+#uppermenustyle {
+	background: transparent /*url(/openexam/images/uu/flik.gif) no-repeat right*/;
+	font: normal 1.0em/1.6em Verdana, Helvetica, Sans-serif;
+	color: #000;
+	margin-top: 0;
+	margin-bottom:0;
+	width:400px;
+	height:45px;
+	float:right;
+}
+
+#uppermenustyle ul {margin: 0; padding: 0;}	
+#uppermenustyle li {display: inline; list-style: none;}
+#uppermenustyle a:link, #uppermenustyle a:visited {color: #900; background-color: transparent; display: block; float: right; padding: 2px 6px 0 9px; text-decoration:none;}
+#uppermenustyle a:hover {color:#900; background-color: transparent; text-decoration:underline;}
+#uppermenustyle img { display:inline; vertical-align:middle;}
+
+.upperunder {
+	width:80px;
+	height:50px;
+	float:right;
+}
+#topmenu form {
+	width:215px;
+	margin-top:1px;
+	float:right;
+	margin-left:10px;
+}
+/*End Toppmeny*/
+
+/*Flikmeny*/
+.menu0 {
+       position: relative;
+       top: 45px;
+       }    
+       
+#toppbildbmc .menu0 {
+	left:0;
+	font: 700 1.0em/1.5em Verdana, Helvetica, Sans-serif;
+	color: #fff;
+	margin:0;
+	clear:both;
+	text-align:center;
+	padding: 63px 0 0 0;
+	text-align: left; 
+	height: 1.9em;
+	list-style:none;
+	}
+.menu0 ul {margin:0; padding:5px 0 0 11px; list-style:none; height:21px;}	
+.menu0 li {display:block; float:left; list-style:none; margin:0; width:110px; padding:2px 0;}
+.menu0 li a:link, .menu0 li a:visited {background:transparent url(/openexam/images/uu/bgtopmeny.gif) no-repeat; color:#900; padding:2px 0px 4px 10px; margin: 0; text-decoration:none; width:101px; display:block;}
+.menu0 li a:hover {color:#333; background:transparent url(/openexam/images/uu/bgtopmenyover.gif) no-repeat; }
+/*End Flikmeny*/
+
+/*Aktiv flik*/
+
+#topmenu li.menucurrent {
+	color:#ccc;
+}
+.menu1 li a.menucurrent {
+font-weight:700;
+}
+.menu0 li a.menucurrent {
+background:transparent url(/openexam/images/uu/bgtopmenyover.gif) no-repeat;
+font-weight:700;
+color:#333;
+}
+.menu1 li a.currentparent {
+font-weight:700;
+}
+.menu0 li a.currentparent {
+background:transparent url(/openexam/images/uu/bgtopmenyover.gif) no-repeat;
+font-weight:700;
+color:#333;
+}
+/* bakgrundsbild*/
+#toppbildbmc {
+	/*position: relative;*/
+	background:#fff url(/openexam/images/uu/topimgbmc.jpg) top left no-repeat;
+	margin: 0 0 20px 180px;
+	width: 800px;  
+	height:131px;
+}
+/* END bakgrundsbild*/
+/* Grundinställningar för  sidfoten */
+#footer {
+	/*position: absolute;*/
+	background:#fff;
+	margin-top: 40px;  
+	margin-left: 180px;
+	padding-bottom:20px;
+	width: 780px;  
+	border-left:none;
+	border-right:none;
+	border-bottom:none;
+	clear:both;
+}
+.sidfot { 
+	border-top: 1px #ddd dotted; 
+	padding: 3px;
+	font: normal 95% Verdana, Helvetica, Sans-serif;
+}
