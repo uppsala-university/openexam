@@ -52,15 +52,15 @@ class HelpPage extends BasePage
 	
 	printf("<h5>" . _("Examination") . "</h5>\n");
 	printf("<p>");
-	printf(_("Begin taking the exam by login on to the CAS server at Uppsala university. Once logged on, the system will present the active exam that has been assigned for you.\n"));
+	printf(_("Begin taking the exam by login on to the CAS server at Uppsala university. Once logged on, the system will present the active exam that has been assigned for you."));
 	printf("</p>\n");
 	printf("<p>");
-	printf(_("In the left side menu is all questions, grouped by in two groups: already answered and still to be answered. You can at any time (until the end of the exam) review and modify your previous answered questions.\n"));
+	printf(_("In the left side menu is all questions, grouped by in two groups: already answered and still to be answered. You can at any time (until the end of the exam) review and modify your previous answered questions."));
 	printf("</p>\n");
 
 	printf("<h5>" . _("Anonymity") . "</h5>\n");
 	printf("<p>\n");
-	printf(_("Your answers are saved in a database using a code associated with your real identity (your CAS-ID). Only when your exam has been finally corrected (by the teachers), your real identity is disclosed and the result is reported to UPPDOK.\n"));
+	printf(_("Your answers are saved in a database using a code associated with your real identity (your CAS-ID). Only when your exam has been finally corrected (by the teachers), your real identity is disclosed and the result is reported to UPPDOK."));
 	printf("</p>\n");
     }
 }
