@@ -141,6 +141,7 @@ ul.level3 {
 div.examination {
 	border: 1px solid gray;
 	padding: 10px;
+	margin-bottom: 10px;
 }
 div.examhead {
 	color: white;
