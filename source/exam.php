@@ -87,6 +87,16 @@ class ExaminationPage extends BasePage
     public function printBody()
     {
 	// 
+	// Authorization first:
+	// 
+	if(isset($_REQUEST['exam'])) {
+	    self::checkExaminationAccess($_REQUEST['exam']);
+	    if(isset($_REQUEST['question'])) {
+		self::checkQuestionAccess($_REQUEST['exam'], $_REQUEST['question']);
+	    }
+	}
+	
+	// 
 	// Bussiness logic:
 	// 
 	if(!isset($_REQUEST['exam'])) {
@@ -157,6 +167,37 @@ class ExaminationPage extends BasePage
 		}
 	    }
 	    echo "</ul>\n";
+	}
+    }
+    
+    // 
+    // Check that caller is authorized to access this exam.
+    // 
+    private function checkExaminationAccess($exam)
+    {
+	$data = Exam::getExamData(phpCAS::getUser(), $exam);
+	if(!$data->hasExamID()) {
+	    ErrorPage::show(_("Active examination was not found!"),
+			    sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+	    exit(1);
+	}
+    }
+
+    // 
+    // Check that the requested question is part of this exam.
+    // 
+    private function checkQuestionAccess($exam, $question)
+    {
+	$data = Exam::getQuestionData($question);
+	if(!$data->hasQuestionID()) {
+	    ErrorPage::show(_("Request parameter error!"),
+			    sprintf("<p>" . _("No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
+	    exit(1);
+	}
+	if($data->getExamID() != $exam) {
+	    ErrorPage::show(_("Request parameter error!"),
+			    sprintf("<p>" . _("The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
+	    exit(1);
 	}
     }
     
