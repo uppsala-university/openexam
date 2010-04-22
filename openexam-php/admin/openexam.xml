@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="openexam">
+	<table_structure name="admins">
+		<field Field="user" Type="varchar(10)" Null="NO" Key="" Extra="" />
+		<options Name="admins" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="1" Avg_row_length="20" Data_length="20" Max_data_length="281474976710655" Index_length="1024" Data_free="0" Create_time="2010-04-21 13:29:38" Update_time="2010-04-21 13:29:57" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="answers">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="question_id" Type="int(11)" Null="NO" Key="MUL" Extra="" />
+		<field Field="student_id" Type="int(11)" Null="NO" Key="MUL" Extra="" />
+		<field Field="answer" Type="text" Null="NO" Key="" Extra="" />
+		<field Field="comment" Type="text" Null="YES" Key="" Extra="" />
+		<key Table="answers" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="14" Null="" Index_type="BTREE" Comment="" />
+		<key Table="answers" Non_unique="1" Key_name="question_id" Seq_in_index="1" Column_name="question_id" Collation="A" Cardinality="14" Null="" Index_type="BTREE" Comment="" />
+		<key Table="answers" Non_unique="1" Key_name="student_id" Seq_in_index="1" Column_name="student_id" Collation="A" Cardinality="7" Null="" Index_type="BTREE" Comment="" />
+		<options Name="answers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="14" Avg_row_length="1170" Data_length="16384" Max_data_length="0" Index_length="32768" Data_free="0" Auto_increment="26" Create_time="2010-04-19 13:39:28" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB; (`question_id`) REFER `openexam/questions`(`id`); (`student_i" />
+	</table_structure>
+	<table_structure name="contributors">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" />
+		<field Field="user" Type="char(8)" Null="NO" Key="" Extra="" />
+		<key Table="contributors" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<key Table="contributors" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<options Name="contributors" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2010-04-19 13:39:28" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB; (`exam_id`) REFER `openexam/exams`(`id`)" />
+	</table_structure>
+	<table_structure name="decoders">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" />
+		<field Field="user" Type="char(8)" Null="NO" Key="" Extra="" />
+		<key Table="decoders" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<key Table="decoders" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<options Name="decoders" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2010-04-19 13:39:28" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB; (`exam_id`) REFER `openexam/exams`(`id`)" />
+	</table_structure>
+	<table_structure name="examinators">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" />
+		<field Field="user" Type="char(8)" Null="NO" Key="" Extra="" />
+		<key Table="examinators" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<key Table="examinators" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<options Name="examinators" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2010-04-19 13:39:28" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB; (`exam_id`) REFER `openexam/exams`(`id`)" />
+	</table_structure>
+	<table_structure name="exams">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="name" Type="varchar(100)" Null="NO" Key="" Extra="" />
+		<field Field="descr" Type="text" Null="YES" Key="" Extra="" />
+		<field Field="starttime" Type="datetime" Null="NO" Key="" Extra="" />
+		<field Field="endtime" Type="datetime" Null="NO" Key="" Extra="" />
+		<field Field="created" Type="datetime" Null="NO" Key="" Extra="" />
+		<field Field="updated" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="" />
+		<field Field="creator" Type="char(8)" Null="NO" Key="" Extra="" />
+		<key Table="exams" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2" Null="" Index_type="BTREE" Comment="" />
+		<options Name="exams" Engine="InnoDB" Version="10" Row_format="Compact" Rows="2" Avg_row_length="8192" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="6" Create_time="2010-04-22 09:15:37" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB" />
+	</table_structure>
+	<table_structure name="questions">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" />
+		<field Field="score" Type="float" Null="NO" Key="" Extra="" />
+		<field Field="name" Type="varchar(30)" Null="NO" Key="" Extra="" />
+		<field Field="quest" Type="text" Null="NO" Key="" Extra="" />
+		<field Field="user" Type="char(8)" Null="NO" Key="" Extra="" />
+		<field Field="video" Type="varchar(512)" Null="YES" Key="" Extra="" />
+		<field Field="image" Type="varchar(512)" Null="YES" Key="" Extra="" />
+		<field Field="audio" Type="varchar(512)" Null="YES" Key="" Extra="" />
+		<field Field="type" Type="enum('freetext','single','multiple')" Null="NO" Key="" Default="freetext" Extra="" />
+		<key Table="questions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="22" Null="" Index_type="BTREE" Comment="" />
+		<key Table="questions" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="3" Null="" Index_type="BTREE" Comment="" />
+		<options Name="questions" Engine="InnoDB" Version="10" Row_format="Compact" Rows="22" Avg_row_length="744" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="23" Create_time="2010-04-19 13:39:28" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB; (`exam_id`) REFER `openexam/exams`(`id`)" />
+	</table_structure>
+	<table_structure name="results">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="answer_id" Type="int(11)" Null="NO" Key="MUL" Extra="" />
+		<field Field="score" Type="float" Null="NO" Key="" Extra="" />
+		<field Field="comment" Type="text" Null="YES" Key="" Extra="" />
+		<key Table="results" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<key Table="results" Non_unique="1" Key_name="answer_id" Seq_in_index="1" Column_name="answer_id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<options Name="results" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2010-04-19 13:39:28" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB; (`answer_id`) REFER `openexam/answers`(`id`)" />
+	</table_structure>
+	<table_structure name="students">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" />
+		<field Field="user" Type="char(8)" Null="NO" Key="" Extra="" />
+		<field Field="code" Type="varchar(15)" Null="NO" Key="" Extra="" />
+		<key Table="students" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="35" Null="" Index_type="BTREE" Comment="" />
+		<key Table="students" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="35" Null="" Index_type="BTREE" Comment="" />
+		<options Name="students" Engine="InnoDB" Version="10" Row_format="Compact" Rows="35" Avg_row_length="468" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="38" Create_time="2010-04-19 13:39:28" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB; (`exam_id`) REFER `openexam/exams`(`id`)" />
+	</table_structure>
+</database>
+</mysqldump>
