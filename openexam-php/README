@@ -1,0 +1,9 @@
+--------------------------------------------------------
+ OpenExam PHP
+--------------------------------------------------------
+
+This is an system for doing exams online using the web. The system is
+written in PHP and is a quick & dirty drop'in for the complete Java EE
+solution to come soon.
+
+// Anders Lövgren, 2010-04-21

@@ -1,0 +1,109 @@
+<?php  // -*- php -*-
+
+// 
+// Copyright (C) 2009 Computing Department BMC, 
+// Uppsala Biomedical Centre, Uppsala University.
+// 
+// File:   conf/config.inc
+// Author: Anders Lövgren
+// Date:   2009-06-28
+// 
+// This file contains the application settings.
+// 
+
+// 
+// The page title shown on each page. This is also used as subject 
+// prefix for email reminder messages:
+// 
+define ('PAGE_TITLE', _('OpenExam PHP - Online examination over the web'));
+
+// 
+// Show the W3C page validators.
+// 
+define ("PAGE_VALIDATOR", false);
+
+// 
+// Define the base URL for the web application. We need to do this because
+// email reminders are generated from code not running under a web server.
+// 
+define ('BASE_URL', sprintf('%s://www.example.com/openexam', isset($_SERVER['HTTPS']) ? "https" : "http"));
+
+// 
+// Settings for CAS (Centralized Authentication System):
+// 
+define ('CAS_HOST', 'cas-server.example.com');
+define ('CAS_PORT',  443);
+define ('CAS_PATH', '/server-path');
+define ('CAS_DEBUG', false);
+
+// 
+// Settings for SMTP server:
+// 
+define ('SMTP_SERVER', 'smtp.example.com');  // Sender hostname
+define ('SMTP_HOST',   'smtp.example.com');  // The SMTP server
+define ('SMTP_PORT',    25);
+// 
+// Settings for authenticated SMTP:
+// 
+define ('SMTP_AUTH', false);                 // Use authentication
+define ('SMTP_USER', null);
+define ('SMTP_PASS', null);
+
+// 
+// Setttings for InfoCGI:
+// 
+define ('INFO_CGI_USER',   'user');
+define ('INFO_CGI_PASS',   'pass');
+define ('INFO_CGI_SERVER', '');
+define ('INFO_CGI_PORT',   1234);
+
+//
+// Settings for LDAP (Lightweight Directory Access Protocol). At least
+// the server should be defined. Setting the LDAP protocol might be
+// required.
+//
+define ('LDAP_SERVER', 'ldap.example.com');
+define ('LDAP_BASEDN', 'ou=employees');
+// define ('LDAP_PORT',   389);
+// define ('LDAP_USER',   'username');
+// define ('LDAP_PASS',   'password');
+// define ('LDAP_PROTOCOL_VERSION', 3);
+
+// 
+// The contact address:
+// 
+define ('CONTACT_NAME', _('System Manager'));
+define ('CONTACT_ADDRESS', 'sysadm@localhost');
+define ('CONTACT_STRING', sprintf("<a href=\"mailto:%s\">%s</a>",
+                                  CONTACT_ADDRESS, CONTACT_NAME));
+
+// 
+// The addresses and subject for emails (for future extensions).
+// 
+define ('KORINT_RECV_ADDRESS', 'dummy@example.com');
+define ('KORINT_SEND_ADDRESS', 'manager@localhost');
+define ('KORINT_SEND_SUBJECT', _('OpenExam PHP'));
+
+// 
+// The string to use in X-Mailer header to tag messages.
+// 
+define ('RFC822_XMAILER_HEADER', "OpenExam PHP Equinox/1.0");
+	
+// 
+// How to format datetime for display by strftime(). There's three options here:
+// 
+//   1. Use '%x %X' for locale default format of date and time.
+//   2. Use '%G-%m-%d %H:%M:%S' for ISO international date format.
+//   3. Place format string within _("") and add translations.
+// 
+define ('DATETIME_FORMAT', '%x %X');
+define ('TIME_FORMAT', '%X');
+define ('DATE_FORMAT', '%x');
+
+// 
+// Controls error logging:
+// 
+define ("ERROR_LOG_TRACE", true);             // Log call trace.
+define ("ERROR_LOG_PREFIX", "OpenExam PHP");        // Use this log prefix.
+
+?>

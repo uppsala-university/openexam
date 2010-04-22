@@ -1,0 +1,35 @@
+#
+# Apache web server configuration for this web application.
+#
+# File:   conf/apache.conf
+# Author: Anders Lövgren
+# Date:   2009-06-25
+#
+# Note: Make sure to modify pathes, including the custom include path below.
+#
+
+Alias /openexam/ /var/www/localhost/apps/openexam/source/
+
+<Directory /var/www/localhost/apps/openexam/source/>
+  Order deny,allow
+  Allow from all
+  Options Indexes FollowSymLinks MultiViews
+  # Hide development files:
+  <FilesMatch "\.(inc|bak|svn|.*~)$">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+  # Set custom include path:
+  php_value include_path ".:/var/www/localhost/apps/openexam:/usr/share/php"
+
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+</Directory>
+
+# This directory contains admin pages, test scripts and setup, so keep it private:
+<Directory /var/www/localhost/apps/openexam/source/admin/>
+  Order deny,allow
+  Deny from all
+  Allow from 127.0.0.1 ::1
+</Directory>
