@@ -28,6 +28,10 @@
 // an "OK" or "ERROR: message".
 // 
 
+if(!defined("FWEXAMD_PORT")) {
+    define ("FWEXAMD_PORT", 3751);
+}
+
 // 
 // The exception thrown upon errors.
 // 
@@ -57,43 +61,105 @@ class LockerException extends Exception
 // 
 class Locker
 {
-    private $ipaddr;   // The peer ip-address
-    
-    public function __construct($ipaddr)
+    private $ipaddr;          // The peer ip-address
+    private $port;            // The destination port
+    private $sock = null;     // The TCP socket
+
+    // 
+    // The connection is initial unconnected.
+    // 
+    public function __construct($ipaddr, $port)
     {
 	$this->ipaddr = $ipadddr;
+	$this->port = $port;
+    }
+
+    public function getIpAddress() 
+    {
+	return $this->ipaddr;
+    }
+    
+    public function getPort() 
+    {
+	return $this->port;
     }
     
     // 
-    // Send "initilize" command to peer.
+    // Opens the TCP connection.
+    // 
+    public function connect()
+    {
+	$this->sock = fsockopen($ipaddr, $port, $errno, $errstr);
+	if(!$this->sock) {
+	    throw new LockerException($errstr, $errno, "Failed connect to the locker daemon on $ipaddr.");
+	}
+    }
+    
+    // 
+    // End TCP connection. This is implicit done when the script execution terminates.
+    // 
+    public function disconnect()
+    {
+	if($this->sock) {
+	    fclose($this->sock);
+	    $this->sock = null;
+	}
+    }
+	  
+    // 
+    // Protocol: send "initilize" command to peer.
     // 
     public function initialize()
     {
-	// TODO: implement
+	if(!isset($this->sock)) {
+	    throw new LockerException($errstr, $errno, "The TCP socket is not connected to peer.");
+	}
+	fwrite($this->sock, "initialize\n");
+	if(($response = trim(fgets($this->sock))) != "OK") {
+	    throw new LockerException($response, 0, "Failed initialize lockdown on peer computer.");
+	}
     }
     
     // 
-    // Send "permit ipaddr" to peer.
+    // Protocol: send "permit ipaddr" to peer.
     // 
     public function permit($ipaddr) 
     {
-	// TODO: implement
+	if(!isset($this->sock)) {
+	    throw new LockerException($errstr, $errno, "The TCP socket is not connected to peer.");
+	}
+	fwrite($this->sock, "permit $ipaddr\n");
+	if(($response = trim(fgets($this->sock))) != "OK") {
+	    throw new LockerException($response, 0, "Failed add permit rule.");
+	}
     }
     
     // 
-    // Send "release" to peer.
+    // Protocol: send "release" to peer.
     // 
     public function release()
     {
-	// TODO: implement
+	if(!isset($this->sock)) {
+	    throw new LockerException($errstr, $errno, "The TCP socket is not connected to peer.");
+	}
+	fwrite($this->sock, "restore\n");
+	if(($response = trim(fgets($this->sock))) != "OK") {
+	    throw new LockerException($response, 0, "Failed restore lockdown state on peer computer.");
+	}
     }
     
     // 
-    // An helper function for resolving the ip-address from an URL.
+    // An helper function for resolving ip-addresses from an URL. The returned
+    // result is an list of ip-addresses or FALSE if hostname could not be resolved.
     // 
     public function resolve($url)
     {
-	// TODO: implement
+	$pattern = "/^(http|https|ftp|ftps|sftp|rtsp|mms):\/\/(.*?)\/(.*)\/(.*?)?([?].*)?$/";
+	$match = array();
+	if(preg_match($pattern, $url, $match)) {   // host is match index 2
+	    $host = $match[2];
+	    return gethostbynamel($host);
+	}
     }
 }
 
