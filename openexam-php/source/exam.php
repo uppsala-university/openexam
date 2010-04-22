@@ -70,7 +70,7 @@ class ExaminationPage extends BasePage
     // the regex pattern to validate its value against.
     // 
     private $params = array( "exam"     => "/^\d+$/",
-			     "question" => "/^\d+$/",
+			     "question" => "/^(\d+|all)$/",
 			     "answer"   => "/.*$/" );
     
     // 
@@ -91,7 +91,7 @@ class ExaminationPage extends BasePage
 	// 
 	if(isset($_REQUEST['exam'])) {
 	    self::checkExaminationAccess($_REQUEST['exam']);
-	    if(isset($_REQUEST['question'])) {
+	    if(isset($_REQUEST['question']) && $_REQUEST['question'] != "all") {
 		self::checkQuestionAccess($_REQUEST['exam'], $_REQUEST['question']);
 	    }
 	}
@@ -104,6 +104,8 @@ class ExaminationPage extends BasePage
 	} else {
 	    if(!isset($_REQUEST['question'])) {
 		self::showInstructions($_REQUEST['exam']);
+	    } elseif($_REQUEST['question'] == "all") {
+		self::showQuestions($_REQUEST['exam']);
 	    } elseif(isset($_REQUEST['answer'])) {
 		self::saveQuestion($_REQUEST['exam'], $_REQUEST['question'], $_REQUEST['answer']);
 	    } else {
@@ -166,6 +168,17 @@ class ExaminationPage extends BasePage
 			   $question->getQuestionScore());
 		}
 	    }
+	    echo "</ul>\n";
+
+	    echo "<span id=\"menuhead\">" . _("Show:") . "</span>\n";
+	    echo "<ul>\n";
+	    printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
+		   $question->getExamID(),
+		   _("Show the start page for this examination"), _("Start page"));
+	    printf("<li><a href=\"?exam=%d&amp;question=all\" title=\"%s\">%s</a></li>\n",
+		   $question->getExamID(),
+		   _("Show all questions at the same time"),
+		   _("All questions"));
 	    echo "</ul>\n";
 	}
     }
@@ -263,6 +276,25 @@ class ExaminationPage extends BasePage
 	printf("<p>" . _("In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question.") . "</p>\n");
 	printf("<p>" . _("Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished.") . "</p>\n");
 	printf("<p>" . _("Good luck!") . "</p>\n");
+    }
+    
+    // 
+    // Show all questions at once.
+    // 
+    private function showQuestions($exam)
+    {
+	$questions = Exam::getQuestions($exam);
+	
+	printf("<h3>" . _("Overview of all questions (no answers included)") . "</h3>\n");
+	foreach($questions as $question) {
+	    printf("<h5>%s %s</h5><p>%s</p><p><a href=\"?exam=%d&amp;question=%d\">[%s]</a></p>\n", 
+		   _("Question"),
+		   utf8_decode($question->getQuestionName()),
+		   utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())),
+		   $question->getExamID(), 
+		   $question->getQuestionID(),
+		   _("Answer"));
+	}
     }
     
     // 
