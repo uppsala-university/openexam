@@ -86,6 +86,7 @@ class Exam
 			FROM answers a, students s 
 			WHERE s.exam_id = %d AND a.student_id = s.id AND s.user = '%s' AND a.student_id = s.id
 			ORDER BY QuestionID", $exam, $user);
+	// die($sql);
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);
     }
@@ -108,15 +109,14 @@ class Exam
     // 
     // Update or insert the answer from user to this question.
     // 
-    public function saveAnswer($question, $user, $answer)
+    public function setAnswer($exam, $question, $user, $answer)
     {
 	$data = self::getAnswerData($question, $user);
 	if(!$data->hasAnswerID()) {
-	    $uid = self::getStudentID($user);
+	    $uid = self::getStudentID($exam, $user);
 	    $sql = sprintf("INSERT INTO answers(question_id, student_id, answer) VALUES(%d, %d, '%s')",
 			   $question, $uid, $answer);
 	} else {
-	    $uid = self::getStudentID($user);
 	    $sql = sprintf("UPDATE answers SET answer = '%s' WHERE id = %d", 
 			   $answer, $data->getAnswerID());
 	}
@@ -129,12 +129,12 @@ class Exam
     // 
     // Get the ID of this student.
     // 
-    private function getStudentID($user) 
+    private function getStudentID($exam, $user) 
     {
 	$db = Database::getConnection();
 	$db->setFetchMode(MDB2_FETCHMODE_ORDERED);
 	
-	$sql = sprintf("SELECT id FROM students WHERE user = '%s'", $user);
+	$sql = sprintf("SELECT id FROM students WHERE user = '%s' AND exam_id = %d", $user, $exam);
 	$res = $db->query($sql);
 	if(PEAR::isError($res)) {
 	    throw new DatabaseException($res->getMessage());
