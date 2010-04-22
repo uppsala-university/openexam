@@ -86,6 +86,9 @@ class ExaminationPage extends BasePage
     // 
     public function printBody()
     {
+	// 
+	// Bussiness logic:
+	// 
 	if(!isset($_REQUEST['exam'])) {
 	    self::showAvailableExams();
 	} else {
@@ -131,9 +134,10 @@ class ExaminationPage extends BasePage
 	    echo "<ul>\n";
 	    if(isset($menuitem['q'])) {
 		foreach($menuitem['q'] as $question) {
-		    printf("<li><a href=\"?exam=%d&amp;question=%d\">%s [%.01fp]</a></li>\n",
+		    printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01fp]</a></li>\n",
 			   $question->getExamID(),
 			   $question->getQuestionID(),
+			   utf8_decode($question->getQuestionText()),
 			   utf8_decode($question->getQuestionName()),
 			   $question->getQuestionScore());
 		}
@@ -144,9 +148,10 @@ class ExaminationPage extends BasePage
 	    echo "<ul>\n";
 	    if(isset($menuitem['a'])) {
 		foreach($menuitem['a'] as $question) {
-		    printf("<li><a href=\"?exam=%d&amp;question=%d\">%s [%.01f]</a></li>\n",
+		    printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01f]</a></li>\n",
 			   $question->getExamID(),
 			   $question->getQuestionID(),
+			   utf8_decode($question->getQuestionText()),
 			   utf8_decode($question->getQuestionName()),
 			   $question->getQuestionScore());
 		}
@@ -178,7 +183,7 @@ class ExaminationPage extends BasePage
 	    printf("<div class=\"examination\">\n");
 	    printf("<div class=\"examhead\">%s</div>\n", utf8_decode($exam->getExamName()));
 	    printf("<div class=\"exambody\">%s<p>%s: <b>%s</b></p>\n", 
-		   utf8_decode($exam->getExamDescription()), 
+		   utf8_decode(str_replace("\n", "<br>", $exam->getExamDescription())),
 		   _("The examination ends"), 
 		   strftime(TIME_FORMAT, strtotime($exam->getExamEndTime())));
 	    printf("<form action=\"exam.php\" method=\"GET\">\n");
@@ -204,7 +209,9 @@ class ExaminationPage extends BasePage
 	}
 	
 	printf("<h3>%s</h3>\n", utf8_decode($exam->getExamName()));
-	printf("<p>" . _("In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question. Good luck!") . "</p>\n");
+	printf("<p>" . _("In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question.") . "</p>\n");
+	printf("<p>" . _("Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished.") . "</p>\n");
+	printf("<p>" . _("Good luck!") . "</p>\n");
     }
     
     // 
@@ -217,7 +224,8 @@ class ExaminationPage extends BasePage
 	
 	printf("<h3>%s %s [%.01fp]</h3>\n", _("Question"), 
 	       utf8_decode($qdata->getQuestionName()), $qdata->getQuestionScore());
-	printf("<p><div class=\"examination\">%s</div></p>\n", $qdata->getQuestionText());
+	printf("<p><div class=\"examination\">%s</div></p>\n", 
+	       str_replace("\n", "<br>", $qdata->getQuestionText()));
 	
 	printf("<p>" . _("Answer:") . "</p>\n");
 	printf("<form action=\"exam.php\" method=\"GET\">\n"); 
@@ -234,8 +242,8 @@ class ExaminationPage extends BasePage
     // 
     private function saveQuestion($exam, $question, $answer)
     {
-	Exam::saveAnswer($question, phpCAS::getUser(), utf8_encode($answer));
-	header(sprintf("location: exam.php?exam=%d&amp;question=%d&amp;status=ok", $exam, $question));
+	Exam::setAnswer($exam, $question, phpCAS::getUser(), utf8_encode($answer));
+	header(sprintf("location: exam.php?exam=%d&question=%d&status=ok", $exam, $question));
     }
     
     // 
