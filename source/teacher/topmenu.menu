@@ -1,0 +1,10 @@
+<ul class="menu0">
+<li><a href="<?php echo "index.php\""; ?> class="menubarlink"><?php echo _("Start"); ?></a></li>
+<li><a href="<?php echo "manager.php\""; ?> class="menubarlink"><?php echo _("Manage"); ?></a></li>
+<li><a href="<?php echo "contribute.php\""; ?> class="menubarlink"><?php echo _("Contribute"); ?></a></li>
+<li><a href="<?php echo "examinator.php\""; ?> class="menubarlink"><?php echo _("Examinate"); ?></a></li>
+<li><a href="<?php echo "decoder.php\""; ?> class="menubarlink"><?php echo _("Decode"); ?></a></li>
+<li><a href="<?php echo "correct.php\""; ?> class="menubarlink"><?php echo _("Correction"); ?></a></li>
+<li><a href="<?php echo "help.php\""; ?> class="menubarlink"><?php echo _("Help"); ?></a></li>
+<li><a href="<?php echo "../about.php\""; ?> class="menubarlink"><?php echo _("About"); ?></a></li>
+</ul>
