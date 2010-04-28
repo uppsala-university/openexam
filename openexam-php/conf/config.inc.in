@@ -80,9 +80,9 @@ define ('CONTACT_STRING', sprintf("<a href=\"mailto:%s\">%s</a>",
 // 
 // The addresses and subject for emails (for future extensions).
 // 
-define ('KORINT_RECV_ADDRESS', 'dummy@example.com');
-define ('KORINT_SEND_ADDRESS', 'manager@localhost');
-define ('KORINT_SEND_SUBJECT', _('OpenExam PHP'));
+define ('OPENEXAM_RECV_ADDRESS', 'dummy@example.com');
+define ('OPENEXAM_SEND_ADDRESS', 'manager@localhost');
+define ('OPENEXAM_SEND_SUBJECT', _('OpenExam PHP'));
 
 // 
 // The string to use in X-Mailer header to tag messages.
