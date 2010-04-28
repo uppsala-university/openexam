@@ -30,7 +30,7 @@ class Admin
 	$row = $res->fetchRow();
 	
 	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-	return intval($row[0]) == 1;	
+	return intval($row[0]) >= 1;	
     }
     
     // 
@@ -41,7 +41,11 @@ class Admin
 	$tasks = array( "admin"    => array( "href" => "admin.php",
 					     "desc" => _("Grant and revoke administrative privileges to trusted users."),
 					     "name" => _("Admins")
-					     )
+					     ),
+			"teacher"  => array( "href" => "teacher.php",
+					     "desc" => _("Grant and revoke teacher privileges to trusted users."),
+					     "name" => _("Teachers")
+					     )			
 			);
 	return $tasks;
     }
@@ -51,7 +55,7 @@ class Admin
     //
     public static function getAdminUsers()
     {
-	$sql = "SELECT user AS UserName FROM admins";
+	$sql = "SELECT id AS UserID, user AS UserName FROM admins";
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);
     }
