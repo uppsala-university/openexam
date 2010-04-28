@@ -3,6 +3,7 @@
 $rootdir = ".";
 switch(basename(dirname($_SERVER['SCRIPT_NAME']))) {
     case "admin":
+    case "teacher":
         $rootdir = "..";
 	break;
 }
@@ -11,5 +12,6 @@ switch(basename(dirname($_SERVER['SCRIPT_NAME']))) {
 <li><a href="<?php echo "$rootdir/exam.php\""; ?> class="menubarlink"><?php echo _("Examination"); ?></a></li>
 <li><a href="<?php echo "$rootdir/help.php\""; ?> class="menubarlink"><?php echo _("Help"); ?></a></li>
 <li><a href="<?php echo "$rootdir/about.php\""; ?> class="menubarlink"><?php echo _("About"); ?></a></li>
+<li><a href="<?php echo "$rootdir/teacher/\""; ?> class="menubarlink"><?php echo _("Teacher"); ?></a></li>
 <li><a href="<?php echo "$rootdir/admin/\""; ?> class="menubarlink"><?php echo _("Admin"); ?></a></li>
 </ul>
