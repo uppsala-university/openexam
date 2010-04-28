@@ -3,14 +3,14 @@
 #
 # File:   conf/apache.conf
 # Author: Anders Lövgren
-# Date:   2009-06-25
+# Date:   2010-04-27
 #
 # Note: Make sure to modify pathes, including the custom include path below.
 #
 
-Alias /openexam/ /var/www/localhost/apps/openexam/source/
+Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
 
-<Directory /var/www/localhost/apps/openexam/source/>
+<Directory /var/www/localhost/apps/openexam-php/source/>
   Order deny,allow
   Allow from all
   Options Indexes FollowSymLinks MultiViews
@@ -20,15 +20,22 @@ Alias /openexam/ /var/www/localhost/apps/openexam/source/
     Deny from all
   </FilesMatch>
   # Set custom include path:
-  php_value include_path ".:/var/www/localhost/apps/openexam:/usr/share/php"
+  php_value include_path ".:/var/www/localhost/apps/openexam-php:/usr/share/php"
 
   RewriteEngine On
   RewriteCond %{HTTPS} off
   RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 </Directory>
 
+# This directory contains the pages used by teachers for managing the exams.
+<Directory /var/www/localhost/apps/openexam-php/source/teacher/>
+  Order deny,allow
+  Deny from all
+  Allow from 127.0.0.1 ::1
+</Directory>
+
 # This directory contains admin pages, test scripts and setup, so keep it private:
-<Directory /var/www/localhost/apps/openexam/source/admin/>
+<Directory /var/www/localhost/apps/openexam-php/source/admin/>
   Order deny,allow
   Deny from all
   Allow from 127.0.0.1 ::1
