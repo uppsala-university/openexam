@@ -138,6 +138,20 @@ class CorrectionPage extends TeacherPage
 	    }
 	}
     }
+
+    // 
+    // verify that the caller has been granted the required role on this exam.
+    // 
+    private function checkAccess($exam)
+    {
+	$role = "contributor";
+	
+	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
+	    ErrorPage::show(_("Access denied!"),
+			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
+	    exit(1);
+	}
+    }
     
     // 
     // Save result from markQuestionScore(), markStudentScore() and saveAnswerScore().
@@ -431,74 +445,7 @@ class CorrectionPage extends TeacherPage
 	printf("</table>\n");
 	
     }
-    
-    private function showScoreBoard_OLD($exam)
-    {
-	$correct = new Correct($exam);
-	$manager = new Manager($exam);
-	
-	$data = $manager->getData();
-	printf("<p>" .
-	       _("This table shows all questions and students for examination '%s'. ") .
-	       _("You can only correct answers to those questions you have published.") . 
-	       "</p>\n", 
-	       utf8_decode($data->getExamName()));
-	
-	$questions = $manager->getQuestions();
-	
-	$scores = $correct->getScoreBoard();
-	print_r($scores);
-	exit(1);
-	
-	printf("<table>\n");
-	// 
-	// Print questions, leave the first cell empty.
-	// 
-	printf("<tr><td>&nbsp;</td>");
-	foreach($questions as $question) {
-	    printf("<td><a href=\"?exam=%d&amp;action=correct&amp;question=%d\" title=\"%s\">%s</a></td>",
-		   $question->getExamID(),
-		   $question->getQuestionID(),
-		   utf8_decode($question->getQuestionText()),
-		   utf8_decode($question->getQuestionName()));
-	}
-	printf("</tr>\n");
-	// 
-	// Output the list of anonymous students.
-	// 
-	$students = $manager->getStudents();
-	foreach($students as $student) {
-	    printf("<tr><td><a href=\"?exam=%d&amp;action=correct&amp;student=%d\">%s</a></td>",
-		   $student->getExamID(), 
-		   $student->getStudentID(),
-		   $student->getStudentCode());
-	    foreach($questions as $question) {
-		if($question->getQuestionPublisher() == phpCAS::getUser()) {
-		    
-		} else {
-		    printf("");
-		}
-	    }
-	    printf("</tr>\n");
-	}
-	
-	printf("</table>\n");
-    }
-
-    // 
-    // verify that the caller has been granted the required role on this exam.
-    // 
-    private function checkAccess($exam)
-    {
-	$role = "contributor";
-	
-	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
-	    ErrorPage::show(_("Access denied!"),
-			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
-	    exit(1);
-	}
-    }
-        
+            
 }
 
 $page = new CorrectionPage();
