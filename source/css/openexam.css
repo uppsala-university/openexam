@@ -105,6 +105,19 @@ tr:nth-child(even) {
 tr:nth-child(odd) {
 	background: #efefef;
 }
+tr.nonth {
+	background: white;
+}
+
+/* 
+ * Used by the correcting page.
+ */
+tr.question, tr.comment {
+	background: #ffffcc;
+}
+tr.answer {
+	background: #efefef;
+}
 
 /*
  * Style different types of list items.
@@ -148,4 +161,20 @@ div.examhead {
 	background-color: gray;
 	font-size: 1.5em;
 	padding: 5px;
+}
+
+/* 
+ * Color encoding for the score board.
+ */
+td.no { /* not owner */
+	background-color: gray;
+}
+td.na { /* no answer */
+	background-color: red;
+}
+td.nc { /* not yet corrected */
+	background-color: white;
+}
+td.ac { /* answer corrected */
+	background-color: lightgreen;
 }
