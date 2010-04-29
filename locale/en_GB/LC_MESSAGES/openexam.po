@@ -7,14 +7,763 @@ msgid ""
 msgstr ""
 "Project-Id-Version: russin 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-04-22 19:41+0200\n"
-"PO-Revision-Date: 2010-04-22 19:43+0200\n"
+"POT-Creation-Date: 2010-04-29 15:38+0200\n"
+"PO-Revision-Date: 2010-04-29 16:38+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: conf/config.inc:18
+msgid "OpenExam PHP - Online examination over the web"
+msgstr "OpenExam PHP - Online examination over the web"
+
+#: conf/config.inc:75
+msgid "System Manager"
+msgstr "System Manager"
+
+#: conf/config.inc:85
+msgid "OpenExam PHP"
+msgstr "OpenExam PHP"
+
+#: template/page.php:81
+msgid "Template:"
+msgstr "Template:"
+
+#: template/page.php:99 include/admin.inc:117 include/teacher.inc:145
+#: source/index.php:96 source/admin/admin.php:89 source/admin/teacher.php:91
+#: source/exam.php:216 source/exam.php:221 source/exam.php:344
+msgid "Request parameter error!"
+msgstr "Request parameter error!"
+
+#: template/page.php:100 include/admin.inc:118 include/teacher.inc:146
+#: source/index.php:97 source/exam.php:345
+#, php-format
+msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
+msgstr "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
+
+#: template/ui/standard.ui:56 template/ui/uu-red/standard.ui:43
+#: template/ui/uu-white/standard.ui:51
+msgid "Listen to page/selected text"
+msgstr "Listen to page/selected text"
+
+#: template/ui/standard.ui:56 template/ui/uu-red/standard.ui:43
+#: template/ui/uu-white/standard.ui:51
+msgid "Say it"
+msgstr "Say it"
+
+#: template/ui/standard.ui:80 template/ui/standard.ui:83
+#: template/ui/uu-red/standard.ui:81 template/ui/uu-red/standard.ui:84
+#: template/ui/uu-white/standard.ui:75 template/ui/uu-white/standard.ui:78
+#, php-format
+msgid "Copyright"
+msgstr "Copyright"
+
+#: template/ui/standard.ui:81 template/ui/uu-red/standard.ui:82
+#: template/ui/uu-white/standard.ui:76
+#, php-format
+msgid "Information about writer, publisher and publish date, and webmaster is missing."
+msgstr "Information about writer, publisher and publish date, and webmaster is missing."
+
+#: template/ui/standard.ui:84 template/ui/uu-red/standard.ui:85
+#: template/ui/uu-white/standard.ui:79
+#, php-format
+msgid "Last modified: %s"
+msgstr "Last modified: %s"
+
+#: template/ui/standard.ui:84 template/ui/uu-red/standard.ui:85
+#: template/ui/uu-white/standard.ui:79
+#, php-format
+msgid "Page responsible:"
+msgstr "Page responsible:"
+
+#: template/publish.inc:21 source/about.php:56
+msgid "Computing Department at BMC"
+msgstr "Computing Department at BMC"
+
+#: template/publish.inc:23
+msgid "Webmaster"
+msgstr "Webmaster"
+
+#: include/error.inc:38
+#, php-format
+msgid "If you think this is a bug in the system, then please report it to %s"
+msgstr "If you think this is a bug in the system, then please report it to %s"
+
+#: include/admin.inc:42
+msgid "Grant and revoke administrative privileges to trusted users."
+msgstr "Grant and revoke administrative privileges to trusted users."
+
+#: include/admin.inc:43
+msgid "Admins"
+msgstr "Admins"
+
+#: include/admin.inc:46
+msgid "Grant and revoke teacher privileges to trusted users."
+msgstr "Grant and revoke teacher privileges to trusted users."
+
+#: include/admin.inc:47
+msgid "Teachers"
+msgstr "Teachers"
+
+#: include/admin.inc:109 include/teacher.inc:137 include/ui.inc:278
+#: source/teacher/correct.php:186 source/teacher/correct.php:496
+#: source/teacher/manager.php:460 source/teacher/template.php:101
+msgid "Access denied!"
+msgstr "Access denied!"
+
+#: include/admin.inc:110
+msgid "Only users granted administrative privileges (system managers) can access this page. The script processing has halted."
+msgstr "Only users granted administrative privileges (system managers) can access this page. The script processing has halted."
+
+#: include/admin.inc:136 include/teacher.inc:164
+msgid "Missing required parameter!"
+msgstr "Missing required parameter!"
+
+#: include/admin.inc:137 include/teacher.inc:165
+#, php-format
+msgid "The required request parameter '%s' is missing"
+msgstr "The required request parameter '%s' is missing"
+
+#: include/ldap.inc:291
+#, php-format
+msgid "Failed connect to LDAP server %s:%d"
+msgstr "Failed connect to LDAP server %s:%d"
+
+#: include/ldap.inc:300
+#, php-format
+msgid "Failed set LDAP protocol version %d"
+msgstr "Failed set LDAP protocol version %d"
+
+#: include/teacher.inc:138
+msgid "Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."
+msgstr ""
+"Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."
+
+#: include/locale.inc:246
+msgid "Swedish"
+msgstr "Swedish"
+
+#: include/locale.inc:251
+msgid "English (GB)"
+msgstr "English (GB)"
+
+#: include/locale.inc:256
+msgid "English (US)"
+msgstr "English (US)"
+
+#: include/locale.inc:261
+msgid "Browser default"
+msgstr "Browser default"
+
+#: include/database.inc:104
+msgid "Can't use setDSN() on existing connection."
+msgstr "Can't use setDSN() on existing connection."
+
+#: include/ui.inc:84
+#, php-format
+msgid "Logged on as"
+msgstr "Logged on as"
+
+#: include/ui.inc:84
+#, php-format
+msgid "Logout"
+msgstr "Logout"
+
+#: include/ui.inc:87
+#, php-format
+msgid "Not logged on"
+msgstr "Not logged on"
+
+#: include/ui.inc:87 source/teacher/help.php:44 source/help.php:44
+#, php-format
+msgid "Logon"
+msgstr "Logon"
+
+#: include/ui.inc:116
+#, php-format
+msgid "Select language to use:"
+msgstr "Select language to use:"
+
+#: include/ui.inc:140
+#, php-format
+msgid "Language:"
+msgstr "Language:"
+
+#: include/ui.inc:141
+msgid "Click on the flag to change language."
+msgstr "Click on the flag to change language."
+
+#: include/ui.inc:195
+msgid "Validator:"
+msgstr "Validator:"
+
+#: include/ui.inc:279
+msgid "Only trusted users with administrative privileges (system users) can access this page. The script processing has halted."
+msgstr "Only trusted users with administrative privileges (system users) can access this page. The script processing has halted."
+
+#: include/ui.inc:322
+#, php-format
+msgid "Error:"
+msgstr "Error:"
+
+#: include/ui.inc:322
+#, php-format
+msgid "Please report this to %s."
+msgstr "Please report this to %s."
+
+#: source/index.php:74
+msgid "Index:"
+msgstr "Index:"
+
+#: source/index.php:82
+#, php-format
+msgid "Welcome!"
+msgstr "Welcome!"
+
+#: source/index.php:83
+#, php-format
+msgid "This system let you do examination online, see <a href=\"%s\">Help</a> for more information."
+msgstr "This system let you do examination online, see <a href=\"%s\">Help</a> for more information."
+
+#: source/index.php:84
+#, php-format
+msgid "Are you ready to begin the examination?"
+msgstr "Are you ready to begin the examination?"
+
+#: source/index.php:85
+#, php-format
+msgid "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
+msgstr "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
+
+#: source/teacher/index.php:68
+msgid "Index"
+msgstr "Index"
+
+#: source/teacher/index.php:76
+#, php-format
+msgid "Information for teachers"
+msgstr "Information for teachers"
+
+#: source/teacher/index.php:78
+#, php-format
+msgid "The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. "
+msgstr ""
+"The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. "
+
+#: source/teacher/index.php:79
+#, php-format
+msgid "It allows people manage examinations and result from online exams."
+msgstr "It allows people manage examinations and result from online exams."
+
+#: source/teacher/index.php:82
+#, php-format
+msgid "If you wish to create your own online exam, contact %s to gain access to the system. "
+msgstr ""
+"If you wish to create your own online exam, contact %s to gain access to the system. "
+
+#: source/teacher/index.php:83
+#, php-format
+msgid "General and getting started information can be found on the <a href=\"%s\">Help</a> page."
+msgstr ""
+"General and getting started information can be found on the <a href=\"%s\">Help</a> page."
+
+#: source/teacher/correct.php:80
+msgid "Answer Correction Page"
+msgstr "Answer Correction Page"
+
+#: source/teacher/correct.php:135
+msgid "Missing request parameter!"
+msgstr "Missing request parameter!"
+
+#: source/teacher/correct.php:136
+#, php-format
+msgid "The required request parameter '%s' is missing. The script processing has halted."
+msgstr ""
+"The required request parameter '%s' is missing. The script processing has halted."
+
+#: source/teacher/correct.php:187
+#, php-format
+msgid "Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."
+msgstr ""
+"Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."
+
+#: source/teacher/correct.php:194
+#, php-format
+msgid "Correct the answer for this question."
+msgstr "Correct the answer for this question."
+
+#: source/teacher/correct.php:201 source/teacher/correct.php:210
+#: source/teacher/correct.php:252 source/teacher/correct.php:267
+#: source/teacher/correct.php:318 source/teacher/correct.php:323
+#: source/exam.php:296
+msgid "Answer"
+msgstr "Answer"
+
+#: source/teacher/correct.php:201 source/teacher/correct.php:252
+#: source/teacher/correct.php:318
+msgid "Score"
+msgstr "Score"
+
+#: source/teacher/correct.php:204 source/teacher/correct.php:261
+#: source/teacher/correct.php:306 source/exam.php:291 source/exam.php:308
+msgid "Question"
+msgstr "Question"
+
+#: source/teacher/correct.php:219 source/teacher/correct.php:276
+#: source/teacher/correct.php:309 source/teacher/correct.php:332
+msgid "Max score"
+msgstr "Max score"
+
+#: source/teacher/correct.php:223 source/teacher/correct.php:280
+#: source/teacher/correct.php:336
+msgid "Comment"
+msgstr "Comment"
+
+#: source/teacher/correct.php:226 source/teacher/correct.php:283
+#: source/teacher/correct.php:339
+msgid "This optional field can be used to save an comment for this answer correction."
+msgstr ""
+"This optional field can be used to save an comment for this answer correction."
+
+#: source/teacher/correct.php:229 source/teacher/correct.php:287
+#: source/teacher/correct.php:343 source/teacher/manager.php:205
+msgid "Submit"
+msgstr "Submit"
+
+#: source/teacher/correct.php:243
+#, php-format
+msgid "Correct all answers at once for this student examination"
+msgstr "Correct all answers at once for this student examination"
+
+#: source/teacher/correct.php:244
+#, php-format
+msgid "Only those questions where this student have given an answer for is shown below. Questions published by other people for this examination is hidden."
+msgstr ""
+"Only those questions where this student have given an answer for is shown below. Questions published by other people for this examination is hidden."
+
+#: source/teacher/correct.php:303
+#, php-format
+msgid "Correct multipe answers for the question '%s'"
+msgstr "Correct multipe answers for the question '%s'"
+
+#: source/teacher/correct.php:349
+#, php-format
+msgid "Select the examination you wish to correct the question answer for."
+msgstr "Select the examination you wish to correct the question answer for."
+
+#: source/teacher/correct.php:352 source/teacher/manager.php:162
+msgid "Examinations"
+msgstr "Examinations"
+
+#: source/teacher/correct.php:358
+msgid "Follow this link to open the examination for answer correction."
+msgstr "Follow this link to open the examination for answer correction."
+
+#: source/teacher/correct.php:361 source/teacher/topmenu.menu:2
+#: source/admin/topmenu.menu:11 source/topmenu.menu:11
+msgid "Start"
+msgstr "Start"
+
+#: source/teacher/correct.php:362
+msgid "End"
+msgstr "End"
+
+#: source/teacher/correct.php:375 source/teacher/correct.php:442
+#, php-format
+msgid "This table shows all questions and students for examination '%s'. "
+msgstr "This table shows all questions and students for examination '%s'. "
+
+#: source/teacher/correct.php:376 source/teacher/correct.php:443
+#, php-format
+msgid "You can only correct answers to those questions you have published."
+msgstr "You can only correct answers to those questions you have published."
+
+#: source/teacher/correct.php:395
+msgid "Summary"
+msgstr "Summary"
+
+#: source/teacher/correct.php:497 source/teacher/manager.php:461
+#: source/teacher/template.php:102
+#, php-format
+msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
+msgstr ""
+"Only users granted the %s role on this exam can access this page. The script processing has halted."
+
+#: source/teacher/help.php:37
+msgid "Help and information to teachers"
+msgstr "Help and information to teachers"
+
+#: source/teacher/help.php:42 source/help.php:42
+#, php-format
+msgid "Help and information"
+msgstr "Help and information"
+
+#: source/teacher/help.php:46 source/help.php:46
+#, php-format
+msgid "You have to be logged on using your UU identity (CAS login) for doing administative tasks. "
+msgstr "You have to be logged on using your UU identity (CAS login) for doing administative tasks. "
+
+#: source/teacher/help.php:49 source/help.php:49
+#, php-format
+msgid "You logon to the <a href=\"https://cas.user.uu.se\">CAS-server at Uppsala University</a> using your UU identity and password A. "
+msgstr "You logon to the <a href=\"https://cas.user.uu.se\">CAS-server at Uppsala University</a> using your UU identity and password A. "
+
+#: source/teacher/help.php:50 source/help.php:50
+#, php-format
+msgid "You will be automatically prompted to logon whenever it's required to continue. "
+msgstr "You will be automatically prompted to logon whenever it's required to continue. "
+
+#: source/teacher/help.php:53
+#, php-format
+msgid "Roles"
+msgstr "Roles"
+
+#: source/teacher/help.php:55
+#, php-format
+msgid "This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
+msgstr ""
+"This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
+
+#: source/teacher/help.php:58
+#, php-format
+msgid "These are the roles that can be delegated:"
+msgstr "These are the roles that can be delegated:"
+
+#: source/teacher/help.php:61
+msgid "A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
+msgstr ""
+"A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
+
+#: source/teacher/help.php:63
+msgid "An examinator can assign (register) student for an examination."
+msgstr "An examinator can assign (register) student for an examination."
+
+#: source/teacher/help.php:65
+msgid "An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
+msgstr ""
+"An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
+
+#: source/teacher/help.php:68
+#, php-format
+msgid "Lifecycle"
+msgstr "Lifecycle"
+
+#: source/teacher/help.php:70
+#, php-format
+msgid "This is an example of how the system is supposed to be used:"
+msgstr "This is an example of how the system is supposed to be used:"
+
+#: source/teacher/help.php:73
+#, php-format
+msgid "A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
+msgstr ""
+"A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
+
+#: source/teacher/help.php:74
+#, php-format
+msgid "The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
+msgstr ""
+"The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
+
+#: source/teacher/help.php:75
+#, php-format
+msgid "The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
+msgstr ""
+"The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
+
+#: source/teacher/help.php:76
+#, php-format
+msgid "After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
+msgstr ""
+"After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
+
+#: source/teacher/help.php:77
+#, php-format
+msgid "Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
+msgstr ""
+"Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
+
+#: source/teacher/help.php:80
+#, php-format
+msgid "Restrictions"
+msgstr "Restrictions"
+
+#: source/teacher/help.php:81
+#, php-format
+msgid "Only the person that publish an question for an examination can correct the answers to that question."
+msgstr ""
+"Only the person that publish an question for an examination can correct the answers to that question."
+
+#: source/teacher/help.php:83
+#, php-format
+msgid "Getting started"
+msgstr "Getting started"
+
+#: source/teacher/help.php:84
+#, php-format
+msgid "If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."
+msgstr ""
+"If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."
+
+#: source/teacher/topmenu.menu:3
+msgid "Manage"
+msgstr "Manage"
+
+#: source/teacher/topmenu.menu:4
+msgid "Correction"
+msgstr "Correction"
+
+#: source/teacher/topmenu.menu:5 source/admin/topmenu.menu:13
+#: source/topmenu.menu:13
+msgid "Help"
+msgstr "Help"
+
+#: source/teacher/topmenu.menu:6 source/admin/topmenu.menu:14
+#: source/topmenu.menu:14
+msgid "About"
+msgstr "About"
+
+#: source/teacher/manager.php:82 source/teacher/manager.php:90
+msgid "Examination Management"
+msgstr "Examination Management"
+
+#: source/teacher/manager.php:112
+#, php-format
+msgid "Missing parameter '%s'"
+msgstr "Missing parameter '%s'"
+
+#: source/teacher/manager.php:156
+#, php-format
+msgid "This page let you create new exams or manage your old ones. "
+msgstr "This page let you create new exams or manage your old ones. "
+
+#: source/teacher/manager.php:157
+#, php-format
+msgid "These are the exams you are the manager of: "
+msgstr "These are the exams you are the manager of: "
+
+#: source/teacher/manager.php:162 source/teacher/manager.php:298
+#: source/teacher/manager.php:315 source/teacher/manager.php:332
+#: source/teacher/manager.php:350 source/teacher/manager.php:382
+msgid "Add"
+msgstr "Add"
+
+#: source/teacher/manager.php:168
+msgid "Click to add/delete contributors, decoders, examinators and questions"
+msgstr "Click to add/delete contributors, decoders, examinators and questions"
+
+#: source/teacher/manager.php:173 source/teacher/manager.php:290
+msgid "Edit"
+msgstr "Edit"
+
+#: source/teacher/manager.php:175 source/teacher/manager.php:292
+msgid "Copy"
+msgstr "Copy"
+
+#: source/teacher/manager.php:177 source/teacher/manager.php:359
+msgid "Delete"
+msgstr "Delete"
+
+#: source/teacher/manager.php:193
+msgid "Name:"
+msgstr "Name:"
+
+#: source/teacher/manager.php:196
+msgid "Description:"
+msgstr "Description:"
+
+#: source/teacher/manager.php:199
+msgid "Start time:"
+msgstr "Start time:"
+
+#: source/teacher/manager.php:202
+msgid "End time:"
+msgstr "End time:"
+
+#: source/teacher/manager.php:215
+#, php-format
+msgid "Define the common properties of the exam. Click on the 'Submit' button to create this exam."
+msgstr ""
+"Define the common properties of the exam. Click on the 'Submit' button to create this exam."
+
+#: source/teacher/manager.php:220
+#, php-format
+msgid "This page let you edit common properties of the exam."
+msgstr "This page let you edit common properties of the exam."
+
+#: source/teacher/manager.php:247
+#, php-format
+msgid "This page let you edit common properties of the exam. Click on the 'Submit' button to save changes."
+msgstr ""
+"This page let you edit common properties of the exam. Click on the 'Submit' button to save changes."
+
+#: source/teacher/manager.php:285
+#, php-format
+msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
+msgstr ""
+"This page let you add/delete contributors, examinators, decoders and questions from this exam. "
+
+#: source/teacher/manager.php:296
+msgid "Contributors"
+msgstr "Contributors"
+
+#: source/teacher/manager.php:307 source/teacher/manager.php:324
+#: source/teacher/manager.php:341
+msgid "Remove"
+msgstr "Remove"
+
+#: source/teacher/manager.php:313
+msgid "Examinators"
+msgstr "Examinators"
+
+#: source/teacher/manager.php:330
+msgid "Decoders"
+msgstr "Decoders"
+
+#: source/teacher/manager.php:348
+msgid "Questions"
+msgstr "Questions"
+
+#: source/teacher/manager.php:380
+msgid "UU-ID:"
+msgstr "UU-ID:"
+
+#: source/teacher/manager.php:392
+#, php-format
+msgid "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
+msgstr ""
+"Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
+
+#: source/teacher/manager.php:414
+#, php-format
+msgid "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
+msgstr ""
+"Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
+
+#: source/teacher/manager.php:436
+#, php-format
+msgid "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
+msgstr ""
+"Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
+
+#: source/teacher/template.php:70
+msgid "Template Page"
+msgstr "Template Page"
+
+#: source/admin/index.php:70 source/admin/topmenu.menu:16
+#: source/topmenu.menu:16
+msgid "Admin"
+msgstr "Admin"
+
+#: source/admin/index.php:78 source/admin/admin.php:132
+#: source/admin/teacher.php:134
+msgid "Administration"
+msgstr "Administration"
+
+#: source/admin/index.php:79
+msgid "The admin pages let you manage almost all aspects of the system. "
+msgstr "The admin pages let you manage almost all aspects of the system. "
+
+#: source/admin/index.php:81
+msgid "Common tasks:"
+msgstr "Common tasks:"
+
+#: source/admin/topmenu.menu:12 source/help.php:53 source/topmenu.menu:12
+#, php-format
+msgid "Examination"
+msgstr "Examination"
+
+#: source/admin/topmenu.menu:15 source/topmenu.menu:15
+msgid "Teacher"
+msgstr "Teacher"
+
+#: source/admin/admin.php:76
+msgid "Supervisor Admin"
+msgstr "Supervisor Admin"
+
+#: source/admin/admin.php:90 source/admin/teacher.php:92
+msgid "Missing request parameter 'user'."
+msgstr "Missing request parameter 'user'."
+
+#: source/admin/admin.php:134
+msgid "This page let you grant and revoke administrative privileges. "
+msgstr "This page let you grant and revoke administrative privileges. "
+
+#: source/admin/admin.php:135
+msgid "These users have been granted administrative privileges:"
+msgstr "These users have been granted administrative privileges:"
+
+#: source/admin/admin.php:142 source/admin/teacher.php:144
+#, php-format
+msgid "Revoke"
+msgstr "Revoke"
+
+#: source/admin/admin.php:149
+msgid "Add new administrator:"
+msgstr "Add new administrator:"
+
+#: source/admin/admin.php:150
+#, php-format
+msgid "Fill in the user name and click on '%s' to give this user administrative privileges:"
+msgstr "Fill in the user name and click on '%s' to give this user administrative privileges:"
+
+#: source/admin/admin.php:150 source/admin/admin.php:155
+#: source/admin/teacher.php:152 source/admin/teacher.php:157
+msgid "Grant"
+msgstr "Grant"
+
+#: source/admin/admin.php:153 source/admin/teacher.php:155
+msgid "Username:"
+msgstr "Username:"
+
+#: source/admin/teacher.php:78
+msgid "Teacher Admin"
+msgstr "Teacher Admin"
+
+#: source/admin/teacher.php:136
+msgid "This page let you grant and revoke the teacher role for other users. "
+msgstr "This page let you grant and revoke the teacher role for other users. "
+
+#: source/admin/teacher.php:137
+msgid "These users have been granted the teacher role:"
+msgstr "These users have been granted the teacher role:"
+
+#: source/admin/teacher.php:151
+msgid "Add new teacher:"
+msgstr "Add new teacher:"
+
+#: source/admin/teacher.php:152
+#, php-format
+msgid "Fill in the user name and click on '%s' to grant this user the teacher role:"
+msgstr ""
+"Fill in the user name and click on '%s' to grant this user the teacher role:"
+
+#: source/help.php:37
+msgid "Help and information to users"
+msgstr "Help and information to users"
+
+#: source/help.php:55
+#, php-format
+msgid "Begin taking the exam by login on to the CAS server at Uppsala university. Once logged on, the system will present the active exam that has been assigned for you."
+msgstr "Begin taking the exam by login on to the CAS server at Uppsala university. Once logged on, the system will present the active exam that has been assigned for you."
+
+#: source/help.php:58
+#, php-format
+msgid "In the left side menu is all questions, grouped by in two groups: already answered and still to be answered. You can at any time (until the end of the exam) review and modify your previous answered questions."
+msgstr "In the left side menu is all questions, grouped by in two groups: already answered and still to be answered. You can at any time (until the end of the exam) review and modify your previous answered questions."
+
+#: source/help.php:61
+#, php-format
+msgid "Anonymity"
+msgstr "Anonymity"
+
+#: source/help.php:63
+#, php-format
+msgid "Your answers are saved in a database using a code associated with your real identity (your CAS-ID). Only when your exam has been finally corrected (by the teachers), your real identity is disclosed and the result is reported to UPPDOK."
+msgstr "Your answers are saved in a database using a code associated with your real identity (your CAS-ID). Only when your exam has been finally corrected (by the teachers), your real identity is disclosed and the result is reported to UPPDOK."
 
 #: source/about.php:36
 msgid "About this system"
@@ -54,10 +803,6 @@ msgstr "This system was developed by <a href=\"mailto:%s\">%s</a> (%s). "
 #, php-format
 msgid "Please visit the <a href=\"%s\">project page</a> for further information."
 msgstr "Please visit the <a href=\"%s\">project page</a> for further information."
-
-#: source/about.php:56 template/publish.inc:21
-msgid "Computing Department at BMC"
-msgstr "Computing Department at BMC"
 
 #: source/exam.php:81
 msgid "Examination:"
@@ -101,12 +846,6 @@ msgstr "Active examination was not found!"
 #, php-format
 msgid "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
 msgstr "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
-
-#: source/exam.php:216 source/exam.php:221 source/exam.php:344
-#: source/index.php:96 source/admin/admin.php:89 template/page.php:99
-#: include/admin.inc:113
-msgid "Request parameter error!"
-msgstr "Request parameter error!"
 
 #: source/exam.php:217
 #, php-format
@@ -161,14 +900,6 @@ msgstr "Good luck!"
 msgid "Overview of all questions (no answers included)"
 msgstr "Overview of all questions (no answers included)"
 
-#: source/exam.php:291 source/exam.php:308
-msgid "Question"
-msgstr "Question"
-
-#: source/exam.php:296
-msgid "Answer"
-msgstr "Answer"
-
 #: source/exam.php:313
 #, php-format
 msgid "Answer:"
@@ -182,319 +913,3 @@ msgstr "Save"
 #, php-format
 msgid "Your answer has been successful saved in the database."
 msgstr "Your answer has been successful saved in the database."
-
-#: source/exam.php:345 source/index.php:97 template/page.php:100
-#: include/admin.inc:114
-#, php-format
-msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
-msgstr "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
-
-#: source/index.php:74
-msgid "Index:"
-msgstr "Index:"
-
-#: source/index.php:82
-#, php-format
-msgid "Welcome!"
-msgstr "Welcome!"
-
-#: source/index.php:83
-#, php-format
-msgid "This system let you do examination online, see <a href=\"%s\">Help</a> for more information."
-msgstr "This system let you do examination online, see <a href=\"%s\">Help</a> for more information."
-
-#: source/index.php:84
-#, php-format
-msgid "Are you ready to begin the examination?"
-msgstr "Are you ready to begin the examination?"
-
-#: source/index.php:85
-#, php-format
-msgid "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
-msgstr "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
-
-#: source/topmenu.menu:10 source/admin/topmenu.menu:10
-msgid "Start"
-msgstr "Start"
-
-#: source/topmenu.menu:11 source/admin/topmenu.menu:11 source/help.php:53
-#, php-format
-msgid "Examination"
-msgstr "Examination"
-
-#: source/topmenu.menu:12 source/admin/topmenu.menu:12
-msgid "Help"
-msgstr "Help"
-
-#: source/topmenu.menu:13 source/admin/topmenu.menu:13
-msgid "About"
-msgstr "About"
-
-#: source/topmenu.menu:14 source/admin/index.php:70
-#: source/admin/topmenu.menu:14
-msgid "Admin"
-msgstr "Admin"
-
-#: source/admin/index.php:78 source/admin/admin.php:132
-msgid "Administration"
-msgstr "Administration"
-
-#: source/admin/index.php:79
-msgid "The admin pages let you manage almost all aspects of the system. "
-msgstr "The admin pages let you manage almost all aspects of the system. "
-
-#: source/admin/index.php:81
-msgid "Common tasks:"
-msgstr "Common tasks:"
-
-#: source/admin/admin.php:76
-msgid "Supervisor Admin"
-msgstr "Supervisor Admin"
-
-#: source/admin/admin.php:90
-msgid "Missing request parameter 'user'."
-msgstr "Missing request parameter 'user'."
-
-#: source/admin/admin.php:134
-msgid "This page let you grant and revoke administrative privileges. "
-msgstr "This page let you grant and revoke administrative privileges. "
-
-#: source/admin/admin.php:135
-msgid "These users have been granted administrative privileges:"
-msgstr "These users have been granted administrative privileges:"
-
-#: source/admin/admin.php:142
-#, php-format
-msgid "Revoke"
-msgstr "Revoke"
-
-#: source/admin/admin.php:149
-msgid "Add new administrator:"
-msgstr "Add new administrator:"
-
-#: source/admin/admin.php:150
-#, php-format
-msgid "Fill in the user name and click on '%s' to give this user administrative privileges:"
-msgstr "Fill in the user name and click on '%s' to give this user administrative privileges:"
-
-#: source/admin/admin.php:150 source/admin/admin.php:155
-msgid "Grant"
-msgstr "Grant"
-
-#: source/admin/admin.php:153
-msgid "Username:"
-msgstr "Username:"
-
-#: source/help.php:37
-msgid "Help and information to users"
-msgstr "Help and information to users"
-
-#: source/help.php:42
-#, php-format
-msgid "Help and information"
-msgstr "Help and information"
-
-#: source/help.php:44 include/ui.inc:87
-#, php-format
-msgid "Logon"
-msgstr "Logon"
-
-#: source/help.php:46
-#, php-format
-msgid "You have to be logged on using your UU identity (CAS login) for doing administative tasks. "
-msgstr "You have to be logged on using your UU identity (CAS login) for doing administative tasks. "
-
-#: source/help.php:49
-#, php-format
-msgid "You logon to the <a href=\"https://cas.user.uu.se\">CAS-server at Uppsala University</a> using your UU identity and password A. "
-msgstr "You logon to the <a href=\"https://cas.user.uu.se\">CAS-server at Uppsala University</a> using your UU identity and password A. "
-
-#: source/help.php:50
-#, php-format
-msgid "You will be automatically prompted to logon whenever it's required to continue. "
-msgstr "You will be automatically prompted to logon whenever it's required to continue. "
-
-#: source/help.php:55
-#, php-format
-msgid "Begin taking the exam by login on to the CAS server at Uppsala university. Once logged on, the system will present the active exam that has been assigned for you."
-msgstr ""
-"Begin taking the exam by login on to the CAS server at Uppsala university. Once logged on, the system will present the active exam that has been assigned for you."
-
-#: source/help.php:58
-#, php-format
-msgid "In the left side menu is all questions, grouped by in two groups: already answered and still to be answered. You can at any time (until the end of the exam) review and modify your previous answered questions."
-msgstr ""
-"In the left side menu is all questions, grouped by in two groups: already answered and still to be answered. You can at any time (until the end of the exam) review and modify your previous answered questions."
-
-#: source/help.php:61
-#, php-format
-msgid "Anonymity"
-msgstr "Anonymity"
-
-#: source/help.php:63
-#, php-format
-msgid "Your answers are saved in a database using a code associated with your real identity (your CAS-ID). Only when your exam has been finally corrected (by the teachers), your real identity is disclosed and the result is reported to UPPDOK."
-msgstr ""
-"Your answers are saved in a database using a code associated with your real identity (your CAS-ID). Only when your exam has been finally corrected (by the teachers), your real identity is disclosed and the result is reported to UPPDOK."
-
-#: template/ui/standard.ui:56 template/ui/uu-white/standard.ui:51
-#: template/ui/uu-red/standard.ui:43
-msgid "Listen to page/selected text"
-msgstr "Listen to page/selected text"
-
-#: template/ui/standard.ui:56 template/ui/uu-white/standard.ui:51
-#: template/ui/uu-red/standard.ui:43
-msgid "Say it"
-msgstr "Say it"
-
-#: template/ui/standard.ui:80 template/ui/standard.ui:83
-#: template/ui/uu-white/standard.ui:75 template/ui/uu-white/standard.ui:78
-#: template/ui/uu-red/standard.ui:81 template/ui/uu-red/standard.ui:84
-#, php-format
-msgid "Copyright"
-msgstr "Copyright"
-
-#: template/ui/standard.ui:81 template/ui/uu-white/standard.ui:76
-#: template/ui/uu-red/standard.ui:82
-#, php-format
-msgid "Information about writer, publisher and publish date, and webmaster is missing."
-msgstr "Information about writer, publisher and publish date, and webmaster is missing."
-
-#: template/ui/standard.ui:84 template/ui/uu-white/standard.ui:79
-#: template/ui/uu-red/standard.ui:85
-#, php-format
-msgid "Last modified: %s"
-msgstr "Last modified: %s"
-
-#: template/ui/standard.ui:84 template/ui/uu-white/standard.ui:79
-#: template/ui/uu-red/standard.ui:85
-#, php-format
-msgid "Page responsible:"
-msgstr "Page responsible:"
-
-#: template/publish.inc:23
-msgid "Webmaster"
-msgstr "Webmaster"
-
-#: template/page.php:81
-msgid "Template:"
-msgstr "Template:"
-
-#: include/error.inc:38
-#, php-format
-msgid "If you think this is a bug in the system, then please report it to %s"
-msgstr "If you think this is a bug in the system, then please report it to %s"
-
-#: include/admin.inc:42
-msgid "Grant and revoke administrative privileges to trusted users."
-msgstr "Grant and revoke administrative privileges to trusted users."
-
-#: include/admin.inc:43
-msgid "Admins"
-msgstr "Admins"
-
-#: include/admin.inc:105 include/ui.inc:278
-msgid "Access denied!"
-msgstr "Access denied!"
-
-#: include/admin.inc:106
-msgid "Only users granted administrative privileges (system managers) can access this page. The script processing has halted."
-msgstr "Only users granted administrative privileges (system managers) can access this page. The script processing has halted."
-
-#: include/admin.inc:132
-msgid "Missing required parameter!"
-msgstr "Missing required parameter!"
-
-#: include/admin.inc:133
-#, php-format
-msgid "The required request parameter '%s' is missing"
-msgstr "The required request parameter '%s' is missing"
-
-#: include/ui.inc:84
-#, php-format
-msgid "Logged on as"
-msgstr "Logged on as"
-
-#: include/ui.inc:84
-#, php-format
-msgid "Logout"
-msgstr "Logout"
-
-#: include/ui.inc:87
-#, php-format
-msgid "Not logged on"
-msgstr "Not logged on"
-
-#: include/ui.inc:116
-#, php-format
-msgid "Select language to use:"
-msgstr "Select language to use:"
-
-#: include/ui.inc:140
-#, php-format
-msgid "Language:"
-msgstr "Language:"
-
-#: include/ui.inc:141
-msgid "Click on the flag to change language."
-msgstr "Click on the flag to change language."
-
-#: include/ui.inc:195
-msgid "Validator:"
-msgstr "Validator:"
-
-#: include/ui.inc:279
-msgid "Only trusted users with administrative privileges (system users) can access this page. The script processing has halted."
-msgstr "Only trusted users with administrative privileges (system users) can access this page. The script processing has halted."
-
-#: include/ui.inc:322
-#, php-format
-msgid "Error:"
-msgstr "Error:"
-
-#: include/ui.inc:322
-#, php-format
-msgid "Please report this to %s."
-msgstr "Please report this to %s."
-
-#: include/database.inc:104
-msgid "Can't use setDSN() on existing connection."
-msgstr "Can't use setDSN() on existing connection."
-
-#: include/ldap.inc:291
-#, php-format
-msgid "Failed connect to LDAP server %s:%d"
-msgstr "Failed connect to LDAP server %s:%d"
-
-#: include/ldap.inc:300
-#, php-format
-msgid "Failed set LDAP protocol version %d"
-msgstr "Failed set LDAP protocol version %d"
-
-#: include/locale.inc:246
-msgid "Swedish"
-msgstr "Swedish"
-
-#: include/locale.inc:251
-msgid "English (GB)"
-msgstr "English (GB)"
-
-#: include/locale.inc:256
-msgid "English (US)"
-msgstr "English (US)"
-
-#: include/locale.inc:261
-msgid "Browser default"
-msgstr "Browser default"
-
-#: conf/config.inc:18
-msgid "OpenExam PHP - Online examination over the web"
-msgstr "OpenExam PHP - Online examination over the web"
-
-#: conf/config.inc:69
-msgid "System Manager"
-msgstr "System Manager"
-
-#: conf/config.inc:79
-msgid "OpenExam PHP"
-msgstr "OpenExam PHP"
