@@ -1,11 +1,22 @@
-Version 1.0 (2010-mm-dd):
+Version 1.0 (2010-04-29):
 
 	* The application is now translated to Swedish and English using GNU gettext.
 	
 	* Added authorization checks, we are now verifying integrity between
 	  request parameters (exam and question). We are also checking that
 	  the current examination is withing its start and end bounds.
-	  
+	
+	* Added help page to teacher section showing casual system information. 
+	
+	* Added page for managing examinations (at the highest level). Its
+	  possible to assign roles to other people (contribute, examinator
+	  and decoder). An previous examination can be cloned.
+	
+        * Added page for correcting answers to exam. The answers can be
+	  corrected by question (all students answer at once) or by student
+	  (all student answer at once). Its also possible to correct answers
+	  question by question.
+		  
 Version 0.9 (2010-04-21):
 
 	* Initial release. The student can authenticate to CAS and do an
