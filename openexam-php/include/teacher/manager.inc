@@ -150,6 +150,17 @@ class Manager
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);			
     }
+    
+    // 
+    // Get the list of students assigned to this exam.
+    // 
+    public function getStudents()
+    {
+	$sql = sprintf("SELECT id AS StudentID, exam_id AS ExamID, user AS StudentUser, code AS StudentCode
+			FROM students WHERE exam_id = %d", $this->exam);
+	$res = Database::getConnection()->query($sql);
+	return new ResultSet($res);			
+    }
 
     // 
     // These function are used for granting and revoking permissions on this exam.
