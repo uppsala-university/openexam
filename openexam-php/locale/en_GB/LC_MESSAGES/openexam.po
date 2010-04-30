@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: russin 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-04-30 12:31+0200\n"
+"POT-Creation-Date: 2010-04-30 12:53+0200\n"
 "PO-Revision-Date: 2010-04-30 12:03+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
@@ -59,142 +59,6 @@ msgstr "Please visit the <a href=\"%s\">project page</a> for further information
 msgid "Computing Department at BMC"
 msgstr "Computing Department at BMC"
 
-#: source/exam.php:81
-msgid "Examination:"
-msgstr "Examination:"
-
-#: source/exam.php:145
-msgid "Questions:"
-msgstr "Questions:"
-
-#: source/exam.php:159
-msgid "Answered:"
-msgstr "Answered:"
-
-#: source/exam.php:173
-msgid "Show:"
-msgstr "Show:"
-
-#: source/exam.php:177
-msgid "Show the start page for this examination"
-msgstr "Show the start page for this examination"
-
-#: source/exam.php:177
-msgid "Start page"
-msgstr "Start page"
-
-#: source/exam.php:180
-msgid "Show all questions at the same time"
-msgstr "Show all questions at the same time"
-
-#: source/exam.php:181
-msgid "All questions"
-msgstr "All questions"
-
-#: source/exam.php:193 source/exam.php:203 source/exam.php:235
-#: source/exam.php:270
-msgid "Active examination was not found!"
-msgstr "Active examination was not found!"
-
-#: source/exam.php:194 source/exam.php:204 source/exam.php:236
-#: source/exam.php:271
-#, php-format
-msgid "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
-msgstr "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
-
-#: source/exam.php:216 source/exam.php:221 source/exam.php:344
-#: source/index.php:96 source/admin/teacher.php:91 source/admin/admin.php:89
-#: template/page.php:99 include/teacher.inc:145 include/admin.inc:117
-msgid "Request parameter error!"
-msgstr "Request parameter error!"
-
-#: source/exam.php:217
-#, php-format
-msgid "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
-msgstr "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
-
-#: source/exam.php:222
-#, php-format
-msgid "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
-msgstr "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
-
-#: source/exam.php:240
-#, php-format
-msgid "Select the examination"
-msgstr "Select the examination"
-
-#: source/exam.php:242
-#, php-format
-msgid "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
-msgstr "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
-
-#: source/exam.php:245
-#, php-format
-msgid "These examinations have been assigned to you, click on the button next to the description to begin the examination."
-msgstr "These examinations have been assigned to you, click on the button next to the description to begin the examination."
-
-#: source/exam.php:251
-msgid "The examination ends"
-msgstr "The examination ends"
-
-#: source/exam.php:255
-msgid "Begin"
-msgstr "Begin"
-
-#: source/exam.php:276
-#, php-format
-msgid "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
-msgstr "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
-
-#: source/exam.php:277
-#, php-format
-msgid "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
-msgstr "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
-
-#: source/exam.php:278
-#, php-format
-msgid "Good luck!"
-msgstr "Good luck!"
-
-#: source/exam.php:288
-#, php-format
-msgid "Overview of all questions (no answers included)"
-msgstr "Overview of all questions (no answers included)"
-
-#: source/exam.php:291 source/exam.php:308 source/teacher/correct.php:218
-#: source/teacher/correct.php:275 source/teacher/correct.php:320
-#: source/teacher/contribute.php:225 source/teacher/contribute.php:331
-#: source/teacher/contribute.php:341
-msgid "Question"
-msgstr "Question"
-
-#: source/exam.php:296 source/teacher/correct.php:215
-#: source/teacher/correct.php:224 source/teacher/correct.php:266
-#: source/teacher/correct.php:281 source/teacher/correct.php:332
-#: source/teacher/correct.php:337
-msgid "Answer"
-msgstr "Answer"
-
-#: source/exam.php:313
-#, php-format
-msgid "Answer:"
-msgstr "Answer:"
-
-#: source/exam.php:319
-msgid "Save"
-msgstr "Save"
-
-#: source/exam.php:323
-#, php-format
-msgid "Your answer has been successful saved in the database."
-msgstr "Your answer has been successful saved in the database."
-
-#: source/exam.php:345 source/index.php:97 template/page.php:100
-#: include/teacher.inc:146 include/admin.inc:118
-#, php-format
-msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
-msgstr "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
-
 #: source/index.php:74
 msgid "Index:"
 msgstr "Index:"
@@ -219,33 +83,48 @@ msgstr "Are you ready to begin the examination?"
 msgid "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
 msgstr "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
 
-#: source/topmenu.menu:11 source/admin/topmenu.menu:11
-#: source/teacher/correct.php:375 source/teacher/topmenu.menu:2
-#: source/teacher/contribute.php:378
+#: source/index.php:96 source/admin/teacher.php:91 source/admin/admin.php:89
+#: source/exam/index.php:216 source/exam/index.php:221
+#: source/exam/index.php:344 template/page.php:99 include/teacher.inc:145
+#: include/admin.inc:117
+msgid "Request parameter error!"
+msgstr "Request parameter error!"
+
+#: source/index.php:97 source/exam/index.php:345 template/page.php:100
+#: include/teacher.inc:146 include/admin.inc:118
+#, php-format
+msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
+msgstr "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
+
+#: source/topmenu.menu:12 source/admin/topmenu.menu:12
+#: source/exam/topmenu.menu:12 source/teacher/correct.php:375
+#: source/teacher/topmenu.menu:2 source/teacher/contribute.php:378
 msgid "Start"
 msgstr "Start"
 
-#: source/topmenu.menu:12 source/admin/topmenu.menu:12 source/help.php:53
+#: source/topmenu.menu:13 source/admin/topmenu.menu:13
+#: source/exam/topmenu.menu:13 source/help.php:53
 #, php-format
 msgid "Examination"
 msgstr "Examination"
 
-#: source/topmenu.menu:13 source/admin/topmenu.menu:13
-#: source/teacher/topmenu.menu:6
+#: source/topmenu.menu:14 source/admin/topmenu.menu:14
+#: source/exam/topmenu.menu:14 source/teacher/topmenu.menu:6
 msgid "Help"
 msgstr "Help"
 
-#: source/topmenu.menu:14 source/admin/topmenu.menu:14
-#: source/teacher/topmenu.menu:7
+#: source/topmenu.menu:15 source/admin/topmenu.menu:15
+#: source/exam/topmenu.menu:15 source/teacher/topmenu.menu:7
 msgid "About"
 msgstr "About"
 
-#: source/topmenu.menu:15 source/admin/topmenu.menu:15
+#: source/topmenu.menu:16 source/admin/topmenu.menu:16
+#: source/exam/topmenu.menu:16
 msgid "Teacher"
 msgstr "Teacher"
 
-#: source/topmenu.menu:16 source/admin/index.php:70
-#: source/admin/topmenu.menu:16
+#: source/topmenu.menu:17 source/admin/index.php:70
+#: source/admin/topmenu.menu:17 source/exam/topmenu.menu:17
 msgid "Admin"
 msgstr "Admin"
 
@@ -321,6 +200,130 @@ msgstr "Add new administrator:"
 #, php-format
 msgid "Fill in the user name and click on '%s' to give this user administrative privileges:"
 msgstr "Fill in the user name and click on '%s' to give this user administrative privileges:"
+
+#: source/exam/index.php:81
+msgid "Examination:"
+msgstr "Examination:"
+
+#: source/exam/index.php:145
+msgid "Questions:"
+msgstr "Questions:"
+
+#: source/exam/index.php:159
+msgid "Answered:"
+msgstr "Answered:"
+
+#: source/exam/index.php:173
+msgid "Show:"
+msgstr "Show:"
+
+#: source/exam/index.php:177
+msgid "Show the start page for this examination"
+msgstr "Show the start page for this examination"
+
+#: source/exam/index.php:177
+msgid "Start page"
+msgstr "Start page"
+
+#: source/exam/index.php:180
+msgid "Show all questions at the same time"
+msgstr "Show all questions at the same time"
+
+#: source/exam/index.php:181
+msgid "All questions"
+msgstr "All questions"
+
+#: source/exam/index.php:193 source/exam/index.php:203
+#: source/exam/index.php:235 source/exam/index.php:270
+msgid "Active examination was not found!"
+msgstr "Active examination was not found!"
+
+#: source/exam/index.php:194 source/exam/index.php:204
+#: source/exam/index.php:236 source/exam/index.php:271
+#, php-format
+msgid "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
+msgstr "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
+
+#: source/exam/index.php:217
+#, php-format
+msgid "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
+msgstr "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
+
+#: source/exam/index.php:222
+#, php-format
+msgid "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
+msgstr "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
+
+#: source/exam/index.php:240
+#, php-format
+msgid "Select the examination"
+msgstr "Select the examination"
+
+#: source/exam/index.php:242
+#, php-format
+msgid "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
+msgstr "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
+
+#: source/exam/index.php:245
+#, php-format
+msgid "These examinations have been assigned to you, click on the button next to the description to begin the examination."
+msgstr "These examinations have been assigned to you, click on the button next to the description to begin the examination."
+
+#: source/exam/index.php:251
+msgid "The examination ends"
+msgstr "The examination ends"
+
+#: source/exam/index.php:255
+msgid "Begin"
+msgstr "Begin"
+
+#: source/exam/index.php:276
+#, php-format
+msgid "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
+msgstr "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
+
+#: source/exam/index.php:277
+#, php-format
+msgid "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
+msgstr "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
+
+#: source/exam/index.php:278
+#, php-format
+msgid "Good luck!"
+msgstr "Good luck!"
+
+#: source/exam/index.php:288
+#, php-format
+msgid "Overview of all questions (no answers included)"
+msgstr "Overview of all questions (no answers included)"
+
+#: source/exam/index.php:291 source/exam/index.php:308
+#: source/teacher/correct.php:218 source/teacher/correct.php:275
+#: source/teacher/correct.php:320 source/teacher/contribute.php:225
+#: source/teacher/contribute.php:331 source/teacher/contribute.php:341
+msgid "Question"
+msgstr "Question"
+
+#: source/exam/index.php:296 source/teacher/correct.php:215
+#: source/teacher/correct.php:224 source/teacher/correct.php:266
+#: source/teacher/correct.php:281 source/teacher/correct.php:332
+#: source/teacher/correct.php:337
+msgid "Answer"
+msgstr "Answer"
+
+#: source/exam/index.php:313
+#, php-format
+msgid "Answer:"
+msgstr "Answer:"
+
+#: source/exam/index.php:319
+msgid "Save"
+msgstr "Save"
+
+#: source/exam/index.php:323
+#, php-format
+msgid "Your answer has been successful saved in the database."
+msgstr "Your answer has been successful saved in the database."
 
 #: source/help.php:37
 msgid "Help and information to users"
