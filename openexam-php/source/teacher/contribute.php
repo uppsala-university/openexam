@@ -201,7 +201,7 @@ class ContributePage extends TeacherPage
     // 
     // Helper function for adding a new or editing an existing question.
     // 
-    private function formPostQuestion($data, $action)
+    private function formPostQuestion(&$data, $action, &$exam)
     {
 	$options = array( "freetext" => _("Freeform text question"),
 			  "single"   => _("Single choice question"),
@@ -254,13 +254,20 @@ class ContributePage extends TeacherPage
 	       $data->hasQuestionImage() ? $data->getQuestionImage() : "",
 	       _("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."));
 
-	printf("<p><u>%s:</u></p>\n", _("Accounting"));
-	printf("<label for=\"name\">%s:</label>\n", _("Publisher"));
-	printf("<input type=\"text\" name=\"user\" size=\"60\" value=\"%s\" title=\"%s\" />\n", 
-	       $data->hasQuestionPublisher() ? utf8_decode($data->getQuestionPublisher()) : phpCAS::getUser(),
-	       _("This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting answers for this question.\n\nIf you modify the value in this field, make sure that this person has been granted contribute privileges on this exam!"));
-	printf("<br /><br />\n");
+	// 
+	// Only allow the creator of the exam to change the publisher of an question. 
+	// This is because the exam creator is the only person who can grant the required
+	// contribute role to the target user.
+	// 
+	if($exam->getExamCreator() == phpCAS::getUser()) {
+	    printf("<p><u>%s:</u></p>\n", _("Accounting"));
+	    printf("<label for=\"name\">%s:</label>\n", _("Publisher"));
+	    printf("<input type=\"text\" name=\"user\" size=\"60\" value=\"%s\" title=\"%s\" />\n", 
+		   $data->hasQuestionPublisher() ? utf8_decode($data->getQuestionPublisher()) : phpCAS::getUser(),
+		   _("This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting answers for this question.\n\nIf you modify the value in this field, make sure that this person has been granted contribute privileges on this exam!"));
+	}
 	
+	printf("<br /><br />\n");	
 	printf("<label for=\"submit\">&nbsp;</label>\n");
 	printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
 	printf("</form>\n");
@@ -279,7 +286,7 @@ class ContributePage extends TeacherPage
 	printf("<p>" . _("This page let you add a new question in the examination '%s'") . "</p>\n", 
 	       utf8_decode($mandata->getExamName()));
 	
-	self::formPostQuestion($qrecord, "add");
+	self::formPostQuestion($qrecord, "add", $mandata);
     }
     
     // 
@@ -295,7 +302,7 @@ class ContributePage extends TeacherPage
 	printf("<p>" . _("This page let you edit the existing question in the examination '%s'") . "</p>\n", 
 	       utf8_decode($mandata->getExamName()));
 	
-	self::formPostQuestion($qrecord, "edit");
+	self::formPostQuestion($qrecord, "edit", $mandata);
     }
 	
     // 
@@ -308,7 +315,10 @@ class ContributePage extends TeacherPage
 	$questions = $manager->getQuestions();
 	
 	printf("<h3>" . _("Manage Questions") . "</h3>\n");
-	printf("<p>" . _("This page let you add, edit and remove questions in the examination '%s'") . "</p>\n", 
+	printf("<p>" . 
+	       _("This page let you add, edit and remove questions in the examination '%s'. ") . 
+	       _("You can only edit or remove a question if you are the publisher of the question or the creator of this examination.") . 
+	       "</p>\n", 
 	       utf8_decode($data->getExamName()));
 	
 	printf("<ul>\n");
@@ -316,15 +326,21 @@ class ContributePage extends TeacherPage
 	       _("Questions"), $data->getExamID(), _("Add"));
 	printf("<ul>\n");
 	foreach($questions as $question) {
-	    printf("<li>%s %s <span class=\"links\"><a href=\"?exam=%d&amp;action=edit&amp;question=%d\">%s</a>, <a href=\"?exam=%d&amp;action=delete&amp;question=%d\">%s</a></span></li>\n", 
-		   _("Question"), 
-		   utf8_decode($question->getQuestionName()),
-		   $question->getExamID(),
-		   $question->getQuestionID(),
-		   _("Edit"),
-		   $question->getExamID(),
-		   $question->getQuestionID(),
-		   _("Delete"));
+	    if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
+		printf("<li>%s %s <span class=\"links\"><a href=\"?exam=%d&amp;action=edit&amp;question=%d\">%s</a>, <a href=\"?exam=%d&amp;action=delete&amp;question=%d\">%s</a></span></li>\n", 
+		       _("Question"), 
+		       utf8_decode($question->getQuestionName()),
+		       $question->getExamID(),
+		       $question->getQuestionID(),
+		       _("Edit"),
+		       $question->getExamID(),
+		       $question->getQuestionID(),
+		       _("Delete"));
+	    } else {
+		printf("<li>%s %s </li>\n",
+		       _("Question"), 
+		       utf8_decode($question->getQuestionName()));
+	    }
 	    printf("<ul>\n");
 	    printf("<li>%s: %.01f</li>\n", _("Score"), $question->getQuestionScore());
 	    printf("<li>%s: %s</li>\n", _("Publisher"), $question->getQuestionPublisher());
