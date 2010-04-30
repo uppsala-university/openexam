@@ -375,8 +375,8 @@ class ContributePage extends TeacherPage
 		   sprintf("%s\n\n%s", utf8_decode($exam->getExamDescription()), _("Follow this link to open the examination to contribute questions.")),
 		   utf8_decode($exam->getExamName()));
 	    printf("<ul>\n");
-	    printf("<li>%s: %s</li>\n", _("Start"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())));
-	    printf("<li>%s: %s</li>\n", _("End"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime())));
+	    printf("<li>%s: %s</li>\n", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())));
+	    printf("<li>%s: %s</li>\n", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime())));
 	    printf("</ul>\n");
 	    printf("<br />\n");
 	    printf("</ul>\n");
