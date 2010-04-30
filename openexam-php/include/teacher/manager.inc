@@ -14,6 +14,7 @@
 class Manager
 {
     private $exam;   // Exam ID
+    private $info = null;
     
     public function __construct($exam)
     {
@@ -31,11 +32,68 @@ class Manager
     public static function getExams($user)
     {
 	$sql = sprintf("SELECT id AS ExamID, name AS ExamName, descr AS ExamDescription, starttime AS ExamStartTime, 
-			          endtime AS ExamEndTime, created AS ExamCreated, updated AS ExamUpdated, creator AS ExamCreator
+			          endtime AS ExamEndTime, created AS ExamCreated, updated AS ExamUpdated, creator AS ExamCreator,
+			          decoded AS ExamDecoded
 			FROM exams
 			WHERE creator = '%s'", $user);
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);	
+    }
+    
+    // 
+    // Get meta information about the exam. This is used by the various teacher script 
+    // to evaluate whether an operation like contribute or decode can be performed.
+    // 
+    public function getInfo($flush = false)
+    {
+	if($flush) {
+	    $this->info = null;    // force update
+	}
+	if(!isset($this->info)) {
+	    $sql = sprintf("SELECT id AS ExamID, starttime AS ExamStartTime, endtime AS ExamEndTime, decoded AS ExamDecoded
+			    FROM exams WHERE id = %d", $this->exam);
+	    $res = Database::getConnection()->query($sql);
+	    if(PEAR::isError($res)) {
+		throw new DatabaseException($res->getMessage());
+	    }
+	    $this->info = new DataRecord($res->fetchRow());
+	    
+	    if($this->info->getExamDecoded() == 'Y') {
+		$this->info->setDecodable(true);         // Can be decoded
+		$this->info->setContributable(false);    // Can contribute questions
+		$this->info->setExaminatable(false);     // Can add student for examination
+		$this->info->setCorrectable(false);      // Can correct answers
+	    } else {
+		$stime = strtotime($this->info['examstarttime']);
+		$etime = strtotime($this->info['examendtime']);
+		$ctime = time();
+
+		if($ctime < $stime) {         // Before exam begins
+		    $this->info->setDecodable(false);
+		    $this->info->setContributable(true);
+		    $this->info->setExaminatable(true);
+		    $this->info->setCorrectable(false);		    
+		} elseif($ctime < $etime) {   // After exam begin, but before its finished
+		    $this->info->setDecodable(false);
+		    $this->info->setContributable(false);
+		    $this->info->setExaminatable(true);
+		    $this->info->setCorrectable(false);		    
+		} else {                      // After exam has finished
+		    if($this->isCorrected()) {
+			$this->info->setContributable(false);
+			$this->info->setExaminatable(false);
+			$this->info->setCorrectable(true);
+			$this->info->setDecodable(true);
+		    } else {
+			$this->info->setContributable(false);
+			$this->info->setExaminatable(false);
+			$this->info->setCorrectable(true);
+			$this->info->setDecodable(false);
+		    }
+		}
+	    }
+	}
+	return $this->info;
     }
     
     // 
@@ -44,7 +102,8 @@ class Manager
     public function getData()
     {
 	$sql = sprintf("SELECT id AS ExamID, name AS ExamName, descr AS ExamDescription, starttime AS ExamStartTime, 
-			          endtime AS ExamEndTime, created AS ExamCreated, updated AS ExamUpdated, creator AS ExamCreator
+			          endtime AS ExamEndTime, created AS ExamCreated, updated AS ExamUpdated, creator AS ExamCreator,
+			          decoded AS ExamDecoded
 			FROM exams WHERE id = %d", $this->exam);
         $res = Database::getConnection()->query($sql);
  	if(PEAR::isError($res)) {
@@ -83,6 +142,29 @@ class Manager
 	if($this->exam == 0) {
 	    $this->exam = $db->lastInsertId("exams", "id");
 	}
+    }
+
+    // 
+    // Returns true if all answers have been corrected.
+    // 
+    public function isCorrected()
+    {
+	// 
+	// Get number of answer without a corresponding result record:
+	// 
+	$sql = sprintf("SELECT COUNT(a.id) FROM students s, answers a 
+			LEFT JOIN results r ON a.id = r.answer_id
+			WHERE s.exam_id = %d AND s.id = a.student_id AND r.id IS NULL", $this->exam);
+	$db = Database::getConnection();
+	$db->setFetchMode(MDB2_FETCHMODE_ORDERED);
+	$res = $db->query($sql);
+	if(PEAR::isError($res)) {
+	    throw new DatabaseException($res->getMessage());
+	}
+	$row = $res->fetchRow();
+	
+	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+	return intval($row[0]) == 0;
     }
     
     // 
