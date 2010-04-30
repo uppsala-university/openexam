@@ -1,3 +1,8 @@
+Version 1.1 (2010-04-30):
+
+	* Added contributor page where people granted the contribute role
+	  can publish questions for an exam.
+
 Version 1.0 (2010-04-29):
 
 	* The application is now translated to Swedish and English using GNU gettext.
