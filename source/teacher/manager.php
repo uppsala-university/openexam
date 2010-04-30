@@ -352,8 +352,11 @@ class ManagerPage extends TeacherPage
 	    if($questions->count() > 0) {
 		printf("<ul>\n");
 		foreach($questions as $question) {
-		    printf("<li>%s <span class=\"links\"><a href=\"contribute.php?exam=%d&amp;action=delete&amp;question=%d\">%s</a></span></li>\n",
+		    printf("<li>%s <span class=\"links\"><a href=\"contribute.php?exam=%d&amp;action=edit&amp;question=%d\">%s</a>, <a href=\"contribute.php?exam=%d&amp;action=delete&amp;question=%d\">%s</a></span></li>\n",
 			   utf8_decode($question->getQuestionName()),
+			   $question->getExamID(),
+			   $question->getQuestionID(),
+			   _("Edit"),
 			   $question->getExamID(),
 			   $question->getQuestionID(),
 			   _("Delete"));
