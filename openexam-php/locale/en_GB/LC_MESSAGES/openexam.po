@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: russin 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-04-29 15:38+0200\n"
-"PO-Revision-Date: 2010-04-29 16:38+0200\n"
+"POT-Creation-Date: 2010-04-30 11:42+0200\n"
+"PO-Revision-Date: 2010-04-30 12:03+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
 "MIME-Version: 1.0\n"
@@ -109,8 +109,9 @@ msgid "Teachers"
 msgstr "Teachers"
 
 #: include/admin.inc:109 include/teacher.inc:137 include/ui.inc:278
-#: source/teacher/correct.php:186 source/teacher/correct.php:496
-#: source/teacher/manager.php:460 source/teacher/template.php:101
+#: source/teacher/correct.php:150 source/teacher/correct.php:200
+#: source/teacher/contribute.php:154 source/teacher/manager.php:463
+#: source/teacher/template.php:101
 msgid "Access denied!"
 msgstr "Access denied!"
 
@@ -139,8 +140,7 @@ msgstr "Failed set LDAP protocol version %d"
 
 #: include/teacher.inc:138
 msgid "Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."
-msgstr ""
-"Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."
+msgstr "Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."
 
 #: include/locale.inc:246
 msgid "Swedish"
@@ -250,8 +250,7 @@ msgstr "Information for teachers"
 #: source/teacher/index.php:78
 #, php-format
 msgid "The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. "
-msgstr ""
-"The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. "
+msgstr "The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. "
 
 #: source/teacher/index.php:79
 #, php-format
@@ -261,136 +260,135 @@ msgstr "It allows people manage examinations and result from online exams."
 #: source/teacher/index.php:82
 #, php-format
 msgid "If you wish to create your own online exam, contact %s to gain access to the system. "
-msgstr ""
-"If you wish to create your own online exam, contact %s to gain access to the system. "
+msgstr "If you wish to create your own online exam, contact %s to gain access to the system. "
 
 #: source/teacher/index.php:83
 #, php-format
 msgid "General and getting started information can be found on the <a href=\"%s\">Help</a> page."
-msgstr ""
-"General and getting started information can be found on the <a href=\"%s\">Help</a> page."
+msgstr "General and getting started information can be found on the <a href=\"%s\">Help</a> page."
 
 #: source/teacher/correct.php:80
 msgid "Answer Correction Page"
 msgstr "Answer Correction Page"
 
-#: source/teacher/correct.php:135
+#: source/teacher/correct.php:135 source/teacher/contribute.php:139
 msgid "Missing request parameter!"
 msgstr "Missing request parameter!"
 
-#: source/teacher/correct.php:136
+#: source/teacher/correct.php:136 source/teacher/contribute.php:140
 #, php-format
 msgid "The required request parameter '%s' is missing. The script processing has halted."
-msgstr ""
-"The required request parameter '%s' is missing. The script processing has halted."
+msgstr "The required request parameter '%s' is missing. The script processing has halted."
 
-#: source/teacher/correct.php:187
+#: source/teacher/correct.php:151 source/teacher/contribute.php:155
+#: source/teacher/manager.php:464 source/teacher/template.php:102
+#, php-format
+msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
+msgstr "Only users granted the %s role on this exam can access this page. The script processing has halted."
+
+#: source/teacher/correct.php:201
 #, php-format
 msgid "Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."
-msgstr ""
-"Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."
+msgstr "Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."
 
-#: source/teacher/correct.php:194
+#: source/teacher/correct.php:208
 #, php-format
 msgid "Correct the answer for this question."
 msgstr "Correct the answer for this question."
 
-#: source/teacher/correct.php:201 source/teacher/correct.php:210
-#: source/teacher/correct.php:252 source/teacher/correct.php:267
-#: source/teacher/correct.php:318 source/teacher/correct.php:323
+#: source/teacher/correct.php:215 source/teacher/correct.php:224
+#: source/teacher/correct.php:266 source/teacher/correct.php:281
+#: source/teacher/correct.php:332 source/teacher/correct.php:337
 #: source/exam.php:296
 msgid "Answer"
 msgstr "Answer"
 
-#: source/teacher/correct.php:201 source/teacher/correct.php:252
-#: source/teacher/correct.php:318
+#: source/teacher/correct.php:215 source/teacher/correct.php:266
+#: source/teacher/correct.php:332 source/teacher/contribute.php:229
+#: source/teacher/contribute.php:345
 msgid "Score"
 msgstr "Score"
 
-#: source/teacher/correct.php:204 source/teacher/correct.php:261
-#: source/teacher/correct.php:306 source/exam.php:291 source/exam.php:308
+#: source/teacher/correct.php:218 source/teacher/correct.php:275
+#: source/teacher/correct.php:320 source/teacher/contribute.php:225
+#: source/teacher/contribute.php:331 source/teacher/contribute.php:341
+#: source/exam.php:291 source/exam.php:308
 msgid "Question"
 msgstr "Question"
 
-#: source/teacher/correct.php:219 source/teacher/correct.php:276
-#: source/teacher/correct.php:309 source/teacher/correct.php:332
+#: source/teacher/correct.php:233 source/teacher/correct.php:290
+#: source/teacher/correct.php:323 source/teacher/correct.php:346
 msgid "Max score"
 msgstr "Max score"
 
-#: source/teacher/correct.php:223 source/teacher/correct.php:280
-#: source/teacher/correct.php:336
+#: source/teacher/correct.php:237 source/teacher/correct.php:294
+#: source/teacher/correct.php:350
 msgid "Comment"
 msgstr "Comment"
 
-#: source/teacher/correct.php:226 source/teacher/correct.php:283
-#: source/teacher/correct.php:339
+#: source/teacher/correct.php:240 source/teacher/correct.php:297
+#: source/teacher/correct.php:353
 msgid "This optional field can be used to save an comment for this answer correction."
-msgstr ""
-"This optional field can be used to save an comment for this answer correction."
+msgstr "This optional field can be used to save an comment for this answer correction."
 
-#: source/teacher/correct.php:229 source/teacher/correct.php:287
-#: source/teacher/correct.php:343 source/teacher/manager.php:205
+#: source/teacher/correct.php:243 source/teacher/correct.php:301
+#: source/teacher/correct.php:357 source/teacher/contribute.php:272
+#: source/teacher/manager.php:205
 msgid "Submit"
 msgstr "Submit"
 
-#: source/teacher/correct.php:243
+#: source/teacher/correct.php:257
 #, php-format
 msgid "Correct all answers at once for this student examination"
 msgstr "Correct all answers at once for this student examination"
 
-#: source/teacher/correct.php:244
+#: source/teacher/correct.php:258
 #, php-format
 msgid "Only those questions where this student have given an answer for is shown below. Questions published by other people for this examination is hidden."
-msgstr ""
-"Only those questions where this student have given an answer for is shown below. Questions published by other people for this examination is hidden."
+msgstr "Only those questions where this student have given an answer for is shown below. Questions published by other people for this examination is hidden."
 
-#: source/teacher/correct.php:303
+#: source/teacher/correct.php:317
 #, php-format
 msgid "Correct multipe answers for the question '%s'"
 msgstr "Correct multipe answers for the question '%s'"
 
-#: source/teacher/correct.php:349
+#: source/teacher/correct.php:363
 #, php-format
 msgid "Select the examination you wish to correct the question answer for."
 msgstr "Select the examination you wish to correct the question answer for."
 
-#: source/teacher/correct.php:352 source/teacher/manager.php:162
+#: source/teacher/correct.php:366 source/teacher/contribute.php:369
+#: source/teacher/manager.php:162
 msgid "Examinations"
 msgstr "Examinations"
 
-#: source/teacher/correct.php:358
+#: source/teacher/correct.php:372
 msgid "Follow this link to open the examination for answer correction."
 msgstr "Follow this link to open the examination for answer correction."
 
-#: source/teacher/correct.php:361 source/teacher/topmenu.menu:2
-#: source/admin/topmenu.menu:11 source/topmenu.menu:11
+#: source/teacher/correct.php:375 source/teacher/contribute.php:378
+#: source/teacher/topmenu.menu:2 source/admin/topmenu.menu:11
+#: source/topmenu.menu:11
 msgid "Start"
 msgstr "Start"
 
-#: source/teacher/correct.php:362
+#: source/teacher/correct.php:376 source/teacher/contribute.php:379
 msgid "End"
 msgstr "End"
 
-#: source/teacher/correct.php:375 source/teacher/correct.php:442
+#: source/teacher/correct.php:389
 #, php-format
 msgid "This table shows all questions and students for examination '%s'. "
 msgstr "This table shows all questions and students for examination '%s'. "
 
-#: source/teacher/correct.php:376 source/teacher/correct.php:443
+#: source/teacher/correct.php:390
 #, php-format
 msgid "You can only correct answers to those questions you have published."
 msgstr "You can only correct answers to those questions you have published."
 
-#: source/teacher/correct.php:395
+#: source/teacher/correct.php:409
 msgid "Summary"
 msgstr "Summary"
-
-#: source/teacher/correct.php:497 source/teacher/manager.php:461
-#: source/teacher/template.php:102
-#, php-format
-msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
-msgstr ""
-"Only users granted the %s role on this exam can access this page. The script processing has halted."
 
 #: source/teacher/help.php:37
 msgid "Help and information to teachers"
@@ -424,8 +422,7 @@ msgstr "Roles"
 #: source/teacher/help.php:55
 #, php-format
 msgid "This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
-msgstr ""
-"This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
+msgstr "This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
 
 #: source/teacher/help.php:58
 #, php-format
@@ -434,8 +431,7 @@ msgstr "These are the roles that can be delegated:"
 
 #: source/teacher/help.php:61
 msgid "A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
-msgstr ""
-"A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
+msgstr "A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
 
 #: source/teacher/help.php:63
 msgid "An examinator can assign (register) student for an examination."
@@ -443,8 +439,7 @@ msgstr "An examinator can assign (register) student for an examination."
 
 #: source/teacher/help.php:65
 msgid "An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
-msgstr ""
-"An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
+msgstr "An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
 
 #: source/teacher/help.php:68
 #, php-format
@@ -459,32 +454,27 @@ msgstr "This is an example of how the system is supposed to be used:"
 #: source/teacher/help.php:73
 #, php-format
 msgid "A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
-msgstr ""
-"A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
+msgstr "A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
 
 #: source/teacher/help.php:74
 #, php-format
 msgid "The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
-msgstr ""
-"The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
+msgstr "The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
 
 #: source/teacher/help.php:75
 #, php-format
 msgid "The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
-msgstr ""
-"The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
+msgstr "The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
 
 #: source/teacher/help.php:76
 #, php-format
 msgid "After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
-msgstr ""
-"After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
+msgstr "After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
 
 #: source/teacher/help.php:77
 #, php-format
 msgid "Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
-msgstr ""
-"Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
+msgstr "Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
 
 #: source/teacher/help.php:80
 #, php-format
@@ -494,8 +484,7 @@ msgstr "Restrictions"
 #: source/teacher/help.php:81
 #, php-format
 msgid "Only the person that publish an question for an examination can correct the answers to that question."
-msgstr ""
-"Only the person that publish an question for an examination can correct the answers to that question."
+msgstr "Only the person that publish an question for an examination can correct the answers to that question."
 
 #: source/teacher/help.php:83
 #, php-format
@@ -505,23 +494,182 @@ msgstr "Getting started"
 #: source/teacher/help.php:84
 #, php-format
 msgid "If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."
+msgstr "If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."
+
+#: source/teacher/contribute.php:80
+msgid "Contribute Page"
+msgstr "Contribute Page"
+
+#: source/teacher/contribute.php:206
+msgid "Freeform text question"
+msgstr "Freeform text question"
+
+#: source/teacher/contribute.php:207
+msgid "Single choice question"
+msgstr "Single choice question"
+
+#: source/teacher/contribute.php:208
+msgid "Multiple choice question"
+msgstr "Multiple choice question"
+
+#: source/teacher/contribute.php:220
+msgid "Required fields"
+msgstr "Required fields"
+
+#: source/teacher/contribute.php:221
+msgid "Name"
+msgstr "Name"
+
+#: source/teacher/contribute.php:233
+msgid "Type"
+msgstr "Type"
+
+#: source/teacher/contribute.php:241
+msgid "Optional fields"
+msgstr "Optional fields"
+
+#: source/teacher/contribute.php:242
+msgid "Video URL"
+msgstr "Video URL"
+
+#: source/teacher/contribute.php:245 source/teacher/contribute.php:250
+#: source/teacher/contribute.php:255
+msgid "An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."
 msgstr ""
-"If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."
+"An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."
+
+#: source/teacher/contribute.php:247
+msgid "Audio URL"
+msgstr "Audio URL"
+
+#: source/teacher/contribute.php:252
+msgid "Image URL"
+msgstr "Image URL"
+
+#: source/teacher/contribute.php:263
+msgid "Accounting"
+msgstr "Accounting"
+
+#: source/teacher/contribute.php:264 source/teacher/contribute.php:346
+msgid "Publisher"
+msgstr "Publisher"
+
+#: source/teacher/contribute.php:267
+msgid ""
+"This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting answers for this question.\n"
+"\n"
+"If you modify the value in this field, make sure that this person has been granted contribute privileges on this exam!"
+msgstr ""
+"This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting answers for this question.\n"
+"\n"
+"If you modify the value in this field, make sure that this person has been granted contribute privileges on this exam!"
+
+#: source/teacher/contribute.php:285
+#, php-format
+msgid "Add Question"
+msgstr "Add Question"
+
+#: source/teacher/contribute.php:286
+#, php-format
+msgid "This page let you add a new question in the examination '%s'"
+msgstr "This page let you add a new question in the examination '%s'"
+
+#: source/teacher/contribute.php:301
+#, php-format
+msgid "Edit Question"
+msgstr "Edit Question"
+
+#: source/teacher/contribute.php:302
+#, php-format
+msgid "This page let you edit the existing question in the examination '%s'"
+msgstr "This page let you edit the existing question in the examination '%s'"
+
+#: source/teacher/contribute.php:317
+#, php-format
+msgid "Manage Questions"
+msgstr "Manage Questions"
+
+#: source/teacher/contribute.php:319
+#, php-format
+msgid "This page let you add, edit and remove questions in the examination '%s'. "
+msgstr ""
+"This page let you add, edit and remove questions in the examination '%s'. "
+
+#: source/teacher/contribute.php:320
+#, php-format
+msgid "You can only edit or remove a question if you are the publisher of the question or the creator of this examination."
+msgstr ""
+"You can only edit or remove a question if you are the publisher of the question or the creator of this examination."
+
+#: source/teacher/contribute.php:326 source/teacher/manager.php:348
+msgid "Questions"
+msgstr "Questions"
+
+#: source/teacher/contribute.php:326 source/teacher/manager.php:162
+#: source/teacher/manager.php:298 source/teacher/manager.php:315
+#: source/teacher/manager.php:332 source/teacher/manager.php:350
+#: source/teacher/manager.php:385
+msgid "Add"
+msgstr "Add"
+
+#: source/teacher/contribute.php:335 source/teacher/manager.php:173
+#: source/teacher/manager.php:290 source/teacher/manager.php:359
+msgid "Edit"
+msgstr "Edit"
+
+#: source/teacher/contribute.php:338 source/teacher/manager.php:177
+#: source/teacher/manager.php:362
+msgid "Delete"
+msgstr "Delete"
+
+#: source/teacher/contribute.php:347
+msgid "Video"
+msgstr "Video"
+
+#: source/teacher/contribute.php:348 source/teacher/contribute.php:350
+#: source/teacher/contribute.php:352
+msgid "No"
+msgstr "No"
+
+#: source/teacher/contribute.php:349
+msgid "Audio"
+msgstr "Audio"
+
+#: source/teacher/contribute.php:351
+msgid "Image"
+msgstr "Image"
+
+#: source/teacher/contribute.php:353
+msgid "Question Text"
+msgstr "Question Text"
+
+#: source/teacher/contribute.php:366
+#, php-format
+msgid "Select the examination you wish to contribute questions for."
+msgstr "Select the examination you wish to contribute questions for."
+
+#: source/teacher/contribute.php:375
+msgid "Follow this link to open the examination to contribute questions."
+msgstr "Follow this link to open the examination to contribute questions."
 
 #: source/teacher/topmenu.menu:3
 msgid "Manage"
 msgstr "Manage"
 
 #: source/teacher/topmenu.menu:4
+msgid "Contribute"
+msgstr "Contribute"
+
+#: source/teacher/topmenu.menu:5
 msgid "Correction"
 msgstr "Correction"
 
-#: source/teacher/topmenu.menu:5 source/admin/topmenu.menu:13
+#: source/teacher/topmenu.menu:6 source/admin/topmenu.menu:13
 #: source/topmenu.menu:13
 msgid "Help"
 msgstr "Help"
 
-#: source/teacher/topmenu.menu:6 source/admin/topmenu.menu:14
+#: source/teacher/topmenu.menu:7 source/admin/topmenu.menu:14
 #: source/topmenu.menu:14
 msgid "About"
 msgstr "About"
@@ -545,27 +693,13 @@ msgstr "This page let you create new exams or manage your old ones. "
 msgid "These are the exams you are the manager of: "
 msgstr "These are the exams you are the manager of: "
 
-#: source/teacher/manager.php:162 source/teacher/manager.php:298
-#: source/teacher/manager.php:315 source/teacher/manager.php:332
-#: source/teacher/manager.php:350 source/teacher/manager.php:382
-msgid "Add"
-msgstr "Add"
-
 #: source/teacher/manager.php:168
 msgid "Click to add/delete contributors, decoders, examinators and questions"
 msgstr "Click to add/delete contributors, decoders, examinators and questions"
 
-#: source/teacher/manager.php:173 source/teacher/manager.php:290
-msgid "Edit"
-msgstr "Edit"
-
 #: source/teacher/manager.php:175 source/teacher/manager.php:292
 msgid "Copy"
 msgstr "Copy"
-
-#: source/teacher/manager.php:177 source/teacher/manager.php:359
-msgid "Delete"
-msgstr "Delete"
 
 #: source/teacher/manager.php:193
 msgid "Name:"
@@ -586,8 +720,7 @@ msgstr "End time:"
 #: source/teacher/manager.php:215
 #, php-format
 msgid "Define the common properties of the exam. Click on the 'Submit' button to create this exam."
-msgstr ""
-"Define the common properties of the exam. Click on the 'Submit' button to create this exam."
+msgstr "Define the common properties of the exam. Click on the 'Submit' button to create this exam."
 
 #: source/teacher/manager.php:220
 #, php-format
@@ -597,14 +730,12 @@ msgstr "This page let you edit common properties of the exam."
 #: source/teacher/manager.php:247
 #, php-format
 msgid "This page let you edit common properties of the exam. Click on the 'Submit' button to save changes."
-msgstr ""
-"This page let you edit common properties of the exam. Click on the 'Submit' button to save changes."
+msgstr "This page let you edit common properties of the exam. Click on the 'Submit' button to save changes."
 
 #: source/teacher/manager.php:285
 #, php-format
 msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
-msgstr ""
-"This page let you add/delete contributors, examinators, decoders and questions from this exam. "
+msgstr "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
 
 #: source/teacher/manager.php:296
 msgid "Contributors"
@@ -623,31 +754,24 @@ msgstr "Examinators"
 msgid "Decoders"
 msgstr "Decoders"
 
-#: source/teacher/manager.php:348
-msgid "Questions"
-msgstr "Questions"
-
-#: source/teacher/manager.php:380
+#: source/teacher/manager.php:383
 msgid "UU-ID:"
 msgstr "UU-ID:"
 
-#: source/teacher/manager.php:392
+#: source/teacher/manager.php:395
 #, php-format
 msgid "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
-msgstr ""
-"Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
+msgstr "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
 
-#: source/teacher/manager.php:414
+#: source/teacher/manager.php:417
 #, php-format
 msgid "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
-msgstr ""
-"Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
+msgstr "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
 
-#: source/teacher/manager.php:436
+#: source/teacher/manager.php:439
 #, php-format
 msgid "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
-msgstr ""
-"Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
+msgstr "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
 
 #: source/teacher/template.php:70
 msgid "Template Page"
@@ -738,8 +862,7 @@ msgstr "Add new teacher:"
 #: source/admin/teacher.php:152
 #, php-format
 msgid "Fill in the user name and click on '%s' to grant this user the teacher role:"
-msgstr ""
-"Fill in the user name and click on '%s' to grant this user the teacher role:"
+msgstr "Fill in the user name and click on '%s' to grant this user the teacher role:"
 
 #: source/help.php:37
 msgid "Help and information to users"
