@@ -4,20 +4,20 @@
 // Copyright (C) 2010 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
-// File:   source/index.php
+// File:   source/exam/index.php
 // Author: Anders Lövgren
 // Date:   2010-04-21
 // 
-// The main entry point for the web application.
+// This is the page where students do their exam.
 // 
 
 // 
 // System check:
 // 
-if(!file_exists("../conf/database.conf")) {
+if(!file_exists("../../conf/database.conf")) {
     header("location: admin/setup.php?reason=database");
 }
-if(!file_exists("../conf/config.inc")) {
+if(!file_exists("../../conf/config.inc")) {
     header("location: admin/setup.php?reason=config");
 }
 
@@ -250,7 +250,7 @@ class ExaminationPage extends BasePage
 		   utf8_decode(str_replace("\n", "<br>", $exam->getExamDescription())),
 		   _("The examination ends"), 
 		   strftime(TIME_FORMAT, strtotime($exam->getExamEndTime())));
-	    printf("<form action=\"exam.php\" method=\"GET\">\n");
+	    printf("<form action=\"index.php\" method=\"GET\">\n");
 	    printf("<input type=\"hidden\" name=\"exam\" value=\"%d\">\n", $exam->getExamID());
 	    printf("<input type=\"submit\" value=\"%s\">\n", _("Begin"));
 	    printf("</form>\n");
@@ -311,7 +311,7 @@ class ExaminationPage extends BasePage
 	       str_replace("\n", "<br>", $qdata->getQuestionText()));
 	
 	printf("<p>" . _("Answer:") . "</p>\n");
-	printf("<form action=\"exam.php\" method=\"GET\">\n"); 
+	printf("<form action=\"index.php\" method=\"GET\">\n"); 
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
 	printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n", $question);
 	printf("<textarea name=\"answer\" cols=\"100\" rows=\"10\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
@@ -330,7 +330,7 @@ class ExaminationPage extends BasePage
     private function saveQuestion($exam, $question, $answer)
     {
 	Exam::setAnswer($exam, $question, phpCAS::getUser(), utf8_encode($answer));
-	header(sprintf("location: exam.php?exam=%d&question=%d&status=ok", $exam, $question));
+	header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
     }
     
     // 
