@@ -498,7 +498,7 @@ class Manager
 	// 
 	$data = $this->getData();
 	$copy = new Manager(0);
-	$copy->setData($data->getExamName(), $data->getExamDescription(), strtotime($data->getExamStartTime()), strtotime($data->getExamEndTime()));
+	$copy->setData($data->getExamName(), $data->getExamDescription(), strtotime('2100-01-01 12:34:56'), strtotime('2100-01-01 12:34:56'));
 	
 	// 
 	// Duplicate the assigned contributor, examinator and decoder roles. 
