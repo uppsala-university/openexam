@@ -517,6 +517,13 @@ class Manager
 	}
 	
 	// 
+	// Add all roles to caller:
+	// 
+	$copy->addContributor(phpCAS::getUser());
+	$copy->addExaminator(phpCAS::getUser());
+	$copy->addDecoder(phpCAS::getUser());
+	
+	// 
 	// Copy all questions, but without any associated answers.
 	// 
 	$sql = sprintf("INSERT INTO questions(exam_id, score, name, quest, user, video, image, audio, type)
