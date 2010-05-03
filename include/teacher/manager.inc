@@ -11,6 +11,122 @@
 // Support for managing exams.
 // 
 
+if(!defined("EXAM_STATE_CONTRIBUTABLE")) {     // Its still possible to contribute questions
+    define ("EXAM_STATE_CONTRIBUTABLE", 1);
+}
+if(!defined("EXAM_STATE_EXAMINATABLE")) {      // Examination started, new students can still be added
+    define ("EXAM_STATE_EXAMINATABLE", 2);
+}
+if(!defined("EXAM_STATE_CORRECTABLE")) {       // Examination finished, not yet decoded.
+    define ("EXAM_STATE_CORRECTABLE", 4);
+}
+if(!defined("EXAM_STATE_DECODEABLE")) {        // Examination can be decoded.
+    define ("EXAM_STATE_DECODEABLE", 8);
+}
+if(!defined("EXAM_STATE_DECODED")) {           // Examination has been decoded.
+    define ("EXAM_STATE_DECODED", 16);
+}
+if(!defined("EXAM_STATE_EDITABLE")) {
+    define ("EXAM_STATE_EDITABLE", 32);
+}
+
+class ExamState
+{   
+    private $state;
+    private $info;
+    
+    public function __construct($exam)
+    {
+	self::setInfo($exam);
+	self::setState($exam);
+    }
+    
+    private function setInfo($exam)
+    {
+	$sql = sprintf("SELECT e.id AS ExamID, e.starttime AS ExamStartTime, e.endtime AS ExamEndTime, e.decoded AS ExamDecoded, COUNT(a.id) AS AnswerCount 
+			FROM exams e, questions q 
+			LEFT JOIN answers a ON q.id = a.question_id WHERE e.id = %d AND q.exam_id = e.id", $exam);
+	$res = Database::getConnection()->query($sql);
+	if(PEAR::isError($res)) {
+	    throw new DatabaseException($res->getMessage());
+	}
+	$this->info = new DataRecord($res->fetchRow());
+    }
+    
+    private function setState($exam)
+    {
+	if($this->info->getExamDecoded() == 'Y') {
+	    $this->state = EXAM_STATE_DECODED;
+	} else {
+	    $manager = new Manager($exam);
+	    
+	    $stime = strtotime($this->info->getExamStartTime());
+	    $etime = strtotime($this->info->getExamEndTime());
+	    $ctime = time();
+	    
+	    if($ctime < $stime) {                  // Before exam begins
+		$this->state = EXAM_STATE_CONTRIBUTABLE | EXAM_STATE_EXAMINATABLE | EXAM_STATE_EDITABLE;
+	    } elseif($ctime < $etime) {            // After exam begin, but before its finished
+		$this->state = EXAM_STATE_EXAMINATABLE;
+	    } elseif($manager->isCorrected()) {    // After exam has finished
+		$this->state = EXAM_STATE_CORRECTABLE | EXAM_STATE_DECODEABLE;
+	    } else {
+		$this->state = EXAM_STATE_CORRECTABLE;
+	    }
+	}
+    }
+    
+    public function getState()
+    {
+	return $this->state;
+    }
+    
+    public function getInfo()
+    {
+	return $this->info;
+    }
+    
+    public function hasAnswers()
+    {
+	return $this->info->getAnswerCount() != 0;
+    }
+
+    public function isContributable()
+    {
+	return $this->state & EXAM_STATE_CONTRIBUTBLE;
+    }
+    
+    public function isExaminatable()
+    {
+	return $this->state & EXAM_STATE_EXAMINATABLE;
+    }
+    
+    public function isCorrectable()
+    {
+	return $this->state & EXAM_STATE_CORRECTABLE;
+    }
+    
+    public function isDecodable()
+    {
+	return $this->state & EXAM_STATE_DECODABLE;
+    }
+    
+    public function isDecoded()
+    {
+	return $this->state & EXAM_STATE_DECODED;
+    }
+
+    public function isEditable()
+    {
+	return $this->state & EXAM_STATE_EDITABLE;
+    }
+    
+    public function readonly()
+    {
+	return !$this->isEditable();
+    }
+}
+
 class Manager
 {
     private $exam;   // Exam ID
@@ -46,52 +162,8 @@ class Manager
     // 
     public function getInfo($flush = false)
     {
-	if($flush) {
-	    $this->info = null;    // force update
-	}
-	if(!isset($this->info)) {
-	    $sql = sprintf("SELECT id AS ExamID, starttime AS ExamStartTime, endtime AS ExamEndTime, decoded AS ExamDecoded
-			    FROM exams WHERE id = %d", $this->exam);
-	    $res = Database::getConnection()->query($sql);
-	    if(PEAR::isError($res)) {
-		throw new DatabaseException($res->getMessage());
-	    }
-	    $this->info = new DataRecord($res->fetchRow());
-	    
-	    if($this->info->getExamDecoded() == 'Y') {
-		$this->info->setDecodable(true);         // Can be decoded
-		$this->info->setContributable(false);    // Can contribute questions
-		$this->info->setExaminatable(false);     // Can add student for examination
-		$this->info->setCorrectable(false);      // Can correct answers
-	    } else {
-		$stime = strtotime($this->info['examstarttime']);
-		$etime = strtotime($this->info['examendtime']);
-		$ctime = time();
-
-		if($ctime < $stime) {         // Before exam begins
-		    $this->info->setDecodable(false);
-		    $this->info->setContributable(true);
-		    $this->info->setExaminatable(true);
-		    $this->info->setCorrectable(false);		    
-		} elseif($ctime < $etime) {   // After exam begin, but before its finished
-		    $this->info->setDecodable(false);
-		    $this->info->setContributable(false);
-		    $this->info->setExaminatable(true);
-		    $this->info->setCorrectable(false);		    
-		} else {                      // After exam has finished
-		    if($this->isCorrected()) {
-			$this->info->setContributable(false);
-			$this->info->setExaminatable(false);
-			$this->info->setCorrectable(true);
-			$this->info->setDecodable(true);
-		    } else {
-			$this->info->setContributable(false);
-			$this->info->setExaminatable(false);
-			$this->info->setCorrectable(true);
-			$this->info->setDecodable(false);
-		    }
-		}
-	    }
+	if(!isset($this->info) || $flush) {
+	    $this->info = new ExamState($this->exam);
 	}
 	return $this->info;
     }
