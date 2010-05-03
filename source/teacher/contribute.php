@@ -70,7 +70,7 @@ class ContributePage extends TeacherPage
 {
     private $params = array( "exam"     => "/^\d+$/",
 			     "action"   => "/^(add|edit|delete)$/",
-			     "question" => "/^\d+$/",
+			     "question" => "/^(\d+|all)$/",
 			     "mode"     => "/^(save)$/",
 			     "score"    => "/^\d(\.\d)*$/",
 			     "type"     => "/^(freetext|single|multiple)$/" );
@@ -99,10 +99,10 @@ class ContributePage extends TeacherPage
 	    if(isset($_REQUEST['action'])) {
 		if($_REQUEST['action'] == "add") {
 		    if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-			self::assert(array('score', 'name', 'quest', 'type'));
+			self::assert(array('score', 'name', 'quest', 'type', 'user'));
 			self::saveAddQuestion($_REQUEST['exam'], $_REQUEST['score'], 
 					      $_REQUEST['name'], $_REQUEST['quest'],
-					      $_REQUEST['type']);
+					      $_REQUEST['type'], $_REQUEST['user']);
 		    } else {
 			self::formAddQuestion($_REQUEST['exam']);
 		    }
@@ -119,7 +119,11 @@ class ContributePage extends TeacherPage
 		    }
 		} elseif($_REQUEST['action'] == "delete") {
 		    self::assert('question');
-		    self::saveDeleteQuestion($_REQUEST['exam'], $_REQUEST['question']);
+		    if($_REQUEST['question'] == "all") {
+			self::saveDeleteQuestions($_REQUEST['exam']);
+		    } else {
+			self::saveDeleteQuestion($_REQUEST['exam'], $_REQUEST['question']);
+		    }
 		}
 	    } else {
 		self::showQuestions($_REQUEST['exam']);
@@ -142,6 +146,17 @@ class ContributePage extends TeacherPage
 	    exit(1);
 	}
     }
+    
+    // 
+    // Delete all questions.
+    // 
+    private function saveDeleteQuestions($exam)
+    {
+	$contrib = new Contribute($exam);
+	$contrib->deleteQuestions($question);
+
+	header(sprintf("location: contribute.php?exam=%d", $exam));
+    }
 
     // 
     // Delete this question.
@@ -157,14 +172,14 @@ class ContributePage extends TeacherPage
     // 
     // Save answers posted by form.
     // 
-    private function saveAddQuestion($exam, $score, $name, $quest, $type)
+    private function saveAddQuestion($exam, $score, $name, $quest, $type, $user)
     {
 	$video = isset($_REQUEST['video']) ? $_REQUEST['video'] : "";
 	$audio = isset($_REQUEST['audio']) ? $_REQUEST['audio'] : "";
 	$image = isset($_REQUEST['image']) ? $_REQUEST['image'] : "";
-	
+
 	$contrib = new Contribute($exam);
-	$contrib->addQuestion($exam, $score, utf8_encode($name), utf8_encode($quest), $type, phpCAS::getUser(), $video, $audio, $image);
+	$contrib->addQuestion($exam, $score, utf8_encode($name), utf8_encode($quest), $type, $user, $video, $audio, $image);
 	
 	header(sprintf("location: contribute.php?exam=%d", $exam));
     }
@@ -251,6 +266,8 @@ class ContributePage extends TeacherPage
 	    printf("<input type=\"text\" name=\"user\" size=\"60\" value=\"%s\" title=\"%s\" />\n", 
 		   $data->hasQuestionPublisher() ? utf8_decode($data->getQuestionPublisher()) : phpCAS::getUser(),
 		   _("This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting answers for this question.\n\nIf you modify the value in this field, make sure that this person has been granted contribute privileges on this exam!"));
+	} else {
+	    printf("<input type=\"hidden\" name=\"user\" value=\"%s\" />\n", phpCAS::getUser());
 	}
 	
 	printf("<br /><br />\n");	
