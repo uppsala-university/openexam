@@ -220,8 +220,8 @@ class ManagerPage extends TeacherPage
 	    printf("<p>" . _("Define the common properties of the exam. Click on the 'Submit' button to create this exam.") . "</p>\n");
 	    $data = new DataRecord( array( "examname" => "Name", 
 					   "examdescription" => "Description", 
-					   "examstarttime" => strftime(DATETIME_FORMAT, time()),
-					   "examendtime"   => strftime(DATETIME_FORMAT, time() + 3600 * 24) ));
+					   "examstarttime" => DATETIME_NONE,
+					   "examendtime"   => DATETIME_NONE));
 	    printf("<p>" . _("This page let you edit common properties of the exam.") . "</p>\n");
 	    self::showExamForm(0, $data, "add");
 	} else {
