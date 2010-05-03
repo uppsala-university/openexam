@@ -77,7 +77,7 @@ class CorrectionPage extends TeacherPage
     
     public function __construct()
     {
-	parent::__construct(_("Answer Correction Page"), $this->params);
+	parent::__construct(_("Answer Correction Page"), $this->params);	
     }
 
     // 
@@ -98,21 +98,21 @@ class CorrectionPage extends TeacherPage
 	if(isset($_REQUEST['exam'])) {
 	    if(isset($_REQUEST['question'])) {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-		    self::checkParams(array('score', 'comment'));
+		    self::assert(array('score', 'comment'));
 		    self::saveQuestionScore($_REQUEST['exam'], $_REQUEST['question']);
 		} else {
 		    self::markQuestionScore($_REQUEST['exam'], $_REQUEST['question']);
 		}
 	    } elseif(isset($_REQUEST['student'])) {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
- 		    self::checkParams(array('score', 'comment'));
+ 		    self::assert(array('score', 'comment'));
 		    self::saveStudentScore($_REQUEST['exam'], $_REQUEST['student']);
 		} else {
 		    self::markStudentScore($_REQUEST['exam'], $_REQUEST['student']);
 		}
 	    } elseif(isset($_REQUEST['answer'])) {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
- 		    self::checkParams(array('score', 'comment'));
+ 		    self::assert(array('score', 'comment'));
 		    self::saveAnswerScore($_REQUEST['exam'], $_REQUEST['answer']);
 		} else {
 		    self::markAnswerScore($_REQUEST['exam'], $_REQUEST['answer']);
@@ -122,20 +122,6 @@ class CorrectionPage extends TeacherPage
 	    }
 	} else {
 	    self::showAvailableExams();
-	}
-    }
-
-    // 
-    // Check that required request parameters where passed.
-    // 
-    private function checkParams($params) 
-    {
-	foreach($params as $param) {
-	    if(!isset($_REQUEST[$param])) {
-		ErrorPage::show(_("Missing request parameter!"),
-				sprintf(_("The required request parameter '%s' is missing. The script processing has halted."), $param));
-		exit(1);
-	    }
 	}
     }
 

@@ -99,7 +99,7 @@ class ContributePage extends TeacherPage
 	    if(isset($_REQUEST['action'])) {
 		if($_REQUEST['action'] == "add") {
 		    if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-			self::checkParams(array('score', 'name', 'quest', 'type'));
+			self::assert(array('score', 'name', 'quest', 'type'));
 			self::saveAddQuestion($_REQUEST['exam'], $_REQUEST['score'], 
 					      $_REQUEST['name'], $_REQUEST['quest'],
 					      $_REQUEST['type']);
@@ -108,17 +108,17 @@ class ContributePage extends TeacherPage
 		    }
 		} elseif($_REQUEST['action'] == "edit") {
 		    if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-			self::checkParams(array('score', 'name', 'quest', 'type', 'question', 'user'));
+			self::assert(array('score', 'name', 'quest', 'type', 'question', 'user'));
 			self::saveEditQuestion($_REQUEST['exam'], $_REQUEST['score'], 
 					       $_REQUEST['name'], $_REQUEST['quest'],
 					       $_REQUEST['type'], $_REQUEST['question'],
 					       $_REQUEST['user']);
 		    } else {
-			self::checkParams(array('question'));
+			self::assert('question');
 			self::formEditQuestion($_REQUEST['exam'], $_REQUEST['question']);
 		    }
 		} elseif($_REQUEST['action'] == "delete") {
-		    self::checkParams(array('question'));
+		    self::assert('question');
 		    self::saveDeleteQuestion($_REQUEST['exam'], $_REQUEST['question']);
 		}
 	    } else {
@@ -129,20 +129,6 @@ class ContributePage extends TeacherPage
 	}
     }
 
-    // 
-    // Check that required request parameters where passed.
-    // 
-    private function checkParams($params) 
-    {
-	foreach($params as $param) {
-	    if(!isset($_REQUEST[$param])) {
-		ErrorPage::show(_("Missing request parameter!"),
-				sprintf(_("The required request parameter '%s' is missing. The script processing has halted."), $param));
-		exit(1);
-	    }
-	}
-    }
-    
     // 
     // Verify that the caller has been granted the required role on this exam.
     // 

@@ -108,8 +108,8 @@ class ManagerPage extends TeacherPage
 	} else {
 	    if(isset($_REQUEST['action'])) {
 		if(isset($_REQUEST['role'])) {
-		    if($_REQUEST['action'] == "delete" && !isset($_REQUEST['user'])) {
-			die(sprintf(_("Missing parameter '%s'"), "user"));
+		    if($_REQUEST['action'] == "delete") {
+			self::assert('user');
 		    }
 		    if($_REQUEST['role'] == "contributor") {
 			if($_REQUEST['action'] == "add") {
