@@ -356,6 +356,10 @@ class ManagerPage extends TeacherPage
 	    $child->addLink(_("Remove all"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all",
 						     $data->getExamID()));
 	}
+	if($manager->isContributor(phpCAS::getUser())) {
+	    $child->addLink(_("View"), sprintf("contribute.php?exam=%d", $data->getExamID()));
+	}
+	
 	$questions = $manager->getQuestions();
 	foreach($questions as $question) {
 	    $subobj = $child->addChild(utf8_decode($question->getQuestionName()));
