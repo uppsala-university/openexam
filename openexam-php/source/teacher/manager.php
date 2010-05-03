@@ -353,6 +353,8 @@ class ManagerPage extends TeacherPage
 	$child = $root->addChild(_("Questions"));
 	if($info->isContributable()) {
 	    $child->addLink(_("Add"), sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()));
+	    $child->addLink(_("Remove all"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all",
+						     $data->getExamID()));
 	}
 	$questions = $manager->getQuestions();
 	foreach($questions as $question) {
