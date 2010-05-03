@@ -297,7 +297,10 @@ class ContributePage extends TeacherPage
     private function showQuestions($exam)
     {
 	$manager = new Manager($exam);
+	
 	$data = $manager->getData();
+	$info = $manager->getInfo();
+	
 	$questions = $manager->getQuestions();
 	
 	printf("<h3>" . _("Manage Questions") . "</h3>\n");
@@ -306,68 +309,62 @@ class ContributePage extends TeacherPage
 	       _("You can only edit or remove a question if you are the publisher of the question or the creator of this examination.") . 
 	       "</p>\n", 
 	       utf8_decode($data->getExamName()));
-	
-	printf("<ul>\n");
-	printf("<li>%s <span class=\"links\"><a href=\"?exam=%d&amp;action=add\">%s</a></span></li>\n", 
-	       _("Questions"), $data->getExamID(), _("Add"));
-	printf("<ul>\n");
-	foreach($questions as $question) {
-	    if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
-		printf("<li>%s %s <span class=\"links\"><a href=\"?exam=%d&amp;action=edit&amp;question=%d\">%s</a>, <a href=\"?exam=%d&amp;action=delete&amp;question=%d\">%s</a></span></li>\n", 
-		       _("Question"), 
-		       utf8_decode($question->getQuestionName()),
-		       $question->getExamID(),
-		       $question->getQuestionID(),
-		       _("Edit"),
-		       $question->getExamID(),
-		       $question->getQuestionID(),
-		       _("Delete"));
-	    } else {
-		printf("<li>%s %s </li>\n",
-		       _("Question"), 
-		       utf8_decode($question->getQuestionName()));
-	    }
-	    printf("<ul>\n");
-	    printf("<li>%s: %.01f</li>\n", _("Score"), $question->getQuestionScore());
-	    printf("<li>%s: %s</li>\n", _("Publisher"), $question->getQuestionPublisher());
-	    printf("<li>%s: %s</li>\n", _("Video"), 
-		   $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No"));
-	    printf("<li>%s: %s</li>\n", _("Audio"), 
-		   $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No"));
-	    printf("<li>%s: %s</li>\n", _("Image"), 
-		   $question->hasQuestionImage() ? $question->getQuestionImage() : _("No"));
-	    printf("<li>%s:<br />%s</li>\n", _("Question Text"), utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
-	    printf("<br />\n");
-	    printf("</ul>\n");	    
+
+	if(!$info->isContributable()) {
+	    printf("<p>" . _("Notice: It's no longer possible to contribute or modify questions for this examination.") . "</p>\n");
 	}
-	printf("</ul>\n");
-	printf("</ul>\n");
+	
+	$tree = new TreeBuilder(_("Questions"));
+	$root = $tree->getRoot();
+	if($info->isContributable()) {
+	    $root->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $data->getExamID()));
+	}
+	foreach($questions as $question) {
+	    $child = $root->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
+	    if($info->isContributable()) {
+		if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {		
+		    $child->AddLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
+						       $question->getExamID(),
+						       $question->getQuestionID()));
+		    $child->AddLink(_("Edit"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", 
+						       $question->getExamID(),
+						       $question->getQuestionID()));
+		}
+	    }
+	    $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
+	    $child->addChild(sprintf("%s: %s", _("Publisher"), $question->getQuestionPublisher()));
+	    $child->addChild(sprintf("%s: %s", _("Video"), $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No")));
+	    $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
+	    $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
+	    $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
+	    $subobj->addText(utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
+	}
+	$tree->output();
     }
-    
+        
     // 
     // Show all exams where caller has been granted the contribute role.
     // 
     private function showAvailableExams()
     {
-	printf("<p>"  . _("Select the examination you wish to contribute questions for.") . "</p>\n");
+	printf("<p>"  . _("Select the examination you wish to contribute questions for (applies only to contributable examinations).") . "</p>\n");
+
+	$tree = new TreeBuilder(_("Examinations"));
+	$root = $tree->getRoot();
 	
-	printf("<ul>\n");
-	printf("<li>%s:</li>\n", _("Examinations"));
 	$exams = Contribute::getExams(phpCAS::getUser());	
 	foreach($exams as $exam) {
-	    printf("<ul>\n");
-	    printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
-		   $exam->getExamID(), 
-		   sprintf("%s\n\n%s", utf8_decode($exam->getExamDescription()), _("Follow this link to open the examination to contribute questions.")),
-		   utf8_decode($exam->getExamName()));
-	    printf("<ul>\n");
-	    printf("<li>%s: %s</li>\n", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())));
-	    printf("<li>%s: %s</li>\n", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime())));
-	    printf("</ul>\n");
-	    printf("<br />\n");
-	    printf("</ul>\n");
+	    $manager = new Manager($exam->getExamID());
+	    
+	    $child = $root->addChild(utf8_decode($exam->getExamName()));
+	    if($manager->getInfo()->isContributable()) {
+		$child->setLink(sprintf("?exam=%d", $exam->getExamID()));
+	    }
+	    // TODO: add title to links!!
+	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
+	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
 	}
-	printf("</ul>\n");
+	$tree->output();
     }
     
 }

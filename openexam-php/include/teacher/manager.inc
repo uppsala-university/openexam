@@ -93,7 +93,7 @@ class ExamState
 
     public function isContributable()
     {
-	return $this->state & EXAM_STATE_CONTRIBUTBLE;
+	return $this->state & EXAM_STATE_CONTRIBUTABLE;
     }
     
     public function isExaminatable()
@@ -127,6 +127,104 @@ class ExamState
     }
 }
 
+class TreeNode
+{
+    private $label;                // Node text
+    private $links = array();      // Optional links
+    private $items = array();      // Optional text items
+    private $childs = array();     // Array of TreeNode objects.
+    private $link = null;
+    
+    public function __construct($label)
+    {
+	$this->label = $label;
+    }
+    
+    public function setLink($url)  // This node links to...
+    {
+	$this->link = $url;
+    }
+    
+    public function addLink($name, $url)
+    {
+	$this->links[$name] = $url;
+    }
+    
+    public function addText($text)
+    {
+	$this->items[] = $text;
+    }
+    
+    public function addChild($child)
+    {
+	if(is_object($child)) {
+	    $this->childs[] = $child;
+	} else {
+	    $child = new TreeNode($child);
+	    $this->childs[] = $child;
+	}
+	return $child;
+    }
+    
+    public function getChilds()
+    {
+	return $this->childs;
+    }
+    
+    public function output()
+    {
+	// 
+	// Output this node and any child nodes.
+	// 
+	printf("<ul><li>\n");
+	if(isset($this->link)) {
+	    printf("<a href=\"%s\">%s</a>", $this->link, $this->label);
+	} else {
+	    printf("%s", $this->label);
+	}
+	foreach($this->items as $text) {
+	    printf("<br />%s", $text);
+	}
+	$links = array();
+	printf("<span class=\"links\">");
+	foreach($this->links as $name => $url) {
+	    $links[] = sprintf("<a href=\"%s\">%s</a>", $url, $name);
+	}
+	printf("%s</span>", implode(", ", $links));
+	printf("</li>");
+	foreach($this->childs as $child) {
+	    $child->output();
+	}
+	printf("</ul>\n");
+    }
+}
+
+class TreeBuilder
+{
+    private $root;   // The root node
+    
+    public function __construct($label)
+    {
+	$this->root = new TreeNode($label);
+    }
+    
+    public function getRoot()
+    {
+	return $this->root;
+    }
+    
+    // public function addChild($label)
+    // {
+    // 	$child = $this->root->addChild(new TreeNode($label));
+    // 	return $child;
+    // }
+    
+    public function output()
+    {
+	$this->root->output();
+    }
+}
+    
 class Manager
 {
     private $exam;   // Exam ID
@@ -433,6 +531,17 @@ class Manager
 	    $db->beginTransaction();
 	} else {
 	    throw new DatabaseException("The exam can't be safely deleted");
+	}
+	
+	foreach(array("contributor", "examinator", "decoder") as $role) {
+	    $sql = sprintf("DELETE FROM ${role}s WHERE exam_id = %d", $this->exam);
+	    $res = $db->query($sql);
+	    if(PEAR::isError($res)) {
+		if($db->in_transaction) {
+		    $db->rollback();
+		}
+		throw new DatabaseException($res->getMessage());
+	    }
 	}
 
 	$sql = sprintf("DELETE FROM questions WHERE exam_id = %d", $this->exam);
