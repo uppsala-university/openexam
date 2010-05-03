@@ -140,7 +140,7 @@ class CorrectionPage extends TeacherPage
     }
     
     // 
-    // Save result from markQuestionScore(), markStudentScore() and saveAnswerScore().
+    // Save result from saveQuestionScore(), saveStudentScore() and saveAnswerScore().
     // 
     private function saveAnswerResult($exam) 
     {
