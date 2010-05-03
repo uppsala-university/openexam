@@ -166,7 +166,8 @@ class ManagerPage extends TeacherPage
 	    $state = new ExamState($exam->getExamID());
 	    
 	    $child = $root->addChild(utf8_decode($exam->getExamName()));
-	    $child->setLink(sprintf("?exam=%d&amp;action=show", $exam->getExamID()));
+	    $child->setLink(sprintf("?exam=%d&amp;action=show", $exam->getExamID()),
+			    utf8_decode($exam->getExamDescription()));
 	    $child->addText(sprintf("(%s - %s)", 
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())),
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
