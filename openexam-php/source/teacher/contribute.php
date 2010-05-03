@@ -343,9 +343,9 @@ class ContributePage extends TeacherPage
 		    $child->AddLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
 						       $question->getExamID(),
 						       $question->getQuestionID()));
-		    $child->AddLink(_("Edit"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", 
-						       $question->getExamID(),
-						       $question->getQuestionID()));
+		    $child->AddLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", 
+							 $question->getExamID(),
+							 $question->getQuestionID()));
 		}
 	    }
 	    $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
