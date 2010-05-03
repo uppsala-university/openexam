@@ -196,17 +196,18 @@ class ManagerPage extends TeacherPage
 	printf("<label for=\"name\">%s</label>\n", _("Name:"));
 	printf("<input type=\"text\" name=\"name\" value=\"%s\" size=\"50\" />\n", utf8_decode($data->getExamName()));
 	printf("<br />\n");
-	printf("<label for=\"\">%s</label>\n", _("Description:"));
+	printf("<label for=\"desc\">%s</label>\n", _("Description:"));
 	printf("<textarea name=\"desc\" cols=\"50\" rows=\"10\">%s</textarea>\n", utf8_decode($data->getExamDescription()));
 	printf("<br />\n");
-	printf("<label for=\"\">%s</label>\n", _("Start time:"));
+	printf("<label for=\"start\">%s</label>\n", _("Start time:"));
 	printf("<input type=\"text\" name=\"start\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
 	printf("<br />\n");
-	printf("<label for=\"\">%s</label>\n", _("End time:"));
+	printf("<label for=\"end\">%s</label>\n", _("End time:"));
 	printf("<input type=\"text\" name=\"end\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
 	if(!$readonly) {
-	    printf("<br />\n");
-	    printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
+	    printf("<br /><br />\n");
+	    printf("<label for=\"submit\">&nbsp;</label>\n");
+	    printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
 	}
 	printf("</form>\n");
     }
