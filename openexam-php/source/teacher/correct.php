@@ -356,7 +356,8 @@ class CorrectionPage extends TeacherPage
 	    $manager = new Manager($exam->getExamID());
 	    $child = $root->addChild(utf8_decode($exam->getExamName()));
 	    if($manager->getInfo()->isCorrectable()) {
-		$child->setLink(sprintf("?exam=%d", $exam->getExamID()));
+		$child->setLink(sprintf("?exam=%d", $exam->getExamID()),
+				_("Click on this link to open this examination to correct answers."));
 	    }
 	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
 	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
@@ -382,12 +383,15 @@ class CorrectionPage extends TeacherPage
 	// Print questions, leave the first cell empty.
 	// 
 	printf("<tr><td>&nbsp;</td>");
+	$i = 1;
 	foreach($questions as $question) {
-	    printf("<td><a href=\"?exam=%d&amp;action=correct&amp;question=%d\" title=\"%s\">%s</a></td>",
+	    printf("<td><a href=\"?exam=%d&amp;action=correct&amp;question=%d\" title=\"%s\">Q%d.</a></td>",
 		   $question->getExamID(),
 		   $question->getQuestionID(),
-		   utf8_decode($question->getQuestionText()),
-		   utf8_decode($question->getQuestionName()));
+		   sprintf("%s\n\n%s", 
+			   utf8_decode($question->getQuestionName()),
+			   utf8_decode($question->getQuestionText())),
+		   $i++);
 	}
 	printf("<td>%s</td>\n", _("Summary"));
 	printf("</tr>\n");
