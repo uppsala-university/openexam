@@ -157,33 +157,35 @@ class ManagerPage extends TeacherPage
 	       _("These are the exams you are the manager of: ") .
 	       "</p>\n");
 	
-	printf("<ul>\n");
-	printf("<li>%s: <span class=\"links\"><a href=\"?action=add\">%s</a></span></li>\n",
-	       _("Examinations"), _("Add"));
+	$tree = new TreeBuilder(_("Examinations"));
+	$root = $tree->getRoot();
+	$root->addLink(_("Add"), "?action=add");
+
 	$exams = Manager::getExams(phpCAS::getUser());
 	foreach($exams as $exam) {
-	    printf("<ul>\n");
-	    printf("<li><a href=\"?exam=%d&amp;action=show\" title=\"%s\">%s</a> (%s - %s) <span class=\"links\"><a href=\"?exam=%d&amp;action=edit\">%s</a>, <a href=\"?exam=%d&amp;action=copy\">%s</a>, <a href=\"?exam=%d&amp;action=delete\">%s</a></span></li>\n",
-		   $exam->getExamID(), 
-		   sprintf("%s\n\n%s", utf8_decode($exam->getExamDescription()), _("Click to add/delete contributors, decoders, examinators and questions")),
-		   utf8_decode($exam->getExamName()), 
-		   strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())), 
-		   strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime())),
-		   $exam->getExamID(), 
-		   _("Edit"),
-		   $exam->getExamID(),
-		   _("Copy"),
-		   $exam->getExamID(),
-		   _("Delete"));
-	    printf("</ul>\n");
+	    $state = new ExamState($exam->getExamID());
+	    
+	    $child = $root->addChild(utf8_decode($exam->getExamName()));
+	    $child->setLink(sprintf("?exam=%d&amp;action=show", $exam->getExamID()));
+	    $child->addText(sprintf("(%s - %s)", 
+				    strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())),
+				    strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
+	    $child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $exam->getExamID()));
+	    
+	    if($state->isEditable()) {
+		$child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $exam->getExamID()));
+	    }
+	    if(!$state->hasAnswers()) {
+		$child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete", $exam->getExamID()));
+	    }
 	}
-	printf("</ul>\n");
+	$tree->output();
     }
-
+		       
     // 
     // Common form for adding and editing exam properties.
     // 
-    private function showExamForm($exam, $data, $action)
+    private function showExamForm($exam, $data, $action, $readonly = false)
     {
 	printf("<form action=\"manager.php\" method=\"GET\">\n");
 	printf("<input type=\"hidden\" name=\"action\" value=\"%s\" />\n", $action);
@@ -201,8 +203,10 @@ class ManagerPage extends TeacherPage
 	printf("<br />\n");
 	printf("<label for=\"\">%s</label>\n", _("End time:"));
 	printf("<input type=\"text\" name=\"end\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
-	printf("<br />\n");
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
+	if(!$readonly) {
+	    printf("<br />\n");
+	    printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
+	}
 	printf("</form>\n");
     }
     
@@ -273,102 +277,101 @@ class ManagerPage extends TeacherPage
 	$manager->delete();
 	header("location: manager.php");
     }
-    
+
     // 
     // Show properties for this exam.
     // 
     private function showExam($exam) 
     {
 	$manager = new Manager($exam);
+	
 	$data = $manager->getData();
+	$info = $manager->getInfo();
 	
-	printf("<p>" . _("This page let you add/delete contributors, examinators, decoders and questions from this exam. ") . "</p>");
-	printf("<ul>\n");
-	printf("<li>%s <span class=\"links\"><a href=\"?exam=%d&amp;action=edit\">%s</a>, <a href=\"?exam=%d&amp;action=copy\">%s</a></span></li>\n",
-	       utf8_decode($data->getExamName()),
-	       $data->getExamID(),
-	       _("Edit"),
-	       $data->getExamID(),
-	       _("Copy"));	
-	printf("<ul>\n");
-	
-	printf("<li>%s <span class=\"links\"><a href=\"?exam=%d&amp;action=add&amp;role=contributor\">%s</a></span></li>\n",
-	       _("Contributors"),
-	       $data->getExamID(),
-	       _("Add"));
+	// 
+	// Build the root node:
+	// 
+	$tree = new TreeBuilder(utf8_decode($data->getExamName()));
+	$root = $tree->getRoot();
+	$root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()));
+	if($info->isEditable()) {
+	    $root->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()));
+	}
+
+	// 
+	// Build the contributors node:
+	// 
+	$child = $root->addChild(_("Contributors"));
+	if($info->isContributable()) {
+	    $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=contributor", $data->getExamID()));
+	}
 	$contributors = $manager->getContributors();
-	if($contributors->count() > 0) {
-	    printf("<ul>\n");
-	    foreach($contributors as $contributor) {
-		printf("<li>%s <span class=\"links\"><a href=\"?exam=%d&amp;action=delete&amp;role=contributor&amp;user=%d\">%s</a></span></li>\n",
-		       $contributor->getContributorUser(),
-		       $contributor->getExamID(),
-		       $contributor->getContributorID(),
-		       _("Remove"));
+	foreach($contributors as $contributor) {
+	    $subobj = $child->addChild($contributor->getContributorUser());
+	    if($info->isContributable()) {
+		$subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=contributor&amp;user=%d", 
+						      $contributor->getExamID(),
+						      $contributor->getContributorID()));
 	    }
-	    printf("</ul>\n");
 	}
-
-	printf("<li>%s <span class=\"links\"><a href=\"?exam=%d&amp;action=add&amp;role=examinator\">%s</a></span></li>\n",
-	       _("Examinators"),
-	       $data->getExamID(),
-	       _("Add"));
+	
+	// 
+	// Build the examinators node:
+	// 
+	$child = $root->addChild(_("Examinators"));
+	if($info->isExaminatable()) {
+	    $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=examinator", $data->getExamID()));
+	}
 	$examinators = $manager->getExaminators();
-	if($examinators->count() > 0) {
-	    printf("<ul>\n");
-	    foreach($examinators as $examinator) {
-		printf("<li>%s <span class=\"links\"><a href=\"?exam=%d&amp;action=delete&amp;role=examinator&amp;user=%d\">%s</a></span></li>\n",
-		       $examinator->getExaminatorUser(),
-		       $examinator->getExamID(),
-		       $examinator->getExaminatorID(),
-		       _("Remove"));
+	foreach($examinators as $examinator) {
+	    $subobj = $child->addChild($examinator->getExaminatorUser());
+	    if($info->isExaminatable()) {
+		$subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=examinator&amp;user=%d", 
+						      $examinator->getExamID(),
+						      $examinator->getExaminatorID()));
 	    }
-	    printf("</ul>\n");
 	}
 	
-	printf("<li>%s <span class=\"links\"><a href=\"?exam=%d&amp;action=add&amp;role=decoder\">%s</a></span></li>\n",
-	       _("Decoders"),
-	       $data->getExamID(),
-	       _("Add"));
+	// 
+	// Build the decoders node:
+	// 
+	$child = $root->addChild(_("Decoders"));
+	$child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=decoder", $data->getExamID()));
 	$decoders = $manager->getDecoders();
-	if($decoders->count() > 0) {
-	    printf("<ul>\n");
-	    foreach($decoders as $decoder) {
-		printf("<li>%s <span class=\"links\"><a href=\"?exam=%d&amp;action=delete&amp;role=decoder&amp;user=%d\">%s</a></span></li>\n",
-		       $decoder->getDecoderUser(),
-		       $decoder->getExamID(),
-		       $decoder->getDecoderID(),
-		       _("Remove"));
-	    }
-	    printf("</ul>\n");
+	foreach($decoders as $decoder) {
+	    $subobj = $child->addChild($decoder->getDecoderUser());
+	    $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=decoder&amp;user=%d",
+						  $decoder->getExamID(),
+						  $decoder->getDecoderID()));
 	}
-	
-	if($manager->isContributor(phpCAS::getUser())) {
-	    printf("<li>%s <span class=\"links\"><a href=\"contribute.php?exam=%d&amp;action=add\">%s</a></span></li>\n",
-		   _("Questions"),
-		   $data->getExamID(),
-		   _("Add"));
-	    $questions = $manager->getQuestions();
-	    if($questions->count() > 0) {
-		printf("<ul>\n");
-		foreach($questions as $question) {
-		    printf("<li>%s <span class=\"links\"><a href=\"contribute.php?exam=%d&amp;action=edit&amp;question=%d\">%s</a>, <a href=\"contribute.php?exam=%d&amp;action=delete&amp;question=%d\">%s</a></span></li>\n",
-			   utf8_decode($question->getQuestionName()),
-			   $question->getExamID(),
-			   $question->getQuestionID(),
-			   _("Edit"),
-			   $question->getExamID(),
-			   $question->getQuestionID(),
-			   _("Delete"));
-		}
-		printf("</ul>\n");
-	    }
-	}
-	
-	printf("</ul>\n");
-	printf("</ul>\n");
-    }
 
+	// 
+	// Build the questions node:
+	// 
+	$child = $root->addChild(_("Questions"));
+	if($info->isContributable()) {
+	    $child->addLink(_("Add"), sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()));
+	}
+	$questions = $manager->getQuestions();
+	foreach($questions as $question) {
+	    $subobj = $child->addChild(utf8_decode($question->getQuestionName()));
+	    if($info->isContributable()) {
+		$subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
+						    $question->getExamID(),
+						    $question->getQuestionID()));
+		$subobj->addLink(_("Remove"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=%d",
+						      $question->getExamID(),
+						      $question->getQuestionID()));
+	    }
+	}
+	
+	printf("<p>" . 
+	       _("This page let you add/delete contributors, examinators, decoders and questions from this exam. ") . 
+	       _("Not all options might be available, i.e. its not possible to add questions to an already started examination." ) .
+	       "</p>");
+	$tree->output();
+    }
+    
     // 
     // Helper function for assigning roles to users for this exam. The text
     // parameter is the description text to show.

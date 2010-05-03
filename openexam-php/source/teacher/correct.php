@@ -346,25 +346,22 @@ class CorrectionPage extends TeacherPage
     
     private function showAvailableExams()
     {
-	printf("<p>"  . _("Select the examination you wish to correct the question answer for.") . "</p>\n");
+	printf("<p>"  . _("Select the examination you wish to correct the question answer for (applies only to corractable examinations).") . "</p>\n");
+
+	$tree = new TreeBuilder(_("Examinations"));
+	$root = $tree->getRoot();
 	
-	printf("<ul>\n");
-	printf("<li>%s:</li>\n", _("Examinations"));
 	$exams = Correct::getExams(phpCAS::getUser());	
 	foreach($exams as $exam) {
-	    printf("<ul>\n");
-	    printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
-		   $exam->getExamID(), 
-		   sprintf("%s\n\n%s", utf8_decode($exam->getExamDescription()), _("Follow this link to open the examination for answer correction.")),
-		   utf8_decode($exam->getExamName()));
-	    printf("<ul>\n");
-	    printf("<li>%s: %s</li>\n", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())));
-	    printf("<li>%s: %s</li>\n", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime())));
-	    printf("</ul>\n");
-	    printf("<br />\n");
-	    printf("</ul>\n");
+	    $manager = new Manager($exam->getExamID());
+	    $child = $root->addChild(utf8_decode($exam->getExamName()));
+	    if($manager->getInfo()->isCorrectable()) {
+		$child->setLink(sprintf("?exam=%d", $exam->getExamID()));
+	    }
+	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
+	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
 	}
-	printf("</ul>\n");
+	$tree->output();
     }
     
     private function showScoreBoard($exam)
