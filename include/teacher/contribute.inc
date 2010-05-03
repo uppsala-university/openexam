@@ -66,6 +66,15 @@ class Contribute
 	    throw new DatabaseException($res->getMessage());
 	}
     }
+    
+    public function deleteQuestions()
+    {
+	$sql = sprintf("DELETE FROM questions WHERE exam_id = %d", $this->exam);
+	$res = Database::getConnection()->query($sql);
+ 	if(PEAR::isError($res)) {
+	    throw new DatabaseException($res->getMessage());
+	}
+    }
 }
 
 ?>
