@@ -140,14 +140,22 @@ class TreeNode
 	$this->label = $label;
     }
     
-    public function setLink($url)  // This node links to...
+    public function setLink($url, $title = null)  // This node links to...
     {
-	$this->link = $url;
+	if(isset($title)) {
+	    $this->link = array("href" => $url, "title" => $title);
+	} else {
+	    $this->link = array("href" => $url);
+	}
     }
     
-    public function addLink($name, $url)
+    public function addLink($name, $url, $title = null)
     {
-	$this->links[$name] = $url;
+	if(isset($title)) {
+	    $this->links[$name] = array("href" => $url, "title" => $title);
+	} else {
+	    $this->links[$name] = array("href" => $url);
+	}
     }
     
     public function addText($text)
@@ -171,6 +179,15 @@ class TreeNode
 	return $this->childs;
     }
     
+    private function attr($attr)
+    {
+	$str = "";
+	foreach($attr as $name => $value) {
+	    $str .= sprintf("%s=\"%s\" ", $name, $value);
+	}
+	return $str;
+    }
+    
     public function output()
     {
 	// 
@@ -178,7 +195,7 @@ class TreeNode
 	// 
 	printf("<ul><li>\n");
 	if(isset($this->link)) {
-	    printf("<a href=\"%s\">%s</a>", $this->link, $this->label);
+	    printf("<a %s>%s</a>", $this->attr($this->link), $this->label);
 	} else {
 	    printf("%s", $this->label);
 	}
@@ -187,8 +204,8 @@ class TreeNode
 	}
 	$links = array();
 	printf("<span class=\"links\">");
-	foreach($this->links as $name => $url) {
-	    $links[] = sprintf("<a href=\"%s\">%s</a>", $url, $name);
+	foreach($this->links as $name => $attr) {
+	    $links[] = sprintf("<a %s>%s</a>", $this->attr($attr), $name);
 	}
 	printf("%s</span>", implode(", ", $links));
 	printf("</li>");
