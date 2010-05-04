@@ -1,3 +1,8 @@
+Version 1.2 (2010-05-04):
+
+	* This is a maintenance release. The authorization control has been
+	  improved, some bug fixes and code cleanup.
+	  
 Version 1.1 (2010-04-30):
 
 	* Added contributor page where people granted the contribute role
