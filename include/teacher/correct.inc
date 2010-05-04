@@ -78,9 +78,10 @@ class Correct
 	$sql = sprintf("SELECT a.id AS AnswerID, a.question_id AS QuestionID, a.student_id AS StudentID, r.id AS ResultID, s.exam_id AS ExamID, 
 			       a.answer AS AnswerText, a.comment AS AnswerComment, r.score AS ResultScore, r.comment AS ResultComment, 
 			       s.user AS StudentUser, s.code AS StudentCode, q.user AS QuestionPublisher
-			FROM questions q, students s, answers a LEFT JOIN results r ON a.id = r.answer_id 
-			WHERE s.id = a.student_id AND a.student_id = %d AND s.exam_id = %d AND a.question_id = q.id
-			ORDER BY a.question_id", 
+			FROM questions q, students s, answers a 
+			LEFT JOIN results r ON a.id = r.answer_id 
+			WHERE s.id = a.student_id AND s.id = %d AND a.question_id = q.id AND q.exam_id = %d
+			ORDER BY a.question_id",
 		       $student, $this->exam);
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);
