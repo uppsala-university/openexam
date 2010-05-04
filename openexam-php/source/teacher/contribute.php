@@ -373,14 +373,17 @@ class ContributePage extends TeacherPage
 	$exams = Contribute::getExams(phpCAS::getUser());	
 	foreach($exams as $exam) {
 	    $manager = new Manager($exam->getExamID());
+	    $info = $manager->getInfo();
 	    
 	    $child = $root->addChild(utf8_decode($exam->getExamName()));
-	    if($manager->getInfo()->isContributable()) {
+	    if($info->isContributable()) {
 		$child->setLink(sprintf("?exam=%d", $exam->getExamID()));
 	    }
 	    // TODO: add title to links!!
 	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
 	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
+	    $child->addChild(sprintf("%s: %s", _("Created"), strftime(DATETIME_FORMAT, strtotime($exam->getExamCreated()))));
+	    $child->addChild(sprintf("%s: %s", _("Creator"), $exam->getExamCreator()));
 	}
 	$tree->output();
     }
