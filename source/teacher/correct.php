@@ -369,11 +369,16 @@ class CorrectionPage extends TeacherPage
     {
 	$manager = new Manager($exam);	
 	$data = $manager->getData();
-	printf("<p>" .
-	       _("This table shows all questions and students for examination '%s'. ") .
-	       _("You can only correct answers to those questions you have published.") . 
-	       "</p>\n", 
+	
+	printf("<h3>" . _("Correct Answers") . "</h3>\n");
+	printf("<p>" . 
+	       _("This table shows all answers from students to questions for the examination '%s'. ") .
+	       "</p>\n",
 	       utf8_decode($data->getExamName()));
+	printf("<p>" . 
+	       _("Correct answers by student (rows), by question (column) or individual (by index). ") . 
+	       _("You can only correct answers for those questions published by yourself.") . 
+	       "</p>\n");	       
 	
  	$board = new ScoreBoard($exam);
 	$questions = $board->getQuestions();
