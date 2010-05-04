@@ -94,7 +94,9 @@ class ManagerPage extends TeacherPage
 	//
 	if(isset($_REQUEST['exam'])) {
 	    self::checkAccess($_REQUEST['exam']);
-	}
+	} else {
+	    self::checkAccess();
+	}	    
 	
 	//
 	// Bussiness logic:
@@ -464,11 +466,15 @@ class ManagerPage extends TeacherPage
     }
     
     // 
-    // Verify that the caller has been granted the required role on this exam.
+    // Verify that the caller has been granted the required role.
     // 
-    private function checkAccess($exam)
+    private function checkAccess($exam = 0)
     {
-	$role = "teacher";
+	if($exam != 0) {
+	    $role = "creator";
+	} else {
+	    $role = "teacher";
+	}
 	
 	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
