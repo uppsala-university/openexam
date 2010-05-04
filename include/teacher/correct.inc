@@ -126,7 +126,7 @@ class Correct
 			       r.score AS ResultScore, s.user AS StudentUser, s.code AS StudentCode, 
 			       q.user AS QuestionPublisher, q.score AS QuestionScore 
 		        FROM students s, questions q, answers a LEFT JOIN results r ON a.id = r.answer_id
-			WHERE s.exam_id = %d AND s.id = a.student_id AND a.question_id = q.id", $this->exam);
+			WHERE q.exam_id = %d AND s.id = a.student_id AND a.question_id = q.id", $this->exam);
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);
     }
