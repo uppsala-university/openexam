@@ -118,7 +118,11 @@ class CorrectionPage extends TeacherPage
 		    self::markAnswerScore($_REQUEST['exam'], $_REQUEST['answer']);
 		}
 	    } else {
-		self::showScoreBoard($_REQUEST['exam']);
+		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
+		    self::saveScoreBoard($_REQUEST['exam']);
+		} else {
+		    self::showScoreBoard($_REQUEST['exam']);
+		}
 	    }
 	} else {
 	    self::showAvailableExams();
@@ -437,11 +441,68 @@ class CorrectionPage extends TeacherPage
 	    printf("<td>%.01f/%.01f/%.01f</td>", $score->getSum(), $score->getMax(), $board->getMaximumScore());
 	    printf("<td>%.01f%%</td>", 100 * $score->getSum() / $board->getMaximumScore());
 	    printf("</tr>\n");
-	}	
+	}
 	printf("</table>\n");
-	
+
+	printf("<h5>" . _("Download Result") . "</h5>\n");
+	printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", 
+	       sprintf("?exam=%d&amp;mode=save", $exam));
     }
             
+    private function saveScoreBoard($exam)
+    {	
+	$manager = new Manager($exam);	
+	$data = $manager->getData();
+		
+ 	$board = new ScoreBoard($exam);
+	$questions = $board->getQuestions();
+
+	ob_end_clean();
+
+	header("Content-Type: text/tab-separated-values");
+	header(sprintf("Content-Disposition: attachment;filename=\"%s.csv\"", str_replace(" ", "_", $data->getExamName())));
+	header("Cache-Control: no-cache");
+	header("Pragma-directive: no-cache");
+	header("Cache-directive: no-cache");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+	
+	$i = 1;
+	printf("%s", _("Code"));
+	foreach($questions as $question) {
+	    printf("\tQ%d.", $i++);
+	}
+	printf("\t%s", _("Score"));
+	printf("\t%s", _("Possible"));
+	printf("\t%s", _("Max score"));
+	printf("\t%s\n", _("Percent"));
+	// 
+	// Output the list of anonymous students.
+	// 
+	$students = $board->getStudents();
+	foreach($students as $student) {
+	    printf("%s", $student->getStudentCode());
+	    foreach($questions as $question) {
+		$data = $board->getData($student->getStudentID(), $question->getQuestionID());
+		if(!isset($data)) {
+		    printf("\t");
+		} else {
+		    if($data->hasResultScore()) {
+			printf("\t%.01f", $data->getResultScore());
+		    } else {
+			printf("\t");
+		    }
+		}
+	    }
+	    $score = $board->getStudentScore($student->getStudentID());
+	    printf("\t%.01f", $score->getSum());
+	    printf("\t%.01f", $score->getMax());
+	    printf("\t%.01f", $board->getMaximumScore());
+	    printf("\t%.01f", 100 * $score->getSum() / $board->getMaximumScore());
+	    printf("\n");
+	}
+	exit(0);
+    }
 }
 
 $page = new CorrectionPage();
