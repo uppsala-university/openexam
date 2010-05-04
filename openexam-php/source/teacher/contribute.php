@@ -364,6 +364,7 @@ class ContributePage extends TeacherPage
     // 
     private function showAvailableExams()
     {
+	printf("<h3>" . _("Contribute Questions") . "</h3>\n");
 	printf("<p>"  . _("Select the examination you wish to contribute questions for (applies only to contributable examinations).") . "</p>\n");
 
 	$tree = new TreeBuilder(_("Examinations"));
