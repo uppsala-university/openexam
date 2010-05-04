@@ -402,6 +402,7 @@ class CorrectionPage extends TeacherPage
 		   $i++);
 	}
 	printf("<td>%s</td>\n", _("Summary"));
+	printf("<td>%s</td>\n", _("Percent"));
 	printf("</tr>\n");
 	// 
 	// Output the list of anonymous students.
@@ -434,9 +435,9 @@ class CorrectionPage extends TeacherPage
 	    }
 	    $score = $board->getStudentScore($student->getStudentID());
 	    printf("<td>%.01f/%.01f/%.01f</td>", $score->getSum(), $score->getMax(), $board->getMaximumScore());
+	    printf("<td>%.01f%%</td>", 100 * $score->getSum() / $board->getMaximumScore());
 	    printf("</tr>\n");
-	}
-	
+	}	
 	printf("</table>\n");
 	
     }
