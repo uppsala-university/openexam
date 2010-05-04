@@ -393,9 +393,12 @@ class CorrectionPage extends TeacherPage
 	    printf("<td><a href=\"?exam=%d&amp;action=correct&amp;question=%d\" title=\"%s\">Q%d.</a></td>",
 		   $question->getExamID(),
 		   $question->getQuestionID(),
-		   sprintf("%s\n\n%s", 
+		   sprintf("%s %s\n\n%s\n\n%s: %.01f",
+			   _("Question"),
 			   utf8_decode($question->getQuestionName()),
-			   utf8_decode($question->getQuestionText())),
+			   utf8_decode($question->getQuestionText()),
+			   _("Max score"),
+			   $question->getQuestionScore()),
 		   $i++);
 	}
 	printf("<td>%s</td>\n", _("Summary"));
