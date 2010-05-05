@@ -193,7 +193,7 @@ class TreeNode
 	// 
 	// Output this node and any child nodes.
 	// 
-	printf("<ul><li>\n");
+	printf("<ul><li>");
 	if(isset($this->link)) {
 	    printf("<a %s>%s</a>", $this->attr($this->link), $this->label);
 	} else {
@@ -203,11 +203,13 @@ class TreeNode
 	    printf("<br />%s", $text);
 	}
 	$links = array();
-	printf("<span class=\"links\">");
-	foreach($this->links as $name => $attr) {
-	    $links[] = sprintf("<a %s>%s</a>", $this->attr($attr), $name);
+	if(count($this->links) != 0) {
+	    printf("<span class=\"links\">");
+	    foreach($this->links as $name => $attr) {
+		$links[] = sprintf("<a %s>%s</a>", $this->attr($attr), $name);
+	    }
+	    printf("%s</span>", implode(", ", $links));
 	}
-	printf("%s</span>", implode(", ", $links));
 	printf("</li>");
 	foreach($this->childs as $child) {
 	    $child->output();
