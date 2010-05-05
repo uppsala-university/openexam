@@ -20,8 +20,8 @@ if(!defined("EXAM_STATE_EXAMINATABLE")) {      // Examination started, new stude
 if(!defined("EXAM_STATE_CORRECTABLE")) {       // Examination finished, not yet decoded.
     define ("EXAM_STATE_CORRECTABLE", 4);
 }
-if(!defined("EXAM_STATE_DECODEABLE")) {        // Examination can be decoded.
-    define ("EXAM_STATE_DECODEABLE", 8);
+if(!defined("EXAM_STATE_DECODABLE")) {         // Examination can be decoded.
+    define ("EXAM_STATE_DECODABLE", 8);
 }
 if(!defined("EXAM_STATE_DECODED")) {           // Examination has been decoded.
     define ("EXAM_STATE_DECODED", 16);
@@ -56,7 +56,7 @@ class ExamState
     private function setState($exam)
     {
 	if($this->info->getExamDecoded() == 'Y') {
-	    $this->state = EXAM_STATE_DECODED;
+	    $this->state = EXAM_STATE_DECODED | EXAM_STATE_DECODABLE;
 	} else {
 	    $manager = new Manager($exam);
 	    
@@ -69,7 +69,7 @@ class ExamState
 	    } elseif($ctime < $etime) {            // After exam begin, but before its finished
 		$this->state = EXAM_STATE_EXAMINATABLE;
 	    } elseif($manager->isCorrected()) {    // After exam has finished
-		$this->state = EXAM_STATE_CORRECTABLE | EXAM_STATE_DECODEABLE;
+		$this->state = EXAM_STATE_CORRECTABLE | EXAM_STATE_DECODABLE;
 	    } else {
 		$this->state = EXAM_STATE_CORRECTABLE;
 	    }
