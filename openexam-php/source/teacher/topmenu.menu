@@ -17,10 +17,12 @@ if($roles->getManagerRoles() > 0 || $roles->getCreatorRoles() > 0) {
 }
 if($roles->getContributorRoles() > 0) {
     printf("<li><a href=\"contribute.php\" class=\"menubarlink\">%s</a></li>\n", _("Contribute"));
-    printf("<li><a href=\"correct.php\" class=\"menubarlink\">%s</a></li>\n", _("Correction"));
 }
 if($roles->getExaminatorRoles() > 0) {
     printf("<li><a href=\"examinator.php\" class=\"menubarlink\">%s</a></li>\n", _("Examinate"));
+}
+if($roles->getContributorRoles() > 0) {
+    printf("<li><a href=\"correct.php\" class=\"menubarlink\">%s</a></li>\n", _("Correction"));
 }
 if($roles->getDecoderRoles() > 0) {
     printf("<li><a href=\"decoder.php\" class=\"menubarlink\">%s</a></li>\n", _("Decode"));
