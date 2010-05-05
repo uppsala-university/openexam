@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: russin 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-05-05 13:42+0200\n"
-"PO-Revision-Date: 2010-05-05 13:41+0200\n"
+"POT-Creation-Date: 2010-05-05 13:58+0200\n"
+"PO-Revision-Date: 2010-05-05 14:00+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -935,8 +935,9 @@ msgid "Allow this user to decode the real identity behind the students assigned 
 msgstr "Tillåt denna användare att avkoda den riktiga identiteten bakom studenter tillagda för examinationen '%s' genom att bevilja honom/henne 'decoder' rollen."
 
 #: source/teacher/manager.php:493
-msgid "Only users granted the creator role on at least one exam can access this page. The script processing has halted."
-msgstr "Endast användare tilldelade rollen 'creator' för åtminstånde en examination har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
+msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
+msgstr ""
+"Endast användare som fått rollen 'teacher' tilldelad eller som har rollen 'creator' för åtminstånde en examination har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
 
 #: source/teacher/decoder.php:74
 msgid "Decoder Page"
