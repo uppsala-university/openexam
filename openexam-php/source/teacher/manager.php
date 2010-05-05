@@ -154,8 +154,6 @@ class ManagerPage extends TeacherPage
     // 
     private function showAvailableExams() 
     {
-	$roles = Teacher::getRoleCount(phpCAS::getUser());
-	
 	printf("<p>"  . 
 	       _("This page let you create new exams or manage your old ones. ") . 
 	       _("These are the exams you are the manager of: ") .
@@ -163,7 +161,7 @@ class ManagerPage extends TeacherPage
 	
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
-	if($roles->getManagerRoles() > 0) {
+	if($this->roles->getManagerRoles() > 0) {
 	    $root->addLink(_("Add"), "?action=add");
 	}
 	
@@ -177,7 +175,7 @@ class ManagerPage extends TeacherPage
 	    $child->addText(sprintf("(%s - %s)", 
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())),
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
-	    if($roles->getManagerRoles() > 0) {
+	    if($this->roles->getManagerRoles() > 0) {
 		$child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $exam->getExamID()));
 	    }
 	    if($state->isEditable()) {
@@ -297,14 +295,12 @@ class ManagerPage extends TeacherPage
 	$data = $manager->getData();
 	$info = $manager->getInfo();
 	
-	$roles = Teacher::getRoleCount(phpCAS::getUser());
-	
 	// 
 	// Build the root node:
 	// 
 	$tree = new TreeBuilder(utf8_decode($data->getExamName()));
 	$root = $tree->getRoot();
-	if($roles->getManagerRoles() > 0) {
+	if($this->roles->getManagerRoles() > 0) {
 	    $root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()));
 	}
 	if($info->isEditable()) {
@@ -459,7 +455,7 @@ class ManagerPage extends TeacherPage
 	if(!$store) {
 	    $data = $manager->getData();
 	    $text = sprintf(_("Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."),
-			    utf8_decode($data->getExamName()), $role);
+			    utf8_decode($data->getExamName()));
 	    return self::addExamRole($exam, "decoder", $text);
 	}
 	
@@ -487,8 +483,7 @@ class ManagerPage extends TeacherPage
 		exit(1);
 	    }
 	} else {
-	    $roles = Teacher::getRoleCount(phpCAS::getUser());
-	    if($roles->getCreatorRoles() == 0 && $roles->getManagerRoles() == 0) {
+	    if($this->roles->getCreatorRoles() == 0 && $this->roles->getManagerRoles() == 0) {
 		ErrorPage::show(_("Access denied!"),
 				_("Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."));
 		exit(1);
