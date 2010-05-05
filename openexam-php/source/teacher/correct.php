@@ -350,7 +350,8 @@ class CorrectionPage extends TeacherPage
     
     private function showAvailableExams()
     {
-	printf("<p>"  . _("Select the examination you wish to correct the question answer for (applies only to corractable examinations).") . "</p>\n");
+	printf("<h3>" . _("Correct Answers") . "</h3>\n");
+	printf("<p>"  . _("Select the examination you wish to correct answers to questions for (applies only to corractable examinations).") . "</p>\n");
 
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
