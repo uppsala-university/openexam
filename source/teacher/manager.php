@@ -485,12 +485,12 @@ class ManagerPage extends TeacherPage
 		ErrorPage::show(_("Access denied!"),
 				sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
 		exit(1);
-	}
+	    }
 	} else {
 	    $roles = Teacher::getRoleCount(phpCAS::getUser());
-	    if($roles->getCreatorRoles() == 0) {
+	    if($roles->getCreatorRoles() == 0 && $roles->getManagerRoles() == 0) {
 		ErrorPage::show(_("Access denied!"),
-				_("Only users granted the creator role on at least one exam can access this page. The script processing has halted."));
+				_("Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."));
 		exit(1);
 	    }
 	}
