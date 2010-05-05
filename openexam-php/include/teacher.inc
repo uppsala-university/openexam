@@ -88,32 +88,6 @@ class Teacher
 	return new DataRecord($res->fetchRow());
     }
     
-    // 
-    // Return true if user has been assigned one of the roles.
-    // 
-    public static function userIsAuthorized($user)
-    {
-    	$db = Database::getConnection();
-    	$db->setFetchMode(MDB2_FETCHMODE_ORDERED);
-	
-	$found = false;
-	foreach(array( "teachers", "contributors", "examinators", "decoders" ) as $role) {	    
-	    $sql = sprintf("SELECT COUNT(*) FROM %s WHERE user = '%s'", $role, $user);
-	    $res = $db->query($sql);
-	    if(PEAR::isError($res)) {
-		throw new DatabaseException($res->getMessage());
-	    }
-	    $row = $res->fetchRow();
-	    if(intval($row[0]) >= 1) {
-		$found = true;
-		break;
-	    }
-	}
-	    
-	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-	return $found;
-    }
-    
     //
     // Get list of all users that has been granted teacher privileges.
     //
@@ -156,13 +130,34 @@ class Teacher
 class TeacherPage extends BasePage
 {
     private $params;
+    protected $roles;
     
     public function __construct($title, $params)
     {
-	$this->params = $params;
+	$this->params = $params;	
+	$this->roles = Teacher::getRoleCount(phpCAS::getUser());
+
+	$this->authorize();
 	$this->validate();
 	
 	parent::__construct($title);
+    }
+
+    // 
+    // Kill script execution if caller is not autorized.
+    // 
+    private function authorize()
+    {
+	if($this->roles->getDecoderRoles() == 0 &&
+	   $this->roles->getExaminatorRoles() == 0 && 
+	   $this->roles->getContributorRoles() == 0 && 
+	   $this->roles->getManagerRoles() == 0 && 
+	   $this->roles->getCreatorRoles() == 0) {
+	    
+	    ErrorPage::show(_("Access denied!"),
+			    _("Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."));
+	    exit(1);
+	}
     }
 
     // 
@@ -170,12 +165,6 @@ class TeacherPage extends BasePage
     // 
     public function validate()
     {
-	if(!Teacher::userIsAuthorized(phpCAS::getUser())) {
-	    ErrorPage::show(_("Access denied!"),
-			    _("Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."));
-	    exit(1);
-	}
-	
 	foreach($this->params as $param => $pattern) {
 	    if(isset($_REQUEST[$param])) {
 		if(!preg_match($pattern, $_REQUEST[$param])) {
