@@ -154,6 +154,8 @@ class ManagerPage extends TeacherPage
     // 
     private function showAvailableExams() 
     {
+	$roles = Teacher::getRoleCount(phpCAS::getUser());
+	
 	printf("<p>"  . 
 	       _("This page let you create new exams or manage your old ones. ") . 
 	       _("These are the exams you are the manager of: ") .
@@ -161,8 +163,10 @@ class ManagerPage extends TeacherPage
 	
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
-	$root->addLink(_("Add"), "?action=add");
-
+	if($roles->getManagerRoles() > 0) {
+	    $root->addLink(_("Add"), "?action=add");
+	}
+	
 	$exams = Manager::getExams(phpCAS::getUser());
 	foreach($exams as $exam) {
 	    $state = new ExamState($exam->getExamID());
@@ -173,8 +177,9 @@ class ManagerPage extends TeacherPage
 	    $child->addText(sprintf("(%s - %s)", 
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())),
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
-	    $child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $exam->getExamID()));
-	    
+	    if($roles->getManagerRoles() > 0) {
+		$child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $exam->getExamID()));
+	    }
 	    if($state->isEditable()) {
 		$child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $exam->getExamID()));
 	    }
@@ -292,12 +297,16 @@ class ManagerPage extends TeacherPage
 	$data = $manager->getData();
 	$info = $manager->getInfo();
 	
+	$roles = Teacher::getRoleCount(phpCAS::getUser());
+	
 	// 
 	// Build the root node:
 	// 
 	$tree = new TreeBuilder(utf8_decode($data->getExamName()));
 	$root = $tree->getRoot();
-	$root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()));
+	if($roles->getManagerRoles() > 0) {
+	    $root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()));
+	}
 	if($info->isEditable()) {
 	    $root->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()));
 	}
@@ -472,14 +481,18 @@ class ManagerPage extends TeacherPage
     {
 	if($exam != 0) {
 	    $role = "creator";
-	} else {
-	    $role = "teacher";
+	    if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
+		ErrorPage::show(_("Access denied!"),
+				sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
+		exit(1);
 	}
-	
-	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
-	    ErrorPage::show(_("Access denied!"),
-			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
-	    exit(1);
+	} else {
+	    $roles = Teacher::getRoleCount(phpCAS::getUser());
+	    if($roles->getCreatorRoles() == 0) {
+		ErrorPage::show(_("Access denied!"),
+				_("Only users granted the creator role on at least one exam can access this page. The script processing has halted."));
+		exit(1);
+	    }
 	}
     }
 }
