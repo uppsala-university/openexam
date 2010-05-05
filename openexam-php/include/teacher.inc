@@ -55,6 +55,40 @@ class Teacher
     }
     
     // 
+    // Get the number of roles assigned to this user.
+    // 
+    public static function getRoleCount($user)
+    {
+	// 
+	// A left join won't work if any one of the joined tables don't contains the user:
+	// 
+	// $sql = sprintf("SELECT COUNT(DISTINCT d.id) AS DecoderRoles, 
+	// 		       COUNT(DISTINCT e.id) AS ExaminatorRoles, 
+	// 		       COUNT(DISTINCT c.id) AS ContributorRoles, 
+	// 		       COUNT(DISTINCT t.id) AS ManagerRoles, 
+	// 		       COUNT(DISTINCT x.id) AS CreatorRoles 
+	//                 FROM decoders d LEFT JOIN examinators e ON d.user = e.user 
+	// 		                LEFT JOIN contributors c ON e.user = c.user 
+	// 		                LEFT JOIN teachers t ON c.user = t.user 
+	// 		                LEFT JOIN exams x ON t.user = x.creator 
+	// 		WHERE d.user = '%s'", $user);
+	// 
+	// This query is not that elegant (repeated arguments), but gets the job done quite effective:
+	// 
+ 	$sql = sprintf("SELECT (SELECT COUNT(id) FROM decoders WHERE user = '%s') AS DecoderRoles,
+		               (SELECT COUNT(id) FROM examinators WHERE user = '%s') AS ExaminatorRoles,
+		               (SELECT COUNT(id) FROM contributors WHERE user = '%s') AS ContributorRoles, 
+		               (SELECT COUNT(id) FROM teachers WHERE user = '%s') AS ManagerRoles, 
+		               (SELECT COUNT(id) FROM exams WHERE creator = '%s') AS CreatorRoles",
+		       $user, $user, $user, $user, $user);
+	$res = Database::getConnection()->query($sql);
+	if(PEAR::isError($res)) {
+	    throw new DatabaseException($res->getMessage());
+	}
+	return new DataRecord($res->fetchRow());
+    }
+    
+    // 
     // Return true if user has been assigned one of the roles.
     // 
     public static function userIsAuthorized($user)

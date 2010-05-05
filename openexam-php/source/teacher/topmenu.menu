@@ -1,9 +1,32 @@
-<ul class="menu0">
-<li><a href="<?php echo "index.php\""; ?> class="menubarlink"><?php echo _("Start"); ?></a></li>
-<li><a href="<?php echo "manager.php\""; ?> class="menubarlink"><?php echo _("Manage"); ?></a></li>
-<li><a href="<?php echo "contribute.php\""; ?> class="menubarlink"><?php echo _("Contribute"); ?></a></li>
-<li><a href="<?php echo "correct.php\""; ?> class="menubarlink"><?php echo _("Correction"); ?></a></li>
-<li><a href="<?php echo "examinator.php\""; ?> class="menubarlink"><?php echo _("Examinate"); ?></a></li>
-<li><a href="<?php echo "help.php\""; ?> class="menubarlink"><?php echo _("Help"); ?></a></li>
-<li><a href="<?php echo "../about.php\""; ?> class="menubarlink"><?php echo _("About"); ?></a></li>
-</ul>
+<?php  // -*- php -*-
+
+// 
+// The top menu for teacher pages. Only output top menu items (links) for those
+// teacher pages where caller has been granted at least one corresponding role.
+// 
+// I.e. for the contributor page we only print a link if caller has been granted
+// the contributor role on at least one examination.
+// 
+
+$roles = Teacher::getRoleCount(phpCAS::getUser());
+
+printf("<ul class=\"menu0\">\n");
+printf("<li><a href=\"index.php\" class=\"menubarlink\">%s</a></li>\n", _("Start"));
+if($roles->getManagerRoles() > 0 || $roles->getCreatorRoles() > 0) {
+    printf("<li><a href=\"manager.php\" class=\"menubarlink\">%s</a></li>\n", _("Manage"));
+}
+if($roles->getContributorRoles() > 0) {
+    printf("<li><a href=\"contribute.php\" class=\"menubarlink\">%s</a></li>\n", _("Contribute"));
+    printf("<li><a href=\"correct.php\" class=\"menubarlink\">%s</a></li>\n", _("Correction"));
+}
+if($roles->getExaminatorRoles() > 0) {
+    printf("<li><a href=\"examinator.php\" class=\"menubarlink\">%s</a></li>\n", _("Examinate"));
+}
+if($roles->getDecoderRoles() > 0) {
+    printf("<li><a href=\"decoder.php\" class=\"menubarlink\">%s</a></li>\n", _("Decode"));
+}
+printf("<li><a href=\"help.php\" class=\"menubarlink\">%s</a></li>\n", _("Help"));
+printf("<li><a href=\"../about.php\" class=\"menubarlink\">%s</a></li>\n", _("About"));
+printf("</ul>\n");
+
+?>

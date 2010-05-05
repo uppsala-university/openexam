@@ -11,6 +11,25 @@
 // Show usage help.
 // 
 
+// 
+// Force logon for unauthenticated users:
+// 
+$GLOBALS['logon'] = true;
+
+// 
+// System check:
+// 
+if(!file_exists("../../conf/database.conf")) {
+    header("location: setup.php?reason=database");
+}
+if(!file_exists("../../conf/config.inc")) {
+    header("location: setup.php?reason=config");
+}
+
+// 
+// Include external libraries:
+// 
+include "MDB2.php";
 include "CAS.php";
 
 // 
@@ -22,13 +41,24 @@ include "include/locale.inc";
 // Include configuration files:
 // 
 include "conf/config.inc";
+include "conf/database.conf";
 
 // 
 // Include required files:
 // 
 include "include/cas.inc";
 include "include/ui.inc";
+include "include/error.inc";
 
+// 
+// Include database support:
+// 
+include "include/database.inc";
+
+// 
+// Required for top menu support:
+// 
+include "include/teacher.inc";
 
 class HelpPage extends BasePage
 {
