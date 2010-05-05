@@ -3,6 +3,9 @@ Version 1.3 (2010-mm-dd):
 	* Added examinator page where the user granted this role can
 	  add/remove users and reschedule the examination.
 	  
+	* Added decoder page where the result from an examination can be
+	  downloaded with the student identities disclosed.
+	  
 Version 1.2 (2010-05-04):
 
 	* This is a maintenance release. The authorization control has been
