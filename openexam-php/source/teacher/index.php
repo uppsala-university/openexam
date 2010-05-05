@@ -57,6 +57,7 @@ include "include/error.inc";
 // Include database support:
 // 
 include "include/database.inc";
+include "include/teacher.inc";
 
 // 
 // The index page:
