@@ -69,7 +69,7 @@ include "include/teacher/contribute.inc";
 class ContributePage extends TeacherPage
 {
     private $params = array( "exam"     => "/^\d+$/",
-			     "action"   => "/^(add|edit|delete)$/",
+			     "action"   => "/^(add|edit|delete|help)$/",
 			     "question" => "/^(\d+|all)$/",
 			     "mode"     => "/^(save)$/",
 			     "score"    => "/^\d(\.\d)*$/",
@@ -208,8 +208,15 @@ class ContributePage extends TeacherPage
 			  "single"   => _("Single choice question"),
 			  "multiple" => _("Multiple choice question")
 			  );
-	
-	printf("<form action=\"contribute.php\" method=\"GET\">\n");
+
+	printf("<script type=\"text/javascript\">\n");
+	printf("function clearform(form) {\n");
+	printf("  form.name.value = \"\";  form.quest.value = \"\";\n");
+	printf("  form.score.value = \"\"; form.video.value = \"\";\n");
+	printf("  form.audio.value = \"\"; form.image.value = \"\";\n");
+	printf("}\n");
+	printf("</script>\n");
+	printf("<form action=\"contribute.php\" method=\"GET\" name=\"question\">\n");
  	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $data->getExamID());
 	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
 	printf("<input type=\"hidden\" name=\"action\" value=\"%s\" />\n", $action);
@@ -220,12 +227,14 @@ class ContributePage extends TeacherPage
 	
 	printf("<p><u>%s:</u></p>\n", _("Required fields"));
 	printf("<label for=\"name\">%s:</label>\n", _("Name"));
-	printf("<input type=\"text\" name=\"name\" size=\"60\" value=\"%s\" />\n", 
-	       $data->hasQuestionName() ? utf8_decode($data->getQuestionName()) : "");
+	printf("<input type=\"text\" name=\"name\" size=\"60\" value=\"%s\" title=\"%s\" />\n", 
+	       $data->hasQuestionName() ? utf8_decode($data->getQuestionName()) : "",
+	       _("A short question name or simply a number"));
 	printf("<br />\n");
 	printf("<label for=\"quest\">%s:</label>\n", _("Question"));
-	printf("<textarea name=\"quest\" cols=\"70\" rows=\"15\">%s</textarea>\n",
-	       $data->hasQuestionText() ? utf8_decode($data->getQuestionText()) : "");
+	printf("<textarea name=\"quest\" cols=\"70\" rows=\"15\" title=\"%s\">%s</textarea>\n",
+	       _("The actual question is defined here."), 
+	       $data->hasQuestionText() || $action == "edit" ? utf8_decode($data->getQuestionText()) : _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n-------------------------\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n-------------------------\n"));
 	printf("<br />\n");
 	printf("<label for=\"score\">%s:</label>\n", _("Score"));
 	printf("<input type=\"text\" name=\"score\" size=\"10\" value=\"%.01f\" />\n",
@@ -241,17 +250,17 @@ class ContributePage extends TeacherPage
 	
 	printf("<p><u>%s:</u></p>\n", _("Optional fields"));
 	printf("<label for=\"video\">%s:</label>\n", _("Video URL"));
-	printf("<input type=\"text\" name=\"video\" value=\"%s\" size=\"80\" title=\"%s\" />\n",
+	printf("<input type=\"text\" name=\"video\" value=\"%s\" size=\"70\" title=\"%s\" />\n",
 	       $data->hasQuestionVideo() ? $data->getQuestionVideo() : "",
 	       _("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."));
 	printf("<br />\n");
 	printf("<label for=\"audio\">%s:</label>\n", _("Audio URL"));
-	printf("<input type=\"text\" name=\"audio\" value=\"%s\" size=\"80\" title=\"%s\" />\n",
+	printf("<input type=\"text\" name=\"audio\" value=\"%s\" size=\"70\" title=\"%s\" />\n",
 	       $data->hasQuestionAudio() ? $data->getQuestionAudio() : "",
 	       _("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."));
 	printf("<br />\n");
 	printf("<label for=\"image\">%s:</label>\n", _("Image URL"));
-	printf("<input type=\"text\" name=\"image\" value=\"%s\" size=\"80\" title=\"%s\" />\n",
+	printf("<input type=\"text\" name=\"image\" value=\"%s\" size=\"70\" title=\"%s\" />\n",
 	       $data->hasQuestionImage() ? $data->getQuestionImage() : "",
 	       _("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."));
 
@@ -273,6 +282,8 @@ class ContributePage extends TeacherPage
 	printf("<br /><br />\n");	
 	printf("<label for=\"submit\">&nbsp;</label>\n");
 	printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
+	printf("<input type=\"reset\" name=\"reset\" value=\"%s\" />\n", _("Reset"));
+	printf("<input type=\"button\" name=\"clear\" value=\"%s\" onclick=\"clearform(document.question);return false;\" />\n", _("Clear"));
 	printf("</form>\n");
     }
 	
@@ -353,6 +364,7 @@ class ContributePage extends TeacherPage
 	    $child->addChild(sprintf("%s: %s", _("Video"), $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No")));
 	    $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
 	    $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
+	    $child->addChild(sprintf("%s: %s", _("Type"), $question->getQuestionType()));
 	    $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
 	    $subobj->addText(utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
 	}
