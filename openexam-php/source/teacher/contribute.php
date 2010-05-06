@@ -69,7 +69,7 @@ include "include/teacher/contribute.inc";
 class ContributePage extends TeacherPage
 {
     private $params = array( "exam"     => "/^\d+$/",
-			     "action"   => "/^(add|edit|delete|help)$/",
+			     "action"   => "/^(add|edit|delete)$/",
 			     "question" => "/^(\d+|all)$/",
 			     "mode"     => "/^(save)$/",
 			     "score"    => "/^\d(\.\d)*$/",
@@ -350,11 +350,14 @@ class ContributePage extends TeacherPage
 	foreach($questions as $question) {
 	    $child = $root->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
 	    if($info->isContributable()) {
-		if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {		
-		    $child->AddLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
+		if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
+		    $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
 						       $question->getExamID(),
 						       $question->getQuestionID()));
-		    $child->AddLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", 
+		    $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
+						       $question->getExamID(),
+						       $question->getQuestionID()));
+		    $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", 
 							 $question->getExamID(),
 							 $question->getQuestionID()));
 		}
