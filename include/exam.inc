@@ -110,10 +110,16 @@ class Exam
 		$match[0] = trim($match[0]);
 		$match[1] = array_keys((array)json_decode($match[1]));
 	    }
-	    return $match;
 	} else {
-	    return array(null, json_decode($str));
+	    if(strlen($str) > 0) {
+		$match[0] = null;
+		$match[1] = json_decode($str);
+	    } else {
+		$match[0] = null;
+		$match[1] = array();
+	    }
 	}
+	return $match;
     }
         
     // 
