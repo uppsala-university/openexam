@@ -61,6 +61,19 @@ include "include/locale.inc";
 include "include/exam.inc";
 
 // 
+// Define symbolic names for question types:
+// 
+if(!defined("QUESTION_TYPE_FREETEXT")) {
+    define ("QUESTION_TYPE_FREETEXT", "freetext");
+}
+if(!defined("QUESTION_TYPE_SINGLE_CHOICE")) {
+    define ("QUESTION_TYPE_SINGLE_CHOICE", "single");
+}
+if(!defined("QUESTION_TYPE_MULTI_CHOICE")) {
+    define ("QUESTION_TYPE_MULTI_CHOICE", "multiple");
+}
+
+// 
 // This class implements a basic page.
 // 
 class ExaminationPage extends BasePage
@@ -71,7 +84,7 @@ class ExaminationPage extends BasePage
     // 
     private $params = array( "exam"     => "/^\d+$/",
 			     "question" => "/^(\d+|all)$/",
-			     "answer"   => "/.*$/" );
+			     "answer"   => "/^.*$/" );
     
     // 
     // Construct the template page.
@@ -120,7 +133,7 @@ class ExaminationPage extends BasePage
 	
 	    $questions = Exam::getQuestions($_REQUEST['exam']);
 	    $answers = Exam::getAnswers($_REQUEST['exam'], phpCAS::getUser());
-
+	    
 	    // 
 	    // Build the associative array of questions and answers. We are going to need
 	    // this array for proper sectioning of answered/unanswered questions.
@@ -146,6 +159,10 @@ class ExaminationPage extends BasePage
 	    echo "<ul>\n";
 	    if(isset($menuitem['q'])) {
 		foreach($menuitem['q'] as $question) {
+		    if($question->getQuestionType() != QUESTION_TYPE_FREETEXT) {
+			$options = Exam::getQuestionChoice($question->getQuestionText());
+			$question->setQuestionText($options[0]);
+		    }
 		    printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01fp]</a></li>\n",
 			   $question->getExamID(),
 			   $question->getQuestionID(),
@@ -160,6 +177,10 @@ class ExaminationPage extends BasePage
 	    echo "<ul>\n";
 	    if(isset($menuitem['a'])) {
 		foreach($menuitem['a'] as $question) {
+		    if($question->getQuestionType() != QUESTION_TYPE_FREETEXT) {
+			$options = Exam::getQuestionChoice($question->getQuestionText());
+			$question->setQuestionText($options[0]);
+		    }
 		    printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01f]</a></li>\n",
 			   $question->getExamID(),
 			   $question->getQuestionID(),
@@ -287,7 +308,11 @@ class ExaminationPage extends BasePage
 	
 	printf("<h3>" . _("Overview of all questions (no answers included)") . "</h3>\n");
 	foreach($questions as $question) {
-	    printf("<h5>%s %s</h5><p>%s</p><p><a href=\"?exam=%d&amp;question=%d\">[%s]</a></p>\n", 
+	    if($question->getQuestionType() != QUESTION_TYPE_FREETEXT) {
+		$options = Exam::getQuestionChoice($question->getQuestionText());
+		$question->setQuestionText($options[0]);		
+	    }
+	    printf("<h5>%s: %s</h5><p>%s</p><p><a href=\"?exam=%d&amp;question=%d\">[%s]</a></p>\n", 
 		   _("Question"),
 		   utf8_decode($question->getQuestionName()),
 		   utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())),
@@ -304,17 +329,44 @@ class ExaminationPage extends BasePage
     {
 	$qdata = Exam::getQuestionData($question);
 	$adata = Exam::getAnswerData($question, phpCAS::getUser());
-	
+
 	printf("<h3>%s %s [%.01fp]</h3>\n", _("Question"), 
 	       utf8_decode($qdata->getQuestionName()), $qdata->getQuestionScore());
-	printf("<p><div class=\"examination\">%s</div></p>\n", 
-	       str_replace("\n", "<br>", $qdata->getQuestionText()));
-	
+	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+	    printf("<p><div class=\"examination\">%s</div></p>\n", 
+		   utf8_decode(str_replace("\n", "<br>", $qdata->getQuestionText())));
+	} else {
+	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
+	    printf("<p><div class=\"examination\">%s</div></p>\n", 
+		   utf8_decode(str_replace("\n", "<br>", $options[0])));
+	}
 	printf("<p>" . _("Answer:") . "</p>\n");
 	printf("<form action=\"index.php\" method=\"GET\">\n"); 
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
 	printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n", $question);
-	printf("<textarea name=\"answer\" cols=\"100\" rows=\"10\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
+	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+	    printf("<textarea name=\"answer\" cols=\"90\" rows=\"10\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
+	} elseif($qdata->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
+	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
+	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
+	    foreach($options[1] as $option) {
+	    	if(in_array($option, $answers[1])) {
+	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", $option, $option);
+		} else {
+	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", $option, $option);
+	    	}
+	    }
+	} elseif($qdata->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
+	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
+	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
+	    foreach($options[1] as $option) {
+		if(in_array($option, $answers[1])) {
+		    printf("<input type=\"checkbox\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", $option, $option);
+		} else {
+		    printf("<input type=\"checkbox\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", $option, $option);
+		}
+	    }
+	}
 	printf("<br /><br />\n");
 	printf("<input type=\"submit\" value=\"%s\" />\n", _("Save"));
 	printf("</form>\n");
@@ -329,6 +381,9 @@ class ExaminationPage extends BasePage
     // 
     private function saveQuestion($exam, $question, $answer)
     {
+	if(is_array($answer)) {
+	    $answer = json_encode($answer);
+	}
 	Exam::setAnswer($exam, $question, phpCAS::getUser(), utf8_encode($answer));
 	header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
     }
@@ -340,7 +395,16 @@ class ExaminationPage extends BasePage
     {
 	foreach($this->params as $param => $pattern) {
 	    if(isset($_REQUEST[$param])) {
-		if(!preg_match($pattern, $_REQUEST[$param])) {
+		if(is_array($_REQUEST[$param])) {
+		    foreach($_REQUEST[$param] as $value) {
+			if(!preg_match($pattern, $value)) {
+			    ErrorPage::show(_("Request parameter error!"),
+					    sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
+						    $param, $pattern));
+			    exit(1);
+			}
+		    }
+		} elseif(!preg_match($pattern, $_REQUEST[$param])) {
 		    ErrorPage::show(_("Request parameter error!"),
 				    sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
 					    $param, $pattern));
