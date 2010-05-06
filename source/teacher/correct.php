@@ -179,6 +179,86 @@ class CorrectionPage extends TeacherPage
     }
     
     // 
+    // Display the answer to a single question.
+    // 
+    private function viewQuestionAnswer($question, $answer)
+    {
+	printf("<tr class=\"nonth\"><td>&nbsp;</td></tr>\n");
+	    
+	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+	    printf("<tr class=\"question\"><td><u>%s: %s</u><br />%s</td></tr>\n", 
+		   _("Question"), 
+		   utf8_decode($question->getQuestionName()),
+		   utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
+	} else {
+	    $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
+	    printf("<tr class=\"question\"><td><u>%s: %s</u><br />%s<br/>%s: %s</td></tr>\n", 
+		   _("Question"), 
+		   utf8_decode($question->getQuestionName()),
+		   utf8_decode(str_replace("\n", "<br>", $qchoice[0])),
+		   _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
+	}
+	
+	printf("<tr class=\"answer\">\n");
+	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+	    printf("<td><u>%s</u>:<br />%s</td>", 
+		   _("Answer"),
+		   utf8_decode(str_replace("\n", "<br>", $answer->getAnswerText())));
+	} else {
+	    $achoice = Exam::getQuestionChoice($answer->getAnswerText());
+	    printf("<td><u>%s</u>:<br />%s</td>", 
+		   _("Answer"),
+		   utf8_decode(str_replace("\n", "<br>", implode(", ", $achoice[1]))));
+	}
+	if($answer->hasResultID()) {
+	    printf("<input type=\"hidden\" name=\"result[%d]\" value=\"%d\" />",
+		   $answer->getAnswerID(), $answer->getResultID());
+	}
+	if($answer->hasResultScore()) {
+	    printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" value=\"%.01f\" size=\"8\" /><br />%s: %.01f</td>",
+		   $answer->getAnswerID(), 
+		   $answer->getResultScore(),
+		   _("Max score"),
+		   $question->getQuestionScore());
+	} elseif($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+	    printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" size=\"8\" /><br />%s: %.01f</td>",
+		   $answer->getAnswerID(), 
+		   _("Max score"),
+		   $question->getQuestionScore());
+	} else {
+	    // 
+	    // Compare student answers against the correct answers
+	    // 
+	    $keys = array_keys($qchoice[1], true);
+	    $hits = 0;
+	    foreach($keys as $key) {
+		if(in_array($key, $achoice[1])) {
+		    $hits++;   // Increment on correct answer
+		}
+	    }
+	    foreach($achoice[1] as $key) {
+		if(!in_array($key, $keys)) {
+		    $hits--;   // Substract for wrong answer
+		}
+	    }
+	    if($hits < 0) {
+		$hits = 0;
+	    }
+	    printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" value=\"%.01f\" size=\"8\" /><br />%s: %.01f</td>",
+		   $answer->getAnswerID(), 
+		   ($hits / count($keys)) * $question->getQuestionScore(),
+		   _("Max score"),
+		   $question->getQuestionScore());
+	}
+	printf("</tr>\n");
+	printf("<tr class=\"comment\"><td>%s: <input type=\"text\" name=\"comment[%d]\" value=\"%s\" size=\"50\" title=\"%s\" /><br/ ></td></tr>",
+	       _("Comment"),
+	       $answer->getAnswerID(), 
+	       $answer->hasResultComment() ? utf8_decode($answer->getResultComment()) : "",
+	       _("This optional field can be used to save an comment for this answer correction."));
+    }
+    
+    // 
     // Examine (correct) an answer to a single question from this student.
     // 
     private function markAnswerScore($exam_id, $answer_id)
@@ -203,31 +283,7 @@ class CorrectionPage extends TeacherPage
 	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
 	printf("<table>\n");
 	printf("<tr><th>%s</th><th>%s</th>\n", _("Answer"), _("Score"));
-	printf("<tr class=\"nonth\"><td>&nbsp;</td></tr>\n");	    
-	printf("<tr class=\"question\"><td><u>%s %s</u><br />%s</td></tr>\n", 
-	       _("Question"), 
-	       utf8_decode($question->getQuestionName()),
-	       utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
-	
-	printf("<tr class=\"answer\">\n");
-	printf("<td><u>%s</u>:<br />%s</td>", 
-	       _("Answer"),
-	       utf8_decode(str_replace("\n", "<br>", $answer->getAnswerText())));
-	if($answer->hasResultID()) {
-	    printf("<input type=\"hidden\" name=\"result[%d]\" value=\"%d\" />",
-		   $answer->getAnswerID(), $answer->getResultID());
-	}
-	printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" value=\"%s\" size=\"8\" /><br />%s: %.01f</td>",
-	       $answer->getAnswerID(), 
-	       $answer->hasResultScore() ? $answer->getResultScore() : "",
-	       _("Max score"),
-	       $question->getQuestionScore());
-	printf("</tr>\n");
-	printf("<tr class=\"comment\"><td>%s: <input type=\"text\" name=\"comment[%d]\" value=\"%s\" size=\"50\" title=\"%s\" /><br/ ></td></tr>",
-	       _("Comment"),
-	       $answer->getAnswerID(), 
-	       $answer->hasResultComment() ? utf8_decode($answer->getResultComment()) : "",
-	       _("This optional field can be used to save an comment for this answer correction."));
+	self::viewQuestionAnswer($question, $answer);
 	printf("</table>\n");
 	printf("<br />\n");
 	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
@@ -258,34 +314,10 @@ class CorrectionPage extends TeacherPage
 	    if($answer->getQuestionPublisher() != phpCAS::getUser()) {
 		continue;   // Not publisher of this question.
 	    }
-	    printf("<tr class=\"nonth\"><td>&nbsp;</td></tr>\n");
-	    
 	    $question = $exam->getQuestionData($answer->getQuestionID());
-	    printf("<tr class=\"question\"><td><u>%s %s</u><br />%s</td></tr>\n", 
-		   _("Question"), 
-		   utf8_decode($question->getQuestionName()),
-		   utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
-	    
-	    printf("<tr class=\"answer\">\n");
-	    printf("<td><u>%s</u>:<br />%s</td>", 
-		   _("Answer"),
-		   utf8_decode(str_replace("\n", "<br>", $answer->getAnswerText())));
-	    if($answer->hasResultID()) {
-		printf("<input type=\"hidden\" name=\"result[%d]\" value=\"%d\" />",
-		       $answer->getAnswerID(), $answer->getResultID());
-	    }
-	    printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" value=\"%s\" size=\"8\" /><br />%s: %.01f</td>",
-		   $answer->getAnswerID(), 
-		   $answer->hasResultScore() ? $answer->getResultScore() : "",
-		   _("Max score"),
-		   $question->getQuestionScore());
-	    printf("</tr>\n");
-	    printf("<tr class=\"comment\"><td>%s: <input type=\"text\" name=\"comment[%d]\" value=\"%s\" size=\"50\" title=\"%s\" /><br/ ></td></tr>",
-		   _("Comment"),
-		   $answer->getAnswerID(), 
-		   $answer->hasResultComment() ? utf8_decode($answer->getResultComment()) : "",
-		   _("This optional field can be used to save an comment for this answer correction."));
+	    self::viewQuestionAnswer($question, $answer);
 	}
+	
 	printf("</table>\n");
 	printf("<br />\n");
 	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
@@ -306,9 +338,18 @@ class CorrectionPage extends TeacherPage
 
 	printf("<h3>" . _("Correct multipe answers for the question '%s'") . "</h3>\n",
 	       utf8_decode($question->getQuestionName()));
-	printf("<p><u>%s</u>:</p><p>%s</p>", 
-	       _("Question"),
-	       utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
+	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+	    printf("<p><u>%s</u>:</p><p>%s</p>", 
+		   _("Question"),
+		   utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
+	} else {
+	    $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
+	    printf("<p><u>%s</u>:</p><p>%s</p><p>%s: %s<br />%s: %s</p>", 
+		   _("Question"),
+		   utf8_decode(str_replace("\n", "<br>", $qchoice[0])),
+		   _("Choices"), implode(", ", array_keys($qchoice[1])),
+		   _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
+	}
 	printf("<p><u>%s</u>: %.01f</p>", 
 	       _("Max score"),
 	       $question->getQuestionScore());
@@ -321,26 +362,7 @@ class CorrectionPage extends TeacherPage
 	printf("<table>\n");
 	printf("<tr><th>%s</th><th>%s</th>\n", _("Answer"), _("Score"));
 	foreach($answers as $answer) {
-	    printf("<tr class=\"nonth\"><td>&nbsp;</td></tr>\n");
-	    printf("<tr class=\"answer\">\n");
-	    printf("<td><u>%s</u>:<br />%s</td>", 
-		   _("Answer"),
-		   utf8_decode(str_replace("\n", "<br>", $answer->getAnswerText())));
-	    if($answer->hasResultID()) {
-		printf("<input type=\"hidden\" name=\"result[%d]\" value=\"%d\" />",
-		       $answer->getAnswerID(), $answer->getResultID());
-	    }
-	    printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" value=\"%s\" size=\"8\" /><br>%s: %.01f</td>",
-		   $answer->getAnswerID(), 
-		   $answer->hasResultScore() ? $answer->getResultScore() : "",
-		   _("Max score"),
-		   $question->getQuestionScore());
-	    printf("</tr>\n");
-	    printf("<tr class=\"comment\"><td>%s: <input type=\"text\" name=\"comment[%d]\" value=\"%s\" size=\"50\" title=\"%s\" /><br/ ></td></tr>",
-		   _("Comment"),
-		   $answer->getAnswerID(), 
-		   $answer->hasResultComment() ? utf8_decode($answer->getResultComment()) : "",
-		   _("This optional field can be used to save an comment for this answer correction."));	    
+	    self::viewQuestionAnswer($question, $answer);
 	}
 	printf("</table>\n");
 	printf("<br />\n");
