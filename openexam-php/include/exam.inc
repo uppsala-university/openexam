@@ -76,7 +76,25 @@ class Exam
 	}
 	return new DataRecord($res->fetchRow());
     }
-    
+
+    // 
+    // Parse JSON encoded options from string and return as hashed array. This 
+    // function can be called with the question text for an mulitple or single
+    // option question. It also parses the answer to those question types.
+    // 
+    public function getQuestionChoice($str)
+    {
+	$match = array();
+	if(preg_match('/^(.*)({.*})$/msU', $str, $match)) {
+	    array_shift($match);   // Remove all matched string
+	    $match[0] = trim($match[0]);
+	    $match[1] = array_keys((array)json_decode($match[1]));
+	    return $match;
+	} else {
+	    return array(null, json_decode($str));
+	}
+    }
+        
     // 
     // Get all answers for the exam for this user.
     // 
