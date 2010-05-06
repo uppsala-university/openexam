@@ -59,6 +59,7 @@ include "include/locale.inc";
 // Include bussiness logic:
 // 
 include "include/exam.inc";
+include "include/teacher.inc";
 
 // 
 // This class implements a basic page.
@@ -72,6 +73,7 @@ class ExaminationPage extends BasePage
     private $params = array( "exam"     => "/^\d+$/",
 			     "question" => "/^(\d+|all)$/",
 			     "answer"   => "/^.*$/" );
+    private $author = false;
     
     // 
     // Construct the template page.
@@ -196,6 +198,14 @@ class ExaminationPage extends BasePage
     // 
     private function checkExaminationAccess($exam)
     {
+	// 
+	// Allow contributors to bypass normal user checks (for previewing questions).
+	// 
+	$this->author = Teacher::userHasRole($exam, "contributor", phpCAS::getUser());
+	if($this->author) {
+	    return;
+	}
+	
 	$data = Exam::getExamData(phpCAS::getUser(), $exam);
 	if(!$data->hasExamID()) {
 	    ErrorPage::show(_("Active examination was not found!"),
@@ -337,7 +347,7 @@ class ExaminationPage extends BasePage
 	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
 	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
 	    foreach($options[1] as $option) {
-	    	if(in_array($option, $answers[1])) {
+		if(in_array($option, $answers[1])) {
 	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", $option, $option);
 		} else {
 	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", $option, $option);
@@ -354,8 +364,10 @@ class ExaminationPage extends BasePage
 		}
 	    }
 	}
-	printf("<br /><br />\n");
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Save"));
+	if(!$this->author) {
+	    printf("<br /><br />\n");
+	    printf("<input type=\"submit\" value=\"%s\" />\n", _("Save"));
+	}
 	printf("</form>\n");
 	
 	if(isset($_REQUEST['status']) && $_REQUEST['status'] == "ok") {
