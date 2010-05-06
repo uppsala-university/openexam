@@ -12,6 +12,19 @@
 // Support class for the online examination.
 // 
 
+// 
+// Define symbolic names for question types:
+// 
+if(!defined("QUESTION_TYPE_FREETEXT")) {
+    define ("QUESTION_TYPE_FREETEXT", "freetext");
+}
+if(!defined("QUESTION_TYPE_SINGLE_CHOICE")) {
+    define ("QUESTION_TYPE_SINGLE_CHOICE", "single");
+}
+if(!defined("QUESTION_TYPE_MULTI_CHOICE")) {
+    define ("QUESTION_TYPE_MULTI_CHOICE", "multiple");
+}
+
 class Exam
 {
     // 
@@ -82,13 +95,21 @@ class Exam
     // function can be called with the question text for an mulitple or single
     // option question. It also parses the answer to those question types.
     // 
-    public function getQuestionChoice($str)
+    // If answers argument is true, then the returned array contain the correct
+    // answers as values with the options as array keys.
+    // 
+    public function getQuestionChoice($str, $answers = false)
     {
 	$match = array();
 	if(preg_match('/^(.*)({.*})$/msU', $str, $match)) {
 	    array_shift($match);   // Remove all matched string
-	    $match[0] = trim($match[0]);
-	    $match[1] = array_keys((array)json_decode($match[1]));
+	    if($answers) {
+		$match[0] = trim($match[0]);
+		$match[1] = (array)json_decode($match[1]);
+	    } else {
+		$match[0] = trim($match[0]);
+		$match[1] = array_keys((array)json_decode($match[1]));
+	    }
 	    return $match;
 	} else {
 	    return array(null, json_decode($str));

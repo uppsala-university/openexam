@@ -61,19 +61,6 @@ include "include/locale.inc";
 include "include/exam.inc";
 
 // 
-// Define symbolic names for question types:
-// 
-if(!defined("QUESTION_TYPE_FREETEXT")) {
-    define ("QUESTION_TYPE_FREETEXT", "freetext");
-}
-if(!defined("QUESTION_TYPE_SINGLE_CHOICE")) {
-    define ("QUESTION_TYPE_SINGLE_CHOICE", "single");
-}
-if(!defined("QUESTION_TYPE_MULTI_CHOICE")) {
-    define ("QUESTION_TYPE_MULTI_CHOICE", "multiple");
-}
-
-// 
 // This class implements a basic page.
 // 
 class ExaminationPage extends BasePage
@@ -219,10 +206,10 @@ class ExaminationPage extends BasePage
 	$now = time();
 	$stime = strtotime($data->getExamStartTime());
 	$etime = strtotime($data->getExamEndTime());
-	
+
 	if(!($stime <= $now && $now <= $etime)) {
-	    ErrorPage::show(_("Active examination was not found!"),
-			    sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+	    ErrorPage::show(_("This examination is now closed!"),
+			    sprintf("<p>" . _("This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance.") . "</p>", strftime(DATETIME_FORMAT, $etime)));
 	    exit(1);
 	}
     }
