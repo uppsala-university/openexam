@@ -353,7 +353,8 @@ class ContributePage extends TeacherPage
 		if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
 		    $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
 						       $question->getExamID(),
-						       $question->getQuestionID()));
+						       $question->getQuestionID()),
+				    _("Preview this question"), array("target" => "_blank"));
 		    $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
 						       $question->getExamID(),
 						       $question->getQuestionID()));
