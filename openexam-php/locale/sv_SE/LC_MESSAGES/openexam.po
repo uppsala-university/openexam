@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: russin 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-05-07 00:28+0200\n"
-"PO-Revision-Date: 2010-05-07 00:42+0200\n"
+"POT-Creation-Date: 2010-05-07 17:25+0200\n"
+"PO-Revision-Date: 2010-05-07 17:28+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -35,13 +35,13 @@ msgstr "Mall:"
 
 #: template/page.php:99 include/admin.inc:117 include/teacher.inc:171
 #: source/index.php:96 source/admin/admin.php:89 source/admin/teacher.php:91
-#: source/exam/index.php:224 source/exam/index.php:229
-#: source/exam/index.php:388 source/exam/index.php:395
+#: source/exam/index.php:234 source/exam/index.php:239
+#: source/exam/index.php:444 source/exam/index.php:451
 msgid "Request parameter error!"
 msgstr "Problem med anropsparametrarna!"
 
 #: template/page.php:100 include/admin.inc:118 include/teacher.inc:172
-#: source/index.php:97 source/exam/index.php:389 source/exam/index.php:396
+#: source/index.php:97 source/exam/index.php:445 source/exam/index.php:452
 #, php-format
 msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
 msgstr "Ogiltigt värde för anropsparametern '%s' (förväntade ett värde som matchar mönstret '%s')."
@@ -285,7 +285,7 @@ msgstr "Endast användare tilldelade rollen %s har åtkomst till den här sidan. Ex
 #: source/teacher/correct.php:343 source/teacher/correct.php:348
 #: source/teacher/correct.php:424 source/teacher/contribute.php:234
 #: source/teacher/contribute.php:351 source/teacher/decoder.php:166
-#: source/exam/index.php:303 source/exam/index.php:320
+#: source/exam/index.php:313 source/exam/index.php:341
 msgid "Question"
 msgstr "Fråga"
 
@@ -295,7 +295,7 @@ msgstr "Rätt svar"
 
 #: source/teacher/correct.php:205 source/teacher/correct.php:210
 #: source/teacher/correct.php:285 source/teacher/correct.php:312
-#: source/teacher/correct.php:363 source/exam/index.php:308
+#: source/teacher/correct.php:363 source/exam/index.php:318
 msgid "Answer"
 msgstr "Svar"
 
@@ -326,7 +326,7 @@ msgstr "Rätta svaret på den här frågan."
 
 #: source/teacher/correct.php:285 source/teacher/correct.php:312
 #: source/teacher/correct.php:363 source/teacher/correct.php:498
-#: source/teacher/contribute.php:239 source/teacher/contribute.php:362
+#: source/teacher/contribute.php:239 source/teacher/contribute.php:366
 #: source/teacher/decoder.php:247
 msgid "Score"
 msgstr "Poäng"
@@ -367,7 +367,7 @@ msgstr "Rätta svaren"
 msgid "Select the examination you wish to correct answers to questions for (applies only to corractable examinations)."
 msgstr "Välj den examination som du vill rätta svaren för (gäller endast dom examinationer som är rättningsbara)."
 
-#: source/teacher/correct.php:378 source/teacher/contribute.php:382
+#: source/teacher/correct.php:378 source/teacher/contribute.php:386
 #: source/teacher/examinator.php:315 source/teacher/manager.php:162
 #: source/teacher/decoder.php:288
 msgid "Examinations"
@@ -377,13 +377,13 @@ msgstr "Examinationer"
 msgid "Click on this link to open this examination to correct answers."
 msgstr "Följ denna länk för att öppna examinationen och rätta svaren."
 
-#: source/teacher/correct.php:389 source/teacher/contribute.php:395
+#: source/teacher/correct.php:389 source/teacher/contribute.php:399
 #: source/teacher/examinator.php:154 source/teacher/examinator.php:266
 #: source/teacher/examinator.php:326 source/teacher/decoder.php:303
 msgid "Starts"
 msgstr "Startar"
 
-#: source/teacher/correct.php:390 source/teacher/contribute.php:396
+#: source/teacher/correct.php:390 source/teacher/contribute.php:400
 #: source/teacher/examinator.php:157 source/teacher/examinator.php:267
 #: source/teacher/examinator.php:327 source/teacher/decoder.php:304
 msgid "Ends"
@@ -590,7 +590,7 @@ msgstr ""
 "{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n"
 "-------------------------\n"
 
-#: source/teacher/contribute.php:243 source/teacher/contribute.php:367
+#: source/teacher/contribute.php:243 source/teacher/contribute.php:371
 msgid "Type"
 msgstr "Typ"
 
@@ -619,7 +619,7 @@ msgstr "Bild (URL)"
 msgid "Accounting"
 msgstr "Bokföring"
 
-#: source/teacher/contribute.php:274 source/teacher/contribute.php:363
+#: source/teacher/contribute.php:274 source/teacher/contribute.php:367
 msgid "Publisher"
 msgstr "Publiserare"
 
@@ -693,52 +693,60 @@ msgstr "Frågor:"
 msgid "Add"
 msgstr "Lägg till"
 
-#: source/teacher/contribute.php:354 source/teacher/manager.php:182
+#: source/teacher/contribute.php:354 source/teacher/manager.php:367
+msgid "View"
+msgstr "Visa"
+
+#: source/teacher/contribute.php:357
+msgid "Preview this question"
+msgstr "Förhandsgranska den här frågan"
+
+#: source/teacher/contribute.php:358 source/teacher/manager.php:182
 #: source/teacher/manager.php:307 source/teacher/manager.php:374
 msgid "Edit"
 msgstr "Ändra"
 
-#: source/teacher/contribute.php:357 source/teacher/examinator.php:294
+#: source/teacher/contribute.php:361 source/teacher/examinator.php:294
 #: source/teacher/manager.php:185
 msgid "Delete"
 msgstr "Ta bort"
 
-#: source/teacher/contribute.php:364
+#: source/teacher/contribute.php:368 source/exam/index.php:355
 msgid "Video"
 msgstr "Video"
 
-#: source/teacher/contribute.php:364 source/teacher/contribute.php:365
-#: source/teacher/contribute.php:366 source/teacher/decoder.php:302
+#: source/teacher/contribute.php:368 source/teacher/contribute.php:369
+#: source/teacher/contribute.php:370 source/teacher/decoder.php:302
 msgid "No"
 msgstr "Nej"
 
-#: source/teacher/contribute.php:365
+#: source/teacher/contribute.php:369 source/exam/index.php:365
 msgid "Audio"
 msgstr "Ljud"
 
-#: source/teacher/contribute.php:366
+#: source/teacher/contribute.php:370 source/exam/index.php:375
 msgid "Image"
 msgstr "Bild"
 
-#: source/teacher/contribute.php:368
+#: source/teacher/contribute.php:372
 msgid "Question Text"
 msgstr "Frågetext"
 
-#: source/teacher/contribute.php:379
+#: source/teacher/contribute.php:383
 #, php-format
 msgid "Contribute Questions"
 msgstr "Bidra med frågor"
 
-#: source/teacher/contribute.php:380
+#: source/teacher/contribute.php:384
 #, php-format
 msgid "Select the examination you wish to contribute questions for (applies only to contributable examinations)."
 msgstr "Välj den examination som du vill bidra med frågor till (gäller endast examinationer som ännu inte hållits)."
 
-#: source/teacher/contribute.php:397
+#: source/teacher/contribute.php:401
 msgid "Created"
 msgstr "Skapad"
 
-#: source/teacher/contribute.php:398 source/teacher/examinator.php:268
+#: source/teacher/contribute.php:402 source/teacher/examinator.php:268
 #: source/teacher/examinator.php:340
 msgid "Creator"
 msgstr "Skapare"
@@ -942,10 +950,6 @@ msgstr "Avkodare (decoder roll)"
 msgid "Remove all"
 msgstr "Ta bort alla"
 
-#: source/teacher/manager.php:367
-msgid "View"
-msgstr "Visa"
-
 #: source/teacher/manager.php:384
 #, php-format
 msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
@@ -1134,122 +1138,137 @@ msgstr "Lägg till en ny lärare:"
 msgid "Fill in the user name and click on '%s' to grant this user the teacher role:"
 msgstr "Fyll i användarnamn och klicka på '%s' för att bevilja lärarrollen (teacher) till denna användare:"
 
-#: source/exam/index.php:81
+#: source/exam/index.php:83
 msgid "Examination:"
 msgstr "Examination:"
 
-#: source/exam/index.php:145
+#: source/exam/index.php:147
 msgid "Questions:"
 msgstr "Frågor:"
 
-#: source/exam/index.php:163
+#: source/exam/index.php:165
 msgid "Answered:"
 msgstr "Besvarade:"
 
-#: source/exam/index.php:181
+#: source/exam/index.php:183
 msgid "Show:"
 msgstr "Visa:"
 
-#: source/exam/index.php:185
+#: source/exam/index.php:187
 msgid "Show the start page for this examination"
 msgstr "Visa startsidan för denna examination"
 
-#: source/exam/index.php:185
+#: source/exam/index.php:187
 msgid "Start page"
 msgstr "Startsida"
 
-#: source/exam/index.php:188
+#: source/exam/index.php:190
 msgid "Show all questions at the same time"
 msgstr "Visa alla frågor på samma gång"
 
-#: source/exam/index.php:189
+#: source/exam/index.php:191
 msgid "All questions"
 msgstr "Alla frågor"
 
-#: source/exam/index.php:201 source/exam/index.php:243
-#: source/exam/index.php:278
+#: source/exam/index.php:211 source/exam/index.php:253
+#: source/exam/index.php:288
 msgid "Active examination was not found!"
 msgstr "En aktiv examination kunde inte hittas!"
 
-#: source/exam/index.php:202 source/exam/index.php:244
-#: source/exam/index.php:279
+#: source/exam/index.php:212 source/exam/index.php:254
+#: source/exam/index.php:289
 #, php-format
 msgid "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
 msgstr "Systemet kunde inte hitta några examinationer tilldelade till ditt inloggnings ID. Om du tror att detta är fel, var god tag kontakt med examinatorn för ytterligare assistans."
 
-#: source/exam/index.php:211
+#: source/exam/index.php:221
 msgid "This examination is now closed!"
 msgstr "Den här examinationen är nu stängd!"
 
-#: source/exam/index.php:212
+#: source/exam/index.php:222
 #, php-format
 msgid "This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance."
-msgstr ""
-"Den här examinationen slutade %s och är nu stängd. Om du tror att detta är fel, var god tag kontakt med examinatorn för ytterligare assistans."
+msgstr "Den här examinationen slutade %s och är nu stängd. Om du tror att detta är fel, var god tag kontakt med examinatorn för ytterligare assistans."
 
-#: source/exam/index.php:225
+#: source/exam/index.php:235
 #, php-format
 msgid "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
 msgstr "Ingen data kunde hittas för den efterfrågade frågan. Detta ska inte inträffa såtillvida att skriptets parametrar inte avsiktligt har ändrats."
 
-#: source/exam/index.php:230
+#: source/exam/index.php:240
 #, php-format
 msgid "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
 msgstr "Den efterfrågade frågan är inte relaterad till den efterfrågade examinationen. Detta ska inte inträffa såtillvida att skriptets parametrar inte avsiktligt har ändrats."
 
-#: source/exam/index.php:248
+#: source/exam/index.php:258
 #, php-format
 msgid "Select the examination"
 msgstr "Välj examination"
 
-#: source/exam/index.php:250
+#: source/exam/index.php:260
 #, php-format
 msgid "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
 msgstr "Du har blivit tilldelad fler än en examination. Välj examination att genomföra genom att klicka på 'Starta' knappen."
 
-#: source/exam/index.php:253
+#: source/exam/index.php:263
 #, php-format
 msgid "These examinations have been assigned to you, click on the button next to the description to begin the examination."
 msgstr "Dessa examinationer har blivit tilldelade till dig, klicka på knappen bredvid beskrivningen för att starta examinationen."
 
-#: source/exam/index.php:259
+#: source/exam/index.php:269
 msgid "The examination ends"
 msgstr "Examinationen slutar"
 
-#: source/exam/index.php:263
+#: source/exam/index.php:273
 msgid "Begin"
 msgstr "Starta"
 
-#: source/exam/index.php:284
+#: source/exam/index.php:294
 #, php-format
 msgid "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
 msgstr "I menyn till vänster finns alla frågor som hör ihop med denna examination. Redan besvarade frågor finns tillgängliga under 'Besvarade' sektionen. Siffran inom parantes är antal poäng per fråga."
 
-#: source/exam/index.php:285
+#: source/exam/index.php:295
 #, php-format
 msgid "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
 msgstr "Kom ihåg att <u>klicka på spara knappen</u> när du har <u>besvarat en fråga</u>, och gör så innan du går vidare till en annan fråga. Det är OK att spara svaret på en fråga flera gånger. Kom ihåg att logga ut när du avslutar examinationen."
 
-#: source/exam/index.php:286
+#: source/exam/index.php:296
 #, php-format
 msgid "Good luck!"
 msgstr "Lycka till!"
 
-#: source/exam/index.php:296
+#: source/exam/index.php:306
 #, php-format
 msgid "Overview of all questions (no answers included)"
 msgstr "Översikt av alla frågor (inga svar inkluderade)"
 
-#: source/exam/index.php:330
+#: source/exam/index.php:359 source/exam/index.php:369
+msgid "Click on the link to open the URL in an external media player"
+msgstr "Klicka på den här länken för att öppna URL:en i en extern mediaspelare"
+
+#: source/exam/index.php:360 source/exam/index.php:370
+msgid "External Media Player"
+msgstr "Extern mediaspelare"
+
+#: source/exam/index.php:380
 #, php-format
 msgid "Answer:"
 msgstr "Svar:"
 
-#: source/exam/index.php:358
+#: source/exam/index.php:411
+msgid "Notice"
+msgstr "Notera"
+
+#: source/exam/index.php:411
+msgid "This question is viewed in preview mode (for question author)."
+msgstr "Frågan visas i förhandsgranskningsläget (för författare av frågor)."
+
+#: source/exam/index.php:413
 msgid "Save"
 msgstr "Spara"
 
-#: source/exam/index.php:362
+#: source/exam/index.php:418
 #, php-format
 msgid "Your answer has been successful saved in the database."
 msgstr "Ditt svar har blivit sparat i databasen."
