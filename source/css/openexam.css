@@ -110,6 +110,37 @@ tr.nonth {
 }
 
 /* 
+ * Two different width of textarea depending on if media is being viewed or not.
+ */
+textarea.answer,
+textarea.question {
+	height: 230px;
+}
+div.question {
+	border-left: 1px solid #dddddd;
+	padding: 8px;
+}
+div.media {
+	left: 700px;
+	width: 250px;
+	float: right;
+	clear: both;
+	margin-left: 15px;
+	margin-bottom: 10px;
+}
+object.media, img.media {
+	border: 1px solid #dddddd;
+	width: 250px;
+	height: 250px;
+}
+object.video {
+	background-image: url(/icons/nuvola/mime/video.png);
+}
+object.audio {
+	background-image: url(file:/icons/nuvola/mime/audio.png);
+}
+
+/* 
  * Used by the correcting page.
  */
 tr.question, tr.comment {
@@ -161,6 +192,13 @@ div.examhead {
 	background-color: gray;
 	font-size: 1.5em;
 	padding: 5px;
+}
+
+/* 
+ * Embedded media.
+ */
+div.mediaview {
+	float: right;
 }
 
 /* 
