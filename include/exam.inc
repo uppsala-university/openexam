@@ -81,7 +81,7 @@ class Exam
     {
 	$sql = sprintf("SELECT id AS QuestionID, exam_id AS ExamID, score AS QuestionScore, name AS QuestionName,
 			       quest AS QuestionText, user AS QuestionPublisher, video AS QuestionVideo,
-			       image AS QuesionImage, audio AS QuestionAudio, type AS QuestionType
+			       image AS QuestionImage, audio AS QuestionAudio, type AS QuestionType
 			FROM questions WHERE id = %d", $question);
         $res = Database::getConnection()->query($sql);
 	if(PEAR::isError($res)) {
