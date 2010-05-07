@@ -15,17 +15,16 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   Order deny,allow
   Allow from all
   Options Indexes FollowSymLinks MultiViews
+  
   # Hide development files:
   <FilesMatch "\.(inc|bak|svn|.*~)$">
     Order allow,deny
     Deny from all
   </FilesMatch>
+  
   # Set custom include path:
   php_value include_path ".:/var/www/localhost/apps/openexam-php:/usr/share/php"
-  # Enforce HTTPS:
-  RewriteEngine On
-  RewriteCond %{HTTPS} off
-  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+  
 </Directory>
 
 # This directory contains the exam, so keep it medium private.
@@ -33,6 +32,11 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   Order deny,allow
   Deny from all
   Allow from 127.0.0.1 ::1 192.168. 10. 169.254.
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 </Directory>
 
 # This directory contains the pages used by teachers for managing the exams.
@@ -40,6 +44,11 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   Order deny,allow
   Deny from all
   Allow from 127.0.0.1 ::1
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 </Directory>
 
 # This directory contains admin pages, test scripts and setup, so keep it private:
@@ -47,4 +56,16 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   Order deny,allow
   Deny from all
   Allow from 127.0.0.1 ::1
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+</Directory>
+
+# This directory contains supporting media files. Don't enforce HTTPS as it 
+# breaks some media player plugins.
+<Directory /var/www/localhost/apps/openexam-php/source/media/>
+  Order deny,allow
+  Allow from all
 </Directory>
