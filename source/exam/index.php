@@ -367,7 +367,8 @@ class ExaminationPage extends BasePage
 	printf("<br /><br />\n");
 	
 	if($this->author) {
-	    printf("<hr/><br/><img src=\"icons/nuvola/info.png\" />\n%s: <i>%s</i>\n", _("Notice"), _("This question is viewed in preview mode (for question author)."));
+	    printf("<hr/><br/><img src=\"icons/nuvola/info.png\" />\n%s: <i>%s</i>\n", 
+		   _("Notice"), _("This question is viewed in preview mode (for question author)."));
 	} else {
 	    printf("<input type=\"submit\" value=\"%s\" />\n", _("Save"));
 	}
