@@ -318,7 +318,7 @@ class ExaminationPage extends BasePage
 		   _("Answer"));
 	}
     }
-    
+        
     // 
     // Show the selected question.
     // 
@@ -327,22 +327,62 @@ class ExaminationPage extends BasePage
 	$qdata = Exam::getQuestionData($question);
 	$adata = Exam::getAnswerData($question, phpCAS::getUser());
 
+	// 
+	// Use custom width depending on whether displaying media or not.
+	// 
+	printf("<style type=\"text/css\">\n");
+	if($qdata->hasQuestionVideo() || $qdata->hasQuestionAudio() || $qdata->hasQuestionImage()) {
+	    printf("textarea.width, div.width { width: 500px; }\n");
+	} else {
+	    printf("textarea.width, div.width { width: 700px; }\n");
+	}
+	printf("</style>\n");
+	
 	printf("<h3>%s %s [%.01fp]</h3>\n", _("Question"), 
 	       utf8_decode($qdata->getQuestionName()), $qdata->getQuestionScore());
+
 	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<p><div class=\"examination\">%s</div></p>\n", 
+	    printf("<div class=\"wide question\">%s</div>\n",
 		   utf8_decode(str_replace("\n", "<br>", $qdata->getQuestionText())));
 	} else {
 	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
-	    printf("<p><div class=\"examination\">%s</div></p>\n", 
+	    printf("<div class=\"wide question\">%s</div>\n", 
 		   utf8_decode(str_replace("\n", "<br>", $options[0])));
 	}
+	
+	if($qdata->hasQuestionVideo()) {
+	    printf("<div class=\"media\">\n");
+	    printf("<p>%s:</p>\n", _("Video"));
+	    printf("<object data=\"%s\" class=\"media video\" allowfullscreen=\"true\"><param name=\"movie\" value=\"%s\" /></object>\n",
+	    	   $qdata->getQuestionVideo(), $qdata->getQuestionVideo());
+	    printf("<br/><a href=\"%s\" title=\"%s\" target=\"_blank\">%s</a>\n", $qdata->getQuestionVideo(),
+		   _("Click on the link to open the URL in an external media player"),
+		   _("External Media Player"));
+	    printf("</div>\n");
+	}
+	if($qdata->hasQuestionAudio()) {
+	    printf("<div class=\"media\">\n");
+	    printf("<p>%s:</p>\n", _("Audio"));
+	    printf("<object data=\"%s\" class=\"media audio\" allowfullscreen=\"true\"><param name=\"audio\" value=\"%s\" /></object>\n",
+		   $qdata->getQuestionAudio(), $qdata->getQuestionAudio());
+	    printf("<br/><a href=\"%s\" title=\"%s\" target=\"_blank\">%s</a>\n", $qdata->getQuestionAudio(),
+		   _("Click on the link to open the URL in an external media player"),
+		   _("External Media Player"));
+	    printf("</div>\n");
+	}
+	if($qdata->hasQuestionImage()) {
+	    printf("<div class=\"media\">\n");
+	    printf("<p>%s:</p>\n", _("Image"));
+	    printf("<img src=\"%s\" class=\"media\" />\n", $qdata->getQuestionImage());
+	    printf("</div>\n");
+	}
+	
 	printf("<p>" . _("Answer:") . "</p>\n");
 	printf("<form action=\"index.php\" method=\"GET\">\n"); 
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
 	printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n", $question);
 	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<textarea name=\"answer\" cols=\"90\" rows=\"10\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
+	    printf("<textarea name=\"answer\" class=\"width answer\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
 	} elseif($qdata->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
 	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
 	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
