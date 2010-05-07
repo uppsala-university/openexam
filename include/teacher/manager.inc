@@ -149,12 +149,17 @@ class TreeNode
 	}
     }
     
-    public function addLink($name, $url, $title = null)
+    public function addLink($name, $url, $title = null, $attr = null)
     {
 	if(isset($title)) {
 	    $this->links[$name] = array("href" => $url, "title" => $title);
 	} else {
 	    $this->links[$name] = array("href" => $url);
+	}
+	if(isset($attr)) {
+	    foreach($attr as $key => $value) {
+		$this->links[$name][$key] = $value;
+	    }
 	}
     }
     
