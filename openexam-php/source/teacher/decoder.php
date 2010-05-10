@@ -184,18 +184,18 @@ class DecoderPage extends TeacherPage
 	    foreach($questions as $question) {
 		$data = $board->getData($student->getStudentID(), $question->getQuestionID());
 		if(!isset($data)) {
-		    printf("<td class=\"na\">-</td>");
+		    printf("<td class=\"cc na\">-</td>");
 		} elseif($data->getQuestionPublisher() == phpCAS::getUser()) {
 		    if($data->hasResultScore()) {
-			printf("<td class=\"ac\">%.01f</td>", $data->getResultScore());
+			printf("<td class=\"cc ac\">%.01f</td>", $data->getResultScore());
 		    } else {
-			printf("<td class=\"nc\">X</td>");
+			printf("<td class=\"cc nc\">X</td>");
 		    }
 		} else {
 		    if($data->hasResultScore()) {
-			printf("<td class=\"no\">%.01f</td>", $data->getResultScore());
+			printf("<td class=\"cc no\">%.01f</td>", $data->getResultScore());
 		    } else {
-			printf("<td class=\"no\">?</td>");
+			printf("<td class=\"cc no\">?</td>");
 		    }
 		}
 	    }
@@ -209,6 +209,20 @@ class DecoderPage extends TeacherPage
 	printf("<h5>" . _("Download Result") . "</h5>\n");
 	printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", 
 	       sprintf("?exam=%d&amp;mode=save", $manager->getExamID()));
+
+	printf("<h5>" . _("Color Codes") . "</h5>\n");
+	printf("<p>"  . _("These are the color codes used in the score board:") . "</p>\n");
+	$codes = array( 
+			"ac" => _("Answer has been corrected."),
+			"no" => _("This answer should be corrected by another person."),
+			"na" => _("No answer was given for this question."),
+			"nc" => _("The answer has not yet been corrected.")
+			);	
+	printf("<table>\n");
+	foreach($codes as $code => $desc) {
+	    printf("<tr><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);
+	}
+	printf("</table>\n");
     }
     
     // 
