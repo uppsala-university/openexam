@@ -121,8 +121,7 @@ div.question {
 	padding: 8px;
 }
 div.media {
-	left: 700px;
-	width: 250px;
+	width: 313px;
 	float: right;
 	clear: both;
 	margin-left: 15px;
@@ -130,8 +129,8 @@ div.media {
 }
 object.media, img.media, embed.media {
 	border: 1px solid #dddddd;
-	width: 250px;
-	height: 250px;
+	width: 320px;
+	height: 240px;
 	background-color: #ffffff;
 }
 object.video, embed.video {

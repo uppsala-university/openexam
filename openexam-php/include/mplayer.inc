@@ -28,10 +28,10 @@ if(!defined("MEDIA_PLAYER_LOOP")) {
     define ("MEDIA_PLAYER_LOOP", false);
 }
 if(!defined("MEDIA_PLAYER_WIDTH")) {
-    define ("MEDIA_PLAYER_WIDTH", 250);
+    define ("MEDIA_PLAYER_WIDTH", 320);
 }
 if(!defined("MEDIA_PLAYER_HEIGHT")) {
-    define ("MEDIA_PLAYER_HEIGHT", 160);
+    define ("MEDIA_PLAYER_HEIGHT", 240);
 }
 if(!defined("MEDIA_PLAYER_MIME_TYPE")) {
     define ("MEDIA_PLAYER_MIME_TYPE", "application/octet-stream");
@@ -451,7 +451,8 @@ class MediaPlayerOutput
     private function object($type, $attr, $params, $embed)
     {
 	if(isset($attr)) {
-	    printf("<object class=\"media %s\" ", $type);
+	    // printf("<object class=\"media %s\" ", $type);
+	    printf("<object ");
 	    foreach($attr as $name => $value) {
 		if(is_bool($value)) {		
 		    printf("%s=\"%s\" ", $name, $value ? "true" : "false");
@@ -731,21 +732,19 @@ class QuickTimeMediaPlayer extends AbstractMediaPlayer
 	
 	$window->object->classid = self::classid;
 	$window->object->codebase = self::codebase;
-	$window->object->width = $this->width;
-	$window->object->height = $this->height;
 	
 	$window->param->src = $this->url;
 	$window->param->autoplay = $this->autostart;
-	$window->param->autostart = $this->autostart;
 	$window->param->controller = true;
 	$window->param->loop = $this->loop;
 	
 	$window->embed->src = $this->url;
 	$window->embed->autoplay = $this->autostart;
-	$window->embed->autostart = $this->autostart;
 	$window->embed->controller = true;
 	$window->embed->loop = $this->loop;
 	$window->embed->pluginspage = $this->pluginpage;
+	$window->embed->showlogo = true;
+	$window->embed->scale = "tofit";
 	
 	$output = new MediaPlayerOutput($media->name, $media->type, $media->url);
 	$output->setWindow($window);
@@ -889,7 +888,7 @@ class FlashMediaPlayer extends AbstractMediaPlayer
     {
 	$player->name = "flowplayer";
 	$player->url  = "http://releases.flowplayer.org/swf/flowplayer-3.2.0.swf";
-	$player->conf = sprintf("config={'clip':'%s'}", $this->url);
+	$player->conf = sprintf("config={'clip':{'url':'%s','autoPlay':false}}", $this->url);
 	
 	$media->name = "Flash";
 	$media->type = $this->mime->getMediaType();
