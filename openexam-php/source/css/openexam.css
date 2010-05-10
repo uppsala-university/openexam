@@ -128,16 +128,17 @@ div.media {
 	margin-left: 15px;
 	margin-bottom: 10px;
 }
-object.media, img.media {
+object.media, img.media, embed.media {
 	border: 1px solid #dddddd;
 	width: 250px;
 	height: 250px;
+	background-color: #ffffff;
 }
-object.video {
-	background-image: url(/icons/nuvola/mime/video.png);
+object.video, embed.video {
+	background-image: url('/icons/nuvola/mime/video.png');
 }
-object.audio {
-	background-image: url(file:/icons/nuvola/mime/audio.png);
+object.audio, embed.audio {
+	background-image: url('/icons/nuvola/mime/audio.png');
 }
 
 /* 
