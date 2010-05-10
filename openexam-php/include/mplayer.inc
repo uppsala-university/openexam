@@ -732,6 +732,8 @@ class QuickTimeMediaPlayer extends AbstractMediaPlayer
 	
 	$window->object->classid = self::classid;
 	$window->object->codebase = self::codebase;
+	$window->object->height = $this->height;
+	$window->object->width = $this->width;
 	
 	$window->param->src = $this->url;
 	$window->param->autoplay = $this->autostart;
@@ -781,6 +783,8 @@ class WindowsMediaPlayer extends AbstractMediaPlayer
 	$window->object->codebase = self::codebase;
 	$window->object->type = $this->plugintype;
 	$window->object->standby = _("Loading Microsoft Windows Media Player components...");
+	$window->object->height = $this->height;
+	$window->object->width = $this->width;
 	
 	$window->param->fileName = $this->url;
 	$window->param->animationatStart = true;
@@ -887,7 +891,7 @@ class FlashMediaPlayer extends AbstractMediaPlayer
     public function output()
     {
 	$player->name = "flowplayer";
-	$player->url  = "http://releases.flowplayer.org/swf/flowplayer-3.2.0.swf";
+	$player->url  = sprintf("%s/media/flowplayer/flowplayer-3.2.0.swf", BASE_URL);
 	$player->conf = sprintf("config={'clip':{'url':'%s','autoPlay':false}}", $this->url);
 	
 	$media->name = "Flash";
