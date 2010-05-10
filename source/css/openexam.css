@@ -205,15 +205,23 @@ div.mediaview {
 /* 
  * Color encoding for the score board.
  */
+td.cc {
+	width: 25px;
+	text-align: center;
+}
 td.no { /* not owner */
-	background-color: gray;
+	border: 1px solid #666666;
+	background-color: #999999;
 }
 td.na { /* no answer */
-	background-color: red;
+	border: 1px solid #880000;
+	background-color: #ee0000;
 }
 td.nc { /* not yet corrected */
-	background-color: white;
+	border: 1px solid #cccccc;
+	background-color: #ffffff;
 }
 td.ac { /* answer corrected */
-	background-color: lightgreen;
+	border: 1px solid #00aa00;
+	background-color: #00ff00;
 }
