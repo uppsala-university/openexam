@@ -60,6 +60,7 @@ include "include/locale.inc";
 // 
 include "include/exam.inc";
 include "include/teacher.inc";
+include "include/mplayer.inc";
 
 // 
 // This class implements a basic page.
@@ -318,7 +319,7 @@ class ExaminationPage extends BasePage
 		   _("Answer"));
 	}
     }
-        
+    
     // 
     // Show the selected question.
     // 
@@ -353,21 +354,15 @@ class ExaminationPage extends BasePage
 	if($qdata->hasQuestionVideo()) {
 	    printf("<div class=\"media\">\n");
 	    printf("<p>%s:</p>\n", _("Video"));
-	    printf("<object data=\"%s\" class=\"media video\" allowfullscreen=\"true\"><param name=\"movie\" value=\"%s\" /></object>\n",
-	    	   $qdata->getQuestionVideo(), $qdata->getQuestionVideo());
-	    printf("<br/><a href=\"%s\" title=\"%s\" target=\"_blank\">%s</a>\n", $qdata->getQuestionVideo(),
-		   _("Click on the link to open the URL in an external media player"),
-		   _("External Media Player"));
+	    $videoplayer = MediaPlayerFactory::createMediaPlayer($qdata->getQuestionVideo());
+	    $videoplayer->output();
 	    printf("</div>\n");
 	}
 	if($qdata->hasQuestionAudio()) {
 	    printf("<div class=\"media\">\n");
 	    printf("<p>%s:</p>\n", _("Audio"));
-	    printf("<object data=\"%s\" class=\"media audio\" allowfullscreen=\"true\"><param name=\"audio\" value=\"%s\" /></object>\n",
-		   $qdata->getQuestionAudio(), $qdata->getQuestionAudio());
-	    printf("<br/><a href=\"%s\" title=\"%s\" target=\"_blank\">%s</a>\n", $qdata->getQuestionAudio(),
-		   _("Click on the link to open the URL in an external media player"),
-		   _("External Media Player"));
+	    $audioplayer = MediaPlayerFactory::createMediaPlayer($qdata->getQuestionAudio());
+	    $audioplayer->output();
 	    printf("</div>\n");
 	}
 	if($qdata->hasQuestionImage()) {
