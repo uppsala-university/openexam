@@ -128,6 +128,10 @@ class CorrectionPage extends TeacherPage
 	    self::showAvailableExams();
 	}
     }
+    
+    public function printMenu()
+    {
+    }
 
     // 
     // verify that the caller has been granted the required role on this exam.
@@ -443,20 +447,20 @@ class CorrectionPage extends TeacherPage
 	    foreach($questions as $question) {
 		$data = $board->getData($student->getStudentID(), $question->getQuestionID());
 		if(!isset($data)) {
-		    printf("<td class=\"na\">-</td>");
+		    printf("<td class=\"cc na\">-</td>");
 		} elseif($data->getQuestionPublisher() == phpCAS::getUser()) {
 		    if($data->hasResultScore()) {
-			printf("<td class=\"ac\"><a href=\"?exam=%d&amp;action=correct&amp;answer=%d\">%.01f</a></td>",
+			printf("<td class=\"cc ac\"><a href=\"?exam=%d&amp;action=correct&amp;answer=%d\">%.01f</a></td>",
 			       $data->getExamID(), $data->getAnswerID(), $data->getResultScore());
 		    } else {
-			printf("<td class=\"nc\"><a href=\"?exam=%d&amp;action=correct&amp;answer=%d\">X</a></td>",
+			printf("<td class=\"cc nc\"><a href=\"?exam=%d&amp;action=correct&amp;answer=%d\">X</a></td>",
 			       $data->getExamID(), $data->getAnswerID());
 		    }
 		} else {
 		    if($data->hasResultScore()) {
-			printf("<td class=\"no\">%.01f</td>", $data->getResultScore());
+			printf("<td class=\"cc no\">%.01f</td>", $data->getResultScore());
 		    } else {
-			printf("<td class=\"no\">?</td>");
+			printf("<td class=\"cc no\">?</td>");
 		    }
 		}
 	    }
@@ -470,6 +474,20 @@ class CorrectionPage extends TeacherPage
 	printf("<h5>" . _("Download Result") . "</h5>\n");
 	printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", 
 	       sprintf("?exam=%d&amp;mode=save", $exam));
+	
+	printf("<h5>" . _("Color Codes") . "</h5>\n");
+	printf("<p>"  . _("These are the color codes used in the score board:") . "</p>\n");
+	$codes = array( 
+			"ac" => _("Answer has been corrected."),
+			"no" => _("This answer should be corrected by another person."),
+			"na" => _("No answer was given for this question."),
+			"nc" => _("The answer has not yet been corrected.")
+			);	
+	printf("<table>\n");
+	foreach($codes as $code => $desc) {
+	    printf("<tr><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);
+	}
+	printf("</table>\n");
     }
             
     private function saveScoreBoard($exam)
