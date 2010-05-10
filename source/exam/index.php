@@ -333,7 +333,7 @@ class ExaminationPage extends BasePage
 	// 
 	printf("<style type=\"text/css\">\n");
 	if($qdata->hasQuestionVideo() || $qdata->hasQuestionAudio() || $qdata->hasQuestionImage()) {
-	    printf("textarea.width, div.width { width: 500px; }\n");
+	    printf("textarea.width, div.width { width: 450px; }\n");
 	} else {
 	    printf("textarea.width, div.width { width: 700px; }\n");
 	}
@@ -343,11 +343,11 @@ class ExaminationPage extends BasePage
 	       utf8_decode($qdata->getQuestionName()), $qdata->getQuestionScore());
 
 	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<div class=\"wide question\">%s</div>\n",
+	    printf("<div class=\"width question\">%s</div>\n",
 		   utf8_decode(str_replace("\n", "<br>", $qdata->getQuestionText())));
 	} else {
 	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
-	    printf("<div class=\"wide question\">%s</div>\n", 
+	    printf("<div class=\"width question\">%s</div>\n", 
 		   utf8_decode(str_replace("\n", "<br>", $options[0])));
 	}
 	
