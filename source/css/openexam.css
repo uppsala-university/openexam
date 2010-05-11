@@ -111,6 +111,9 @@ tr.nonth {
 
 /* 
  * Two different width of textarea depending on if media is being viewed or not.
+ * 
+ * The media frame size should match the configured video size in mplayer.inc
+ * and exam/index.php
  */
 textarea.answer,
 textarea.question {
@@ -121,7 +124,7 @@ div.question {
 	padding: 8px;
 }
 div.media {
-	width: 313px;
+	width: 320px;
 	float: right;
 	clear: both;
 	margin-left: 15px;
@@ -223,4 +226,25 @@ td.nc { /* not yet corrected */
 td.ac { /* answer corrected */
 	border: 1px solid #00aa00;
 	background-color: #00ff00;
+}
+
+/* 
+ * Controls the style of the VLC media player control panel.
+ */
+div.vlc-ctrl {
+	background-color: #eeeeee;
+	border: 1px solid #dddddd;
+	padding-top: 5px;
+	margin-top: 0px;
+	overflow: hidden;
+	height: 1%;
+}
+div.vlc-play {    /* start, stop and pause buttons */
+	float: left;
+}
+div.vlc-seek {    /* seek forward/backward buttons */
+	float: right;
+}
+div.vlc-screen {  /* full screen control button */
+	float: right;
 }
