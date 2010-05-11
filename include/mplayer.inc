@@ -1129,6 +1129,33 @@ class MediaPlayerFactory
 	    $mime->lookup();
 	}
 	
+	// 
+	// See if system manager has tweaks:
+	// 
+	if(class_exists('MediaPlayerConfig')) {
+	    $config = new MediaPlayerConfig();
+	    $mptype = $config->getPlayerId($mime->getMimeType());
+	    if($mptype != MEDIA_PLAYER_BUILTIN) {
+		$player = null;
+		switch($mptype) {
+		 case MEDIA_PLAYER_WINDOWS:
+		    $player = new WindowsMediaPlayer($url, false); break;
+		 case MEDIA_PLAYER_QUICKTIME:
+		    $player = new QuickTimeMediaPlayer($url, false); break;
+		 case MEDIA_PLAYER_REALPLAY:
+		    $player = new RealMediaPlayer($url, false); break;
+		 case MEDIA_PLAYER_ADOBE_FLASH:
+		    $player = new FlashMediaPlayer($url, false); break;
+		 case MEDIA_PLAYER_VIDEOLAN:
+		    $player = new VLCMediaPlayer($url, false); break;
+		 case MEDIA_PLAYER_GENERIC:
+		    $player = new GenericMediaPlayer($url, false); break;
+		}
+		$player->setMimeType($mime);
+		return $player;		    
+	    }
+	}
+	
 	switch($mime->getMimeType()) {
 	 case "application/ram":
 	 case "application/vnd.rn-realmedia":
