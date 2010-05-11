@@ -1,0 +1,80 @@
+
+   OPENEXAM PHP - INSTALL NOTES
+
+
+** REQUIREMENTS:
+
+   These are the requirements. Tested versions within brackets, but other
+   versions might work just OK.
+   
+   *) PHP >= 5.2.x (need to support the new object model). [5.2.13]
+   *) An SQL database (RDBS) supported by PEAR MDB2. [MySQL 5.0.90]
+   *) Apache web server [2.2.15]
+	 
+   PECL Extensions (including those builtin in PHP):
+	    
+   *) gettext.so  - GNU gettext  (i.e. ngettext(), _(), ...) (recommended).
+   *) http.so     - HTTP extension (used to get content type of media URL's).
+
+   PEAR Packages:
+   
+   *) phpCAS     - CAS client for PHP     (required).
+   *) MDB2       - Core database + driver (required).
+		  
+** INSTALL:
+
+   1. Install phpCAS from http://www.ja-sig.org/wiki/display/CASC/phpCAS:
+   
+        bash$> sudo pear install http://www.ja-sig.org/downloads/cas-clients/php/1.0.1/CAS-1.0.1.tgz
+
+   2. Unpack the application archive to a directory *outside* of the web
+      server (i.e. /var/www/apps/openexam-php). Go inside conf and make config
+      protected versions of the template configuration files:
+	       
+        bash$> cd /var/www/apps/openexam-php/conf
+        bash$> cp apache.conf.in apache.conf
+
+          ...
+
+      Edit the configuration files. Include the conf/apache.conf in your
+      Apache server configuration.
+
+   3. Generate the SQL database. If you are using MySQL, all you have to do
+      is to connect with the client, create the database and import the SQL
+      script:
+
+        bash$> mysql -u root -p
+        Enter password:
+          ...
+        mysql> create database openexam;
+        mysql> grant select,update,insert,delete on openexam.* to openexam@localhost identified by 'password';
+        mysql> flush privileges;
+        mysql> use openexam;
+        mysql> source /var/www/apps/openexam-php/admin/sql/openexam-php.sql
+        mysql> insert into admins(user) values('username');   // Add an administrator
+        mysql> exit
+          ...
+
+      Now insert the connection parameter in conf/database.conf
+
+   4. To get laguage support (translation) working, you have to compile the 
+      .po files for your platform. This is done by running make in the
+      package root directory:
+
+        bash$> make
+
+      This should compile all *.po to *.mo that can be read by PHP's GNU
+      gettext extension. If the gettext extension is missing, then the
+      application will always present english text.
+	    
+   5. The two files conf/config.inc and conf/database.conf should not be
+      readable by world, only by trusted users and the account the web
+      server is running under (see admin/setperm.sh):
+
+        bash$> chmod 600 conf/config.inc conf/database.conf
+        bash$> setfacl -m u:apache:r conf/config.inc conf/database.conf
+
+      You are now ready to restart the web server at try it out.
+
+
+// Anders Lövgren, 2010-05-07
