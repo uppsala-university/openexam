@@ -333,7 +333,7 @@ class ExaminationPage extends BasePage
 	// 
 	printf("<style type=\"text/css\">\n");
 	if($qdata->hasQuestionVideo() || $qdata->hasQuestionAudio() || $qdata->hasQuestionImage()) {
-	    printf("textarea.width, div.width { width: 450px; }\n");
+	    printf("textarea.width, div.width { width: 440px; }\n");
 	} else {
 	    printf("textarea.width, div.width { width: 700px; }\n");
 	}
