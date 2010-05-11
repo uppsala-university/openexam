@@ -1,3 +1,24 @@
+Version 1.4 (2010-05-11):
+
+	* It's now possible to utilize and correct answers to multiple and
+	  single choice questions in examinations.
+	
+	* Implemented auto correction answers for multi and single choice
+	  questions, with possibility for the corrector to override the 
+	  calculated score.
+
+	* Multimedia files defined for questions is now shown on the right
+	  hand side, embedded in HTML and using browser plugins (flash,
+	  quicktime, windows media and real player). Supports video, audio 
+	  and images.
+
+	* The VLC media player plugin (see http://www.videolan.org) is now
+	  supported using a javascript controller interface.
+	  
+	* System managers can override the builtin media content hanling to
+	  choose which media player to handle all or specific content types,
+	  see docs/README-MPLAYER for more information.
+
 Version 1.3 (2010-05-05):
 
 	* Added examinator page where the user granted this role can
