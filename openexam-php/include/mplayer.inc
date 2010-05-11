@@ -11,18 +11,45 @@
 // Support class for embedding media player in HTML page. The output is 
 // based on examples from http://cit.ucsf.edu/embedmedia/step1.php
 // 
+// The media player factory:
+// -----------------------------
+// 
 // The idea behind the media player factory is:
 // 
 // 1. Detect media type (MIME) for an URL.
 // 2. Create the media player that supports the detected media type.
 // 3. Let the media player output the HTML for embedded plugin.
 // 
+// Content types and media players:
+// --------------------------------------
+// 
+// These are the media player supported by this file:
+// 
+// *) GenericMediaPlayer: 
+// 
+//    The generic media player is used as a standard media player for content
+//    types not handled by other players.
+// 
+// *) QuickTimeMediaPlayer:
+// 
+//    A media player that handles the content type video/quicktime (*.moov, 
+//    *.mov, *.qt and *.qtvr).
+// 
+// *) FlashMediaPlayer:
+// 
+//    Handles video/x-flv (*.flv) and application/x-shockwave-flash (*.swf) 
+//    content type. 
+// 
+// *) WindowsMediaPlayer:
+// 
+//    handles Windows media files and their associated content types.
+// 
 
 // 
 // Default settings:
 // 
 if(!defined("MEDIA_PLAYER_AUTOSTART")) {
-    define ("MEDIA_PLAYER_AUTOSTART", false);
+    define ("MEDIA_PLAYER_AUTOSTART", true);
 }
 if(!defined("MEDIA_PLAYER_LOOP")) {
     define ("MEDIA_PLAYER_LOOP", false);
@@ -191,7 +218,7 @@ class MediaMimeType
 						       "type" => "audio",
 						       "desc" => "MP2 Audio" 
 						       ),
-	     "audio/x-pn-realaudio-plugin"   => array( 
+	     "audio/x-pn-realaudio"          => array( 
 						       "ext"  => array( "" ),
 						       "type" => "audio",
 						       "desc" => "RealAudio Plugin File"
@@ -879,6 +906,9 @@ class FlashMediaPlayer extends AbstractMediaPlayer
 {
     const classid  = "clsid:D27CDB6E-AE6D-11CF-96B8-444553540000";
     const codebase = "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0";
+
+    const quality  = "high";
+    const bgcolor  = "#ffffff";
     
     public function __construct($url = null, $detect = true)
     {
@@ -890,93 +920,81 @@ class FlashMediaPlayer extends AbstractMediaPlayer
     
     public function output()
     {
-	$player->name = "flowplayer";
-	$player->url  = sprintf("%s/media/flowplayer/flowplayer-3.2.0.swf", BASE_URL);
-	$player->conf = sprintf("config={'clip':{'url':'%s','autoPlay':false}}", $this->url);
+	// 
+	// FLV videos requires an player while SWF is flash video with the 
+	// player builtin. We need to take this in account when generating
+	// the HTML output.
+	// 
 	
-	$media->name = "Flash";
-	$media->type = $this->mime->getMediaType();
-	$media->url  = $this->url;
+	if($this->mime->getMimeType() == "video/x-flv") {
+	    $player->name = "flowplayer";
+	    $player->url  = sprintf("%s/media/flowplayer/flowplayer-3.2.0.swf", BASE_URL);
+	    $player->conf = sprintf("config={'clip':{'url':'%s','autoPlay':%s,'scaling':'fit'}}", 
+				    $this->url, $this->autostart ? "true" : "false");
+	    
+	    $media->name = "Flash";
+	    $media->type = $this->mime->getMediaType();
+	    $media->url  = $this->url;
+	    
+	    $window->object->id = $player->name;
+	    $window->object->classid = self::classid;
+	    $window->object->codebase = self::codebase;
+	    $window->object->width = $this->width;
+	    $window->object->height = $this->height;
+	    
+	    $window->param->movie = $player->url;
+	    $window->param->quality = self::quality;
+	    $window->param->bgcolor = self::bgcolor;
+	    $window->param->loop = $this->loop;
+	    $window->param->allowfullscreen = true;
+	    $window->param->flashvars = $player->conf;
+	    
+	    $window->embed->src = $player->url;
+	    $window->embed->quality = self::quality;
+	    $window->embed->bgcolor = self::bgcolor;
+	    $window->embed->width = $this->width;
+	    $window->embed->height = $this->height;
+	    $window->embed->loop = $this->loop;
+	    $window->embed->type = $this->plugintype;
+	    $window->embed->pluginspage = $this->pluginpage;
+	    $window->embed->allowfullscreen = true;
+	    $window->embed->flashvars = $player->conf;
+	    
+	    $output = new MediaPlayerOutput($media->name, $media->type, $media->url);
+	    $output->setWindow($window);
+	    
+	    $output->send();
+	} else {
+	    $media->name = "Flash";
+	    $media->type = $this->mime->getMediaType();
+	    $media->url  = $this->url;
 	
-	$window->object->id = $player->name;
-	$window->object->classid = self::classid;
-	$window->object->codebase = self::codebase;
-	$window->object->width = $this->width;
-	$window->object->height = $this->height;
-		
-	$window->param->movie = $player->url;
-	$window->param->quality = "high";
-	$window->param->bgcolor = "#ffffff";
-	$window->param->loop = $this->loop;
-	$window->param->allowfullscreen = true;
-	$window->param->flashvars = $player->conf;
-		
-	$window->embed->src = $player->url;
-	$window->embed->quality = "high";
-	$window->embed->bgcolor = "#ffffff";
-	$window->embed->width = $this->width;
-	$window->embed->height = $this->height;
-	$window->embed->loop = $this->loop;
-	$window->embed->type = $this->plugintype;
-	$window->embed->pluginspage = $this->pluginpage;
-	$window->embed->allowfullscreen = true;
-	$window->embed->flashvars = $player->conf;
+	    $window->object->classid = self::classid;
+	    $window->object->codebase = self::codebase;
+	    $window->object->width = $this->width;
+	    $window->object->height = $this->height;
 	
-	$output = new MediaPlayerOutput($media->name, $media->type, $media->url);
-	$output->setWindow($window);
+	    $window->param->movie = $this->url;
+	    $window->param->quality = self::quality;
+	    $window->param->bgcolor = self::bgcolor;
+	    $window->param->loop = $this->loop;
+	    $window->param->allowfullscreen = true;
+	    
+	    $window->embed->src = $this->url;
+	    $window->embed->quality = self::quality;
+	    $window->embed->bgcolor = self::bgcolor;
+	    $window->embed->width = $this->width;
+	    $window->embed->height = $this->height;
+	    $window->embed->loop = $this->loop;
+	    $window->embed->type = $this->plugintype;
+	    $window->embed->pluginspage = $this->pluginpage;
+	    $window->embed->allowfullscreen = true;
 	
-	$output->send();
-    }
-}
-
-// 
-// Macromedia Flash version 6.
-// TODO: delete if flowplayer works.
-// 
-class FlashMediaPlayer_OLD extends AbstractMediaPlayer
-{
-    const classid  = "clsid:D27CDB6E-AE6D-11CF-96B8-444553540000";
-    const codebase = "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0";
-    
-    public function __construct($url = null, $detect = true)
-    {
-	parent::__construct($url, $detect);
-
-	$this->plugintype = "application/x-shockwave-flash";
-	$this->pluginpage = "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash";
-    }
-    
-    public function output()
-    {
-	$media->name = "Flash";
-	$media->type = $this->mime->getMediaType();
-	$media->url  = $this->url;
-	
-	$window->object->classid = self::classid;
-	$window->object->codebase = self::codebase;
-	$window->object->width = $this->width;
-	$window->object->height = $this->height;
-	
-	$window->param->movie = $this->url;
-	$window->param->quality = "high";
-	$window->param->bgcolor = "#ffffff";
-	$window->param->loop = $this->loop;
-	$window->param->allowfullscreen = true;
-	
-	$window->embed->src = $this->url;
-	$window->embed->quality = "high";
-	$window->embed->bgcolor = "#ffffff";
-	$window->embed->width = $this->width;
-	$window->embed->height = $this->height;
-	$window->embed->loop = $this->loop;
-	$window->embed->type = $this->plugintype;
-	$window->embed->pluginspage = $this->pluginpage;
-	$window->embed->allowfullscreen = true;
-	
-	$output = new MediaPlayerOutput($media->name, $media->type, $media->url);
-	$output->setWindow($window);
-	
-	$output->send();
+	    $output = new MediaPlayerOutput($media->name, $media->type, $media->url);
+	    $output->setWindow($window);
+	    
+	    $output->send();
+	}
     }
 }
 
