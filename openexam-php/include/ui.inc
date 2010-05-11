@@ -173,8 +173,8 @@ class BasePage implements TemplatePage
 	printf("<meta name=\"publisher\" content=\"BMC Administration - Uppsala Biomedical Centre - Uppsala Univertitet\" />\n");
 	printf("<meta name=\"description\" content=\"Locker room booking system\" />\n");
 	printf("<meta name=\"author\" content=\"http://it.bmc.uu.se/andlov/proj/\" />\n");
-	printf("<link rel=\"stylesheet\" type=\"text/css\" href=\"/openexam/css/openexam.css\" />\n");
-	printf("<script type=\"text/javascript\" language=\"javascript\" src=\"js/openexam.js\" />\n");
+	printf("<link rel=\"stylesheet\" type=\"text/css\" href=\"%s/css/openexam.css\" />\n", BASE_URL);
+	printf("<script type=\"text/javascript\" language=\"javascript\" src=\"%s/js/openexam.js\" />\n", BASE_URL);
     }
     
     // 
