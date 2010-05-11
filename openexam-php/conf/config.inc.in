@@ -104,7 +104,50 @@ define ('DATETIME_NONE', '2100-01-01');
 // 
 // Controls error logging:
 // 
-define ("ERROR_LOG_TRACE", true);             // Log call trace.
+define ("ERROR_LOG_TRACE", true);                   // Log call trace.
 define ("ERROR_LOG_PREFIX", "OpenExam PHP");        // Use this log prefix.
+
+// 
+// Media Player configuration. Affects which plugin gets embedded on the 
+// question page to handle media URL's. See docs/README-MPLAYER for more 
+// information and examples.
+// 
+// Constant identifiers for different media players:
+// 
+define ('MEDIA_PLAYER_WINDOWS',     'wmp');                  // Windows Media Player.
+define ('MEDIA_PLAYER_QUICKTIME',   'quicktime');            // Apples QuickTime player.
+define ('MEDIA_PLAYER_REALPLAY',    'realplay');             // Real Media Player.
+define ('MEDIA_PLAYER_ADOBE_FLASH', 'flash');                // Adobe Flash Player (Flowplayer GPL).
+define ('MEDIA_PLAYER_VIDEOLAN',    'vlc');                  // Video LAN Client (VLC Plugin).
+define ('MEDIA_PLAYER_GENERIC',     'generic');              // Generic Media Player.
+define ('MEDIA_PLAYER_DEFAULT',      MEDIA_PLAYER_GENERIC);  // Default (for unhandled content types).
+define ('MEDIA_PLAYER_BUILTIN',      false);                 // Explicit 
+// 
+// Use this class to tweak the builtin media player configuration:
+//   
+// class MediaPlayerConfig
+// {
+//     // 
+//     // Should return one of the MEDIA_PLAYER_XXX constants.
+//     // 
+//     public function getPlayerId($content) 
+//     {
+// 	// 
+// 	// Override handling of QuickTime and MPEG-4:
+// 	// 
+// 	switch($content) {
+// 	 case "video/quicktime":
+// 	    return MEDIA_PLAYER_VIDEOLAN;
+// 	 case "audio/mp4":
+// 	 case "audio/mp4":
+// 	    return MEDIA_PLAYER_ADOBE_FLASH;
+// 	}
+// 	
+// 	// 
+// 	// Use builtin config for all other content:
+// 	// 
+// 	return MEDIA_PLAYER_BUILTIN;
+//     }
+// }
 
 ?>
