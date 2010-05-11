@@ -1,4 +1,4 @@
-PACKAGE_NAME    = russin
+PACKAGE_NAME    = openexam-php
 PACKAGE_VERSION = 1.0
 PACKAGE_ADDRESS = anders.lovgren@bmc.uu.se
 PACKAGE_COPYING = "Computing Department at BMC, Uppsala Biomedical Centre, Uppsala University"
