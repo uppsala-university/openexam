@@ -42,7 +42,12 @@
 // 
 // *) WindowsMediaPlayer:
 // 
-//    handles Windows media files and their associated content types.
+//    Handles Windows media files (like *.wma , *.asf and *.avi/*.divx) and 
+//    their associated content types.
+// 
+// *) VLCMediaPlayer:
+// 
+//    The VideoLAN media player (VLC) plugin.
 // 
 
 // 
@@ -526,7 +531,7 @@ class MediaPlayerOutput
     // 
     // Output plugin HTML for embedded media file.
     // 
-    public function send()
+    public function send($object = null)
     {
 	printf("<!-- Begin embedded %s file -->\n", $this->name);	
 	
@@ -546,6 +551,10 @@ class MediaPlayerOutput
 			 $this->control->param,
 			 $this->control->embed);
 	    printf("<!-- End %s controller -->\n", $this->type);
+	}
+	
+	if(isset($object)) {
+	    $object->control();
 	}
 	
 	printf("<!-- Begin link to launch external media player -->\n");
@@ -703,6 +712,9 @@ abstract class AbstractMediaPlayer implements MediaPlayer
 
 }
 
+// 
+// The generic media player.
+// 
 class GenericMediaPlayer extends AbstractMediaPlayer
 {
     public function __construct($url = null, $detect = true)
@@ -843,6 +855,9 @@ class WindowsMediaPlayer extends AbstractMediaPlayer
     }
 }
 
+// 
+// The media player for Read Media content.
+// 
 class RealMediaPlayer extends AbstractMediaPlayer
 {
     const objectid = "rvocx";
@@ -999,6 +1014,109 @@ class FlashMediaPlayer extends AbstractMediaPlayer
 }
 
 // 
+// The VideoLAN (VLC) media player.
+// 
+class VLCMediaPlayer extends AbstractMediaPlayer
+{
+    const objectid = "vlc";
+    const version  = "VideoLAN.VLCPlugin.2";
+
+    public function __construct($url = null, $detect = true)
+    {
+	parent::__construct($url, $detect);
+
+	$this->plugintype = "application/x-vlc-plugin";
+	$this->pluginpage = "http://www.videolan.org";
+    }
+    
+    public function output()
+    {
+	$media->name = "VideoLAN (VLC)";
+	$media->type = $this->mime->getMediaType();
+	$media->url = $this->url;
+
+	$window->embed->type = $this->plugintype;
+	$window->embed->pluginspage = $this->pluginpage;
+	$window->embed->version = self::version;
+	$window->embed->id = self::objectid;
+	$window->embed->width = $this->width;
+	$window->embed->height = $this->height;
+	$window->embed->target = $this->url;
+	$window->embed->name = sprintf("%s%d", $media->type, $this->playerid);
+	$window->embed->loop = $this->loop;
+	$window->embed->autoplay = $this->autostart;
+
+	$output = new MediaPlayerOutput($media->name, $media->type, $media->url);
+	$output->setWindow($window);
+	
+	$this->control = "control";
+	$output->send($this);	
+    }
+    
+    // 
+    // Outputs the custom control panel:
+    // 
+    public function control()
+    {
+	$panel = array( "vlc-play"   => array( 
+					       array( 
+						      "func"  => "play()",
+						      "icon"  => "media-playback-start.png",
+						      "title" => _("Start playback"),
+						      ),
+					       array( 
+						      "func"  => "pause()",
+						      "icon"  => "media-playback-pause.png",
+						      "title" => _("Pause playback") 
+						    ),
+					       array( 
+						      "func"  => "stop()",
+						      "icon"  => "media-playback-stop.png",
+						      "title" => _("Stop playback") 
+						      )
+					       ),
+			"vlc-seek"   => array( 
+					       array( 
+						      "func"  => "backward()",
+						      "icon"  => "media-seek-backward.png",
+						      "title" => _("Seek backward in media stream") 
+						      ),
+					       array( 
+						      "func"  => "forward()",
+						      "icon"  => "media-seek-forward.png",
+						      "title" => _("Seek forward in media stream") 
+						      )
+					       ),
+			"vlc-screen" => array( 
+					       array( 
+						      "func"  => "fullscreen()",
+						      "icon"  => "view-fullscreen.png",
+						      "title" => _("Switch to fullscreen mode"),
+						      "media" => "video"
+						      )
+					       )
+			);
+	
+	printf("<script type=\"text/javascript\" language=\"javascript\">\n");
+	include("js/vlc.js");
+	printf("</script>\n");
+
+	printf("<div class=\"vlc-ctrl\">\n");
+	foreach($panel as $group => $buttons) {
+	    printf("<div class=\"%s\">\n", $group);
+	    foreach($buttons as $button) {
+		if(!isset($button['media']) || $button['media'] == $this->mime->getMediaType()) {
+		    printf("<img src=\"../icons/nuvola/player/%s\" onclick=\"javascript:%s\" title=\"%s\" />\n",
+			   $button['icon'], $button['func'], $button['title']);
+		}
+	    }
+	    printf("</div>\n");
+	}
+	printf("</div>\n");
+    }
+}
+
+// 
 // This class inspects the MIME type referenced by the URL and returns a
 // media player object suitable for playing that type of media.
 // 
@@ -1073,7 +1191,7 @@ class MediaPlayerFactory
 	 case "video/x-ogm+ogg":
 	 case "video/x-sgi-movie":
 	 case "video/x-theora":
-	 case "video/x-theora+ogg":
+	 case "video/x-theora+ogg":	    
 	    $player = new GenericMediaPlayer($url, false);
 	    $player->setMimeType($mime);
 	    return $player;
