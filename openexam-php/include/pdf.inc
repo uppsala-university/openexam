@@ -36,6 +36,9 @@ if(!defined('PDF_MEDIA_TYPE')) {
 if(!defined('PDF_MEDIA_LANDSCAPE')) {
     define ('PDF_MEDIA_LANDSCAPE', false);
 }
+if(!defined('PDF_FRONT_PAGE_MARGIN')) {
+    define ('PDF_FRONT_PAGE_MARGIN', '60mm');
+}
 if(!defined('PDF_GENERATOR')) {
     define ('PDF_GENERATOR', 'OpenExam PHP');
 }
@@ -96,7 +99,7 @@ class HtmlDocPDF
     // 
     protected function getCommand($target = null)
     {	
-	$fmt = "htmldoc - --book --format %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s'";
+	$fmt = "htmldoc - --book --format %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s' --toclevels 2";
 	$cmd = sprintf($fmt, 
 		       $this->format, 
 		       PDF_LINK_STYLE, 
@@ -152,23 +155,25 @@ class ResultPDF extends HtmlDocPDF
     // 
     private function createFrontPage($path)
     {
-	$file = fopen($path, "w");
-	if($file) {
-	    fprintf($file, "<html>\n");
-	    fprintf($file, "<body>\n");
-	    fprintf($file, "<br/><br/>\n");
-	    fprintf($file, "<center>\n");
-	    fprintf($file, "<img src=\"%s\" />\n", PDF_LOGOTYPE);
-	    fprintf($file, "<br/><br/><br/><br/><br/><br/>\n");
-	    fprintf($file, "<h1>%s</h1>\n", $this->title);
-	    fprintf($file, "<h2>%s</h2>\n", $this->author);
-	    fprintf($file, "<br/><br/><br/><br/>\n");
-	    fprintf($file, "<h4>%s: %s</h4>\n", _("Examination Date"), strftime(DATE_FORMAT, strtotime($this->exam->getExamStartTime())));
-	    fprintf($file, "</center>\n");
-	    fprintf($file, "</body>\n");
-	    fprintf($file, "</html>\n");
-		
-	    fclose($file);
+	$stream = fopen($path, "w");
+	if($stream) {
+	    fprintf($stream, "<html>\n");
+	    fprintf($stream, "<body>\n");
+	    fprintf($stream, "<!-- MEDIA LEFT %s  -->\n", PDF_FRONT_PAGE_MARGIN);
+	    fprintf($stream, "<!-- MEDIA RIGHT %s -->\n", PDF_FRONT_PAGE_MARGIN);
+	    fprintf($stream, "<br/><br/>\n");
+	    fprintf($stream, "<center>\n");
+	    fprintf($stream, "<img src=\"%s\" />\n", PDF_LOGOTYPE);
+	    fprintf($stream, "<br/><br/><br/><br/><br/><br/>\n");
+	    fprintf($stream, "<h1>%s</h1>\n", $this->title);
+	    fprintf($stream, "<h2>%s</h2>\n", $this->author);
+	    fprintf($stream, "<br/><br/><br/><br/>\n");
+	    fprintf($stream, "<h4>%s: %s</h4>\n", _("Examination Date"), strftime(DATE_FORMAT, strtotime($this->exam->getExamStartTime())));
+	    fprintf($stream, "</center>\n");
+	    fprintf($stream, "</body>\n");
+	    fprintf($stream, "</html>\n");
+	    
+	    fclose($stream);
 	    
 	    $this->frontpage = $path;
 	    return true;
@@ -193,7 +198,6 @@ class ResultPDF extends HtmlDocPDF
 	fprintf($stream, "<META NAME=\"GENERATOR\" CONTENT=\"%s\" />\n", PDF_GENERATOR);
 	fprintf($stream, "<META NAME=\"KEYWORDS\" CONTENT=\"exam,openexam,php,online\" />\n");
 	fprintf($stream, "<META NAME=\"SUBJECT\" CONTENT=\"%s\" />\n", $this->title);
-	
     }
     
     // 
@@ -266,7 +270,7 @@ class ResultPDF extends HtmlDocPDF
 	$answers = $handler->getStudentAnswers($student);
 	foreach($answers as $answer) {
 	    $question = Exam::getQuestionData($answer->getQuestionID());
-	    fprintf($stream, "<br/>\n<!-- NEED %d -->\n", PDF_QUESTION_MIN_LENGTH);
+	    fprintf($stream, "<!-- NEED %d -->\n<br/>\n", PDF_QUESTION_MIN_LENGTH);
 	    fprintf($stream, "<h2>%s: %s</h2>\n", _("Question"), utf8_decode($question->getQuestionName()));
 	    
 	    // 
