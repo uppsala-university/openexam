@@ -230,11 +230,11 @@ class ResultPDF extends HtmlDocPDF
 	// 
 	fprintf($stream, "<h2>%s</h2>\n", _("Score Table"));
 	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores."));
-	fprintf($stream, "<table><tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
+	fprintf($stream, "<table><tr><th align=\"right\">%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
 		_("Question"), _("Score"), _("Max score"), _("Percent"));
 	$questions = $board->getQuestions();
 	foreach($questions as $question) {
-	    fprintf($stream, "<tr><td>%s</td>", utf8_decode($question->getQuestionName()));
+	    fprintf($stream, "<tr><td align=\"right\">%s</td><td>&nbsp;</td>", utf8_decode($question->getQuestionName()));
 	    $data = $board->getData($student, $question->getQuestionID());
 	    if(isset($data)) {
  		fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td></tr>\n",
@@ -242,10 +242,16 @@ class ResultPDF extends HtmlDocPDF
 			$question->getQuestionScore(),
 			100 * $data->getResultScore() / $question->getQuestionScore());
 	    } else {
- 		fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td></tr>\n",
+		fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td></tr>\n",
 			$question->getQuestionScore(), 0);		
 	    }
 	}
+	fprintf($stream, "<tr><td align=\"right\">---</td><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
+	fprintf($stream, "<tr><td><b>%s:</b></td><td>&nbsp;</td><td><b>%.01f</b></td><td><b>%.01f</b></td><td><b>%.01f%%</b></td></tr>\n",
+		_("Summary"), 
+		$score->getSum(), 
+		$board->getMaximumScore(), 
+		100 * $score->getSum() / $board->getMaximumScore());
 	fprintf($stream, "</table>\n");
     }
     
