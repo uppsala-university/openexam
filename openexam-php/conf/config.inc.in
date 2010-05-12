@@ -39,12 +39,14 @@ define ('CAS_DEBUG', false);
 // 
 // Settings for PDF generation:
 // 
-define ('PDF_ENGINE',    'htmldoc');    // Currently the only supported generator.
-define ('PDF_LOGOTYPE',  '/var/www/localhost/apps/openexam-php/source/images/uu-logotype-4f-84.png');
-define ('PDF_LINKCOLOR', '#000099');
-define ('PDF_LINKSTYLE', 'plain');
-define ('PDF_PAGESIZE',  'a4');
-define ('PDF_GENERATOR', 'OpenExam PHP');
+define ('PDF_ENGINE',     'htmldoc');        // Currently the only supported generator.
+define ('PDF_GENERATOR',  'OpenExam PHP');
+define ('PDF_LOGOTYPE',   '/var/www/localhost/apps/openexam-php/source/images/uu-logotype-4f-84.png');
+define ('PDF_LINK_COLOR', '#000099');
+define ('PDF_LINK_STYLE', 'plain');
+define ('PDF_MEDIA_SIZE', 'a4');
+define ('PDF_MEDIA_TYPE', 'plain');
+define ('PDF_MEDIA_LANDSCAPE', false);
 define ('PDF_OUTPUT_FORMAT', 'pdf14');
 
 // 

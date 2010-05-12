@@ -8,9 +8,11 @@
 // Author: Anders Lövgren
 // Date:   2010-05-12
 // 
-// Support for generating PDF files. Currently, the application HTMLDOC is 
-// used for converting structured HTML (caller *.book files) to PDF thru a
-// UNIX command pipeline.
+// Support for generating PDF files.
+// 
+// Currently we do the conversion by using the application HTMLDOC for converting 
+// structured HTML (called *.book files) to PDF, by piping HTML on its stdin using
+// a UNIX command pipeline.
 // 
 
 if(!defined('PDF_ENGINE')) {
@@ -19,14 +21,20 @@ if(!defined('PDF_ENGINE')) {
 if(!defined('PDF_LOGOTYPE')) {
     define ('PDF_LOGOTYPE',  '../images/uu-logotype-4f-84.png');
 }
-if(!defined('PDF_LINKCOLOR')) {
-    define ('PDF_LINKCOLOR', '#000099');
+if(!defined('PDF_LINK_COLOR')) {
+    define ('PDF_LINK_COLOR', '#000099');
 }
-if(!defined('PDF_LINKSTYLE')) {
-    define ('PDF_LINKSTYLE', 'plain');
+if(!defined('PDF_LINK_STYLE')) {
+    define ('PDF_LINK_STYLE', 'plain');
 }
-if(!defined('PDF_PAGESIZE')) {
-    define ('PDF_PAGESIZE',  'a4');
+if(!defined('PDF_MEDIA_SIZE')) {
+    define ('PDF_MEDIA_SIZE', 'a4');
+}
+if(!defined('PDF_MEDIA_TYPE')) {
+    define ('PDF_MEDIA_TYPE', 'plain');
+}
+if(!defined('PDF_MEDIA_LANDSCAPE')) {
+    define ('PDF_MEDIA_LANDSCAPE', false);
 }
 if(!defined('PDF_GENERATOR')) {
     define ('PDF_GENERATOR', 'OpenExam PHP');
@@ -34,13 +42,18 @@ if(!defined('PDF_GENERATOR')) {
 if(!defined('PDF_OUTPUT_FORMAT')) {
     define ('PDF_OUTPUT_FORMAT', 'pdf14');
 }
+if(!defined('PDF_QUESTION_MIN_LENGTH')) {
+    define ('PDF_QUESTION_MIN_LENGTH', 12);
+}
 
 class HtmlDocPDF
 {
-    protected $title;
-    protected $author;
+    protected $title;     // The page title
+    protected $author;    // The publisher
+    
     protected $debug = false;
     protected $format = PDF_OUTPUT_FORMAT;
+    protected $frontpage = null;
     
     protected function __construct($title, $author)
     {
@@ -83,8 +96,16 @@ class HtmlDocPDF
     // 
     protected function getCommand($target = null)
     {	
-	$fmt = "htmldoc - --book --title --format %s --linkstyle %s --size %s --titleimage %s --linkcolor '%s'";
-	$cmd = sprintf($fmt, $this->format, PDF_LINKSTYLE, PDF_PAGESIZE, PDF_LOGOTYPE, PDF_LINKCOLOR);
+	$fmt = "htmldoc - --book --format %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s'";
+	$cmd = sprintf($fmt, 
+		       $this->format, 
+		       PDF_LINK_STYLE, 
+		       PDF_MEDIA_SIZE, 
+		       PDF_LINK_COLOR, 
+		       _("Table of Contents"));
+	if(isset($this->frontpage)) {
+	    $cmd .= sprintf(" --titlefile %s", $this->frontpage);
+	}
 	if(isset($target)) {
 	    $cmd .= sprintf(" -f %s", $target);
 	}
@@ -93,8 +114,9 @@ class HtmlDocPDF
 }
 
 // 
-// The class for generating a PDF file containing the result of
-// an exam for a single student.
+// Generates the examination result PDF for a single student or all students
+// registered on the exam. The output can either be sent to the browser or
+// saved to a file.
 // 
 class ResultPDF extends HtmlDocPDF
 {
@@ -108,8 +130,52 @@ class ResultPDF extends HtmlDocPDF
 	
 	parent::__construct($this->exam->getExamName(), 
 			    $this->exam->getExamOrgUnit());
+	
+	if(!$this->createFrontPage(tempnam("/tmp", "result"))) {
+	    throw new Exception("Failed create front page");
+	}
     }
 
+    // 
+    // Remember to remove the temporary front page file.
+    // 
+    public function __destruct()
+    {
+	if(file_exists($this->frontpage)) {
+	    unlink($this->frontpage);
+	}
+    }
+
+    // 
+    // Generate and save the front page to path. This function checks if
+    // the frontpage exists first.
+    // 
+    private function createFrontPage($path)
+    {
+	$file = fopen($path, "w");
+	if($file) {
+	    fprintf($file, "<html>\n");
+	    fprintf($file, "<body>\n");
+	    fprintf($file, "<br/><br/>\n");
+	    fprintf($file, "<center>\n");
+	    fprintf($file, "<img src=\"%s\" />\n", PDF_LOGOTYPE);
+	    fprintf($file, "<br/><br/><br/><br/><br/><br/>\n");
+	    fprintf($file, "<h1>%s</h1>\n", $this->title);
+	    fprintf($file, "<h2>%s</h2>\n", $this->author);
+	    fprintf($file, "<br/><br/><br/><br/>\n");
+	    fprintf($file, "<h4>%s: %s</h4>\n", _("Examination Date"), strftime(DATE_FORMAT, strtotime($this->exam->getExamStartTime())));
+	    fprintf($file, "</center>\n");
+	    fprintf($file, "</body>\n");
+	    fprintf($file, "</html>\n");
+		
+	    fclose($file);
+	    
+	    $this->frontpage = $path;
+	    return true;
+	}
+	return false;
+    }
+    
     // 
     // Output meta data.
     // 
@@ -118,11 +184,16 @@ class ResultPDF extends HtmlDocPDF
 	fprintf($stream, "<!-- FOOTER CENTER \"\$CHAPTER\" -->\n");
 	fprintf($stream, "<!-- FOOTER LEFT \"%s\" -->\n", _('Page $PAGE of $PAGES'));
 	fprintf($stream, "<!-- FOOTER RIGHT \"\$DATE \$TIME\" -->\n");
-	  
+	
+	fprintf($stream, "<!-- MEDIA SIZE %s -->\n", strtoupper(PDF_MEDIA_SIZE));
+	fprintf($stream, "<!-- MEDIA TYPE %s -->\n", strtoupper(PDF_MEDIA_TYPE));
+	fprintf($stream, "<!-- MEDIA LANDSCAPE %s -->\n", PDF_MEDIA_LANDSCAPE ? "YES" : "NO");
+	
 	fprintf($stream, "<META NAME=\"AUTHOR\" CONTENT=\"%s\" />\n", $this->author);
 	fprintf($stream, "<META NAME=\"GENERATOR\" CONTENT=\"%s\" />\n", PDF_GENERATOR);
 	fprintf($stream, "<META NAME=\"KEYWORDS\" CONTENT=\"exam,openexam,php,online\" />\n");
 	fprintf($stream, "<META NAME=\"SUBJECT\" CONTENT=\"%s\" />\n", $this->title);
+	
     }
     
     // 
@@ -134,20 +205,64 @@ class ResultPDF extends HtmlDocPDF
 	fprintf($stream, "<p>%s</p>\n", 
 		str_replace("\n", "<br/>", utf8_decode($this->exam->getExamDescription())));
     }
+
+    // 
+    // Output the scores section.
+    // 
+    private function printSectionScores($stream, $student)
+    {
+	$board = new ScoreBoard($this->exam->getExamID());
+	
+	fprintf($stream, "<h1>%s</h1>\n", _("Examination Result"));
+	
+	// 
+	// The summary section.
+	// 
+	$score = $board->getStudentScore($student);
+	fprintf($stream, "<h2>%s</h2>\n", _("Summary"));
+	fprintf($stream, "<p>" . _("You scored total %.01f of maximum %.01f points (%.01f%%) on this examination.") . "</p>\n",
+		$score->getSum(), 
+		$board->getMaximumScore(), 
+		100 * $score->getSum() / $board->getMaximumScore());
+	
+	// 
+	// The answer result details section.
+	// 
+	fprintf($stream, "<h2>%s</h2>\n", _("Score Table"));
+	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores."));
+	fprintf($stream, "<table><tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
+		_("Question"), _("Score"), _("Max score"), _("Percent"));
+	$questions = $board->getQuestions();
+	foreach($questions as $question) {
+	    fprintf($stream, "<tr><td>%s</td>", utf8_decode($question->getQuestionName()));
+	    $data = $board->getData($student, $question->getQuestionID());
+	    if(isset($data)) {
+ 		fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td></tr>\n",
+			$data->getResultScore(),
+			$question->getQuestionScore(),
+			100 * $data->getResultScore() / $question->getQuestionScore());
+	    } else {
+ 		fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td></tr>\n",
+			$question->getQuestionScore(), 0);		
+	    }
+	}
+	fprintf($stream, "</table>\n");
+    }
     
     // 
     // Output the question/answer section.
     // 
     private function printSectionAnswers($stream, $student)
     {
-	fprintf($stream, "<h1>%s</h1>\n", _("Questions"));
+	fprintf($stream, "<h1>%s</h1>\n", _("Questions and Answers"));
 	
 	$handler = new Correct($this->exam->getExamID());
 	$answers = $handler->getStudentAnswers($student);
 	foreach($answers as $answer) {
 	    $question = Exam::getQuestionData($answer->getQuestionID());
+	    fprintf($stream, "<br/>\n<!-- NEED %d -->\n", PDF_QUESTION_MIN_LENGTH);
 	    fprintf($stream, "<h2>%s: %s</h2>\n", _("Question"), utf8_decode($question->getQuestionName()));
-		
+	    
 	    // 
 	    // Output tags for image if question has one:
 	    // 
@@ -234,6 +349,7 @@ class ResultPDF extends HtmlDocPDF
 	    fprintf($pipes[0], "<html>\n<head><title>%s</title></head>\n<body>\n", $this->title);
 	    $this->printMetaData($pipes[0]);
 	    $this->printSectionDescription($pipes[0]);
+	    $this->printSectionScores($pipes[0], $student);
 	    $this->printSectionAnswers($pipes[0], $student);
 	    fprintf($pipes[0], "</body></html>\n");
 	    
