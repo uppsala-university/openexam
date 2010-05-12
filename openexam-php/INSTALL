@@ -20,14 +20,26 @@
    
    *) phpCAS     - CAS client for PHP     (required).
    *) MDB2       - Core database + driver (required).
-		  
+
+   External programs:
+   
+   *) HTMLDOC    - Generate result PDF from HTML (recommended) [1.8.27].
+
 ** INSTALL:
 
    1. Install phpCAS from http://www.ja-sig.org/wiki/display/CASC/phpCAS:
    
         bash$> sudo pear install http://www.ja-sig.org/downloads/cas-clients/php/1.0.1/CAS-1.0.1.tgz
 
-   2. Unpack the application archive to a directory *outside* of the web
+   2. Install HTMLDOC (optional) from http://www.easysw.com/htmldoc/:
+   
+        bash$> tar xfvz htmldoc-xyz.tar.gz
+	bash$> cd htmldoc-xyz
+	bash$> ./configure
+	bash$> make
+	bash$> sudo make install
+	
+   3. Unpack the application archive to a directory *outside* of the web
       server (i.e. /var/www/apps/openexam-php). Go inside conf and make config
       protected versions of the template configuration files:
 	       
@@ -39,7 +51,7 @@
       Edit the configuration files. Include the conf/apache.conf in your
       Apache server configuration.
 
-   3. Generate the SQL database. If you are using MySQL, all you have to do
+   4. Generate the SQL database. If you are using MySQL, all you have to do
       is to connect with the client, create the database and import the SQL
       script:
 
@@ -57,7 +69,7 @@
 
       Now insert the connection parameter in conf/database.conf
 
-   4. To get laguage support (translation) working, you have to compile the 
+   5. To get laguage support (translation) working, you have to compile the 
       .po files for your platform. This is done by running make in the
       package root directory:
 
@@ -67,7 +79,7 @@
       gettext extension. If the gettext extension is missing, then the
       application will always present english text.
 	    
-   5. The two files conf/config.inc and conf/database.conf should not be
+   6. The two files conf/config.inc and conf/database.conf should not be
       readable by world, only by trusted users and the account the web
       server is running under (see admin/setperm.sh):
 
