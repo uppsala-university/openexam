@@ -295,9 +295,9 @@ class Manager
     // 
     public function getData()
     {
-	$sql = sprintf("SELECT id AS ExamID, name AS ExamName, descr AS ExamDescription, starttime AS ExamStartTime, 
-			          endtime AS ExamEndTime, created AS ExamCreated, updated AS ExamUpdated, creator AS ExamCreator,
-			          decoded AS ExamDecoded
+	$sql = sprintf("SELECT id AS ExamID, name AS ExamName, descr AS ExamDescription, orgunit AS ExamOrgUnit, 
+			          starttime AS ExamStartTime, endtime AS ExamEndTime, created AS ExamCreated, 
+			          updated AS ExamUpdated, creator AS ExamCreator, decoded AS ExamDecoded
 			FROM exams WHERE id = %d", $this->exam);
         $res = Database::getConnection()->query($sql);
  	if(PEAR::isError($res)) {
