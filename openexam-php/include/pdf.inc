@@ -260,50 +260,46 @@ class ResultPDF extends HtmlDocPDF
     }
     
     // 
-    // Output the question/answer section.
+    // Helper function for printing a question and (possibly) the students
+    // answer to it.
     // 
-    private function printSectionAnswers($stream, $student)
+    private function printQuestionAnswer($stream, $question, $answer)
     {
-	fprintf($stream, "<h1>%s</h1>\n", _("Questions and Answers"));
+	fprintf($stream, "<!-- NEED %d -->\n<br/>\n", PDF_QUESTION_MIN_LENGTH);
+	fprintf($stream, "<h2>%s: %s</h2>\n", _("Question"), utf8_decode($question->getQuestionName()));
+	    
+	// 
+	// Output tags for image if question has one:
+	// 
+	if($question->hasQuestionImage()) {
+	    fprintf($stream, "<img src=\"%s\" />\n", $question->getQuestionImage());
+	}
 	
-	$handler = new Correct($this->exam->getExamID());
-	$answers = $handler->getStudentAnswers($student);
-	foreach($answers as $answer) {
-	    $question = Exam::getQuestionData($answer->getQuestionID());
-	    fprintf($stream, "<!-- NEED %d -->\n<br/>\n", PDF_QUESTION_MIN_LENGTH);
-	    fprintf($stream, "<h2>%s: %s</h2>\n", _("Question"), utf8_decode($question->getQuestionName()));
+	// 
+	// Print the block of text containing the question. Format this 
+	// section different depending on the question type.
+	// 
+	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+	    fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", utf8_decode($question->getQuestionText())));
+	} elseif($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
+		 $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
+	    $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
+	    fprintf($stream, "<p><b>%s</b></p>\n", utf8_decode($qchoice[0]));
 	    
-	    // 
-	    // Output tags for image if question has one:
-	    // 
-	    if($question->hasQuestionImage()) {
-		fprintf($stream, "<img src=\"%s\" />\n", $question->getQuestionImage());
+	    printf("<ol>\n");
+	    foreach($qchoice[1] as $choice => $correct) {
+		printf("<li>%s</li>\n", utf8_decode($choice));
 	    }
-		
-	    // 
-	    // Print the block of text containing the question. Format this 
-	    // section different depending on the question type.
-	    // 
-	    if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-		fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", utf8_decode($question->getQuestionText())));
-	    } elseif($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
-		     $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
-		$qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
-		fprintf($stream, "<p><b>%s</b></p>\n", utf8_decode($qchoice[0]));
-		
-		printf("<ol>\n");
-		foreach($qchoice[1] as $choice => $correct) {
-		    printf("<li>%s</li>\n", utf8_decode($choice));
-		}
-		printf("</ol>\n");
-		
-		printf("%s: %s\n", _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
-	    }
-	    fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Max score"), $question->getQuestionScore());
+	    printf("</ol>\n");
 	    
-	    // 
-	    // The answer together with comment.
-	    // 
+	    printf("%s: %s\n", _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
+	}
+	fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Max score"), $question->getQuestionScore());
+	
+	// 
+	// The answer together with comment (if set).
+	// 
+	if(isset($answer)) {
 	    fprintf($stream, "<h3>%s</h3>\n", _("Answer"));
 	    if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
 		fprintf($stream, "<p>%s</p>\n", utf8_decode($answer->getAnswerText()));
@@ -319,6 +315,54 @@ class ResultPDF extends HtmlDocPDF
 		fprintf($stream, "%s: %s<br/>\n", _("Teacher comments"), $answer->getResultComment());
 	    }
 	    fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Score"), $answer->getResultScore());
+	}
+    }
+    
+    // 
+    // Output the question/answer section.
+    // 
+    private function printSectionAnswers($stream, $student)
+    {	
+	$handler   = new Correct($this->exam->getExamID());
+	$answers   = $handler->getStudentAnswers($student);
+	$questions = $this->manager->getQuestions();
+	
+	//
+	// Build the assiciative array of answered ('a') and unanswered ('u') questions.
+	//
+	$qadata = array( 'a' => array(), 'u' => array() );
+	foreach($questions as $question) {
+	    $answered = false;
+	    foreach($answers as $answer) {
+		if($question->getQuestionID() == $answer->getQuestionID()) {
+		    $answered = true;
+		    break;
+		}
+	    }
+	    if($answered) {
+		$qadata['a'][] = array($question, $answer);
+	    } else {
+		$qadata['u'][] = array($question, null);
+	    }
+	}
+
+	// 
+	// Now loop thru the array of questions and answers. We use two separate 
+	// sections for answered and unanswered questions.
+	// 
+
+	if(count($qadata['a']) > 0) {
+	    fprintf($stream, "<h1>%s</h1>\n", _("Questions and Answers"));
+	    foreach($qadata['a'] as $data) {
+		$this->printQuestionAnswer($stream, $data[0], $data[1]);
+	    }
+	}
+	
+	if(count($qadata['u']) > 0) {
+	    fprintf($stream, "<h1>%s</h1>\n", _("Unanswered Questions"));
+	    foreach($qadata['u'] as $data) {
+		$this->printQuestionAnswer($stream, $data[0], null);
+	    }
 	}
     }
 
