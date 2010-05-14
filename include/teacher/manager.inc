@@ -439,6 +439,20 @@ class Manager
     }
 
     // 
+    // Get data for this student.
+    // 
+    public function getStudentData($student)
+    {
+	$sql = sprintf("SELECT id AS StudentID, exam_id AS ExamID, user AS StudentUser, code AS StudentCode
+		        FROM students WHERE id = %d", $student); 
+        $res = Database::getConnection()->query($sql);
+	if(PEAR::isError($res)) {
+	    throw new DatabaseException($res->getMessage());
+	}
+	return new DataRecord($res->fetchRow());
+    }
+    
+    // 
     // These function are used for granting and revoking permissions on this exam.
     // 
    
