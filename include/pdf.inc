@@ -49,6 +49,15 @@ if(!defined('PDF_QUESTION_MIN_LENGTH')) {
     define ('PDF_QUESTION_MIN_LENGTH', 12);
 }
 
+// 
+// All classes feeding input to HTMLDOC should implement this interface
+// and call begin() passing itself as a class reference.
+// 
+interface InputGenerator
+{
+    public function write($stream);
+}
+
 class HtmlDocPDF
 {
     protected $title;     // The page title
@@ -62,6 +71,16 @@ class HtmlDocPDF
     {
 	$this->title  = $title;
 	$this->author = $author;
+    }
+
+    // 
+    // Remember to remove the temporary front page file.
+    // 
+    public function __destruct()
+    {
+	if(file_exists($this->frontpage)) {
+	    unlink($this->frontpage);
+	}
     }
     
     // 
@@ -97,23 +116,88 @@ class HtmlDocPDF
     // Get the command string for writing the PDF to target. If target is null,
     // then output is written to stdout.
     // 
-    protected function getCommand($target = null)
+    private function getCommand($target)
     {	
-	$fmt = "htmldoc - --book --format %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s' --toclevels 2";
+	$fmt = "htmldoc - --book --format %s --titlefile %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s' --toclevels 2";
 	$cmd = sprintf($fmt, 
 		       $this->format, 
+		       $this->frontpage,
 		       PDF_LINK_STYLE, 
 		       PDF_MEDIA_SIZE, 
 		       PDF_LINK_COLOR, 
 		       _("Table of Contents"));
-	if(isset($this->frontpage)) {
-	    $cmd .= sprintf(" --titlefile %s", $this->frontpage);
-	}
 	if(isset($target)) {
 	    $cmd .= sprintf(" -f %s", $target);
 	}
 	return $cmd;
     }
+    
+    // 
+    // Open the HTMLDOC pipeline and call back using the class reference to 
+    // get the input data using the multiplexed stream resource.
+    // 
+    protected function begin($class, $target = null) 
+    {	
+	if($this->debug) {
+	    $pipes = array( fopen("php://stdout", "w") );
+	} else {
+	    $fds = array( 
+			  0 => array("pipe", "r"),
+			  1 => array("pipe", "w"),
+			  2 => array("pipe", "w")
+			  );
+	    
+	    $cmd = $this->getCommand($target);
+	    $env = array( "SHELL" => "/bin/bash", "TZ" => "UTC" );
+	    $pipes = array();
+	    
+	    if(version_compare(phpversion(), "5.0.0") < 0) {
+		$timezone = getenv("TZ");
+		putenv(sprintf("TZ=%s", $env['TZ']));
+		$process = proc_open($cmd, $fds, $pipes);
+		putenv(sprintf("TZ=%s", $timezone));
+	    }
+	    else {
+		$process = proc_open($cmd, $fds, $pipes, null, $env);
+	    }
+	}
+	
+	if(is_resource($process) || $this->debug) {
+	    $class->write($pipes[0]);
+	    
+	    if(!$this->debug) {
+		fclose($pipes[0]);
+		
+		$stdout = stream_get_contents($pipes[1]);
+		$stderr = stream_get_contents($pipes[2]);
+		
+		if(strlen($stderr) > 0) {
+		    // 
+		    // HTMLDOC got the bad habit of writing status info to stderr.
+		    // 
+		    if(!preg_match("/^(BYTES: \d+|PAGES: \d+)$/msU", $stderr)) {
+			throw new Exception(sprintf("Failed generate PDF: %s", $stderr));
+		    }
+		}
+		if(strlen($stdout) > 0) {		    
+		    echo $stdout;
+		}
+		
+		fclose($pipes[1]);
+		fclose($pipes[2]);
+		
+		$result = proc_close($process);
+		
+		//
+		// Check exit status of process.
+		//
+		if($result != 0) {
+		    throw new Exception(sprintf("HTMLDOC finished with non-zero exit code %d", $result), $result);
+		}
+	    }
+	}
+    }
+    
 }
 
 // 
@@ -121,41 +205,35 @@ class HtmlDocPDF
 // registered on the exam. The output can either be sent to the browser or
 // saved to a file.
 // 
-class ResultPDF extends HtmlDocPDF
+class ResultPDF extends HtmlDocPDF implements InputGenerator
 {
     private $manager;
+    private $student;   // Current student ID
     private $exam;
+    private $ldap;
     
     public function __construct($examid)
     {
 	$this->manager = new Manager($examid);
 	$this->exam = $this->manager->getData();
+	$this->ldap = LDAPSearch::factory();
 	
 	parent::__construct($this->exam->getExamName(), 
 			    $this->exam->getExamOrgUnit());
-	
-	if(!$this->createFrontPage(tempnam("/tmp", "result"))) {
-	    throw new Exception("Failed create front page");
-	}
     }
-
-    // 
-    // Remember to remove the temporary front page file.
-    // 
+    
     public function __destruct()
     {
-	if(file_exists($this->frontpage)) {
-	    unlink($this->frontpage);
-	}
+	$this->ldap->close();
     }
 
     // 
-    // Generate and save the front page to path. This function checks if
-    // the frontpage exists first.
+    // Create the frontpage. If previous frontpage exists, then it's
+    // unlinked (deleted) before the new one is created.
     // 
-    private function createFrontPage($path)
-    {
-	$stream = fopen($path, "w");
+    private function createFrontPage($name)
+    {		
+	$stream = fopen($this->frontpage, "w");
 	if($stream) {
 	    fprintf($stream, "<html>\n");
 	    fprintf($stream, "<body>\n");
@@ -168,17 +246,16 @@ class ResultPDF extends HtmlDocPDF
 	    fprintf($stream, "<h1>%s</h1>\n", $this->title);
 	    fprintf($stream, "<h2>%s</h2>\n", $this->author);
 	    fprintf($stream, "<br/><br/><br/><br/>\n");
+	    fprintf($stream, "<table><tr><td align=\"left\">\n");
 	    fprintf($stream, "<h4>%s: %s</h4>\n", _("Examination Date"), strftime(DATE_FORMAT, strtotime($this->exam->getExamStartTime())));
+	    fprintf($stream, "<h4>%s: %s</h4>\n", _("Participant"), $name);
+	    fprintf($stream, "</td></tr></table>\n");
 	    fprintf($stream, "</center>\n");
 	    fprintf($stream, "</body>\n");
 	    fprintf($stream, "</html>\n");
 	    
 	    fclose($stream);
-	    
-	    $this->frontpage = $path;
-	    return true;
 	}
-	return false;
     }
     
     // 
@@ -213,7 +290,7 @@ class ResultPDF extends HtmlDocPDF
     // 
     // Output the scores section.
     // 
-    private function printSectionScores($stream, $student)
+    private function printSectionScores($stream)
     {
 	$board = new ScoreBoard($this->exam->getExamID());
 	
@@ -222,7 +299,7 @@ class ResultPDF extends HtmlDocPDF
 	// 
 	// The summary section.
 	// 
-	$score = $board->getStudentScore($student);
+	$score = $board->getStudentScore($this->student);
 	fprintf($stream, "<h2>%s</h2>\n", _("Summary"));
 	fprintf($stream, "<p>" . _("You scored total %.01f of maximum %.01f points (%.01f%%) on this examination.") . "</p>\n",
 		$score->getSum(), 
@@ -239,7 +316,7 @@ class ResultPDF extends HtmlDocPDF
 	$questions = $board->getQuestions();
 	foreach($questions as $question) {
 	    fprintf($stream, "<tr><td align=\"right\">%s</td><td>&nbsp;</td>", utf8_decode($question->getQuestionName()));
-	    $data = $board->getData($student, $question->getQuestionID());
+	    $data = $board->getData($this->student, $question->getQuestionID());
 	    if(isset($data)) {
  		fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td></tr>\n",
 			$data->getResultScore(),
@@ -321,10 +398,10 @@ class ResultPDF extends HtmlDocPDF
     // 
     // Output the question/answer section.
     // 
-    private function printSectionAnswers($stream, $student)
+    private function printSectionAnswers($stream)
     {	
 	$handler   = new Correct($this->exam->getExamID());
-	$answers   = $handler->getStudentAnswers($student);
+	$answers   = $handler->getStudentAnswers($this->student);
 	$questions = $this->manager->getQuestions();
 	
 	//
@@ -367,24 +444,13 @@ class ResultPDF extends HtmlDocPDF
     }
     
     // 
-    // Output the reference section.
+    // Print sub section for examination creator.
     // 
-    private function printSectionReference($stream)
+    private function printSubSectionExamCreator($stream)
     {
-	$openexam = "http://it.bmc.uu.se/andlov/proj/openexam/";
-	$htmldoc  = "http://www.easysw.com/htmldoc/";
+	$this->ldap->setAttributeFilter(array("cn", "mail"));
+	$user = $this->ldap->searchPrincipalName($this->exam->getExamCreator());
 	
-	fprintf($stream, "<h1>%s</h1>\n", _("Reference"));
-	fprintf($stream, "<p>" . _("Information about this examination.") . "</p>\n");
-
-	fprintf($stream, "<h2>%s</h2>\n", _("Contact Information"));
-	fprintf($stream, "<p>" . _("This section lists those people thats been involved in this examination.") . "</p>\n");
-
-	// 
-	// The examination creator:
-	// 
-	$ldap = LDAPSearch::factory();
-	$user = $ldap->searchPrincipalName($this->exam->getExamCreator());
 	fprintf($stream, "<h5>%s:</h5>\n", _("Responsable for examination"));
 	fprintf($stream, 
 		"<p><blockquote>" . 
@@ -392,10 +458,16 @@ class ResultPDF extends HtmlDocPDF
 		"</blockquote></p>\n",
 		$user->first()->getMail(), 
 		utf8_decode($user->first()->getCN()->first()));
+	$this->ldap->setAttributeFilter(null);
+    }
+
+    // 
+    // Print sub section for question contributors and answer correctors.
+    // 
+    private function printSubSectionContributors($stream)
+    {
+	$this->ldap->setAttributeFilter(array("cn", "mail"));
 	
-	// 
-	// Question contributors:
-	// 
 	$contributors = $this->manager->getContributors();
  	if($contributors->count()) {
 	    
@@ -424,7 +496,7 @@ class ResultPDF extends HtmlDocPDF
 		    "</blockquote></p>\n");
 	    fprintf($stream, "<ul>\n");
 	    foreach($qdata as $uuid => $qlist) {
-		$user = $ldap->searchPrincipalName($uuid);
+		$user = $this->ldap->searchPrincipalName($uuid);
 		fprintf($stream, "<li><a href=\"mailto:%s\">%s</a><br/><blockquote>%s: %s</blockquote></li>\n",
 			$user->first()->getMail(), 
 			utf8_decode($user->first()->getCN()->first()),
@@ -432,7 +504,32 @@ class ResultPDF extends HtmlDocPDF
 	    }
 	    fprintf($stream, "</ul>\n");
 	}
+	$this->ldap->setAttributeFilter(null);
+    }
+    
+    // 
+    // Output the reference section.
+    // 
+    private function printSectionReference($stream)
+    {
+	$openexam = "http://it.bmc.uu.se/andlov/proj/openexam/";
+	$htmldoc  = "http://www.easysw.com/htmldoc/";
 	
+	fprintf($stream, "<h1>%s</h1>\n", _("Reference"));
+	fprintf($stream, "<p>" . _("Information about this examination.") . "</p>\n");
+
+	fprintf($stream, "<h2>%s</h2>\n", _("Contact Information"));
+	fprintf($stream, "<p>" . _("This section lists those people thats been involved in this examination.") . "</p>\n");
+
+	// 
+	// Print examination creator and question contributors:
+	// 
+	$this->printSubSectionExamCreator($stream);
+	$this->printSubSectionContributors($stream);
+
+	// 
+	// Print document info:
+	// 
 	fprintf($stream, "<h2>%s</h2>\n", _("Document Information"));
 	fprintf($stream, "<p>" . 
 		_("This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s\">%s</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license.") . 
@@ -442,78 +539,39 @@ class ResultPDF extends HtmlDocPDF
     }
     
     // 
+    // This is our callback function implementing the interface InputGenerator.
+    // 
+    public function write($stream)
+    {
+	fprintf($stream, "<html>\n<head><title>%s</title></head>\n<body>\n", $this->title);
+	$this->printMetaData($stream);
+	$this->printSectionDescription($stream);
+	$this->printSectionScores($stream);
+	$this->printSectionAnswers($stream);
+	$this->printSectionReference($stream);
+	fprintf($stream, "</body></html>\n");
+    }
+    
+    // 
     // Feed the HTMLDOC process with HTML (*.book) on stdin. If debug mode is enabled, 
     // then no process is executed, instead the generated HTML is output on stdout.
     // 
-    private function generate($student, $cmd)
+    private function generate($target = null)
     {
-	if($this->debug) {
-	    $pipes = array( fopen("php://stdout", "w") );
-	} else {
-	    $fds = array( 
-			  0 => array("pipe", "r"),
-			  1 => array("pipe", "w"),
-			  2 => array("pipe", "w")
-			  );
-	    
-	    $env = array( "SHELL" => "/bin/bash", "TZ" => "UTC" );
-	    $pipes = array();
-	    
-	    if(version_compare(phpversion(), "5.0.0") < 0) {
-		$timezone = getenv("TZ");
-		putenv(sprintf("TZ=%s", $env['TZ']));
-		$process = proc_open($cmd, $fds, $pipes);
-		putenv(sprintf("TZ=%s", $timezone));
-	    }
-	    else {
-		$process = proc_open($cmd, $fds, $pipes, null, $env);
-	    }
-	}
+	// 
+	// We must create the frontpage before launching the process.
+	// 
+	$data = $this->manager->getStudentData($this->student);
+	$user = $this->ldap->searchUID($data->getStudentUser());
+	$name = $user->first()->getCN()->first();
 	
-	if(is_resource($process) || $this->debug) {
-	    // 
-	    // Output HTML header and body with meta data. Include questions/answer and 
-	    // summary sections.
-	    // 
-	    fprintf($pipes[0], "<html>\n<head><title>%s</title></head>\n<body>\n", $this->title);
-	    $this->printMetaData($pipes[0]);
-	    $this->printSectionDescription($pipes[0]);
-	    $this->printSectionScores($pipes[0], $student);
-	    $this->printSectionAnswers($pipes[0], $student);
-	    $this->printSectionReference($pipes[0]);
-	    fprintf($pipes[0], "</body></html>\n");
-	    
-	    if(!$this->debug) {
-		fclose($pipes[0]);
-		
-		$stdout = stream_get_contents($pipes[1]);
-		$stderr = stream_get_contents($pipes[2]);
-		
-		if(strlen($stderr) > 0) {
-		    // 
-		    // HTMLDOC got the bad habit of writing status info to stderr.
-		    // 
-		    if(!preg_match("/^(BYTES: \d+|PAGES: \d+)$/msU", $stderr)) {
-			throw new Exception(sprintf("Failed generate PDF: %s", $stderr));
-		    }
-		}
-		if(strlen($stdout) > 0) {		    
-		    echo $stdout;
-		}
-		
-		fclose($pipes[1]);
-		fclose($pipes[2]);
-		
-		$result = proc_close($process);
-		
-		//
-		// Check exit status of process.
-		//
-		if($result != 0) {
-		    throw new Exception(sprintf("HTMLDOC finished with non-zero exit code %d", $result), $result);
-		}
-	    }
+	if(file_exists($this->frontpage)) {
+	    unlink($this->frontpage);
 	}
+	$this->frontpage = tempnam("/tmp", "openexam-result");
+	$this->createFrontPage($name);
+
+	$this->begin($this, $target);
     }
     
     // 
@@ -521,29 +579,24 @@ class ResultPDF extends HtmlDocPDF
     // 
     public function send($student)
     {
-	$students = $this->manager->getStudents();
-	foreach($students as $data) {
-	    if($data->getStudentID() == $student) {
-		if(strstr($this->format, "pdf")) {
-		    header("Content-Type: application-pdf");
-		    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
-				   sprintf("%s-%s.pdf", $data->getStudentUser(), $data->getStudentCode())));	    
-		} elseif(strstr($this->format, "ps")) {
-		    header("Content-Type: application-postscript");
-		    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
-				   sprintf("%s-%s.ps", $data->getStudentUser(), $data->getStudentCode())));	    
-		} elseif(strstr($this->format, "html")) {
-		    header("Content-Type: text/html");
-		    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
-				   sprintf("%s-%s.html", $data->getStudentUser(), $data->getStudentCode())));	    
-		}
-		$cmd = $this->getCommand();
-		$this->generate($student, $cmd);
-		
-		return true;
-	    }
+	$data = $this->manager->getStudentData($student);
+	
+	if(strstr($this->format, "pdf")) {
+	    header("Content-Type: application-pdf");
+	    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
+			   sprintf("%s-%s.pdf", $data->getStudentUser(), $data->getStudentCode())));	    
+	} elseif(strstr($this->format, "ps")) {
+	    header("Content-Type: application-postscript");
+	    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
+			   sprintf("%s-%s.ps", $data->getStudentUser(), $data->getStudentCode())));	    
+	} elseif(strstr($this->format, "html")) {
+	    header("Content-Type: text/html");
+	    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
+			   sprintf("%s-%s.html", $data->getStudentUser(), $data->getStudentCode())));	    
 	}
-	return false;
+	
+	$this->student = $student;
+	$this->generate();
     }
     
     // 
@@ -551,8 +604,8 @@ class ResultPDF extends HtmlDocPDF
     // 
     public function save($student, $file)
     {
-	$cmd = $this->getCommand($file);
-	$this->generate($student, $cmd);	
+	$this->student = $student;
+	$this->generate($file);
     }
     
     // 
@@ -581,7 +634,9 @@ class ResultPDF extends HtmlDocPDF
 	    } else {
 		throw new Exception(sprintf("Unknown format '%s'", $this->format));
 	    }
-	    $this->save($student->getStudentID(), $file);
+	    
+	    $this->student = $student->getStudentID();
+	    $this->generate($file);
 	}
     }
     
