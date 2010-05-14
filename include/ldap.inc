@@ -189,10 +189,75 @@ class LDAPSearch
     
     private $attr = null;    // Search attribute list.
     
+    private $dc = null;
+    private $db = null;
+    
     public function __construct($server = null, $basedn = null)
     {
 	$this->server = $server;
 	$this->basedn = $basedn;
+    }
+    
+    public function __destruct()
+    {
+	$this->close();
+    }
+
+    // 
+    // Explicit open connection with LDAP, otherwise called at first search.
+    // 
+    public function open()
+    {
+	// 
+	// Establish connection with the LDAP server. Returns a link
+	// resource that we use in subsequent calls.
+	// 
+	$this->dc = ldap_connect($this->server, $this->port);
+	if(!$this->dc) {
+	    throw new LDAPException(sprintf(_("Failed connect to LDAP server %s:%d"),
+					    $this->server, $this->port));
+	}
+	
+	// 
+	// Set LDAP protocol version.
+	// 
+	if(defined("LDAP_PROTOCOL_VERSION")) {
+	    if(!ldap_set_option($this->dc, LDAP_OPT_PROTOCOL_VERSION, LDAP_PROTOCOL_VERSION)) {
+		throw new LDAPException(sprintf(_("Failed set LDAP protocol version %d"), 
+						LDAP_PROTOCOL_VERSION));
+	    }
+	}
+	
+	// 
+	// Try to bind to the directory service.
+	// 
+	$this->db = false;
+	if(isset($this->user)) {
+	    if(isset($this->pass)) {
+		$this->db = @ldap_bind($this->dc, $this->user, $this->pass);
+	    } else {
+		$this->db = @ldap_bind($this->dc, $this->user);
+	    }
+	} else {
+	    $this->db = ldap_bind($this->dc);    // Anonymous
+	}
+	if(!$this->db) {
+	    throw new LDAPException(ldap_error($this->dc), ldap_errno($this->dc));
+	}
+    }
+    
+    public function close()
+    {
+	if(isset($this->dc)) {
+	    // 
+	    // Disconnect from LDAP server:
+	    // 
+	    if(!ldap_unbind($this->dc)) {
+		throw new LDAPException(ldap_error($this->dc), ldap_errno($this->dc));
+	    } else {
+		$this->dc = null;
+	    }
+	}
     }
     
     // 
@@ -283,67 +348,30 @@ class LDAPSearch
     private function search($filter)
     {	
 	// 
-	// Establish connection with the LDAP server. Returns a link
-	// resource that we use in subsequent calls.
+	// Open connection on first search.
 	// 
-	$dc = ldap_connect($this->server, $this->port);
-	if(!$dc) {
-	    throw new LDAPException(sprintf(_("Failed connect to LDAP server %s:%d"),
-					    $this->server, $this->port));
+	if(!isset($this->dc)) {
+	    $this->open();
 	}
 	
-	// 
-	// Set LDAP protocol version.
-	// 
-	if(defined("LDAP_PROTOCOL_VERSION")) {
-	    if(!ldap_set_option($dc, LDAP_OPT_PROTOCOL_VERSION, LDAP_PROTOCOL_VERSION)) {
-		throw new LDAPException(sprintf(_("Failed set LDAP protocol version %d"), 
-						LDAP_PROTOCOL_VERSION));
-	    }
-	}
-	
-	// 
-	// Try to bind to the directory service.
-	// 
-	$db = false;
-	if(isset($this->user)) {
-	    if(isset($this->pass)) {
-		$db = @ldap_bind($dc, $this->user, $this->pass);
-	    } else {
-		$db = @ldap_bind($dc, $this->user);
-	    }
-	} else {
-	    $db = ldap_bind($dc);    // Anonymous
-	}
-	if(!$db) {
-	    throw new LDAPException(ldap_error($dc), ldap_errno($dc));
-	}
-
 	// 
 	// Perform the search against using the supplied filter:
 	// 
 	if(isset($this->attr)) {
-	    $rs = ldap_search($dc, $this->basedn, $filter, $this->attr);
+	    $rs = ldap_search($this->dc, $this->basedn, $filter, $this->attr);
 	} else {
-	    $rs = ldap_search($dc, $this->basedn, $filter);
+	    $rs = ldap_search($this->dc, $this->basedn, $filter);
 	}
 	if(!$rs) {
-	    throw new LDAPException(ldap_error($dc), ldap_errno($dc));
+	    throw new LDAPException(ldap_error($this->dc), ldap_errno($this->dc));
 	}
 	
 	// 
 	// Get all entries:
 	// 
-	$de = ldap_get_entries($dc, $rs);	
+	$de = ldap_get_entries($this->dc, $rs);	
 	if(!$de) {
-	    throw new LDAPException(ldap_error($dc), ldap_errno($dc));
-	}
-	
-	// 
-	// Disconnect from LDAP server:
-	// 
-	if(!ldap_unbind($dc)) {
-	    throw new LDAPException(ldap_error($dc), ldap_errno($dc));
+	    throw new LDAPException(ldap_error($this->dc), ldap_errno($this->dc));
 	}
 	
 	// 
