@@ -166,7 +166,9 @@ class DecoderPage extends TeacherPage
     
     public function __destruct()
     {
-	$this->ldap->close();
+	if(isset($this->ldap)) {
+	    $this->ldap->close();
+	}
     }
 
     // 
