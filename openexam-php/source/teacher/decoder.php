@@ -52,12 +52,12 @@ include "include/error.inc";
 // Include database support:
 // 
 include "include/database.inc";
+include "include/ldap.inc";
 
 // 
 // Business logic:
 // 
 include "include/exam.inc";
-include "include/ldap.inc";
 include "include/pdf.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
@@ -149,7 +149,6 @@ class DecoderPage extends TeacherPage
 
     private $manager;
     private $decoder;
-    private $ldap;
     
     public function __construct()
     {
@@ -158,19 +157,9 @@ class DecoderPage extends TeacherPage
 	if(isset($_REQUEST['exam'])) {
 	    $this->manager = new Manager($_REQUEST['exam']);
 	    $this->decoder = new Decoder($_REQUEST['exam']);
-	    
-	    $this->ldap = LDAPSearch::factory();
-	    $this->ldap->setAttributeFilter(array( "cn", "mail" ));
 	}
     }
     
-    public function __destruct()
-    {
-	if(isset($this->ldap)) {
-	    $this->ldap->close();
-	}
-    }
-
     // 
     // The main entry point. This is where all processing begins.
     // 
@@ -393,7 +382,7 @@ class DecoderPage extends TeacherPage
 	$students = $board->getStudents();
 	foreach($students as $student) {
 	    $array = array();
-	    $student->setStudentName($this->getCommonName($student->getStudentUser()));
+	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
 	    $array[] = $student->getStudentName();
 	    $array[] = $student->getStudentUser();
 	    $array[] = $student->getStudentCode();
@@ -418,22 +407,6 @@ class DecoderPage extends TeacherPage
 	}
     }
     
-    // 
-    // Utility function for looking up the common name in LDAP.
-    // 
-    private function getCommonName($student, $missing = null)
-    {
-	$user = $this->ldap->searchUID($student);
-	if(!$user->first()->hasCN()) {
-	    $user = $this->ldap->searchPrincipalName($student);
-	}
-	if(!$user->first()->hasCN()) {
-	    return $missing;
-	} else {
-	    return utf8_decode($user->first()->getCN()->first());
-	}
-    }
-
     // 
     // Show the page where caller can chose to download the result and score
     // board in different formats.
@@ -473,7 +446,7 @@ class DecoderPage extends TeacherPage
 	printf("<option value=\"all\">%s</option>\n", _("All students"));
 	printf("<option value=\"0\" disabled=\"true\">---</option>\n");
 	foreach($students as $student) {
-	    $student->setStudentName($this->getCommonName($student->getStudentUser(), "???"));
+	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
 	    printf("<option value=\"%d\">%s (%s) [%s]</option>\n", 
 		   $student->getStudentID(),
 		   $student->getStudentName(),
@@ -557,7 +530,7 @@ class DecoderPage extends TeacherPage
 	// 
 	$students = $board->getStudents();
 	foreach($students as $student) {
-	    $student->setStudentName($this->getCommonName($student->getStudentUser()));
+	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
 	    printf("<tr><td nowrap>%s</td><td>%s</td><td>%s</td>",
 		   $student->getStudentName(),
 		   $student->getStudentUser(),
