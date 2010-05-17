@@ -433,7 +433,8 @@ class Manager
     public function getStudents()
     {
 	$sql = sprintf("SELECT id AS StudentID, exam_id AS ExamID, user AS StudentUser, code AS StudentCode
-			FROM students WHERE exam_id = %d", $this->exam);
+			FROM students WHERE exam_id = %d
+			ORDER BY user", $this->exam);
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);			
     }
