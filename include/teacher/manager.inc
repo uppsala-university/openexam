@@ -379,6 +379,25 @@ class Manager
 	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 	return intval($row[0]) >= 1;
     }
+
+    // 
+    // Return true if this user is a decoder for this exam.
+    // 
+    public function isDecoder($user)
+    {
+        $db = Database::getConnection();
+	$db->setFetchMode(MDB2_FETCHMODE_ORDERED);
+	$sql = sprintf("SELECT COUNT(*) FROM decoders
+			 WHERE user = '%s' AND exam_id = %d", $user, $this->exam);
+	$res = $db->query($sql);
+	if(PEAR::isError($res)) {
+	    throw new DatabaseException($res->getMessage());
+	}
+	$row = $res->fetchRow();
+    
+	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+	return intval($row[0]) >= 1;
+    }
     
     // 
     // Get all users granted contributor rights on this exam.
@@ -539,11 +558,14 @@ class Manager
 	}
 	
 	// 
-	// Add all roles to caller:
+	// Add prefered roles to caller:
 	// 
-	$copy->addContributor(phpCAS::getUser());
-	$copy->addExaminator(phpCAS::getUser());
-	$copy->addDecoder(phpCAS::getUser());
+	if(!$copy->isContributor(phpCAS::getUser())) {
+	    $copy->addContributor(phpCAS::getUser());
+	}
+	if(!$copy->isDecoder(phpCAS::getUser())) {
+	    $copy->addDecoder(phpCAS::getUser());
+	}
 	
 	// 
 	// Copy all questions, but without any associated answers.
