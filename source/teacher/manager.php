@@ -241,7 +241,6 @@ class ManagerPage extends TeacherPage
 	    // By default, add creator of the exam as contributor, examinator and decoder.
 	    // 
 	    $manager->addContributor(phpCAS::getUser());
-	    $manager->addExaminator(phpCAS::getUser());
 	    $manager->addDecoder(phpCAS::getUser());
 	    header(sprintf("location: manager.php?exam=%d", $manager->getExamID()));
 	}
@@ -384,7 +383,11 @@ class ManagerPage extends TeacherPage
 	printf("<p>" . 
 	       _("This page let you add/delete contributors, examinators, decoders and questions from this exam. ") . 
 	       _("Not all options might be available, i.e. its not possible to add questions to an already started examination." ) .
-	       "</p>");
+	       "</p>\n");
+	printf("<p>" . 
+	       _("For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination.") .
+	       "</p>\n");
+	
 	$tree->output();
     }
     

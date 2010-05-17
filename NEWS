@@ -5,6 +5,9 @@ Version 1.5 (2010-05-17):
 	  
 	* The score board data can be downloaded as CSV/TSV (comma- resp. tab 
 	  separated data) for processing in a spread sheet application.
+	  
+	* Common names for all system users (teachers) and students are now looked
+	  up in the LDAP directory.
 
 Version 1.4 (2010-05-11):
 
