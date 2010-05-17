@@ -55,13 +55,13 @@ include "include/error.inc";
 // Include database support:
 // 
 include "include/database.inc";
+include "include/ldap.inc";
 
 // 
 // Business logic:
 // 
 include "include/admin.inc";
 include "include/teacher.inc";
-include "include/ldap.inc";
 
 // 
 // The index page:
