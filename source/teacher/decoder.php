@@ -452,7 +452,7 @@ class DecoderPage extends TeacherPage
 	       "</p>\n");
 	printf("<p>"  .	
 	       _("Notice that the language used in the generated file will be the same as your currently selected language (%s).") . 
-	       "</p>\n", $locale);
+	       "</p>\n", _($locale));
 	
 	$options = array( "pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML" );
 	printf("<form action=\"decoder.php\" method=\"GET\">\n");
