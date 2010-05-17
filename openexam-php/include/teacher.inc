@@ -128,9 +128,10 @@ class Teacher
 // contributor and examinator pages.
 // 
 class TeacherPage extends BasePage
-{
+{   
     private $params;
     protected $roles;
+    private $ldap;
     
     public function __construct($title, $params)
     {
@@ -143,6 +144,13 @@ class TeacherPage extends BasePage
 	parent::__construct($title);
     }
 
+    public function __destruct()
+    {
+	if(isset($this->ldap)) {
+	    $this->ldap->close();
+	}
+    }
+    
     // 
     // Kill script execution if caller is not autorized.
     // 
@@ -193,6 +201,44 @@ class TeacherPage extends BasePage
 	    }
 	}
     }
+    
+    // 
+    // Support function for doing LDAP lookup.
+    // 
+    protected function getCommonName($user, $lookup = LDAP_LOOKUP_BOTH)
+    {
+	if(!isset($this->ldap)) {
+	    $this->ldap = LDAPSearch::factory();
+	    $this->ldap->setAttributeFilter(array("cn"));
+	}
+	if($lookup & LDAP_LOOKUP_UID) {	    
+	    $entry = $this->ldap->searchUID($user);
+	    if($entry->first()->hasCN()) {		
+		return $entry->first()->getCN()->first();
+	    }
+	}
+	if($lookup & LDAP_LOOKUP_PRINCIPAL) {
+	    $entry = $this->ldap->searchPrincipalName($user);
+	    if($entry->first()->hasCN()) {
+		return $entry->first()->getCN()->first();
+	    }
+	}
+	return $user;
+    }
+
+    // 
+    // Similar to getCommonName(), but returns a formatted user name string.
+    // 
+    protected function getFormatName($user, $lookup = LDAP_LOOKUP_BOTH)
+    {
+	$name = $this->getCommonName($user, $lookup);
+	if($name != $user) {
+	    return sprintf("%s (%s)", utf8_decode($name), $user);
+	} else {
+	    return $user;
+	}
+    }
+    
 }
 
 ?>

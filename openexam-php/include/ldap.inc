@@ -11,7 +11,18 @@
 // LDAP search support.
 // 
 
-define("LDAP_STANDARD_PORT", 389);
+if(!defined("LDAP_STANDARD_PORT")) {
+    define ("LDAP_STANDARD_PORT", 389);
+}
+if(!defined("LDAP_LOOKUP_UID")) {
+    define ("LDAP_LOOKUP_UID", 1);
+}
+if(!defined("LDAP_LOOKUP_PRINCIPAL")) {
+    define ("LDAP_LOOKUP_PRINCIPAL", 2);
+}
+if(!defined("LDAP_LOOKUP_BOTH")) {
+    define ("LDAP_LOOKUP_BOTH", 3);
+}
 
 // 
 // Our custom LDAP exception.

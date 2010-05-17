@@ -52,6 +52,7 @@ include "include/error.inc";
 // Include database support:
 // 
 include "include/database.inc";
+include "include/ldap.inc";
 
 // 
 // Business logic:
@@ -265,7 +266,7 @@ class ExaminatorPage extends TeacherPage
 	$child = $root->addChild(_("Properties:"));
 	$stobj = $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime()))));
 	$etobj = $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime()))));
-	$child->addChild(sprintf("%s: %s", _("Creator"), utf8_decode($data->getExamCreator())));
+	$child->addChild(sprintf("%s: %s", _("Creator"), $this->getFormatName($data->getExamCreator())));
 	$child->addChild(sprintf("%s: %d", _("Students"), $students->count()));
 	
 	if($info->isExaminatable()) {
@@ -285,11 +286,14 @@ class ExaminatorPage extends TeacherPage
 	}
 	if($students->count() > 0) {
 	    foreach($students as $student) {
-		if($info->isDecoded()) {
-		    $subobj = $child->addChild(sprintf("<code>%s -> %s</code>", $student->getStudentCode(), $student->getStudentUser()));
+		if($info->isDecoded() || EXAMINATOR_VISIBLE_IDENTITIES) {
+		    $student->setStudentName($this->getFormatName($student->getStudentUser()));
 		} else {
-		    $subobj = $child->addChild(sprintf("<code>%s -> %s</code>", $student->getStudentCode(), "xxx"));
+		    $student->setStudentName("xxx");
 		}
+		$subobj = $child->addChild(sprintf("<code>%s -> %s</code>", 
+						   $student->getStudentCode(), 
+						   $student->getStudentName()));
 		if($info->isExaminatable()) {
 		    $subobj->addLink(_("Delete"), 
 				     sprintf("?exam=%d&amp;action=delete&amp;user=%d", 
@@ -337,7 +341,7 @@ class ExaminatorPage extends TeacherPage
 				sprintf("?exam=%d&amp;action=edit", $exam->getExamID()),
 				_("Click on this link to reschedule the examination"));
 	    }
-	    $child->addChild(sprintf("%s: %s", _("Creator"), utf8_decode($exam->getExamCreator())));
+	    $child->addChild(sprintf("%s: %s", _("Creator"), $this->getFormatName($exam->getExamCreator())));
 	}
 	$tree->output();
     }

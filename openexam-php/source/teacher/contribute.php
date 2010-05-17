@@ -54,12 +54,13 @@ include "include/error.inc";
 // Include database support:
 // 
 include "include/database.inc";
+include "include/ldap.inc";
 
 // 
 // Business logic:
 // 
-include "include/teacher.inc";
 include "include/exam.inc";
+include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/contribute.inc";
 
@@ -385,7 +386,7 @@ class ContributePage extends TeacherPage
 
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
-	
+
 	$exams = Contribute::getExams(phpCAS::getUser());	
 	foreach($exams as $exam) {
 	    $manager = new Manager($exam->getExamID());
@@ -399,7 +400,7 @@ class ContributePage extends TeacherPage
 	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
 	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
 	    $child->addChild(sprintf("%s: %s", _("Created"), strftime(DATETIME_FORMAT, strtotime($exam->getExamCreated()))));
-	    $child->addChild(sprintf("%s: %s", _("Creator"), $exam->getExamCreator()));
+	    $child->addChild(sprintf("%s: %s", _("Creator"), $this->getFormatName($exam->getExamCreator())));
 	}
 	$tree->output();
     }
