@@ -474,10 +474,11 @@ class DecoderPage extends TeacherPage
 		   $student->getStudentUser(),
 		   $student->getStudentCode());
 	}
-	printf("</select>\n");	
+	printf("</select>\n");
 	printf("<br/>\n");
 	printf("<label for=\"submit\">&nbsp</label>\n");	
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
+	printf("<input type=\"submit\" value=\"%s\" title=\"%s\" />\n", 
+	       _("Submit"), _("Please note that it might take some time to complete your request, especial if the examination has a lot of students."));
 	printf("</form>\n");
 
 	// 
@@ -502,12 +503,19 @@ class DecoderPage extends TeacherPage
 	printf("<label for=\"submit\">&nbsp</label>\n");	
 	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
 	printf("</form>\n");
+	
+	// 
+	// Info on online browsing.
+	// 
+	printf("<h5>" . _("View Score Board") . "</h5>\n");
+	printf("<p>"  . _("It's possible to <a href=\"%s\">review the score board online</a> by following the link.") . "</p>\n",
+	       sprintf("?exam=%d&amp;action=show", $exam)); 
     }
     
     // 
     // Shows the score board with the anonymous identity disclosed.
     // 
-    private function showScores($exam)
+    private function showScore($exam)
     {
 	$data = $this->manager->getData();
 	
