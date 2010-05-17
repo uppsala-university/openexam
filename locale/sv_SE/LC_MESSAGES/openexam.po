@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.4\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-05-18 01:38+0200\n"
-"PO-Revision-Date: 2010-05-18 01:42+0200\n"
+"POT-Creation-Date: 2010-05-18 01:47+0200\n"
+"PO-Revision-Date: 2010-05-18 01:47+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -128,8 +128,9 @@ msgid "Score Table"
 msgstr "Poängtabell"
 
 #: include/pdf.inc:318
-msgid "This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-'."
-msgstr "Den här tabellen visar en summering av din poängsumma jämfört med maximala antalet poäng. Frågor där svar saknas är markerade med '-'."
+msgid "This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."
+msgstr ""
+"Den här tabellen visar en summering av din poängsumma jämfört med maximala antalet poäng. Frågor där svar saknas är markerade med '-' i tabellen."
 
 #: include/pdf.inc:320 include/pdf.inc:351 source/teacher/correct.php:194
 #: source/teacher/correct.php:200 source/teacher/correct.php:347
@@ -1136,8 +1137,7 @@ msgstr "Vissa operationer kan saknas, t.ex. det är inte möjligt att lägga till f
 #: source/teacher/manager.php:388
 #, php-format
 msgid "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
-msgstr ""
-"Av integritetsskäl rörande anonymitet bör inte personer med rollen contributor (bidragare) samtidigt inneha rollen som examinator på en och samma examination."
+msgstr "Av integritetsskäl rörande anonymitet bör inte personer med rollen contributor (bidragare) samtidigt inneha rollen som examinator på en och samma examination."
 
 #: source/teacher/manager.php:405
 msgid "UU-ID:"
