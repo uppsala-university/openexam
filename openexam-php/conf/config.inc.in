@@ -112,7 +112,7 @@ define ('RFC822_XMAILER_HEADER', "OpenExam PHP Equinox/1.0");
 define ('DATETIME_FORMAT', '%x %X');
 define ('TIME_FORMAT', '%X');
 define ('DATE_FORMAT', '%x');
-define ('DATETIME_NONE', '2100-01-01');
+define ('DATETIME_NONE', '2050-01-01');
 
 // 
 // Expose real identities to examinators.
