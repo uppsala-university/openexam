@@ -315,7 +315,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	// The answer result details section.
 	// 
 	fprintf($stream, "<h2>%s</h2>\n", _("Score Table"));
-	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-'."));
+	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."));
 	fprintf($stream, "<table><tr><th align=\"right\">%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
 		_("Question"), _("Score"), _("Max score"), _("Percent"));
 	$questions = $board->getQuestions();
