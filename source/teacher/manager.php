@@ -60,6 +60,7 @@ include "include/error.inc";
 // Include database support:
 // 
 include "include/database.inc";
+include "include/ldap.inc";
 
 // 
 // Business logic:
@@ -316,7 +317,7 @@ class ManagerPage extends TeacherPage
 	}
 	$contributors = $manager->getContributors();
 	foreach($contributors as $contributor) {
-	    $subobj = $child->addChild($contributor->getContributorUser());
+	    $subobj = $child->addChild($this->getFormatName($contributor->getContributorUser()));
 	    if($info->isContributable()) {
 		$subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=contributor&amp;user=%d", 
 						      $contributor->getExamID(),
@@ -333,7 +334,7 @@ class ManagerPage extends TeacherPage
 	}
 	$examinators = $manager->getExaminators();
 	foreach($examinators as $examinator) {
-	    $subobj = $child->addChild($examinator->getExaminatorUser());
+	    $subobj = $child->addChild($this->getFormatName($examinator->getExaminatorUser()));
 	    if($info->isExaminatable()) {
 		$subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=examinator&amp;user=%d", 
 						      $examinator->getExamID(),
@@ -348,7 +349,7 @@ class ManagerPage extends TeacherPage
 	$child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=decoder", $data->getExamID()));
 	$decoders = $manager->getDecoders();
 	foreach($decoders as $decoder) {
-	    $subobj = $child->addChild($decoder->getDecoderUser());
+	    $subobj = $child->addChild($this->getFormatName($decoder->getDecoderUser()));
 	    $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=decoder&amp;user=%d",
 						  $decoder->getExamID(),
 						  $decoder->getDecoderID()));
