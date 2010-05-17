@@ -440,6 +440,8 @@ class DecoderPage extends TeacherPage
     // 
     private function showDownload($exam)
     {
+	global $locale;
+	
 	// 
 	// The form for downloading the results:
 	// 
@@ -448,6 +450,10 @@ class DecoderPage extends TeacherPage
 	       _("This section lets you download the results for all or individual students in different formats. ") . 
 	       _("The result contains the complete examination with answers and scores.") .
 	       "</p>\n");
+	printf("<p>"  .	
+	       _("Notice that the language used in the generated file will be the same as your currently selected language (%s).") . 
+	       "</p>\n", $locale);
+	
 	$options = array( "pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML" );
 	printf("<form action=\"decoder.php\" method=\"GET\">\n");
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $this->manager->getExamID());
