@@ -453,14 +453,14 @@ class DecoderPage extends TeacherPage
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $this->manager->getExamID());
 	printf("<input type=\"hidden\" name=\"mode\" value=\"result\" />\n");
 	printf("<input type=\"hidden\" name=\"action\" value=\"save\" />\n");	
-	printf("<label for=\"format\">%s</label>\n", _("Format"));
+	printf("<label for=\"format\">%s:</label>\n", _("Format"));
 	printf("<select name=\"format\">\n");
 	foreach($options as $name => $label) {
 	    printf("<option value=\"%s\">%s</option>\n", $name, $label);
 	}
 	printf("</select>\n");
 	printf("<br/>\n");
-	printf("<label for=\"select\">%s</label>\n", _("Select"));
+	printf("<label for=\"select\">%s:</label>\n", _("Select"));
 	printf("<select name=\"student\">\n");
  	$board = new ScoreBoard($this->manager->getExamID());
 	$students = $board->getStudents();
@@ -493,7 +493,7 @@ class DecoderPage extends TeacherPage
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\">\n", $this->manager->getExamID());
 	printf("<input type=\"hidden\" name=\"mode\" value=\"scores\" />\n");
 	printf("<input type=\"hidden\" name=\"action\" value=\"save\" />\n");	
-	printf("<label for=\"format\">%s</label>\n", _("Format"));
+	printf("<label for=\"format\">%s:</label>\n", _("Format"));
 	printf("<select name=\"format\">\n");
 	foreach($options as $name => $label) {
 	    printf("<option value=\"%s\">%s</option>\n", $name, $label);
