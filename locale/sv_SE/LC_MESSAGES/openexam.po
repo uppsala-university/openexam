@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: openexam-php 1.4\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
 "POT-Creation-Date: 2010-05-17 21:32+0200\n"
-"PO-Revision-Date: 2010-05-17 21:34+0200\n"
+"PO-Revision-Date: 2010-05-17 21:41+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -1189,7 +1189,8 @@ msgstr "Användare"
 #: source/teacher/decoder.php:450
 #, php-format
 msgid "This section lets you download the results for all or individual students in different formats. "
-msgstr "Den här avdelningen låter dig ladda ner resultat i olika format för alla studenter smatidigt eller individuellt per student. "
+msgstr ""
+"Den här avdelningen låter dig ladda ner resultat i olika format för alla studenter samtidigt eller individuellt per student. "
 
 #: source/teacher/decoder.php:451
 #, php-format
