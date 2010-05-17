@@ -1,3 +1,11 @@
+Verison 1.5 (2010-mm-dd):
+
+	* Result from examination can now be exported as PDF/PS/HTML or generated
+	  as batch jobs using admin/result.pdf.
+	  
+	* The score board data can be downloaded as CSV/TSV (comma- resp.
+	  tab separated data) for processing in a spread sheet application.
+
 Version 1.4 (2010-05-11):
 
 	* It's now possible to utilize and correct answers to multiple and

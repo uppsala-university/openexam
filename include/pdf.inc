@@ -14,6 +14,11 @@
 // structured HTML (called *.book files) to PDF, by piping HTML on its stdin using
 // a UNIX command pipeline.
 // 
+// These classes should probably be modified to use a cache of already generated
+// files, especial useful when generating results for a whole exam (takes about 
+// 5 sec for 30 students). For a large axamination, we might hit the script execution
+// timeout.
+// 
 
 if(!defined('PDF_ENGINE')) {
     define ('PDF_ENGINE', 'htmldoc');
@@ -310,7 +315,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	// The answer result details section.
 	// 
 	fprintf($stream, "<h2>%s</h2>\n", _("Score Table"));
-	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores."));
+	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-'."));
 	fprintf($stream, "<table><tr><th align=\"right\">%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
 		_("Question"), _("Score"), _("Max score"), _("Percent"));
 	$questions = $board->getQuestions();
@@ -558,12 +563,21 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
     // 
     private function generate($target = null)
     {
+	$this->ldap->setAttributeFilter(array( "cn" ));
+	
 	// 
 	// We must create the frontpage before launching the process.
 	// 
 	$data = $this->manager->getStudentData($this->student);
 	$user = $this->ldap->searchUID($data->getStudentUser());
-	$name = $user->first()->getCN()->first();
+	if(!$user->first()->hasCN()) {
+	    $user = $this->ldap->searchPrincipalName($data->getStudentUser());
+	}
+	if($user->first()->hasCN()) {
+	    $name = $user->first()->getCN()->first();
+	} else {
+	    $name = "";
+	}
 	
 	if(file_exists($this->frontpage)) {
 	    unlink($this->frontpage);
@@ -582,11 +596,11 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	$data = $this->manager->getStudentData($student);
 	
 	if(strstr($this->format, "pdf")) {
-	    header("Content-Type: application-pdf");
+	    header("Content-Type: application/pdf");
 	    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
 			   sprintf("%s-%s.pdf", $data->getStudentUser(), $data->getStudentCode())));	    
 	} elseif(strstr($this->format, "ps")) {
-	    header("Content-Type: application-postscript");
+	    header("Content-Type: application/postscript");
 	    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
 			   sprintf("%s-%s.ps", $data->getStudentUser(), $data->getStudentCode())));	    
 	} elseif(strstr($this->format, "html")) {
@@ -637,6 +651,77 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	    
 	    $this->student = $student->getStudentID();
 	    $this->generate($file);
+	}
+    }
+
+    // 
+    // Send all results as a zip-file.
+    // 
+    public function sendAll()
+    {
+	$dirname = tempnam("/tmp", "openexam-result");
+	$zipname = tempnam("/tmp", "openexam-result");
+
+	if(!$dirname || !$zipname) {
+	    throw new Exception("Failed create temporary file.");
+	}
+
+	// 
+	// For naming the result zip-file. Note that we use RFC 2822 format of date:
+	// 
+	$data = $this->manager->getData();
+	$name = sprintf("%s - %s", $data->getExamName(), date('r', strtotime($data->getExamStartTime())));
+	
+	$zip = new ZipArchive();
+	if(!$zip->open($zipname, ZIPARCHIVE::OVERWRITE)) {
+	    throw new Exception("Failed create zip-archive.");
+	}
+	unlink($dirname);
+	if(!mkdir($dirname)) {
+	    throw new Exception("Failed create temporary directory.");	    
+	}
+
+	$this->saveAll($dirname);
+	if(!($handle = opendir($dirname))) {
+	    throw new Exception("Failed open zip entry directory.");
+	}
+	
+	// 
+	// Must add all files to zip-file and close the zip before unlinking the
+	// temporary files added to zip-file, otherwise we get an empty archive.
+	// 
+	while(($file = readdir($handle)) !== false) {
+	    if($file == "." || $file == "..") {
+		continue;
+	    }
+	    $path = sprintf("%s/%s", $dirname, $file);
+	    $zip->addFile($path, $file);
+	}
+	$zip->close();
+	rewinddir($handle);
+	while(($file = readdir($handle)) !== false) {
+	    if($file != "." && $file == "..") {
+		$path = sprintf("%s/%s", $dirname, $file);
+		unlink($path);
+	    }
+	}
+	closedir($handle);
+	
+	header("Content-Type: application/zip");
+	header(sprintf("Content-Disposition: attachment;filename=\"%s.zip\"", $name));
+	header("Cache-Control: no-cache");
+	header("Pragma-directive: no-cache");
+	header("Cache-directive: no-cache");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+	
+	readfile($zipname);
+	
+	if(file_exists($zipname)) {
+	    unlink($zipname);
+	}
+	if(file_exists($dirname)) {
+	    rmdir($dirname);
 	}
     }
     
