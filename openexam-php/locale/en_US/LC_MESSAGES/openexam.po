@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.4\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-05-18 01:38+0200\n"
-"PO-Revision-Date: 2010-05-18 01:39+0200\n"
+"POT-Creation-Date: 2010-05-18 01:47+0200\n"
+"PO-Revision-Date: 2010-05-18 01:47+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English\n"
 "MIME-Version: 1.0\n"
@@ -127,8 +127,9 @@ msgid "Score Table"
 msgstr "Score Table"
 
 #: include/pdf.inc:318
-msgid "This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-'."
-msgstr "This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-'."
+msgid "This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."
+msgstr ""
+"This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."
 
 #: include/pdf.inc:320 include/pdf.inc:351 source/teacher/correct.php:194
 #: source/teacher/correct.php:200 source/teacher/correct.php:347
@@ -1135,8 +1136,7 @@ msgstr "Not all options might be available, i.e. its not possible to add questio
 #: source/teacher/manager.php:388
 #, php-format
 msgid "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
-msgstr ""
-"For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
+msgstr "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
 
 #: source/teacher/manager.php:405
 msgid "UU-ID:"
