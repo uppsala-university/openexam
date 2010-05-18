@@ -181,6 +181,7 @@ class ExaminatorPage extends TeacherPage
     {
 	printf("<h3>" . _("Add Students") . "</h3>\n");
 	printf("<p>"  . _("You can add students one by one or as a list of codes/student ID pairs. The list should be a newline separated list of username/code pairs where the username and code is separated by tabs.") . "</p>\n");
+	printf("<p>"  . _("If the student code is missing, then the system is going to generate a random code.") . "</p>\n");
 
 	printf("<h5>" . _("Add student one by one:") . "</h5>\n");
 	printf("<form action=\"examinator.php\" method=\"GET\">\n");
@@ -209,7 +210,7 @@ class ExaminatorPage extends TeacherPage
 	printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
 	printf("</form>\n");
     }
-
+    
     // 
     // Save a single student.
     // 
@@ -226,10 +227,18 @@ class ExaminatorPage extends TeacherPage
     private function saveAddStudents($exam, $user)
     {
 	$users = explode("\n", trim($user));
+	print_r($users);
 	foreach($users as $row) {
-	    list($user, $code) = explode("\t", trim($row)); 
-	    $data[$user] = $code;
+	    if(($line = trim($row)) != "") {
+		if(strstr($line, "\t")) {
+		    list($user, $code) = explode("\t", trim($row)); 
+		    $data[$user] = $code;
+		} else {
+		    $data[$line] = null;
+		}
+	    }
 	}
+	
 	$handler = new Examinator($exam);
 	$handler->addStudents($data);
 	header(sprintf("location: examinator.php?exam=%d", $exam));
