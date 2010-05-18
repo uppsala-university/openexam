@@ -61,6 +61,10 @@ include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/examinator.inc";
 
+if(!defined("EXAMINATOR_VISIBLE_IDENTITIES")) {
+    define ("EXAMINATOR_VISIBLE_IDENTITIES", true);
+}
+
 // 
 // The examinator page:
 // 
@@ -267,9 +271,15 @@ class ExaminatorPage extends TeacherPage
 	$students = $handler->getStudents();
 	
 	printf("<h3>" . _("Showing Examination") . "</h3>\n");
-	printf("<p>"  . _("Showing details for the examination <i>'%s'</i>. No usernames will be exposed unless the examination has already been decoded.") . "</p>\n", 
-	       utf8_decode($data->getExamDescription()));
-
+	printf("<p>" . 
+	       _("Showing details for the examination <i>'%s'</i>. ") . 
+	       _("Use the links to add and remove students, and reschedule the start and end time of the examination. ") .
+	       "</p>\n", utf8_decode($data->getExamDescription()));
+	
+	if(!EXAMINATOR_VISIBLE_IDENTITIES) {
+	    printf("<p><img src=\"../icons/nuvola/info.png\" /> "  . _("No usernames will be exposed unless the examination has already been decoded.") . "</p>\n");
+	}
+	
 	$tree = new TreeBuilder(utf8_decode($data->getExamName()));
 	$root = $tree->getRoot();
 	$child = $root->addChild(_("Properties:"));
