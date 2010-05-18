@@ -35,11 +35,19 @@ class Examinator
 	return new ResultSet($res);
     }
 
+    private function getStudentCode($user)
+    {
+	return strtoupper(substr(md5(sprintf("%s%d", $user, time())), 0, 8));
+    }
+    
     // 
     // Add a single student to this exam.
     // 
     public function addStudent($user, $code)
     {
+	if(!isset($code) || strlen($code) == 0) {
+	    $code = $this->getStudentCode($user);
+	}
 	$sql = sprintf("INSERT INTO students(exam_id, user, code) 
 	                  VALUES(%d, '%s', '%s')", $this->exam, $user, $code);
         $res = Database::getConnection()->query($sql);
@@ -56,6 +64,9 @@ class Examinator
     {
 	$sql = "INSERT INTO students(exam_id, user, code) VALUES";
 	foreach($data as $user => $code) {
+	    if(!isset($code) || strlen($code) == 0) {
+		$code = $this->getStudentCode($user);
+	    }
 	    $sql .= sprintf("(%d, '%s', '%s'),", $this->exam, $user, $code);
 	}
 	$sql = substr($sql, 0, -1);
