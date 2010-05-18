@@ -309,21 +309,21 @@ class Manager
     // 
     // Set data for this exam or create a new exam in the database (if exam ID is 0).
     // 
-    public function setData($name, $desc, $sdate, $edate)
+    public function setData($unit, $name, $desc, $sdate, $edate)
     {
 	$db = Database::getConnection();
 	
 	if($this->exam != 0) {
-	    $sql = sprintf("UPDATE exams SET name = '%s', descr = '%s', starttime = '%s', endtime = '%s'
+	    $sql = sprintf("UPDATE exams SET orgunit = '%s', name = '%s', descr = '%s', starttime = '%s', endtime = '%s'
 			     WHERE id = '%d'", 
-			   $name, $desc, 
+			   $unit, $name, $desc, 
 			   date('Y-m-d H:i:s', $sdate), 
 			   date('Y-m-d H:i:s', $edate),
 			   $this->exam);
 	} else {
-	    $sql = sprintf("INSERT INTO exams(name, descr, starttime, endtime, created, creator)
-	                    VALUES('%s','%s','%s','%s','%s','%s')", 
-			   $name, $desc, 
+	    $sql = sprintf("INSERT INTO exams(orgunit, name, descr, starttime, endtime, created, creator)
+	                    VALUES('%s','%s','%s','%s','%s','%s','%s')", 
+			   $unit, $name, $desc, 
 			   date('Y-m-d H:i:s', $sdate), 
 			   date('Y-m-d H:i:s', $edate), 
 			   date('Y-m-d H:i:s', time()), 
@@ -539,7 +539,11 @@ class Manager
 	// 
 	$data = $this->getData();
 	$copy = new Manager(0);
-	$copy->setData($data->getExamName(), $data->getExamDescription(), strtotime(DATETIME_NONE), strtotime(DATETIME_NONE));
+	$copy->setData($data->getExamOrgUnit(), 
+		       $data->getExamName(), 
+		       $data->getExamDescription(), 
+		       strtotime(DATETIME_NONE), 
+		       strtotime(DATETIME_NONE));
 	
 	// 
 	// Duplicate the assigned contributor, examinator and decoder roles. 

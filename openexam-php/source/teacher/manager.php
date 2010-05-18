@@ -199,6 +199,9 @@ class ManagerPage extends TeacherPage
 	if($exam != 0) {
 	    printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
 	}
+	printf("<label for=\"unit\">%s</label>\n", _("Organization Unit:"));
+	printf("<input type=\"text\" name=\"unit\" value=\"%s\" size=\"50\" />\n", utf8_decode($data->getExamOrgUnit()));
+	printf("<br />\n");
 	printf("<label for=\"name\">%s</label>\n", _("Name:"));
 	printf("<input type=\"text\" name=\"name\" value=\"%s\" size=\"50\" />\n", utf8_decode($data->getExamName()));
 	printf("<br />\n");
@@ -225,7 +228,8 @@ class ManagerPage extends TeacherPage
     {
 	if(!$store) {
 	    printf("<p>" . _("Define the common properties of the exam. Click on the 'Submit' button to create this exam.") . "</p>\n");
-	    $data = new DataRecord( array( "examname" => "Name", 
+	    $data = new DataRecord( array( "examorgunit" => "Organization Unit",
+					   "examname" => "Name", 
 					   "examdescription" => "Description", 
 					   "examstarttime" => DATETIME_NONE,
 					   "examendtime"   => DATETIME_NONE));
@@ -233,7 +237,8 @@ class ManagerPage extends TeacherPage
 	    self::showExamForm(0, $data, "add");
 	} else {
 	    $manager = new Manager(0);
-	    $manager->setData(utf8_encode($_REQUEST['name']),
+	    $manager->setData(utf8_encode($_REQUEST['unit']),
+			      utf8_encode($_REQUEST['name']),
 			      utf8_encode($_REQUEST['desc']),
 			      strtotime($_REQUEST['start']),
 			      strtotime($_REQUEST['end']));
@@ -258,7 +263,8 @@ class ManagerPage extends TeacherPage
 	    printf("<p>" . _("This page let you edit common properties of the exam. Click on the 'Submit' button to save changes.") . "</p>\n");
 	    self::showExamForm($exam, $data, "edit");
 	} else {
-	    $manager->setData(utf8_encode($_REQUEST['name']), 
+	    $manager->setData(utf8_encode($_REQUEST['unit']),
+			      utf8_encode($_REQUEST['name']), 
 			      utf8_encode($_REQUEST['desc']), 
 			      strtotime($_REQUEST['start']), 
 			      strtotime($_REQUEST['end']));
