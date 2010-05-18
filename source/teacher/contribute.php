@@ -346,7 +346,9 @@ class ContributePage extends TeacherPage
 	$tree = new TreeBuilder(_("Questions"));
 	$root = $tree->getRoot();
 	if($info->isContributable()) {
-	    $root->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $data->getExamID()));
+	    $root->addLink(_("Add"), 
+			   sprintf("?exam=%d&amp;action=add", $data->getExamID()), 
+			   _("Click to add a question to this examination."));
 	}
 	foreach($questions as $question) {
 	    $child = $root->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
@@ -395,6 +397,9 @@ class ContributePage extends TeacherPage
 	    $child = $root->addChild(utf8_decode($exam->getExamName()));
 	    if($info->isContributable()) {
 		$child->setLink(sprintf("?exam=%d", $exam->getExamID()));
+		$child->addLink(_("Add"), 
+				sprintf("?exam=%d&amp;action=add", $exam->getExamID()),
+				_("Click to add a question to this examination."));
 	    }
 	    // TODO: add title to links!!
 	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
