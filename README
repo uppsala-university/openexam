@@ -1,9 +1,39 @@
---------------------------------------------------------
- OpenExam PHP
---------------------------------------------------------
+   
+   OPENEXAM PHP - SECURE ONLINE EXAMINATION OVER THE WEB
+   
 
-This is an system for doing exams online using the web. The system is
-written in PHP and is a quick & dirty drop'in for the complete Java EE
-solution to come soon.
+** GENERAL:
 
-// Anders Lövgren, 2010-04-21
+   OpenExam PHP is an web application for doing secure examinations over the
+   web. Currently it supports freetext, single- and multiple choice
+   questions. It has basic support for multimedia (adding video, audio and
+   images) use in questions.
+
+** SELF CORRECTING EXAMINATIONS:
+
+   If questions are of single- or multiple choice type, then the answer to
+   those are self correcting. The system will automatic assign an score for
+   answers to these questions, but the teacher (the one correcting the exam)
+   has the opportunity to override the score.
+
+** MULTIMEDIA (VIDEO AND AUDIO):
+
+   Multimedia is supported by adding an URL to the question. The system will
+   make an HTTP HEAD request to determine the content type of the media.
+   
+   Different content types can be handled by different media players (actually 
+   classes that generates the HTML to embed the media on the HTML page). The
+   default media handling can be customized inside conf/config.inc.
+
+** ACCESS ROLES:
+
+   Different users can have different roles on an examination. For example,
+   one or more persons might publish questions and correct answers, while
+   other persons are responsible for register students and decoding result
+   on the examination.
+   
+   This is controlled by the examination creator by granting and revoking
+   roles on the examination. The different kind of roles are contributor,
+   examinator and decoder.
+   
+// Anders Lövgren, 2010-05-18
