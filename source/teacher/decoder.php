@@ -102,6 +102,15 @@ class OutputTextCsv extends OutputFormatter
     }
 }
 
+class OutputTextXml extends OutputFormatter
+{
+    public function getLine(&$data)
+    {
+	parent::format($data);
+        return "<row><data>" . implode("</data><data>", $this->values) . "</data></row>";
+    }
+}
+
 class OutputTextHtml extends OutputFormatter
 {
     public function getLine(&$data)
@@ -144,7 +153,7 @@ class DecoderPage extends TeacherPage
     private $params = array( "exam"    => "/^\d+$/",
 			     "mode"    => "/^(result|scores)$/",
 			     "action"  => "/^(save|show|download)$/", 
-			     "format"  => "/^(pdf|html|ps|csv|tab)$/",
+			     "format"  => "/^(pdf|html|ps|csv|tab|xml)$/",
 			     "student" => "/^(\d+|all)$/" );
 
     private $manager;
@@ -285,8 +294,12 @@ class DecoderPage extends TeacherPage
 	    break;
 	 case "tab":
 	    self::saveScoresTab($exam, $data);
+	    break;
 	 case "csv":
 	    self::saveScoresCsv($exam, $data);
+	    break;
+	 case "xml":
+	    self::saveScoresXml($exam, $data);
 	    break;
 	 default:
 	    die(sprintf("Format %s is not supported in score board mode.", $format));
@@ -351,6 +364,38 @@ class DecoderPage extends TeacherPage
 	exit(0);
     }
 
+    // 
+    // Save the score board as XML formatted values (for import in a 
+    // spread sheet application).
+    // 
+    private function saveScoresXml($exam, &$data)
+    {
+	if(ob_get_length() > 0) {
+	    ob_end_clean();
+	}
+
+	$stream = fopen("php://memory", "r+");
+	$format = new OutputTextXml();
+	$writer = new StreamWriter($stream, $format);
+	
+	fprintf($stream, "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n");
+	fprintf($stream, "<rows>\n");
+	$this->writeScores($data, $writer, $exam);
+	fprintf($stream, "</rows>\n");
+	
+    	header("Content-Type: application/xml");
+    	header(sprintf("Content-Disposition: attachment;filename=\"%s.xml\"", $data->getExamName()));
+    	header("Cache-Control: no-cache");
+    	header("Pragma-directive: no-cache");
+    	header("Cache-directive: no-cache");
+    	header("Pragma: no-cache");
+    	header("Expires: 0");
+	
+	rewind($stream);
+	echo stream_get_contents($stream);
+	exit(0);
+    }
+    
     // 
     // Format the score table using the supplied formatter object.
     // 
@@ -467,7 +512,7 @@ class DecoderPage extends TeacherPage
 	printf("<p>"  . 
 	       _("This section lets you download the score board showing a summary view of the examination in different formats. ") . 
 	       "</p>\n");
-	$options = array( "tab" => "Tab Separated Text", "csv" => "Comma Separated Text" );
+	$options = array( "tab" => "Tab Separated Text", "csv" => "Comma Separated Text", "xml" => "XML Format Data" );
 	printf("<form action=\"decoder.php\" method=\"GET\">\n");
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\">\n", $this->manager->getExamID());
 	printf("<input type=\"hidden\" name=\"mode\" value=\"scores\" />\n");
