@@ -272,7 +272,7 @@ class CorrectionPage extends TeacherPage
 
 	if($answer->getQuestionPublisher() != phpCAS::getUser()) {
 	    ErrorPage::show(_("Access denied!"),
-			    sprintf(_("Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."), $answer->getQuestionPublisher()));
+			    sprintf(_("Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."), $this->getFormatName($answer->getQuestionPublisher())));
 	    exit(1);
 	}
 	

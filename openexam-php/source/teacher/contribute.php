@@ -367,7 +367,7 @@ class ContributePage extends TeacherPage
 		}
 	    }
 	    $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
-	    $child->addChild(sprintf("%s: %s", _("Publisher"), $question->getQuestionPublisher()));
+	    $child->addChild(sprintf("%s: %s", _("Publisher"), $this->getFormatName($question->getQuestionPublisher())));
 	    $child->addChild(sprintf("%s: %s", _("Video"), $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No")));
 	    $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
 	    $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
