@@ -590,7 +590,7 @@ class Manager
 
     // 
     // Delete this exam. Referental integrity should ensure that this function fails 
-    // if questions have answers or if exam has students.
+    // if questions have answers or if exam has students with answers.
     // 
     public function delete()
     {
@@ -601,7 +601,7 @@ class Manager
 	    throw new DatabaseException("The exam can't be safely deleted");
 	}
 	
-	foreach(array("contributor", "examinator", "decoder") as $role) {
+	foreach(array("contributor", "examinator", "decoder", "student") as $role) {
 	    $sql = sprintf("DELETE FROM ${role}s WHERE exam_id = %d", $this->exam);
 	    $res = $db->query($sql);
 	    if(PEAR::isError($res)) {
