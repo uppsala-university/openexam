@@ -365,9 +365,11 @@ class ExaminationPage extends BasePage
 	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
 	    foreach($options[1] as $option) {
 		if(in_array($option, $answers[1])) {
-	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", $option, $option);
+	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", 
+			   utf8_decode($option), utf8_decode($option));
 		} else {
-	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", $option, $option);
+	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", 
+			   utf8_decode($option), utf8_decode($option));
 	    	}
 	    }
 	} elseif($qdata->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
@@ -375,9 +377,11 @@ class ExaminationPage extends BasePage
 	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
 	    foreach($options[1] as $option) {
 		if(in_array($option, $answers[1])) {
-		    printf("<input type=\"checkbox\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", $option, $option);
+		    printf("<input type=\"checkbox\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", 
+			   utf8_decode($option), utf8_decode($option));
 		} else {
-		    printf("<input type=\"checkbox\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", $option, $option);
+		    printf("<input type=\"checkbox\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", 
+			   utf8_decode($option), utf8_decode($option));
 		}
 	    }
 	}
