@@ -1,6 +1,11 @@
-Version 1.51 (2010-mm-dd):
+Version 1.5.1 (2010-05-19):
 
 	* Fixed layout of embedded multimedia on question answer page.
+	
+	* Score board data can now be downloaded in XML format.
+	
+	* Student codes are now automatic generated if they are missing at
+	  registration time.
 	
 Version 1.5 (2010-05-18):
 
