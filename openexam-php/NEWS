@@ -1,3 +1,7 @@
+Version 1.51 (2010-mm-dd):
+
+	* Fixed layout of embedded multimedia on question answer page.
+	
 Version 1.5 (2010-05-18):
 
 	* Result from examination can now be exported as PDF/PS/HTML or generated
