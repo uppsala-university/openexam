@@ -1,0 +1,64 @@
+/* Format as -*- C -*- code.
+ * 
+ * Custom CSS for pages containing multimedia (video and/or audio)
+ * 
+ * Author: Anders Lövgren
+ * Date:   2010-05-19
+ */
+
+/**
+ *  The question view is split in two columns:
+ */
+div.left {
+	float: left;
+	width: 450px;
+}
+div.right {
+	float: right;
+	width: 320px;
+}
+
+/**
+ *  Custom size for textarea.
+ */
+textarea.answer {
+	width: 430px;
+	height: 230px;
+}
+
+/** 
+ *  Embedded media
+ */
+object.media, img.media, embed.media {
+	border: 1px solid #dddddd;
+	width: 320px;
+	height: 240px;
+	background-color: #ffffff;
+}
+object.video, embed.video {
+	background-image: url('/icons/nuvola/mime/video.png');
+}
+object.audio, embed.audio {
+	background-image: url('/icons/nuvola/mime/audio.png');
+}
+
+/** 
+ *  Controls the style of the VLC media player control panel.
+ */
+div.vlc-ctrl {
+	background-color: #eeeeee;
+	border: 1px solid #dddddd;
+	padding-top: 5px;
+	margin-top: 0px;
+	overflow: hidden;
+	height: 1%;
+}
+div.vlc-play {    /* start, stop and pause buttons */
+	float: left;
+}
+div.vlc-seek {    /* seek forward/backward buttons */
+	float: right;
+}
+div.vlc-screen {  /* full screen control button */
+	float: right;
+}

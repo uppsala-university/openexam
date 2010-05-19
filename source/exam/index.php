@@ -329,55 +329,37 @@ class ExaminationPage extends BasePage
 	$adata = Exam::getAnswerData($question, phpCAS::getUser());
 
 	// 
-	// Use custom width depending on whether displaying media or not.
+	// Use custom CSS depending on whether displaying media or not.
 	// 
 	printf("<style type=\"text/css\">\n");
 	if($qdata->hasQuestionVideo() || $qdata->hasQuestionAudio() || $qdata->hasQuestionImage()) {
-	    printf("textarea.width, div.width { width: 440px; }\n");
+	    $qdata->setQuestionMedia(true);
+	    include "../css/multimedia.css";  // Inline CSS
 	} else {
-	    printf("textarea.width, div.width { width: 700px; }\n");
+	    printf("textarea.answer { width: 755px; height: 230px; }\n");
 	}
 	printf("</style>\n");
-	
+
+	printf("<div class=\"left\">\n");
 	printf("<h3>%s %s [%.01fp]</h3>\n", _("Question"), 
 	       utf8_decode($qdata->getQuestionName()), $qdata->getQuestionScore());
 
 	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<div class=\"width question\">%s</div>\n",
+	    printf("<div class=\"question\">%s</div>\n",
 		   utf8_decode(str_replace("\n", "<br>", $qdata->getQuestionText())));
 	} else {
 	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
-	    printf("<div class=\"width question\">%s</div>\n", 
+	    printf("<div class=\"question\">%s</div>\n", 
 		   utf8_decode(str_replace("\n", "<br>", $options[0])));
 	}
-	
-	if($qdata->hasQuestionVideo()) {
-	    printf("<div class=\"media\">\n");
-	    printf("<p>%s:</p>\n", _("Video"));
-	    $videoplayer = MediaPlayerFactory::createMediaPlayer($qdata->getQuestionVideo());
-	    $videoplayer->output();
-	    printf("</div>\n");
-	}
-	if($qdata->hasQuestionAudio()) {
-	    printf("<div class=\"media\">\n");
-	    printf("<p>%s:</p>\n", _("Audio"));
-	    $audioplayer = MediaPlayerFactory::createMediaPlayer($qdata->getQuestionAudio());
-	    $audioplayer->output();
-	    printf("</div>\n");
-	}
-	if($qdata->hasQuestionImage()) {
-	    printf("<div class=\"media\">\n");
-	    printf("<p>%s:</p>\n", _("Image"));
-	    printf("<img src=\"%s\" class=\"media\" />\n", $qdata->getQuestionImage());
-	    printf("</div>\n");
-	}
-	
-	printf("<p>" . _("Answer:") . "</p>\n");
+		
+	printf("<div class=\"answer\">\n");
+	printf("<p class=\"answer\">" . _("Answer:") . "</p>\n");
 	printf("<form action=\"index.php\" method=\"GET\">\n"); 
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
 	printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n", $question);
 	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<textarea name=\"answer\" class=\"width answer\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
+	    printf("<textarea name=\"answer\" class=\"answer\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
 	} elseif($qdata->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
 	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
 	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
@@ -399,19 +381,46 @@ class ExaminationPage extends BasePage
 		}
 	    }
 	}
-	printf("<br /><br />\n");
-	
-	if($this->author) {
-	    printf("<hr/><br/><img src=\"icons/nuvola/info.png\" />\n%s: <i>%s</i>\n", 
-		   _("Notice"), _("This question is viewed in preview mode (for question author)."));
-	} else {
+	if(!$this->author) {
+	    printf("<br />\n");
 	    printf("<input type=\"submit\" value=\"%s\" />\n", _("Save"));
 	}
-	printf("</form>\n");
-	
+	printf("</form>\n");	
+	printf("</div>\n");
+	if($this->author) {
+	    printf("<br/><img src=\"icons/nuvola/info.png\" />\n%s: <i>%s</i>\n", 
+		   _("Notice"), _("This question is viewed in preview mode (for question author)."));
+	}
 	if(isset($_REQUEST['status']) && $_REQUEST['status'] == "ok") {
 	    printf("<p><img src=\"icons/nuvola/info.png\" /> " . _("Your answer has been successful saved in the database.") . "</p>\n");
+	}	
+	printf("</div>\n");
+	
+	if($qdata->hasQuestionMedia()) {
+	    printf("<div class=\"right\">\n");
+	    if($qdata->hasQuestionVideo()) {
+		printf("<div class=\"media\">\n");
+		printf("<h3>%s:</h3>\n", _("Video"));
+		$videoplayer = MediaPlayerFactory::createMediaPlayer($qdata->getQuestionVideo());
+		$videoplayer->output();
+		printf("</div>\n");
+	    }
+	    if($qdata->hasQuestionAudio()) {
+		printf("<div class=\"media\">\n");
+		printf("<h3>%s:</h3>\n", _("Audio"));
+		$audioplayer = MediaPlayerFactory::createMediaPlayer($qdata->getQuestionAudio());
+		$audioplayer->output();
+		printf("</div>\n");
+	    }
+	    if($qdata->hasQuestionImage()) {
+		printf("<div class=\"media\">\n");
+		printf("<h3>%s:</h3>\n", _("Image"));
+		printf("<img src=\"%s\" class=\"media\" />\n", $qdata->getQuestionImage());
+		printf("</div>\n");
+	    }
+	    printf("</div>\n");
 	}
+	printf("<br style=\"clear: both;\">\n");
     }
     
     // 
