@@ -525,7 +525,7 @@ class DecoderPage extends TeacherPage
 	printf("<select name=\"student\">\n");
  	$board = new ScoreBoard($this->manager->getExamID());	
 	$students = $board->getStudents();
-	printf("<option value=\"all\">%s</option>\n", _("All students"));
+	printf("<option value=\"all\">%s</option>\n", _("All Students"));
 	printf("<option value=\"0\" disabled=\"true\">---</option>\n");
 	foreach($students as $student) {
 	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
