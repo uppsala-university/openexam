@@ -443,7 +443,7 @@ class CorrectionPage extends TeacherPage
 		printf("<td><a href=\"?exam=%d&amp;action=correct&amp;question=%d\" title=\"%s\">Q%d.</a></td>",
 		       $question->getExamID(),
 		       $question->getQuestionID(),
-		       $question->getQuestionTile(),
+		       $question->getQuestionTitle(),
 		       $i++);
 	    } else {
 		printf("<td><a name=\"Q%d\" title=\"%s\">Q%d.</a></td>",
