@@ -421,16 +421,24 @@ class CorrectionPage extends TeacherPage
 	printf("<tr><td>&nbsp;</td>");
 	$i = 1;
 	foreach($questions as $question) {
-	    printf("<td><a href=\"?exam=%d&amp;action=correct&amp;question=%d\" title=\"%s\">Q%d.</a></td>",
-		   $question->getExamID(),
-		   $question->getQuestionID(),
-		   sprintf("%s %s\n\n%s\n\n%s: %.01f",
-			   _("Question"),
-			   utf8_decode($question->getQuestionName()),
-			   utf8_decode($question->getQuestionText()),
-			   _("Max score"),
-			   $question->getQuestionScore()),
-		   $i++);
+	    $question->setQuestionTitle(sprintf("%s %s\n\n%s\n\n%s: %.01f",
+						_("Question"),
+						utf8_decode($question->getQuestionName()),
+						utf8_decode($question->getQuestionText()),
+						_("Max score"),
+						$question->getQuestionScore()));
+	    if($question->getQuestionPublisher() == phpCAS::getUser()) {
+		printf("<td><a href=\"?exam=%d&amp;action=correct&amp;question=%d\" title=\"%s\">Q%d.</a></td>",
+		       $question->getExamID(),
+		       $question->getQuestionID(),
+		       $question->getQuestionTile(),
+		       $i++);
+	    } else {
+		printf("<td><a name=\"Q%d\" title=\"%s\">Q%d.</a></td>",
+		       $question->getQuestionID(),
+		       $question->getQuestionTitle(),
+		       $i++);
+	    }
 	}
 	printf("<td>%s</td>\n", _("Summary"));
 	printf("<td>%s</td>\n", _("Percent"));
