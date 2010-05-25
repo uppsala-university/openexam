@@ -233,7 +233,7 @@ class ContributePage extends TeacherPage
 	       _("A short question name or simply a number"));
 	printf("<br />\n");
 	printf("<label for=\"quest\">%s:</label>\n", _("Question"));
-	printf("<textarea name=\"quest\" cols=\"70\" rows=\"15\" title=\"%s\">%s</textarea>\n",
+	printf("<textarea name=\"quest\" class=\"question\" title=\"%s\">%s</textarea>\n",
 	       _("The actual question is defined here."), 
 	       $data->hasQuestionText() || $action == "edit" ? utf8_decode($data->getQuestionText()) : _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n-------------------------\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n-------------------------\n"));
 	printf("<br />\n");

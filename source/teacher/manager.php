@@ -206,7 +206,7 @@ class ManagerPage extends TeacherPage
 	printf("<input type=\"text\" name=\"name\" value=\"%s\" size=\"50\" />\n", utf8_decode($data->getExamName()));
 	printf("<br />\n");
 	printf("<label for=\"desc\">%s</label>\n", _("Description:"));
-	printf("<textarea name=\"desc\" cols=\"50\" rows=\"10\">%s</textarea>\n", utf8_decode($data->getExamDescription()));
+	printf("<textarea name=\"desc\" class=\"description\">%s</textarea>\n", utf8_decode($data->getExamDescription()));
 	printf("<br />\n");
 	printf("<label for=\"start\">%s</label>\n", _("Start time:"));
 	printf("<input type=\"text\" name=\"start\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
