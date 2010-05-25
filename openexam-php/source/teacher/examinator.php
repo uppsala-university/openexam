@@ -208,7 +208,7 @@ class ExaminatorPage extends TeacherPage
 	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
 	printf("<input type=\"hidden\" name=\"action\" value=\"add\" />\n");
 	printf("<label for=\"user\">%s:</label>\n", _("Students"));
-	printf("<textarea name=\"user\" rows=\"10\" cols=\"40\">user1\tcode1\nuser2\tcode2\n</textarea>\n");
+	printf("<textarea name=\"user\" class=\"students\">user1\tcode1\nuser2\tcode2\n</textarea>\n");
 	printf("<br /><br />\n");
 	printf("<label for=\"submit\">&nbsp;</label>\n");
 	printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
