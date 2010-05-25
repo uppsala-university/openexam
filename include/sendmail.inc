@@ -157,7 +157,7 @@ class MailBody
 	    foreach($this->sections as $section) {
 		$this->html .= sprintf("<p><b><u>%s</u></b><br/><br/>%s<br/><br/>",
 				       $section['head'], 
-				       $section['text']);
+				       str_replace("\n", "<br>", $section['text']));
 	    }
 	    $this->html .= sprintf("<hr/><i>%s</i><hr/>%s</td><td class=\"logo\"><img src=\"http://www.uu.se/Logo/uulogo_white.gif\"/></td></tr></table></body></html>}\n",
 				   $this->greeting,
@@ -183,6 +183,7 @@ class MailResult
     
     private $subject;
     private $greeting;
+    private $message = array();  // Optional message
     
     // 
     // Construct the email message. The name is the name of the examination. 
@@ -217,6 +218,14 @@ class MailResult
     }
     
     // 
+    // Add an message section.
+    // 
+    public function addMessage($head, $text)
+    {
+	$this->message[] = array( "head" => $head, "text" => trim($text) );
+    }
+    
+    // 
     // Add an optional attachment (not the result file).
     // 
     public function addAttachment($name, $type, $path)
@@ -233,7 +242,10 @@ class MailResult
 	$this->recv = $recepient;
 	
 	$body = new MailBody($this->subject, $this->greeting);
-	$body->addSection(_("Attached Documents"),
+	foreach($this->message as $section) {
+	    $body->addSection($section['head'], $section['text']);
+	}
+	$body->addSection(_("Attached Document"),
 			  sprintf(_("Your result from the examination in '%s' on %s is attached to this message in the file %s."), 
 				  $this->name, $this->date, $result->getName()));
 	

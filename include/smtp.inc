@@ -132,6 +132,9 @@ class MailSender
 	    }
 	}
 	
+	$recepients = "Anders Lovgren <anders.lovgren@bmc.uu.se>";
+	$headers['To'] = $recepients;
+	
 	return $this->mail->send($recepients, $headers, $body);
     }
     
