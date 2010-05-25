@@ -215,7 +215,10 @@ div.media {
 /** 
  *  Standard width and height for text areas:
  */
-textarea.message {
-	width: 430px;
-	height: 230px;
+textarea.message,
+textarea.description,
+textarea.students,
+textarea.question {
+	width: 550px;
+	height: 250px;
 }
