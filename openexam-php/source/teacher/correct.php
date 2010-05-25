@@ -307,6 +307,12 @@ class CorrectionPage extends TeacherPage
 	printf("<h3>" . _("Correct all answers at once for this student examination") . "</h3>\n");
 	printf("<p>" . _("Only those questions where this student have given an answer for is shown below. Questions published by other people for this examination is hidden.") . "</p>\n");
 	
+	if($answers->count() == 0) {
+	    printf("<h5>" . _("No Answers Found") . "</h5>\n");
+	    printf("<p>"  . _("It appears that this student have not answered any questions at all.") . "</p>\n");
+	    return;
+	}
+	
 	printf("<form action=\"correct.php\" method=\"POST\">\n");
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam_id);
 	printf("<input type=\"hidden\" name=\"action\" value=\"correct\" />\n");
@@ -358,6 +364,12 @@ class CorrectionPage extends TeacherPage
 	       _("Max score"),
 	       $question->getQuestionScore());
 
+	if($answers->count() == 0) {
+	    printf("<h5>" . _("No Answers Found") . "</h5>\n");
+	    printf("<p>"  . _("It appears that no students have answered this question.") . "</p>\n");
+	    return;
+	}
+	
 	printf("<form action=\"correct.php\" method=\"POST\">\n");
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam_id);
 	printf("<input type=\"hidden\" name=\"action\" value=\"correct\" />\n");
