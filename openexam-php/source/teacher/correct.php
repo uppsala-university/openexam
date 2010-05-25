@@ -255,7 +255,7 @@ class CorrectionPage extends TeacherPage
 		   $question->getQuestionScore());
 	}
 	printf("</tr>\n");
-	printf("<tr class=\"comment\"><td>%s: <input type=\"text\" name=\"comment[%d]\" value=\"%s\" size=\"50\" title=\"%s\" /><br/ ></td></tr>",
+	printf("<tr class=\"comment\"><td>%s: <input type=\"text\" name=\"comment[%d]\" value=\"%s\" size=\"95\" title=\"%s\" /><br/ ></td></tr>",
 	       _("Comment"),
 	       $answer->getAnswerID(), 
 	       $answer->hasResultComment() ? utf8_decode($answer->getResultComment()) : "",
