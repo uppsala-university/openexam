@@ -1,3 +1,12 @@
+Version 1.5.2 (2010-mm-dd):
+
+	* Added support for sending the examination result by email. The
+	  emails are multipart encoded (MIME mail with plain text and HTML
+	  sections). 
+	  
+	* Up to three optional attachments (not counting the result PDF) can
+	  be attached to the message.
+
 Version 1.5.1 (2010-05-19):
 
 	* Fixed layout of embedded multimedia on question answer page.

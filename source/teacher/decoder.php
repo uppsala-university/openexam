@@ -29,6 +29,8 @@ if(!file_exists("../../conf/config.inc")) {
 // 
 include "MDB2.php";
 include "CAS.php";
+include('Mail.php');
+include('Mail/mime.php');
 
 // 
 // Locale and internationalization support:
@@ -63,6 +65,18 @@ include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/decoder.inc";
 include "include/teacher/correct.inc";
+include "include/smtp.inc";
+include "include/sendmail.inc";
+
+// 
+// Settings for result mail attachments.
+// 
+if(!defined('ATTACH_MAX_FILE_SIZE')) {
+    define ('ATTACH_MAX_FILE_SIZE', 1024 * 1024);
+}
+if(!defined('ATTACH_MAX_NUM_FILES')) {
+    define ('ATTACH_MAX_NUM_FILES', 3);
+}
 
 // 
 // Output formatters:
@@ -152,7 +166,7 @@ class DecoderPage extends TeacherPage
 {
     private $params = array( "exam"    => "/^\d+$/",
 			     "mode"    => "/^(result|scores)$/",
-			     "action"  => "/^(save|show|download)$/", 
+			     "action"  => "/^(save|show|mail|download)$/", 
 			     "format"  => "/^(pdf|html|ps|csv|tab|xml)$/",
 			     "student" => "/^(\d+|all)$/" );
 
@@ -192,7 +206,7 @@ class DecoderPage extends TeacherPage
 	    if($_REQUEST['action'] == "download") {
 		self::showDownload($_REQUEST['exam']);
 	    } elseif($_REQUEST['action'] == "show") {
-		self::showScore($_REQUEST['exam']);
+		self::showScores($_REQUEST['exam']);
 	    } elseif($_REQUEST['action'] == "save") {
 		self::assert("mode");
 		if($_REQUEST['mode'] == "result") {
@@ -202,9 +216,32 @@ class DecoderPage extends TeacherPage
 		    self::assert("format");
 		    self::saveScores($_REQUEST['exam'], $_REQUEST['format']);
 		}
+	    } elseif($_REQUEST['action'] == "mail") {
+		if(isset($_REQUEST['student'])) {
+		    self::assert("format");
+		    self::sendResult($_REQUEST['exam'], $_REQUEST['student'], $_REQUEST['format']);
+		} else {
+		    self::mailResult($_REQUEST['exam']);
+		}
 	    }
 	} else {
 	    self::showAvailableExams();
+	}
+    }
+
+    public function printMenu()
+    {	
+	if(isset($_REQUEST['exam'])) {
+	    printf("<span id=\"menuhead\">%s</span>\n", _("Result"));
+	    printf("<ul>\n");
+	    printf("<li><a href=\"?exam=%d&amp;action=download\">%s</a></li>\n", $_REQUEST['exam'], _("Download"));
+	    printf("<li><a href=\"?exam=%d&amp;action=mail\">%s</a></li>\n", $_REQUEST['exam'], _("Email Results"));
+	    printf("</ul>\n");
+	    printf("<span id=\"menuhead\">%s</span>\n", _("Score Board"));
+	    printf("<ul>\n");
+	    printf("<li><a href=\"?exam=%d&amp;action=download\">%s</a></li>\n", $_REQUEST['exam'], _("Download"));
+	    printf("<li><a href=\"?exam=%d&amp;action=show\">%s</a></li>\n", $_REQUEST['exam'], _("Show"));
+	    printf("</ul>\n");
 	}
     }
 
@@ -486,7 +523,7 @@ class DecoderPage extends TeacherPage
 	printf("<br/>\n");
 	printf("<label for=\"select\">%s:</label>\n", _("Select"));
 	printf("<select name=\"student\">\n");
- 	$board = new ScoreBoard($this->manager->getExamID());
+ 	$board = new ScoreBoard($this->manager->getExamID());	
 	$students = $board->getStudents();
 	printf("<option value=\"all\">%s</option>\n", _("All students"));
 	printf("<option value=\"0\" disabled=\"true\">---</option>\n");
@@ -502,7 +539,7 @@ class DecoderPage extends TeacherPage
 	printf("<br/>\n");
 	printf("<label for=\"submit\">&nbsp</label>\n");	
 	printf("<input type=\"submit\" value=\"%s\" title=\"%s\" />\n", 
-	       _("Submit"), _("Please note that it might take some time to complete your request, especial if the examination has a lot of students."));
+	       _("Download"), _("Please note that it might take some time to complete your request, especial if the examination has a lot of students."));
 	printf("</form>\n");
 
 	// 
@@ -525,21 +562,14 @@ class DecoderPage extends TeacherPage
 	printf("</select>\n");
 	printf("<br/>\n");
 	printf("<label for=\"submit\">&nbsp</label>\n");	
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
+	printf("<input type=\"submit\" value=\"%s\" />\n", _("Download"));
 	printf("</form>\n");
-	
-	// 
-	// Info on online browsing.
-	// 
-	printf("<h5>" . _("View Score Board") . "</h5>\n");
-	printf("<p>"  . _("It's possible to <a href=\"%s\">review the score board online</a> by following the link.") . "</p>\n",
-	       sprintf("?exam=%d&amp;action=show", $exam)); 
     }
     
     // 
     // Shows the score board with the anonymous identity disclosed.
     // 
-    private function showScore($exam)
+    private function showScores($exam)
     {
 	$data = $this->manager->getData();
 	
@@ -618,6 +648,130 @@ class DecoderPage extends TeacherPage
 	    printf("<tr><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);
 	}
 	printf("</table>\n");	
+    }
+    
+    // 
+    // Send the email message. The message is either sent to myself (debug), all students
+    // or individual students.
+    // 
+    private function sendResult($exam, $student, $format)
+    {
+	printf("<h5>" . _("Sending Result") . "</h5>\n");
+
+	$from = $this->getMailRecepient(phpCAS::getUser());
+	$data = $this->manager->getData();
+	$mail = new MailResult($data->getExamName(), $data->getExamStartTime(), $from, $from);
+	
+	// 
+	// Append any uploaded files.
+	// 
+	for($i = 0; $i < ATTACH_MAX_NUM_FILES; $i++) {
+	    if($_FILES['attach']['error'][$i] == 0 && $_FILES['attach']['size'][$i] > 0) {    // successful uploaded
+		if(is_uploaded_file($_FILES['attach']['tmp_name'][$i])) {
+		    $mail->addAttachment($_FILES['attach']['name'][$i], 
+					 $_FILES['attach']['type'][$i],
+					 $_FILES['attach']['tmp_name'][$i]);
+		}
+	    }
+	}
+
+	$result = new ResultPDF($exam);
+	$result->setFormat($format);
+	
+	if($student == "all") {
+	    $students = $this->manager->getStudents();
+	} else {
+	    $students = array($this->manager->getStudentData($student));
+	}
+	
+	foreach($students as $student) {
+	    $addr = $this->getMailRecepient($student->getStudentUser());
+	    $file = tempnam("/tmp", "openexam-result");
+	    $result->save($student->getStudentID(), $file);
+	    
+	    if(strstr($format, "pdf")) {
+		$attach = new MailAttachment("result.pdf", "application/pdf", $file);
+	    } elseif(strstr($format, "ps")) {
+		$attach = new MailAttachment("result.ps", "application/postscript", $file);
+	    } elseif(strstr($format, "html")) {
+		$attach = new MailAttachment("result.html", "text/html", $file);
+	    }
+	    
+	    if(isset($_REQUEST['mirror'])) {
+		$mail->setFrom($addr);
+		$mail->send($from, $attach);
+	    } else {
+		$mail->setBcc($from);
+		$mail->send($addr, $attach);
+	    }
+	}
+    }
+    
+    // 
+    // Show form for sending examination result to students.
+    // 
+    private function mailResult($exam)
+    {
+	global $locale;
+	
+	// 
+	// The form for sending the results by email:
+	// 
+	printf("<h5>" . _("Send Result") . "</h5>\n");	
+	printf("<p>"  . 
+	       _("This section lets you send the results to all or individual students in different formats. ") . 
+	       _("The result contains the complete examination with answers and scores.") .
+	       "</p>\n");
+	printf("<p>"  .	
+	       _("Notice that the language used in the outgoing message will be the same as your currently selected language (%s).") . 
+	       "</p>\n", _($locale));
+	
+	$options = array( "pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML" );
+	printf("<form enctype=\"multipart/form-data\" action=\"decoder.php\" method=\"POST\">\n");
+	printf("<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"%d\" />\n", ATTACH_MAX_FILE_SIZE);
+	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $this->manager->getExamID());
+	printf("<input type=\"hidden\" name=\"mode\" value=\"result\" />\n");
+	printf("<input type=\"hidden\" name=\"action\" value=\"mail\" />\n");	
+	printf("<label for=\"format\">%s:</label>\n", _("Format"));
+	printf("<select name=\"format\">\n");
+	foreach($options as $name => $label) {
+	    printf("<option value=\"%s\">%s</option>\n", $name, $label);
+	}
+	printf("</select>\n");
+	printf("<br/>\n");
+	printf("<label for=\"select\">%s:</label>\n", _("Select"));
+	printf("<select name=\"student\">\n");
+	$board = new ScoreBoard($this->manager->getExamID());	
+	$students = $board->getStudents();
+	printf("<option value=\"all\">%s</option>\n", _("All Students"));
+	printf("<option value=\"0\" disabled=\"true\">---</option>\n");
+	foreach($students as $student) {
+	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
+	    printf("<option value=\"%d\">%s (%s) [%s]</option>\n", 
+		   $student->getStudentID(),
+		   $student->getStudentName(),
+		   $student->getStudentUser(),
+		   $student->getStudentCode());
+	}
+	printf("</select>\n");
+	printf("<h5>%s</h5>\n", _("Attachements"));
+	for($i = 0; $i < ATTACH_MAX_NUM_FILES; $i++) {
+	    printf("<label for=\"attach[]\">&nbsp;</label>\n");
+	    printf("<input type=\"file\" class=\"file\" title=\"%s\" name=\"attach[]\" />\n", 
+		   _("Attach this file to all outgoing messages."));
+	    printf("<br/>\n");
+	}
+	printf("<br/>\n");
+	printf("<label for=\"mirror\">&nbsp;</label>\n");
+	printf("<input type=\"checkbox\" name=\"mirror\" title=\"%s\" />%s\n", 
+	       _("If checked, then your email address will be used as the receiver, with the student address set as the sender."),
+	       _("Enable mirror mode (dry-run)."));
+	printf("<br/>\n");
+	printf("<br/>\n");
+	printf("<label for=\"submit\">&nbsp</label>\n");
+	printf("<input type=\"submit\" value=\"%s\" title=\"%s\" />\n", 
+	       _("Send"), _("Please note that it might take some time to complete your request, especial if the examination has a lot of students."));
+	printf("</form>\n");
     }
     
     // 
