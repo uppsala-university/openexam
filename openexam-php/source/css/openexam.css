@@ -211,3 +211,11 @@ div.media {
 	border-left: 2px solid #cccccc;
 	padding-left: 10px;
 }
+
+/** 
+ *  Standard width and height for text areas:
+ */
+textarea.message {
+	width: 430px;
+	height: 230px;
+}

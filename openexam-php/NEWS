@@ -6,6 +6,9 @@ Version 1.5.2 (2010-mm-dd):
 	  
 	* Up to three optional attachments (not counting the result PDF) can
 	  be attached to the message.
+	  
+	* It's now possible to optional append one or more section of text
+	  with headers to the email message.
 
 Version 1.5.1 (2010-05-19):
 
