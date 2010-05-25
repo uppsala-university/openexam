@@ -181,7 +181,7 @@ class ExaminationPage extends BasePage
 	    }
 	    echo "</ul>\n";
 
-	    echo "<span id=\"menuhead\">" . _("Show:") . "</span>\n";
+	    echo "<span id=\"menuhead\">:" . _("Show") . "</span>\n";
 	    echo "<ul>\n";
 	    printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
 		   $question->getExamID(),
