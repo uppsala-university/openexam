@@ -576,7 +576,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	    $user = $this->ldap->searchPrincipalName($data->getStudentUser());
 	}
 	if($user->first()->hasCN()) {
-	    $name = $user->first()->getCN()->first();
+	    $name = utf8_decode($user->first()->getCN()->first());
 	} else {
 	    $name = "";
 	}
