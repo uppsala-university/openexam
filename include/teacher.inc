@@ -133,7 +133,7 @@ class TeacherPage extends BasePage
     protected $roles;
     private $ldap;
     
-    public function __construct($title, $params)
+    public function __construct($title, $params, $template = "standard")
     {
 	$this->params = $params;	
 	$this->roles = Teacher::getRoleCount(phpCAS::getUser());
@@ -141,7 +141,7 @@ class TeacherPage extends BasePage
 	$this->authorize();
 	$this->validate();
 	
-	parent::__construct($title);
+	parent::__construct($title, $template);
     }
 
     public function __destruct()
@@ -209,9 +209,10 @@ class TeacherPage extends BasePage
     {
 	if(!isset($this->ldap)) {
 	    $this->ldap = LDAPSearch::factory();
-	    $this->ldap->setAttributeFilter(array("cn"));
 	}
-	if($lookup & LDAP_LOOKUP_UID) {	    
+	$this->ldap->setAttributeFilter(array("cn"));
+	
+ 	if($lookup & LDAP_LOOKUP_UID) {	    
 	    $entry = $this->ldap->searchUID($user);
 	    if($entry->first()->hasCN()) {		
 		return $entry->first()->getCN()->first();
@@ -238,7 +239,32 @@ class TeacherPage extends BasePage
 	    return $user;
 	}
     }
-    
+
+    // 
+    // Get mail address object (MailRecepient).
+    // 
+    protected function getMailRecepient($user, $lookup = LDAP_LOOKUP_BOTH)
+    {
+	if(!isset($this->ldap)) {
+	    $this->ldap = LDAPSearch::factory();
+	}
+	$this->ldap->setAttributeFilter(array("cn", "mail"));
+	
+ 	if($lookup & LDAP_LOOKUP_UID) {	    
+	    $entry = $this->ldap->searchUID($user);
+	    if($entry->first()->hasMail()) {
+		return new MailRecepient(utf8_decode($entry->first()->getCN()->first()),
+					 $entry->first()->getMail()->first());
+	    }
+	}
+	if($lookup & LDAP_LOOKUP_PRINCIPAL) {
+	    $entry = $this->ldap->searchPrincipalName($user);
+	    if($entry->first()->hasMail()) {
+		return new MailRecepient(utf8_decode($entry->first()->getCN()->first()),
+					 $entry->first()->getMail()->first());
+	    }
+	}
+    }
 }
 
 ?>

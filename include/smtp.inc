@@ -121,17 +121,18 @@ class MailSender
     // 
     // Send the message to recepients. Returns true or a PEAR_Error object.
     // 
-    public function send($recipients, $headers, $body) 
+    public function send($recepients, $headers, $body) 
     {
 	if(!isset($this->mail)) {
 	    $this->mail = Mail::factory('smtp', $this->params);
 	}
 	foreach(array("Cc", "Bcc") as $field) {
 	    if(isset($headers[$field])) {
-		$recipients .= ", " . $headers[$field];
+		$recepients .= ", " . $headers[$field];
 	    }
 	}
-	return $this->mail->send($recipients, $headers, $body);
+	
+	return $this->mail->send($recepients, $headers, $body);
     }
     
     // 
@@ -156,7 +157,7 @@ class MailSender
 	    $headers['From'] = $sender;
 	}
 	if(isset($subject)) {
-	    $headers['Subject'] = sprintf("%s: %s", PAGE_TITLE, $subject);
+	    $headers['Subject'] = $subject;
 	}
 	
 	return $headers;

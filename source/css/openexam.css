@@ -18,7 +18,11 @@ label
 	margin-right: 0.5em;
 	display: block
 }
-        
+
+input.file {
+	width: 400px;
+}
+
 .submit input
 {
 	margin-left: 8.5em;
