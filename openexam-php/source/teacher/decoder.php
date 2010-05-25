@@ -674,7 +674,37 @@ class DecoderPage extends TeacherPage
 		}
 	    }
 	}
-
+	
+	// 
+	// Append optional message.
+	// 
+	if(isset($_REQUEST['message'])) {
+	    $lines = split("\n", $_REQUEST['message']);
+	    if(count($lines) > 0) {
+		$sect = array();
+		foreach($lines as $line) {
+		    $line = trim($line);
+		    if(strlen($line) == 0) {
+			$sect[] = "\n\n";
+		    } elseif($line[0] == "-") {
+			$curr = array_pop($sect);
+			if(count($sect)) {
+			    $head = array_shift($sect);
+			    $text = "  " . implode(" ", $sect);
+			    $mail->addMessage($head, $text);
+			}
+			$sect = array();
+			$sect[] = $curr;
+		    } else {
+			$sect[] = $line;
+		    }
+		}
+		$head = array_shift($sect);
+		$text = "  " . implode(" ", $sect);
+		$mail->addMessage($head, $text);
+	    }
+	}
+	
 	$result = new ResultPDF($exam);
 	$result->setFormat($format);
 	
@@ -725,7 +755,10 @@ class DecoderPage extends TeacherPage
 	printf("<p>"  .	
 	       _("Notice that the language used in the outgoing message will be the same as your currently selected language (%s).") . 
 	       "</p>\n", _($locale));
-	
+
+	// 
+	// The format and student select section:
+	// 
 	$options = array( "pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML" );
 	printf("<form enctype=\"multipart/form-data\" action=\"decoder.php\" method=\"POST\">\n");
 	printf("<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"%d\" />\n", ATTACH_MAX_FILE_SIZE);
@@ -754,6 +787,19 @@ class DecoderPage extends TeacherPage
 		   $student->getStudentCode());
 	}
 	printf("</select>\n");
+	
+	// 
+	// The optional message section:
+	// 
+	printf("<h5>%s</h5>\n", _("Optional Message"));
+	printf("<label for=\"message\">%s</label>\n", _("Text"));
+	printf("<textarea name=\"message\" class=\"message\" title=\"%s\" onclick=\"this.value='';\">%s</textarea>\n",
+	       _("Append one or more optional section of text to the message."),
+	       _("Header 1:\n---\nSome text for this first section...\n\nHeader 2:\n---\nIt's possible to have multiple blocks of text separated by newlines:\n\nFirst block...\n\n...and second block.\n"));
+	
+	// 
+	// The attachment section:
+	// 
 	printf("<h5>%s</h5>\n", _("Attachements"));
 	for($i = 0; $i < ATTACH_MAX_NUM_FILES; $i++) {
 	    printf("<label for=\"attach[]\">&nbsp;</label>\n");
