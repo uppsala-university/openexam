@@ -23,6 +23,11 @@ if(isset($_SERVER['SERVER_ADDR'])) {
 }
 
 // 
+// In case we are running from inside the admin directory:
+// 
+set_include_path(get_include_path() . PATH_SEPARATOR . "..");
+
+// 
 // Include external libraries:
 // 
 include "MDB2.php";
@@ -62,8 +67,9 @@ include "include/pdf.inc";
 include "include/ldap.inc";
 
 class ResultApp {
+    private $list = false;
     private $debug = false;
-    private $verbose = false;
+    private $verbose = 0;
     private $format = "pdf";
     private $prog;
 
@@ -83,6 +89,16 @@ class ResultApp {
 	    list($opt, $arg) = split('=', $argv[$i]);
 	    
 	    switch($argv[$i]) {
+	     case '-l':
+	     case '--list':
+		$this->list = true;
+		break;
+	     case '-u':
+		$this->user = $argv[++$i];
+		break;
+	     case '--user':
+		$this->user = $arg;
+		break;
 	     case '-e':
 		$this->exam = $argv[++$i];
 		break;
@@ -123,11 +139,23 @@ class ResultApp {
 		break;
 	     case '-v':
 	     case '--verbose':
-		$this->verbose = true;
+		$this->verbose++;
 		break;
 	     default:
 		$this->error(sprintf("unknown option '%s'", $argv[$i]));
 	    }
+	}
+	
+	if($this->list) {
+	    if(!isset($this->user)) {
+		$this->error("the -l option requires the -u option, see --help\n");
+	    }
+	    if(isset($this->exam)) {
+		$this->listStudents();
+	    } else {
+		$this->listExams();
+	    }
+	    return;
 	}
 
 	if(!isset($this->exam)) {
@@ -157,23 +185,90 @@ class ResultApp {
     
     private function showUsage()
     {
-	printf("result.php - Generate result PDF/PS/HTML file(s)\n");
+	printf("%s - Generate result PDF/PS/HTML file(s)\n", $this->prog);
 	printf("\n");
-	printf("Usage: result.php [-e num [-p dir] | [-s num]] [-o file] [-f format] [-h|--help]\n");
+	printf("Usage: %s [-e num [-p dir] | [-s num]] [-o file] [-f format] [-h|--help]\n", $this->prog);
 	printf("Options:\n");
+	printf("  -l,--list:         List all exams (*). Use with -e to list all students.\n");
+	printf("  -u,--user=name:    Work as this user.\n");
 	printf("  -e,--exam=num:     The examination ID (from database).\n");
 	printf("  -s,--student=num:  The student ID (from database).\n");
 	printf("  -p,--destdir=path: Write result PDF's to directory.\n");
 	printf("  -o,--file=name:    The output file (use stdout otherwise).\n");
 	printf("  -f,--format=name:  Set output format (i.e. pdf, ps or html).\n");
 	printf("  -d,--debug:        Enable debug, can be used multiple times.\n");
-	printf("  -v,--verbose:      Be more verbose.\n");
+	printf("  -v,--verbose:      Be more verbose, can be used multiple times.\n");
 	printf("  -h,--help:         Show this help.\n");
 	printf("\n");
+	printf("Note:\n");
+	printf("  *) The -l option requires the -u option.\n");
+	printf("\n");
+	printf("Examples:\n");
+	if($this->verbose) {
+	    printf("  1. # Verbosly list all exams for this user:\n");
+	    printf("     php %s -l -u user -v -v\n", $this->prog);
+	    printf("\n");
+	    printf("  2. # List all students on exam with ID 4:\n");
+	    printf("     php %s -l -u user -e 4\n", $this->prog);
+	    printf("\n");
+	    printf("  3. # Generate result PDF for all students on exam with ID 4:\n");
+	    printf("     php %s -e 4 -p resdir -f pdf\n", $this->prog);
+	    printf("\n");
+	    printf("  4. # Print result for student with ID 7 in HTML on stdout:\n");
+	    printf("     php %s -e 4 -s 7 -f html\n", $this->prog);
+	} else {
+	    printf("  Use 'php %s -v -h' to display some examples.\n", $this->prog);
+	}
+	printf("\n");	    
 	printf("This script is part of the openexam-php project:\n");
 	printf("  http://it.bmc.uu.se/andlov/proj/openexam/\n");
     }
     
+    // 
+    // List all exams where selected user is manager.
+    // 
+    private function listExams()
+    {
+	$exams = Manager::getExams($this->user);
+	foreach($exams as $exam) {
+	    printf("[%d]\t%s\n", $exam->getExamID(), utf8_decode($exam->getExamName()));
+	    if($this->verbose) {
+		printf("\tStart:   %s\n", $exam->getExamStartTime());
+		printf("\tEnd:     %s\n", $exam->getExamEndTime());
+		printf("\tCreator: %s\n", $exam->getExamCreator());
+		printf("\tDecoded: %s\n", $exam->getExamDecoded() == 'Y' ? "yes" : "no");
+	    }
+	    if($this->verbose > 1) {
+		printf("\tCreated: %s\n", $exam->getExamCreated());
+		printf("\tUpdated: %s\n", $exam->getExamUpdated());
+	    }
+	    if($this->verbose) {
+		$grades = new ExamGrades($exam->getExamGrades());
+		printf("\tGrades:\n");
+		foreach($grades->getGrades() as $name => $score) {
+		    printf("\t\t%d\t(%s)\n", $score, $name);
+		}
+	    }
+	    if($this->verbose > 2) {
+		printf("\tDescription:\n\t\t%s\n", str_replace("\n", "\n\t\t", utf8_decode($exam->getExamDescription())));
+	    }
+	    if($this->verbose) {
+		printf("\n");
+	    }
+	}
+    }
+    
+    // 
+    // List all students on the exam.
+    // 
+    private function listStudents()
+    {
+	$manager  = new Manager($this->exam);
+	$students = $manager->getStudents();
+	foreach($students as $student) {
+	    printf("[%d]\t%s (%s)\n", $student->getStudentID(), $student->getStudentUser(), $student->getStudentCode());
+	}
+    }
 }
 
 $result = new ResultApp();
