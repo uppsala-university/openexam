@@ -454,11 +454,13 @@ class CorrectionPage extends TeacherPage
 	}
 	printf("<td>%s</td>\n", _("Summary"));
 	printf("<td>%s</td>\n", _("Percent"));
+	printf("<td>%s</td>\n", _("Grade"));
 	printf("</tr>\n");
 	// 
 	// Output the list of anonymous students.
 	// 
 	$students = $board->getStudents();
+	$grades = new ExamGrades($data->getExamGrades());
 	foreach($students as $student) {
 	    printf("<tr><td><a href=\"?exam=%d&amp;action=correct&amp;student=%d\">%s</a></td>",
 		   $student->getExamID(), 
@@ -485,8 +487,10 @@ class CorrectionPage extends TeacherPage
 		}
 	    }
 	    $score = $board->getStudentScore($student->getStudentID());
+	    $grade = $grades->getGrade($score->getSum());
 	    printf("<td>%.01f/%.01f/%.01f</td>", $score->getSum(), $score->getMax(), $board->getMaximumScore());
 	    printf("<td>%.01f%%</td>", 100 * $score->getSum() / $board->getMaximumScore());
+	    printf("<td class=\"gr%s\">%s</td>", strtolower($grade), $grade);
 	    printf("</tr>\n");
 	}
 	printf("</table>\n");
@@ -536,11 +540,13 @@ class CorrectionPage extends TeacherPage
 	printf("\t%s", _("Score"));
 	printf("\t%s", _("Possible"));
 	printf("\t%s", _("Max score"));
-	printf("\t%s\n", _("Percent"));
+	printf("\t%s", _("Percent"));
+	printf("\t%s\n", _("Grade"));
 	// 
 	// Output the list of anonymous students.
 	// 
 	$students = $board->getStudents();
+	$grades = new ExamGrades($data->getExamGrades());
 	foreach($students as $student) {
 	    printf("%s", $student->getStudentCode());
 	    foreach($questions as $question) {
@@ -556,10 +562,12 @@ class CorrectionPage extends TeacherPage
 		}
 	    }
 	    $score = $board->getStudentScore($student->getStudentID());
+	    $grade = $grades->getGrade($score->getSum());
 	    printf("\t%.01f", $score->getSum());
 	    printf("\t%.01f", $score->getMax());
 	    printf("\t%.01f", $board->getMaximumScore());
 	    printf("\t%.01f", 100 * $score->getSum() / $board->getMaximumScore());
+	    printf("\t%s", $grade);
 	    printf("\n");
 	}
 	exit(0);
