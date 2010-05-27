@@ -30,6 +30,108 @@ if(!defined("EXAM_STATE_EDITABLE")) {
     define ("EXAM_STATE_EDITABLE", 32);
 }
 
+// 
+// An abstraction of exam grades.
+// 
+class ExamGrades
+{
+    private $data = array();
+
+    // 
+    // Initialize using a json encoded associative array (name => grade).
+    // 
+    public function __construct($json = null) 
+    {
+	if(isset($json) && strlen($json)) {
+	    $this->decode($json);
+	}
+    }
+    
+    // 
+    // Get the array of grades.
+    // 
+    public function getGrades()
+    {
+	return $this->data;
+    }
+    
+    // 
+    // Get the grade name given the value (a score).
+    // 
+    public function getGrade($value)
+    {
+	foreach($this->data as $name => $grade) {
+	    if($value < $grade) {
+		return $prev;
+	    }
+	    $prev = $name;
+	}
+	return $name;
+    }
+    
+    // 
+    // Get the threshold value for obtaining this grade.
+    // 
+    public function getThreshold($grade)
+    {
+	return $this->data[$grade];
+    }
+    
+    // 
+    // Return encoded form of this object.
+    // 
+    public function encode()
+    {
+	return json_encode($this->data);
+    }
+    
+    // 
+    // Set data for this object.
+    // 
+    public function decode($json)
+    {
+	$this->data = json_decode($json, true);
+	asort($this->data);
+    }
+    
+    // 
+    // Get human readable representation.
+    // 
+    public function getText()
+    {
+	$str = "";
+	foreach($this->data as $name => $grade) {
+	    $str .= sprintf("%s:%d\n", $name, $grade);
+	}
+	return $str;
+    }
+    
+    // 
+    // Initialize from text.
+    // 
+    public function setText($text)
+    {
+	$this->data = array();
+	$lines = split("\n", $text);
+	foreach($lines as $line) {
+	    $line = trim($line);
+	    if(strlen($line) != 0) {
+		list($name, $grade) = explode(":", $line);
+		$this->data[$name] = $grade;
+	    }
+	}
+	asort($this->data);
+    }
+    
+    // 
+    // For textual context:
+    // 
+    public function __toString()
+    {
+	return $this->encode();
+    }
+}
+
 class ExamState
 {   
     private $state;
@@ -271,7 +373,7 @@ class Manager
     {
 	$sql = sprintf("SELECT id AS ExamID, name AS ExamName, descr AS ExamDescription, starttime AS ExamStartTime, 
 			          endtime AS ExamEndTime, created AS ExamCreated, updated AS ExamUpdated, creator AS ExamCreator,
-			          decoded AS ExamDecoded
+			          decoded AS ExamDecoded, grades AS ExamGrades
 			FROM exams
 			WHERE creator = '%s'", $user);
 	$res = Database::getConnection()->query($sql);
@@ -297,7 +399,7 @@ class Manager
     {
 	$sql = sprintf("SELECT id AS ExamID, name AS ExamName, descr AS ExamDescription, orgunit AS ExamOrgUnit, 
 			          starttime AS ExamStartTime, endtime AS ExamEndTime, created AS ExamCreated, 
-			          updated AS ExamUpdated, creator AS ExamCreator, decoded AS ExamDecoded
+			          updated AS ExamUpdated, creator AS ExamCreator, decoded AS ExamDecoded, grades AS ExamGrades
 			FROM exams WHERE id = %d", $this->exam);
         $res = Database::getConnection()->query($sql);
  	if(PEAR::isError($res)) {
@@ -309,21 +411,21 @@ class Manager
     // 
     // Set data for this exam or create a new exam in the database (if exam ID is 0).
     // 
-    public function setData($unit, $name, $desc, $sdate, $edate)
+    public function setData($unit, $name, $desc, $grades, $sdate, $edate)
     {
 	$db = Database::getConnection();
 	
 	if($this->exam != 0) {
-	    $sql = sprintf("UPDATE exams SET orgunit = '%s', name = '%s', descr = '%s', starttime = '%s', endtime = '%s'
+	    $sql = sprintf("UPDATE exams SET orgunit = '%s', name = '%s', descr = '%s', grades = '%s', starttime = '%s', endtime = '%s'
 			     WHERE id = '%d'", 
-			   $unit, $name, $desc, 
+			   $unit, $name, $desc, $grades,
 			   date('Y-m-d H:i:s', $sdate), 
 			   date('Y-m-d H:i:s', $edate),
 			   $this->exam);
 	} else {
-	    $sql = sprintf("INSERT INTO exams(orgunit, name, descr, starttime, endtime, created, creator)
-	                    VALUES('%s','%s','%s','%s','%s','%s','%s')", 
-			   $unit, $name, $desc, 
+	    $sql = sprintf("INSERT INTO exams(orgunit, name, descr, grades, starttime, endtime, created, creator)
+	                    VALUES('%s','%s','%s','%s','%s','%s','%s','%s')", 
+			   $unit, $name, $desc, $grades,
 			   date('Y-m-d H:i:s', $sdate), 
 			   date('Y-m-d H:i:s', $edate), 
 			   date('Y-m-d H:i:s', time()), 
@@ -542,6 +644,7 @@ class Manager
 	$copy->setData($data->getExamOrgUnit(), 
 		       $data->getExamName(), 
 		       $data->getExamDescription(), 
+		       $data->getExamGrades(),
 		       strtotime(DATETIME_NONE), 
 		       strtotime(DATETIME_NONE));
 	
