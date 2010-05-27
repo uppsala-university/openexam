@@ -194,12 +194,16 @@ class ManagerPage extends TeacherPage
     // 
     private function showExamForm($exam, $data, $action, $readonly = false)
     {
+	$grades = new ExamGrades($data->getExamGrades());
+	
 	printf("<form action=\"manager.php\" method=\"GET\">\n");
 	printf("<input type=\"hidden\" name=\"action\" value=\"%s\" />\n", $action);
 	if($exam != 0) {
 	    printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
 	}
-	printf("<label for=\"unit\">%s</label>\n", _("Organization Unit:"));
+	
+	printf("<h5>" . _("Common Properties") . "</h5>\n");
+	printf("<label for=\"unit\">%s</label>\n", _("Organization:"));
 	printf("<input type=\"text\" name=\"unit\" value=\"%s\" size=\"50\" />\n", utf8_decode($data->getExamOrgUnit()));
 	printf("<br />\n");
 	printf("<label for=\"name\">%s</label>\n", _("Name:"));
@@ -208,11 +212,20 @@ class ManagerPage extends TeacherPage
 	printf("<label for=\"desc\">%s</label>\n", _("Description:"));
 	printf("<textarea name=\"desc\" class=\"description\">%s</textarea>\n", utf8_decode($data->getExamDescription()));
 	printf("<br />\n");
+	
+	printf("<h5>" . _("Scheduling") . "</h5>\n");
 	printf("<label for=\"start\">%s</label>\n", _("Start time:"));
 	printf("<input type=\"text\" name=\"start\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
 	printf("<br />\n");
 	printf("<label for=\"end\">%s</label>\n", _("End time:"));
 	printf("<input type=\"text\" name=\"end\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
+	
+	printf("<h5>" . _("Graduation") . "</h5>\n");
+	printf("<label for=\"grade\">&nbsp;</label>\n");
+	printf("<textarea class=\"grade\" name=\"grade\" title=\"%s\">%s</textarea>\n",
+	       _("Input name:value pairs on separate lines defining the graduation levels on this examination. The first line must be on form name:0, denoting the failed grade."),
+	       utf8_decode($grades->getText()));
+	
 	if(!$readonly) {
 	    printf("<br /><br />\n");
 	    printf("<label for=\"submit\">&nbsp;</label>\n");
@@ -229,17 +242,21 @@ class ManagerPage extends TeacherPage
 	if(!$store) {
 	    printf("<p>" . _("Define the common properties of the exam. Click on the 'Submit' button to create this exam.") . "</p>\n");
 	    $data = new DataRecord( array( "examorgunit" => "Organization Unit",
-					   "examname" => "Name", 
+					   "examname"    => "Name", 
 					   "examdescription" => "Description", 
+					   "examgrades"    => "{\"U\":0,\"G\":10,\"VG\":18}",
 					   "examstarttime" => DATETIME_NONE,
-					   "examendtime"   => DATETIME_NONE));
-	    printf("<p>" . _("This page let you edit common properties of the exam.") . "</p>\n");
+					   "examendtime"   => DATETIME_NONE ));
 	    self::showExamForm(0, $data, "add");
 	} else {
+	    $grades  = new ExamGrades();
+	    $grades->setText($_REQUEST['grade']);
+	    
 	    $manager = new Manager(0);
 	    $manager->setData(utf8_encode($_REQUEST['unit']),
 			      utf8_encode($_REQUEST['name']),
 			      utf8_encode($_REQUEST['desc']),
+			      utf8_encode($grades->encode()),
 			      strtotime($_REQUEST['start']),
 			      strtotime($_REQUEST['end']));
 	    // 
@@ -263,9 +280,13 @@ class ManagerPage extends TeacherPage
 	    printf("<p>" . _("This page let you edit common properties of the exam. Click on the 'Submit' button to save changes.") . "</p>\n");
 	    self::showExamForm($exam, $data, "edit");
 	} else {
+	    $grades = new ExamGrades();
+	    $grades->setText($_REQUEST['grade']);
+	    
 	    $manager->setData(utf8_encode($_REQUEST['unit']),
 			      utf8_encode($_REQUEST['name']), 
 			      utf8_encode($_REQUEST['desc']), 
+			      utf8_encode($grades->encode()),
 			      strtotime($_REQUEST['start']), 
 			      strtotime($_REQUEST['end']));
 	    header(sprintf("location: manager.php?exam=%d", $exam));
