@@ -356,6 +356,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	    $score = $board->getStudentScore($student->getStudentID());
 	    $class = $grade->getGrade($score->getSum());
 	    $value = sprintf("%.01f", $score->getSum());
+	    $range = intval(floor(10 * $score->getSum() / $board->getMaximumScore()));
 	    if(!isset($grades['grade'][$class])) {
 		$grades['grade'][$class] = 1;
 	    } else {
@@ -366,8 +367,14 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	    } else {
 		$grades['score'][$value]++;
 	    }
+	    if(!isset($grades['range'][$range])) {
+		$grades['range'][$range] = 1;
+	    } else {
+		$grades['range'][$range]++;
+	    }
 	}
 	krsort($grades['score']);
+	krsort($grades['range']);
 
 	// 
 	// Get mean value and standard deviation. We are going to present
@@ -407,7 +414,10 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	$sum = array( "st" => 0, "pc" => 0 );
 	foreach($grades['grade'] as $key => $val) {
 	    fprintf($stream, "<tr align=\"right\"><td><b>%s</b></td><td>%.01f</td><td>%d</td><td>%.01f</td></tr>\n",
-		    $key, $grade->getThreshold($key), $val, 100 * $val / $board->getStudents()->count());
+		    $key, 
+		    $grade->getThreshold($key), 
+		    $val, 
+		    100 * $val / $board->getStudents()->count());
 	    $sum['st'] += $val;
 	    $sum['pc'] += 100 * $val / $board->getStudents()->count();
 	}
@@ -418,7 +428,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	
 	fprintf($stream, "<!-- NEED %d -->\n", count($grades['score']) + 3);
 	fprintf($stream, "<p>" . _("This table shows the distribution of scores by student on this examination.") . "</p>\n");
-	fprintf($stream, "<table>\n");
+ 	fprintf($stream, "<table>\n");
 	fprintf($stream, "<tr><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Score"), _("Percent"), _("Students"));
 	$sum = array( "st" => 0, "sc" => 0 );
 	foreach($grades['score'] as $key => $val) {
@@ -436,6 +446,34 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 		_("Standard Deviation"), $sds, $sdf);
 	fprintf($stream, "</table><br/>\n");
 
+	fprintf($stream, "<!-- NEED %d -->\n", count($grades['range']) + 3);
+	fprintf($stream, "<p>" . _("This table shows the number of student for each range of percentage correct answers.") . "</p>\n");
+ 	fprintf($stream, "<table>\n");
+	fprintf($stream, "<tr><th>%s</th><th>%s</th></tr>\n", _("Range"), _("Students"));
+	$sum = array( "st" => 0 );
+	foreach($grades['range'] as $key => $val) {
+	    $percent = $key * 10;
+	    switch($percent) {
+	     case 0:
+		fprintf($stream, "<tr align=\"right\"><td><b>< 10 %%</b></td><td>%d</td></tr>\n", 
+			$val);
+		break;
+	     case 90:
+		fprintf($stream, "<tr align=\"right\"><td><b>> %d %%</b></td><td>%d</td></tr>\n",
+			$percent, $val);
+		break;
+	     default:
+		fprintf($stream, "<tr align=\"right\"><td><b>%d - %d %%</b></td><td>%d</td></tr>\n",
+			$percent, $percent + 9, $val);
+		break;
+	    }
+	    $sum['st'] += $val;
+	}
+	fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td></tr>\n");
+	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%d</td></tr>\n",
+		_("Summary"), $sum['st']);
+	fprintf($stream, "</table><br/>\n");
+	
 	// 
 	// This is funky code, so we better provide some description:
 	// 
