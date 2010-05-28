@@ -214,14 +214,19 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 {
     private $manager;
     private $student;   // Current student ID
-    private $exam;
-    private $ldap;
+    private $exam;      // Exam data
+    private $ldap;      // For LDAP search
+    private $board;     // Score board object
+    private $grade;     // Examination grade object
     
     public function __construct($examid)
     {
 	$this->manager = new Manager($examid);
 	$this->exam = $this->manager->getData();
 	$this->ldap = LDAPSearch::factory();
+
+	$this->board = new ScoreBoard($this->exam->getExamID());
+	$this->grade = new ExamGrades($this->exam->getExamGrades());
 	
 	parent::__construct($this->exam->getExamName(), 
 			    $this->exam->getExamOrgUnit());
@@ -296,28 +301,25 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
     // Output the scores section.
     // 
     private function printSectionScores($stream)
-    {
-	$board = new ScoreBoard($this->exam->getExamID());
-	$grade = new ExamGrades($this->exam->getExamGrades());
-	
+    {	
 	fprintf($stream, "<h1>%s</h1>\n", _("Examination Result"));
 	
 	// 
 	// The summary section.
 	// 
-	$score = $board->getStudentScore($this->student);
+	$score = $this->board->getStudentScore($this->student);
 	fprintf($stream, "<h2>%s</h2>\n", _("Summary"));
 	fprintf($stream, "<p>" . _("You scored total %.01f of maximum %.01f points (%.01f%%) on this examination.") . "</p>\n",
 		$score->getSum(), 
-		$board->getMaximumScore(), 
-		100 * $score->getSum() / $board->getMaximumScore());
+		$this->board->getMaximumScore(), 
+		100 * $score->getSum() / $this->board->getMaximumScore());
 
 	// 
 	// The graduation section.
 	// 
 	fprintf($stream, "<h2>%s</h2>\n", _("Graduation"));
 	fprintf($stream, "<p>" . _("Your graduation on this examination is: <b>%s</b>.") . "</p>\n",
-		$grade->getGrade($score->getSum()));
+		$this->grade->getGrade($score->getSum()));
 	
 	// 
 	// The answer result details section.
@@ -326,10 +328,10 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."));
 	fprintf($stream, "<table><tr align=\"right\"><th>%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
 		_("Question"), _("Score"), _("Max score"), _("Percent"));
-	$questions = $board->getQuestions();
+	$questions = $this->board->getQuestions();
 	foreach($questions as $question) {
 	    fprintf($stream, "<tr align=\"right\"><td>%s</td><td>&nbsp;</td>", utf8_decode($question->getQuestionName()));
-	    $data = $board->getData($this->student, $question->getQuestionID());
+	    $data = $this->board->getData($this->student, $question->getQuestionID());
 	    if(isset($data)) {
  		fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td></tr>\n",
 			$data->getResultScore(),
@@ -344,143 +346,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%.01f</b></td><td><b>%.01f</b></td><td><b>%.01f%%</b></td></tr>\n",
 		_("Summary"), 
 		$score->getSum(), 
-		$board->getMaximumScore(), 
-		100 * $score->getSum() / $board->getMaximumScore());
+		$this->board->getMaximumScore(), 
+		100 * $score->getSum() / $this->board->getMaximumScore());
 	fprintf($stream, "</table><br/>\n");
-
-	// 
-	// The grade distribution section.
-	// 
-	$grades = array();
-	foreach($board->getStudents() as $student) {
-	    $score = $board->getStudentScore($student->getStudentID());
-	    $class = $grade->getGrade($score->getSum());
-	    $value = sprintf("%.01f", $score->getSum());
-	    $range = intval(floor(10 * $score->getSum() / $board->getMaximumScore()));
-	    if(!isset($grades['grade'][$class])) {
-		$grades['grade'][$class] = 1;
-	    } else {
-		$grades['grade'][$class]++;   // One more with this grade
-	    }
-	    if(!isset($grades['score'][$value])) {
-		$grades['score'][$value] = 1;
-	    } else {
-		$grades['score'][$value]++;
-	    }
-	    if(!isset($grades['range'][$range])) {
-		$grades['range'][$range] = 1;
-	    } else {
-		$grades['range'][$range]++;
-	    }
-	}
-	krsort($grades['score']);
-	krsort($grades['range']);
-
-	// 
-	// Get mean value and standard deviation. We are going to present
-	// values based on all scores and values where we first remove the
-	// highest and lowest scores.
-	// 
-	$scf = array();
-	foreach($grades['score'] as $key => $val) {
-	    for($i = 0; $i < $val; $i++) {
-		$scf[] = $key;
-	    }
-	}
-	sort($scf);
-	$scs = $scf;
-
-	while($scs[0] == 0) {
-	    array_shift($scs);	    
-	}
-	array_pop($scs);
-	
-	$sdf = $this->getStandardDeviation($scf);
-	$mvf = $this->getMeanValue($scf);
-
-	$sds = $this->getStandardDeviation($scs);
-	$mvs = $this->getMeanValue($scs);
-	
-	// 
-	// Now we are ready to generate the two tables. We use NEED to ensure
-	// that the tables don't get cut apart somewhere in the middle.
-	// 
-	fprintf($stream, "<h2>%s</h2>\n", _("Distribution"));
-	
-	fprintf($stream, "<!-- NEED %d -->\n", count($grades['grade']) + 3);
-	fprintf($stream, "<p>" . _("This table shows the distribution by grades. The number of student allotted for each grade are:") . "</p>\n");
-	fprintf($stream, "<table>\n");
-	fprintf($stream, "<tr align=\"right\"><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Grade"), _("Threshold"), _("Students"), _("Percent"));
-	$sum = array( "st" => 0, "pc" => 0 );
-	foreach($grades['grade'] as $key => $val) {
-	    fprintf($stream, "<tr align=\"right\"><td><b>%s</b></td><td>%.01f</td><td>%d</td><td>%.01f</td></tr>\n",
-		    $key, 
-		    $grade->getThreshold($key), 
-		    $val, 
-		    100 * $val / $board->getStudents()->count());
-	    $sum['st'] += $val;
-	    $sum['pc'] += 100 * $val / $board->getStudents()->count();
-	}
-	fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td><td>---</td></tr>\n");
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%d</b></td><td><b>%.01f%%</b></td></tr>\n",
-		_("Summary"), $sum['st'], $sum['pc']);
-	fprintf($stream, "</table><br/>\n");
-	
-	fprintf($stream, "<!-- NEED %d -->\n", count($grades['score']) + 3);
-	fprintf($stream, "<p>" . _("This table shows the distribution of scores by student on this examination.") . "</p>\n");
- 	fprintf($stream, "<table>\n");
-	fprintf($stream, "<tr><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Score"), _("Percent"), _("Students"));
-	$sum = array( "st" => 0, "sc" => 0 );
-	foreach($grades['score'] as $key => $val) {
-	    fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td><b>%.01f</b></td><td>%.01f</td><td>%d</td></tr>\n",
-		    $key, 100 * $key / $score->getMax(), $val);
-	    $sum['sc'] += $key * $val;
-	    $sum['st'] += $val;
-	}
-	fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f</td><td>&nbsp;</td><td>%d</td></tr>\n",
-		_("Summary"), $sum['sc'], $sum['st']);
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td><td>%.01f%% (%.01f%%)</td></tr>\n",
-		_("Mean Value"), $mvs, $mvf, 100 * $mvs / $score->getMax(), 100 * $mvf / $score->getMax());
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td></tr>\n",
-		_("Standard Deviation"), $sds, $sdf);
-	fprintf($stream, "</table><br/>\n");
-
-	fprintf($stream, "<!-- NEED %d -->\n", count($grades['range']) + 3);
-	fprintf($stream, "<p>" . _("This table shows the number of student for each range of percentage correct answers.") . "</p>\n");
- 	fprintf($stream, "<table>\n");
-	fprintf($stream, "<tr><th>%s</th><th>%s</th></tr>\n", _("Range"), _("Students"));
-	$sum = array( "st" => 0 );
-	foreach($grades['range'] as $key => $val) {
-	    $percent = $key * 10;
-	    switch($percent) {
-	     case 0:
-		fprintf($stream, "<tr align=\"right\"><td><b>< 10 %%</b></td><td>%d</td></tr>\n", 
-			$val);
-		break;
-	     case 90:
-		fprintf($stream, "<tr align=\"right\"><td><b>> %d %%</b></td><td>%d</td></tr>\n",
-			$percent, $val);
-		break;
-	     default:
-		fprintf($stream, "<tr align=\"right\"><td><b>%d - %d %%</b></td><td>%d</td></tr>\n",
-			$percent, $percent + 9, $val);
-		break;
-	    }
-	    $sum['st'] += $val;
-	}
-	fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td></tr>\n");
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%d</td></tr>\n",
-		_("Summary"), $sum['st']);
-	fprintf($stream, "</table><br/>\n");
-	
-	// 
-	// This is funky code, so we better provide some description:
-	// 
-	fprintf($stream, "<p>" . 
-		_("The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. ") . 
-		_("The other values are calculated by first removing the highest and lowest scores.") .
-		"</p>\n");
     }
     
     // 
@@ -655,6 +523,154 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
     }
     
     // 
+    // Output the examination statistics section.
+    // 
+    private function printSectionStatistics($stream)
+    {
+	fprintf($stream, "<h1>%s</h1>\n", _("Statistics"));
+	fprintf($stream, "<p>" . _("This section shows overall statistics for all participients on this examination.") . "</p>\n");
+	
+	// 
+	// The grade distribution sub section.
+	// 
+	$grades = array();
+	foreach($this->board->getStudents() as $student) {
+	    $score = $this->board->getStudentScore($student->getStudentID());
+	    $class = $this->grade->getGrade($score->getSum());
+	    $value = sprintf("%.01f", $score->getSum());
+	    $range = intval(floor(10 * $score->getSum() / $this->board->getMaximumScore()));
+	    if(!isset($grades['grade'][$class])) {
+		$grades['grade'][$class] = 1;
+	    } else {
+		$grades['grade'][$class]++;   // One more with this grade
+	    }
+	    if(!isset($grades['score'][$value])) {
+		$grades['score'][$value] = 1;
+	    } else {
+		$grades['score'][$value]++;
+	    }
+	    if(!isset($grades['range'][$range])) {
+		$grades['range'][$range] = 1;
+	    } else {
+		$grades['range'][$range]++;
+	    }
+	}
+	krsort($grades['score']);
+	krsort($grades['range']);
+
+	// 
+	// Get mean value and standard deviation. We are going to present
+	// values based on all scores and values where we first remove the
+	// highest and lowest scores.
+	// 
+	$scf = array();
+	foreach($grades['score'] as $key => $val) {
+	    for($i = 0; $i < $val; $i++) {
+		$scf[] = $key;
+	    }
+	}
+	sort($scf);
+	$scs = $scf;
+
+	while($scs[0] == 0) {
+	    array_shift($scs);	    
+	}
+	array_pop($scs);
+	
+	$sdf = $this->getStandardDeviation($scf);
+	$mvf = $this->getMeanValue($scf);
+
+	$sds = $this->getStandardDeviation($scs);
+	$mvs = $this->getMeanValue($scs);
+	
+	// 
+	// Now we are ready to generate the two tables. We use NEED to ensure
+	// that the tables don't get cut apart somewhere in the middle.
+	// 
+	fprintf($stream, "<h2>%s</h2>\n", _("Distribution"));
+	
+	fprintf($stream, "<!-- NEED %d -->\n", count($grades['grade']) + 3);
+	fprintf($stream, "<p>" . _("This table shows the distribution by grades. The number of student allotted for each grade are:") . "</p>\n");
+	fprintf($stream, "<table>\n");
+	fprintf($stream, "<tr align=\"right\"><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Grade"), _("Threshold"), _("Students"), _("Percent"));
+	$sum = array( "st" => 0, "pc" => 0 );
+	foreach($grades['grade'] as $key => $val) {
+	    fprintf($stream, "<tr align=\"right\"><td><b>%s</b></td><td>%.01f</td><td>%d</td><td>%.01f</td></tr>\n",
+		    $key, 
+		    $this->grade->getThreshold($key), 
+		    $val, 
+		    100 * $val / $this->board->getStudents()->count());
+	    $sum['st'] += $val;
+	    $sum['pc'] += 100 * $val / $this->board->getStudents()->count();
+	}
+	fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td><td>---</td></tr>\n");
+	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%d</b></td><td><b>%.01f%%</b></td></tr>\n",
+		_("Summary"), $sum['st'], $sum['pc']);
+	fprintf($stream, "</table><br/>\n");
+	
+	fprintf($stream, "<!-- NEED %d -->\n", count($grades['score']) + 3);
+	fprintf($stream, "<p>" . _("This table shows the distribution of scores by student on this examination.") . "</p>\n");
+ 	fprintf($stream, "<table>\n");
+	fprintf($stream, "<tr><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Score"), _("Percent"), _("Students"));
+	$sum = array( "st" => 0, "sc" => 0 );
+	foreach($grades['score'] as $key => $val) {
+	    fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td><b>%.01f</b></td><td>%.01f</td><td>%d</td></tr>\n",
+		    $key, 100 * $key / $this->board->getMaximumScore(), $val);
+	    $sum['sc'] += $key * $val;
+	    $sum['st'] += $val;
+	}
+	fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
+	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f</td><td>&nbsp;</td><td>%d</td></tr>\n",
+		_("Summary"), $sum['sc'], $sum['st']);
+	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td><td>%.01f%% (%.01f%%)</td></tr>\n",
+		_("Mean Value"), $mvs, $mvf, 100 * $mvs / $this->board->getMaximumScore(), 100 * $mvf / $this->board->getMaximumScore());
+	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td></tr>\n",
+		_("Standard Deviation"), $sds, $sdf);
+	fprintf($stream, "</table><br/>\n");
+
+	// 
+	// The result ranges sub section.
+	// 
+	fprintf($stream, "<h2>%s</h2>\n", _("Ranges"));
+	
+	fprintf($stream, "<!-- NEED %d -->\n", count($grades['range']) + 3);
+	fprintf($stream, "<p>" . _("This table shows the number of student in each range of percentage correct answers.") . "</p>\n");
+ 	fprintf($stream, "<table>\n");
+	fprintf($stream, "<tr><th>%s</th><th>%s</th></tr>\n", _("Range"), _("Students"));
+	$sum = array( "st" => 0 );
+	foreach($grades['range'] as $key => $val) {
+	    $percent = $key * 10;
+	    switch($percent) {
+	     case 0:
+		fprintf($stream, "<tr align=\"right\"><td><b>< 10 %%</b></td><td>%d</td></tr>\n", 
+			$val);
+		break;
+	     case 90:
+		fprintf($stream, "<tr align=\"right\"><td><b>> %d %%</b></td><td>%d</td></tr>\n",
+			$percent, $val);
+		break;
+	     default:
+		fprintf($stream, "<tr align=\"right\"><td><b>%d - %d %%</b></td><td>%d</td></tr>\n",
+			$percent, $percent + 9, $val);
+		break;
+	    }
+	    $sum['st'] += $val;
+	}
+	fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td></tr>\n");
+	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%d</td></tr>\n",
+		_("Summary"), $sum['st']);
+	fprintf($stream, "</table><br/>\n");
+	
+	// 
+	// This is funky code, so we better provide some description:
+	// 
+	fprintf($stream, "<p>" . 
+		_("The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. ") . 
+		_("The other values are calculated by first removing the highest and lowest scores.") .
+		"</p>\n");
+    }
+    
+    // 
     // Output the reference section.
     // 
     private function printSectionReference($stream)
@@ -720,6 +736,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	$this->printSectionDescription($stream);
 	$this->printSectionScores($stream);
 	$this->printSectionAnswers($stream);
+	$this->printSectionStatistics($stream);
 	$this->printSectionReference($stream);
 	fprintf($stream, "</body></html>\n");
     }
