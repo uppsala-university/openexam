@@ -93,10 +93,12 @@ class DecoderPage extends TeacherPage
 			     "mode"    => "/^(result|scores)$/",
 			     "action"  => "/^(save|show|mail|download)$/", 
 			     "format"  => "/^(pdf|html|ps|csv|tab|xml)$/",
-			     "student" => "/^(\d+|all)$/" );
-
+			     "student" => "/^(\d+|all)$/",
+			     "verbose" => "/^\d+$/" );
+    
     private $manager;
     private $decoder;
+    private $verbose = false;
     
     public function __construct()
     {
@@ -105,6 +107,9 @@ class DecoderPage extends TeacherPage
 	if(isset($_REQUEST['exam'])) {
 	    $this->manager = new Manager($_REQUEST['exam']);
 	    $this->decoder = new Decoder($_REQUEST['exam']);
+	}
+	if(isset($_REQUEST['verbose'])) {
+	    $this->verbose = $_REQUEST['verbose'];
 	}
     }
     
@@ -368,7 +373,14 @@ class DecoderPage extends TeacherPage
 	       "</p>\n",
 	       utf8_decode($data->getExamName()));
 
+	if($this->verbose) {
+	    printf("<span class=\"links viewmode\"><a href=\"?exam=4&amp;action=show&amp;verbose=0\">%s</a></span>\n", _("Silent"));
+	} else {
+	    printf("<span class=\"links viewmode\"><a href=\"?exam=4&amp;action=show&amp;verbose=1\">%s</a></span>\n", _("Verbose"));
+	}
+	
  	$board = new ScoreBoardPrinter($exam);
+	$board->setVerbose($this->verbose);
 	$board->output();
 
 	printf("<h5>" . _("Color Codes") . "</h5>\n");
