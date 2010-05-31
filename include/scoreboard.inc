@@ -491,11 +491,19 @@ class ScoreBoardWriter extends ScoreBoardOutput
 class ScoreBoardPrinter extends ScoreBoardOutput
 {
     private $decoded;     // Allready decoded
+    private $verbose;     // Be more verbose in output.
+    private $show;
     
     public function __construct($exam)
     {
 	parent::__construct($exam);	
 	$this->decoded = $this->board->getExam()->getExamDecoded() == 'Y';
+	$this->verbose = false;
+    }
+    
+    public function setVerbose($bool)
+    {
+	$this->verbose = $bool;
     }
     
     public function output()
@@ -503,29 +511,53 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 	$this->index = 0;
 	$questions = $this->board->getQuestions();
 	
+	// 
+	// Select which field to output:
+	// 
+	$this->show->name = $this->decoded;
+	$this->show->user = $this->decoded && $this->verbose;
+	$this->show->code = $this->verbose || !$this->decoded;
+	$this->show->summary = $this->verbose;
+	$this->show->percent = true;
+	$this->show->grade = true;
+	$this->show->score = true;
+	$this->show->links = !$this->decoded;
+	
 	$table = new Table();
 
 	// 
 	// Print headers:
 	// 
 	$row = $table->addRow();
-	if($this->decoded) {
+	if($this->show->name) {
 	    $row->addHeader(_("Name"));
+	}
+	if($this->show->user) {
 	    $row->addHeader(_("User"));
 	}
-	$row->addHeader(_("Code"));
-	foreach($questions as $question) {
-	    $header = $this->getHeaderData($question);
-	    $obj = $row->addHeader($header->name);
-	    if(!$this->decoded && isset($header->link)) {
-		$obj->setLink($header->link)->setTitle($header->desc);
-	    } else {
-		$obj->setAnchor($header->name, $header->desc);
+	if($this->show->code) {
+	    $row->addHeader(_("Code"));
+	}
+	if($this->show->score) {
+	    foreach($questions as $question) {
+		$header = $this->getHeaderData($question);
+		$obj = $row->addHeader($header->name);
+		if($this->show->links && isset($header->link)) {
+		    $obj->setLink($header->link)->setTitle($header->desc);
+		} else {
+		    $obj->setAnchor($header->name, $header->desc);
+		}
 	    }
 	}
-	$row->addHeader(_("Summary"));
-	$row->addHeader(_("Percent"));
-	$row->addHeader(_("Grade"));
+	if($this->show->summary) {
+	    $row->addHeader(_("Summary"));
+	}
+	if($this->show->percent) {
+	    $row->addHeader(_("Percent"));
+	}
+	if($this->show->grade) {
+	    $row->addHeader(_("Grade"));
+	}
 
 	// 
 	// Print all students:
@@ -534,56 +566,76 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 	$grades = new ExamGrades($this->board->getExam()->getExamGrades());
 	foreach($students as $student) {
 	    $row = $table->addRow();
-	    if($this->decoded) {
+	    if($this->show->name) {
 		$obj = $row->addData(utf8_decode($this->getCommonName($student->getStudentUser())));
 		$obj->setNoWrap();
-		$obj = $row->addData($student->getStudentUser());
-	    }
-	    $obj = $row->addData($student->getStudentCode());
-	    if(!$this->decoded) {
-		$obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;student=%d",
-				      $student->getExamID(), 
-				      $student->getStudentID()));
-	    }
-	    
-	    // 
-	    // Print all answers for this student:
-	    // 
-	    foreach($questions as $question) {
-		$data = $this->board->getData($student->getStudentID(), 
-					      $question->getQuestionID());
-		if(!isset($data)) {
-		    $obj = $row->addData("-");
-		    $obj->setClass("cc na");
-		} elseif($data->hasResultScore()) {
-		    $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
-		    $obj->setClass("cc ac");
-		} else {
-		    $obj = $row->addData("X");
-		    $obj->setClass("cc nc");
+		if(!$this->show->user && !$this->show->code) {
+		    $obj->setTitle(sprintf("%s: %s\n%s: %s", 
+					   _("User"), $student->getStudentUser(),
+					   _("Code"), $student->getStudentCode()));
 		}
-		
+	    }
+	    if($this->show->user) {
+		$row->addData($student->getStudentUser());
+	    }
+	    if($this->show->code) {
+		$obj = $row->addData($student->getStudentCode());
+		if($this->show->links) {
+		    $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;student=%d",
+					  $student->getExamID(), 
+					  $student->getStudentID()));
+		}
+	    }
+	    if($this->show->score) {
 		// 
-		// Theres no reason to continue if data is missing or if exam is decoded.
+		// Print all answers for this student:
 		// 
-		if(!isset($data) || $this->decoded) {
-		    continue;
-		}
-		
-		if($question->getQuestionPublisher() == phpCAS::getUser()) {
-		    $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d",
-					  $data->getExamID(), 
-					  $data->getAnswerID()));
-		} else {
-		    $obj->setClass("cc no");
+		foreach($questions as $question) {
+		    $data = $this->board->getData($student->getStudentID(), 
+						  $question->getQuestionID());
+		    if(!isset($data)) {
+			$obj = $row->addData("-");
+			$obj->setClass("cc na");
+		    } elseif($data->hasResultScore()) {
+			$obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+			$obj->setClass("cc ac");
+		    } else {
+			$obj = $row->addData("X");
+			$obj->setClass("cc nc");
+		    }
+		    
+		    // 
+		    // Theres no reason to continue if data is missing or if exam is decoded.
+		    // 
+		    if(!isset($data) || $this->decoded) {
+			continue;
+		    }
+		    
+		    if($question->getQuestionPublisher() == phpCAS::getUser()) {
+			$obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d",
+					      $data->getExamID(), 
+					      $data->getAnswerID()));
+		    } else {
+			$obj->setClass("cc no");
+		    }
 		}
 	    }
-	    $score = $this->board->getStudentScore($student->getStudentID());
-	    $grade = $grades->getGrade($score->getSum());
-	    $obj = $row->addData(sprintf("%.01f/%.01f/%.01f", $score->getSum(), $score->getMax(), $this->board->getMaximumScore()));
-	    $obj = $row->addData(sprintf("%.01f%%", 100 * $score->getSum() / $this->board->getMaximumScore()));
-	    $obj = $row->addData($grade);
-	    $obj->setClass(sprintf("gr%s", strtolower($grade)));
+	    if($this->show->summary ||
+	       $this->show->percent ||
+	       $this->show->grade) {
+		$score = $this->board->getStudentScore($student->getStudentID());
+		$grade = $grades->getGrade($score->getSum());
+		if($this->show->summary) {
+		    $obj = $row->addData(sprintf("%.01f/%.01f/%.01f", $score->getSum(), $score->getMax(), $this->board->getMaximumScore()));
+		}
+		if($this->show->percent) {
+		    $obj = $row->addData(sprintf("%.01f%%", 100 * $score->getSum() / $this->board->getMaximumScore()));
+		}
+		if($this->show->grade) {
+		    $obj = $row->addData($grade);
+		    $obj->setClass(sprintf("gr%s", strtolower($grade)));
+		}
+	    }
 	}
 	
 	$table->output();

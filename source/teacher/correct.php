@@ -80,11 +80,16 @@ class CorrectionPage extends TeacherPage
 			     "answer"   => "/^\d+$/", 
 			     "question" => "/^\d+$/",
 			     "student"  => "/^\d+$/",
+			     "verbose"  => "/^\d+$/",
 			     "mode"     => "/^(mark|save)$/" );
+    private $verbose = false;
     
     public function __construct()
     {
 	parent::__construct(_("Answer Correction Page"), $this->params);	
+	if(isset($_REQUEST['verbose'])) {
+	    $this->verbose = $_REQUEST['verbose'];
+	}
     }
 
     // 
@@ -429,8 +434,15 @@ class CorrectionPage extends TeacherPage
 	       _("Correct answers by student (rows), by question (column) or individual (by index). ") . 
 	       _("You can only correct answers for those questions published by yourself.") . 
 	       "</p>\n");	       
+
+	if($this->verbose) {
+	    printf("<span class=\"links viewmode\"><a href=\"?exam=4&amp;verbose=0\">%s</a></span>\n", _("Silent"));
+	} else {
+	    printf("<span class=\"links viewmode\"><a href=\"?exam=4&amp;verbose=1\">%s</a></span>\n", _("Verbose"));
+	}
 	
  	$board = new ScoreBoardPrinter($exam);
+	$board->setVerbose($this->verbose);
 	$board->output();
 
 	printf("<h5>" . _("Download Result") . "</h5>\n");
