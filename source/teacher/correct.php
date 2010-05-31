@@ -55,6 +55,7 @@ include "include/error.inc";
 // Include database support:
 // 
 include "include/database.inc";
+include "include/ldap.inc";
 
 // 
 // Business logic:
@@ -63,6 +64,12 @@ include "include/teacher.inc";
 include "include/exam.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/correct.inc";
+
+// 
+// Support classes:
+// 
+include "include/scoreboard.inc";
+include "include/html.inc";
 
 // 
 // The answer correction page:
@@ -423,77 +430,8 @@ class CorrectionPage extends TeacherPage
 	       _("You can only correct answers for those questions published by yourself.") . 
 	       "</p>\n");	       
 	
- 	$board = new ScoreBoard($exam);
-	$questions = $board->getQuestions();
-	
-	printf("<table>\n");
-	// 
-	// Print questions, leave the first cell empty.
-	// 
-	printf("<tr><td>&nbsp;</td>");
-	$i = 1;
-	foreach($questions as $question) {
-	    $question->setQuestionTitle(sprintf("%s %s\n\n%s\n\n%s: %.01f",
-						_("Question"),
-						utf8_decode($question->getQuestionName()),
-						utf8_decode($question->getQuestionText()),
-						_("Max score"),
-						$question->getQuestionScore()));
-	    if($question->getQuestionPublisher() == phpCAS::getUser()) {
-		printf("<td><a href=\"?exam=%d&amp;action=correct&amp;question=%d\" title=\"%s\">Q%d.</a></td>",
-		       $question->getExamID(),
-		       $question->getQuestionID(),
-		       $question->getQuestionTitle(),
-		       $i++);
-	    } else {
-		printf("<td><a name=\"Q%d\" title=\"%s\">Q%d.</a></td>",
-		       $question->getQuestionID(),
-		       $question->getQuestionTitle(),
-		       $i++);
-	    }
-	}
-	printf("<td>%s</td>\n", _("Summary"));
-	printf("<td>%s</td>\n", _("Percent"));
-	printf("<td>%s</td>\n", _("Grade"));
-	printf("</tr>\n");
-	// 
-	// Output the list of anonymous students.
-	// 
-	$students = $board->getStudents();
-	$grades = new ExamGrades($data->getExamGrades());
-	foreach($students as $student) {
-	    printf("<tr><td><a href=\"?exam=%d&amp;action=correct&amp;student=%d\">%s</a></td>",
-		   $student->getExamID(), 
-		   $student->getStudentID(),
-		   $student->getStudentCode());
-	    foreach($questions as $question) {
-		$data = $board->getData($student->getStudentID(), $question->getQuestionID());
-		if(!isset($data)) {
-		    printf("<td class=\"cc na\">-</td>");
-		} elseif($data->getQuestionPublisher() == phpCAS::getUser()) {
-		    if($data->hasResultScore()) {
-			printf("<td class=\"cc ac\"><a href=\"?exam=%d&amp;action=correct&amp;answer=%d\">%.01f</a></td>",
-			       $data->getExamID(), $data->getAnswerID(), $data->getResultScore());
-		    } else {
-			printf("<td class=\"cc nc\"><a href=\"?exam=%d&amp;action=correct&amp;answer=%d\">X</a></td>",
-			       $data->getExamID(), $data->getAnswerID());
-		    }
-		} else {
-		    if($data->hasResultScore()) {
-			printf("<td class=\"cc no\">%.01f</td>", $data->getResultScore());
-		    } else {
-			printf("<td class=\"cc no\">?</td>");
-		    }
-		}
-	    }
-	    $score = $board->getStudentScore($student->getStudentID());
-	    $grade = $grades->getGrade($score->getSum());
-	    printf("<td>%.01f/%.01f/%.01f</td>", $score->getSum(), $score->getMax(), $board->getMaximumScore());
-	    printf("<td>%.01f%%</td>", 100 * $score->getSum() / $board->getMaximumScore());
-	    printf("<td class=\"gr%s\">%s</td>", strtolower($grade), $grade);
-	    printf("</tr>\n");
-	}
-	printf("</table>\n");
+ 	$board = new ScoreBoardPrinter($exam);
+	$board->output();
 
 	printf("<h5>" . _("Download Result") . "</h5>\n");
 	printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", 
@@ -513,7 +451,7 @@ class CorrectionPage extends TeacherPage
 	}
 	printf("</table>\n");
     }
-            
+    
     private function saveScoreBoard($exam)
     {	
 	$manager = new Manager($exam);	

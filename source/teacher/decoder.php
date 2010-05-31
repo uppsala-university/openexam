@@ -60,13 +60,19 @@ include "include/ldap.inc";
 // Business logic:
 // 
 include "include/exam.inc";
-include "include/pdf.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/decoder.inc";
 include "include/teacher/correct.inc";
+
+// 
+// Support classes:
+// 
+include "include/pdf.inc";
+include "include/html.inc";
 include "include/smtp.inc";
 include "include/sendmail.inc";
+include "include/scoreboard.inc";
 
 // 
 // Settings for result mail attachments.
@@ -76,87 +82,6 @@ if(!defined('ATTACH_MAX_FILE_SIZE')) {
 }
 if(!defined('ATTACH_MAX_NUM_FILES')) {
     define ('ATTACH_MAX_NUM_FILES', 3);
-}
-
-// 
-// Output formatters:
-// 
-class OutputFormatter
-{
-    protected $values;
-    
-    public function format(&$data)
-    {
-	$this->values = array();
-	foreach($data as $value) {
-	    if(is_float($value)) {
-		$this->values[] = sprintf("%.01f", $value);
-	    } else {
-		$this->values[] = $value;
-	    }
-	}
-    }
-}
-
-class OutputTextTab extends OutputFormatter
-{
-    public function getLine(&$data)
-    {
-	parent::format($data);
-        return implode("\t", $this->values);
-    }
-}
-
-class OutputTextCsv extends OutputFormatter
-{
-    public function getLine(&$data)
-    {
-	parent::format($data);
-	return "\"" . implode("\",\"", $this->values) . "\"";
-    }
-}
-
-class OutputTextXml extends OutputFormatter
-{
-    public function getLine(&$data)
-    {
-	parent::format($data);
-        return "<row><data>" . implode("</data><data>", $this->values) . "</data></row>";
-    }
-}
-
-class OutputTextHtml extends OutputFormatter
-{
-    public function getLine(&$data)
-    {
-	parent::format($data);
-	return "<tr><td>" . implode("</td><td>", $this->values) . "</td></tr>";
-    }
-}
-
-// 
-// Writes data to the stream using the formatter object.
-// 
-class StreamWriter
-{
-    private $stream;
-    private $format;
-
-    public function __construct($stream, $format)
-    {
-	$this->stream = $stream;
-	$this->format = $format;
-    }
-    
-    public function getStream()
-    {
-	return $this->stream;
-    }
-
-    public function writeLine(&$data)
-    {
-	fprintf($this->stream, "%s\n", $this->format->getLine($data));
-    }
 }
 
 // 
@@ -309,186 +234,50 @@ class DecoderPage extends TeacherPage
 	    die(sprintf("Format %s is not supported in result mode.", $format));
 	}
     }
-    
+
     private function saveScores($exam, $format)
     {
-	$data = $this->manager->getData();
-	$info = $this->manager->getInfo();
-	
-	if(!$info->isDecoded()) {
+	if(!$this->manager->getInfo()->isDecoded()) {
 	    ErrorPage::show(_("Can't continue!"),
 			    _("This examination has not been decoded. The script processing has halted."));
 	    exit(1);
 	}
 	
 	ob_end_clean();
-	
-	switch($format) {
-	 case "pdf":
-	 case "html":
-	 case "ps":
-	    die("TODO: implement saving score board as pdf, html and ps");
-	    break;
-	 case "tab":
-	    self::saveScoresTab($exam, $data);
-	    break;
-	 case "csv":
-	    self::saveScoresCsv($exam, $data);
-	    break;
-	 case "xml":
-	    self::saveScoresXml($exam, $data);
-	    break;
-	 default:
-	    die(sprintf("Format %s is not supported in score board mode.", $format));
-	}
-    }
-    
-    // 
-    // Save the score board as tab-separated values (for import in a 
-    // spread sheet application).
-    // 
-    private function saveScoresTab($exam, &$data)
-    {
-	if(ob_get_length() > 0) {
-	    ob_end_clean();
-	}
 
 	$stream = fopen("php://memory", "r+");
-	$format = new OutputTextTab();
-	$writer = new StreamWriter($stream, $format);
-	
-	$this->writeScores($data, $writer, $exam);
-	
-    	header("Content-Type: text/tab-separated-values");
-    	header(sprintf("Content-Disposition: attachment;filename=\"%s.tab\"", $data->getExamName()));
-    	header("Cache-Control: no-cache");
-    	header("Pragma-directive: no-cache");
-    	header("Cache-directive: no-cache");
-    	header("Pragma: no-cache");
-    	header("Expires: 0");
-			
-	rewind($stream);
-	echo stream_get_contents($stream);
-	exit(0);
-    }
-
-    // 
-    // Save the score board as comma-separated values (for import in a 
-    // spread sheet application).
-    // 
-    private function saveScoresCsv($exam, &$data)
-    {
-	if(ob_get_length() > 0) {
-	    ob_end_clean();
-	}
-	
-	$stream = fopen("php://memory", "r+");	
-	$format = new OutputTextCsv();
-	$writer = new StreamWriter($stream, $format);
-	
-	$this->writeScores($data, $writer, $exam);
-	
-    	header("Content-Type: text/csv");
-    	header(sprintf("Content-Disposition: attachment;filename=\"%s.csv\"", $data->getExamName()));
-    	header("Cache-Control: no-cache");
-    	header("Pragma-directive: no-cache");
-    	header("Cache-directive: no-cache");
-    	header("Pragma: no-cache");
-    	header("Expires: 0");
-
-	rewind($stream);
-	echo stream_get_contents($stream);
-	exit(0);
-    }
-
-    // 
-    // Save the score board as XML formatted values (for import in a 
-    // spread sheet application).
-    // 
-    private function saveScoresXml($exam, &$data)
-    {
-	if(ob_get_length() > 0) {
-	    ob_end_clean();
-	}
-
-	$stream = fopen("php://memory", "r+");
-	$format = new OutputTextXml();
-	$writer = new StreamWriter($stream, $format);
-	
-	fprintf($stream, "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n");
-	fprintf($stream, "<rows>\n");
-	$this->writeScores($data, $writer, $exam);
-	fprintf($stream, "</rows>\n");
-	
-    	header("Content-Type: application/xml");
-    	header(sprintf("Content-Disposition: attachment;filename=\"%s.xml\"", $data->getExamName()));
-    	header("Cache-Control: no-cache");
-    	header("Pragma-directive: no-cache");
-    	header("Cache-directive: no-cache");
-    	header("Pragma: no-cache");
-    	header("Expires: 0");
-	
-	rewind($stream);
-	echo stream_get_contents($stream);
-	exit(0);
-    }
-    
-    // 
-    // Format the score table using the supplied formatter object.
-    // 
-    private function writeScores($data, $writer, $exam)
-    {
-	$board = new ScoreBoard($exam);
-	$questions = $board->getQuestions();
-
-	// 
-	// Write header list:
-	// 
-	$i = 1;	
-	$array = array();
-	$array[] = _("Name");
-	$array[] = _("User");
-	$array[] = _("Code");
-	foreach($questions as $question) {
-	    $array[] = sprintf("Q%d", $i++);
-	}
-	$array[] = _("Score");
-	$array[] = _("Possible");
-	$array[] = _("Max score");
-	$array[] = _("Percent");
-	$writer->writeLine($array);
-	
-	// 
-	// Output the list of students.
-	// 
-	$students = $board->getStudents();
-	foreach($students as $student) {
-	    $array = array();
-	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
-	    $array[] = $student->getStudentName();
-	    $array[] = $student->getStudentUser();
-	    $array[] = $student->getStudentCode();
-	    foreach($questions as $question) {
-		$data = $board->getData($student->getStudentID(), $question->getQuestionID());
-		if(!isset($data)) {
-		    $array[] = "";
-		} else {
-		    if($data->hasResultScore()) {
-			$array[] = $data->getResultScore();
-		    } else {
-			$array[] = "";
-		    }
-		}
+	if($stream) {
+	    switch($format) {
+	     case "pdf":
+	     case "ps":
+		die("TODO: implement saving score board as PDF and PostScript");
+		break;
+	     case "html":
+		$format = new OutputTextHtml();
+		break;		
+	     case "tab":
+		$format = new OutputTextTab();
+		break;
+	     case "csv":
+		$format = new OutputTextCsv();
+		break;
+	     case "xml":
+		$format = new OutputTextXml();
+		break;
+	     default:
+		die(sprintf("Format %s is not supported in score board mode.", $format));
 	    }
-	    $score = $board->getStudentScore($student->getStudentID());
-	    $array[] = $score->getSum();
-	    $array[] = $score->getMax();
-	    $array[] = $board->getMaximumScore();
-	    $array[] = 100 * $score->getSum() / $board->getMaximumScore();
-	    $writer->writeLine($array);
+	    
+	    if(isset($format)) {
+		$writer = new StreamWriter($stream, $format);
+		$sender = new ScoreBoardWriter($exam, $writer, $format);
+		$sender->send();
+		fclose($stream);
+		exit(1);
+	    }
 	}
     }
-    
+            
     // 
     // Show the page where caller can chose to download the result and score
     // board in different formats.
@@ -549,7 +338,7 @@ class DecoderPage extends TeacherPage
 	printf("<p>"  . 
 	       _("This section lets you download the score board showing a summary view of the examination in different formats. ") . 
 	       "</p>\n");
-	$options = array( "tab" => "Tab Separated Text", "csv" => "Comma Separated Text", "xml" => "XML Format Data" );
+	$options = array( "tab" => "Tab Separated Text", "csv" => "Comma Separated Text", "xml" => "XML Format Data", "html" => "Single HTML Page" );
 	printf("<form action=\"decoder.php\" method=\"GET\">\n");
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\">\n", $this->manager->getExamID());
 	printf("<input type=\"hidden\" name=\"mode\" value=\"scores\" />\n");
@@ -578,62 +367,9 @@ class DecoderPage extends TeacherPage
 	       _("This table shows all answers from students to questions for the examination '%s'. ") .
 	       "</p>\n",
 	       utf8_decode($data->getExamName()));
-	
- 	$board = new ScoreBoard($this->manager->getExamID());
-	$questions = $board->getQuestions();
-	
-	printf("<table>\n");
-	printf("<tr><td>%s</td><td>%s</td><td>%s</td>", _("Name"), _("User"), _("Code"));
-	$i = 1;
-	foreach($questions as $question) {
-	    printf("<td><a name=\"%d:%d\" title=\"%s\">Q%d.</a></td>",
-		   $question->getExamID(),
-		   $question->getQuestionID(),
-		   sprintf("%s %s\n\n%s\n\n%s: %.01f",
-			   _("Question"),
-			   utf8_decode($question->getQuestionName()),
-			   utf8_decode($question->getQuestionText()),
-			   _("Max score"),
-			   $question->getQuestionScore()),
-		   $i++);
-	}
-	printf("<td>%s</td>\n", _("Summary"));
-	printf("<td>%s</td>\n", _("Percent"));
-	printf("</tr>\n");
-	// 
-	// Output the list of decoded students.
-	// 
-	$students = $board->getStudents();
-	foreach($students as $student) {
-	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
-	    printf("<tr><td nowrap>%s</td><td>%s</td><td>%s</td>",
-		   $student->getStudentName(),
-		   $student->getStudentUser(),
-		   $student->getStudentCode());
-	    foreach($questions as $question) {
-		$data = $board->getData($student->getStudentID(), $question->getQuestionID());
-		if(!isset($data)) {
-		    printf("<td class=\"cc na\">-</td>");
-		} elseif($data->getQuestionPublisher() == phpCAS::getUser()) {
-		    if($data->hasResultScore()) {
-			printf("<td class=\"cc ac\">%.01f</td>", $data->getResultScore());
-		    } else {
-			printf("<td class=\"cc nc\">X</td>");
-		    }
-		} else {
-		    if($data->hasResultScore()) {
-			printf("<td class=\"cc no\">%.01f</td>", $data->getResultScore());
-		    } else {
-			printf("<td class=\"cc no\">?</td>");
-		    }
-		}
-	    }
-	    $score = $board->getStudentScore($student->getStudentID());
-	    printf("<td>%.01f/%.01f/%.01f</td>", $score->getSum(), $score->getMax(), $board->getMaximumScore());
-	    printf("<td>%.01f%%</td>", 100 * $score->getSum() / $board->getMaximumScore());
-	    printf("</tr>\n");
-	}
-	printf("</table>\n");
+
+ 	$board = new ScoreBoardPrinter($exam);
+	$board->output();
 
 	printf("<h5>" . _("Color Codes") . "</h5>\n");
 	printf("<p>"  . _("These are the color codes used in the score board:") . "</p>\n");
