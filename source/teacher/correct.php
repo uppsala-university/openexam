@@ -453,11 +453,11 @@ class CorrectionPage extends TeacherPage
 	} else {
 	    printf("<span class=\"links viewmode\"><a href=\"?exam=4&amp;verbose=1\">%s</a></span>\n", _("Verbose"));
 	}
-	
+
  	$board = new ScoreBoardPrinter($exam);
 	$board->setVerbose($this->verbose);
 	$board->output();
-
+	
 	printf("<h5>" . _("Download Result") . "</h5>\n");
 	printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", 
 	       sprintf("?exam=%d&amp;mode=save", $exam));
