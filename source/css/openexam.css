@@ -183,12 +183,12 @@ td.na { /* no answer */
 	background-color: #ee0000;
 }
 td.nc { /* not yet corrected */
-	border: 1px solid #cccccc;
-	background-color: #ffffff;
-}
-td.ac { /* answer corrected */
 	border: 1px solid #00aa00;
 	background-color: #00ff00;
+}
+td.ac { /* answer corrected */
+	border: 1px solid #cccccc;
+	background-color: #ffffff;
 }
 
 /**
