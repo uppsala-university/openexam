@@ -649,12 +649,14 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 				    $question->getQuestionID());
 	}
 	$header->name = sprintf("Q%d", ++$this->index);
-	$header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f",
+	$header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f\n%s: %s",
 				_("Question"),
 				utf8_decode($question->getQuestionName()),
 				utf8_decode($question->getQuestionText()),
 				_("Max score"),
-				$question->getQuestionScore());
+				$question->getQuestionScore(),
+				_("Publisher"),
+				utf8_decode($this->getCommonName($question->getQuestionPublisher())));
 	return $header;
     }
 }
