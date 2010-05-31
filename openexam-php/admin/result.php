@@ -65,6 +65,7 @@ include "include/teacher/correct.inc";
 include "include/teacher/manager.inc";
 include "include/pdf.inc";
 include "include/ldap.inc";
+include "include/scoreboard.inc";
 
 class ResultApp {
     private $list = false;
