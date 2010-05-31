@@ -186,6 +186,28 @@ class LDAPAttributeData extends LDAPResultSet
 }
 
 // 
+// A simple LDAP query cache.
+// 
+class LDAPCache
+{
+    private $cache = array();
+    
+    public function lookup($attr, $str)
+    {
+	if(isset($this->cache[$attr][$str])) {
+	    return $this->cache[$attr][$str];
+	} else {
+	    return null;
+	}
+    }
+    
+    public function store($attr, $str, $data)
+    {
+	$this->cache[$attr][$str] = $data;
+    }
+}
+
+// 
 // This class implements the LDAP search functionality. The attribute that's
 // returned can be filtered by calling setAttributeFilter().
 // 
@@ -202,6 +224,8 @@ class LDAPSearch
     
     private $dc = null;
     private $db = null;
+
+    private $cache;
     
     public function __construct($server = null, $basedn = null)
     {
@@ -293,6 +317,9 @@ class LDAPSearch
 	if(defined('LDAP_PASS')) {
 	    $ldap->setPassword(LDAP_PASS);
 	}
+	if(defined('LDAP_CACHE') && LDAP_CACHE) {
+	    $ldap->setCache(new LDAPCache());
+	}
 	
 	return $ldap;
     }
@@ -352,12 +379,30 @@ class LDAPSearch
     }
     
     // 
+    // Set an extern LDAP result cache.
+    // 
+    public function setCache(&$cache)
+    {
+	$this->cache = $cache;
+    }
+    
+    // 
     // This function performs the search against the LDAP server
     // and returns a LDAP result object that might contain multiple
     // matched entries.
     // 
-    private function search($filter)
+    private function search($filter, $attr)
     {	
+	// 
+	// Consider cache first:
+	// 
+	if(isset($this->cache)) {
+	    $result = $this->cache->lookup($attr, $filter);
+	    if(isset($result)) {
+		return $result;
+	    }
+	}
+	
 	// 
 	// Open connection on first search.
 	// 
@@ -388,7 +433,11 @@ class LDAPSearch
 	// 
 	// Return LDAP result object.
 	// 
-	return new LDAPResultSet(null, $de, "LDAPDirectoryEntry");
+	$result = new LDAPResultSet(null, $de, "LDAPDirectoryEntry");
+	if(isset($this->cache)) {
+	    $this->cache->store($attr, $filter, $result);
+	}
+	return $result;
     }
     
     // 
@@ -396,7 +445,7 @@ class LDAPSearch
     // 
     public function searchCN($firstname, $lastname)
     {
-	return self::search(sprintf("(cn=%s %s)", $firstname, $lastname));
+	return self::search(sprintf("(cn=%s %s)", $firstname, $lastname), "cn");
     }
 
     // 
@@ -404,7 +453,7 @@ class LDAPSearch
     // 
     public function searchGivenName($firstname)
     {
-	return self::search(sprintf("(givenname=%s)", $firstname));
+	return self::search(sprintf("(givenname=%s)", $firstname), "givenname");
     }
     
     // 
@@ -412,7 +461,7 @@ class LDAPSearch
     // 
     public function searchSN($lastname)
     {
-	return self::search(sprintf("(sn=%s)", $lastname));
+	return self::search(sprintf("(sn=%s)", $lastname), "sn");
     }
     
     // 
@@ -420,7 +469,7 @@ class LDAPSearch
     // 
     public function searchUID($account_id) 
     {
-	return self::search(sprintf("(uid=%s)", $account_id));
+	return self::search(sprintf("(uid=%s)", $account_id), "uid");
     }    
     
     // 
@@ -430,7 +479,7 @@ class LDAPSearch
     // 
     public function searchPrincipalName($account_id)
     {
-	return self::search(sprintf("(edupersonprincipalname=%s@anst.uu.se)", $account_id));
+	return self::search(sprintf("(edupersonprincipalname=%s@anst.uu.se)", $account_id), "principal");
     }
 }
 
