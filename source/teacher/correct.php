@@ -325,6 +325,19 @@ class CorrectionPage extends TeacherPage
 	    return;
 	}
 	
+	$found = false;
+	foreach($answers as $answer) {
+	    if($answer->getQuestionPublisher() == phpCAS::getUser()) {
+		$found = true;
+		break;
+	    }
+	}
+	if(!$found) {
+	    printf("<h5>" . _("No Answers Found") . "</h5>\n");
+	    printf("<p>"  . _("It appears that this student have not answered any of you questions.") . "</p>\n");
+	    return;
+	}
+	
 	printf("<form action=\"correct.php\" method=\"POST\">\n");
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam_id);
 	printf("<input type=\"hidden\" name=\"action\" value=\"correct\" />\n");
