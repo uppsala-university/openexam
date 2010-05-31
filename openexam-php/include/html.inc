@@ -172,37 +172,54 @@ if(!defined('TABLE_RULES_ALL')) {
 }
 
 // 
-// TBody attributes (align and valign):
+// Constants for TBody and TableItem (base class of TableRow, TableHeader 
+// and TableData) align and valign attributes:
 // 
-if(!defined('TBODY_ALIGN_RIGHT')) {
-    define ('TBODY_ALIGN_RIGHT', "right");
+if(!defined('TABLE_ALIGN_RIGHT')) {
+    define ('TABLE_ALIGN_RIGHT', "right");
 }
-if(!defined('TBODY_ALIGN_LEFT')) {
-    define ('TBODY_ALIGN_LEFT', "left");
+if(!defined('TABLE_ALIGN_LEFT')) {
+    define ('TABLE_ALIGN_LEFT', "left");
 }
-if(!defined('TBODY_ALIGN_CENTER')) {
-    define ('TBODY_ALIGN_CENTER', "center");
+if(!defined('TABLE_ALIGN_CENTER')) {
+    define ('TABLE_ALIGN_CENTER', "center");
 }
-if(!defined('TBODY_ALIGN_JUSTIFY')) {
-    define ('TBODY_ALIGN_JUSTIFY', "justify");
+if(!defined('TABLE_ALIGN_JUSTIFY')) {
+    define ('TABLE_ALIGN_JUSTIFY', "justify");
 }
-if(!defined('TBODY_ALIGN_CHAR')) {
-    define ('TBODY_ALIGN_CHAR', "char");
-}
-
-if(!defined('TBODY_VALIGN_TOP')) {
-    define ('TBODY_VALIGN_TOP', "top");
-}
-if(!defined('TBODY_VALIGN_MIDDLE')) {
-    define ('TBODY_VALIGN_MIDDLE', "middle");
-}
-if(!defined('TBODY_VALIGN_BOTTOM')) {
-    define ('TBODY_VALIGN_BOTTOM', "bottom");
-}
-if(!defined('TBODY_VALIGN_BASELINE')) {
-    define ('TBODY_VALIGN_BASELINE', "baseline");
+if(!defined('TABLE_ALIGN_CHAR')) {
+    define ('TABLE_ALIGN_CHAR', "char");
 }
 
+if(!defined('TABLE_VALIGN_TOP')) {
+    define ('TABLE_VALIGN_TOP', "top");
+}
+if(!defined('TABLE_VALIGN_MIDDLE')) {
+    define ('TABLE_VALIGN_MIDDLE', "middle");
+}
+if(!defined('TABLE_VALIGN_BOTTOM')) {
+    define ('TABLE_VALIGN_BOTTOM', "bottom");
+}
+if(!defined('TABLE_VALIGN_BASELINE')) {
+    define ('TABLE_VALIGN_BASELINE', "baseline");
+}
+
+// 
+// Constants for the scope attribute of TableCell:
+// 
+if(!defined('TABLE_SCOPE_COL')) {
+    define ('TABLE_SCOPE_COL', "col");
+}
+if(!defined('TABLE_SCOPE_ROW')) {
+    define ('TABLE_SCOPE_ROW', "row");
+}
+if(!defined('TABLE_SCOPE_COLGROUP')) {
+    define ('TABLE_SCOPE_COLGROUP', "colgroup");
+}
+if(!defined('TABLE_SCOPE_ROWGROUP')) {
+    define ('TABLE_SCOPE_ROWGROUP', "rowgroup");
+}
+  
 // 
 // Link types:
 // 
@@ -1044,13 +1061,36 @@ class Table extends Container
     }
 }
 
-class TableRow extends Container
+abstract class TableItem extends Container
+{
+    public function setAlign($value)
+    {
+	parent::setAttr("align", $value);
+    }
+    
+    public function setValign($value)
+    {
+	parent::setAttr("valign", $value);
+    }
+    
+    public function setChar($char)
+    {
+	parent::setAttr("char", $char);
+    }
+    
+    public function setCharOffset($num)
+    {
+	parent::setAttr("charoff", $num);
+    }
+}
+
+class TableRow extends TableItem
 {
     public function __construct()
     {
 	parent::__construct("tr");
     }
-    
+        
     public function addHeader($text)
     {
 	return parent::addElement(new TableHeader($text));
@@ -1062,13 +1102,46 @@ class TableRow extends Container
     }
 }
 
-abstract class TableCell extends Container
+abstract class TableCell extends TableItem
 {
     public function setLink($str, $type = LINK_TYPE_HREF)
     {
 	return parent::setLink(new Link($type, $str));
     }
     
+    public function setAbbr($text)
+    {
+	return parent::setAttr("abbr", $text);
+    }
+
+    public function setAxis($category)
+    {
+	return parent::setAttr("axis", $category);
+    }
+    
+    public function setColspan($num)
+    {
+	return parent::setAttr("colspan", $num);
+    }
+
+    public function setRowspan($num)
+    {
+	return parent::setAttr("rowspan", $num);
+    }
+
+    public function setNoWrap()    // Deprecated
+    {
+	return parent::setAttr("nowrap", "nowrap");
+    }
+    
+    // 
+    // See TABLE_ITEM_SCOPE_XXX
+    // 
+    public function setScope($scope)
+    {
+	return parent::setAttr("scope", $scope);
+    }
+
     // 
     // This is a convenience function for:
     // setLink($name, LINK_TYPE_NAME)->setTitle($str);
@@ -1094,6 +1167,11 @@ class TableData extends TableCell
     {
 	parent::__construct("td");
 	parent::addText($text);
+    }
+
+    public function setHeaders($hid)
+    {
+	return parent::setAttr("headers", $hid);
     }
 }
 
