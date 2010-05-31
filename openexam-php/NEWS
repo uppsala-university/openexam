@@ -9,6 +9,12 @@ Version 1.5.2 (2010-mm-dd):
 	  
 	* It's now possible to optional append one or more section of text
 	  with headers to the email message.
+	  
+	* The examination grade levels can be defined in any format. The generated 
+	  result PDF is automatic assigned a grade based on this information.
+	  
+	* Added shared score board class. Both the corrector and decoder
+	  page is now rendering the scores using the same data backend class.
 
 Version 1.5.1 (2010-05-19):
 
