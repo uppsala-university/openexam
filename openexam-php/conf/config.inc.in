@@ -81,6 +81,7 @@ define ('LDAP_BASEDN', 'ou=employees');
 // define ('LDAP_USER',   'username');
 // define ('LDAP_PASS',   'password');
 // define ('LDAP_PROTOCOL_VERSION', 3);
+define ('LDAP_CACHE', true);              // Turn on LDAP result cache.
 
 // 
 // The contact address:
