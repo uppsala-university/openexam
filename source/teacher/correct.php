@@ -491,7 +491,7 @@ class CorrectionPage extends TeacherPage
 		   "</p>\n",
 		   utf8_decode($data->getExamName()));
 	    printf("<p>" . 
-		   _("It has already been decoded, so it's no longer possible to modify any scores or comments.") . 
+		   _("The examination has already been decoded, so it's no longer possible to modify any scores or comments.") . 
 		   "</p>\n");
 	}
 	
