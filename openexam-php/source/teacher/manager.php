@@ -77,6 +77,7 @@ class ManagerPage extends TeacherPage
 			     "action" => "/^(add|edit|show|copy|delete)$/",
 			     "role"   => "/^(contributor|examinator|decoder)$/",
 			     "user"   => "/^\d+$/" );
+    private $manager;
     
     public function __construct()
     {
@@ -109,6 +110,7 @@ class ManagerPage extends TeacherPage
 		self::addExam(isset($_REQUEST['name']));
 	    }
 	} else {
+	    $this->manager = new Manager($_REQUEST['exam']);	    
 	    if(isset($_REQUEST['action'])) {
 		if(isset($_REQUEST['role'])) {
 		    if($_REQUEST['action'] == "delete") {
@@ -192,9 +194,8 @@ class ManagerPage extends TeacherPage
     // 
     private function showExamForm($exam, $data, $action, $readonly = false)
     {
- 	$manager = new Manager($exam);
-	$info = $manager->getInfo();
-	
+	$info = $this->manager->getInfo();
+ 	
 	$grades = new ExamGrades($data->getExamGrades());
 	
 	printf("<form action=\"manager.php\" method=\"GET\">\n");
@@ -214,7 +215,7 @@ class ManagerPage extends TeacherPage
 	printf("<textarea name=\"desc\" class=\"description\">%s</textarea>\n", utf8_decode($data->getExamDescription()));
 	printf("<br />\n");
 
-	if($info->isEditable()) {
+	if($this->manager->getExamID() == 0 || $info->isEditable()) {
 	    printf("<h5>" . _("Scheduling") . "</h5>\n");
 	    printf("<label for=\"start\">%s</label>\n", _("Start time:"));
 	    printf("<input type=\"text\" name=\"start\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
@@ -241,7 +242,7 @@ class ManagerPage extends TeacherPage
     // Add an new exam.
     // 
     private function addExam($store)
-    {
+    {	
 	if(!$store) {
 	    printf("<p>" . _("Define the common properties of the exam. Click on the 'Submit' button to create this exam.") . "</p>\n");
 	    $data = new DataRecord( array( "examorgunit" => "Organization Unit",
@@ -250,24 +251,25 @@ class ManagerPage extends TeacherPage
 					   "examgrades"    => "{\"U\":0,\"G\":10,\"VG\":18}",
 					   "examstarttime" => DATETIME_NONE,
 					   "examendtime"   => DATETIME_NONE ));
+	    $this->manager = new Manager(0);
 	    self::showExamForm(0, $data, "add");
 	} else {
 	    $grades  = new ExamGrades();
 	    $grades->setText($_REQUEST['grade']);
 	    
-	    $manager = new Manager(0);
-	    $manager->setData(utf8_encode($_REQUEST['unit']),
-			      utf8_encode($_REQUEST['name']),
-			      utf8_encode($_REQUEST['desc']),
-			      utf8_encode($grades->encode()),
-			      strtotime($_REQUEST['start']),
-			      strtotime($_REQUEST['end']));
+	    $this->manager = new Manager(0);
+	    $this->manager->setData(utf8_encode($_REQUEST['unit']),
+				    utf8_encode($_REQUEST['name']),
+				    utf8_encode($_REQUEST['desc']),
+				    utf8_encode($grades->encode()),
+				    strtotime($_REQUEST['start']),
+				    strtotime($_REQUEST['end']));
 	    // 
 	    // By default, add creator of the exam as contributor, examinator and decoder.
 	    // 
-	    $manager->addContributor(phpCAS::getUser());
-	    $manager->addDecoder(phpCAS::getUser());
-	    header(sprintf("location: manager.php?exam=%d", $manager->getExamID()));
+	    $this->manager->addContributor(phpCAS::getUser());
+	    $this->manager->addDecoder(phpCAS::getUser());
+	    header(sprintf("location: manager.php?exam=%d", $this->manager->getExamID()));
 	}
     }
     
@@ -276,8 +278,7 @@ class ManagerPage extends TeacherPage
     // 
     private function editExam($exam, $store)
     {
-	$manager = new Manager($exam);
-	$data = $manager->getData();
+	$data = $this->manager->getData();
 	
 	if(!$store) {
 	    printf("<p>" . _("This page let you edit common properties of the exam. Click on the 'Submit' button to save changes.") . "</p>\n");
@@ -293,12 +294,12 @@ class ManagerPage extends TeacherPage
 		$_REQUEST['end'] = $data->getExamEndTime();
 	    }
 	    
-	    $manager->setData(utf8_encode($_REQUEST['unit']),
-			      utf8_encode($_REQUEST['name']), 
-			      utf8_encode($_REQUEST['desc']), 
-			      utf8_encode($grades->encode()),
-			      strtotime($_REQUEST['start']), 
-			      strtotime($_REQUEST['end']));
+	    $this->manager->setData(utf8_encode($_REQUEST['unit']),
+				    utf8_encode($_REQUEST['name']), 
+				    utf8_encode($_REQUEST['desc']), 
+				    utf8_encode($grades->encode()),
+				    strtotime($_REQUEST['start']), 
+				    strtotime($_REQUEST['end']));
 	    header(sprintf("location: manager.php?exam=%d", $exam));
 	}
     }
@@ -310,15 +311,13 @@ class ManagerPage extends TeacherPage
     // 
     private function copyExam($exam)
     {
-	$orig = new Manager($exam);
-	$copy = $orig->copy();
+	$copy = $this->manager->copy();
 	header(sprintf("location: manager.php?exam=%d&action=edit", $copy->getExamID()));
     }
     
     private function deleteExam($exam)
     {
-	$manager = new Manager($exam);
-	$manager->delete();
+	$this->manager->delete();
 	header("location: manager.php");
     }
 
@@ -327,10 +326,8 @@ class ManagerPage extends TeacherPage
     // 
     private function showExam($exam) 
     {
-	$manager = new Manager($exam);
-	
-	$data = $manager->getData();
-	$info = $manager->getInfo();
+	$data = $this->manager->getData();
+	$info = $this->manager->getInfo();
 	
 	// 
 	// Build the root node:
@@ -349,7 +346,7 @@ class ManagerPage extends TeacherPage
 	if($info->isContributable()) {
 	    $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=contributor", $data->getExamID()));
 	}
-	$contributors = $manager->getContributors();
+	$contributors = $this->manager->getContributors();
 	foreach($contributors as $contributor) {
 	    $subobj = $child->addChild($this->getFormatName($contributor->getContributorUser()));
 	    if($info->isContributable()) {
@@ -366,7 +363,7 @@ class ManagerPage extends TeacherPage
 	if($info->isExaminatable()) {
 	    $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=examinator", $data->getExamID()));
 	}
-	$examinators = $manager->getExaminators();
+	$examinators = $this->manager->getExaminators();
 	foreach($examinators as $examinator) {
 	    $subobj = $child->addChild($this->getFormatName($examinator->getExaminatorUser()));
 	    if($info->isExaminatable()) {
@@ -381,7 +378,7 @@ class ManagerPage extends TeacherPage
 	// 
 	$child = $root->addChild(_("Decoders"));
 	$child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=decoder", $data->getExamID()));
-	$decoders = $manager->getDecoders();
+	$decoders = $this->manager->getDecoders();
 	foreach($decoders as $decoder) {
 	    $subobj = $child->addChild($this->getFormatName($decoder->getDecoderUser()));
 	    $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=decoder&amp;user=%d",
@@ -398,12 +395,12 @@ class ManagerPage extends TeacherPage
 	    $quest->addLink(_("Remove all"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all",
 						     $data->getExamID()));
 	}
-	if($manager->isContributor(phpCAS::getUser())) {
+	if($this->manager->isContributor(phpCAS::getUser())) {
 	    $quest->addLink(_("View"), sprintf("contribute.php?exam=%d", $data->getExamID()));
 	}
 		
 	$child = $quest->addChild(_("Active"));
-	$questions = $manager->getQuestions('active');
+	$questions = $this->manager->getQuestions('active');
 	foreach($questions as $question) {
 	    $subobj = $child->addChild(sprintf("%s %s...", 
 					       utf8_decode($question->getQuestionName()),
@@ -424,7 +421,7 @@ class ManagerPage extends TeacherPage
 			     _("Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."));
 	}
 	$child = $quest->addChild(_("Removed"));
-	$questions = $manager->getQuestions('removed');
+	$questions = $this->manager->getQuestions('removed');
 	foreach($questions as $question) {
 	    $subobj = $child->addChild(sprintf("%s %s...", 
 					       utf8_decode($question->getQuestionName()),
@@ -465,67 +462,58 @@ class ManagerPage extends TeacherPage
 
     private function addContributor($exam, $store)
     {
- 	$manager = new Manager($exam);
-	
 	if(!$store) {
-	    $data = $manager->getData();
+	    $data = $this->manager->getData();
 	    $text = sprintf(_("Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."),
-			    utf8_decode($data->getExamName()), $role);
+			    utf8_decode($data->getExamName()));
 	    return self::addExamRole($exam, "contributor", $text);
 	}
 	
-	$manager->addContributor($_REQUEST['uuid']);
+	$this->manager->addContributor($_REQUEST['uuid']);
 	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
     }
 
     private function deleteContributor($exam, $user)
     {
- 	$manager = new Manager($exam);
-	$manager->deleteContributor($user);
+	$this->manager->deleteContributor($user);
 	header(sprintf("location: manager.php?exam=%d", $exam));
     }
 
     private function addExaminator($exam, $store)
     {
- 	$manager = new Manager($exam);
-	
 	if(!$store) {
-	    $data = $manager->getData();
+	    $data = $this->manager->getData();
 	    $text = sprintf(_("Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."),
-			    utf8_decode($data->getExamName()), $role);
+			    utf8_decode($data->getExamName()));
 	    return self::addExamRole($exam, "examinator", $text);
 	}
 	
-	$manager->addExaminator($_REQUEST['uuid']);
+	$this->manager->addExaminator($_REQUEST['uuid']);
 	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
     }
 
     private function deleteExaminator($exam, $user)
     {
- 	$manager = new Manager($exam);
-	$manager->deleteExaminator($user);
+	$this->manager->deleteExaminator($user);
 	header(sprintf("location: manager.php?exam=%d", $exam));
     }
 
     private function addDecoder($exam, $store)
     {
- 	$manager = new Manager($exam);
-	
 	if(!$store) {
-	    $data = $manager->getData();
+	    $data = $this->manager->getData();
 	    $text = sprintf(_("Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."),
 			    utf8_decode($data->getExamName()));
 	    return self::addExamRole($exam, "decoder", $text);
 	}
 	
-	$manager->addDecoder($_REQUEST['uuid']);
+	$this->manager->addDecoder($_REQUEST['uuid']);
 	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
     }
-
+    
     private function deleteDecoder($exam, $user)
     {
- 	$manager = new Manager($exam);
-	$manager->deleteDecoder($user);
+	$this->manager->deleteDecoder($user);
 	header(sprintf("location: manager.php?exam=%d", $exam));
     }
     
