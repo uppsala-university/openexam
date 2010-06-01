@@ -476,7 +476,10 @@ class CorrectionPage extends TeacherPage
     {
 	$manager = new Manager($exam);	
 	$data = $manager->getData();
-	
+
+	// 
+	// Output ingress:
+	// 
 	if($data->getExamDecoded() == 'N') {
 	    printf("<h3>" . _("Correct Answers") . "</h3>\n");
 	    printf("<p>" . 
@@ -498,6 +501,9 @@ class CorrectionPage extends TeacherPage
 		   "</p>\n");
 	}
 	
+	// 
+	// Links for customize output:
+	// 
  	printf("<span class=\"links viewmode\">");
 	printf("%s: <a href=\"?exam=%d&amp;verbose=%d\">%s</a>, ", 
 	       _("Details"), 
@@ -511,15 +517,17 @@ class CorrectionPage extends TeacherPage
 	       $this->colorize ? _("Standard") : _("Colorize"));
 	printf("</span>\n");
 	
+	// 
+	// Output the score board using selected options:
+	// 
  	$board = new ScoreBoardPrinter($exam);
 	$board->setVerbose($this->verbose);
 	$board->setColorized($this->colorize);
 	$board->output();
 	
-	printf("<h5>" . _("Download Result") . "</h5>\n");
-	printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", 
-	       sprintf("?exam=%d&amp;mode=save", $exam));
-	
+	// 
+	// The color codes table:
+	// 
 	printf("<h5>" . _("Color Codes") . "</h5>\n");
 	printf("<p>"  . _("These are the color codes used in the score board:") . "</p>\n");
 	if($this->colorize) {
@@ -544,6 +552,15 @@ class CorrectionPage extends TeacherPage
 	    printf("<tr class=\"colorcode\"><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);
 	}
 	printf("</table>\n");
+
+	// 
+	// Download should either be removed or provide the full spectra of
+	// formats using class ScoreBoardWriter (see decoded.php).
+	// 
+	printf("<h5>" . _("Download Result") . "</h5>\n");
+	printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", 
+	       sprintf("?exam=%d&amp;mode=save", $exam));
+	
     }
     
     private function saveScoreBoard($exam)
@@ -557,7 +574,7 @@ class CorrectionPage extends TeacherPage
 	ob_end_clean();
 
 	header("Content-Type: text/tab-separated-values");
-	header(sprintf("Content-Disposition: attachment;filename=\"%s.csv\"", str_replace(" ", "_", $data->getExamName())));
+	header(sprintf("Content-Disposition: attachment;filename=\"%s.tab\"", str_replace(" ", "_", $data->getExamName())));
 	header("Cache-Control: no-cache");
 	header("Pragma-directive: no-cache");
 	header("Cache-directive: no-cache");
