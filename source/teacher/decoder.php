@@ -100,6 +100,7 @@ class DecoderPage extends TeacherPage
     private $manager;
     private $decoder;
     private $verbose = false;
+    private $colorize = false;
     
     public function __construct()
     {
@@ -410,7 +411,8 @@ class DecoderPage extends TeacherPage
 			    "ac" => _("Answer has been corrected."),
 			    "no" => _("This answer should be corrected by another person."),
 			    "na" => _("No answer was given for this question."),
-			    "nc" => _("The answer has not yet been corrected.")
+			    "nc" => _("The answer has not yet been corrected."),
+			    "qr" => _("Question is flagged as removed (no scores for this question is counted).")
 			    );	
 	}
 	printf("<table>\n");

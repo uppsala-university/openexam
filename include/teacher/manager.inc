@@ -535,15 +535,20 @@ class Manager
     }
     
     // 
-    // Get all questions associated with this exam.
+    // Get all questions associated with this exam, optional filter on status. 
+    // If status is null, then all question are returned. Possible values for
+    // status are: 'active' or 'removed'.
     // 
-    public function getQuestions()
+    public function getQuestions($status = null)
     {
 	$sql = sprintf("SELECT id AS QuestionID, exam_id AS ExamID, score AS QuestionScore,
 			       name AS QuestionName, quest AS QuestionText, user AS QuestionPublisher,
 			       video AS QuestionVideo, image AS QuestionImage, audio AS QuestionAudio,
-			       type AS QuestionType
+			       type AS QuestionType, status AS QuestionStatus, comment AS QuestionComment
 			FROM questions WHERE exam_id = %d", $this->exam);
+	if(isset($status)) {
+	    $sql .= sprintf(" AND status = '%s'", $status);
+	}
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);			
     }
@@ -675,7 +680,7 @@ class Manager
 	}
 	
 	// 
-	// Copy all questions, but without any associated answers.
+	// Copy all questions, but without any associated answers, question status or comments.
 	// 
 	$sql = sprintf("INSERT INTO questions(exam_id, score, name, quest, user, video, image, audio, type)
 	                SELECT %d, score, name, quest, user, video, image, audio, type

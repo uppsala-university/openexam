@@ -75,6 +75,26 @@ class Contribute
 	    throw new DatabaseException($res->getMessage());
 	}
     }
+    
+    public function removeQuestion($question, $comment)
+    {
+	$sql = sprintf("UPDATE questions SET status = 'removed', comment = '%s'
+			WHERE id = %d AND exam_id = %d", $comment, $question, $this->exam);
+	$res = Database::getConnection()->query($sql);
+ 	if(PEAR::isError($res)) {
+	    throw new DatabaseException($res->getMessage());
+	}
+    }
+    
+    public function restoreQuestion($question)
+    {
+	$sql = sprintf("UPDATE questions SET status = 'active', comment = NULL
+			WHERE id = %d AND exam_id = %d", $question, $this->exam);
+	$res = Database::getConnection()->query($sql);
+ 	if(PEAR::isError($res)) {
+	    throw new DatabaseException($res->getMessage());
+	}
+    }
 }
 
 ?>
