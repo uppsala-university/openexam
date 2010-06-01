@@ -541,7 +541,7 @@ class CorrectionPage extends TeacherPage
 	}
 	printf("<table>\n");
 	foreach($codes as $code => $desc) {
-	    printf("<tr><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);
+	    printf("<tr class=\"colorcode\"><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);
 	}
 	printf("</table>\n");
     }
