@@ -70,7 +70,7 @@ include "include/teacher/contribute.inc";
 class ContributePage extends TeacherPage
 {
     private $params = array( "exam"     => "/^\d+$/",
-			     "action"   => "/^(add|edit|delete)$/",
+			     "action"   => "/^(add|edit|delete|remove|restore)$/",
 			     "question" => "/^(\d+|all)$/",
 			     "mode"     => "/^(save)$/",
 			     "score"    => "/^\d(\.\d)*$/",
@@ -125,6 +125,17 @@ class ContributePage extends TeacherPage
 		    } else {
 			self::saveDeleteQuestion($_REQUEST['exam'], $_REQUEST['question']);
 		    }
+		} elseif($_REQUEST['action'] == "remove") {
+		    if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
+			self::assert(array('question', 'comment'));
+ 			self::saveRemoveQuestion($_REQUEST['exam'], $_REQUEST['question'], $_REQUEST['comment']);
+		    } else {
+			self::assert('question');
+			self::formRemoveQuestion($_REQUEST['exam'], $_REQUEST['question']);
+		    }
+		} elseif($_REQUEST['action'] == "restore") {
+		    self::assert('question');
+		    self::saveRestoreQuestion($_REQUEST['exam'], $_REQUEST['question']);
 		}
 	    } else {
 		self::showQuestions($_REQUEST['exam']);
@@ -198,6 +209,28 @@ class ContributePage extends TeacherPage
 	$contrib->editQuestion($question, $exam, $score, utf8_encode($name), utf8_encode($quest), $type, $user, $video, $audio, $image);
 
 	header(sprintf("location: contribute.php?exam=%d", $exam));
+    }
+    
+    // 
+    // Marks a question as removed.
+    // 
+    private function saveRemoveQuestion($exam, $question, $comment)
+    {
+	$contrib = new Contribute($exam);
+	$contrib->removeQuestion($question, utf8_encode($comment));
+
+	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
+    }
+
+    // 
+    // Marks a question as restored.
+    // 
+    private function saveRestoreQuestion($exam, $question)
+    {
+	$contrib = new Contribute($exam);
+	$contrib->restoreQuestion($question, $comment);
+
+	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
     }
     
     // 
@@ -318,6 +351,35 @@ class ContributePage extends TeacherPage
 	       utf8_decode($mandata->getExamName()));
 	
 	self::formPostQuestion($qrecord, "edit", $mandata);
+    }
+    
+    // 
+    // Show form for marking a question as removed (not deleted).
+    // 
+    private function formRemoveQuestion($exam, $question)
+    {
+	$qrecord = Exam::getQuestionData($question);
+	
+	printf("<h3>" . _("Remove Question") . "</h3>\n");
+	printf("<p>"  . 
+	       _("This page let you mark the question '%s' as removed from this examination. ") . 
+	       _("By marking this question as removed, any scores for answers will be ignored in the examination result. ") .
+	       "</p>\n",
+	       utf8_decode($qrecord->getQuestionName()));
+	
+	printf("<form action=\"contribute.php\" method=\"POST\">\n");
+	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\"/>\n", $exam);
+	printf("<input type=\"hidden\" name=\"question\" value=\"%d\"/>\n", $question);
+	printf("<input type=\"hidden\" name=\"action\" value=\"remove\"/>\n");
+	printf("<input type=\"hidden\" name=\"mode\" value=\"save\"/>\n");
+	printf("<label for=\"comment\">%s:</label>\n", _("Comment"));
+	printf("<textarea class=\"message\" name=\"comment\" title=\"%s\">&nbsp;</textarea>\n",
+	       _("The comment you add here will show up as the reason for question removal on the examination results."));
+	printf("<br/>\n");
+	printf("<label for=\"submit\">&nbsp;</label>\n");
+	printf("<input type=\"submit\" value=\"%s\">\n", _("Submit"));
+	printf("<input type=\"reset\" value=\"%s\">\n", _("Reset"));
+	printf("</form>\n");
     }
 	
     // 

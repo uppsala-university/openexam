@@ -116,10 +116,12 @@ class ScoreBoard
 	$score = new Score(0, 0);
 	if(isset($this->scores[$student])) {
 	    foreach($this->scores[$student] as $question => $record) {
-		if($record->getResultScore() != null) {
-		    $score->addSum($record->getResultScore());
+		if($record->getQuestionStatus() == 'active') {
+		    if($record->getResultScore() != null) {
+			$score->addSum($record->getResultScore());
+		    }
+		    $score->addMax($record->getQuestionScore());
 		}
-		$score->addMax($record->getQuestionScore());
 	    }
 	}
 	return $score;
@@ -130,10 +132,12 @@ class ScoreBoard
 	$score = new Score(0, 0);
 	foreach($this->scores as $student => $data) {
 	    $record = $data[$question];
-	    if($record->getResultScore() != null) {
-		$score->addSum($record->getResultScore());
+	    if($record->getQuestionStatus() == 'active') {
+		if($record->getResultScore() != null) {
+		    $score->addSum($record->getResultScore());
+		}
+		$score->addMax($record->getQuestionScore());
 	    }
-	    $score->addMax($record->getQuestionScore());
 	}
 	return $score;
     } 
@@ -143,7 +147,9 @@ class ScoreBoard
 	if(!isset($this->maxscore)) {
 	    $total = 0;
 	    foreach($this->questions as $question) {
-		$total += $question->getQuestionScore();
+		if($question->getQuestionStatus() == 'active') {
+		    $total += $question->getQuestionScore();
+		}
 	    }
 	    $this->maxscore = $total;
 	}
@@ -549,7 +555,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 	    foreach($questions as $question) {
 		$header = $this->getHeaderData($question);
 		$obj = $row->addHeader($header->name);
-		if($this->show->links && isset($header->link)) {
+		if($this->show->links && isset($header->link) && $question->getQuestionStatus() != 'removed') {
 		    $obj->setLink($header->link)->setTitle($header->desc);
 		} else {
 		    $obj->setAnchor($header->name, $header->desc);
@@ -602,20 +608,26 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 						  $question->getQuestionID());
 		    if($this->colorize) {
 			if(!isset($data)) {
-			    $obj = $row->addData("-");
+			    $obj = $row->addData("?");
 			    $obj->setClass("cc s0");
 			} elseif($data->hasResultScore()) {
 			    $val = 20 * floor(5 * $data->getResultScore() / $data->getQuestionScore());
 			    $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
 			    $obj->setClass(sprintf("cc s%d", $val));
+			} elseif($data->getQuestionStatus() == 'removed') {
+			    $obj = $row->addData("-");
+			    $obj->setClass("cc qr");
 			} else {
 			    $obj = $row->addData("X");
 			    $obj->setClass("cc nc");
 			}
 		    } else {
 			if(!isset($data)) {
-			    $obj = $row->addData("-");
+			    $obj = $row->addData("?");
 			    $obj->setClass("cc na");
+ 			} elseif($data->getQuestionStatus() == 'removed') {
+			    $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+			    $obj->setClass("cc qr");
 			} elseif($data->hasResultScore()) {
 			    $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
 			    $obj->setClass("cc ac");
@@ -632,13 +644,15 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 			continue;
 		    }
 		    
-		    if($question->getQuestionPublisher() == phpCAS::getUser()) {
-			$obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d",
-					      $data->getExamID(), 
-					      $data->getAnswerID()));
-		    } else {
-			if(!$this->colorize) {
-			    $obj->setClass("cc no");
+		    if($question->getQuestionStatus() != 'removed') {
+			if($question->getQuestionPublisher() == phpCAS::getUser()) {
+			    $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d",
+						  $data->getExamID(), 
+						  $data->getAnswerID()));
+			} else {
+			    if(!$this->colorize) {
+				$obj->setClass("cc no");
+			    }
 			}
 		    }
 		}
@@ -680,6 +694,16 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 				$question->getQuestionScore(),
 				_("Publisher"),
 				utf8_decode($this->getCommonName($question->getQuestionPublisher())));
+	if($question->getQuestionStatus() == 'removed') {
+	    if($question->getQuestionComment() != null) {
+		$header->desc .= sprintf("\n\n%s: %s", 
+					 _("This question has been removed"),
+					 utf8_decode($question->getQuestionComment()));
+	    } else {
+		$header->desc .= sprintf("\n\n%s.", 
+					 _("This question has been removed"));
+	    }
+	}
 	return $header;
     }
 }
