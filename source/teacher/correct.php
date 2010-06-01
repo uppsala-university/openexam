@@ -447,7 +447,10 @@ class CorrectionPage extends TeacherPage
     private function showAvailableExams()
     {
 	printf("<h3>" . _("Correct Answers") . "</h3>\n");
-	printf("<p>"  . _("Select the examination you wish to correct answers to questions for (applies only to corractable examinations).") . "</p>\n");
+	printf("<p>"  . 
+	       _("Select the examination you wish to correct answers to questions for (applies only to corractable examinations). ") . 
+	       _("You can also follow the link to review an already decoded examination.") . 
+	       "</p>\n");
 
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
@@ -459,7 +462,7 @@ class CorrectionPage extends TeacherPage
 	    if($manager->getInfo()->isCorrectable()) {
 		$child->setLink(sprintf("?exam=%d", $exam->getExamID()),
 				_("Click on this link to open this examination to correct answers."));
-	    } else {
+	    } elseif($manager->getInfo()->isDecoded()) {
 		$child->setLink(sprintf("?exam=%d", $exam->getExamID()),
 				_("Click on this link to review this examination."));
 	    }
