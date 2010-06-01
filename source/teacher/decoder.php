@@ -219,8 +219,9 @@ class DecoderPage extends TeacherPage
     }
     
     // 
-    // Save result from exam. The result is the complete examination for an student.
-    // If student 
+    // Save result from exam. The result is the complete examination for an 
+    // student. If student equals all, then all student result is downloaded
+    // as an zip archive.
     // 
     private function saveResult($exam, $format, $student)
     {
