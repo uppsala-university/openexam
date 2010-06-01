@@ -396,7 +396,9 @@ class ManagerPage extends TeacherPage
 	
 	$questions = $manager->getQuestions();
 	foreach($questions as $question) {
-	    $subobj = $child->addChild(utf8_decode($question->getQuestionName()));
+	    $subobj = $child->addChild(sprintf("%s %s...", 
+					       utf8_decode($question->getQuestionName()),
+					       utf8_decode(substr($question->getQuestionText(), 0, 60))));
 	    if($info->isContributable()) {
 		$subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
 						    $question->getExamID(),
