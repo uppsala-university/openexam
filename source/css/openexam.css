@@ -205,6 +205,14 @@ td.qr { /* question flagged as removed */
 	border: 1px solid #00aaaa;
 	background-color: #00ffff;
 }
+td.aa { /* answer avarage (bottom) */
+	border: 1px solid #dddddd;
+	background-color: #eeeeee;
+}
+tr.avarage,
+tr.colorcode {
+	background-color: #ffffff;
+}
 
 /** 
  *  Color encoding for the score board (colorized mode).

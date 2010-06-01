@@ -20,11 +20,13 @@ class Score
 {
     private $sum;
     private $max;
+    private $num;     // Number of values added
     
     public function __construct($sum, $max)
     {
 	$this->sum = $sum;
 	$this->max = $max;
+	$this->num = 0;
     }
     
     public function getSum() 
@@ -37,14 +39,36 @@ class Score
 	return $this->max;
     }
     
+    public function getNum()
+    {
+	return $this->num;
+    }
+    
     public function addSum($value)
     {
 	$this->sum += $value;
+	$this->num++;
     }
     
     public function addMax($value)
     {
 	$this->max += $value;
+    }
+    
+    public function getPercent()
+    {
+	if($this->num == 0) {
+	    return 0;
+	}
+	return 100 * $this->sum / $this->max;
+    }
+    
+    public function getAvarage()
+    {
+	if($this->num == 0) {
+	    return 0;
+	}
+	return $this->sum / $this->num;
     }
 }
 
@@ -131,17 +155,19 @@ class ScoreBoard
     {
 	$score = new Score(0, 0);
 	foreach($this->scores as $student => $data) {
-	    $record = $data[$question];
-	    if($record->getQuestionStatus() == 'active') {
-		if($record->getResultScore() != null) {
-		    $score->addSum($record->getResultScore());
+	    if(isset($data[$question])) {
+		$record = $data[$question];
+		if($record->getQuestionStatus() == 'active') {
+		    if($record->getResultScore() != null) {
+			$score->addSum($record->getResultScore());
+		    }
+		    $score->addMax($record->getQuestionScore());
 		}
-		$score->addMax($record->getQuestionScore());
 	    }
 	}
 	return $score;
     } 
-   
+    
     public function getMaximumScore()
     {
 	if(!isset($this->maxscore)) {
@@ -532,6 +558,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 	$this->show->code = $this->verbose || !$this->decoded;
 	$this->show->summary = $this->verbose;
 	$this->show->percent = true;
+	$this->show->avarage = true;
 	$this->show->grade = true;
 	$this->show->score = true;
 	$this->show->links = !$this->decoded;
@@ -611,9 +638,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 			    $obj = $row->addData("?");
 			    $obj->setClass("cc s0");
 			} elseif($data->hasResultScore()) {
-			    $val = 20 * floor(5 * $data->getResultScore() / $data->getQuestionScore());
+			    $cls = $this->getColorClass($data->getResultScore(), $data->getQuestionScore());
 			    $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
-			    $obj->setClass(sprintf("cc s%d", $val));
+			    $obj->setClass(sprintf("cc s%d", $cls));
 			} elseif($data->getQuestionStatus() == 'removed') {
 			    $obj = $row->addData("-");
 			    $obj->setClass("cc qr");
@@ -674,8 +701,51 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 		}
 	    }
 	}
+	// 
+	// Output answer avarage values at bottom.
+	// 
+	$table->addRow();
+	$row = $table->addRow();
+	$row->setClass("avarage");
+ 	if($this->show->user) {
+	    $row->addData();
+	}
+ 	if($this->show->code) {
+	    $row->addData();
+	}
+	$obj = $row->addHeader(_("Avarage:"));
+	$obj->setAlign(TABLE_ALIGN_RIGHT);
+	
+	foreach($questions as $question) {
+	    $score = $this->board->getQuestionScore($question->getQuestionID());
+	    if($score->getNum() == 0) {
+		$obj = $row->addData("-");
+	    } else {
+		$obj = $row->addData(sprintf("%.01f", $score->getSum() / $score->getNum()));
+	    }
+	    if($this->colorize) {
+		$cls = $this->getColorClass($score->getSum(), $score->getMax());
+		$obj->setClass(sprintf("cc s%d", $cls));
+	    } else {
+		$obj->setClass("cc aa");
+	    }
+	    $obj->setTitle(sprintf("%s: %d\n%s: %.01f%%", 
+				   _("Answers"), $score->getNum(),
+				   _("Percent"), $score->getPercent()));
+	}
 	
 	$table->output();
+    }
+
+    // 
+    // Get the color class for this cell (when colorized).
+    // 
+    private function getColorClass($val, $max)
+    {
+	if($max == 0) {
+	    return 0;
+	}
+	return 20 * floor(5 * $val / $max);
     }
     
     private function getHeaderData($question)
