@@ -495,13 +495,18 @@ class Cdata
 	    echo $this->text;
 	}
     }
+    
+    public function __toString()
+    {
+	return $this->text;
+    }
 }
 
 class BR extends Cdata
 {
     public function __construct()
     {
-	parent::__construct("<br/>\n");
+	parent::__construct("<br/>");
     }
 }
 
@@ -509,7 +514,7 @@ class HR extends Cdata
 {
     public function __construct()
     {
-	parent::__construct("<hr/>\n");
+	parent::__construct("<hr/>");
     }
 }
 
@@ -1096,7 +1101,7 @@ class TableRow extends TableItem
 	return parent::addElement(new TableHeader($text));
     }
     
-    public function addData($text)
+    public function addData($text = "&nbsp;")
     {
 	return parent::addElement(new TableData($text));
     }
