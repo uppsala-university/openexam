@@ -77,7 +77,7 @@ class Correct
     {
 	$sql = sprintf("SELECT a.id AS AnswerID, a.question_id AS QuestionID, a.student_id AS StudentID, r.id AS ResultID, s.exam_id AS ExamID, 
 			       a.answer AS AnswerText, a.comment AS AnswerComment, r.score AS ResultScore, r.comment AS ResultComment, 
-			       s.user AS StudentUser, s.code AS StudentCode, q.user AS QuestionPublisher
+			       s.user AS StudentUser, s.code AS StudentCode, q.user AS QuestionPublisher, q.status AS QuestionStatus
 			FROM questions q, students s, answers a 
 			LEFT JOIN results r ON a.id = r.answer_id 
 			WHERE s.id = a.student_id AND s.id = %d AND a.question_id = q.id AND q.exam_id = %d
@@ -118,15 +118,21 @@ class Correct
     // 
     // Get the score for this exam. The result will have NULL for answers yet to be 
     // corrected and should contain all data required to build the two-dimensional
-    // array that maps user and question to its score.
+    // array that maps user and question to its score. 
     // 
-    public function getScoreBoard()
+    // The score board can optional be filtered on the question status. Possible 
+    // values are: 'active' or 'removed'.
+    // 
+    public function getScoreBoard($status = null)
     {
 	$sql = sprintf("SELECT a.id AS AnswerID, a.question_id AS QuestionID, s.id AS StudentID, s.exam_id AS ExamID, 
 			       r.score AS ResultScore, s.user AS StudentUser, s.code AS StudentCode, 
-			       q.user AS QuestionPublisher, q.score AS QuestionScore 
+			       q.user AS QuestionPublisher, q.score AS QuestionScore, q.status AS QuestionStatus
 		        FROM students s, questions q, answers a LEFT JOIN results r ON a.id = r.answer_id
 			WHERE q.exam_id = %d AND s.id = a.student_id AND a.question_id = q.id", $this->exam);
+	if(isset($status)) {
+	    $sql .= sprintf(" AND q.status = '%s'", $status);
+	}
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);
     }

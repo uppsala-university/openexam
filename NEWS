@@ -15,6 +15,11 @@ Version 1.5.2 (2010-mm-dd):
 	  
 	* Added shared score board class. Both the corrector and decoder
 	  page is now rendering the scores using the same data backend class.
+	  
+	* Questions can now be removed/restored after an examination has
+	  taken place. This is not the same as deleting a question, in that
+	  all answer and comment associated with the question remains in the
+	  database. The question is just marked as ignored.
 
 Version 1.5.1 (2010-05-19):
 

@@ -205,7 +205,7 @@ class CorrectionPage extends TeacherPage
     private function viewQuestionAnswer($question, $answer)
     {
 	printf("<tr class=\"nonth\"><td>&nbsp;</td></tr>\n");
-	    
+	
 	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
 	    printf("<tr class=\"question\"><td><u>%s: %s</u><br />%s</td></tr>\n", 
 		   _("Question"), 
@@ -218,6 +218,10 @@ class CorrectionPage extends TeacherPage
 		   utf8_decode($question->getQuestionName()),
 		   utf8_decode(str_replace("\n", "<br>", $qchoice[0])),
 		   _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
+	}
+
+	if($answer->getQuestionStatus() == 'removed') {
+	    printf("<tr><td class=\"removed\"><img src=\"../icons/nuvola/info.png\"/> " . ("This question is flagged as removed. The answer score set here will not affect the student result on this examination.") . "</td></tr>\n");
 	}
 	
 	printf("<tr class=\"answer\">\n");
@@ -329,17 +333,41 @@ class CorrectionPage extends TeacherPage
 	    printf("<p>"  . _("It appears that this student have not answered any questions at all.") . "</p>\n");
 	    return;
 	}
-	
-	$found = false;
+
+	// 
+	// Show removed questions, but only in verbose mode.
+	// 
+	$found->answers = 0;
+	$found->removed = 0;
 	foreach($answers as $answer) {
 	    if($answer->getQuestionPublisher() == phpCAS::getUser()) {
-		$found = true;
-		break;
+		$found->answers++;
+		if($answer->getQuestionStatus() == 'removed') {
+		    $found->removed++;
+		}
 	    }
 	}
-	if(!$found) {
+	if($found->answers == 0) {
 	    printf("<h5>" . _("No Answers Found") . "</h5>\n");
 	    printf("<p>"  . _("It appears that this student have not answered any of you questions.") . "</p>\n");
+	    return;
+	}
+	if($found->removed > 0) {
+	    printf("<span class=\"links viewmode\">");
+	    printf("%s: <a href=\"?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=%d\">%s</a>",
+		   _("Show"), 
+		   $exam_id,
+		   $student_id,
+		   $this->verbose == false,
+		   $this->verbose ? _("Answered") : _("All"));
+	    printf("</span>\n");
+	}
+	if($found->answers - $found->removed == 0 &&
+	   $this->verbose == false) {
+	    printf("<h5>" . _("No Answers Found") . "</h5>\n");
+	    printf("<p>"  . _("Only answers to removed questions where found. Click <a href=\"%s\">here</a> to view answers for those questions.") . "</p>\n", 
+		   sprintf("?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=1",
+			   $exam_id, $student_id));
 	    return;
 	}
 	
@@ -431,6 +459,9 @@ class CorrectionPage extends TeacherPage
 	    if($manager->getInfo()->isCorrectable()) {
 		$child->setLink(sprintf("?exam=%d", $exam->getExamID()),
 				_("Click on this link to open this examination to correct answers."));
+	    } else {
+		$child->setLink(sprintf("?exam=%d", $exam->getExamID()),
+				_("Click on this link to review this examination."));
 	    }
 	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
 	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
@@ -443,27 +474,38 @@ class CorrectionPage extends TeacherPage
 	$manager = new Manager($exam);	
 	$data = $manager->getData();
 	
-	printf("<h3>" . _("Correct Answers") . "</h3>\n");
-	printf("<p>" . 
-	       _("This table shows all answers from students to questions for the examination '%s'. ") .
-	       "</p>\n",
-	       utf8_decode($data->getExamName()));
-	printf("<p>" . 
-	       _("Correct answers by student (rows), by question (column) or individual (by index). ") . 
-	       _("You can only correct answers for those questions published by yourself.") . 
-	       "</p>\n");	       
-
+	if($data->getExamDecoded() == 'N') {
+	    printf("<h3>" . _("Correct Answers") . "</h3>\n");
+	    printf("<p>" . 
+		   _("This table shows all answers from students to questions for the examination '%s'. ") .
+		   "</p>\n",
+		   utf8_decode($data->getExamName()));
+	    printf("<p>" . 
+		   _("Correct answers by student (rows), by question (column) or individual (by index). ") . 
+		   _("You can only correct answers for those questions published by yourself.") . 
+		   "</p>\n");	       
+	} else {
+	    printf("<h3>" . _("Showing Scores") . "</h3>\n");
+	    printf("<p>" . 
+		   _("This table shows all answers from students to questions for the examination '%s'. ") .
+		   "</p>\n",
+		   utf8_decode($data->getExamName()));
+	    printf("<p>" . 
+		   _("It has already been decoded, so it's no longer possible to modify any scores or comments.") . 
+		   "</p>\n");
+	}
+	
  	printf("<span class=\"links viewmode\">");
-	if($this->verbose) {
-	    printf("%s: <a href=\"?exam=4&amp;verbose=0\">%s</a>, ", _("Details"), _("Less"));
-	} else {
-	    printf("%s: <a href=\"?exam=4&amp;verbose=1\">%s</a>, ", _("Details"), _("More"));
-	}
-	if($this->colorize) {
-	    printf("%s: <a href=\"?exam=4&amp;colorize=0\">%s</a>", _("Mode"), _("Standard"));
-	} else {
-	    printf("%s: <a href=\"?exam=4&amp;colorize=1\">%s</a>", _("Mode"), _("Colorize"));
-	}
+	printf("%s: <a href=\"?exam=%d&amp;verbose=%d\">%s</a>, ", 
+	       _("Details"), 
+	       $exam, 
+	       $this->verbose == false, 
+	       $this->verbose ? _("Less") : _("More"));
+	printf("%s: <a href=\"?exam=%d&amp;colorize=%d\">%s</a>", 
+	       _("Mode"), 
+	       $exam, 
+	       $this->colorize == false,
+	       $this->colorize ? _("Standard") : _("Colorize"));
 	printf("</span>\n");
 	
  	$board = new ScoreBoardPrinter($exam);
@@ -490,7 +532,8 @@ class CorrectionPage extends TeacherPage
 			    "ac" => _("Answer has been corrected."),
 			    "no" => _("This answer should be corrected by another person."),
 			    "na" => _("No answer was given for this question."),
-			    "nc" => _("The answer has not yet been corrected.")
+			    "nc" => _("The answer has not yet been corrected."),
+			    "qr" => _("Question is flagged as removed (no scores for this question is counted).")
 			    );
 	}
 	printf("<table>\n");

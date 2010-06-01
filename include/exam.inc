@@ -61,14 +61,14 @@ class Exam
     }
     
     // 
-    // Get all questions for this exam.
+    // Get all active questions for this exam.
     // 
     public function getQuestions($exam) 
     {
 	$sql = sprintf("SELECT q.id AS QuestionID, q.exam_id AS ExamID, q.score AS QuestionScore, q.name AS QuestionName,
 			       q.quest AS QuestionText, q.user AS QuestionPublisher, q.video AS QuestionVideo,
 			       q.image AS QuestionImage, q.audio AS QuestionAudio, q.type AS QuestionType
-			FROM questions q WHERE q.exam_id = %d
+			FROM questions q WHERE q.exam_id = %d AND q.status = 'active'
 			ORDER BY QuestionID", $exam);
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);
