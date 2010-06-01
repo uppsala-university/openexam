@@ -384,17 +384,18 @@ class ManagerPage extends TeacherPage
 	// 
 	// Build the questions node:
 	// 
-	$child = $root->addChild(_("Questions"));
+	$quest = $root->addChild(_("Questions"));
 	if($info->isContributable()) {
-	    $child->addLink(_("Add"), sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()));
-	    $child->addLink(_("Remove all"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all",
+	    $quest->addLink(_("Add"), sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()));
+	    $quest->addLink(_("Remove all"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all",
 						     $data->getExamID()));
 	}
 	if($manager->isContributor(phpCAS::getUser())) {
-	    $child->addLink(_("View"), sprintf("contribute.php?exam=%d", $data->getExamID()));
+	    $quest->addLink(_("View"), sprintf("contribute.php?exam=%d", $data->getExamID()));
 	}
-	
-	$questions = $manager->getQuestions();
+		
+	$child = $quest->addChild(_("Active"));
+	$questions = $manager->getQuestions('active');
 	foreach($questions as $question) {
 	    $subobj = $child->addChild(sprintf("%s %s...", 
 					       utf8_decode($question->getQuestionName()),
@@ -402,11 +403,28 @@ class ManagerPage extends TeacherPage
 	    if($info->isContributable()) {
 		$subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
 						    $question->getExamID(),
-						    $question->getQuestionID()));
-		$subobj->addLink(_("Remove"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=%d",
+						    $question->getQuestionID()),
+				 _("Edit properties for this question"));
+		$subobj->addLink(_("Delete"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=%d",
 						      $question->getExamID(),
-						      $question->getQuestionID()));
+						      $question->getQuestionID()),
+				 _("Permanent delete this question"));
 	    }
+	    $subobj->addLink(_("Remove"), sprintf("contribute.php?exam=%d&amp;action=remove&amp;question=%d",
+						  $question->getExamID(),
+						  $question->getQuestionID()),
+			     _("Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."));
+	}
+	$child = $quest->addChild(_("Removed"));
+	$questions = $manager->getQuestions('removed');
+	foreach($questions as $question) {
+	    $subobj = $child->addChild(sprintf("%s %s...", 
+					       utf8_decode($question->getQuestionName()),
+					       utf8_decode(substr($question->getQuestionText(), 0, 60))));
+	    $subobj->addLink(_("Restore"), sprintf("contribute.php?exam=%d&amp;action=restore&amp;question=%d",
+						   $question->getExamID(),
+						   $question->getQuestionID()),
+			     _("Flag this question as active again"));
 	}
 	
 	printf("<p>" . 

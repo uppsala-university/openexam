@@ -326,21 +326,27 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	// 
 	fprintf($stream, "<h2>%s</h2>\n", _("Score Table"));
 	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."));
-	fprintf($stream, "<table><tr align=\"right\"><th>%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
-		_("Question"), _("Score"), _("Max score"), _("Percent"));
+	fprintf($stream, "<table><tr align=\"right\"><th>%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
+		_("Question"), _("Score"), _("Max score"), _("Percent"), _("Notice"));
 	$questions = $this->board->getQuestions();
 	foreach($questions as $question) {
 	    fprintf($stream, "<tr align=\"right\"><td>%s</td><td>&nbsp;</td>", utf8_decode($question->getQuestionName()));
 	    $data = $this->board->getData($this->student, $question->getQuestionID());
-	    if(isset($data)) {
- 		fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td></tr>\n",
-			$data->getResultScore(),
-			$question->getQuestionScore(),
-			100 * $data->getResultScore() / $question->getQuestionScore());
+	    if($question->getQuestionStatus() == 'active') {
+		if(isset($data)) {
+		    fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td>",
+			    $data->getResultScore(),
+			    $question->getQuestionScore(),
+			    100 * $data->getResultScore() / $question->getQuestionScore());
+		} else {
+		    fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td>",
+			    $question->getQuestionScore(), 0);		
+		}		
 	    } else {
-		fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td></tr>\n",
-			$question->getQuestionScore(), 0);		
+		fprintf($stream, "<td>-</td><td>-</td><td>-<td><td>%s</td>", _("Removed"));
+		$this->removed++;
 	    }
+	    fprintf($stream, "</tr>\n");
 	}
 	fprintf($stream, "<tr align=\"right\"><td>---</td><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
 	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%.01f</b></td><td><b>%.01f</b></td><td><b>%.01f%%</b></td></tr>\n",
@@ -378,15 +384,25 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	    $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
 	    fprintf($stream, "<p><b>%s</b></p>\n", utf8_decode($qchoice[0]));
 	    
-	    printf("<ol>\n");
+	    fprintf($stream, "<ol>\n");
 	    foreach($qchoice[1] as $choice => $correct) {
-		printf("<li>%s</li>\n", utf8_decode($choice));
+		fprintf($stream, "<li>%s</li>\n", utf8_decode($choice));
 	    }
-	    printf("</ol>\n");
+	    fprintf($stream, "</ol>\n");
 	    
-	    printf("%s: %s\n", _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
+	    fprintf($stream, "%s: %s\n", _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
 	}
 	fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Max score"), $question->getQuestionScore());
+	
+	if($question->getQuestionStatus() == 'removed') {
+	    if($question->getQuestionComment() != null) {
+		fprintf($stream, "<p><b>%s</b>: %s</p>\n", 
+			_("Teachers reason for removal"), 
+			utf8_decode($question->getQuestionComment()));
+	    } else {
+		fprintf($stream, "<p><b>%s</b></p>\n", _("This question was removed without an explanation from the teacher."));
+	    }
+	}
 	
 	// 
 	// The answer together with comment (if set).
@@ -401,10 +417,10 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 		fprintf($stream, "<p>%s</p>\n", implode(", ", $achoice[1]));
 	    }
 	    if($answer->hasAnswerComment()) {
-		fprintf($stream, "%s: %s<br/>\n", _("Your comments"), $answer->getAnswerComment());
+		fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Your comments"), $answer->getAnswerComment());
 	    }
 	    if($answer->hasResultComment()) {
-		fprintf($stream, "%s: %s<br/>\n", _("Teacher comments"), $answer->getResultComment());
+		fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Teacher comments"), $answer->getResultComment());
 	    }
 	    fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Score"), $answer->getResultScore());
 	}
@@ -420,9 +436,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	$questions = $this->manager->getQuestions();
 	
 	//
-	// Build the assiciative array of answered ('a') and unanswered ('u') questions.
+	// Build the associative array of answered ('a') and unanswered ('u') questions.
 	//
-	$qadata = array( 'a' => array(), 'u' => array() );
+	$qadata = array( 'a' => array(), 'u' => array(), 'r' => array() );
 	foreach($questions as $question) {
 	    $answered = false;
 	    foreach($answers as $answer) {
@@ -431,7 +447,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 		    break;
 		}
 	    }
-	    if($answered) {
+	    if($question->getQuestionStatus() == 'removed') {
+		$qadata['r'][] = array($question, $answered ? $answer : null);
+	    } elseif($answered) {
 		$qadata['a'][] = array($question, $answer);
 	    } else {
 		$qadata['u'][] = array($question, null);
@@ -454,6 +472,17 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	    fprintf($stream, "<h1>%s</h1>\n", _("Unanswered Questions"));
 	    foreach($qadata['u'] as $data) {
 		$this->printQuestionAnswer($stream, $data[0], null);
+	    }
+	}
+	
+	if(count($qadata['r']) > 0) {
+	    fprintf($stream, "<h1>%s</h1>\n", _("Removed Questions"));
+	    fprintf($stream, "<p>" .
+		    _("These questions has been removed from this examination. ") .
+		    _("The questions, along with your answers (if any) and the teacher appraisal, is included here for reference, but do not affect your examination score or grade.") .
+		    "</p>\n");
+	    foreach($qadata['r'] as $data) {
+		$this->printQuestionAnswer($stream, $data[0], $data[1]);
 	    }
 	}
     }
@@ -587,9 +616,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	// Now we are ready to generate the two tables. We use NEED to ensure
 	// that the tables don't get cut apart somewhere in the middle.
 	// 
+	fprintf($stream, "<!-- NEED %d -->\n", count($grades['grade']) + 3);
 	fprintf($stream, "<h2>%s</h2>\n", _("Distribution"));
 	
-	fprintf($stream, "<!-- NEED %d -->\n", count($grades['grade']) + 3);
 	fprintf($stream, "<p>" . _("This table shows the distribution by grades. The number of student allotted for each grade are:") . "</p>\n");
 	fprintf($stream, "<table>\n");
 	fprintf($stream, "<tr align=\"right\"><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Grade"), _("Threshold"), _("Students"), _("Percent"));
@@ -629,11 +658,19 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	fprintf($stream, "</table><br/>\n");
 
 	// 
+	// This is funky code, so we better provide some description:
+	// 
+	fprintf($stream, "<p>" . 
+		_("The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. ") . 
+		_("The other values are calculated by first removing the highest and lowest scores.") .
+		"</p>\n");
+	
+	// 
 	// The result ranges sub section.
 	// 
+	fprintf($stream, "<!-- NEED %d -->\n", count($grades['range']) + 3);
 	fprintf($stream, "<h2>%s</h2>\n", _("Ranges"));
 	
-	fprintf($stream, "<!-- NEED %d -->\n", count($grades['range']) + 3);
 	fprintf($stream, "<p>" . _("This table shows the number of student in each range of percentage correct answers.") . "</p>\n");
  	fprintf($stream, "<table>\n");
 	fprintf($stream, "<tr><th>%s</th><th>%s</th></tr>\n", _("Range"), _("Students"));
@@ -660,14 +697,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%d</td></tr>\n",
 		_("Summary"), $sum['st']);
 	fprintf($stream, "</table><br/>\n");
-	
-	// 
-	// This is funky code, so we better provide some description:
-	// 
-	fprintf($stream, "<p>" . 
-		_("The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. ") . 
-		_("The other values are calculated by first removing the highest and lowest scores.") .
-		"</p>\n");
     }
     
     // 
@@ -736,6 +765,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	$this->printSectionDescription($stream);
 	$this->printSectionScores($stream);
 	$this->printSectionAnswers($stream);
+	// if($this->removed > 0) {
+	//     $this->printSectionRemovedQuestions($stream);
+	// }
 	$this->printSectionStatistics($stream);
 	$this->printSectionReference($stream);
 	fprintf($stream, "</body></html>\n");

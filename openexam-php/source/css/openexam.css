@@ -122,6 +122,10 @@ tr.question, tr.comment {
 tr.answer {
 	background: #efefef;
 }
+td.removed {
+	background: white;
+	border: 2px solid red;
+}
 
 /*
  * Style different types of list items.
@@ -196,6 +200,10 @@ td.nc { /* not yet corrected */
 td.ac { /* answer corrected */
 	border: 1px solid #cccccc;
 	background-color: #ffffff;
+}
+td.qr { /* question flagged as removed */
+	border: 1px solid #00aaaa;
+	background-color: #00ffff;
 }
 
 /** 
