@@ -174,8 +174,8 @@ div.examquest {
 	background: #ffffcc;
 }
 
-/* 
- * Color encoding for the score board.
+/** 
+ *  Color encoding for the score board (author mode).
  */
 td.cc {
 	width: 25px;
@@ -196,6 +196,40 @@ td.nc { /* not yet corrected */
 td.ac { /* answer corrected */
 	border: 1px solid #cccccc;
 	background-color: #ffffff;
+}
+
+/** 
+ *  Color encoding for the score board (colorized mode).
+ */
+td.s0 {
+	border: 1px solid #000000;
+	color: white;
+	background: #000033;
+}
+td.s20 {
+	border: 1px solid #000033;
+	color: white;
+	background: #000066;
+}
+td.s40 {
+	border: 1px solid #000066;
+	color: white;
+	background: #000099;
+}
+td.s60 {
+	border: 1px solid #0099cc;
+	color: black;
+	background: #33ccff;
+}
+td.s80 {
+	border: 1px solid #aacccc;
+	color: black;
+	background: #ddffff;
+}
+td.s100 {
+	border: 1px solid #cccccc;
+	color: black;
+	background: #ffffff;
 }
 
 /**
