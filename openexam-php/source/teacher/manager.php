@@ -178,8 +178,6 @@ class ManagerPage extends TeacherPage
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
 	    if($this->roles->getManagerRoles() > 0) {
 		$child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $exam->getExamID()));
-	    }
-	    if($state->isEditable()) {
 		$child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $exam->getExamID()));
 	    }
 	    if(!$state->hasAnswers()) {
@@ -194,6 +192,9 @@ class ManagerPage extends TeacherPage
     // 
     private function showExamForm($exam, $data, $action, $readonly = false)
     {
+ 	$manager = new Manager($exam);
+	$info = $manager->getInfo();
+	
 	$grades = new ExamGrades($data->getExamGrades());
 	
 	printf("<form action=\"manager.php\" method=\"GET\">\n");
@@ -212,13 +213,15 @@ class ManagerPage extends TeacherPage
 	printf("<label for=\"desc\">%s</label>\n", _("Description:"));
 	printf("<textarea name=\"desc\" class=\"description\">%s</textarea>\n", utf8_decode($data->getExamDescription()));
 	printf("<br />\n");
-	
-	printf("<h5>" . _("Scheduling") . "</h5>\n");
-	printf("<label for=\"start\">%s</label>\n", _("Start time:"));
-	printf("<input type=\"text\" name=\"start\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
-	printf("<br />\n");
-	printf("<label for=\"end\">%s</label>\n", _("End time:"));
-	printf("<input type=\"text\" name=\"end\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
+
+	if($info->isEditable()) {
+	    printf("<h5>" . _("Scheduling") . "</h5>\n");
+	    printf("<label for=\"start\">%s</label>\n", _("Start time:"));
+	    printf("<input type=\"text\" name=\"start\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
+	    printf("<br />\n");
+	    printf("<label for=\"end\">%s</label>\n", _("End time:"));
+	    printf("<input type=\"text\" name=\"end\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
+	}
 	
 	printf("<h5>" . _("Graduation") . "</h5>\n");
 	printf("<label for=\"grade\">&nbsp;</label>\n");
@@ -274,14 +277,21 @@ class ManagerPage extends TeacherPage
     private function editExam($exam, $store)
     {
 	$manager = new Manager($exam);
+	$data = $manager->getData();
 	
 	if(!$store) {
-	    $data = $manager->getData();
 	    printf("<p>" . _("This page let you edit common properties of the exam. Click on the 'Submit' button to save changes.") . "</p>\n");
 	    self::showExamForm($exam, $data, "edit");
 	} else {
 	    $grades = new ExamGrades();
 	    $grades->setText($_REQUEST['grade']);
+	    
+	    if(!isset($_REQUEST['start'])) {
+		$_REQUEST['start'] = $data->getExamStartTime();
+	    }
+	    if(!isset($_REQUEST['end'])) {
+		$_REQUEST['end'] = $data->getExamEndTime();
+	    }
 	    
 	    $manager->setData(utf8_encode($_REQUEST['unit']),
 			      utf8_encode($_REQUEST['name']), 
@@ -329,9 +339,7 @@ class ManagerPage extends TeacherPage
 	$root = $tree->getRoot();
 	if($this->roles->getManagerRoles() > 0) {
 	    $root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()));
-	}
-	if($info->isEditable()) {
-	    $root->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()));
+	    $root->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()));   // Should be limited
 	}
 
 	// 
