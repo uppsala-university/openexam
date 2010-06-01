@@ -89,12 +89,13 @@ if(!defined('ATTACH_MAX_NUM_FILES')) {
 // 
 class DecoderPage extends TeacherPage
 {
-    private $params = array( "exam"    => "/^\d+$/",
-			     "mode"    => "/^(result|scores)$/",
-			     "action"  => "/^(save|show|mail|download)$/", 
-			     "format"  => "/^(pdf|html|ps|csv|tab|xml)$/",
-			     "student" => "/^(\d+|all)$/",
-			     "verbose" => "/^\d+$/" );
+    private $params = array( "exam"     => "/^\d+$/",
+			     "mode"     => "/^(result|scores)$/",
+			     "action"   => "/^(save|show|mail|download)$/", 
+			     "format"   => "/^(pdf|html|ps|csv|tab|xml)$/",
+			     "student"  => "/^(\d+|all)$/",
+			     "colorize" => "/^\d+$/",
+			     "verbose"  => "/^\d+$/" );
     
     private $manager;
     private $decoder;
@@ -110,6 +111,9 @@ class DecoderPage extends TeacherPage
 	}
 	if(isset($_REQUEST['verbose'])) {
 	    $this->verbose = $_REQUEST['verbose'];
+	}
+	if(isset($_REQUEST['colorize'])) {
+	    $this->colorize = $_REQUEST['colorize'];
 	}
     }
     
@@ -373,24 +377,42 @@ class DecoderPage extends TeacherPage
 	       "</p>\n",
 	       utf8_decode($data->getExamName()));
 
+ 	printf("<span class=\"links viewmode\">");
 	if($this->verbose) {
-	    printf("<span class=\"links viewmode\"><a href=\"?exam=4&amp;action=show&amp;verbose=0\">%s</a></span>\n", _("Silent"));
+	    printf("%s: <a href=\"?exam=4&amp;action=show&amp;verbose=0\">%s</a>, ", _("Details"), _("Less"));
 	} else {
-	    printf("<span class=\"links viewmode\"><a href=\"?exam=4&amp;action=show&amp;verbose=1\">%s</a></span>\n", _("Verbose"));
+	    printf("%s: <a href=\"?exam=4&amp;action=show&amp;verbose=1\">%s</a>, ", _("Details"), _("More"));
 	}
+	if($this->colorize) {
+	    printf("%s: <a href=\"?exam=4&amp;action=show&amp;colorize=0\">%s</a>", _("Mode"), _("Standard"));
+	} else {
+	    printf("%s: <a href=\"?exam=4&amp;action=show&amp;colorize=1\">%s</a>", _("Mode"), _("Colorize"));
+	}
+	printf("</span>\n");
 	
  	$board = new ScoreBoardPrinter($exam);
 	$board->setVerbose($this->verbose);
+	$board->setColorized($this->colorize);
 	$board->output();
 
 	printf("<h5>" . _("Color Codes") . "</h5>\n");
 	printf("<p>"  . _("These are the color codes used in the score board:") . "</p>\n");
-	$codes = array( 
-			"ac" => _("Answer has been corrected."),
-			"no" => _("This answer should be corrected by another person."),
-			"na" => _("No answer was given for this question."),
-			"nc" => _("The answer has not yet been corrected.")
-			);	
+	if($this->colorize) {
+	    $codes = array( 
+			    "s0"   => sprintf(_("Less than %d%% of max score."), 20),
+			    "s20"  => sprintf(_("Between %d and %d %% of max score."), 20, 40),
+			    "s40"  => sprintf(_("Between %d and %d %% of max score."), 40, 60),
+			    "s60"  => sprintf(_("Between %d and %d %% of max score."), 60, 80),
+			    "s80"  => sprintf(_("Between %d and %d %% of max score."), 80, 99),
+			    "s100" => sprintf(_("%d%% correct answer (full score)."), 100));
+	} else {
+	    $codes = array( 
+			    "ac" => _("Answer has been corrected."),
+			    "no" => _("This answer should be corrected by another person."),
+			    "na" => _("No answer was given for this question."),
+			    "nc" => _("The answer has not yet been corrected.")
+			    );	
+	}
 	printf("<table>\n");
 	foreach($codes as $code => $desc) {
 	    printf("<tr><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);

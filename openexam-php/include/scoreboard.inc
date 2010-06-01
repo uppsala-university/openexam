@@ -492,6 +492,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 {
     private $decoded;     // Allready decoded
     private $verbose;     // Be more verbose in output.
+    private $colorize;    // Colorize scores.
     private $show;
     
     public function __construct($exam)
@@ -499,11 +500,17 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 	parent::__construct($exam);	
 	$this->decoded = $this->board->getExam()->getExamDecoded() == 'Y';
 	$this->verbose = false;
+	$this->colorize = false;
     }
     
     public function setVerbose($bool)
     {
 	$this->verbose = $bool;
+    }
+    
+    public function setColorized($bool)
+    {
+	$this->colorize = $bool;
     }
     
     public function output()
@@ -593,15 +600,29 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 		foreach($questions as $question) {
 		    $data = $this->board->getData($student->getStudentID(), 
 						  $question->getQuestionID());
-		    if(!isset($data)) {
-			$obj = $row->addData("-");
-			$obj->setClass("cc na");
-		    } elseif($data->hasResultScore()) {
-			$obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
-			$obj->setClass("cc ac");
+		    if($this->colorize) {
+			if(!isset($data)) {
+			    $obj = $row->addData("-");
+			    $obj->setClass("cc s0");
+			} elseif($data->hasResultScore()) {
+			    $val = 20 * floor(5 * $data->getResultScore() / $data->getQuestionScore());
+			    $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+			    $obj->setClass(sprintf("cc s%d", $val));
+			} else {
+			    $obj = $row->addData("X");
+			    $obj->setClass("cc nc");
+			}
 		    } else {
-			$obj = $row->addData("X");
-			$obj->setClass("cc nc");
+			if(!isset($data)) {
+			    $obj = $row->addData("-");
+			    $obj->setClass("cc na");
+			} elseif($data->hasResultScore()) {
+			    $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+			    $obj->setClass("cc ac");
+			} else {
+			    $obj = $row->addData("X");
+			    $obj->setClass("cc nc");
+			}
 		    }
 		    
 		    // 
@@ -616,7 +637,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 					      $data->getExamID(), 
 					      $data->getAnswerID()));
 		    } else {
-			$obj->setClass("cc no");
+			if(!$this->colorize) {
+			    $obj->setClass("cc no");
+			}
 		    }
 		}
 	    }
