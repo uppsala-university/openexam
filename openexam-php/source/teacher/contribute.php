@@ -373,7 +373,8 @@ class ContributePage extends TeacherPage
 	    $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
 	    $child->addChild(sprintf("%s: %s", _("Type"), $question->getQuestionType()));
 	    $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
-	    $subobj->addText(utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
+	    $subobj->addText(sprintf("<div class=\"examquest\">%s</div>", 
+				     utf8_decode(str_replace("\n", "<br>", $question->getQuestionText()))));
 	}
 	$tree->output();
     }
