@@ -1,4 +1,4 @@
-Version 1.5.2 (2010-mm-dd):
+Version 1.5.2 (2010-06-02):
 
 	* Added support for sending the examination result by email. The
 	  emails are multipart encoded (MIME mail with plain text and HTML
@@ -17,10 +17,12 @@ Version 1.5.2 (2010-mm-dd):
 	  page is now rendering the scores using the same data backend class.
 	  
 	* Questions can now be removed/restored after an examination has
-	  taken place. This is not the same as deleting a question, in that
-	  all answer and comment associated with the question remains in the
-	  database. The question is just marked as ignored.
-
+	  taken place. 
+	  
+	  This is not the same as deleting a question, in that all answer and 
+	  comment associated with the question remains in the database. The 
+	  question is just marked as ignored.
+	
 Version 1.5.1 (2010-05-19):
 
 	* Fixed layout of embedded multimedia on question answer page.
