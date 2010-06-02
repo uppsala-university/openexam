@@ -145,9 +145,9 @@ class ExaminationPage extends BasePage
 		}
 	    }
 	    
-	    echo "<span id=\"menuhead\">" . _("Questions:") . "</span>\n";
-	    echo "<ul>\n";
 	    if(isset($menuitem['q'])) {
+		echo "<span id=\"menuhead\">" . _("Questions:") . "</span>\n";
+		echo "<ul>\n";
 		foreach($menuitem['q'] as $question) {
 		    if($question->getQuestionType() != QUESTION_TYPE_FREETEXT) {
 			$options = Exam::getQuestionChoice($question->getQuestionText());
@@ -156,16 +156,16 @@ class ExaminationPage extends BasePage
 		    printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01fp]</a></li>\n",
 			   $question->getExamID(),
 			   $question->getQuestionID(),
-			   utf8_decode($question->getQuestionText()),
-			   utf8_decode($question->getQuestionName()),
+			   utf8_decode(strip_tags($question->getQuestionText())),
+			   utf8_decode(strip_tags($question->getQuestionName())),
 			   $question->getQuestionScore());
 		}
+		echo "</ul>\n";
 	    }
-	    echo "</ul>\n";
 
-	    echo "<span id=\"menuhead\">" . _("Answered:") . "</span>\n";
-	    echo "<ul>\n";
 	    if(isset($menuitem['a'])) {
+		echo "<span id=\"menuhead\">" . _("Answered") . ":</span>\n";
+		echo "<ul>\n";
 		foreach($menuitem['a'] as $question) {
 		    if($question->getQuestionType() != QUESTION_TYPE_FREETEXT) {
 			$options = Exam::getQuestionChoice($question->getQuestionText());
@@ -174,14 +174,14 @@ class ExaminationPage extends BasePage
 		    printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01f]</a></li>\n",
 			   $question->getExamID(),
 			   $question->getQuestionID(),
-			   utf8_decode($question->getQuestionText()),
-			   utf8_decode($question->getQuestionName()),
+			   utf8_decode(strip_tags($question->getQuestionText())),
+			   utf8_decode(strip_tags($question->getQuestionName())),
 			   $question->getQuestionScore());
 		}
+		echo "</ul>\n";
 	    }
-	    echo "</ul>\n";
 
-	    echo "<span id=\"menuhead\">:" . _("Show") . "</span>\n";
+	    echo "<span id=\"menuhead\">" . _("Show") . ":</span>\n";
 	    echo "<ul>\n";
 	    printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
 		   $question->getExamID(),
