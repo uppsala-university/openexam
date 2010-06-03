@@ -101,7 +101,7 @@ class Exam
     public function getQuestionChoice($str, $answers = false)
     {
 	$match = array();
-	if(preg_match('/^(.*)({.*})$/msU', $str, $match)) {
+        if(preg_match('/^(.*)({.*}).*$/msU', $str, $match)) {
 	    array_shift($match);   // Remove all matched string
 	    if($answers) {
 		$match[0] = trim($match[0]);
