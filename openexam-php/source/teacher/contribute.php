@@ -73,7 +73,7 @@ class ContributePage extends TeacherPage
 			     "action"   => "/^(add|edit|delete|remove|restore)$/",
 			     "question" => "/^(\d+|all)$/",
 			     "mode"     => "/^(save)$/",
-			     "score"    => "/^\d(\.\d)*$/",
+			     "score"    => "/^\d+(\.\d)*$/",
 			     "type"     => "/^(freetext|single|multiple)$/" );
     
     public function __construct()
