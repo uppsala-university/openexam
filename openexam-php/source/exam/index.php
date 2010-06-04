@@ -72,8 +72,8 @@ class ExaminationPage extends BasePage
     // the regex pattern to validate its value against.
     // 
     private $params = array( "exam"     => "/^\d+$/",
-			     "question" => "/^(\d+|all)$/",
-			     "answer"   => "/^.*$/" );
+			     "question" => "/^(\d+|all)$/" );
+			     // "answer"   => "/^.*$/" );
     private $author = false;
     
     // 
@@ -355,7 +355,7 @@ class ExaminationPage extends BasePage
 		
 	printf("<div class=\"answer\">\n");
 	printf("<p class=\"answer\">" . _("Answer:") . "</p>\n");
-	printf("<form action=\"index.php\" method=\"GET\">\n"); 
+	printf("<form action=\"index.php\" method=\"POST\">\n"); 
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
 	printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n", $question);
 	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
