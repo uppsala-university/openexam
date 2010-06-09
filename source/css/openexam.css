@@ -305,3 +305,12 @@ td.gr5 {
 	border: 1px solid #00aa00;
 	background-color: #00ff00;
 }
+
+/**
+ *  The section header used in forms:
+ */
+h4.secthead {
+	color: gray;
+	text-decoration: underline;
+	margin: 0px;
+}

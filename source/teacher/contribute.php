@@ -60,6 +60,7 @@ include "include/ldap.inc";
 // Business logic:
 // 
 include "include/exam.inc";
+include "include/html.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/contribute.inc";
@@ -71,7 +72,7 @@ class ContributePage extends TeacherPage
 {
     private $params = array( "exam"     => "/^\d+$/",
 			     "action"   => "/^(add|edit|delete|remove|restore)$/",
-			     "question" => "/^(\d+|all)$/",
+			     "question" => "/^(\d+|all|active|removed)$/",
 			     "mode"     => "/^(save)$/",
 			     "score"    => "/^\d+(\.\d)*$/",
 			     "type"     => "/^(freetext|single|multiple)$/" );
@@ -138,7 +139,11 @@ class ContributePage extends TeacherPage
 		    self::saveRestoreQuestion($_REQUEST['exam'], $_REQUEST['question']);
 		}
 	    } else {
-		self::showQuestions($_REQUEST['exam']);
+		if(isset($_REQUEST['question'])) {
+		    self::showQuestions($_REQUEST['exam'], $_REQUEST['question']);
+		} else {
+		    self::showQuestions($_REQUEST['exam']);
+		}
 	    }
 	} else {
 	    self::showAvailableExams();
@@ -232,11 +237,11 @@ class ContributePage extends TeacherPage
 
 	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
     }
-    
+
     // 
     // Helper function for adding a new or editing an existing question.
     // 
-    private function formPostQuestion(&$data, $action, &$exam)
+    private function formPostQuestion(&$data, $action, &$exam, &$info)
     {
 	$options = array( "freetext" => _("Freeform text question"),
 			  "single"   => _("Single choice question"),
@@ -250,53 +255,70 @@ class ContributePage extends TeacherPage
 	printf("  form.audio.value = \"\"; form.image.value = \"\";\n");
 	printf("}\n");
 	printf("</script>\n");
-	printf("<form action=\"contribute.php\" method=\"GET\" name=\"question\">\n");
- 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $data->getExamID());
-	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
-	printf("<input type=\"hidden\" name=\"action\" value=\"%s\" />\n", $action);
+
+	$form = new Form("contribute.php", "POST");
+	$form->setName("question");
+	$form->addHidden("exam", $data->getExamID());
+	$form->addHidden("mode", "save");
+	$form->addHidden("action", $action);
 	if($action == "edit") {
-	    printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n",
-		   $data->getQuestionID());
+	    $form->addHidden("question", $data->getQuestionID());
+	}
+	if(!$info->isEditable()) {
+	    $form->addHidden("name", utf8_decode($data->getQuestionName()));
+	    $form->addHidden("quest", utf8_decode($data->getQuestionText()));
+	    $form->addHidden("type", $data->getQuestionType());
 	}
 	
-	printf("<p><u>%s:</u></p>\n", _("Required fields"));
-	printf("<label for=\"name\">%s:</label>\n", _("Name"));
-	printf("<input type=\"text\" name=\"name\" size=\"60\" value=\"%s\" title=\"%s\" />\n", 
-	       $data->hasQuestionName() ? utf8_decode($data->getQuestionName()) : "",
-	       _("A short question name or simply a number"));
-	printf("<br />\n");
-	printf("<label for=\"quest\">%s:</label>\n", _("Question"));
-	printf("<textarea name=\"quest\" class=\"question\" title=\"%s\">%s</textarea>\n",
-	       _("The actual question is defined here."), 
-	       $data->hasQuestionText() || $action == "edit" ? utf8_decode($data->getQuestionText()) : _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n-------------------------\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n-------------------------\n"));
-	printf("<br />\n");
-	printf("<label for=\"score\">%s:</label>\n", _("Score"));
-	printf("<input type=\"text\" name=\"score\" size=\"10\" value=\"%.01f\" />\n",
-	       $data->hasQuestionScore() ? $data->getQuestionScore() : 0.0);
-	printf("<br />\n");
-	printf("<label for=\"type\">%s:</label>\n", _("Type"));
-	printf("<select name=\"type\">\n");
-	foreach($options as $value => $text) {
-	    printf("<option value=\"%s\" %s>%s</option>\n", 
-		   $value, $data->getQuestionType() == $value ? "selected" : "", $text);
-	}
-	printf("</select>\n");
+	$sect = $form->addSectionHeader(_("Required fields"));
+	$sect->setClass("secthead");
 	
-	printf("<p><u>%s:</u></p>\n", _("Optional fields"));
-	printf("<label for=\"video\">%s:</label>\n", _("Video URL"));
-	printf("<input type=\"text\" name=\"video\" value=\"%s\" size=\"70\" title=\"%s\" />\n",
-	       $data->hasQuestionVideo() ? $data->getQuestionVideo() : "",
-	       _("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."));
-	printf("<br />\n");
-	printf("<label for=\"audio\">%s:</label>\n", _("Audio URL"));
-	printf("<input type=\"text\" name=\"audio\" value=\"%s\" size=\"70\" title=\"%s\" />\n",
-	       $data->hasQuestionAudio() ? $data->getQuestionAudio() : "",
-	       _("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."));
-	printf("<br />\n");
-	printf("<label for=\"image\">%s:</label>\n", _("Image URL"));
-	printf("<input type=\"text\" name=\"image\" value=\"%s\" size=\"70\" title=\"%s\" />\n",
-	       $data->hasQuestionImage() ? $data->getQuestionImage() : "",
-	       _("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question."));
+	if($info->isEditable()) {	    
+	    $input = $form->addTextBox("name", $data->hasQuestionName() ? utf8_decode($data->getQuestionName()) : "");
+	    $input->setTitle(_("A short question name or simply a number"));
+	    $input->setLabel(_("Name"));
+	    $input->setSize(60);
+	    
+	    $input = $form->addTextArea("quest", 
+					$data->hasQuestionText() || $action == "edit" ? 
+					utf8_decode($data->getQuestionText()) : 
+					_("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n-------------------------\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n-------------------------\n"));
+	    $input->setTitle(_("The actual question is defined here."));
+	    $input->setLabel(_("Question"));
+	    $input->setClass("question");
+	    
+	    $combo = $form->addComboBox("type");
+	    $combo->setLabel(_("Type"));
+	    foreach($options as $value => $text) {
+		$option = $combo->addOption($value, $text);
+		if($data->getQuestionType() == $value) {
+		    $option->setSelected();
+		}
+	    }
+	}
+	
+	$input = $form->addTextBox("score", sprintf("%.01f", $data->hasQuestionScore() ? $data->getQuestionScore() : 0.0));
+	$input->setLabel(_("Score"));
+	
+	if($info->isEditable()) {
+	    $sect = $form->addSectionHeader(_("Optional fields"));
+	    $sect->setClass("secthead");
+	    
+	    $input = $form->addTextBox("video", $data->hasQuestionVideo() ? $data->getQuestionVideo() : "");
+	    $input->setLabel(_("Video URL"));
+	    $input->setTitle(_("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question. The resource will be embedded on the question page in the right hand sidebar."));
+	    $input->setSize(70);
+
+	    $input = $form->addTextBox("audio", $data->hasQuestionAudio() ? $data->getQuestionAudio() : "");
+	    $input->setLabel(_("Audio URL"));
+	    $input->setTitle(_("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question. The resource will be embedded on the question page in the right hand sidebar."));
+	    $input->setSize(70);
+
+	    $input = $form->addTextBox("image", $data->hasQuestionImage() ? $data->getQuestionImage() : "");
+	    $input->setLabel(_("Image URL"));
+	    $input->setTitle(_("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question. The resource will be embedded on the question page in the right hand sidebar."));
+	    $input->setSize(70);
+	}
 
 	// 
 	// Only allow the creator of the exam to change the publisher of an question. 
@@ -304,37 +326,42 @@ class ContributePage extends TeacherPage
 	// contribute role to the target user.
 	// 
 	if($exam->getExamCreator() == phpCAS::getUser()) {
-	    printf("<p><u>%s:</u></p>\n", _("Accounting"));
-	    printf("<label for=\"name\">%s:</label>\n", _("Publisher"));
-	    printf("<input type=\"text\" name=\"user\" size=\"60\" value=\"%s\" title=\"%s\" />\n", 
-		   $data->hasQuestionPublisher() ? utf8_decode($data->getQuestionPublisher()) : phpCAS::getUser(),
-		   _("This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting answers for this question.\n\nIf you modify the value in this field, make sure that this person has been granted contribute privileges on this exam!"));
+	    $sect = $form->addSectionHeader(_("Accounting"));
+	    $sect->setClass("secthead");
+	    
+	    $input = $form->addTextBox("user", $data->hasQuestionPublisher() ? utf8_decode($data->getQuestionPublisher()) : phpCAS::getUser());
+	    $input->setLabel(_("Publisher"));
+	    $input->setTitle(_("This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting answers for this question.\n\nIf you modify the value in this field, make sure that this person has been granted contribute privileges on this exam!"));
+	    $input->setSize(60);
 	} else {
-	    printf("<input type=\"hidden\" name=\"user\" value=\"%s\" />\n", phpCAS::getUser());
+	    $form->addHidden("user", phpCAS::getUser());
 	}
 	
-	printf("<br /><br />\n");	
-	printf("<label for=\"submit\">&nbsp;</label>\n");
-	printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
-	printf("<input type=\"reset\" name=\"reset\" value=\"%s\" />\n", _("Reset"));
-	printf("<input type=\"button\" name=\"clear\" value=\"%s\" onclick=\"clearform(document.question);return false;\" />\n", _("Clear"));
-	printf("</form>\n");
-    }
+	$form->addSpace();
+	$button = $form->addButton(BUTTON_SUBMIT, _("Submit"));
+	$button->setLabel();
+	$button = $form->addButton(BUTTON_RESET, _("Reset"));
+	$button = $form->addButton(BUTTON_STANDARD, _("Clear"));
+	$button->setEvent(EVENT_ON_CLICK, "clearform(document.question);return false;");
 	
+	$form->output();
+    }
+    
     // 
     // Show the form for adding a new question.
     // 
     private function formAddQuestion($exam)
     {
 	$manager = new Manager($exam);
-	$mandata = $manager->getData();
-	$qrecord = new DataRecord(array("examid" => $exam, "questiontype" => "freetext" ));
+	$data = $manager->getData();
+	$info = $manager->getInfo();
+	$qrec = new DataRecord(array("examid" => $exam, "questiontype" => "freetext" ));
 	
 	printf("<h3>" . _("Add Question") . "</h3>\n");
 	printf("<p>" . _("This page let you add a new question in the examination '%s'") . "</p>\n", 
-	       utf8_decode($mandata->getExamName()));
+	       utf8_decode($data->getExamName()));
 	
-	self::formPostQuestion($qrecord, "add", $mandata);
+	self::formPostQuestion($qrec, "add", $data, $info);
     }
     
     // 
@@ -343,14 +370,15 @@ class ContributePage extends TeacherPage
     private function formEditQuestion($exam, $question)
     {
 	$manager = new Manager($exam);
-	$mandata = $manager->getData();
-	$qrecord = Exam::getQuestionData($question);
+	$data = $manager->getData();
+	$info = $manager->getInfo();
+	$qrec = Exam::getQuestionData($question);
 
 	printf("<h3>" . _("Edit Question") . "</h3>\n");
 	printf("<p>" . _("This page let you edit the existing question in the examination '%s'") . "</p>\n", 
-	       utf8_decode($mandata->getExamName()));
+	       utf8_decode($data->getExamName()));
 	
-	self::formPostQuestion($qrecord, "edit", $mandata);
+	self::formPostQuestion($qrec, "edit", $data, $info);
     }
     
     // 
@@ -385,14 +413,25 @@ class ContributePage extends TeacherPage
     // 
     // Show all questions for this exam.
     // 
-    private function showQuestions($exam)
+    private function showQuestions($exam, $show = "active")
     {
 	$manager = new Manager($exam);
 	
 	$data = $manager->getData();
 	$info = $manager->getInfo();
-	
-	$questions = $manager->getQuestions();
+
+	$mode = array( "all" => _("All"), "active" => _("Active"), "removed" => _("Removed"));
+	$disp = array();
+	printf("<span class=\"links viewmode\">\n");
+	foreach($mode as $name => $text) {
+	    if($show != $name) {
+		$disp[] = sprintf("<a href=\"?exam=%d&amp;question=%s\">%s</a>", $exam, $name, $text);
+	    } else {
+		$disp[] = $text;
+	    }
+	}
+	printf("%s: %s\n", _("Show"), implode(", ", $disp));
+	printf("</span>\n");
 	
 	printf("<h3>" . _("Manage Questions") . "</h3>\n");
 	printf("<p>" . 
@@ -412,17 +451,23 @@ class ContributePage extends TeacherPage
 			   sprintf("?exam=%d&amp;action=add", $data->getExamID()), 
 			   _("Click to add a question to this examination."));
 	}
+	
+	$status = $show != "all" ? $show : null;
+	$questions = $manager->getQuestions($status);
+	
 	foreach($questions as $question) {
 	    $child = $root->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
+	    if(!$info->isDecoded()) {
+		$child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
+						   $question->getExamID(),
+						   $question->getQuestionID()));
+	    }
 	    if($info->isContributable()) {
 		if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
 		    $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
 						       $question->getExamID(),
 						       $question->getQuestionID()),
 				    _("Preview this question"), array("target" => "_blank"));
-		    $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
-						       $question->getExamID(),
-						       $question->getQuestionID()));
 		    $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", 
 							 $question->getExamID(),
 							 $question->getQuestionID()));
@@ -434,6 +479,10 @@ class ContributePage extends TeacherPage
 	    $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
 	    $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
 	    $child->addChild(sprintf("%s: %s", _("Type"), $question->getQuestionType()));
+	    if($question->getQuestionStatus() == "removed") {
+		$child->addChild(sprintf("%s: %s", _("Status"), $question->getQuestionStatus()));
+		$child->addChild(sprintf("%s: %s", _("Comment"), utf8_decode($question->getQuestionComment())));
+	    }
 	    $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
 	    $subobj->addText(sprintf("<div class=\"examquest\">%s</div>", 
 				     utf8_decode(str_replace("\n", "<br>", $question->getQuestionText()))));
