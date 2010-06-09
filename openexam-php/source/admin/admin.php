@@ -49,6 +49,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -139,8 +140,14 @@ class SupervisorAdminPage extends AdminPage
 	echo "<table>\n";
 	foreach($users as $user) {
 	    $data = $ldap->searchPrincipalName($user->getUserName());
+	    $name = "";
+	    if($data->first() != null) {
+		if($data->first()->hasCN()) {
+		    $name = $data->first()->getCN()->first();
+		}
+	    }
 	    printf("<tr><td>%s</td><td>%s</td><td><a href=\"?user=%s&amp;action=revoke\">" . _("Revoke") . "</a></td></tr>\n",
-		   iconv("UTF8", $locale->getCharSet(), $data->first()->getCN()->first()),
+		   iconv("UTF8", $locale->getCharSet(), $name),
 		   $user->getUserName(), 
 		   $user->getUserID());
 	}
