@@ -50,6 +50,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -150,12 +151,13 @@ class TeacherAdminPage extends AdminPage
 	
 	echo "<h5>" . _("Add new teacher:") . "</h5>\n";
 	printf("<p>"  . _("Fill in the user name and click on '%s' to grant this user the teacher role:") . "</p>\n", _("Grant"));
-	echo "<form action=\"teacher.php\" method=\"get\">\n";
-	echo "  <input type=\"hidden\" name=\"action\" value=\"grant\" />\n";
-	echo "  <label for=\"user\">" . _("Username:") . "</label>\n";
-	echo "  <input type=\"text\" name=\"user\" />\n";
-	echo "  <input type=\"submit\" value=\"" . _("Grant") . "\" />\n";
-	echo "</form>\n";
+	
+	$form = new Form("teacher.php", "GET");
+	$form->addHidden("action", "grant");
+	$input = $form->addTextBox("user");
+	$input->setLabel(_("Username"));
+	$form->addSubmitButton("submit", _("Grant"));
+	$form->output();
     }
     
 }
