@@ -165,7 +165,7 @@ class ManagerPage extends TeacherPage
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
 	if($this->roles->getManagerRoles() > 0) {
-	    $root->addLink(_("Add"), "?action=add");
+	    $root->addLink(_("Add"), "?action=add", _("Creates a new examination."));
 	}
 	
 	$exams = Manager::getExams(phpCAS::getUser());
@@ -179,11 +179,11 @@ class ManagerPage extends TeacherPage
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime())),
 				    strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
 	    if($this->roles->getManagerRoles() > 0) {
-		$child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $exam->getExamID()));
-		$child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $exam->getExamID()));
+		$child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $exam->getExamID()), _("Create a new examination by using this examination as a template."));
+		$child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $exam->getExamID()), _("Edit common properties like name, description or grades for this examination."));
 	    }
 	    if(!$state->hasAnswers()) {
-		$child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete", $exam->getExamID()));
+		$child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete", $exam->getExamID()), _("Deletes the examination along with any questions."));
 	    }
 	}
 	$tree->output();
@@ -335,8 +335,8 @@ class ManagerPage extends TeacherPage
 	$tree = new TreeBuilder(utf8_decode($data->getExamName()));
 	$root = $tree->getRoot();
 	if($this->roles->getManagerRoles() > 0) {
-	    $root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()));
-	    $root->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()));   // Should be limited
+	    $root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()), _("Create a new examination by using this examination as a template."));
+	    $root->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()), _("Edit common properties like name, description or grades for this examination."));   // Should be limited
 	}
 
 	// 
@@ -344,7 +344,9 @@ class ManagerPage extends TeacherPage
 	// 
 	$child = $root->addChild(_("Contributors"));
 	if($info->isContributable()) {
-	    $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=contributor", $data->getExamID()));
+	    $child->addLink(_("Add"), 
+			    sprintf("?exam=%d&amp;action=add&amp;role=contributor", $data->getExamID()), 
+			    _("Add a question contributor to this examination."));
 	}
 	$contributors = $this->manager->getContributors();
 	foreach($contributors as $contributor) {
@@ -352,7 +354,9 @@ class ManagerPage extends TeacherPage
 	    if($info->isContributable()) {
 		$subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=contributor&amp;user=%d", 
 						      $contributor->getExamID(),
-						      $contributor->getContributorID()));
+						      $contributor->getContributorID()),
+				 sprintf(_("Remove %s as a question contributor for this examination."),
+					 utf8_decode($this->getCommonName($contributor->getContributorUser()))));
 	    }
 	}
 	
@@ -361,7 +365,9 @@ class ManagerPage extends TeacherPage
 	// 
 	$child = $root->addChild(_("Examinators"));
 	if($info->isExaminatable()) {
-	    $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=examinator", $data->getExamID()));
+	    $child->addLink(_("Add"), 
+			    sprintf("?exam=%d&amp;action=add&amp;role=examinator", $data->getExamID()),
+			    _("Add a person with the examinator role."));
 	}
 	$examinators = $this->manager->getExaminators();
 	foreach($examinators as $examinator) {
@@ -369,7 +375,9 @@ class ManagerPage extends TeacherPage
 	    if($info->isExaminatable()) {
 		$subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=examinator&amp;user=%d", 
 						      $examinator->getExamID(),
-						      $examinator->getExaminatorID()));
+						      $examinator->getExaminatorID()),
+				 sprintf(_("Remove %s as an examinator for this examination."),
+					 utf8_decode($this->getCommonName($contributor->getContributorUser()))));
 	    }
 	}
 	
@@ -377,13 +385,17 @@ class ManagerPage extends TeacherPage
 	// Build the decoders node:
 	// 
 	$child = $root->addChild(_("Decoders"));
-	$child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;role=decoder", $data->getExamID()));
+	$child->addLink(_("Add"), 
+			sprintf("?exam=%d&amp;action=add&amp;role=decoder", $data->getExamID()),
+			    _("Add a person with the examinator role."));
 	$decoders = $this->manager->getDecoders();
 	foreach($decoders as $decoder) {
 	    $subobj = $child->addChild($this->getFormatName($decoder->getDecoderUser()));
 	    $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=decoder&amp;user=%d",
 						  $decoder->getExamID(),
-						  $decoder->getDecoderID()));
+						  $decoder->getDecoderID()),
+			     sprintf(_("Remove %s as a decoder for this examination."),
+					 utf8_decode($this->getCommonName($contributor->getContributorUser()))));
 	}
 
 	// 
@@ -391,12 +403,17 @@ class ManagerPage extends TeacherPage
 	// 
 	$quest = $root->addChild(_("Questions"));
 	if($info->isContributable()) {
-	    $quest->addLink(_("Add"), sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()));
-	    $quest->addLink(_("Remove all"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all",
-						     $data->getExamID()));
+	    $quest->addLink(_("Add"), 
+			    sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()),
+			    _("Add a new question for this examination."));
+	    $quest->addLink(_("Remove all"), 
+			    sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all", $data->getExamID()),
+			    _("Remove all questions from this examination."));
 	}
 	if($this->manager->isContributor(phpCAS::getUser())) {
-	    $quest->addLink(_("View"), sprintf("contribute.php?exam=%d", $data->getExamID()));
+	    $quest->addLink(_("Edit"), 
+			    sprintf("contribute.php?exam=%d", $data->getExamID()),
+			    _("Open the page showing all questions at once, where questions can be edited and previewed."));
 	}
 	
 	$child = $quest->addChild(_("Active"));
