@@ -1028,6 +1028,11 @@ class Form extends Container
 	return parent::addElement(new TextArea($name, $text));
     }
     
+    public function addFileInput($name)
+    {
+	return parent::addElement(new FileInput($name));
+    }
+    
     public function addSubmitButton($name = "submit", $label = null)
     {
 	return parent::addElement(new SubmitButton($name, $label));
