@@ -743,6 +743,11 @@ class Option extends Container
     {
 	parent::setAttr("selected", "selected");
     }
+
+    public function setDisabled()
+    {
+	parent::setAttr("disabled", "disabled");	
+    }
 }
 
 // 
