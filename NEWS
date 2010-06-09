@@ -1,3 +1,9 @@
+Version 1.5.3 (2010-mm-dd):
+
+	* The session length can now be extended (see conf/config.inc) and
+	  the answer form can be automatic posted at regular interval thru 
+	  javascript.
+	
 Version 1.5.2 (2010-06-02):
 
 	* Added support for sending the examination result by email. The
@@ -11,7 +17,9 @@ Version 1.5.2 (2010-06-02):
 	  with headers to the email message.
 	  
 	* The examination grade levels can be defined in any format. The generated 
-	  result PDF is automatic assigned a grade based on this information.
+	  result PDF is automatic assigned a grade based on this information. 
+	  The grades are dynamic, so changing the grades will affect score
+	  board and result views automatic.
 	  
 	* Added shared score board class. Both the corrector and decoder
 	  page is now rendering the scores using the same data backend class.

@@ -14,6 +14,15 @@
 // 
 
 // 
+// This should affect the number of seconds the CAS session is valid, but
+// I'm not sure that it actually works.
+// 
+if(defined("SESSION_LIFETIME") && SESSION_LIFETIME != 0) {
+    session_set_cookie_params(SESSION_LIFETIME, "%s", dirname($_SERVER['PHP_SELF']));
+    ini_set("session.gc_maxlifetime", SESSION_LIFETIME);
+}
+
+// 
 // Output CAS debug or not? The debug is usually output to /tmp
 // 
 if(defined("CAS_DEBUG") && CAS_DEBUG) {
