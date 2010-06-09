@@ -55,6 +55,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -194,48 +195,47 @@ class ManagerPage extends TeacherPage
     // 
     private function showExamForm($exam, $data, $action, $readonly = false)
     {
-	$info = $this->manager->getInfo();
- 	
 	$grades = new ExamGrades($data->getExamGrades());
-	
-	printf("<form action=\"manager.php\" method=\"GET\">\n");
-	printf("<input type=\"hidden\" name=\"action\" value=\"%s\" />\n", $action);
+
+	$info = $this->manager->getInfo();
+ 	$form = new Form("manager.php", "GET");
+	$form->addHidden("action", $action);
 	if($exam != 0) {
-	    printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
+	    $form->addHidden("exam", $exam);
 	}
-	
-	printf("<h5>" . _("Common Properties") . "</h5>\n");
-	printf("<label for=\"unit\">%s</label>\n", _("Organization:"));
-	printf("<input type=\"text\" name=\"unit\" value=\"%s\" size=\"50\" />\n", utf8_decode($data->getExamOrgUnit()));
-	printf("<br />\n");
-	printf("<label for=\"name\">%s</label>\n", _("Name:"));
-	printf("<input type=\"text\" name=\"name\" value=\"%s\" size=\"50\" />\n", utf8_decode($data->getExamName()));
-	printf("<br />\n");
-	printf("<label for=\"desc\">%s</label>\n", _("Description:"));
-	printf("<textarea name=\"desc\" class=\"description\">%s</textarea>\n", utf8_decode($data->getExamDescription()));
-	printf("<br />\n");
+
+	$form->addSectionHeader(_("Common Properties"));
+	$input = $form->addTextBox("unit", utf8_decode($data->getExamOrgUnit()));
+	$input->setLabel(_("Organization"));
+	$input->setSize(50);
+	$input = $form->addTextBox("name", utf8_decode($data->getExamName()));
+	$input->setLabel(_("Name"));
+	$input->setSize(50);
+	$input = $form->addTextArea("desc", utf8_decode($data->getExamDescription()));
+	$input->setLabel(_("Description"));
+	$input->setClass("description");
 
 	if($this->manager->getExamID() == 0 || $info->isEditable()) {
-	    printf("<h5>" . _("Scheduling") . "</h5>\n");
-	    printf("<label for=\"start\">%s</label>\n", _("Start time:"));
-	    printf("<input type=\"text\" name=\"start\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
-	    printf("<br />\n");
-	    printf("<label for=\"end\">%s</label>\n", _("End time:"));
-	    printf("<input type=\"text\" name=\"end\" value=\"%s\" size=\"30\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
+	    $form->addSectionHeader(_("Scheduling"));
+	    $input = $form->addTextBox("start", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
+	    $input->setLabel(_("Start time"));
+	    $input->setSize(30);
+	    $input = $form->addTextBox("end", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
+	    $input->setLabel(_("End time"));
+	    $input->setSize(30);
 	}
-	
-	printf("<h5>" . _("Graduation") . "</h5>\n");
-	printf("<label for=\"grade\">&nbsp;</label>\n");
-	printf("<textarea class=\"grade\" name=\"grade\" title=\"%s\">%s</textarea>\n",
-	       _("Input name:value pairs on separate lines defining the graduation levels on this examination. The first line must be on form name:0, denoting the failed grade."),
-	       utf8_decode($grades->getText()));
+
+	$form->addSectionHeader(_("Graduation"));
+	$input = $form->addTextArea("grade", utf8_decode($grades->getText()));
+	$input->setClass("grade");
+	$input->setLabel();
+	$input->setTitle(_("Input name:value pairs on separate lines defining the graduation levels on this examination. The first line must be on form name:0, denoting the failed grade."));
 	
 	if(!$readonly) {
-	    printf("<br /><br />\n");
-	    printf("<label for=\"submit\">&nbsp;</label>\n");
-	    printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
+	    $button = $form->addSubmitButton("submit", _("Submit"));
+	    $button->setLabel();
 	}
-	printf("</form>\n");
+	$form->output();
     }
     
     // 
@@ -467,14 +467,14 @@ class ManagerPage extends TeacherPage
     private function addExamRole($exam, $role, $text)
     {
 	printf("<p>%s</p>\n", $text);
-	printf("<form action=\"manager.php\" method=\"GET\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
-	printf("<input type=\"hidden\" name=\"action\" value=\"add\" />\n");
-	printf("<input type=\"hidden\" name=\"role\" value=\"%s\" />\n", $role);
-	printf("<label for=\"uuid\">%s</label>\n",  _("UU-ID:"));
-	printf("<input type=\"text\" name=\"uuid\" />\n");
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Add"));
-	printf("</form>\n");
+	$form = new Form("manager.php", "GET");
+	$form->addHidden("exam", $exam);
+	$form->addHidden("role", $role);
+	$form->addHidden("action", "add");
+	$input = $form->addTextBox("uuid");
+	$input->setLabel(_("UU-ID"));
+	$form->addSubmitButton("submit", _("Add"));
+	$form->output();
     }
 
     private function addContributor($exam, $store)
