@@ -49,6 +49,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -69,7 +70,6 @@ include "include/teacher/correct.inc";
 // Support classes:
 // 
 include "include/pdf.inc";
-include "include/html.inc";
 include "include/smtp.inc";
 include "include/sendmail.inc";
 include "include/scoreboard.inc";
@@ -310,37 +310,37 @@ class DecoderPage extends TeacherPage
 	       "</p>\n", _($locale));
 	
 	$options = array( "pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML" );
-	printf("<form action=\"decoder.php\" method=\"GET\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $this->manager->getExamID());
-	printf("<input type=\"hidden\" name=\"mode\" value=\"result\" />\n");
-	printf("<input type=\"hidden\" name=\"action\" value=\"save\" />\n");	
-	printf("<label for=\"format\">%s:</label>\n", _("Format"));
-	printf("<select name=\"format\">\n");
+	
+	$form = new Form("decoder.php", "GET");
+	$form->addHidden("exam", $this->manager->getExamID());
+	$form->addHidden("mode", "result");
+	$form->addHidden("action", "save");
+	
+	$combo = $form->addComboBox("format");
+	$combo->setLabel(_("Format"));
 	foreach($options as $name => $label) {
-	    printf("<option value=\"%s\">%s</option>\n", $name, $label);
+	    $combo->addOption($name, $label);
 	}
-	printf("</select>\n");
-	printf("<br/>\n");
-	printf("<label for=\"select\">%s:</label>\n", _("Select"));
-	printf("<select name=\"student\">\n");
+	
+	$combo = $form->addComboBox("student");
+	$combo->setLabel(_("Select"));
  	$board = new ScoreBoard($this->manager->getExamID());	
 	$students = $board->getStudents();
-	printf("<option value=\"all\">%s</option>\n", _("All Students"));
-	printf("<option value=\"0\" disabled=\"true\">---</option>\n");
+	$option = $combo->addOption("all", _("All Students"));
+	$option = $combo->addOption(0, "---");
+	$option->setDisabled();
 	foreach($students as $student) {
 	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
-	    printf("<option value=\"%d\">%s (%s) [%s]</option>\n", 
-		   $student->getStudentID(),
-		   $student->getStudentName(),
-		   $student->getStudentUser(),
-		   $student->getStudentCode());
+	    $combo->addOption($student->getStudentID(), 
+			      sprintf("%s (%s) [%s]", 
+				      $student->getStudentName(),
+				      $student->getStudentUser(),
+				      $student->getStudentCode()));
 	}
-	printf("</select>\n");
-	printf("<br/>\n");
-	printf("<label for=\"submit\">&nbsp</label>\n");	
-	printf("<input type=\"submit\" value=\"%s\" title=\"%s\" />\n", 
-	       _("Download"), _("Please note that it might take some time to complete your request, especial if the examination has a lot of students."));
-	printf("</form>\n");
+	$button = $form->addSubmitButton("submit", _("Download"));
+	$button->setLabel();
+	$button->setTitle(_("Please note that it might take some time to complete your request, especial if the examination has a lot of students."));
+	$form->output();
 
 	// 
 	// The form for downloading the score board:
@@ -349,21 +349,21 @@ class DecoderPage extends TeacherPage
 	printf("<p>"  . 
 	       _("This section lets you download the score board showing a summary view of the examination in different formats. ") . 
 	       "</p>\n");
+	
 	$options = array( "tab" => "Tab Separated Text", "csv" => "Comma Separated Text", "xml" => "XML Format Data", "html" => "Single HTML Page" );
-	printf("<form action=\"decoder.php\" method=\"GET\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\">\n", $this->manager->getExamID());
-	printf("<input type=\"hidden\" name=\"mode\" value=\"scores\" />\n");
-	printf("<input type=\"hidden\" name=\"action\" value=\"save\" />\n");	
-	printf("<label for=\"format\">%s:</label>\n", _("Format"));
-	printf("<select name=\"format\">\n");
+	
+	$form = new Form("decoder.php", "GET");
+	$form->addHidden("exam", $this->manager->getExamID());
+	$form->addHidden("mode", "scores");
+	$form->addHidden("action", "save");
+	$combo = $form->addComboBox("format");
+	$combo->setLabel(_("Format"));
 	foreach($options as $name => $label) {
-	    printf("<option value=\"%s\">%s</option>\n", $name, $label);
+	    $combo->addOption($name, $label);
 	}
-	printf("</select>\n");
-	printf("<br/>\n");
-	printf("<label for=\"submit\">&nbsp</label>\n");	
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Download"));
-	printf("</form>\n");
+	$button = $form->addSubmitButton("submit", _("Download"));
+	$button->setLabel();
+	$form->output();
     }
     
     // 
@@ -520,7 +520,6 @@ class DecoderPage extends TeacherPage
 	// 
 	// The form for sending the results by email:
 	// 
-	printf("<h5>" . _("Send Result") . "</h5>\n");	
 	printf("<p>"  . 
 	       _("This section lets you send the results to all or individual students in different formats. ") . 
 	       _("The result contains the complete examination with answers and scores.") .
@@ -533,64 +532,65 @@ class DecoderPage extends TeacherPage
 	// The format and student select section:
 	// 
 	$options = array( "pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML" );
-	printf("<form enctype=\"multipart/form-data\" action=\"decoder.php\" method=\"POST\">\n");
-	printf("<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"%d\" />\n", ATTACH_MAX_FILE_SIZE);
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $this->manager->getExamID());
-	printf("<input type=\"hidden\" name=\"mode\" value=\"result\" />\n");
-	printf("<input type=\"hidden\" name=\"action\" value=\"mail\" />\n");	
-	printf("<label for=\"format\">%s:</label>\n", _("Format"));
-	printf("<select name=\"format\">\n");
+	$form = new Form("decoder.php", "POST");
+	$form->setEncodingType("multipart/form-data");
+	$form->addHidden("MAX_FILE_SIZE", ATTACH_MAX_FILE_SIZE);
+	$form->addHidden("exam", $this->manager->getExamID());
+	$form->addHidden("mode", "result");
+	$form->addHidden("action", "mail");
+		
+	$form->addSectionHeader(_("Send Result"));
+	$combo = $form->addComboBox("format");
+	$combo->setLabel(_("Format"));
 	foreach($options as $name => $label) {
-	    printf("<option value=\"%s\">%s</option>\n", $name, $label);
+	    $combo->addOption($name, $label);
 	}
-	printf("</select>\n");
-	printf("<br/>\n");
-	printf("<label for=\"select\">%s:</label>\n", _("Select"));
-	printf("<select name=\"student\">\n");
+	$combo = $form->addComboBox("student");
+	$combo->setLabel(_("Select"));
 	$board = new ScoreBoard($this->manager->getExamID());	
 	$students = $board->getStudents();
-	printf("<option value=\"all\">%s</option>\n", _("All Students"));
-	printf("<option value=\"0\" disabled=\"true\">---</option>\n");
+	$option = $combo->addOption("all", _("All Students"));
+	$option = $combo->addOption(0, "---");
+	$option->setDisabled();
 	foreach($students as $student) {
 	    $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
-	    printf("<option value=\"%d\">%s (%s) [%s]</option>\n", 
-		   $student->getStudentID(),
-		   $student->getStudentName(),
-		   $student->getStudentUser(),
-		   $student->getStudentCode());
+	    $combo->addOption($student->getStudentID(),
+			      sprintf("%s (%s) [%s]", 
+				      $student->getStudentName(),
+				      $student->getStudentUser(),
+				      $student->getStudentCode()));
 	}
-	printf("</select>\n");
 	
 	// 
 	// The optional message section:
 	// 
-	printf("<h5>%s</h5>\n", _("Optional Message"));
-	printf("<label for=\"message\">%s</label>\n", _("Text"));
-	printf("<textarea name=\"message\" class=\"message\" title=\"%s\" onclick=\"this.value='';\">%s</textarea>\n",
-	       _("Append one or more optional section of text to the message."),
-	       _("Header 1:\n---\nSome text for this first section...\n\nHeader 2:\n---\nIt's possible to have multiple blocks of text separated by newlines:\n\nFirst block...\n\n...and second block.\n"));
+	$form->addSectionHeader(_("Optional Message"));
+	$input = $form->addTextArea("message", _("Header 1:\n---\nSome text for this first section...\n\nHeader 2:\n---\nIt's possible to have multiple blocks of text separated by newlines:\n\nFirst block...\n\n...and second block.\n"));
+	$input->setLabel(_("Text"));
+	$input->setClass("message");
+	$input->setTitle(_("Append one or more optional section of text to the message."));
+	$input->setEvent(EVENT_ON_CLICK, "this.value=''");
 	
 	// 
 	// The attachment section:
 	// 
-	printf("<h5>%s</h5>\n", _("Attachements"));
+	$form->addSectionHeader(_("Attachements"));
 	for($i = 0; $i < ATTACH_MAX_NUM_FILES; $i++) {
-	    printf("<label for=\"attach[]\">&nbsp;</label>\n");
-	    printf("<input type=\"file\" class=\"file\" title=\"%s\" name=\"attach[]\" />\n", 
-		   _("Attach this file to all outgoing messages."));
-	    printf("<br/>\n");
+	    $input = $form->addFileInput("attach[]");
+	    $input->setLabel();
+	    $input->setClass("file");
+	    $input->setTitle(_("Attach this file to all outgoing messages."));
 	}
-	printf("<br/>\n");
-	printf("<label for=\"mirror\">&nbsp;</label>\n");
-	printf("<input type=\"checkbox\" name=\"mirror\" title=\"%s\" />%s\n", 
-	       _("If checked, then your email address will be used as the receiver, with the student address set as the sender."),
-	       _("Enable mirror mode (dry-run)."));
-	printf("<br/>\n");
-	printf("<br/>\n");
-	printf("<label for=\"submit\">&nbsp</label>\n");
-	printf("<input type=\"submit\" value=\"%s\" title=\"%s\" />\n", 
-	       _("Send"), _("Please note that it might take some time to complete your request, especial if the examination has a lot of students."));
-	printf("</form>\n");
+	$form->addSpace();
+	$input = $form->addCheckBox("mirror", _("Enable mirror mode (dry-run)."));
+	$input->setTitle(_("If checked, then your email address will be used as the receiver, with the student address set as the sender."));
+	$input->setLabel();
+	$form->addSpace();
+	$button = $form->addSubmitButton("submit", _("Send"));
+	$button->setLabel();
+	$button->setTitle(_("Please note that it might take some time to complete your request, especial if the examination has a lot of students."));
+	
+	$form->output();
     }
     
     // 
