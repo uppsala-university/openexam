@@ -519,7 +519,7 @@ class BR extends Cdata
 {
     public function __construct()
     {
-	parent::__construct("<br/>");
+	parent::__construct("<br/>\n");
     }
 }
 
@@ -527,7 +527,7 @@ class HR extends Cdata
 {
     public function __construct()
     {
-	parent::__construct("<hr/>");
+	parent::__construct("<hr/>\n");
     }
 }
 
@@ -809,9 +809,9 @@ abstract class OptionInput extends Input
 {
     private $text;
 
-    public function __construct($name, $value, $text = null)
+    public function __construct($type, $name, $value, $text = null)
     {
-	parent::__construct($name, $value);
+	parent::__construct($type, $name, $value);
 	$this->text = isset($text) ? $text : $value;
     }
     
