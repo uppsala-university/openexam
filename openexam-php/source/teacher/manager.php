@@ -188,7 +188,7 @@ class ManagerPage extends TeacherPage
 	}
 	$tree->output();
     }
-		       
+    
     // 
     // Common form for adding and editing exam properties.
     // 
@@ -411,7 +411,7 @@ class ManagerPage extends TeacherPage
 			    _("Remove all questions from this examination."));
 	}
 	if($this->manager->isContributor(phpCAS::getUser())) {
-	    $quest->addLink(_("Edit"), 
+	    $quest->addLink(_("Show"), 
 			    sprintf("contribute.php?exam=%d", $data->getExamID()),
 			    _("Open the page showing all questions at once, where questions can be edited and previewed."));
 	}
