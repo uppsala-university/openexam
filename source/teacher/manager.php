@@ -398,13 +398,13 @@ class ManagerPage extends TeacherPage
 	if($this->manager->isContributor(phpCAS::getUser())) {
 	    $quest->addLink(_("View"), sprintf("contribute.php?exam=%d", $data->getExamID()));
 	}
-		
+	
 	$child = $quest->addChild(_("Active"));
 	$questions = $this->manager->getQuestions('active');
 	foreach($questions as $question) {
 	    $subobj = $child->addChild(sprintf("%s %s...", 
 					       utf8_decode($question->getQuestionName()),
-					       utf8_decode(substr($question->getQuestionText(), 0, 60))));
+					       utf8_decode(substr(strip_tags($question->getQuestionText()), 0, 55))));
 	    if($info->isContributable()) {
 		$subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
 						    $question->getExamID(),
