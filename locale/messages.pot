@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-06-02 02:01+0200\n"
+"POT-Creation-Date: 2010-06-09 12:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,13 +34,13 @@ msgstr ""
 
 #: template/page.php:99 include/admin.inc:117 include/teacher.inc:179
 #: source/index.php:96 source/admin/admin.php:89 source/admin/teacher.php:91
-#: source/exam/index.php:235 source/exam/index.php:240
-#: source/exam/index.php:452 source/exam/index.php:459
+#: source/exam/index.php:245 source/exam/index.php:250
+#: source/exam/index.php:470 source/exam/index.php:477
 msgid "Request parameter error!"
 msgstr ""
 
 #: template/page.php:100 include/admin.inc:118 include/teacher.inc:180
-#: source/index.php:97 source/exam/index.php:453 source/exam/index.php:460
+#: source/index.php:97 source/exam/index.php:471 source/exam/index.php:478
 #, php-format
 msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
 msgstr ""
@@ -163,7 +163,7 @@ msgstr ""
 #: source/teacher/correct.php:211 source/teacher/correct.php:217
 #: source/teacher/correct.php:411 source/teacher/correct.php:416
 #: source/teacher/contribute.php:268 source/teacher/contribute.php:416
-#: source/exam/index.php:314 source/exam/index.php:344
+#: source/exam/index.php:324 source/exam/index.php:354
 msgid "Question"
 msgstr ""
 
@@ -188,11 +188,11 @@ msgstr ""
 msgid "Percent"
 msgstr ""
 
-#: include/pdf.inc:330 source/exam/index.php:396
+#: include/pdf.inc:330 source/exam/index.php:414
 msgid "Notice"
 msgstr ""
 
-#: include/pdf.inc:346 source/teacher/manager.php:423
+#: include/pdf.inc:346 source/teacher/manager.php:440
 msgid "Removed"
 msgstr ""
 
@@ -212,7 +212,7 @@ msgstr ""
 #: include/pdf.inc:411 source/teacher/correct.php:230
 #: source/teacher/correct.php:235 source/teacher/correct.php:310
 #: source/teacher/correct.php:380 source/teacher/correct.php:437
-#: source/exam/index.php:319
+#: source/exam/index.php:329
 msgid "Answer"
 msgstr ""
 
@@ -381,7 +381,7 @@ msgstr ""
 #: include/admin.inc:109 include/teacher.inc:165 include/ui.inc:278
 #: source/teacher/correct.php:161 source/teacher/correct.php:295
 #: source/teacher/contribute.php:156 source/teacher/examinator.php:138
-#: source/teacher/manager.php:528 source/teacher/manager.php:534
+#: source/teacher/manager.php:545 source/teacher/manager.php:551
 #: source/teacher/decoder.php:191 source/teacher/template.php:101
 msgid "Access denied!"
 msgstr ""
@@ -616,7 +616,7 @@ msgid "Answer Correction Page"
 msgstr ""
 
 #: source/teacher/correct.php:162 source/teacher/contribute.php:157
-#: source/teacher/examinator.php:139 source/teacher/manager.php:529
+#: source/teacher/examinator.php:139 source/teacher/manager.php:546
 #: source/teacher/decoder.php:192 source/teacher/template.php:102
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
@@ -675,11 +675,11 @@ msgid "It appears that this student have not answered any of you questions."
 msgstr ""
 
 #: source/teacher/correct.php:358 source/teacher/decoder.php:178
-#: source/exam/index.php:184
+#: source/exam/index.php:194
 msgid "Show"
 msgstr ""
 
-#: source/teacher/correct.php:362
+#: source/teacher/correct.php:362 source/exam/index.php:177
 msgid "Answered"
 msgstr ""
 
@@ -1106,15 +1106,15 @@ msgstr ""
 msgid "Notice: It's no longer possible to contribute or modify questions for this examination."
 msgstr ""
 
-#: source/teacher/contribute.php:408 source/teacher/manager.php:392
+#: source/teacher/contribute.php:408 source/teacher/manager.php:404
 msgid "Questions"
 msgstr ""
 
 #: source/teacher/contribute.php:411 source/teacher/contribute.php:463
 #: source/teacher/examinator.php:302 source/teacher/examinator.php:353
 #: source/teacher/manager.php:168 source/teacher/manager.php:347
-#: source/teacher/manager.php:364 source/teacher/manager.php:380
-#: source/teacher/manager.php:394 source/teacher/manager.php:459
+#: source/teacher/manager.php:368 source/teacher/manager.php:388
+#: source/teacher/manager.php:406 source/teacher/manager.php:476
 msgid "Add"
 msgstr ""
 
@@ -1122,7 +1122,7 @@ msgstr ""
 msgid "Click to add a question to this examination."
 msgstr ""
 
-#: source/teacher/contribute.php:419 source/teacher/manager.php:399
+#: source/teacher/contribute.php:419
 msgid "View"
 msgstr ""
 
@@ -1131,16 +1131,17 @@ msgid "Preview this question"
 msgstr ""
 
 #: source/teacher/contribute.php:423 source/teacher/manager.php:183
-#: source/teacher/manager.php:339 source/teacher/manager.php:409
+#: source/teacher/manager.php:339 source/teacher/manager.php:414
+#: source/teacher/manager.php:426
 msgid "Edit"
 msgstr ""
 
 #: source/teacher/contribute.php:426 source/teacher/examinator.php:317
-#: source/teacher/manager.php:186 source/teacher/manager.php:413
+#: source/teacher/manager.php:186 source/teacher/manager.php:430
 msgid "Delete"
 msgstr ""
 
-#: source/teacher/contribute.php:433 source/exam/index.php:407
+#: source/teacher/contribute.php:433 source/exam/index.php:425
 msgid "Video"
 msgstr ""
 
@@ -1149,11 +1150,11 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: source/teacher/contribute.php:434 source/exam/index.php:414
+#: source/teacher/contribute.php:434 source/exam/index.php:432
 msgid "Audio"
 msgstr ""
 
-#: source/teacher/contribute.php:435 source/exam/index.php:421
+#: source/teacher/contribute.php:435 source/exam/index.php:439
 msgid "Image"
 msgstr ""
 
@@ -1333,8 +1334,24 @@ msgstr ""
 msgid "These are the exams you are the manager of: "
 msgstr ""
 
+#: source/teacher/manager.php:168
+msgid "Creates a new examination."
+msgstr ""
+
 #: source/teacher/manager.php:182 source/teacher/manager.php:338
 msgid "Copy"
+msgstr ""
+
+#: source/teacher/manager.php:182 source/teacher/manager.php:338
+msgid "Create a new examination by using this examination as a template."
+msgstr ""
+
+#: source/teacher/manager.php:183 source/teacher/manager.php:339
+msgid "Edit common properties like name, description or grades for this examination."
+msgstr ""
+
+#: source/teacher/manager.php:186
+msgid "Deletes the examination along with any questions."
 msgstr ""
 
 #: source/teacher/manager.php:207
@@ -1385,82 +1402,117 @@ msgstr ""
 msgid "Contributors"
 msgstr ""
 
-#: source/teacher/manager.php:353 source/teacher/manager.php:370
-#: source/teacher/manager.php:384 source/teacher/manager.php:418
+#: source/teacher/manager.php:349
+msgid "Add a question contributor to this examination."
+msgstr ""
+
+#: source/teacher/manager.php:355 source/teacher/manager.php:376
+#: source/teacher/manager.php:394 source/teacher/manager.php:435
 msgid "Remove"
 msgstr ""
 
-#: source/teacher/manager.php:362
+#: source/teacher/manager.php:358
+#, php-format
+msgid "Remove %s as a question contributor for this examination."
+msgstr ""
+
+#: source/teacher/manager.php:366
 msgid "Examinators"
 msgstr ""
 
+#: source/teacher/manager.php:370 source/teacher/manager.php:390
+msgid "Add a person with the examinator role."
+msgstr ""
+
 #: source/teacher/manager.php:379
+#, php-format
+msgid "Remove %s as an examinator for this examination."
+msgstr ""
+
+#: source/teacher/manager.php:387
 msgid "Decoders"
 msgstr ""
 
-#: source/teacher/manager.php:395
+#: source/teacher/manager.php:397
+#, php-format
+msgid "Remove %s as a decoder for this examination."
+msgstr ""
+
+#: source/teacher/manager.php:408
+msgid "Add a new question for this examination."
+msgstr ""
+
+#: source/teacher/manager.php:409
 msgid "Remove all"
 msgstr ""
 
-#: source/teacher/manager.php:402
-msgid "Active"
-msgstr ""
-
-#: source/teacher/manager.php:412
-msgid "Edit properties for this question"
+#: source/teacher/manager.php:411
+msgid "Remove all questions from this examination."
 msgstr ""
 
 #: source/teacher/manager.php:416
-msgid "Permanent delete this question"
+msgid "Open the page showing all questions at once, where questions can be edited and previewed."
 msgstr ""
 
-#: source/teacher/manager.php:421
-msgid "Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."
+#: source/teacher/manager.php:419
+msgid "Active"
 msgstr ""
 
 #: source/teacher/manager.php:429
+msgid "Edit properties for this question"
+msgstr ""
+
+#: source/teacher/manager.php:433
+msgid "Permanent delete this question"
+msgstr ""
+
+#: source/teacher/manager.php:438
+msgid "Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."
+msgstr ""
+
+#: source/teacher/manager.php:446
 msgid "Restore"
 msgstr ""
 
-#: source/teacher/manager.php:432
+#: source/teacher/manager.php:449
 msgid "Flag this question as active again"
 msgstr ""
 
-#: source/teacher/manager.php:436
+#: source/teacher/manager.php:453
 #, php-format
 msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
 msgstr ""
 
-#: source/teacher/manager.php:437
+#: source/teacher/manager.php:454
 #, php-format
 msgid "Not all options might be available, i.e. its not possible to add questions to an already started examination."
 msgstr ""
 
-#: source/teacher/manager.php:440
+#: source/teacher/manager.php:457
 #, php-format
 msgid "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
 msgstr ""
 
-#: source/teacher/manager.php:457
+#: source/teacher/manager.php:474
 msgid "UU-ID:"
 msgstr ""
 
-#: source/teacher/manager.php:467
+#: source/teacher/manager.php:484
 #, php-format
 msgid "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
 msgstr ""
 
-#: source/teacher/manager.php:486
+#: source/teacher/manager.php:503
 #, php-format
 msgid "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
 msgstr ""
 
-#: source/teacher/manager.php:505
+#: source/teacher/manager.php:522
 #, php-format
 msgid "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
 msgstr ""
 
-#: source/teacher/manager.php:535
+#: source/teacher/manager.php:552
 msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 msgstr ""
 
@@ -1741,121 +1793,117 @@ msgstr ""
 msgid "Fill in the user name and click on '%s' to grant this user the teacher role:"
 msgstr ""
 
-#: source/exam/index.php:84
+#: source/exam/index.php:94
 msgid "Examination:"
 msgstr ""
 
-#: source/exam/index.php:148
+#: source/exam/index.php:159
 msgid "Questions:"
 msgstr ""
 
-#: source/exam/index.php:166
-msgid "Answered:"
-msgstr ""
-
-#: source/exam/index.php:188
+#: source/exam/index.php:198
 msgid "Show the start page for this examination"
 msgstr ""
 
-#: source/exam/index.php:188
+#: source/exam/index.php:198
 msgid "Start page"
 msgstr ""
 
-#: source/exam/index.php:191
+#: source/exam/index.php:201
 msgid "Show all questions at the same time"
 msgstr ""
 
-#: source/exam/index.php:192
+#: source/exam/index.php:202
 msgid "All questions"
 msgstr ""
 
-#: source/exam/index.php:212 source/exam/index.php:254
-#: source/exam/index.php:289
+#: source/exam/index.php:222 source/exam/index.php:264
+#: source/exam/index.php:299
 msgid "Active examination was not found!"
 msgstr ""
 
-#: source/exam/index.php:213 source/exam/index.php:255
-#: source/exam/index.php:290
+#: source/exam/index.php:223 source/exam/index.php:265
+#: source/exam/index.php:300
 #, php-format
 msgid "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
 msgstr ""
 
-#: source/exam/index.php:222
+#: source/exam/index.php:232
 msgid "This examination is now closed!"
 msgstr ""
 
-#: source/exam/index.php:223
+#: source/exam/index.php:233
 #, php-format
 msgid "This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance."
 msgstr ""
 
-#: source/exam/index.php:236
+#: source/exam/index.php:246
 #, php-format
 msgid "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
 msgstr ""
 
-#: source/exam/index.php:241
+#: source/exam/index.php:251
 #, php-format
 msgid "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
 msgstr ""
 
-#: source/exam/index.php:259
+#: source/exam/index.php:269
 #, php-format
 msgid "Select the examination"
 msgstr ""
 
-#: source/exam/index.php:261
+#: source/exam/index.php:271
 #, php-format
 msgid "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
 msgstr ""
 
-#: source/exam/index.php:264
+#: source/exam/index.php:274
 #, php-format
 msgid "These examinations have been assigned to you, click on the button next to the description to begin the examination."
 msgstr ""
 
-#: source/exam/index.php:270
+#: source/exam/index.php:280
 msgid "The examination ends"
 msgstr ""
 
-#: source/exam/index.php:274
+#: source/exam/index.php:284
 msgid "Begin"
 msgstr ""
 
-#: source/exam/index.php:295
+#: source/exam/index.php:305
 #, php-format
 msgid "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
 msgstr ""
 
-#: source/exam/index.php:296
+#: source/exam/index.php:306
 #, php-format
 msgid "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
 msgstr ""
 
-#: source/exam/index.php:297
+#: source/exam/index.php:307
 #, php-format
 msgid "Good luck!"
 msgstr ""
 
-#: source/exam/index.php:307
+#: source/exam/index.php:317
 #, php-format
 msgid "Overview of all questions (no answers included)"
 msgstr ""
 
-#: source/exam/index.php:357
+#: source/exam/index.php:367
 #, php-format
 msgid "Answer:"
 msgstr ""
 
-#: source/exam/index.php:390
+#: source/exam/index.php:403
 msgid "Save"
 msgstr ""
 
-#: source/exam/index.php:396
+#: source/exam/index.php:414
 msgid "This question is viewed in preview mode (for question author)."
 msgstr ""
 
-#: source/exam/index.php:399
+#: source/exam/index.php:417
 #, php-format
 msgid "Your answer has been successful saved in the database."
 msgstr ""
