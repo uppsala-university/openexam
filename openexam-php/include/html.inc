@@ -971,6 +971,27 @@ class Form extends Container
     {
 	parent::setAttr("name", $name);
     }
+
+    public function setEncodingType($mime) 
+    {
+	parent::setAttr("enctype", $mime);
+    }
+    
+    // 
+    // A comma separated list of accepted MIME types.
+    // 
+    public function setAccept($mime)
+    {
+	parent::setAttr("accept", $mime);
+    }
+    
+    // 
+    // A comma and/or space separated list of accepted charset values.
+    // 
+    public function setAcceptCharset($charset)
+    {
+	parent::setAttr("accept-charset", $charset);
+    }
     
     public function addHidden($name, $value)
     {
