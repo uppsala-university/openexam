@@ -29,6 +29,18 @@ define ("PAGE_VALIDATOR", false);
 define ('BASE_URL', sprintf('%s://www.example.com/openexam', isset($_SERVER['HTTPS']) ? "https" : "http"));
 
 // 
+// Enable autosave and session length if non-zero. The value are in seconds.
+// If autosave is set, then it defines the number of second from page load
+// until the answer form is automatic posted (for saving).
+// 
+if(!defined("SESSION_AUTOSAVE")) {
+    define ("SESSION_AUTOSAVE", 0);
+}
+if(!defined("SESSION_LIFETIME")) {
+    define ("SESSION_LIFETIME", 3600);
+}
+
+// 
 // Settings for CAS (Centralized Authentication System):
 // 
 define ('CAS_HOST', 'cas-server.example.com');

@@ -12,6 +12,17 @@
 // 
 
 // 
+// Enable autosave if non-zero. Try to set session length twice the value of
+// the autosave interval. This should affect the CAS logon session length.
+// 
+if(!defined("SESSION_AUTOSAVE")) {
+    define ("SESSION_AUTOSAVE", 0);
+}
+if(!defined("SESSION_LIFETIME")) {
+    define ("SESSION_LIFETIME", 2 * SESSION_AUTOSAVE);
+}
+
+// 
 // System check:
 // 
 if(!file_exists("../../conf/database.conf")) {
@@ -73,7 +84,6 @@ class ExaminationPage extends BasePage
     // 
     private $params = array( "exam"     => "/^\d+$/",
 			     "question" => "/^(\d+|all)$/" );
-			     // "answer"   => "/^.*$/" );
     private $author = false;
     
     // 
@@ -352,11 +362,14 @@ class ExaminationPage extends BasePage
 	    printf("<div class=\"question\">%s</div>\n", 
 		   utf8_decode(str_replace("\n", "<br>", $options[0])));
 	}
-		
+	
 	printf("<div class=\"answer\">\n");
 	printf("<p class=\"answer\">" . _("Answer:") . "</p>\n");
-	printf("<form action=\"index.php\" method=\"POST\">\n"); 
+	printf("<form action=\"index.php\" method=\"POST\" id=\"answerform\">\n"); 	
 	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
+	if(SESSION_AUTOSAVE != 0) {
+	    printf("<input type=\"hidden\" name=\"autosave\" value=\"false\">\n");
+	}
 	printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n", $question);
 	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
 	    printf("<textarea name=\"answer\" class=\"answer\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
@@ -389,7 +402,12 @@ class ExaminationPage extends BasePage
 	    printf("<br />\n");
 	    printf("<input type=\"submit\" value=\"%s\" />\n", _("Save"));
 	}
-	printf("</form>\n");	
+	printf("</form>\n");
+	printf("<script type=\"text/javascript\">\n");
+	if(SESSION_AUTOSAVE != 0) {
+	    printf("autosave_form('answerform', %d, true);\n", SESSION_AUTOSAVE);
+	}
+	printf("</script>\n");
 	printf("</div>\n");
 	if($this->author) {
 	    printf("<br/><img src=\"icons/nuvola/info.png\" />\n%s: <i>%s</i>\n", 
@@ -426,7 +444,7 @@ class ExaminationPage extends BasePage
 	}
 	printf("<br style=\"clear: both;\">\n");
     }
-    
+        
     // 
     // Save the answer for an question.
     // 
@@ -464,6 +482,7 @@ class ExaminationPage extends BasePage
 	    }
 	}
     }
+    
 }
 
 // 
