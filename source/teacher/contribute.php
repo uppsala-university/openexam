@@ -345,7 +345,7 @@ class ContributePage extends TeacherPage
 	$manager = new Manager($exam);
 	$mandata = $manager->getData();
 	$qrecord = Exam::getQuestionData($question);
-	
+
 	printf("<h3>" . _("Edit Question") . "</h3>\n");
 	printf("<p>" . _("This page let you edit the existing question in the examination '%s'") . "</p>\n", 
 	       utf8_decode($mandata->getExamName()));
