@@ -11,10 +11,10 @@
 // Support for managing exams.
 // 
 
-if(!defined("EXAM_STATE_CONTRIBUTABLE")) {     // Its still possible to contribute questions
+if(!defined("EXAM_STATE_CONTRIBUTABLE")) {     // Its still possible to contribute questions.
     define ("EXAM_STATE_CONTRIBUTABLE", 1);
 }
-if(!defined("EXAM_STATE_EXAMINATABLE")) {      // Examination started, new students can still be added
+if(!defined("EXAM_STATE_EXAMINATABLE")) {      // Examination started, but new students can still be added.
     define ("EXAM_STATE_EXAMINATABLE", 2);
 }
 if(!defined("EXAM_STATE_CORRECTABLE")) {       // Examination finished, not yet decoded.
@@ -26,7 +26,7 @@ if(!defined("EXAM_STATE_DECODABLE")) {         // Examination can be decoded.
 if(!defined("EXAM_STATE_DECODED")) {           // Examination has been decoded.
     define ("EXAM_STATE_DECODED", 16);
 }
-if(!defined("EXAM_STATE_EDITABLE")) {
+if(!defined("EXAM_STATE_EDITABLE")) {          // Examination is still fully editable.
     define ("EXAM_STATE_EDITABLE", 32);
 }
 
