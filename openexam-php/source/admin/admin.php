@@ -148,12 +148,13 @@ class SupervisorAdminPage extends AdminPage
 	
 	echo "<h5>" . _("Add new administrator:") . "</h5>\n";
 	printf("<p>"  . _("Fill in the user name and click on '%s' to give this user administrative privileges:") . "</p>\n", _("Grant"));
-	echo "<form action=\"admin.php\" method=\"get\">\n";
-	echo "  <input type=\"hidden\" name=\"action\" value=\"grant\" />\n";
-	echo "  <label for=\"user\">" . _("Username:") . "</label>\n";
-	echo "  <input type=\"text\" name=\"user\" />\n";
-	echo "  <input type=\"submit\" value=\"" . _("Grant") . "\" />\n";
-	echo "</form>\n";
+	
+	$form = new Form("admin.php", "GET");
+	$form->addHidden("action", "grant");
+	$input = $form->addTextBox("user");
+	$input->setLabel(_("Username"));
+	$form->addSubmitButton("submit", _("Grant"));
+	$form->output();
     }
     
 }
