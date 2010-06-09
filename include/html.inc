@@ -260,6 +260,19 @@ if(!defined('LINK_TARGET_TOP')) {
 }
 
 // 
+// Constants for button types.
+// 
+if(!defined('BUTTON_SUBMIT')) {
+    define ('BUTTON_SUBMIT', "submit");
+}
+if(!defined('BUTTON_RESET')) {
+    define ('BUTTON_RESET', "reset");
+}
+if(!defined('BUTTON_STANDARD')) {
+    define ('BUTTON_STANDARD', "standard");
+}
+
+// 
 // Some handy inline event handlers:
 // 
 if(!defined('EVENT_HANDLER_CLEAR_CONTENT')) {
@@ -883,6 +896,14 @@ class ResetButton extends Input
     }
 }
 
+class StandardButton extends Input
+{
+    public function __construct($name = null, $label = null) 
+    {
+	parent::__construct("button", $name, $label);
+    }
+}
+
 class ImageButton extends Input
 {
     public function __construct($name = null, $value = null, $src = null, $alt = null)
@@ -946,6 +967,11 @@ class Form extends Container
 	parent::setAttr("method", $method);
     }
     
+    public function setName($name)
+    {
+	parent::setAttr("name", $name);
+    }
+    
     public function addHidden($name, $value)
     {
 	return parent::addElement(new HiddenField($name, $value));
@@ -985,6 +1011,23 @@ class Form extends Container
     {
 	return parent::addElement(new ResetButton($name, $label));
     }
+
+    public function addStandardButton($name, $label = null)
+    {
+	return parent::addElement(new StandardButton($name, $label));
+    }
+    
+    public function addButton($type = BUTTON_SUBMIT, $label = null)
+    {
+	switch($type) {
+	 case BUTTON_SUBMIT:
+	    return parent::addElement(new SubmitButton($type, $label));
+	 case BUTTON_RESET:
+	    return parent::addElement(new ResetButton($type, $label));
+	 default:
+	    return parent::addElement(new StandardButton($type, $label));
+	}
+    }
     
     public function addSpace()
     {
@@ -994,6 +1037,13 @@ class Form extends Container
     public function addLine()
     {
 	return parent::addElement(new HR());
+    }
+    
+    public function addSectionHeader($text, $class = null)
+    {
+        $header = parent::addElement(new H4($text));
+	$header->setClass(isset($class) ? $class : "secthead");
+	return $header;
     }
 }
 
