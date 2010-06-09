@@ -55,6 +55,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -279,10 +280,12 @@ class ExaminationPage extends BasePage
 		   utf8_decode(str_replace("\n", "<br>", $exam->getExamDescription())),
 		   _("The examination ends"), 
 		   strftime(TIME_FORMAT, strtotime($exam->getExamEndTime())));
-	    printf("<form action=\"index.php\" method=\"GET\">\n");
-	    printf("<input type=\"hidden\" name=\"exam\" value=\"%d\">\n", $exam->getExamID());
-	    printf("<input type=\"submit\" value=\"%s\">\n", _("Begin"));
-	    printf("</form>\n");
+	    
+	    $form = new Form("index.php", "GET");
+	    $form->addHidden("exam", $exam->getExamID());
+	    $form->addSubmitButton("submit", _("Begin"));
+	    $form->output();
+	    
 	    printf("</div>\n");
 	    printf("</div>\n");
 	}
@@ -365,44 +368,48 @@ class ExaminationPage extends BasePage
 	
 	printf("<div class=\"answer\">\n");
 	printf("<p class=\"answer\">" . _("Answer:") . "</p>\n");
-	printf("<form action=\"index.php\" method=\"POST\" id=\"answerform\">\n"); 	
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
+
+	// 
+	// Output the question form including any already given answer:
+	// 
+	$form = new Form("index.php", "POST");
+	$form->setId("answerform");
 	if(SESSION_AUTOSAVE != 0) {
-	    printf("<input type=\"hidden\" name=\"autosave\" value=\"false\">\n");
+	    $form->addHidden("autosave", false);
 	}
-	printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n", $question);
+	$form->addHidden("exam", $exam);
+	$form->addHidden("question", $question);
+	
 	if($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<textarea name=\"answer\" class=\"answer\">%s</textarea>\n", utf8_decode($adata->getAnswerText()));
+	    $input = $form->addTextArea("answer", utf8_decode($adata->getAnswerText()));
+	    $input->setClass("answer");
 	} elseif($qdata->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
 	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
 	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
 	    foreach($options[1] as $option) {
+		$input = $form->addRadioButton("answer[]", utf8_decode($option), utf8_decode($option));
 		if(in_array($option, $answers[1])) {
-	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", 
-			   utf8_decode($option), utf8_decode($option));
-		} else {
-	    	    printf("<input type=\"radio\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", 
-			   utf8_decode($option), utf8_decode($option));
+		    $input->setChecked();
 	    	}
+		$form->addSpace();
 	    }
 	} elseif($qdata->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
 	    $options = Exam::getQuestionChoice($qdata->getQuestionText());
 	    $answers = Exam::getQuestionChoice($adata->getAnswerText());
 	    foreach($options[1] as $option) {
+		$input = $form->addCheckBox("answer[]", utf8_decode($option), utf8_decode($option));
 		if(in_array($option, $answers[1])) {
-		    printf("<input type=\"checkbox\" name=\"answer[]\" value=\"%s\" checked />%s<br/>\n", 
-			   utf8_decode($option), utf8_decode($option));
-		} else {
-		    printf("<input type=\"checkbox\" name=\"answer[]\" value=\"%s\"/>%s<br/>\n", 
-			   utf8_decode($option), utf8_decode($option));
+		    $input->setChecked();
 		}
+		$form->addSpace();
 	    }
 	}
 	if(!$this->author) {
-	    printf("<br />\n");
-	    printf("<input type=\"submit\" value=\"%s\" />\n", _("Save"));
+	    $form->addSpace();
+	    $form->addSubmitButton("submit", _("Save"));
 	}
-	printf("</form>\n");
+	$form->output();
+	
 	printf("<script type=\"text/javascript\">\n");
 	if(SESSION_AUTOSAVE != 0) {
 	    printf("autosave_form('answerform', %d, true);\n", SESSION_AUTOSAVE);
