@@ -226,7 +226,7 @@ class CorrectionPage extends TeacherPage
 				  _("Correct answer"), implode(", ", array_keys($qchoice[1], true))));
 	}
 
-	if($answer->getQuestionStatus() == 'removed') {
+	if($question->getQuestionStatus() == 'removed') {
 	    $row = $table->addRow();
 	    $data = $row->addData(_("This question is flagged as removed. The answer score set here will not affect the student result on this examination."));
 	    $data->setClass("removed");
