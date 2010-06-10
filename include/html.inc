@@ -696,6 +696,39 @@ class Paragraph extends Container
 }
 
 // 
+// An image tag
+// 
+class Image extends Component
+{
+    public function __construct($src, $alt)
+    {
+	parent::__construct("img");
+	parent::setAttr("src", $src);
+	parent::setAttr("alt", $alt);
+    }
+    
+    public function setHeight($pixels)
+    {
+	parent::setAttr("height", $pixels);
+    }
+
+    public function setWidth($pixels)
+    {
+	parent::setAttr("width", $pixels);
+    }
+    
+    public function setLongDescription($url)
+    {
+	parent::setAttr("longdesc", $url);
+    }
+    
+    public function setUseMap($name)
+    {
+	parent::setAttr("usemap", $name);
+    }
+}
+
+// 
 // A combobox (drop down list).
 // 
 class ComboBox extends Container
