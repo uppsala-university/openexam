@@ -135,9 +135,15 @@ class SupervisorAdminPage extends AdminPage
 	  _("This page let you grant and revoke administrative privileges. ") . 
 	  _("These users have been granted administrative privileges:") . 
 	  "</p>\n";
+	
 	$ldap = LDAPSearch::factory();
 	$users = Admin::getAdminUsers();
-	echo "<table>\n";
+
+	$table = new Table();
+	$row = $table->addRow();
+	$row->addHeader(_("Name"));
+	$row->addHeader(_("User"));
+	$row->addHeader(_("Role"));
 	foreach($users as $user) {
 	    $data = $ldap->searchPrincipalName($user->getUserName());
 	    $name = "";
@@ -146,12 +152,13 @@ class SupervisorAdminPage extends AdminPage
 		    $name = $data->first()->getCN()->first();
 		}
 	    }
-	    printf("<tr><td>%s</td><td>%s</td><td><a href=\"?user=%s&amp;action=revoke\">" . _("Revoke") . "</a></td></tr>\n",
-		   iconv("UTF8", $locale->getCharSet(), $name),
-		   $user->getUserName(), 
-		   $user->getUserID());
+	    $row = $table->addRow();
+	    $row->addData(iconv("UTF8", $locale->getCharSet(), $name));
+	    $row->addData($user->getUserName());
+	    $data = $row->addData(_("Revoke"));
+	    $data->setlink(sprintf("?user=%s&amp;action=revoke", $user->getUserID()));
 	}
-	echo "</table>\n";
+	$table->output();
 	
 	echo "<h5>" . _("Add new administrator:") . "</h5>\n";
 	printf("<p>"  . _("Fill in the user name and click on '%s' to give this user administrative privileges:") . "</p>\n", _("Grant"));
