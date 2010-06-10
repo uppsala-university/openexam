@@ -230,7 +230,7 @@ class CorrectionPage extends TeacherPage
 	    $row = $table->addRow();
 	    $data = $row->addData(_("This question is flagged as removed. The answer score set here will not affect the student result on this examination."));
 	    $data->setClass("removed");
-	    $data->addElement(new Image("../icons/nuvola/info.png", _("Info Icon")));
+	    $data->addElement(new Image("../icons/nuvola/info.png", _("Info icon")));
 	}
 
 	$row = $table->addRow();
