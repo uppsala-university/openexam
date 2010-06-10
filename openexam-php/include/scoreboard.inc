@@ -707,11 +707,13 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 	$table->addRow();
 	$row = $table->addRow();
 	$row->setClass("avarage");
- 	if($this->show->user) {
-	    $row->addData();
-	}
- 	if($this->show->code) {
-	    $row->addData();
+	if($this->decoded) {
+	    if($this->show->user) {
+		$row->addData();
+	    }
+	    if($this->show->code) {
+		$row->addData();
+	    }
 	}
 	$obj = $row->addHeader(_("Avarage:"));
 	$obj->setAlign(TABLE_ALIGN_RIGHT);
