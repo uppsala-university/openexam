@@ -1292,6 +1292,11 @@ class TableData extends TableCell
     {
 	return parent::setAttr("headers", $hid);
     }
+    
+    public function addTextBox($name, $text = null)  // A convenient function
+    {
+	return parent::addElement(new TextBox($name, $text));
+    }
 }
 
 abstract class TContainer extends Container
