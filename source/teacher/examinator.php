@@ -47,6 +47,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -152,19 +153,20 @@ class ExaminatorPage extends TeacherPage
 	printf("<h3>" . _("Reschedule Examination") . "</h3>\n");
 	printf("<p>"  . _("This page let you reschedule the start and end time of the examination.") . "</p>\n");
 
-	printf("<form action=\"examinator.php\" method=\"GET\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
-	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
-	printf("<input type=\"hidden\" name=\"action\" value=\"edit\" />\n");
-	printf("<label for=\"start\">%s:</label>\n", _("Starts"));
-	printf("<input type=\"text\" name=\"stime\" value=\"%s\" size=\"25\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
-	printf("<br />\n");
-	printf("<label for=\"start\">%s:</label>\n", _("Ends"));
-	printf("<input type=\"text\" name=\"etime\" value=\"%s\" size=\"25\" />\n", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
-	printf("<br /><br />\n");
-	printf("<label for=\"submit\">&nbsp;</label>\n");
-	printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
-	printf("</form>\n");
+	$form = new Form("examinator.php", "GET");
+	$form->addHidden("exam", $exam);
+	$form->addHidden("mode", "save");
+	$form->addHidden("action", "edit");
+	$input = $form->addTextBox("stime", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
+	$input->setLabel(_("Starts"));
+	$input->setSize(25);
+	$input = $form->addTextBox("etime", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
+	$input->setLabel(_("Ends"));
+	$input->setSize(25);
+	$form->addSpace();
+	$input = $form->addSubmitButton("submit", _("Submit"));
+	$input->setLabel();
+	$form->output();
     }
     
     // 
@@ -187,32 +189,36 @@ class ExaminatorPage extends TeacherPage
 	printf("<p>"  . _("You can add students one by one or as a list of codes/student ID pairs. The list should be a newline separated list of username/code pairs where the username and code is separated by tabs.") . "</p>\n");
 	printf("<p>"  . _("If the student code is missing, then the system is going to generate a random code.") . "</p>\n");
 
-	printf("<h5>" . _("Add student one by one:") . "</h5>\n");
-	printf("<form action=\"examinator.php\" method=\"GET\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
-	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
-	printf("<input type=\"hidden\" name=\"action\" value=\"add\" />\n");
-	printf("<label for=\"code\">%s:</label>\n", _("Code"));
-	printf("<input type=\"text\" name=\"code\" title=\"%s\" />\n", _("The anonymous code associated with this student logon."));
-	printf("<br />\n");
-	printf("<label for=\"user\">%s:</label>\n", _("UU-ID"));
-	printf("<input type=\"text\" name=\"user\" />\n");
-	printf("<br /><br />\n");
-	printf("<label for=\"submit\">&nbsp;</label>\n");
-	printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
-	printf("</form>\n");
+	$form = new Form("examinator.php", "GET");
+	$form->addSectionHeader(_("Add student one by one:"));
+	$form->addHidden("exam", $exam);
+	$form->addHidden("mode", "save");
+	$form->addHidden("action", "add");
+	$input = $form->addTextBox("code");
+	$input->setLabel(_("Code"));
+	$input->setTitle(_("The anonymous code associated with this student logon."));
+	$input = $form->addTextBox("user");
+	$input->setLabel(_("UU-ID"));
+	$input->setTitle(_("The student logon username."));
+	$form->addSpace();
+	$input = $form->addSubmitButton("submit", _("Submit"));
+	$input->setLabel();
+	$form->output();
 
-	printf("<h5>" . _("Add list of students:") . "</h5>\n");
-	printf("<form action=\"examinator.php\" method=\"POST\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam);
-	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
-	printf("<input type=\"hidden\" name=\"action\" value=\"add\" />\n");
-	printf("<label for=\"user\">%s:</label>\n", _("Students"));
-	printf("<textarea name=\"user\" class=\"students\">user1\tcode1\nuser2\tcode2\n</textarea>\n");
-	printf("<br /><br />\n");
-	printf("<label for=\"submit\">&nbsp;</label>\n");
-	printf("<input type=\"submit\" name=\"submit\" value=\"%s\" />\n", _("Submit"));
-	printf("</form>\n");
+	$form = new Form("examinator.php", "POST");
+	$form->addSectionHeader(_("Add list of students:"));
+	$form->addHidden("exam", $exam);
+	$form->addHidden("mode", "save");
+	$form->addHidden("action", "add");
+	$input = $form->addTextArea("user", "user1\tcode1\nuser2\tcode2\n");
+	$input->setLabel(_("Students"));
+	$input->setTitle(_("Click inside the textarea to clear its content."));
+	$input->setEvent(EVENT_ON_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
+	$input->setClass("students");
+	$form->addSpace();
+	$input = $form->addSubmitButton("submit", _("Submit"));
+	$input->setLabel();
+	$form->output();
     }
     
     // 
