@@ -50,6 +50,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -69,7 +70,6 @@ include "include/teacher/correct.inc";
 // Support classes:
 // 
 include "include/scoreboard.inc";
-include "include/html.inc";
 
 // 
 // The answer correction page:
@@ -202,54 +202,63 @@ class CorrectionPage extends TeacherPage
     // 
     // Display the answer to a single question.
     // 
-    private function viewQuestionAnswer($question, $answer)
+    private function viewQuestionAnswer($question, $answer, &$table, &$form)
     {
-	printf("<tr class=\"nonth\"><td>&nbsp;</td></tr>\n");
+	$row = $table->addRow();
+	$row->setClass("nonth");
+	$row->addData();
 	
 	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<tr class=\"question\"><td><u>%s: %s</u><br />%s</td></tr>\n", 
-		   _("Question"), 
-		   utf8_decode($question->getQuestionName()),
-		   utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
+	    $row = $table->addRow();
+	    $row->setClass("question");
+	    $row->addData(sprintf("<u>%s: %s</u><br />%s", 
+				  _("Question"), 
+				  utf8_decode($question->getQuestionName()),
+				  utf8_decode(str_replace("\n", "<br/>", $question->getQuestionText()))));
 	} else {
 	    $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
-	    printf("<tr class=\"question\"><td><u>%s: %s</u><br />%s<br/>%s: %s</td></tr>\n", 
-		   _("Question"), 
-		   utf8_decode($question->getQuestionName()),
-		   utf8_decode(str_replace("\n", "<br>", $qchoice[0])),
-		   _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
+	    $row = $table->addRow();
+	    $row->setClass("question");
+	    $row->addData(sprintf("<u>%s: %s</u><br />%s<br/>%s: %s", 
+				  _("Question"), 
+				  utf8_decode($question->getQuestionName()),
+				  utf8_decode(str_replace("\n", "<br/>", $qchoice[0])),
+				  _("Correct answer"), implode(", ", array_keys($qchoice[1], true))));
 	}
 
 	if($answer->getQuestionStatus() == 'removed') {
-	    printf("<tr><td class=\"removed\"><img src=\"../icons/nuvola/info.png\"/> " . ("This question is flagged as removed. The answer score set here will not affect the student result on this examination.") . "</td></tr>\n");
+	    $row = $table->addRow();
+	    $data = $row->addData(_("This question is flagged as removed. The answer score set here will not affect the student result on this examination."));
+	    $data->setClass("removed");
+	    $data->addElement(new Image("../icons/nuvola/info.png", _("Info Icon")));
 	}
-	
-	printf("<tr class=\"answer\">\n");
+
+	$row = $table->addRow();
+	$row->setClass("answer");
 	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<td><u>%s</u>:<br />%s</td>", 
-		   _("Answer"),
-		   utf8_decode(str_replace("\n", "<br>", $answer->getAnswerText())));
+	    $row->addData(sprintf("<u>%s</u>:<br />%s",
+				  _("Answer"),
+				  utf8_decode(str_replace("\n", "<br/>", $answer->getAnswerText()))));
 	} else {
 	    $achoice = Exam::getQuestionChoice($answer->getAnswerText());
-	    printf("<td><u>%s</u>:<br />%s</td>", 
-		   _("Answer"),
-		   utf8_decode(str_replace("\n", "<br>", implode(", ", $achoice[1]))));
+	    $row->addData(sprintf("<u>%s</u>:<br />%s",
+				  _("Answer"),
+				  utf8_decode(str_replace("\n", "<br/>", implode(", ", $achoice[1])))));
 	}
 	if($answer->hasResultID()) {
-	    printf("<input type=\"hidden\" name=\"result[%d]\" value=\"%d\" />",
-		   $answer->getAnswerID(), $answer->getResultID());
+	    $form->addHidden(sprintf("result[%d]", $answer->getAnswerID()), $answer->getResultID());
 	}
 	if($answer->hasResultScore()) {
-	    printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" value=\"%.01f\" size=\"8\" /><br />%s: %.01f</td>",
-		   $answer->getAnswerID(), 
-		   $answer->getResultScore(),
-		   _("Max score"),
-		   $question->getQuestionScore());
+	    $data = $row->addData(sprintf("<br/>%s: %.01f", _("Max score"), $question->getQuestionScore()));
+	    $data->setValign(TABLE_VALIGN_TOP);
+	    $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()),
+					 sprintf("%.01f", $answer->getResultScore()));
+	    $textbox->setSize(8);
 	} elseif($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" size=\"8\" /><br />%s: %.01f</td>",
-		   $answer->getAnswerID(), 
-		   _("Max score"),
-		   $question->getQuestionScore());
+	    $data = $row->addData(sprintf("<br/>%s: %.01f", _("Max score"), $question->getQuestionScore()));
+	    $data->setValign(TABLE_VALIGN_TOP);
+ 	    $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()), 0.0);
+	    $textbox->setSize(8);
 	} else {
 	    // 
 	    // Compare student answers against the correct answers
@@ -269,18 +278,19 @@ class CorrectionPage extends TeacherPage
 	    if($hits < 0) {
 		$hits = 0;
 	    }
-	    printf("<td valign=\"top\"><input type=\"text\" name=\"score[%d]\" value=\"%.01f\" size=\"8\" /><br />%s: %.01f</td>",
-		   $answer->getAnswerID(), 
-		   ($hits / count($keys)) * $question->getQuestionScore(),
-		   _("Max score"),
-		   $question->getQuestionScore());
+	    $data = $row->addData(sprintf("<br/>%s: %.01f", _("Max score"), $question->getQuestionScore()));
+	    $data->setValign(TABLE_VALIGN_TOP);
+	    $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()),
+					 sprintf("%.01f", ($hits / count($keys)) * $question->getQuestionScore()));
+	    $textbox->setSize(8);
 	}
-	printf("</tr>\n");
-	printf("<tr class=\"comment\"><td>%s: <input type=\"text\" name=\"comment[%d]\" value=\"%s\" size=\"95\" title=\"%s\" /><br/ ></td></tr>",
-	       _("Comment"),
-	       $answer->getAnswerID(), 
-	       $answer->hasResultComment() ? utf8_decode($answer->getResultComment()) : "",
-	       _("This optional field can be used to save an comment for this answer correction."));
+	$row = $table->addRow();
+	$row->setClass("comment");
+	$data = $row->addData(_("Comment"));
+	$textbox = $data->addTextBox(sprintf("comment[%d]", $answer->getAnswerID()),
+				     $answer->hasResultComment() ? utf8_decode($answer->getResultComment()) : "");
+	$textbox->setSize(95);
+	$textbox->setTitle(_("This optional field can be used to save an comment for this answer correction."));
     }
     
     // 
@@ -301,18 +311,19 @@ class CorrectionPage extends TeacherPage
 	$question = $exam->getQuestionData($answer->getQuestionID());
 	
 	printf("<h3>" . _("Correct the answer for this question.") . "</h3>\n");
-	printf("<form action=\"correct.php\" method=\"POST\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam_id);
-	printf("<input type=\"hidden\" name=\"action\" value=\"correct\" />\n");
-	printf("<input type=\"hidden\" name=\"answer\" value=\"%d\" />\n", $answer_id);
-	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
-	printf("<table>\n");
-	printf("<tr><th>%s</th><th>%s</th>\n", _("Answer"), _("Score"));
-	self::viewQuestionAnswer($question, $answer);
-	printf("</table>\n");
-	printf("<br />\n");
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
-	printf("</form>\n");	
+	$form = new Form("correct.php", "POST");
+	$form->addHidden("exam", $exam_id);
+	$form->addHidden("action", "correct");
+	$form->addHidden("answer", $answer_id);
+	$form->addHidden("mode", "save");
+	$table = new Table();
+	$row = $table->addRow();
+	$row->addHeader(_("Answer"));
+	$row->addHeader(_("Score"));
+	self::viewQuestionAnswer($question, $answer, $table, $form);
+	$form->addElement($table);
+	$form->addSubmitButton("submit", _("Submit"));
+	$form->output();
     }
     
     // 
@@ -371,25 +382,25 @@ class CorrectionPage extends TeacherPage
 	    return;
 	}
 	
-	printf("<form action=\"correct.php\" method=\"POST\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam_id);
-	printf("<input type=\"hidden\" name=\"action\" value=\"correct\" />\n");
-	printf("<input type=\"hidden\" name=\"student\" value=\"%d\" />\n", $student_id);
-	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
-	printf("<table>\n");
-	printf("<tr><th>%s</th><th>%s</th>\n", _("Answer"), _("Score"));
+	$form = new Form("correct.php", "POST");
+	$form->addHidden("exam", $exam_id);
+	$form->addHidden("action", "correct");
+	$form->addHidden("student", $student_id);
+	$form->addHidden("mode", "save");
+	$table = new Table();
+	$row = $table->addRow();
+	$row->addHeader(_("Answer"));
+	$row->addHeader(_("Score"));
 	foreach($answers as $answer) {
 	    if($answer->getQuestionPublisher() != phpCAS::getUser()) {
 		continue;   // Not publisher of this question.
 	    }
 	    $question = $exam->getQuestionData($answer->getQuestionID());
-	    self::viewQuestionAnswer($question, $answer);
+	    self::viewQuestionAnswer($question, $answer, $table, $form);
 	}
-	
-	printf("</table>\n");
-	printf("<br />\n");
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
-	printf("</form>\n");	
+	$form->addElement($table);
+	$form->addSubmitButton("submit", _("Submit"));
+	$form->output();
     }
 
     // 
@@ -409,12 +420,12 @@ class CorrectionPage extends TeacherPage
 	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
 	    printf("<p><u>%s</u>:</p><p>%s</p>", 
 		   _("Question"),
-		   utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())));
+		   utf8_decode(str_replace("\n", "<br/>", $question->getQuestionText())));
 	} else {
 	    $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
 	    printf("<p><u>%s</u>:</p><p>%s</p><p>%s: %s<br />%s: %s</p>", 
 		   _("Question"),
-		   utf8_decode(str_replace("\n", "<br>", $qchoice[0])),
+		   utf8_decode(str_replace("\n", "<br/>", $qchoice[0])),
 		   _("Choices"), implode(", ", array_keys($qchoice[1])),
 		   _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
 	}
@@ -427,21 +438,22 @@ class CorrectionPage extends TeacherPage
 	    printf("<p>"  . _("It appears that no students have answered this question.") . "</p>\n");
 	    return;
 	}
-	
-	printf("<form action=\"correct.php\" method=\"POST\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\" />\n", $exam_id);
-	printf("<input type=\"hidden\" name=\"action\" value=\"correct\" />\n");
-	printf("<input type=\"hidden\" name=\"question\" value=\"%d\" />\n", $question_id);
-	printf("<input type=\"hidden\" name=\"mode\" value=\"save\" />\n");
-	printf("<table>\n");
-	printf("<tr><th>%s</th><th>%s</th>\n", _("Answer"), _("Score"));
+
+	$form = new Form("correct.php", "POST");
+	$form->addHidden("exam", $exam_id);
+	$form->addHidden("action", "correct");
+	$form->addHidden("question", $question_id);
+	$form->addHidden("mode", "save");
+	$table = new Table();
+	$row = $table->addRow();
+	$row->addHeader(_("Answer"));
+	$row->addHeader(_("Score"));
 	foreach($answers as $answer) {
-	    self::viewQuestionAnswer($question, $answer);
+	    self::viewQuestionAnswer($question, $answer, $table, $form);
 	}
-	printf("</table>\n");
-	printf("<br />\n");
-	printf("<input type=\"submit\" value=\"%s\" />\n", _("Submit"));
-	printf("</form>\n");
+	$form->addElement($table);
+	$form->addSubmitButton("submit", _("Submit"));
+	$form->output();
     }
     
     private function showAvailableExams()
@@ -547,11 +559,15 @@ class CorrectionPage extends TeacherPage
 			    "qr" => _("Question is flagged as removed (no scores for this question is counted).")
 			    );
 	}
-	printf("<table>\n");
+	$table = new Table();
 	foreach($codes as $code => $desc) {
-	    printf("<tr class=\"colorcode\"><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);
+	    $row = $table->addRow();
+	    $row->setClass("colorcode");
+	    $data = $row->addData();
+	    $data->setClass(sprintf("cc %s", $code));
+	    $data = $row->addData($desc);
 	}
-	printf("</table>\n");
+	$table->output();
 
 	// 
 	// Download should either be removed or provide the full spectra of
