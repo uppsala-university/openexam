@@ -322,6 +322,7 @@ class CorrectionPage extends TeacherPage
 	$row->addHeader(_("Score"));
 	self::viewQuestionAnswer($question, $answer, $table, $form);
 	$form->addElement($table);
+	$form->addSpace();
 	$form->addSubmitButton("submit", _("Submit"));
 	$form->output();
     }
@@ -399,6 +400,7 @@ class CorrectionPage extends TeacherPage
 	    self::viewQuestionAnswer($question, $answer, $table, $form);
 	}
 	$form->addElement($table);
+	$form->addSpace();
 	$form->addSubmitButton("submit", _("Submit"));
 	$form->output();
     }
@@ -452,6 +454,7 @@ class CorrectionPage extends TeacherPage
 	    self::viewQuestionAnswer($question, $answer, $table, $form);
 	}
 	$form->addElement($table);
+	$form->addSpace();
 	$form->addSubmitButton("submit", _("Submit"));
 	$form->output();
     }
