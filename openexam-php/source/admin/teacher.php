@@ -137,9 +137,15 @@ class TeacherAdminPage extends AdminPage
 	  _("This page let you grant and revoke the teacher role for other users. ") .
 	  _("These users have been granted the teacher role:") . 
 	  "</p>\n";
+	
 	$ldap = LDAPSearch::factory();
 	$users = Teacher::getTeachers();
-	echo "<table>\n";
+	
+	$table = new Table();
+	$row = $table->addRow();
+	$row->addHeader(_("Name"));
+	$row->addHeader(_("User"));
+	$row->addHeader(_("Role"));
 	foreach($users as $user) {
 	    $data = $ldap->searchPrincipalName($user->getUserName());
 	    $name = "";
@@ -148,12 +154,13 @@ class TeacherAdminPage extends AdminPage
 		    $name = $data->first()->getCN()->first();
 		}
 	    }
-	    printf("<tr><td>%s</td><td>%s</td><td><a href=\"?user=%s&amp;action=revoke\">" . _("Revoke") . "</a></td></tr>\n",
-		   iconv("UTF8", $locale->getCharSet(), $name),
-		   $user->getUserName(), 
-		   $user->getUserID());
+	    $row = $table->addRow();
+	    $row->addData(iconv("UTF8", $locale->getCharSet(), $name));
+	    $row->addData($user->getUserName());
+	    $data = $row->addData(_("Revoke"));
+	    $data->setLink(sprintf("?user=%s&amp;action=revoke", $user->getUserID()));
 	}
-	echo "</table>\n";
+	$table->output();
 	
 	echo "<h5>" . _("Add new teacher:") . "</h5>\n";
 	printf("<p>"  . _("Fill in the user name and click on '%s' to grant this user the teacher role:") . "</p>\n", _("Grant"));

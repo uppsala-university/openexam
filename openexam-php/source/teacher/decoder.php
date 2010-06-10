@@ -416,11 +416,13 @@ class DecoderPage extends TeacherPage
 			    "qr" => _("Question is flagged as removed (no scores for this question is counted).")
 			    );	
 	}
-	printf("<table>\n");
+	$table = new Table();
 	foreach($codes as $code => $desc) {
-	    printf("<tr><td class=\"cc %s\">&nbsp;</td><td>%s</td>\n", $code, $desc);
+	    $row = $table->addRow();
+	    $row->addData()->setClass(sprintf("cc %s", $code));
+	    $row->addData($desc);
 	}
-	printf("</table>\n");	
+	$table->output();
     }
     
     // 
