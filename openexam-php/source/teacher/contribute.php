@@ -49,6 +49,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -60,7 +61,6 @@ include "include/ldap.inc";
 // Business logic:
 // 
 include "include/exam.inc";
-include "include/html.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/contribute.inc";
@@ -395,19 +395,20 @@ class ContributePage extends TeacherPage
 	       "</p>\n",
 	       utf8_decode($qrecord->getQuestionName()));
 	
-	printf("<form action=\"contribute.php\" method=\"POST\">\n");
-	printf("<input type=\"hidden\" name=\"exam\" value=\"%d\"/>\n", $exam);
-	printf("<input type=\"hidden\" name=\"question\" value=\"%d\"/>\n", $question);
-	printf("<input type=\"hidden\" name=\"action\" value=\"remove\"/>\n");
-	printf("<input type=\"hidden\" name=\"mode\" value=\"save\"/>\n");
-	printf("<label for=\"comment\">%s:</label>\n", _("Comment"));
-	printf("<textarea class=\"message\" name=\"comment\" title=\"%s\">&nbsp;</textarea>\n",
-	       _("The comment you add here will show up as the reason for question removal on the examination results."));
-	printf("<br/>\n");
-	printf("<label for=\"submit\">&nbsp;</label>\n");
-	printf("<input type=\"submit\" value=\"%s\">\n", _("Submit"));
-	printf("<input type=\"reset\" value=\"%s\">\n", _("Reset"));
-	printf("</form>\n");
+	$form = new Form("contribute.php", "POST");
+	$form->addHidden("exam", $exam);
+	$form->addHidden("question", $question);
+	$form->addHidden("action", "remove");
+	$form->addHidden("mode", "save");
+	$input = $form->addTextArea("comment");
+	$input->setLabel(_("Comment"));
+	$input->setTitle(_("The comment you add here will show up as the reason for question removal on the examination results."));
+	$input->setClass("message");
+	$form->addSpace();
+	$input = $form->addButton(BUTTON_SUBMIT, _("Submit"));
+	$input->setLabel();
+	$input = $form->addButton(BUTTON_RESET, _("Reset"));
+	$form->output();
     }
 	
     // 
