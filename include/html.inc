@@ -615,14 +615,14 @@ class Container extends Element
     	    $this->label->output();
 	}
 	parent::output(ELEMENT_OUTPUT_CONTAINER_START);
-	if(isset($this->cdata)) {
-	    $this->cdata->output();
-	}
 	if(count($this->childs) > 1) {
 	    printf("\n");
 	}
 	foreach($this->childs as $child) {
 	    $child->output();
+	}
+	if(isset($this->cdata)) {
+	    $this->cdata->output();
 	}
 	parent::output(ELEMENT_OUTPUT_CONTAINER_END);
     }
