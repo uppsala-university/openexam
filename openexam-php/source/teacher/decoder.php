@@ -608,20 +608,47 @@ class DecoderPage extends TeacherPage
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
 	
-	$exams = Decoder::getExams(phpCAS::getUser());	
+	// 
+	// Group the examinations by their state:
+	// 
+	$exams = Decoder::getExams(phpCAS::getUser());
+	$nodes = array( 
+			'u' => array( 'name' => _("Decodable"),
+				      'data' => array() ),
+			'd' => array( 'name' => _("Decoded"),
+				      'data' => array() ),
+			'o' => array( 'name' => _("Other"),
+				      'data' => array() )
+			);
+	
 	foreach($exams as $exam) {
 	    $manager = new Manager($exam->getExamID());
-	    $child = $root->addChild(utf8_decode($exam->getExamName()));
-	    if($manager->getInfo()->isDecodable()) {
-		$child->setLink(sprintf("?exam=%d", $exam->getExamID()),
-				_("Click on this link to decode this examination."));
-		$child->addLink(_("Decode"), 
-				sprintf("?exam=%d", $exam->getExamID()),
-				_("Click on this link to decode this examination."));
+	    $state = $manager->getInfo();
+	    if($state->isDecoded()) {
+		$nodes['d']['data'][$exam->getExamName()] = $state;
+	    } elseif($state->isDecodable()) {
+		$nodes['u']['data'][$exam->getExamName()] = $state;
+	    } else {
+		$nodes['o']['data'][$exam->getExamName()] = $state;
 	    }
-	    $child->addChild(sprintf("%s: %s", _("Decoded"), $exam->getExamDecoded() == 'Y' ? _("Yes") : _("No")));
-	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
-	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
+	}
+	
+	foreach($nodes as $type => $group) {
+	    if(count($group['data']) > 0) {
+		$node = $root->addChild($group['name']);
+		foreach($group['data'] as $name => $state) {
+		    $child = $node->addChild(utf8_decode($name));
+		    if($state->isDecodable()) {
+			$child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
+					_("Click on this link to decode this examination."));
+			$child->addLink(_("Decode"), 
+					sprintf("?exam=%d", $state->getInfo()->getExamID()),
+					_("Click on this link to decode this examination."));
+		    }
+		    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
+		    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+		}
+	    }
 	}
 	$tree->output();
     }
