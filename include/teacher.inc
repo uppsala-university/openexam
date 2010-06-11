@@ -131,6 +131,7 @@ class TeacherPage extends BasePage
 {   
     private $params;
     protected $roles;
+    protected $param;     // Washed request parameters
     private $ldap;
     
     public function __construct($title, $params, $template = "standard")
@@ -169,7 +170,8 @@ class TeacherPage extends BasePage
     }
 
     // 
-    // Validate access and request parameters:
+    // Validate access and request parameters. All validated request parameters
+    // are automatic injected into $this->param.
     // 
     public function validate()
     {
@@ -180,6 +182,8 @@ class TeacherPage extends BasePage
 				    sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
 					    $param, $pattern));
 		    exit(1);
+		} else {
+		    $this->param->$param = $_REQUEST[$param];    // Inject washed parameter
 		}
 	    }
 	}
