@@ -11,7 +11,7 @@
 // Support for managing exams.
 // 
 
-if(!defined("EXAM_STATE_CONTRIBUTABLE")) {     // Its still possible to contribute questions.
+if(!defined("EXAM_STATE_CONTRIBUTABLE")) {     // It's still possible to contribute questions.
     define ("EXAM_STATE_CONTRIBUTABLE", 1);
 }
 if(!defined("EXAM_STATE_EXAMINATABLE")) {      // Examination started, but new students can still be added.
@@ -28,6 +28,16 @@ if(!defined("EXAM_STATE_DECODED")) {           // Examination has been decoded.
 }
 if(!defined("EXAM_STATE_EDITABLE")) {          // Examination is still fully editable.
     define ("EXAM_STATE_EDITABLE", 32);
+}
+
+if(!defined("EXAM_STATE_UPCOMING")) {
+    define ("EXAM_STATE_UPCOMING", 64);
+}
+if(!defined("EXAM_STATE_RUNNING")) {
+    define ("EXAM_STATE_RUNNING", 128);
+}
+if(!defined("EXAM_STATE_FINISHED")) {
+    define ("EXAM_STATE_FINISHED", 256);
 }
 
 // 
@@ -158,7 +168,7 @@ class ExamState
     private function setState($exam)
     {
 	if($this->info->getExamDecoded() == 'Y') {
-	    $this->state = EXAM_STATE_DECODED | EXAM_STATE_DECODABLE;
+	    $this->state = EXAM_STATE_DECODED | EXAM_STATE_DECODABLE | EXAM_STATE_FINISHED;
 	} else {
 	    $manager = new Manager($exam);
 	    
@@ -167,13 +177,13 @@ class ExamState
 	    $ctime = time();
 	    
 	    if($ctime < $stime) {                  // Before exam begins
-		$this->state = EXAM_STATE_CONTRIBUTABLE | EXAM_STATE_EXAMINATABLE | EXAM_STATE_EDITABLE;
+		$this->state = EXAM_STATE_CONTRIBUTABLE | EXAM_STATE_EXAMINATABLE | EXAM_STATE_EDITABLE | EXAM_STATE_UPCOMING;
 	    } elseif($ctime < $etime) {            // After exam begin, but before its finished
-		$this->state = EXAM_STATE_EXAMINATABLE;
+		$this->state = EXAM_STATE_EXAMINATABLE | EXAM_STATE_RUNNING;
 	    } elseif($manager->isCorrected()) {    // After exam has finished
-		$this->state = EXAM_STATE_CORRECTABLE | EXAM_STATE_DECODABLE;
+		$this->state = EXAM_STATE_CORRECTABLE | EXAM_STATE_FINISHED | EXAM_STATE_DECODABLE;
 	    } else {
-		$this->state = EXAM_STATE_CORRECTABLE;
+		$this->state = EXAM_STATE_CORRECTABLE | EXAM_STATE_FINISHED;
 	    }
 	}
     }
@@ -221,6 +231,21 @@ class ExamState
     public function isEditable()
     {
 	return $this->state & EXAM_STATE_EDITABLE;
+    }
+    
+    public function isUpcoming()
+    {
+	return $this->state & EXAM_STATE_UPCOMING;
+    }
+    
+    public function isRunning()
+    {
+	return $this->state & EXAM_STATE_RUNNING;
+    }
+    
+    public function isFinished()
+    {
+	return $this->state & EXAM_STATE_FINISHED;
     }
     
     public function readonly()
