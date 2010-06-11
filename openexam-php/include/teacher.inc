@@ -216,8 +216,8 @@ class TeacherPage extends BasePage
     {
 	if(!isset($this->ldap)) {
 	    $this->ldap = LDAPSearch::factory();
+	    $this->ldap->setAttributeFilter(array("cn", "mail"));
 	}
-	$this->ldap->setAttributeFilter(array("cn"));
 	
  	if($lookup & LDAP_LOOKUP_UID) {	    
 	    $entry = $this->ldap->searchUID($user);
@@ -254,8 +254,8 @@ class TeacherPage extends BasePage
     {
 	if(!isset($this->ldap)) {
 	    $this->ldap = LDAPSearch::factory();
+	    $this->ldap->setAttributeFilter(array("cn", "mail"));
 	}
-	$this->ldap->setAttributeFilter(array("cn", "mail"));
 	
  	if($lookup & LDAP_LOOKUP_UID) {	    
 	    $entry = $this->ldap->searchUID($user);
