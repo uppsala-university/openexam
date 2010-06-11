@@ -77,6 +77,24 @@ class BasePage implements TemplatePage
 	$page = new PageRender($this);
 	include(sprintf("template/ui/%s.ui", $this->template));
     }
+
+    // 
+    // Prints a successful message.
+    // 
+    public function success($message)
+    {
+	printf("<img src=\"%s/icons/nuvola/ok.png\" alt=\"%s\"/> %s<br/>\n", 
+	       BASE_URL, _("Success"), $message);
+    }
+    
+    // 
+    // Prints an error message.
+    // 
+    public function error($message)
+    {
+	printf("<img src=\"%s/icons/nuvola/error.png\" alt=\"%s\"/><b> %s:</b> %s<br/>\n", 
+	       BASE_URL, _("Error"), _("Error"), $message);
+    }
     
     final public function printLogonStatus()
     {
@@ -319,8 +337,8 @@ final class PageRender implements TemplatePage
 	try {
 	    $this->page->printBody();
 	} catch(Exception $exception) {
- 	    printf("<b>" . _("Error:") . "</b> %s. " . _("Please report this to %s.") . "\n",
-		   $exception, CONTACT_STRING);
+	    $message = sprintf(_("Please report this to %s."), CONTACT_STRING);
+	    $this->page->error(sprintf("%s. %s", $exception, $message));
 	    error_log(sprintf("%s: %s (in %s:%d)",
 			      ERROR_LOG_PREFIX,
 			      $exception->getMessage(),
