@@ -485,6 +485,10 @@ class DecoderPage extends TeacherPage
 	
 	foreach($students as $student) {
 	    $addr = $this->getMailRecepient($student->getStudentUser());
+	    if(!isset($mail)) {
+		$this->error(sprintf(_("Failed lookup email address for %s"), $student->getStudentUser()));
+		continue;
+	    }
 	    $file = tempnam("/tmp", "openexam-result");
 	    $result->save($student->getStudentID(), $file);
 	    
@@ -499,11 +503,14 @@ class DecoderPage extends TeacherPage
 	    if(isset($_REQUEST['mirror'])) {
 		$mail->setFrom($addr);
 		$mail->send($from, $attach);
+		$this->success(sprintf(_("Successful sent message to <a href=\"mailto:%s\">%s</a>"), $from->getEmail(), $from->getName()));
 	    } else {
 		$mail->setBcc($from);
 		$mail->send($addr, $attach);
+		$this->success(sprintf(_("Successful sent message to <a href=\"mailto:%s\">%s</a>"), $addr->getEmail(), $addr->getName()));
 	    }
 	}
+	
     }
     
     // 
