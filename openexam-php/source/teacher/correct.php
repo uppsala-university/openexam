@@ -84,17 +84,16 @@ class CorrectionPage extends TeacherPage
 			     "colorize" => "/^\d+$/",
 			     "mode"     => "/^(mark|save)$/" );
     private $manager;
-    private $verbose = false;
-    private $colorize = false;
     
     public function __construct()
     {
-	parent::__construct(_("Answer Correction Page"), $this->params);	
-	if(isset($_REQUEST['verbose'])) {
-	    $this->verbose = $_REQUEST['verbose'];
-	}
-	if(isset($_REQUEST['colorize'])) {
-	    $this->colorize = $_REQUEST['colorize'];
+	$this->param->verbose = false;
+	$this->param->colorize = false;
+	
+	parent::__construct(_("Answer Correction Page"), $this->params);
+
+	if(isset($_REQUEST['exam'])) {
+	    $this->manager = new Manager($_REQUEST['exam']);
 	}
     }
 
@@ -107,40 +106,39 @@ class CorrectionPage extends TeacherPage
 	// Authorization first:
 	//
 	if(isset($_REQUEST['exam'])) {
-	    self::checkAccess($_REQUEST['exam']);
+	    self::checkAccess();
 	}
 	
 	//
 	// Bussiness logic:
 	//
 	if(isset($_REQUEST['exam'])) {
-	    $this->manager = new Manager($_REQUEST['exam']);
 	    if(isset($_REQUEST['question'])) {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
 		    self::assert(array('score', 'comment'));
-		    self::saveQuestionScore($_REQUEST['exam'], $_REQUEST['question']);
+		    self::saveQuestionScore();
 		} else {
-		    self::markQuestionScore($_REQUEST['exam'], $_REQUEST['question']);
+		    self::markQuestionScore();
 		}
 	    } elseif(isset($_REQUEST['student'])) {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
  		    self::assert(array('score', 'comment'));
-		    self::saveStudentScore($_REQUEST['exam'], $_REQUEST['student']);
+		    self::saveStudentScore();
 		} else {
-		    self::markStudentScore($_REQUEST['exam'], $_REQUEST['student']);
+		    self::markStudentScore();
 		}
 	    } elseif(isset($_REQUEST['answer'])) {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
  		    self::assert(array('score', 'comment'));
-		    self::saveAnswerScore($_REQUEST['exam'], $_REQUEST['answer']);
+		    self::saveAnswerScore();
 		} else {
-		    self::markAnswerScore($_REQUEST['exam'], $_REQUEST['answer']);
+		    self::markAnswerScore();
 		}
 	    } else {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-		    self::saveScoreBoard($_REQUEST['exam']);
+		    self::saveScoreBoard();
 		} else {
-		    self::showScoreBoard($_REQUEST['exam']);
+		    self::showScoreBoard();
 		}
 	    }
 	} else {
@@ -151,11 +149,11 @@ class CorrectionPage extends TeacherPage
     // 
     // verify that the caller has been granted the required role on this exam.
     // 
-    private function checkAccess($exam)
+    private function checkAccess()
     {
 	$role = "contributor";
 	
-	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
+	if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
 			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
 	    exit(1);
@@ -165,36 +163,36 @@ class CorrectionPage extends TeacherPage
     // 
     // Save result from saveQuestionScore(), saveStudentScore() and saveAnswerScore().
     // 
-    private function saveAnswerResult($exam) 
+    private function saveAnswerResult() 
     {
     	$results = isset($_REQUEST['result']) ? $_REQUEST['result'] : array();
-    	$correct = new Correct($exam);
+    	$correct = new Correct($this->param->exam);
     	$correct->setAnswerResult($_REQUEST['score'], $_REQUEST['comment'], $results);
-    	header(sprintf("location: correct.php?exam=%d", $exam));
+    	header(sprintf("location: correct.php?exam=%d", $this->param->exam));
     }
 
     // 
     // Save result posted from saveAnswerScore().
     // 
-    private function saveAnswerScore($exam, $answer)
+    private function saveAnswerScore()
     {
-	self::saveAnswerResult($exam);
+	self::saveAnswerResult();
     }
 
     // 
     // Save result posted from markStudentScore().
     // 
-    private function saveStudentScore($exam, $student)
+    private function saveStudentScore()
     {
-	self::saveAnswerResult($exam);
+	self::saveAnswerResult();
     }
 
     // 
     // Save result from markQuestionScore().
     // 
-    private function saveQuestionScore($exam, $question) 
+    private function saveQuestionScore() 
     {
-	self::saveAnswerResult($exam);
+	self::saveAnswerResult();
     }
     
     // 
@@ -294,10 +292,10 @@ class CorrectionPage extends TeacherPage
     // 
     // Examine (correct) an answer to a single question from this student.
     // 
-    private function markAnswerScore($exam_id, $answer_id)
+    private function markAnswerScore()
     {
-	$correct = new Correct($exam_id);
-	$answer = $correct->getQuestionAnswer($answer_id);
+	$correct = new Correct($this->param->exam);
+	$answer = $correct->getQuestionAnswer($this->param->answer);
 
 	if($answer->getQuestionPublisher() != phpCAS::getUser()) {
 	    ErrorPage::show(_("Access denied!"),
@@ -310,9 +308,9 @@ class CorrectionPage extends TeacherPage
 	
 	printf("<h3>" . _("Correct the answer for this question.") . "</h3>\n");
 	$form = new Form("correct.php", "POST");
-	$form->addHidden("exam", $exam_id);
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("action", "correct");
-	$form->addHidden("answer", $answer_id);
+	$form->addHidden("answer", $this->param->answer);
 	$form->addHidden("mode", "save");
 	$table = new Table();
 	$row = $table->addRow();
@@ -328,10 +326,10 @@ class CorrectionPage extends TeacherPage
     // 
     // Examine all answers from a single student.
     // 
-    private function markStudentScore($exam_id, $student_id)
+    private function markStudentScore()
     {
-	$correct = new Correct($exam_id);
-	$answers = $correct->getStudentAnswers($student_id);
+	$correct = new Correct($this->param->exam);
+	$answers = $correct->getStudentAnswers($this->param->student);
 	
 	$exam = new Exam();
 	
@@ -366,25 +364,25 @@ class CorrectionPage extends TeacherPage
 	    printf("<span class=\"links viewmode\">");
 	    printf("%s: <a href=\"?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=%d\">%s</a>",
 		   _("Show"), 
-		   $exam_id,
-		   $student_id,
-		   $this->verbose == false,
-		   $this->verbose ? _("Answered") : _("All"));
+		   $this->param->exam,
+		   $this->param->student,
+		   $this->param->verbose == false,
+		   $this->param->verbose ? _("Answered") : _("All"));
 	    printf("</span>\n");
 	}
 	if($found->answers - $found->removed == 0 &&
-	   $this->verbose == false) {
+	   $this->param->verbose == false) {
 	    printf("<h5>" . _("No Answers Found") . "</h5>\n");
 	    printf("<p>"  . _("Only answers to removed questions where found. Click <a href=\"%s\">here</a> to view answers for those questions.") . "</p>\n", 
 		   sprintf("?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=1",
-			   $exam_id, $student_id));
+			   $this->param->exam, $this->param->student));
 	    return;
 	}
 	
 	$form = new Form("correct.php", "POST");
-	$form->addHidden("exam", $exam_id);
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("action", "correct");
-	$form->addHidden("student", $student_id);
+	$form->addHidden("student", $this->param->student);
 	$form->addHidden("mode", "save");
 	$table = new Table();
 	$row = $table->addRow();
@@ -514,10 +512,9 @@ class CorrectionPage extends TeacherPage
 	$tree->output();
     }
     
-    private function showScoreBoard($exam)
+    private function showScoreBoard()
     {
-	$manager = new Manager($exam);	
-	$data = $manager->getData();
+	$data = $this->manager->getData();
 
 	// 
 	// Output ingress:
@@ -549,22 +546,22 @@ class CorrectionPage extends TeacherPage
  	printf("<span class=\"links viewmode\">");
 	printf("%s: <a href=\"?exam=%d&amp;verbose=%d\">%s</a>, ", 
 	       _("Details"), 
-	       $exam, 
-	       $this->verbose == false, 
-	       $this->verbose ? _("Less") : _("More"));
+	       $this->param->exam, 
+	       $this->param->verbose == false, 
+	       $this->param->verbose ? _("Less") : _("More"));
 	printf("%s: <a href=\"?exam=%d&amp;colorize=%d\">%s</a>", 
 	       _("Mode"), 
-	       $exam, 
-	       $this->colorize == false,
-	       $this->colorize ? _("Standard") : _("Colorize"));
+	       $this->param->exam, 
+	       $this->param->colorize == false,
+	       $this->param->colorize ? _("Standard") : _("Colorize"));
 	printf("</span>\n");
 	
 	// 
 	// Output the score board using selected options:
 	// 
- 	$board = new ScoreBoardPrinter($exam);
-	$board->setVerbose($this->verbose);
-	$board->setColorized($this->colorize);
+ 	$board = new ScoreBoardPrinter($this->param->exam);
+	$board->setVerbose($this->param->verbose);
+	$board->setColorized($this->param->colorize);
 	$board->output();
 	
 	// 
@@ -572,7 +569,7 @@ class CorrectionPage extends TeacherPage
 	// 
 	printf("<h5>" . _("Color Codes") . "</h5>\n");
 	printf("<p>"  . _("These are the color codes used in the score board:") . "</p>\n");
-	if($this->colorize) {
+	if($this->param->colorize) {
 	    $codes = array( 
 			    "s0"   => sprintf(_("Less than %d%% of max score."), 20),
 			    "s20"  => sprintf(_("Between %d and %d %% of max score."), 20, 40),
@@ -605,16 +602,15 @@ class CorrectionPage extends TeacherPage
 	// 
 	printf("<h5>" . _("Download Result") . "</h5>\n");
 	printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", 
-	       sprintf("?exam=%d&amp;mode=save", $exam));
+	       sprintf("?exam=%d&amp;mode=save", $this->param->exam));
 	
     }
     
-    private function saveScoreBoard($exam)
+    private function saveScoreBoard()
     {	
-	$manager = new Manager($exam);	
-	$data = $manager->getData();
-		
- 	$board = new ScoreBoard($exam);
+	$data = $this->manager->getData();
+	
+ 	$board = new ScoreBoard($this->param->exam);
 	$questions = $board->getQuestions();
 
 	ob_end_clean();

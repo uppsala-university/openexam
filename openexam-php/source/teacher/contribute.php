@@ -73,13 +73,25 @@ class ContributePage extends TeacherPage
     private $params = array( "exam"     => "/^\d+$/",
 			     "action"   => "/^(add|edit|delete|remove|restore)$/",
 			     "question" => "/^(\d+|all|active|removed)$/",
+			     "comment"  => "/.*/",
 			     "mode"     => "/^(save)$/",
 			     "score"    => "/^\d+(\.\d)*$/",
-			     "type"     => "/^(freetext|single|multiple)$/" );
+			     "name"     => "/^.*$/", 
+			     "quest"    => "/.*/", 
+			     "type"     => "/^(freetext|single|multiple)$/",
+			     "user"     => "/^[0-9a-zA-Z]{1,10}$/", 
+			     "status"   => "/^(active|removed)$/",
+			     "video"    => "/^(.*:\/\/.*|)$/", 
+			     "audio"    => "/^(.*:\/\/.*|)$/",
+			     "image"    => "/^(.*:\/\/.*|)$/" );
+    private $manager;
     
     public function __construct()
     {
 	parent::__construct(_("Contribute Page"), $this->params);
+	if(isset($_REQUEST['exam'])) {
+	    $this->manager = new Manager($_REQUEST['exam']);
+	}
     }
 
     // 
@@ -91,7 +103,7 @@ class ContributePage extends TeacherPage
 	// Authorization first:
 	//
 	if(isset($_REQUEST['exam'])) {
-	    self::checkAccess($_REQUEST['exam']);
+	    self::checkAccess();
 	}
 	
 	//
@@ -102,47 +114,42 @@ class ContributePage extends TeacherPage
 		if($_REQUEST['action'] == "add") {
 		    if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
 			self::assert(array('score', 'name', 'quest', 'type', 'user'));
-			self::saveAddQuestion($_REQUEST['exam'], $_REQUEST['score'], 
-					      $_REQUEST['name'], $_REQUEST['quest'],
-					      $_REQUEST['type'], $_REQUEST['user']);
+			self::saveAddQuestion();
 		    } else {
-			self::formAddQuestion($_REQUEST['exam']);
+			self::formAddQuestion();
 		    }
 		} elseif($_REQUEST['action'] == "edit") {
 		    if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
 			self::assert(array('score', 'name', 'quest', 'type', 'question', 'user'));
-			self::saveEditQuestion($_REQUEST['exam'], $_REQUEST['score'], 
-					       $_REQUEST['name'], $_REQUEST['quest'],
-					       $_REQUEST['type'], $_REQUEST['question'],
-					       $_REQUEST['user']);
+			self::saveEditQuestion();
 		    } else {
 			self::assert('question');
-			self::formEditQuestion($_REQUEST['exam'], $_REQUEST['question']);
+			self::formEditQuestion();
 		    }
 		} elseif($_REQUEST['action'] == "delete") {
 		    self::assert('question');
 		    if($_REQUEST['question'] == "all") {
-			self::saveDeleteQuestions($_REQUEST['exam']);
+			self::saveDeleteQuestions();
 		    } else {
-			self::saveDeleteQuestion($_REQUEST['exam'], $_REQUEST['question']);
+			self::saveDeleteQuestion();
 		    }
 		} elseif($_REQUEST['action'] == "remove") {
 		    if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
 			self::assert(array('question', 'comment'));
- 			self::saveRemoveQuestion($_REQUEST['exam'], $_REQUEST['question'], $_REQUEST['comment']);
+ 			self::saveRemoveQuestion();
 		    } else {
 			self::assert('question');
-			self::formRemoveQuestion($_REQUEST['exam'], $_REQUEST['question']);
+			self::formRemoveQuestion();
 		    }
 		} elseif($_REQUEST['action'] == "restore") {
 		    self::assert('question');
-		    self::saveRestoreQuestion($_REQUEST['exam'], $_REQUEST['question']);
+		    self::saveRestoreQuestion();
 		}
 	    } else {
 		if(isset($_REQUEST['question'])) {
-		    self::showQuestions($_REQUEST['exam'], $_REQUEST['question']);
+		    self::showQuestions();
 		} else {
-		    self::showQuestions($_REQUEST['exam']);
+		    self::showQuestions();
 		}
 	    }
 	} else {
@@ -153,11 +160,11 @@ class ContributePage extends TeacherPage
     // 
     // Verify that the caller has been granted the required role on this exam.
     // 
-    private function checkAccess($exam)
+    private function checkAccess()
     {
 	$role = "contributor";
 	
-	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
+	if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
 			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
 	    exit(1);
@@ -167,75 +174,92 @@ class ContributePage extends TeacherPage
     // 
     // Delete all questions.
     // 
-    private function saveDeleteQuestions($exam)
+    private function saveDeleteQuestions()
     {
-	$contrib = new Contribute($exam);
-	$contrib->deleteQuestions($question);
+	$contrib = new Contribute($this->param->exam);
+	$contrib->deleteQuestions();
 
-	header(sprintf("location: contribute.php?exam=%d", $exam));
+	header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
     }
 
     // 
     // Delete this question.
     // 
-    private function saveDeleteQuestion($exam, $question)
+    private function saveDeleteQuestion()
     {
-	$contrib = new Contribute($exam);
-	$contrib->deleteQuestion($question);
+	$contrib = new Contribute($this->param->exam);
+	$contrib->deleteQuestion($this->param->question);
 	
-	header(sprintf("location: contribute.php?exam=%d", $exam));
+	header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
     }
     
     // 
     // Save answers posted by form.
     // 
-    private function saveAddQuestion($exam, $score, $name, $quest, $type, $user)
+    private function saveAddQuestion()
     {
-	$video = isset($_REQUEST['video']) ? $_REQUEST['video'] : "";
-	$audio = isset($_REQUEST['audio']) ? $_REQUEST['audio'] : "";
-	$image = isset($_REQUEST['image']) ? $_REQUEST['image'] : "";
+	$video = isset($this->param->video) ? $this->param->video : "";
+	$audio = isset($this->param->audio) ? $this->param->audio : "";
+	$image = isset($this->param->image) ? $this->param->image : "";
 
-	$contrib = new Contribute($exam);
-	$contrib->addQuestion($exam, $score, utf8_encode($name), utf8_encode($quest), $type, $user, $video, $audio, $image);
+	$contrib = new Contribute($this->param->exam);
+	$contrib->addQuestion($this->param->exam, 
+			      $this->param->score, 
+			      utf8_encode($this->param->name), 
+			      utf8_encode($this->param->quest), 
+			      $this->param->type, 
+			      $this->param->user, 
+			      $video, 
+			      $audio, 
+			      $image);
 	
-	header(sprintf("location: contribute.php?exam=%d", $exam));
+	header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
     }
 
     // 
     // Save answers posted by form.
     // 
-    private function saveEditQuestion($exam, $score, $name, $quest, $type, $question, $user)
+    private function saveEditQuestion()
     {
-	$video = isset($_REQUEST['video']) ? $_REQUEST['video'] : "";
-	$audio = isset($_REQUEST['audio']) ? $_REQUEST['audio'] : "";
-	$image = isset($_REQUEST['image']) ? $_REQUEST['image'] : "";
+	$video = isset($this->param->video) ? $this->param->video : "";
+	$audio = isset($this->param->audio) ? $this->param->audio : "";
+	$image = isset($this->param->image) ? $this->param->image : "";
 	
-	$contrib = new Contribute($exam);
-	$contrib->editQuestion($question, $exam, $score, utf8_encode($name), utf8_encode($quest), $type, $user, $video, $audio, $image);
+	$contrib = new Contribute($this->param->exam);
+	$contrib->editQuestion($this->param->question, 
+			       $this->param->exam, 
+			       $this->param->score, 
+			       utf8_encode($this->param->name), 
+			       utf8_encode($this->param->quest), 
+			       $this->param->type, 
+			       $this->param->user, 
+			       $video, 
+			       $audio, 
+			       $image);
 
-	header(sprintf("location: contribute.php?exam=%d", $exam));
+	header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
     }
     
     // 
     // Marks a question as removed.
     // 
-    private function saveRemoveQuestion($exam, $question, $comment)
+    private function saveRemoveQuestion()
     {
-	$contrib = new Contribute($exam);
-	$contrib->removeQuestion($question, utf8_encode($comment));
+	$contrib = new Contribute($this->param->exam);
+	$contrib->removeQuestion($this->param->question, utf8_encode($this->param->comment));
 
-	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
+	header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
     }
 
     // 
     // Marks a question as restored.
     // 
-    private function saveRestoreQuestion($exam, $question)
+    private function saveRestoreQuestion()
     {
-	$contrib = new Contribute($exam);
-	$contrib->restoreQuestion($question, $comment);
+	$contrib = new Contribute($this->param->exam);
+	$contrib->restoreQuestion($this->param->question, $this->param->comment);
 
-	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
+	header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
     }
 
     // 
@@ -350,12 +374,12 @@ class ContributePage extends TeacherPage
     // 
     // Show the form for adding a new question.
     // 
-    private function formAddQuestion($exam)
+    private function formAddQuestion()
     {
-	$manager = new Manager($exam);
-	$data = $manager->getData();
-	$info = $manager->getInfo();
-	$qrec = new DataRecord(array("examid" => $exam, "questiontype" => "freetext" ));
+	$data = $this->manager->getData();
+	$info = $this->manager->getInfo();
+	$qrec = new DataRecord(array("examid" => $this->param->exam, 
+				     "questiontype" => "freetext" ));
 	
 	printf("<h3>" . _("Add Question") . "</h3>\n");
 	printf("<p>" . _("This page let you add a new question in the examination '%s'") . "</p>\n", 
@@ -367,12 +391,11 @@ class ContributePage extends TeacherPage
     // 
     // Show the form for editing an existing question.
     // 
-    private function formEditQuestion($exam, $question)
+    private function formEditQuestion()
     {
-	$manager = new Manager($exam);
-	$data = $manager->getData();
-	$info = $manager->getInfo();
-	$qrec = Exam::getQuestionData($question);
+	$data = $this->manager->getData();
+	$info = $this->manager->getInfo();
+	$qrec = Exam::getQuestionData($this->param->question);
 
 	printf("<h3>" . _("Edit Question") . "</h3>\n");
 	printf("<p>" . _("This page let you edit the existing question in the examination '%s'") . "</p>\n", 
@@ -384,9 +407,9 @@ class ContributePage extends TeacherPage
     // 
     // Show form for marking a question as removed (not deleted).
     // 
-    private function formRemoveQuestion($exam, $question)
+    private function formRemoveQuestion()
     {
-	$qrecord = Exam::getQuestionData($question);
+	$qrecord = Exam::getQuestionData($this->param->question);
 	
 	printf("<h3>" . _("Remove Question") . "</h3>\n");
 	printf("<p>"  . 
@@ -396,8 +419,8 @@ class ContributePage extends TeacherPage
 	       utf8_decode($qrecord->getQuestionName()));
 	
 	$form = new Form("contribute.php", "POST");
-	$form->addHidden("exam", $exam);
-	$form->addHidden("question", $question);
+	$form->addHidden("exam", $this->param->exam);
+	$form->addHidden("question", $this->param->question);
 	$form->addHidden("action", "remove");
 	$form->addHidden("mode", "save");
 	$input = $form->addTextArea("comment");
@@ -414,19 +437,19 @@ class ContributePage extends TeacherPage
     // 
     // Show all questions for this exam.
     // 
-    private function showQuestions($exam, $show = "active")
+    private function showQuestions()
     {
-	$manager = new Manager($exam);
-	
-	$data = $manager->getData();
-	$info = $manager->getInfo();
+	$data = $this->manager->getData();
+	$info = $this->manager->getInfo();
+	$show = isset($this->param->question) ? $this->param->question : "active";
 
 	$mode = array( "all" => _("All"), "active" => _("Active"), "removed" => _("Removed"));
 	$disp = array();
 	printf("<span class=\"links viewmode\">\n");
 	foreach($mode as $name => $text) {
 	    if($show != $name) {
-		$disp[] = sprintf("<a href=\"?exam=%d&amp;question=%s\">%s</a>", $exam, $name, $text);
+		$disp[] = sprintf("<a href=\"?exam=%d&amp;question=%s\">%s</a>", 
+				  $this->param->exam, $name, $text);
 	    } else {
 		$disp[] = $text;
 	    }
@@ -454,7 +477,7 @@ class ContributePage extends TeacherPage
 	}
 	
 	$status = $show != "all" ? $show : null;
-	$questions = $manager->getQuestions($status);
+	$questions = $this->manager->getQuestions($status);
 	
 	foreach($questions as $question) {
 	    $child = $root->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
