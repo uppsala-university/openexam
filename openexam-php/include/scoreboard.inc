@@ -757,11 +757,20 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 				    $question->getExamID(),
 				    $question->getQuestionID());
 	}
+	
+	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+	    $question->setQuestionBody(strip_tags($question->getQuestionText()));
+	} elseif($question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE ||
+		 $question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
+	    $options = Exam::getQuestionChoice($question->getQuestionText());
+	    $question->setQuestionBody(strip_tags($options[0]));
+	}
+	
 	$header->name = sprintf("Q%d", ++$this->index);
 	$header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f\n%s: %s",
 				_("Question"),
 				utf8_decode($question->getQuestionName()),
-				utf8_decode($question->getQuestionText()),
+				utf8_decode($question->getQuestionBody()),
 				_("Max score"),
 				$question->getQuestionScore(),
 				_("Publisher"),
