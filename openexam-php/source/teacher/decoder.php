@@ -99,22 +99,17 @@ class DecoderPage extends TeacherPage
     
     private $manager;
     private $decoder;
-    private $verbose = false;
-    private $colorize = false;
     
     public function __construct()
     {
+	$this->param->verbose = false;
+	$this->param->colorize = false;
+	
 	parent::__construct(_("Decoder Page"), $this->params);
 	
 	if(isset($_REQUEST['exam'])) {
 	    $this->manager = new Manager($_REQUEST['exam']);
 	    $this->decoder = new Decoder($_REQUEST['exam']);
-	}
-	if(isset($_REQUEST['verbose'])) {
-	    $this->verbose = $_REQUEST['verbose'];
-	}
-	if(isset($_REQUEST['colorize'])) {
-	    $this->colorize = $_REQUEST['colorize'];
 	}
     }
     
@@ -127,8 +122,8 @@ class DecoderPage extends TeacherPage
 	// Authorization first:
 	//
 	if(isset($_REQUEST['exam'])) {
-	    self::checkAccess($_REQUEST['exam']);
-	    self::setDecoded($_REQUEST['exam']);
+	    self::checkAccess();
+	    self::setDecoded();
 	}
 	
 	// 
@@ -139,24 +134,24 @@ class DecoderPage extends TeacherPage
 		$_REQUEST['action'] = "download";
 	    }
 	    if($_REQUEST['action'] == "download") {
-		self::showDownload($_REQUEST['exam']);
+		self::showDownload();
 	    } elseif($_REQUEST['action'] == "show") {
-		self::showScores($_REQUEST['exam']);
+		self::showScores();
 	    } elseif($_REQUEST['action'] == "save") {
 		self::assert("mode");
 		if($_REQUEST['mode'] == "result") {
 		    self::assert(array("format", "student"));
-		    self::saveResult($_REQUEST['exam'], $_REQUEST['format'], $_REQUEST['student']);
+		    self::saveResult();
 		} elseif($_REQUEST['mode'] == "scores") {
 		    self::assert("format");
-		    self::saveScores($_REQUEST['exam'], $_REQUEST['format']);
+		    self::saveScores();
 		}
 	    } elseif($_REQUEST['action'] == "mail") {
 		if(isset($_REQUEST['student'])) {
 		    self::assert("format");
-		    self::sendResult($_REQUEST['exam'], $_REQUEST['student'], $_REQUEST['format']);
+		    self::sendResult();
 		} else {
-		    self::mailResult($_REQUEST['exam']);
+		    self::mailResult();
 		}
 	    }
 	} else {
@@ -183,18 +178,17 @@ class DecoderPage extends TeacherPage
     // 
     // Verify that the caller has been granted the required role on this exam.
     // 
-    private function checkAccess($exam)
+    private function checkAccess()
     {
 	$role = "decoder";
 	
-	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
+	if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
 			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
 	    exit(1);
 	}
 	
-	$manager = new Manager($exam);
-	if(!$manager->getInfo()->isDecodable()) {	
+	if(!$this->manager->getInfo()->isDecodable()) {	
 	    ErrorPage::show(_("Can't continue!"),
 			    _("This examination is not yet decodable, probably becuase not all answers have been corrected yet. The script processing has halted."));
 	    exit(1);
@@ -205,7 +199,7 @@ class DecoderPage extends TeacherPage
     // This function flags the exam as decoded. It should be called whenever
     // script execution calls an function that reveals the real identities.
     // 
-    private function setDecoded($exam)
+    private function setDecoded()
     {
 	$data = $this->manager->getData();
 	
@@ -223,30 +217,30 @@ class DecoderPage extends TeacherPage
     // student. If student equals all, then all student result is downloaded
     // as an zip archive.
     // 
-    private function saveResult($exam, $format, $student)
+    private function saveResult()
     {
 	ob_end_clean();
 	
-	switch($format) {
+	switch($this->param->format) {
 	 case "pdf":
 	 case "html":
 	 case "ps":
-	    if($student == "all") {    // Send zip-file containing all results.
-		$result = new ResultPDF($exam);
-		$result->setFormat($format);
+	    if($this->param->student == "all") {    // Send zip-file containing all results.
+		$result = new ResultPDF($this->param->exam);
+		$result->setFormat($this->param->format);
 		$result->sendAll();
 	    } else {
-		$result = new ResultPDF($exam);
-		$result->setFormat($format);
-		$result->send($student);
+		$result = new ResultPDF($this->param->exam);
+		$result->setFormat($this->param->format);
+		$result->send($this->param->student);
 	    }
 	    break;
 	 default:
-	    die(sprintf("Format %s is not supported in result mode.", $format));
+	    die(sprintf("Format %s is not supported in result mode.", $this->param->format));
 	}
     }
 
-    private function saveScores($exam, $format)
+    private function saveScores()
     {
 	if(!$this->manager->getInfo()->isDecoded()) {
 	    ErrorPage::show(_("Can't continue!"),
@@ -258,14 +252,14 @@ class DecoderPage extends TeacherPage
 
 	$stream = fopen("php://memory", "r+");
 	if($stream) {
-	    switch($format) {
+	    switch($this->param->format) {
 	     case "pdf":
 	     case "ps":
 		die("TODO: implement saving score board as PDF and PostScript");
 		break;
 	     case "html":
 		$format = new OutputTextHtml();
-		break;		
+		break;
 	     case "tab":
 		$format = new OutputTextTab();
 		break;
@@ -276,12 +270,12 @@ class DecoderPage extends TeacherPage
 		$format = new OutputTextXml();
 		break;
 	     default:
-		die(sprintf("Format %s is not supported in score board mode.", $format));
+		die(sprintf("Format %s is not supported in score board mode.", $this->param->format));
 	    }
 	    
 	    if(isset($format)) {
 		$writer = new StreamWriter($stream, $format);
-		$sender = new ScoreBoardWriter($exam, $writer, $format);
+		$sender = new ScoreBoardWriter($this->param->exam, $writer, $format);
 		$sender->send();
 		fclose($stream);
 		exit(1);
@@ -293,7 +287,7 @@ class DecoderPage extends TeacherPage
     // Show the page where caller can chose to download the result and score
     // board in different formats.
     // 
-    private function showDownload($exam)
+    private function showDownload()
     {
 	global $locale;
 	
@@ -312,7 +306,7 @@ class DecoderPage extends TeacherPage
 	$options = array( "pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML" );
 	
 	$form = new Form("decoder.php", "GET");
-	$form->addHidden("exam", $this->manager->getExamID());
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("mode", "result");
 	$form->addHidden("action", "save");
 	
@@ -324,7 +318,7 @@ class DecoderPage extends TeacherPage
 	
 	$combo = $form->addComboBox("student");
 	$combo->setLabel(_("Select"));
- 	$board = new ScoreBoard($this->manager->getExamID());	
+ 	$board = new ScoreBoard($this->param->exam);	
 	$students = $board->getStudents();
 	$option = $combo->addOption("all", _("All Students"));
 	$option = $combo->addOption(0, "---");
@@ -353,7 +347,7 @@ class DecoderPage extends TeacherPage
 	$options = array( "tab" => "Tab Separated Text", "csv" => "Comma Separated Text", "xml" => "XML Format Data", "html" => "Single HTML Page" );
 	
 	$form = new Form("decoder.php", "GET");
-	$form->addHidden("exam", $this->manager->getExamID());
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("mode", "scores");
 	$form->addHidden("action", "save");
 	$combo = $form->addComboBox("format");
@@ -369,7 +363,7 @@ class DecoderPage extends TeacherPage
     // 
     // Shows the score board with the anonymous identity disclosed.
     // 
-    private function showScores($exam)
+    private function showScores()
     {
 	$data = $this->manager->getData();
 	
@@ -380,26 +374,26 @@ class DecoderPage extends TeacherPage
 	       utf8_decode($data->getExamName()));
 
  	printf("<span class=\"links viewmode\">");
-	if($this->verbose) {
+	if($this->param->verbose) {
 	    printf("%s: <a href=\"?exam=4&amp;action=show&amp;verbose=0\">%s</a>, ", _("Details"), _("Less"));
 	} else {
 	    printf("%s: <a href=\"?exam=4&amp;action=show&amp;verbose=1\">%s</a>, ", _("Details"), _("More"));
 	}
-	if($this->colorize) {
+	if($this->param->colorize) {
 	    printf("%s: <a href=\"?exam=4&amp;action=show&amp;colorize=0\">%s</a>", _("Mode"), _("Standard"));
 	} else {
 	    printf("%s: <a href=\"?exam=4&amp;action=show&amp;colorize=1\">%s</a>", _("Mode"), _("Colorize"));
 	}
 	printf("</span>\n");
 	
- 	$board = new ScoreBoardPrinter($exam);
-	$board->setVerbose($this->verbose);
-	$board->setColorized($this->colorize);
+ 	$board = new ScoreBoardPrinter($this->param->exam);
+	$board->setVerbose($this->param->verbose);
+	$board->setColorized($this->param->colorize);
 	$board->output();
 
 	printf("<h5>" . _("Color Codes") . "</h5>\n");
 	printf("<p>"  . _("These are the color codes used in the score board:") . "</p>\n");
-	if($this->colorize) {
+	if($this->param->colorize) {
 	    $codes = array( 
 			    "s0"   => sprintf(_("Less than %d%% of max score."), 20),
 			    "s20"  => sprintf(_("Between %d and %d %% of max score."), 20, 40),
@@ -429,7 +423,7 @@ class DecoderPage extends TeacherPage
     // Send the email message. The message is either sent to myself (debug), all students
     // or individual students.
     // 
-    private function sendResult($exam, $student, $format)
+    private function sendResult()
     {
 	printf("<h5>" . _("Sending Result") . "</h5>\n");
 
@@ -480,10 +474,10 @@ class DecoderPage extends TeacherPage
 	    }
 	}
 	
-	$result = new ResultPDF($exam);
-	$result->setFormat($format);
+	$result = new ResultPDF($this->param->exam);
+	$result->setFormat($this->param->format);
 	
-	if($student == "all") {
+	if($this->param->student == "all") {
 	    $students = $this->manager->getStudents();
 	} else {
 	    $students = array($this->manager->getStudentData($student));
@@ -494,11 +488,11 @@ class DecoderPage extends TeacherPage
 	    $file = tempnam("/tmp", "openexam-result");
 	    $result->save($student->getStudentID(), $file);
 	    
-	    if(strstr($format, "pdf")) {
+	    if(strstr($this->param->format, "pdf")) {
 		$attach = new MailAttachment("result.pdf", "application/pdf", $file);
-	    } elseif(strstr($format, "ps")) {
+	    } elseif(strstr($this->param->format, "ps")) {
 		$attach = new MailAttachment("result.ps", "application/postscript", $file);
-	    } elseif(strstr($format, "html")) {
+	    } elseif(strstr($this->param->format, "html")) {
 		$attach = new MailAttachment("result.html", "text/html", $file);
 	    }
 	    
@@ -515,7 +509,7 @@ class DecoderPage extends TeacherPage
     // 
     // Show form for sending examination result to students.
     // 
-    private function mailResult($exam)
+    private function mailResult()
     {
 	global $locale;
 	
@@ -537,7 +531,7 @@ class DecoderPage extends TeacherPage
 	$form = new Form("decoder.php", "POST");
 	$form->setEncodingType("multipart/form-data");
 	$form->addHidden("MAX_FILE_SIZE", ATTACH_MAX_FILE_SIZE);
-	$form->addHidden("exam", $this->manager->getExamID());
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("mode", "result");
 	$form->addHidden("action", "mail");
 		
@@ -549,7 +543,7 @@ class DecoderPage extends TeacherPage
 	}
 	$combo = $form->addComboBox("student");
 	$combo->setLabel(_("Select"));
-	$board = new ScoreBoard($this->manager->getExamID());	
+	$board = new ScoreBoard($this->param->exam);	
 	$students = $board->getStudents();
 	$option = $combo->addOption("all", _("All Students"));
 	$option = $combo->addOption(0, "---");
