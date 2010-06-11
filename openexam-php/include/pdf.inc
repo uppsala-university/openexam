@@ -223,7 +223,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
     {
 	$this->manager = new Manager($examid);
 	$this->exam = $this->manager->getData();
+	
 	$this->ldap = LDAPSearch::factory();
+	$this->ldap->setAttributeFilter(array("cn", "mail"));
 
 	$this->board = new ScoreBoard($this->exam->getExamID());
 	$this->grade = new ExamGrades($this->exam->getExamGrades());
@@ -492,7 +494,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
     // 
     private function printSubSectionExamCreator($stream)
     {
-	$this->ldap->setAttributeFilter(array("cn", "mail"));
 	$user = $this->ldap->searchPrincipalName($this->exam->getExamCreator());
 	
 	fprintf($stream, "<h5>%s:</h5>\n", _("Responsable for examination"));
@@ -500,9 +501,8 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 		"<p><blockquote>" . 
 		_("Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>") . 
 		"</blockquote></p>\n",
-		$user->first()->getMail(), 
+		$user->first()->getMail()->first(), 
 		utf8_decode($user->first()->getCN()->first()));
-	$this->ldap->setAttributeFilter(null);
     }
 
     // 
@@ -510,8 +510,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
     // 
     private function printSubSectionContributors($stream)
     {
-	$this->ldap->setAttributeFilter(array("cn", "mail"));
-	
 	$contributors = $this->manager->getContributors();
  	if($contributors->count()) {
 	    
@@ -548,7 +546,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 	    }
 	    fprintf($stream, "</ul>\n");
 	}
-	$this->ldap->setAttributeFilter(null);
     }
     
     // 
@@ -779,8 +776,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
     // 
     private function generate($target = null)
     {
-	$this->ldap->setAttributeFilter(array( "cn" ));
-	
 	// 
 	// We must create the frontpage before launching the process.
 	// 
