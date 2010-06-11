@@ -83,6 +83,7 @@ class CorrectionPage extends TeacherPage
 			     "verbose"  => "/^\d+$/",
 			     "colorize" => "/^\d+$/",
 			     "mode"     => "/^(mark|save)$/" );
+    private $manager;
     private $verbose = false;
     private $colorize = false;
     
@@ -113,6 +114,7 @@ class CorrectionPage extends TeacherPage
 	// Bussiness logic:
 	//
 	if(isset($_REQUEST['exam'])) {
+	    $this->manager = new Manager($_REQUEST['exam']);
 	    if(isset($_REQUEST['question'])) {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
 		    self::assert(array('score', 'comment'));
@@ -144,10 +146,6 @@ class CorrectionPage extends TeacherPage
 	} else {
 	    self::showAvailableExams();
 	}
-    }
-    
-    public function printMenu()
-    {
     }
 
     // 
@@ -469,21 +467,50 @@ class CorrectionPage extends TeacherPage
 
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
+
+	// 
+	// Group the examinations by their state:
+	// 
+	$exams = Correct::getExams(phpCAS::getUser());
+	$nodes = array( 
+			'c' => array( 'name' => _("Correctable"),
+				      'data' => array() ),
+			'd' => array( 'name' => _("Decoded"),
+				      'data' => array() ),
+			'u' => array( 'name' => _("Upcoming"),
+				      'data' => array() )
+			);
 	
-	$exams = Correct::getExams(phpCAS::getUser());	
 	foreach($exams as $exam) {
 	    $manager = new Manager($exam->getExamID());
-	    $child = $root->addChild(utf8_decode($exam->getExamName()));
-	    if($manager->getInfo()->isCorrectable()) {
-		$child->setLink(sprintf("?exam=%d", $exam->getExamID()),
-				_("Click on this link to open this examination to correct answers."));
-	    } elseif($manager->getInfo()->isDecoded()) {
-		$child->setLink(sprintf("?exam=%d", $exam->getExamID()),
-				_("Click on this link to review this examination."));
+	    $state = $manager->getInfo();
+	    if($state->isUpcoming()) {
+		$nodes['u']['data'][$exam->getExamName()] = $state;
+	    } elseif($state->isCorrectable()) {
+		$nodes['c']['data'][$exam->getExamName()] = $state;
+	    } elseif($state->isDecoded()) {
+		$nodes['d']['data'][$exam->getExamName()] = $state;
 	    }
-	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
-	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
 	}
+	
+	foreach($nodes as $type => $group) {
+	    if(count($group['data']) > 0) {
+		$node = $root->addChild($group['name']);
+		foreach($group['data'] as $name => $state) {
+		    $child = $node->addChild(utf8_decode($name));
+		    if($state->isCorrectable()) {
+			$child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
+					_("Click on this link to open this examination to correct answers."));
+		    } elseif($state->isDecoded()) {
+			$child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
+					_("Click on this link to review this examination."));
+		    }
+		    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
+		    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+		}
+	    }
+	}
+	
 	$tree->output();
     }
     
