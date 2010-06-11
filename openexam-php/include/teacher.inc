@@ -208,7 +208,7 @@ class TeacherPage extends BasePage
 	    }
 	}
     }
-    
+
     // 
     // Support function for doing LDAP lookup.
     // 
@@ -271,6 +271,7 @@ class TeacherPage extends BasePage
 					 $entry->first()->getMail()->first());
 	    }
 	}
+	return null;
     }
 }
 
