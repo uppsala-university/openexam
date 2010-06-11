@@ -480,7 +480,7 @@ class DecoderPage extends TeacherPage
 	if($this->param->student == "all") {
 	    $students = $this->manager->getStudents();
 	} else {
-	    $students = array($this->manager->getStudentData($student));
+	    $students = array($this->manager->getStudentData($this->param->student));
 	}
 	
 	foreach($students as $student) {
