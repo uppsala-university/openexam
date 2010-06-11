@@ -171,7 +171,8 @@ class TeacherPage extends BasePage
 
     // 
     // Validate access and request parameters. All validated request parameters
-    // are automatic injected into $this->param.
+    // are automatic injected into $this->param, but only if they origins from 
+    // a GET or POST request.
     // 
     public function validate()
     {
@@ -182,8 +183,10 @@ class TeacherPage extends BasePage
 				    sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
 					    $param, $pattern));
 		    exit(1);
-		} else {
-		    $this->param->$param = $_REQUEST[$param];    // Inject washed parameter
+		} elseif(isset($_GET[$param])) {
+		    $this->param->$param = $_GET[$param];     // Inject washed parameter
+		} elseif(isset($_POST[$param])) {
+		    $this->param->$param = $_POST[$param];    // Inject washed parameter
 		}
 	    }
 	}
