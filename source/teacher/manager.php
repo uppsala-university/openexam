@@ -77,12 +77,18 @@ class ManagerPage extends TeacherPage
     private $params = array( "exam"   => "/^\d+$/",
 			     "action" => "/^(add|edit|show|copy|delete)$/",
 			     "role"   => "/^(contributor|examinator|decoder)$/",
-			     "user"   => "/^\d+$/" );
+			     "user"   => "/^\d+$/",
+			     "uuid"   => "/^[0-9a-zA-Z]{1,10}$/",
+			     "name"   => "/^\w+$/" );
     private $manager;
     
     public function __construct()
     {
 	parent::__construct(_("Examination Management"), $this->params);
+
+	if(isset($_REQUEST['exam'])) {
+	    $this->manager = new Manager($_REQUEST['exam']);
+	}
     }
 
     // 
@@ -95,11 +101,7 @@ class ManagerPage extends TeacherPage
         //
 	// Authorization first:
 	//
-	if(isset($_REQUEST['exam'])) {
-	    self::checkAccess($_REQUEST['exam']);
-	} else {
-	    self::checkAccess();
-	}	    
+	self::checkAccess();
 	
 	//
 	// Bussiness logic:
@@ -111,7 +113,6 @@ class ManagerPage extends TeacherPage
 		self::addExam(isset($_REQUEST['name']));
 	    }
 	} else {
-	    $this->manager = new Manager($_REQUEST['exam']);	    
 	    if(isset($_REQUEST['action'])) {
 		if(isset($_REQUEST['role'])) {
 		    if($_REQUEST['action'] == "delete") {
@@ -119,36 +120,36 @@ class ManagerPage extends TeacherPage
 		    }
 		    if($_REQUEST['role'] == "contributor") {
 			if($_REQUEST['action'] == "add") {
-			    self::addContributor($_REQUEST['exam'], isset($_REQUEST['uuid']));
+			    self::addContributor(isset($_REQUEST['uuid']));
 			} elseif($_REQUEST['action'] == "delete") {
-			    self::deleteContributor($_REQUEST['exam'], $_REQUEST['user']);
+			    self::deleteContributor();
 			}
 		    } elseif($_REQUEST['role'] == "examinator") {
 			if($_REQUEST['action'] == "add") {
-			    self::addExaminator($_REQUEST['exam'], isset($_REQUEST['uuid']));
+			    self::addExaminator(isset($_REQUEST['uuid']));
 			} elseif($_REQUEST['action'] == "delete") {
-			    self::deleteExaminator($_REQUEST['exam'], $_REQUEST['user']);
+			    self::deleteExaminator();
 			}
 		    } elseif($_REQUEST['role'] == "decoder") {
 			if($_REQUEST['action'] == "add") {
-			    self::addDecoder($_REQUEST['exam'], isset($_REQUEST['uuid']));
+			    self::addDecoder(isset($_REQUEST['uuid']));
 			} elseif($_REQUEST['action'] == "delete") {
-			    self::deleteDecoder($_REQUEST['exam'], $_REQUEST['user']);
+			    self::deleteDecoder();
 			}
 		    }
 		} else {
 		    if($_REQUEST['action'] == "show") {
-			self::showExam($_REQUEST['exam']);
+			self::showExam();
 		    } elseif($_REQUEST['action'] == "edit") {
-			self::editExam($_REQUEST['exam'], isset($_REQUEST['name']));
+			self::editExam(isset($_REQUEST['name']));
 		    } elseif($_REQUEST['action'] == "copy") {
-			self::copyExam($_REQUEST['exam']);
+			self::copyExam();
 		    } elseif($_REQUEST['action'] == "delete") {
-			self::deleteExam($_REQUEST['exam']);
+			self::deleteExam();
 		    } 
 		}
 	    } else {
-		self::showExam($_REQUEST['exam']);
+		self::showExam();
 	    }
 	} 
     }
@@ -276,13 +277,13 @@ class ManagerPage extends TeacherPage
     // 
     // Edit an existing exam.
     // 
-    private function editExam($exam, $store)
+    private function editExam($store)
     {
 	$data = $this->manager->getData();
 	
 	if(!$store) {
 	    printf("<p>" . _("This page let you edit common properties of the exam. Click on the 'Submit' button to save changes.") . "</p>\n");
-	    self::showExamForm($exam, $data, "edit");
+	    self::showExamForm($this->param->exam, $data, "edit");
 	} else {
 	    $grades = new ExamGrades();
 	    $grades->setText($_REQUEST['grade']);
@@ -300,22 +301,22 @@ class ManagerPage extends TeacherPage
 				    utf8_encode($grades->encode()),
 				    strtotime($_REQUEST['start']), 
 				    strtotime($_REQUEST['end']));
-	    header(sprintf("location: manager.php?exam=%d", $exam));
+	    header(sprintf("location: manager.php?exam=%d", $this->param->exam));
 	}
     }
     
     // 
-    // Creates a copy of an existing exam. The contributor, examinator and decoder is 
+    // Creates a copy of the current exam. The contributor, examinator and decoder is 
     // roles are preserved (but re-associated with the copy). The list of questions 
     // is also preserved, but without any associated answers.
     // 
-    private function copyExam($exam)
+    private function copyExam()
     {
 	$copy = $this->manager->copy();
 	header(sprintf("location: manager.php?exam=%d&action=edit", $copy->getExamID()));
     }
     
-    private function deleteExam($exam)
+    private function deleteExam()
     {
 	$this->manager->delete();
 	header("location: manager.php");
@@ -324,7 +325,7 @@ class ManagerPage extends TeacherPage
     // 
     // Show properties for this exam.
     // 
-    private function showExam($exam) 
+    private function showExam() 
     {
 	$data = $this->manager->getData();
 	$info = $this->manager->getInfo();
@@ -464,11 +465,11 @@ class ManagerPage extends TeacherPage
     // Helper function for assigning roles to users for this exam. The text
     // parameter is the description text to show.
     // 
-    private function addExamRole($exam, $role, $text)
+    private function addExamRole($role, $text)
     {
 	printf("<p>%s</p>\n", $text);
 	$form = new Form("manager.php", "GET");
-	$form->addHidden("exam", $exam);
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("role", $role);
 	$form->addHidden("action", "add");
 	$input = $form->addTextBox("uuid");
@@ -477,71 +478,71 @@ class ManagerPage extends TeacherPage
 	$form->output();
     }
 
-    private function addContributor($exam, $store)
+    private function addContributor($store)
     {
 	if(!$store) {
 	    $data = $this->manager->getData();
 	    $text = sprintf(_("Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."),
 			    utf8_decode($data->getExamName()));
-	    return self::addExamRole($exam, "contributor", $text);
+	    return self::addExamRole("contributor", $text);
 	}
 	
 	$this->manager->addContributor($_REQUEST['uuid']);
-	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
+	header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
     }
 
-    private function deleteContributor($exam, $user)
+    private function deleteContributor()
     {
-	$this->manager->deleteContributor($user);
-	header(sprintf("location: manager.php?exam=%d", $exam));
+	$this->manager->deleteContributor($this->param->user);
+	header(sprintf("location: manager.php?exam=%d", $this->param->exam));
     }
 
-    private function addExaminator($exam, $store)
+    private function addExaminator($store)
     {
 	if(!$store) {
 	    $data = $this->manager->getData();
 	    $text = sprintf(_("Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."),
 			    utf8_decode($data->getExamName()));
-	    return self::addExamRole($exam, "examinator", $text);
+	    return self::addExamRole("examinator", $text);
 	}
 	
 	$this->manager->addExaminator($_REQUEST['uuid']);
-	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
+	header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
     }
 
-    private function deleteExaminator($exam, $user)
+    private function deleteExaminator()
     {
-	$this->manager->deleteExaminator($user);
-	header(sprintf("location: manager.php?exam=%d", $exam));
+	$this->manager->deleteExaminator($this->param->user);
+	header(sprintf("location: manager.php?exam=%d", $this->param->exam));
     }
 
-    private function addDecoder($exam, $store)
+    private function addDecoder($store)
     {
 	if(!$store) {
 	    $data = $this->manager->getData();
 	    $text = sprintf(_("Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."),
 			    utf8_decode($data->getExamName()));
-	    return self::addExamRole($exam, "decoder", $text);
+	    return self::addExamRole("decoder", $text);
 	}
 	
 	$this->manager->addDecoder($_REQUEST['uuid']);
-	header(sprintf("location: manager.php?exam=%d&action=show", $exam));
+	header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
     }
     
-    private function deleteDecoder($exam, $user)
+    private function deleteDecoder()
     {
-	$this->manager->deleteDecoder($user);
-	header(sprintf("location: manager.php?exam=%d", $exam));
+	$this->manager->deleteDecoder($this->param->user);
+	header(sprintf("location: manager.php?exam=%d", $this->param->exam));
     }
     
     // 
     // Verify that the caller has been granted the required role.
     // 
-    private function checkAccess($exam = 0)
+    private function checkAccess()
     {
-	if($exam != 0) {
+	if(isset($this->param->exam)) {
 	    $role = "creator";
-	    if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
+	    if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
 		ErrorPage::show(_("Access denied!"),
 				sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
 		exit(1);

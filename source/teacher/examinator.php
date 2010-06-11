@@ -72,11 +72,21 @@ if(!defined("EXAMINATOR_VISIBLE_IDENTITIES")) {
 class ExaminatorPage extends TeacherPage
 {
     private $params = array( "exam"   => "/^\d+$/",
+			     "code"   => "/^([0-9a-fA-F]{1,15}|)$/", 
+			     "user"   => "/^[0-9a-zA-Z]{1,10}$/",
+			     "users"  => "/.*/",
+			     "stime"  => "/^.*$/",
+			     "etime"  => "/^.*$/",
 			     "action" => "/^(add|edit|show|delete)$/" );
+    private $manager;
     
     public function __construct()
     {
 	parent::__construct(_("Examinator Page"), $this->params);
+
+	if(isset($_REQUEST['exam'])) {
+	    $this->manager = new Manager($_REQUEST['exam']);
+	}
     }
 
     // 
@@ -88,7 +98,7 @@ class ExaminatorPage extends TeacherPage
 	// Authorization first:
 	//
 	if(isset($_REQUEST['exam'])) {
-	    self::checkAccess($_REQUEST['exam']);
+	    self::checkAccess();
 	}
 	
 	//
@@ -102,26 +112,26 @@ class ExaminatorPage extends TeacherPage
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
 		    if(isset($_REQUEST['code'])) {
 			self::assert('user');
-			self::saveAddStudent($_REQUEST['exam'], $_REQUEST['user'], $_REQUEST['code']);
+			self::saveAddStudent();
 		    } else {
-			self::assert('user');
-			self::saveAddStudents($_REQUEST['exam'], $_REQUEST['user']);
+			self::assert('users');
+			self::saveAddStudents();
 		    }
 		} else {
-		    self::formAddStudents($_REQUEST['exam']);
+		    self::formAddStudents();
 		}
 	    } elseif($_REQUEST['action'] == "edit") {
 		if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
 		    self::assert(array('stime', 'etime'));
-		    self::saveEditSchedule($_REQUEST['exam'], $_REQUEST['stime'], $_REQUEST['etime']);
+		    self::saveEditSchedule();
 		} else {
-		    self::formEditSchedule($_REQUEST['exam']);
+		    self::formEditSchedule();
 		}
 	    } elseif($_REQUEST['action'] == "show") {
 		self::showExam($_REQUEST['exam']);
 	    } elseif($_REQUEST['action'] == "delete") {
 		self::assert('user');
-		self::deleteStudent($_REQUEST['exam'], $_REQUEST['user']);
+		self::deleteStudent();
 	    }
 	} else {
 	    self::showAvailableExams();
@@ -131,11 +141,11 @@ class ExaminatorPage extends TeacherPage
     // 
     // Verify that the caller has been granted the required role on this exam.
     // 
-    private function checkAccess($exam)
+    private function checkAccess()
     {
 	$role = "examinator";
 	
-	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
+	if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
 			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
 	    exit(1);
@@ -145,16 +155,15 @@ class ExaminatorPage extends TeacherPage
     // 
     // Show the form for rescheduling the exam.
     // 
-    private function formEditSchedule($exam)
+    private function formEditSchedule()
     {
-	$manager = new Manager($exam);
-	$data = $manager->getData();
+	$data = $this->manager->getData();
 	
 	printf("<h3>" . _("Reschedule Examination") . "</h3>\n");
 	printf("<p>"  . _("This page let you reschedule the start and end time of the examination.") . "</p>\n");
 
 	$form = new Form("examinator.php", "GET");
-	$form->addHidden("exam", $exam);
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("mode", "save");
 	$form->addHidden("action", "edit");
 	$input = $form->addTextBox("stime", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
@@ -172,18 +181,19 @@ class ExaminatorPage extends TeacherPage
     // 
     // Save rescheduled start and end time for this exam.
     // 
-    private function saveEditSchedule($exam, $stime, $etime)
+    private function saveEditSchedule()
     {
-	$handler = new Examinator($exam);
-	$handler->setSchedule(strtotime($stime), strtotime($etime));
+	$handler = new Examinator($this->param->exam);
+	$handler->setSchedule(strtotime($this->param->stime), 
+			      strtotime($this->param->etime));
 	
-	header(sprintf("location: examinator.php?exam=%d", $exam));
+	header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
     }
     
     // 
     // Show form for adding student(s).
     // 
-    private function formAddStudents($exam)
+    private function formAddStudents()
     {
 	printf("<h3>" . _("Add Students") . "</h3>\n");
 	printf("<p>"  . _("You can add students one by one or as a list of codes/student ID pairs. The list should be a newline separated list of username/code pairs where the username and code is separated by tabs.") . "</p>\n");
@@ -191,7 +201,7 @@ class ExaminatorPage extends TeacherPage
 
 	$form = new Form("examinator.php", "GET");
 	$form->addSectionHeader(_("Add student one by one:"));
-	$form->addHidden("exam", $exam);
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("mode", "save");
 	$form->addHidden("action", "add");
 	$input = $form->addTextBox("code");
@@ -207,10 +217,10 @@ class ExaminatorPage extends TeacherPage
 
 	$form = new Form("examinator.php", "POST");
 	$form->addSectionHeader(_("Add list of students:"));
-	$form->addHidden("exam", $exam);
+	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("mode", "save");
 	$form->addHidden("action", "add");
-	$input = $form->addTextArea("user", "user1\tcode1\nuser2\tcode2\n");
+	$input = $form->addTextArea("users", "user1\tcode1\nuser2\tcode2\n");
 	$input->setLabel(_("Students"));
 	$input->setTitle(_("Click inside the textarea to clear its content."));
 	$input->setEvent(EVENT_ON_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
@@ -224,20 +234,19 @@ class ExaminatorPage extends TeacherPage
     // 
     // Save a single student.
     // 
-    private function saveAddStudent($exam, $user, $code)
+    private function saveAddStudent()
     {
-	$handler = new Examinator($exam);
-	$handler->addStudent($user, $code);
-	header(sprintf("location: examinator.php?exam=%d", $exam));
+	$handler = new Examinator($this->param->exam);
+	$handler->addStudent($this->param->user, $this->param->code);
+	header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
     }
 
     // 
     // Save a list of students.
     // 
-    private function saveAddStudents($exam, $user)
+    private function saveAddStudents()
     {
-	$users = explode("\n", trim($user));
-	print_r($users);
+	$users = explode("\n", trim($this->param->users));
 	foreach($users as $row) {
 	    if(($line = trim($row)) != "") {
 		if(strstr($line, "\t")) {
@@ -249,31 +258,30 @@ class ExaminatorPage extends TeacherPage
 	    }
 	}
 	
-	$handler = new Examinator($exam);
+	$handler = new Examinator($this->param->exam);
 	$handler->addStudents($data);
-	header(sprintf("location: examinator.php?exam=%d", $exam));
+	header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
     }
 
     // 
     // Delete this student. The user argument is the numeric ID of the student.
     // 
-    private function deleteStudent($exam, $user)
+    private function deleteStudent()
     {
-	$handler = new Examinator($exam);
-	$handler->removeStudent($user);
-	header(sprintf("location: examinator.php?exam=%d", $exam));
+	$handler = new Examinator($this->param->exam);
+	$handler->removeStudent($this->param->user);
+	header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
     }
     
     // 
     // Show this single exam.
     // 
-    private function showExam($exam)
+    private function showExam()
     {
-	$manager = new Manager($exam);
-	$data = $manager->getData();
-	$info = $manager->getInfo();
+	$data = $this->manager->getData();
+	$info = $this->manager->getInfo();
 
-	$handler = new Examinator($exam);
+	$handler = new Examinator($this->param->exam);
 	$students = $handler->getStudents();
 	
 	printf("<h3>" . _("Showing Examination") . "</h3>\n");
