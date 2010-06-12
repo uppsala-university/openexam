@@ -79,7 +79,7 @@ class ManagerPage extends TeacherPage
 			     "role"   => "/^(contributor|examinator|decoder)$/",
 			     "user"   => "/^\d+$/",
 			     "uuid"   => "/^[0-9a-zA-Z]{1,10}$/",
-			     "name"   => "/^\w+$/" );
+			     "name"   => "/^[[:ascii:]]+$/" );
     private $manager;
     
     public function __construct()
