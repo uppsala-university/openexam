@@ -352,6 +352,63 @@ class ExaminatorPage extends TeacherPage
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
 	
+	$exams = Examinator::getExams(phpCAS::getUser());
+	$nodes = array( 
+			'u' => array( 'name' => _("Upcoming"),
+				      'data' => array() ),
+			'a' => array( 'name' => _("Active"),
+				      'data' => array() ),
+			'f' => array( 'name' => _("Finished"),
+				      'data' => array() )
+			);
+	
+	foreach($exams as $exam) {
+	    $manager = new Manager($exam->getExamID());
+	    $state = $manager->getInfo();
+	    if($state->isUpcoming()) {
+		$nodes['u']['data'][$exam->getExamName()] = $state;
+	    } elseif($state->isRunning()) {
+		$nodes['a']['data'][$exam->getExamName()] = $state;
+	    } elseif($state->isFinished()) {
+		$nodes['f']['data'][$exam->getExamName()] = $state;
+	    }
+	}
+	
+	foreach($nodes as $type => $group) {
+	    if(count($group['data']) > 0) {
+		$node = $root->addChild($group['name']);
+		foreach($group['data'] as $name => $state) {
+		    $child = $node->addChild(utf8_decode($name));
+		    $child->setLink(sprintf("?exam=%d&action=show", $state->getInfo()->getExamID()), 
+				    _("Click on this link to view and/or edit this examination"));
+		    $stobj = $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
+		    $etobj = $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+		    if($state->isExaminatable()) {
+			$child->addLink(_("Add"), 
+					sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()),
+					_("Click on this link to add students to this examination"));
+			$stobj->addLink(_("Change"), 
+					sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()),
+					_("Click on this link to reschedule the examination"));
+			$etobj->addLink(_("Change"), 
+					sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()),
+					_("Click on this link to reschedule the examination"));
+		    }
+		}
+	    }
+	}
+	
+	$tree->output();
+    }
+
+    private function showAvailableExams_OLD()
+    {
+	printf("<h3>" . _("Examinator Tasks") . "</h3>\n");
+	printf("<p>"  . _("The tree of examinations shows all examination you can reschedule or add students to.") . "</p>\n");
+
+	$tree = new TreeBuilder(_("Examinations"));
+	$root = $tree->getRoot();
+	
 	$exams = Examinator::getExams(phpCAS::getUser());	
 	foreach($exams as $exam) {
 	    $manager = new Manager($exam->getExamID());
