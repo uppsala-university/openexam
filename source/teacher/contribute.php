@@ -525,24 +525,49 @@ class ContributePage extends TeacherPage
 	$tree = new TreeBuilder(_("Examinations"));
 	$root = $tree->getRoot();
 
-	$exams = Contribute::getExams(phpCAS::getUser());	
+	// 
+	// Group the examinations by their state:
+	// 
+	$exams = Contribute::getExams(phpCAS::getUser());
+	$nodes = array( 
+			'c' => array( 'name' => _("Contributable"),
+				      'data' => array() ),
+			'a' => array( 'name' => _("Active"),
+				      'data' => array() ),
+			'f' => array( 'name' => _("Finished"),
+				      'data' => array() )
+			);
+	
 	foreach($exams as $exam) {
 	    $manager = new Manager($exam->getExamID());
-	    $info = $manager->getInfo();
-	    
-	    $child = $root->addChild(utf8_decode($exam->getExamName()));
-	    if($info->isContributable()) {
-		$child->setLink(sprintf("?exam=%d", $exam->getExamID()));
-		$child->addLink(_("Add"), 
-				sprintf("?exam=%d&amp;action=add", $exam->getExamID()),
-				_("Click to add a question to this examination."));
+	    $state = $manager->getInfo();
+	    if($state->isContributable()) {
+		$nodes['c']['data'][$exam->getExamName()] = $state;
+	    } elseif($state->isRunning()) {
+		$nodes['a']['data'][$exam->getExamName()] = $state;
+	    } elseif($state->isFinished()) {
+		$nodes['f']['data'][$exam->getExamName()] = $state;
 	    }
-	    // TODO: add title to links!!
-	    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
-	    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
-	    $child->addChild(sprintf("%s: %s", _("Created"), strftime(DATETIME_FORMAT, strtotime($exam->getExamCreated()))));
-	    $child->addChild(sprintf("%s: %s", _("Creator"), $this->getFormatName($exam->getExamCreator())));
 	}
+
+	foreach($nodes as $type => $group) {
+	    if(count($group['data']) > 0) {
+		$node = $root->addChild($group['name']);
+		foreach($group['data'] as $name => $state) {
+		    $child = $node->addChild(utf8_decode($name));
+		    if($state->isContributable()) {
+			$child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
+					_("Click on this link to see all questions in this examination."));
+			$child->addLink(_("Add"), 
+					sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()),
+					_("Click to add a question to this examination."));
+		    }
+		    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
+		    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+		}
+	    }
+	}
+	
 	$tree->output();
     }
     
