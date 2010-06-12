@@ -401,41 +401,6 @@ class ExaminatorPage extends TeacherPage
 	$tree->output();
     }
 
-    private function showAvailableExams_OLD()
-    {
-	printf("<h3>" . _("Examinator Tasks") . "</h3>\n");
-	printf("<p>"  . _("The tree of examinations shows all examination you can reschedule or add students to.") . "</p>\n");
-
-	$tree = new TreeBuilder(_("Examinations"));
-	$root = $tree->getRoot();
-	
-	$exams = Examinator::getExams(phpCAS::getUser());	
-	foreach($exams as $exam) {
-	    $manager = new Manager($exam->getExamID());
-	    $info = $manager->getInfo();
-	    
-	    $child = $root->addChild(utf8_decode($exam->getExamName()));
-	    $child->setLink(sprintf("?exam=%d&action=show", $exam->getExamID()), 
-			    _("Click on this link to view and/or edit this examination"));
-	    $stobj = $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($exam->getExamStartTime()))));
-	    $etobj = $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($exam->getExamEndTime()))));
-	    
-	    if($info->isExaminatable()) {
-		$child->addLink(_("Add"), 
-				sprintf("?exam=%d&amp;action=add", $exam->getExamID()),
-				_("Click on this link to add students to this examination"));
-		$stobj->addLink(_("Change"), 
-				sprintf("?exam=%d&amp;action=edit", $exam->getExamID()),
-				_("Click on this link to reschedule the examination"));
-		$etobj->addLink(_("Change"), 
-				sprintf("?exam=%d&amp;action=edit", $exam->getExamID()),
-				_("Click on this link to reschedule the examination"));
-	    }
-	    $child->addChild(sprintf("%s: %s", _("Creator"), $this->getFormatName($exam->getExamCreator())));
-	}
-	$tree->output();
-    }
-    
 }
 
 $page = new ExaminatorPage();
