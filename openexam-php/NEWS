@@ -3,6 +3,12 @@ Version 1.5.3 (2010-mm-dd):
 	* The session length can now be extended (see conf/config.inc) and
 	  the answer form can be automatic posted at regular interval thru 
 	  javascript.
+	  
+	* By user request, the question score and correcting teacher can now 
+	  be modified even after the examination has finished.
+	  
+	* All top level tree listings (on the teacher pages) is now grouping
+	  examinations by their state.
 	
 Version 1.5.2 (2010-06-02):
 
