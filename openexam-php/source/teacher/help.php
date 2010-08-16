@@ -89,8 +89,10 @@ class HelpPage extends BasePage
 	printf("<dl>\n");
 	printf("<dt>Contributor:</dt>\n");
 	printf("<dd>%s</dd>\n", _("A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."));
+	printf("<dt>Corrector:</dt>\n");
+	printf("<dd>%s</dd>\n", _("A corrector is a person that has been assigned the task of correcting one or more question answers on an exam. Currently, only the examination creator can publish questions with another person as its corrector."));	
 	printf("<dt>Examinator:</dt>\n");	       
-	printf("<dd>%s</dd>\n", _("An examinator can assign (register) student for an examination."));
+	printf("<dd>%s</dd>\n", _("An examinator can assign (register) student for an examination and re-schedule the start and stop time."));
 	printf("<dt>Decoder:</dt>\n");	       
 	printf("<dd>%s</dd>\n", _("An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."));
 	printf("</dl>\n");

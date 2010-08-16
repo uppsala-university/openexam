@@ -354,8 +354,8 @@ class ContributePage extends TeacherPage
 	    $sect->setClass("secthead");
 	    
 	    $input = $form->addTextBox("user", $data->hasQuestionPublisher() ? utf8_decode($data->getQuestionPublisher()) : phpCAS::getUser());
-	    $input->setLabel(_("Publisher"));
-	    $input->setTitle(_("This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting answers for this question.\n\nIf you modify the value in this field, make sure that this person has been granted contribute privileges on this exam!"));
+	    $input->setLabel(_("Corrector"));
+	    $input->setTitle(_("This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting the answers to this question.\n\nBy default, the same person that publish a question is also assigned as its corrector."));
 	    $input->setSize(60);
 	} else {
 	    $form->addHidden("user", phpCAS::getUser());
