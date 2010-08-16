@@ -151,11 +151,13 @@ class CorrectionPage extends TeacherPage
     // 
     private function checkAccess()
     {
-	$role = "contributor";
+	$role1 = "contributor";
+	$role2 = "corrector";
 	
-	if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
+	if(!Teacher::userHasRole($this->param->exam, $role1, phpCAS::getUser()) &&
+	   !Teacher::userHasRole($this->param->exam, $role2, phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
-			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
+			    sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
 	    exit(1);
 	}
     }

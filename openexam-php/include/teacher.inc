@@ -22,7 +22,8 @@ class Teacher
     // 
     // Return true if user has been assigned the requested role. These roles are
     // bound to an exam: creator, contributor, examinator or decoder. The teacher 
-    // role is global and not bound to a specific exam.
+    // role is global and not bound to a specific exam. The corrector role is granted
+    // to a person by an questions publisher.
     // 
     public static function userHasRole($exam, $role, $user) 
     {
@@ -37,6 +38,9 @@ class Teacher
 	 case "examinator":
 	 case "decoder":
 	    $sql = sprintf("SELECT COUNT(*) FROM ${role}s WHERE exam_id = %d AND user = '%s'", $exam, $user);
+	    break;
+	 case "corrector":
+	    $sql = sprintf("SELECT COUNT(*) FROM questions WHERE exam_id = %d AND user = '%s'", $exam, $user);
 	    break;
 	 default:
 	    return false;
