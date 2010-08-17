@@ -156,6 +156,57 @@ class TeacherPage extends BasePage
 	}
     }
     
+    public function printMenu()
+    {
+	if(isset($this->param->exam)) {
+	    foreach(array("creator", "contributor", "examinator", "decoder", "corrector") as $role) {
+	    	$roles->$role = Teacher::userHasRole($_REQUEST['exam'], $role, phpCAS::getUser());
+	    }
+            printf("<span id=\"menuhead\">%s</span>\n", _("This examination:"));
+	    printf("<ul>\n");
+	    if($roles->creator) {
+		printf("<span id=\"menuhead\">%s</span>\n", _("General:"));
+		printf("<ul>\n");
+		printf("<li><a href=\"manager.php?exam=%d&action=show\">%s</a></li>\n", $_REQUEST['exam'], _("Overview"));
+		printf("<li><a href=\"manager.php?exam=%d&action=edit\">%s</a></li>\n", $_REQUEST['exam'], _("Properties"));
+		printf("</ul>\n");
+		printf("<br/>\n");
+	    }
+	    if($roles->creator) {
+		printf("<span id=\"menuhead\">%s</span>\n", _("Staff:"));
+		printf("<ul>\n");
+		printf("<li><a href=\"manager.php?exam=%d&action=add&role=contributor\">%s</a></li>\n", $_REQUEST['exam'], _("Add contributor"));
+		printf("<li><a href=\"manager.php?exam=%d&action=add&role=examinator\">%s</a></li>\n", $_REQUEST['exam'], _("Add examinator"));
+		printf("<li><a href=\"manager.php?exam=%d&action=add&role=decoder\">%s</a></li>\n", $_REQUEST['exam'], _("Add decoder"));
+		printf("</ul>\n");
+		printf("<br/>\n");
+	    }
+	    if($roles->creator || $roles->contributor || $roles->corrector) {
+		printf("<span id=\"menuhead\">%s</span>\n", _("Questions:"));
+		printf("<ul>\n");
+		printf("<li><a href=\"contribute.php?exam=%d&action=add\">%s</a></li>\n", $_REQUEST['exam'], _("Add question"));
+		printf("<li><a href=\"contribute.php?exam=%d\">%s</a></li>\n", $_REQUEST['exam'], _("Show all questions"));
+		printf("<li><a href=\"correct.php?exam=%d\">%s</a></li>\n", $_REQUEST['exam'], _("Correct answers"));
+		printf("</ul>\n");
+		printf("<br/>\n");
+	    }
+	    if($roles->creator || $roles->examinator || $roles->decoder) {
+		printf("<span id=\"menuhead\">%s</span>\n", _("Tasks:"));
+		printf("<ul>\n");
+		if($roles->creator || $roles->examinator) {
+		    printf("<li><a href=\"examinator.php?exam=%d&action=add\">%s</a></li>\n", $_REQUEST['exam'], _("Add students"));
+		    printf("<li><a href=\"examinator.php?exam=%d&action=edit\">%s</a></li>\n", $_REQUEST['exam'], _("Change schedule"));
+		}
+		if($roles->creator || $roles->decoder) {
+		    printf("<li><a href=\"decoder.php?exam=%d\">%s</a></li>\n", $_REQUEST['exam'], _("Decode answers"));
+		}
+		printf("</ul>\n");
+		printf("<br/>\n");
+	    }
+	    printf("</ul>\n");
+	}
+    }
+    
     // 
     // Kill script execution if caller is not autorized.
     // 
