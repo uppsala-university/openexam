@@ -136,15 +136,20 @@ class TeacherPage extends BasePage
     private $params;
     protected $roles;
     protected $param;     // Washed request parameters
+    protected $manager;
     private $ldap;
     
     public function __construct($title, $params, $template = "standard")
     {
-	$this->params = $params;	
+	$this->params = $params;
 	$this->roles = Teacher::getRoleCount(phpCAS::getUser());
 
 	$this->authorize();
 	$this->validate();
+	
+	if(isset($this->param->exam)) {
+	    $this->manager = new Manager($this->param->exam);
+	}
 	
 	parent::__construct($title, $template);
     }

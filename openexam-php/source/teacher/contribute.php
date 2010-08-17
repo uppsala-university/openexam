@@ -84,14 +84,10 @@ class ContributePage extends TeacherPage
 			     "video"    => "/^(.*:\/\/.*|)$/", 
 			     "audio"    => "/^(.*:\/\/.*|)$/",
 			     "image"    => "/^(.*:\/\/.*|)$/" );
-    private $manager;
     
     public function __construct()
     {
 	parent::__construct(_("Contribute Page"), $this->params);
-	if(isset($_REQUEST['exam'])) {
-	    $this->manager = new Manager($_REQUEST['exam']);
-	}
     }
 
     // 

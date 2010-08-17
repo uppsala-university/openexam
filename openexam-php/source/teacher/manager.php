@@ -80,15 +80,10 @@ class ManagerPage extends TeacherPage
 			     "user"   => "/^\d+$/",
 			     "uuid"   => "/^[0-9a-zA-Z]{1,10}$/",
 			     "name"   => "/^[[:ascii:]]+$/" );
-    private $manager;
     
     public function __construct()
     {
 	parent::__construct(_("Examination Management"), $this->params);
-
-	if(isset($_REQUEST['exam'])) {
-	    $this->manager = new Manager($_REQUEST['exam']);
-	}
     }
 
     // 
