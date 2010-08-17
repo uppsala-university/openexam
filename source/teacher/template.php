@@ -78,26 +78,28 @@ class TemplatePage extends TeacherPage
         //
 	// Authorization first:
 	//
-	if(isset($_REQUEST['exam'])) {
-	    self::checkAccess($_REQUEST['exam']);
+	if(isset($this->param->exam)) {
+	    self::checkAccess($this->param->exam);
 	}
 	
 	//
 	// Bussiness logic:
 	//
-	if(isset($_REQUEST['exam'])) {
+	if(isset($this->param->exam)) {
 	    die("TODO: implement bussiness logic");
 	} 
     }
 
     // 
     // Verify that the caller has been granted the required role on this exam.
+    // This example code checks if caller is assigned the contributor role. New
+    // roles can be added in include/teacher/manager.inc
     // 
     private function checkAccess($exam)
     {
-	$role = "role";   // TODO: replace!!
+	$role = "contributor";
 	
-	if(!Teacher::userHasRole($exam, $role, phpCAS::getUser())) {
+	if(!$this->manager->hasRole(phpCAS::getUser(), $role)) {
 	    ErrorPage::show(_("Access denied!"),
 			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
 	    exit(1);
