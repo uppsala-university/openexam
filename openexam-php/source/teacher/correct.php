@@ -83,7 +83,6 @@ class CorrectionPage extends TeacherPage
 			     "verbose"  => "/^\d+$/",
 			     "colorize" => "/^\d+$/",
 			     "mode"     => "/^(mark|save)$/" );
-    private $manager;
     
     public function __construct()
     {
@@ -91,10 +90,6 @@ class CorrectionPage extends TeacherPage
 	$this->param->colorize = false;
 	
 	parent::__construct(_("Answer Correction Page"), $this->params);
-
-	if(isset($_REQUEST['exam'])) {
-	    $this->manager = new Manager($_REQUEST['exam']);
-	}
     }
 
     // 
