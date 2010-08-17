@@ -162,16 +162,22 @@ class DecoderPage extends TeacherPage
     public function printMenu()
     {	
 	if(isset($_REQUEST['exam'])) {
-	    printf("<span id=\"menuhead\">%s</span>\n", _("Result"));
+            printf("<span id=\"menuhead\">%s</span>\n", _("Decoder:"));
+	    printf("<ul>\n");
+	    printf("<span id=\"menuhead\">%s</span>\n", _("Result:"));
 	    printf("<ul>\n");
 	    printf("<li><a href=\"?exam=%d&amp;action=download\">%s</a></li>\n", $_REQUEST['exam'], _("Download"));
-	    printf("<li><a href=\"?exam=%d&amp;action=mail\">%s</a></li>\n", $_REQUEST['exam'], _("Email Results"));
+	    printf("<li><a href=\"?exam=%d&amp;action=mail\">%s</a></li>\n", $_REQUEST['exam'], _("Send by email"));
 	    printf("</ul>\n");
-	    printf("<span id=\"menuhead\">%s</span>\n", _("Score Board"));
+	    printf("<br/>\n");
+	    printf("<span id=\"menuhead\">%s</span>\n", _("Score board:"));
 	    printf("<ul>\n");
 	    printf("<li><a href=\"?exam=%d&amp;action=download\">%s</a></li>\n", $_REQUEST['exam'], _("Download"));
 	    printf("<li><a href=\"?exam=%d&amp;action=show\">%s</a></li>\n", $_REQUEST['exam'], _("Show"));
 	    printf("</ul>\n");
+	    printf("<br/>\n");
+	    printf("</ul>\n");
+	    parent::printMenu();   // print parent menu
 	}
     }
 

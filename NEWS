@@ -9,6 +9,10 @@ Version 1.5.3 (2010-mm-dd):
 	  
 	* All top level tree listings (on the teacher pages) is now grouping
 	  examinations by their state.
+	  
+	* Added the pseudo role corrector. People get this role by
+	  being assigned as the corrector of answers to one or more
+	  questions (currently, only the exam creator can grant this role).
 	
 Version 1.5.2 (2010-06-02):
 
