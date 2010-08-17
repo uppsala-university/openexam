@@ -78,15 +78,10 @@ class ExaminatorPage extends TeacherPage
 			     "stime"  => "/^.*$/",
 			     "etime"  => "/^.*$/",
 			     "action" => "/^(add|edit|show|delete)$/" );
-    private $manager;
     
     public function __construct()
     {
 	parent::__construct(_("Examinator Page"), $this->params);
-
-	if(isset($_REQUEST['exam'])) {
-	    $this->manager = new Manager($_REQUEST['exam']);
-	}
     }
 
     // 
