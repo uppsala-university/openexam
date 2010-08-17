@@ -97,7 +97,6 @@ class DecoderPage extends TeacherPage
 			     "colorize" => "/^\d+$/",
 			     "verbose"  => "/^\d+$/" );
     
-    private $manager;
     private $decoder;
     
     public function __construct()
@@ -108,7 +107,6 @@ class DecoderPage extends TeacherPage
 	parent::__construct(_("Decoder Page"), $this->params);
 	
 	if(isset($_REQUEST['exam'])) {
-	    $this->manager = new Manager($_REQUEST['exam']);
 	    $this->decoder = new Decoder($_REQUEST['exam']);
 	}
     }
