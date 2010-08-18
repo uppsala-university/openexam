@@ -6,5 +6,5 @@
 # Date:   2010-05-17
 #
 
-mysqldump -u root -p -d openexam2 > openexam.sql
-mysqldump -u root -p -d -X openexam2 > openexam.xml
+mysqldump -u root -p -d openexam > openexam.sql
+mysqldump -u root -p -d -X openexam > openexam.xml
