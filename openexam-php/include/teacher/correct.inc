@@ -21,15 +21,16 @@ class Correct
     }
     
     // 
-    // Get all exams where this user is a contributor.
+    // Get all exams where this user is a corrector for at least one question.
     // 
     public static function getExams($user)
     {
 	$sql = sprintf("SELECT e.id AS ExamID, e.name AS ExamName, e.descr AS ExamDescription, 
 			       e.starttime AS ExamStartTime, e.endtime AS ExamEndTime, e.created AS ExamCreated,
 			       e.updated AS ExamUpdated, e.creator AS ExamCreator
-			FROM exams e, contributors c
-			WHERE e.id = c.exam_id AND c.user = '%s'
+			FROM exams e, questions q
+			WHERE e.id = q.exam_id AND q.user = '%s'
+			GROUP BY e.id
 			ORDER BY e.starttime", $user);
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);
