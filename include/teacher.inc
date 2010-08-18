@@ -226,8 +226,26 @@ class TeacherPage extends BasePage
 	    if($state->value & EXAM_STATE_DECODABLE) {
 		$state->flags[] = "decodable";
 	    }
+
+	    $scripts = array( 
+			      "manager.php" => "creator",
+			      "contribute.php" => "contributor",
+			      "examinator.php" => "examinator",
+			      "correct.php" => "corrector",
+			      "decoder.php" => "decoder"
+			      );
 	    
-	    $roles->value = array("creator", "contributor", "examinator", "decoder", "corrector");
+	    $roles->script = basename($_SERVER['SCRIPT_NAME']);
+	    $roles->value  = array();
+	    
+	    foreach($scripts as $script => $role) {
+		if($roles->script == $script) {
+		    array_unshift($roles->value, $role);
+		} else {
+		    array_push($roles->value, $role);
+		}
+	    }
+	    
 	    foreach($roles->value as $role) {
 		if($this->manager->hasRole(phpCAS::getUser(), $role)) {
 		    if(!isset($roles->primary)) {
@@ -249,7 +267,7 @@ class TeacherPage extends BasePage
 	    printf("</style>\n");
 	    printf("<dl>\n");
 	    printf("<dt>%s:</dt><dd>&nbsp;<a name=\"\" title=\"%s\">%s</a></dd>\n", _("Status"), $state->title, $state->primary);
-	    printf("<dt>%s:</dt><dd>&nbsp;<a name=\"\" title=\"%s\">%s</a></dd>\n", _("Roles"),  $roles->title, $roles->primary);
+	    printf("<dt>%s:</dt><dd>&nbsp;<a name=\"\" title=\"%s\">%s</a></dd>\n", _("Role"),   $roles->title, $roles->primary);
 	    printf("</dl>\n");
 	}
     }
