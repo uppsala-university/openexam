@@ -138,11 +138,9 @@ class ExaminatorPage extends TeacherPage
     // 
     private function checkAccess()
     {
-	$role = "examinator";
-	
-	if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
+	if(!$this->manager->isExaminator(phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
-			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
+			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "examinator"));
 	    exit(1);
 	}
     }
