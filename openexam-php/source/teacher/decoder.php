@@ -184,11 +184,9 @@ class DecoderPage extends TeacherPage
     // 
     private function checkAccess()
     {
-	$role = "decoder";
-	
-	if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
+	if(!$this->manager->isDecoder(phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
-			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
+			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "decoder"));
 	    exit(1);
 	}
 	

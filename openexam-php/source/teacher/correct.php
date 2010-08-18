@@ -149,8 +149,8 @@ class CorrectionPage extends TeacherPage
 	$role1 = "contributor";
 	$role2 = "corrector";
 	
-	if(!Teacher::userHasRole($this->param->exam, $role1, phpCAS::getUser()) &&
-	   !Teacher::userHasRole($this->param->exam, $role2, phpCAS::getUser())) {
+	if(!$this->manager->hasRole(phpCAS::getUser(), $role1) &&
+	   !$this->manager->hasRole(phpCAS::getUser(), $role2)) {
 	    ErrorPage::show(_("Access denied!"),
 			    sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
 	    exit(1);

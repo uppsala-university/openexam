@@ -19,35 +19,17 @@
 
 class Teacher
 {
+    
     // 
-    // Return true if user has been assigned the requested role. These roles are
-    // bound to an exam: creator, contributor, examinator or decoder. The teacher 
-    // role is global and not bound to a specific exam. The corrector role is granted
-    // to a person by an questions publisher.
+    // Returns true of user has been granted the teacher role. The teacher role 
+    // is global and not bound to a specific exam.
     // 
-    public static function userHasRole($exam, $role, $user) 
-    {
-	switch($role) {
-	 case "teacher":
-	    $sql = sprintf("SELECT COUNT(*) FROM teachers WHERE user = '%s'", $user);
-	    break;
-	 case "creator":
-	    $sql = sprintf("SELECT COUNT(*) FROM exams WHERE id = %d AND creator = '%s'", $exam, $user);
-	    break;
-	 case "contributor":
-	 case "examinator":
-	 case "decoder":
-	    $sql = sprintf("SELECT COUNT(*) FROM ${role}s WHERE exam_id = %d AND user = '%s'", $exam, $user);
-	    break;
-	 case "corrector":
-	    $sql = sprintf("SELECT COUNT(*) FROM questions WHERE exam_id = %d AND user = '%s'", $exam, $user);
-	    break;
-	 default:
-	    return false;
-	}
-	
+    public static function isTeacher($user) 
+    {	
 	$db = Database::getConnection();
 	$db->setFetchMode(MDB2_FETCHMODE_ORDERED);
+	
+	$sql = sprintf("SELECT COUNT(*) FROM teachers WHERE user = '%s'", $user);
 	$res = $db->query($sql);
 	if(PEAR::isError($res)) {
 	    throw new DatabaseException($res->getMessage());
@@ -163,47 +145,46 @@ class TeacherPage extends BasePage
     
     public function printMenu()
     {
-	if(isset($this->param->exam)) {
-	    foreach(array("creator", "contributor", "examinator", "decoder", "corrector") as $role) {
-	    	$roles->$role = Teacher::userHasRole($_REQUEST['exam'], $role, phpCAS::getUser());
-	    }
+	if(isset($this->param->exam)) {	    
             printf("<span id=\"menuhead\">%s</span>\n", _("This examination:"));
 	    printf("<ul>\n");
-	    if($roles->creator) {
+	    if($this->manager->isCreator(phpCAS::getUser())) {
 		printf("<span id=\"menuhead\">%s</span>\n", _("General:"));
 		printf("<ul>\n");
-		printf("<li><a href=\"manager.php?exam=%d&action=show\">%s</a></li>\n", $_REQUEST['exam'], _("Overview"));
-		printf("<li><a href=\"manager.php?exam=%d&action=edit\">%s</a></li>\n", $_REQUEST['exam'], _("Properties"));
+		printf("<li><a href=\"manager.php?exam=%d&action=show\">%s</a></li>\n", $this->param->exam, _("Overview"));
+		printf("<li><a href=\"manager.php?exam=%d&action=edit\">%s</a></li>\n", $this->param->exam, _("Properties"));
 		printf("</ul>\n");
 		printf("<br/>\n");
 	    }
-	    if($roles->creator) {
+	    if($this->manager->isCreator(phpCAS::getUser())) {
 		printf("<span id=\"menuhead\">%s</span>\n", _("Staff:"));
 		printf("<ul>\n");
-		printf("<li><a href=\"manager.php?exam=%d&action=add&role=contributor\">%s</a></li>\n", $_REQUEST['exam'], _("Add contributor"));
-		printf("<li><a href=\"manager.php?exam=%d&action=add&role=examinator\">%s</a></li>\n", $_REQUEST['exam'], _("Add examinator"));
-		printf("<li><a href=\"manager.php?exam=%d&action=add&role=decoder\">%s</a></li>\n", $_REQUEST['exam'], _("Add decoder"));
+		printf("<li><a href=\"manager.php?exam=%d&action=add&role=contributor\">%s</a></li>\n", $this->param->exam, _("Add contributor"));
+		printf("<li><a href=\"manager.php?exam=%d&action=add&role=examinator\">%s</a></li>\n", $this->param->exam, _("Add examinator"));
+		printf("<li><a href=\"manager.php?exam=%d&action=add&role=decoder\">%s</a></li>\n", $this->param->exam, _("Add decoder"));
 		printf("</ul>\n");
 		printf("<br/>\n");
 	    }
-	    if($roles->creator || $roles->contributor || $roles->corrector) {
+	    if($this->manager->isContributor(phpCAS::getUser()) || 
+	       $this->manager->isCorrector(phpCAS::getUser())) {
 		printf("<span id=\"menuhead\">%s</span>\n", _("Questions:"));
 		printf("<ul>\n");
-		printf("<li><a href=\"contribute.php?exam=%d&action=add\">%s</a></li>\n", $_REQUEST['exam'], _("Add question"));
-		printf("<li><a href=\"contribute.php?exam=%d\">%s</a></li>\n", $_REQUEST['exam'], _("Show all questions"));
-		printf("<li><a href=\"correct.php?exam=%d\">%s</a></li>\n", $_REQUEST['exam'], _("Correct answers"));
+		printf("<li><a href=\"contribute.php?exam=%d&action=add\">%s</a></li>\n", $this->param->exam, _("Add question"));
+		printf("<li><a href=\"contribute.php?exam=%d\">%s</a></li>\n", $this->param->exam, _("Show all questions"));
+		printf("<li><a href=\"correct.php?exam=%d\">%s</a></li>\n", $this->param->exam, _("Correct answers"));
 		printf("</ul>\n");
 		printf("<br/>\n");
 	    }
-	    if($roles->creator || $roles->examinator || $roles->decoder) {
+	    if($this->manager->isExaminator(phpCAS::getUser()) || 
+	       $this->manager->isDecoder(phpCAS::getUser())) {
 		printf("<span id=\"menuhead\">%s</span>\n", _("Tasks:"));
 		printf("<ul>\n");
-		if($roles->creator || $roles->examinator) {
-		    printf("<li><a href=\"examinator.php?exam=%d&action=add\">%s</a></li>\n", $_REQUEST['exam'], _("Add students"));
-		    printf("<li><a href=\"examinator.php?exam=%d&action=edit\">%s</a></li>\n", $_REQUEST['exam'], _("Change schedule"));
+		if($this->manager->isExaminator(phpCAS::getUser())) {
+		    printf("<li><a href=\"examinator.php?exam=%d&action=add\">%s</a></li>\n", $this->param->exam, _("Add students"));
+		    printf("<li><a href=\"examinator.php?exam=%d&action=edit\">%s</a></li>\n", $this->param->exam, _("Change schedule"));
 		}
-		if($roles->creator || $roles->decoder) {
-		    printf("<li><a href=\"decoder.php?exam=%d\">%s</a></li>\n", $_REQUEST['exam'], _("Decode answers"));
+		if($this->manager->isDecoder(phpCAS::getUser())) {
+		    printf("<li><a href=\"decoder.php?exam=%d\">%s</a></li>\n", $this->param->exam, _("Decode answers"));
 		}
 		printf("</ul>\n");
 		printf("<br/>\n");
