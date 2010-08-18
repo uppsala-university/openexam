@@ -142,52 +142,112 @@ class TeacherPage extends BasePage
 	    $this->ldap->close();
 	}
     }
+
+    // 
+    // An helper function for printing a sub menu.
+    // 
+    private function printSubMenu($sect)
+    {
+	printf("<span id=\"menuhead\">%s</span>\n", $sect->head);
+	printf("<ul>\n");
+	foreach($sect->link as $obj) {
+	    printf("<li><a href=\"%s\">%s</a></li>\n", $obj->href, $obj->name);
+	}
+	printf("</ul>\n");
+	printf("<br/>\n");
+    }
     
+    // 
+    // Print the left side menu.
+    // 
     public function printMenu()
     {
-	if(isset($this->param->exam)) {	    
-            printf("<span id=\"menuhead\">%s</span>\n", _("This examination:"));
-	    printf("<ul>\n");
+	if(isset($this->param->exam)) {
+	    // 
+	    // General sub menu:
+	    // 
 	    if($this->manager->isCreator(phpCAS::getUser())) {
-		printf("<span id=\"menuhead\">%s</span>\n", _("General:"));
-		printf("<ul>\n");
-		printf("<li><a href=\"manager.php?exam=%d&action=show\">%s</a></li>\n", $this->param->exam, _("Overview"));
-		printf("<li><a href=\"manager.php?exam=%d&action=edit\">%s</a></li>\n", $this->param->exam, _("Properties"));
-		printf("</ul>\n");
-		printf("<br/>\n");
+		$links->general->head = _("General:");
+		$links->general->link->overview->href   = sprintf("manager.php?exam=%d&action=show", $this->param->exam);
+		$links->general->link->overview->name   = _("Overview");
+		$links->general->link->properties->href = sprintf("manager.php?exam=%d&action=edit", $this->param->exam);
+		$links->general->link->properties->name = _("Properties");
 	    }
+	    
+	    // 
+	    // Staff sub menu:
+	    // 
 	    if($this->manager->isCreator(phpCAS::getUser())) {
-		printf("<span id=\"menuhead\">%s</span>\n", _("Staff:"));
-		printf("<ul>\n");
-		printf("<li><a href=\"manager.php?exam=%d&action=add&role=contributor\">%s</a></li>\n", $this->param->exam, _("Add contributor"));
-		printf("<li><a href=\"manager.php?exam=%d&action=add&role=examinator\">%s</a></li>\n", $this->param->exam, _("Add examinator"));
-		printf("<li><a href=\"manager.php?exam=%d&action=add&role=decoder\">%s</a></li>\n", $this->param->exam, _("Add decoder"));
-		printf("</ul>\n");
-		printf("<br/>\n");
+		if(!$this->manager->getInfo()->isFinished()) {
+		    $links->staff->link->contributor->href = sprintf("manager.php?exam=%d&action=add&role=contributor", $this->param->exam);
+		    $links->staff->link->contributor->name = _("Add contributor");
+		    $links->staff->link->examinator->href  = sprintf("manager.php?exam=%d&action=add&role=examinator", $this->param->exam);
+		    $links->staff->link->examinator->name  = _("Add examinator");
+		}
+		$links->staff->link->decoder->href = sprintf("manager.php?exam=%d&action=add&role=decoder", $this->param->exam);
+		$links->staff->link->decoder->name = _("Add decoder");
+		if(isset($links->staff)) {
+		    $links->staff->head = _("Staff:");
+		}
 	    }
+	    
+	    // 
+	    // Questions sub menu:
+	    // 
 	    if($this->manager->isContributor(phpCAS::getUser()) || 
 	       $this->manager->isCorrector(phpCAS::getUser())) {
-		printf("<span id=\"menuhead\">%s</span>\n", _("Questions:"));
-		printf("<ul>\n");
-		printf("<li><a href=\"contribute.php?exam=%d&action=add\">%s</a></li>\n", $this->param->exam, _("Add question"));
-		printf("<li><a href=\"contribute.php?exam=%d\">%s</a></li>\n", $this->param->exam, _("Show all questions"));
-		printf("<li><a href=\"correct.php?exam=%d\">%s</a></li>\n", $this->param->exam, _("Correct answers"));
-		printf("</ul>\n");
-		printf("<br/>\n");
+		if($this->manager->getInfo()->isContributable()) {
+		    $links->questions->link->qadd->href = sprintf("contribute.php?exam=%d&action=add", $this->param->exam);
+		    $links->questions->link->qadd->name = _("Add question");
+		}
+		if($this->manager->isContributor(phpCAS::getUser())) {
+		    $links->questions->link->qshow->href = sprintf("contribute.php?exam=%d", $this->param->exam);
+		    $links->questions->link->qshow->name = _("Show all questions");
+		}
+		if($this->manager->getInfo()->isCorrectable()) {
+		    $links->questions->link->answers->href = sprintf("correct.php?exam=%d", $this->param->exam);
+		    $links->questions->link->answers->name = _("Correct answers");
+		}
+		if(isset($links->questions)) {
+		    $links->questions->head = _("Questions:");
+		}
 	    }
+
+	    // 
+	    // Tasks sub menu:
+	    // 
 	    if($this->manager->isExaminator(phpCAS::getUser()) || 
 	       $this->manager->isDecoder(phpCAS::getUser())) {
-		printf("<span id=\"menuhead\">%s</span>\n", _("Tasks:"));
-		printf("<ul>\n");
-		if($this->manager->isExaminator(phpCAS::getUser())) {
-		    printf("<li><a href=\"examinator.php?exam=%d&action=add\">%s</a></li>\n", $this->param->exam, _("Add students"));
-		    printf("<li><a href=\"examinator.php?exam=%d&action=edit\">%s</a></li>\n", $this->param->exam, _("Change schedule"));
+		if($this->manager->isExaminator(phpCAS::getUser()) && 
+		   $this->manager->getInfo()->isFinished() == false) {
+		    $links->tasks->link->addstud->href  = sprintf("examinator.php?exam=%d&action=add", $this->param->exam);
+		    $links->tasks->link->addstud->name  = _("Add students");
+		    $links->tasks->link->schedule->href = sprintf("examinator.php?exam=%d&action=edit", $this->param->exam);
+		    $links->tasks->link->schedule->name = _("Change schedule");
 		}
-		if($this->manager->isDecoder(phpCAS::getUser())) {
-		    printf("<li><a href=\"decoder.php?exam=%d\">%s</a></li>\n", $this->param->exam, _("Decode answers"));
+		if($this->manager->isDecoder(phpCAS::getUser()) && 
+		   $this->manager->getInfo()->isDecodable()) {
+		    $links->tasks->link->decode->href = sprintf("decoder.php?exam=%d", $this->param->exam);
+		    $links->tasks->link->decode->name = _("Decode answers");
 		}
-		printf("</ul>\n");
-		printf("<br/>\n");
+		if(isset($links->tasks)) {
+		    $links->tasks->head = _("Tasks:");
+		}
+	    }
+	    
+            printf("<span id=\"menuhead\">%s</span>\n", _("This examination:"));
+	    printf("<ul>\n");
+	    if(isset($links->general)) {
+		self::printSubMenu($links->general);
+	    }
+	    if(isset($links->staff)) {
+		self::printSubMenu($links->staff);
+	    }
+	    if(isset($links->questions)) {
+		self::printSubMenu($links->questions);
+	    }
+	    if(isset($links->tasks)) {
+		self::printSubMenu($links->tasks);
 	    }
 	    printf("</ul>\n");
 	}
