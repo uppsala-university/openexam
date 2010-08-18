@@ -193,6 +193,67 @@ class TeacherPage extends BasePage
 	}
     }
     
+    final public function printManagerStatus()
+    {
+	if(isset($this->param->exam)) {
+	    $state->value = $this->manager->getInfo()->getState();
+	    
+	    if($state->value & EXAM_STATE_UPCOMING) {
+		$state->primary = "upcoming";
+	    } elseif($state->value & EXAM_STATE_RUNNING) {
+		$state->primary = "running";
+	    } elseif($state->value & EXAM_STATE_FINISHED) {
+		$state->primary = "finished";
+	    } else {
+		$state->primary = "unknown";
+	    }
+	
+	    if($state->value & EXAM_STATE_CONTRIBUTABLE) {
+		$state->flags[] = "contributable";
+	    }
+	    if($state->value & EXAM_STATE_DECODED) {
+		$state->flags[] = "decoded";
+	    }
+	    if($state->value & EXAM_STATE_EXAMINATABLE) {
+		$state->flags[] = "examinatable";
+	    }
+	    if($state->value & EXAM_STATE_EDITABLE) {
+		$state->flags[] = "editable";
+	    }
+	    if($state->value & EXAM_STATE_CORRECTABLE) {
+		$state->flags[] = "correctable";
+	    }
+	    if($state->value & EXAM_STATE_DECODABLE) {
+		$state->flags[] = "decodable";
+	    }
+	    
+	    $roles->value = array("creator", "contributor", "examinator", "decoder", "corrector");
+	    foreach($roles->value as $role) {
+		if($this->manager->hasRole(phpCAS::getUser(), $role)) {
+		    if(!isset($roles->primary)) {
+			$roles->primary = $role;
+		    } else {
+			$roles->suppl[] = $role;
+		    }
+		}
+	    }
+	    
+	    $roles->title = sprintf(_("Primary role: %s\n\nSupplementary roles:\n- %s\n"), 
+				      $roles->primary, 
+				      implode("\n- ", $roles->suppl));
+	    $state->title = sprintf(_("Additional status flags:\n- %s\n"),
+				      implode("\n- ", $state->flags));
+	    
+	    printf("<style type=\"text/css\">\n");
+	    printf("dt { font-weight: bold; float: left; }\n");
+	    printf("</style>\n");
+	    printf("<dl>\n");
+	    printf("<dt>%s:</dt><dd>&nbsp;<a name=\"\" title=\"%s\">%s</a></dd>\n", _("Status"), $state->title, $state->primary);
+	    printf("<dt>%s:</dt><dd>&nbsp;<a name=\"\" title=\"%s\">%s</a></dd>\n", _("Roles"),  $roles->title, $roles->primary);
+	    printf("</dl>\n");
+	}
+    }
+    
     // 
     // Kill script execution if caller is not autorized.
     // 

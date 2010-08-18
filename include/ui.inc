@@ -388,6 +388,13 @@ final class PageRender implements TemplatePage
     {
 	$this->page->printLogonStatus();
     }
+
+    public function printManagerStatus()
+    {
+	if(method_exists($this->page, 'printManagerStatus')) {
+	    $this->page->printManagerStatus();     // defined for teacher pages.
+	}
+    }
     
     public function printLanguageSelect()
     {
