@@ -90,7 +90,7 @@ class IndexPage extends BasePage
     // 
     public function printMenu()
     {
-	printf("<span id=\"menuhead\">%s</span>\n", _("Manager:"));
+	printf("<span id=\"menuhead\">%s:</span>\n", _("Manager"));
 	printf("<ul>\n");
 	printf("<li><a href=\"teacher/\" class=\"menubarlink\">%s</a></li>\n", _("Teacher"));
 	printf("<li><a href=\"admin/\"   class=\"menubarlink\">%s</a></li>\n", _("Admin"));
