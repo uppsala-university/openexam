@@ -346,7 +346,7 @@ class DecoderPage extends TeacherPage
 	       _("This section lets you download the score board showing a summary view of the examination in different formats. ") . 
 	       "</p>\n");
 	
-	$options = array( "tab" => "Tab Separated Text", "csv" => "Comma Separated Text", "xml" => "XML Format Data", "html" => "Single HTML Page" );
+	$options = array( "csv" => _("Comma Separated Text"), "tab" => _("Tab Separated Text"), "xml" => _("XML Format Data"), "html" => _("Single HTML Page") );
 	
 	$form = new Form("decoder.php", "GET");
 	$form->addHidden("exam", $this->param->exam);
