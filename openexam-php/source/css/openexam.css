@@ -310,7 +310,14 @@ td.gr5 {
  *  The section header used in forms:
  */
 h4.secthead {
-	color: gray;
+        color: gray;
 	text-decoration: underline;
 	margin: 0px;
+}
+
+/**
+ *  The manager status section.
+ */
+#managerstatus {
+        position: absolute;
 }
