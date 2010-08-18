@@ -158,11 +158,9 @@ class ContributePage extends TeacherPage
     // 
     private function checkAccess()
     {
-	$role = "contributor";
-	
-	if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
+	if(!$this->manager->isContributor(phpCAS::getUser())) {
 	    ErrorPage::show(_("Access denied!"),
-			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
+			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "contributor"));
 	    exit(1);
 	}
     }
