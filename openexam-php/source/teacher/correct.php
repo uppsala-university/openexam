@@ -473,9 +473,11 @@ class CorrectionPage extends TeacherPage
 			'd' => array( 'name' => _("Decoded"),
 				      'data' => array() ),
 			'u' => array( 'name' => _("Upcoming"),
+				      'data' => array() ),
+			'a' => array( 'name' => _("Active"),
 				      'data' => array() )
 			);
-	
+
 	foreach($exams as $exam) {
 	    $manager = new Manager($exam->getExamID());
 	    $state = $manager->getInfo();
@@ -485,6 +487,8 @@ class CorrectionPage extends TeacherPage
 		$nodes['c']['data'][$exam->getExamName()] = $state;
 	    } elseif($state->isDecoded()) {
 		$nodes['d']['data'][$exam->getExamName()] = $state;
+	    } elseif($state->isRunning()) {
+		$nodes['a']['data'][$exam->getExamName()] = $state;
 	    }
 	}
 	
