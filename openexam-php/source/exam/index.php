@@ -284,7 +284,7 @@ class ExaminationPage extends BasePage
 	    printf("<div class=\"exambody\">%s<p>%s: <b>%s</b></p>\n", 
 		   utf8_decode(str_replace("\n", "<br>", $exam->getExamDescription())),
 		   _("The examination ends"), 
-		   strftime(TIME_FORMAT, strtotime($exam->getExamEndTime())));
+		   strftime(DATETIME_ISO, strtotime($exam->getExamEndTime())));
 	    
 	    $form = new Form("index.php", "GET");
 	    $form->addHidden("exam", $exam->getExamID());
