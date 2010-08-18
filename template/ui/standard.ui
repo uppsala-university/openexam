@@ -34,11 +34,6 @@ document.rs_form.url.value = document.location.href; } //-->
 <body class="grey">
 
 <div id="toppbildbmc">
-<div id="managerstatus">
-<?php 
-$page->printManagerStatus();
-?>
-</div>
 <div id="topmenu">
 <?php 
 $page->printLogonStatus(); 
@@ -95,5 +90,16 @@ if(!isset($publish)) {
 
 </div>
 </div>
+
+<!-- 
+  The manager status must be showed after body has been printed, 
+  as the body code might change the state.
+  -->
+<div id="managerstatus">
+<?php 
+$page->printManagerStatus();
+?>
+</div>
+
 </body>
 </html>
