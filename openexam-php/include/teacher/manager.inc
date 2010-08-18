@@ -489,22 +489,70 @@ class Manager
     }
     
     // 
-    // Return true if this user is a contributor for this exam.
+    // Returns true if the user has been assigned the requested role on this 
+    // exam. These roles are bound to an exam: creator, contributor, examinator 
+    // or decoder. The corrector role is granted to a person by an questions 
+    // publisher. Use cached query result if cache is true.
     // 
-    public function isContributor($user)
+    public function hasRole($user, $role, $cache = true)
     {
-        $db = Database::getConnection();
+	if($cache && isset($this->$user->$role)) {
+	    return $this->$user->$role;
+	}
+	
+	switch($role) {
+	 case "creator":
+	    $sql = sprintf("SELECT COUNT(*) FROM exams WHERE id = %d AND creator = '%s'", $this->exam, $user);
+	    break;
+	 case "contributor":
+	 case "examinator":
+	 case "decoder":
+	    $sql = sprintf("SELECT COUNT(*) FROM ${role}s WHERE exam_id = %d AND user = '%s'", $this->exam, $user);
+	    break;
+	 case "corrector":
+	    $sql = sprintf("SELECT COUNT(*) FROM questions WHERE exam_id = %d AND user = '%s'", $this->exam, $user);
+	    break;
+	 default:
+	    return false;
+	}
+	
+	$db = Database::getConnection();
 	$db->setFetchMode(MDB2_FETCHMODE_ORDERED);
-	$sql = sprintf("SELECT COUNT(*) FROM contributors
-			 WHERE user = '%s' AND exam_id = %d", $user, $this->exam);
 	$res = $db->query($sql);
 	if(PEAR::isError($res)) {
 	    throw new DatabaseException($res->getMessage());
 	}
 	$row = $res->fetchRow();
-    
+	if($cache) {
+	    $this->$user->$role = intval($row[0]) >= 1;
+	}
+	
 	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 	return intval($row[0]) >= 1;
+    }
+    
+    // 
+    // Return true if this user is the creator this exam.
+    // 
+    public function isCreator($user)
+    {
+	return self::hasRole($user, "creator");
+    }
+
+    // 
+    // Return true if this user is a corrector for this exam.
+    // 
+    public function isCorrector($user)
+    {
+	return self::hasRole($user, "corrector");
+    }
+    
+    // 
+    // Return true if this user is a contributor for this exam.
+    // 
+    public function isContributor($user)
+    {
+	return self::hasRole($user, "contributor");
     }
 
     // 
@@ -512,18 +560,15 @@ class Manager
     // 
     public function isDecoder($user)
     {
-        $db = Database::getConnection();
-	$db->setFetchMode(MDB2_FETCHMODE_ORDERED);
-	$sql = sprintf("SELECT COUNT(*) FROM decoders
-			 WHERE user = '%s' AND exam_id = %d", $user, $this->exam);
-	$res = $db->query($sql);
-	if(PEAR::isError($res)) {
-	    throw new DatabaseException($res->getMessage());
-	}
-	$row = $res->fetchRow();
-    
-	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-	return intval($row[0]) >= 1;
+	return self::hasRole($user, "decoder");
+    }
+
+    // 
+    // Return true if this user is a examinator for this exam.
+    // 
+    public function isExaminator($user)
+    {
+	return self::hasRole($user, "examinator");
     }
     
     // 

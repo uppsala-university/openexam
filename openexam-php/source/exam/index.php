@@ -71,8 +71,12 @@ include "include/locale.inc";
 // Include bussiness logic:
 // 
 include "include/exam.inc";
-include "include/teacher.inc";
 include "include/mplayer.inc";
+
+// 
+// Needed to bypass access checks for contributors (in preview mode):
+// 
+include "include/teacher/manager.inc";
 
 // 
 // This class implements a basic page.
@@ -213,7 +217,8 @@ class ExaminationPage extends BasePage
 	// 
 	// Allow contributors to bypass normal user checks (for previewing questions).
 	// 
-	$this->author = Teacher::userHasRole($exam, "contributor", phpCAS::getUser());
+	$manager = new Manager($exam);
+	$this->author = $manager->isContributor(phpCAS::getUser());
 	if($this->author) {
 	    return;
 	}

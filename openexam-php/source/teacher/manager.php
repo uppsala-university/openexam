@@ -565,10 +565,9 @@ class ManagerPage extends TeacherPage
     private function checkAccess()
     {
 	if(isset($this->param->exam)) {
-	    $role = "creator";
-	    if(!Teacher::userHasRole($this->param->exam, $role, phpCAS::getUser())) {
+	    if(!$this->manager->isCreator(phpCAS::getUser())) {
 		ErrorPage::show(_("Access denied!"),
-				sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
+				sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "creator"));
 		exit(1);
 	    }
 	} else {
