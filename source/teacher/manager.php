@@ -224,6 +224,7 @@ class ManagerPage extends TeacherPage
 
 	$info = $this->manager->getInfo();
  	$form = new Form("manager.php", "GET");
+	$form->setName("form");
 	$form->addHidden("action", $action);
 	if($exam != 0) {
 	    $form->addHidden("exam", $exam);
@@ -245,9 +246,15 @@ class ManagerPage extends TeacherPage
 	    $input = $form->addTextBox("start", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
 	    $input->setLabel(_("Start time"));
 	    $input->setSize(30);
+	    $input->setid("stm");
+	    $image = $form->addElement(new Image("../images/datetimepicker/cal.gif", _("Calendar icon")));
+	    $image->setEvent(EVENT_ON_CLICK, "javascript:{NewCssCal('stm','yyyymmdd','dropdown',true)}");
 	    $input = $form->addTextBox("end", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
 	    $input->setLabel(_("End time"));
 	    $input->setSize(30);
+	    $input->setid("etm");
+	    $image = $form->addElement(new Image("../images/datetimepicker/cal.gif", _("Calendar icon")));
+	    $image->setEvent(EVENT_ON_CLICK, "javascript:{NewCssCal('etm','yyyymmdd','dropdown',true)}");
 	}
 
 	$form->addSectionHeader(_("Graduation"));

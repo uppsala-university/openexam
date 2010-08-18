@@ -156,15 +156,22 @@ class ExaminatorPage extends TeacherPage
 	printf("<p>"  . _("This page let you reschedule the start and end time of the examination.") . "</p>\n");
 
 	$form = new Form("examinator.php", "GET");
+	$form->setName("form");
 	$form->addHidden("exam", $this->param->exam);
 	$form->addHidden("mode", "save");
 	$form->addHidden("action", "edit");
 	$input = $form->addTextBox("stime", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
 	$input->setLabel(_("Starts"));
 	$input->setSize(25);
+	$input->setid("stm");
+	$image = $form->addElement(new Image("../images/datetimepicker/cal.gif", _("Calendar icon")));
+	$image->setEvent(EVENT_ON_CLICK, "javascript:{NewCssCal('stm','yyyymmdd','dropdown',true)}");
 	$input = $form->addTextBox("etime", strftime(DATETIME_FORMAT, strtotime($data->getExamEndTime())));
 	$input->setLabel(_("Ends"));
 	$input->setSize(25);
+	$input->setid("etm");
+	$image = $form->addElement(new Image("../images/datetimepicker/cal.gif", _("Calendar icon")));
+	$image->setEvent(EVENT_ON_CLICK, "javascript:{NewCssCal('etm','yyyymmdd','dropdown',true)}");
 	$form->addSpace();
 	$input = $form->addSubmitButton("submit", _("Submit"));
 	$input->setLabel();
