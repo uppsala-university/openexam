@@ -148,7 +148,7 @@ class TeacherPage extends BasePage
     // 
     private function printSubMenu($sect)
     {
-	printf("<span id=\"menuhead\">%s</span>\n", $sect->head);
+	printf("<span id=\"menuhead\">%s:</span>\n", $sect->head);
 	printf("<ul>\n");
 	foreach($sect->link as $obj) {
 	    printf("<li><a href=\"%s\">%s</a></li>\n", $obj->href, $obj->name);
@@ -167,7 +167,7 @@ class TeacherPage extends BasePage
 	    // General sub menu:
 	    // 
 	    if($this->manager->isCreator(phpCAS::getUser())) {
-		$links->general->head = _("General:");
+		$links->general->head = _("General");
 		$links->general->link->overview->href   = sprintf("manager.php?exam=%d&action=show", $this->param->exam);
 		$links->general->link->overview->name   = _("Overview");
 		$links->general->link->properties->href = sprintf("manager.php?exam=%d&action=edit", $this->param->exam);
@@ -187,7 +187,7 @@ class TeacherPage extends BasePage
 		$links->staff->link->decoder->href = sprintf("manager.php?exam=%d&action=add&role=decoder", $this->param->exam);
 		$links->staff->link->decoder->name = _("Add decoder");
 		if(isset($links->staff)) {
-		    $links->staff->head = _("Staff:");
+		    $links->staff->head = _("Staff");
 		}
 	    }
 	    
@@ -209,7 +209,7 @@ class TeacherPage extends BasePage
 		    $links->questions->link->answers->name = _("Correct answers");
 		}
 		if(isset($links->questions)) {
-		    $links->questions->head = _("Questions:");
+		    $links->questions->head = _("Questions");
 		}
 	    }
 
@@ -231,11 +231,11 @@ class TeacherPage extends BasePage
 		    $links->tasks->link->decode->name = _("Decode answers");
 		}
 		if(isset($links->tasks)) {
-		    $links->tasks->head = _("Tasks:");
+		    $links->tasks->head = _("Tasks");
 		}
 	    }
 	    
-            printf("<span id=\"menuhead\">%s</span>\n", _("This examination:"));
+            printf("<span id=\"menuhead\">%s:</span>\n", _("This examination"));
 	    printf("<ul>\n");
 	    if(isset($links->general)) {
 		self::printSubMenu($links->general);
