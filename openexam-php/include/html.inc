@@ -326,7 +326,7 @@ class Element
     // 
     public function setId($id)
     {
-	$this->class = $id;
+	$this->id = $id;
     }
     
     // 
