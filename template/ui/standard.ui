@@ -34,6 +34,11 @@ document.rs_form.url.value = document.location.href; } //-->
 <body class="grey">
 
 <div id="toppbildbmc">
+<div id="managerstatus">
+<?php 
+$page->printManagerStatus();
+?>
+</div>
 <div id="topmenu">
 <?php 
 $page->printLogonStatus(); 
