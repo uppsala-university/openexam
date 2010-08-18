@@ -67,7 +67,7 @@ class IndexPage extends BasePage
     private $params = array();
     
     // 
-    // Construct the template page.
+    // Construct the start page.
     // 
     public function __construct()
     {	
@@ -75,7 +75,7 @@ class IndexPage extends BasePage
     }
 
     // 
-    // The template page body.
+    // The start page body.
     // 
     public function printBody()
     {
@@ -83,6 +83,18 @@ class IndexPage extends BasePage
 	printf("<p>" . _("This system let you do examination online, see <a href=\"%s\">Help</a> for more information.") . "</p>\n", "help.php");
 	printf("<h5>" . _("Are you ready to begin the examination?") . "</h5\n");
 	printf("<p>" . _("Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon).") . "</p>\n", "exam/");
+    }
+    
+    // 
+    // Menus for examination managers or admins.
+    // 
+    public function printMenu()
+    {
+	printf("<span id=\"menuhead\">%s</span>\n", _("Manager:"));
+	printf("<ul>\n");
+	printf("<li><a href=\"teacher/\" class=\"menubarlink\">%s</a></li>\n", _("Teacher"));
+	printf("<li><a href=\"admin/\"   class=\"menubarlink\">%s</a></li>\n", _("Admin"));
+	printf("</ul>\n");
     }
     
     // 
