@@ -130,12 +130,21 @@ class ExaminationPage extends BasePage
 		self::showQuestion($_REQUEST['exam'], $_REQUEST['question']);
 	    }
 	}
+	
+	if($this->testcase) {
+	    printf("<hr/>\n");
+	    printf("<b>" . ("Test case") .":</b> <a href=\"%s\">%s</a> <a href=\"%s\">%s</a>\n",
+		   sprintf("../teacher/manager.php?exam=%d&amp;action=finish", $_REQUEST['exam']),
+		   _("Finish"),
+		   sprintf("../teacher/manager.php?exam=%d&amp;action=cancel", $_REQUEST['exam']),
+		   _("Cancel"));
+	}
     }
     
     public function printMenu()
     {
 	if(isset($_REQUEST['exam'])) {
-	
+	    
 	    $questions = Exam::getQuestions($_REQUEST['exam']);
 	    $answers = Exam::getAnswers($_REQUEST['exam'], phpCAS::getUser());
 	    
@@ -199,10 +208,10 @@ class ExaminationPage extends BasePage
 	    echo "<span id=\"menuhead\">" . _("Show") . ":</span>\n";
 	    echo "<ul>\n";
 	    printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
-		   $question->getExamID(),
+		   $_REQUEST['exam'],
 		   _("Show the start page for this examination"), _("Start page"));
 	    printf("<li><a href=\"?exam=%d&amp;question=all\" title=\"%s\">%s</a></li>\n",
-		   $question->getExamID(),
+		   $_REQUEST['exam'],
 		   _("Show all questions at the same time"),
 		   _("All questions"));
 	    echo "</ul>\n";
@@ -220,6 +229,7 @@ class ExaminationPage extends BasePage
 	$manager = new Manager($exam);
 	$this->author = $manager->isContributor(phpCAS::getUser());
 	if($this->author) {
+	    $this->testcase = false;
 	    return;
 	}
 	
@@ -239,6 +249,8 @@ class ExaminationPage extends BasePage
 			    sprintf("<p>" . _("This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance.") . "</p>", strftime(DATETIME_FORMAT, $etime)));
 	    exit(1);
 	}
+
+	$this->testcase = $data->getExamTestCase() == 'Y';
     }
 
     // 
@@ -313,6 +325,16 @@ class ExaminationPage extends BasePage
 	printf("<p>" . _("In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question.") . "</p>\n");
 	printf("<p>" . _("Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished.") . "</p>\n");
 	printf("<p>" . _("Good luck!") . "</p>\n");
+	
+	if($this->testcase) {
+	    printf("<div class=\"testcase\">\n");
+	    printf("<h4>" . _("Running in test case mode!") . "</h4>\n");
+	    printf("<p>"  . _("This examination is running in test case mode. This mode allows you to review and work with the examination in the same way as the students will.") . "</p>\n");
+	    printf("<p>"  . _("To exit, click either on the 'finish' or 'cancel' link at bottom of the page. Clicking 'finish' will stop the examination and allow you to correct and decode results, while 'cancel' will delete this test case.") . "</p>\n");
+	    printf("<h6>" . _("Important") . ":</h6>\n");
+	    printf("<p>"  . _("Running in test case mode is non-destructive. The original examination remains unaffected as you are working entierly on a copy of it.") . "</p>\n");
+	    printf("</div>\n");
+	}	
     }
     
     // 

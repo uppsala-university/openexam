@@ -50,7 +50,7 @@ class Exam
     {
 	$sql = sprintf("SELECT e.id AS ExamID, s.id AS StudentID, e.name AS ExamName, e.descr AS ExamDescription, 
 			       e.starttime AS ExamStartTime, e.endtime AS ExamEndTime, e.created AS ExamCreated,
-			       e.updated AS ExamUpdated, e.creator AS ExamCreator
+			       e.updated AS ExamUpdated, e.creator AS ExamCreator, e.testcase AS ExamTestCase
 			FROM students s, exams e
 			WHERE s.user = '%s' AND s.exam_id = e.id AND e.id = %d", $user, $exam);
         $res = Database::getConnection()->query($sql);
@@ -132,7 +132,6 @@ class Exam
 			FROM answers a, students s 
 			WHERE s.exam_id = %d AND a.student_id = s.id AND s.user = '%s' AND a.student_id = s.id
 			ORDER BY QuestionID", $exam, $user);
-	// die($sql);
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);
     }

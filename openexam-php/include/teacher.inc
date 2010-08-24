@@ -151,7 +151,13 @@ class TeacherPage extends BasePage
 	printf("<span id=\"menuhead\">%s:</span>\n", $sect->head);
 	printf("<ul>\n");
 	foreach($sect->link as $obj) {
-	    printf("<li><a href=\"%s\">%s</a></li>\n", $obj->href, $obj->name);
+	    if(isset($obj->target)) {
+		printf("<li><a href=\"%s\" target=\"%s\">%s</a></li>\n", 
+		       $obj->href, $obj->target, $obj->name);
+	    } else {
+		printf("<li><a href=\"%s\">%s</a></li>\n", 
+		       $obj->href, $obj->name);
+	    }
 	}
 	printf("</ul>\n");
 	printf("<br/>\n");
@@ -172,15 +178,25 @@ class TeacherPage extends BasePage
 		$links->general->link->overview->name   = _("Overview");
 		$links->general->link->properties->href = sprintf("manager.php?exam=%d&action=edit", $this->param->exam);
 		$links->general->link->properties->name = _("Properties");
+		if($this->manager->getInfo()->isTestCase()) {
+		    $links->general->link->testcase->href = sprintf("../exam/index.php?exam=%d", $this->param->exam);
+		    $links->general->link->testcase->name = _("Test");
+		} else {
+		    $links->general->link->testcase->href = sprintf("manager.php?exam=%d&action=test", $this->param->exam);
+		    $links->general->link->testcase->name = _("Test");
+		}
+		$links->general->link->testcase->target = "_blank";
 	    }
 	    
 	    // 
 	    // Staff sub menu:
 	    // 
 	    if($this->manager->isCreator(phpCAS::getUser())) {
-		if(!$this->manager->getInfo()->isFinished()) {
+		if($this->manager->getInfo()->isUpcoming()) {
 		    $links->staff->link->contributor->href = sprintf("manager.php?exam=%d&action=add&role=contributor", $this->param->exam);
 		    $links->staff->link->contributor->name = _("Add contributor");
+		}
+		if(!$this->manager->getInfo()->isFinished()) {
 		    $links->staff->link->examinator->href  = sprintf("manager.php?exam=%d&action=add&role=examinator", $this->param->exam);
 		    $links->staff->link->examinator->name  = _("Add examinator");
 		}

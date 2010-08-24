@@ -17,6 +17,10 @@ Version 1.5.3 (2010-mm-dd):
 	* Top menus are hidden once an examination gets selected (in
 	  teacher section). New menus bound to selected examination
 	  appears in left side instead.
+	  
+	* Added ability to run the exam in "dry-run" mode (also called
+	  test case). This mode works as a real examination, but using
+	  a copy of the original examination.
 	
 Version 1.5.2 (2010-06-02):
 
