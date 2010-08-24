@@ -192,8 +192,8 @@ class BasePage implements TemplatePage
 	printf("<meta name=\"description\" content=\"Locker room booking system\" />\n");
 	printf("<meta name=\"author\" content=\"http://it.bmc.uu.se/andlov/proj/\" />\n");
 	printf("<link rel=\"stylesheet\" type=\"text/css\" href=\"%s/css/openexam.css\" />\n", BASE_URL);
-	printf("<script type=\"text/javascript\" language=\"javascript\" src=\"%s/js/openexam.js\" />\n", BASE_URL);
-	printf("<script type=\"text/javascript\" language=\"javascript\" src=\"%s/js/datetimepicker_css.js\" />\n", BASE_URL);
+	printf("<script type=\"text/javascript\" language=\"javascript\" src=\"%s/js/openexam.js\"></script>\n", BASE_URL);
+	printf("<script type=\"text/javascript\" language=\"javascript\" src=\"%s/js/datetimepicker_css.js\"></script>\n", BASE_URL);
     }
     
     // 
