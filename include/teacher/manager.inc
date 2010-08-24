@@ -40,6 +40,10 @@ if(!defined("EXAM_STATE_FINISHED")) {
     define ("EXAM_STATE_FINISHED", 256);
 }
 
+if(!defined("EXAM_STATE_TEST_CASE")) {
+    define ("EXAM_STATE_TEST_CASE", 512);
+}
+
 // 
 // An abstraction of exam grades.
 // 
@@ -155,7 +159,8 @@ class ExamState
     
     private function setInfo($exam)
     {
-	$sql = sprintf("SELECT e.id AS ExamID, e.starttime AS ExamStartTime, e.endtime AS ExamEndTime, e.decoded AS ExamDecoded, COUNT(a.id) AS AnswerCount 
+	$sql = sprintf("SELECT e.id AS ExamID, e.starttime AS ExamStartTime, e.endtime AS ExamEndTime, 
+			       e.decoded AS ExamDecoded, e.testcase AS ExamTestCase, COUNT(a.id) AS AnswerCount 
 			FROM exams e, questions q 
 			LEFT JOIN answers a ON q.id = a.question_id WHERE e.id = %d AND q.exam_id = e.id", $exam);
 	$res = Database::getConnection()->query($sql);
@@ -185,6 +190,9 @@ class ExamState
 	    } else {
 		$this->state = EXAM_STATE_CORRECTABLE | EXAM_STATE_FINISHED;
 	    }
+	}
+	if($this->info->getExamTestCase() == 'Y') {
+	    $this->state |= EXAM_STATE_TEST_CASE;
 	}
     }
     
@@ -246,6 +254,11 @@ class ExamState
     public function isFinished()
     {
 	return $this->state & EXAM_STATE_FINISHED;
+    }
+
+    public function isTestCase()
+    {
+	return $this->state & EXAM_STATE_TEST_CASE;
     }
     
     public function readonly()
@@ -398,7 +411,7 @@ class Manager
     {
 	$sql = sprintf("SELECT id AS ExamID, name AS ExamName, descr AS ExamDescription, starttime AS ExamStartTime, 
 			          endtime AS ExamEndTime, created AS ExamCreated, updated AS ExamUpdated, creator AS ExamCreator,
-			          decoded AS ExamDecoded, grades AS ExamGrades
+			          decoded AS ExamDecoded, grades AS ExamGrades, testcase AS ExamTestCase
 			FROM exams
 			WHERE creator = '%s'", $user);
 	$res = Database::getConnection()->query($sql);
@@ -424,7 +437,8 @@ class Manager
     {
 	$sql = sprintf("SELECT id AS ExamID, name AS ExamName, descr AS ExamDescription, orgunit AS ExamOrgUnit, 
 			          starttime AS ExamStartTime, endtime AS ExamEndTime, created AS ExamCreated, 
-			          updated AS ExamUpdated, creator AS ExamCreator, decoded AS ExamDecoded, grades AS ExamGrades
+			          updated AS ExamUpdated, creator AS ExamCreator, decoded AS ExamDecoded, 
+			          grades AS ExamGrades, testcase AS ExamTestCase
 			FROM exams WHERE id = %d", $this->exam);
         $res = Database::getConnection()->query($sql);
  	if(PEAR::isError($res)) {
@@ -704,7 +718,7 @@ class Manager
     // 
     // This function creates a clone of this exam and returns the clone object.
     // 
-    public function copy()
+    public function copy($testcase = false)
     {	
         $db = Database::getConnection();
         if($db->supports('transaction')) {	
@@ -715,38 +729,56 @@ class Manager
 	// Create the clone object.
 	// 
 	$data = $this->getData();
+	if($testcase) {
+	    $data->setExamStartTime(time() - 1);
+	    $data->setExamEndTime(strtotime(DATETIME_NONE));
+	} else {
+	    $data->setExamStartTime(strtotime(DATETIME_NONE));
+	    $data->setExamEndTime(strtotime(DATETIME_NONE));
+	}
 	$copy = new Manager(0);
 	$copy->setData($data->getExamOrgUnit(), 
 		       $data->getExamName(), 
 		       $data->getExamDescription(), 
 		       $data->getExamGrades(),
-		       strtotime(DATETIME_NONE), 
-		       strtotime(DATETIME_NONE));
-	
-	// 
-	// Duplicate the assigned contributor, examinator and decoder roles. 
-	// 
-	foreach(array( "decoders", "examinators", "contributors" ) as $table) {
-	    $sql = sprintf("INSERT INTO %s(exam_id, user) SELECT %d, user FROM %s WHERE id = %d", 
-			   $table, $copy->getExamID(), 
-			   $table, $this->getExamID());
-	    $res = $db->query($sql);
-	    if(PEAR::isError($res)) {
-		if($db->in_transaction) {
-		    $db->rollback();
+		       $data->getExamStartTime(),
+		       $data->getExamEndTime());
+
+	if(!$testcase) {
+	    // 
+	    // Duplicate the assigned contributor, examinator and decoder roles. 
+	    // 
+	    foreach(array( "decoders", "examinators", "contributors" ) as $table) {
+		$sql = sprintf("INSERT INTO %s(exam_id, user) SELECT %d, user FROM %s WHERE id = %d", 
+			       $table, $copy->getExamID(), 
+			       $table, $this->getExamID());
+		$res = $db->query($sql);
+		if(PEAR::isError($res)) {
+		    if($db->in_transaction) {
+			$db->rollback();
+		    }
+		    throw new DatabaseException($res->getMessage());
 		}
-		throw new DatabaseException($res->getMessage());
 	    }
 	}
 	
 	// 
 	// Add prefered roles to caller:
-	// 
-	if(!$copy->isContributor(phpCAS::getUser())) {
-	    $copy->addContributor(phpCAS::getUser());
-	}
-	if(!$copy->isDecoder(phpCAS::getUser())) {
-	    $copy->addDecoder(phpCAS::getUser());
+	//
+	if(!$testcase) {
+	    if(!$copy->isContributor(phpCAS::getUser())) {
+		$copy->addContributor(phpCAS::getUser());
+	    }
+	    if(!$copy->isDecoder(phpCAS::getUser())) {
+		$copy->addDecoder(phpCAS::getUser());
+	    }
+	} else {
+	    if(!$copy->isExaminator(phpCAS::getUser())) {
+		$copy->addExaminator(phpCAS::getUser());
+	    }
+	    if(!$copy->isDecoder(phpCAS::getUser())) {
+		$copy->addDecoder(phpCAS::getUser());
+	    }
 	}
 	
 	// 
@@ -763,28 +795,27 @@ class Manager
 	    throw new DatabaseException($res->getMessage());
 	}
 	
-        if($db->in_transaction) {
-	    $db->commit();
-	}
-	
-	return $copy;
-    }
+	if($testcase) {
+	    // 
+	    // The exam must be flagged as a test case.
+	    // 
+	    $sql = sprintf("UPDATE exams SET testcase = 'Y' WHERE id = %d", $copy->getExamID());
+	    $res = $db->query($sql);
+	    if(PEAR::isError($res)) {
+		if($db->in_transaction) {
+		    $db->rollback();
+		}
+		throw new DatabaseException($res->getMessage());
+	    }
 
-    // 
-    // Delete this exam. Referental integrity should ensure that this function fails 
-    // if questions have answers or if exam has students with answers.
-    // 
-    public function delete()
-    {
-        $db = Database::getConnection();
-        if($db->supports('transaction')) {
-	    $db->beginTransaction();
-	} else {
-	    throw new DatabaseException("The exam can't be safely deleted");
-	}
-	
-	foreach(array("contributor", "examinator", "decoder", "student") as $role) {
-	    $sql = sprintf("DELETE FROM ${role}s WHERE exam_id = %d", $this->exam);
+	    // 
+	    // Add caller as an participient on this exam:
+	    // 
+	    $sql = sprintf("INSERT INTO students(exam_id, user, code) 
+	                    VALUES(%d, '%s', '%s')", 
+			   $copy->getExamID(), 
+			   phpCAS::getUser(), 
+			   sprintf("TEST%.04d", $copy->getExamID()));
 	    $res = $db->query($sql);
 	    if(PEAR::isError($res)) {
 		if($db->in_transaction) {
@@ -793,7 +824,73 @@ class Manager
 		throw new DatabaseException($res->getMessage());
 	    }
 	}
+	
+        if($db->in_transaction) {
+	    $db->commit();
+	}
+	
+	return $copy;
+    }
+    
+    // 
+    // Delete this exam. Referental integrity should ensure that this function fails 
+    // if questions have answers or if exam has students with answers.
+    // 
+    public function delete($testcase = false)
+    {
+        $db = Database::getConnection();
+        if($db->supports('transaction')) {
+	    $db->beginTransaction();
+	} else {
+	    throw new DatabaseException("The exam can't be safely deleted");
+	}
+	
+	// 
+	// Only remove answers in test case mode to ensure referential integrity.
+	// 
+	if($testcase) {
+	    $questions = $this->getQuestions();
+	    foreach($questions as $question) {
+		// 
+		// Delete results first for answers to this question:
+		// 
+		$sql = sprintf("DELETE r FROM results AS r 
+				LEFT JOIN answers AS a ON r.answer_id = a.id 
+				WHERE a.question_id = %d", $question->getQuestionID());
+		$res = $db->query($sql);
+		if(PEAR::isError($res)) {
+		    if($db->in_transaction) {
+			$db->rollback();
+		    }
+		    throw new DatabaseException($res->getMessage());
+		}
 
+		// 
+		// Now delete the answers to this question:
+		// 
+		$sql = sprintf("DELETE FROM answers WHERE question_id = %d", $question->getQuestionID());
+		$res = $db->query($sql);
+		if(PEAR::isError($res)) {
+		    if($db->in_transaction) {
+			$db->rollback();
+		    }
+		    throw new DatabaseException($res->getMessage());
+		}
+	    }
+	}
+	
+	foreach(array("contributor", "examinator", "decoder", "student") as $role) {
+	    $sql = sprintf("DELETE FROM ${role}s WHERE exam_id = %d", $this->exam);
+	    printf("sql: $sql\n");
+	    $res = $db->query($sql);
+	    if(PEAR::isError($res)) {
+		if($db->in_transaction) {
+		    $db->rollback();
+		}
+		throw new DatabaseException($res->getMessage());
+	    }
+	}
+	
 	$sql = sprintf("DELETE FROM questions WHERE exam_id = %d", $this->exam);
 	$res = $db->query($sql);
 	if(PEAR::isError($res)) {

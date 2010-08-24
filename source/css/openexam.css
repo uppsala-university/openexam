@@ -320,6 +320,24 @@ h4.secthead {
  */
 #managerstatus {
         position: absolute;
-top: -5px;
-left: 180px;
+        top: -5px;
+        left: 180px;
+}
+#managerstatus dt {
+        color: gray;
+}
+
+/**
+ *  The info section about test case mode.
+ */
+div.testcase {
+        padding: 10px;
+        border: 2px solid #00aa00;
+	background-color: #eeffee;
+}
+div.testcase h4,
+div.testcase h5,
+div.testcase h6 {
+        color: green;
+	text-decoration: underline;
 }
