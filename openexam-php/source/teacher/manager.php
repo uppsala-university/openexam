@@ -68,6 +68,7 @@ include "include/ldap.inc";
 // 
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
+include "include/teacher/testcase.inc";
 
 // 
 // The index page:
@@ -75,7 +76,7 @@ include "include/teacher/manager.inc";
 class ManagerPage extends TeacherPage
 {
     private $params = array( "exam"   => "/^\d+$/",
-			     "action" => "/^(add|edit|show|copy|delete)$/",
+			     "action" => "/^(add|edit|show|copy|test|delete|cancel|finish)$/",
 			     "role"   => "/^(contributor|examinator|decoder)$/",
 			     "user"   => "/^\d+$/",
 			     "uuid"   => "/^[0-9a-zA-Z]{1,10}$/",
@@ -139,9 +140,15 @@ class ManagerPage extends TeacherPage
 			self::editExam(isset($_REQUEST['name']));
 		    } elseif($_REQUEST['action'] == "copy") {
 			self::copyExam();
+		    } elseif($_REQUEST['action'] == "test") {
+			self::testExam();
 		    } elseif($_REQUEST['action'] == "delete") {
 			self::deleteExam();
-		    } 
+		    } elseif($_REQUEST['action'] == "cancel") {
+			self::cancelExam();
+		    } elseif($_REQUEST['action'] == "finish") {
+			self::finishExam();
+		    }
 		}
 	    } else {
 		self::showExam();
@@ -175,25 +182,31 @@ class ManagerPage extends TeacherPage
 			'a' => array( 'name' => _("Active"),
 				      'data' => array() ),
 			'f' => array( 'name' => _("Finished"),
+				      'data' => array() ),
+			't' => array( 'name' => _("Testing"),
 				      'data' => array() )
 			);
 	
 	foreach($exams as $exam) {
 	    $manager = new Manager($exam->getExamID());
 	    $state = $manager->getInfo();
-	    if($state->isUpcoming()) {
-		$nodes['u']['data'][$exam->getExamName()] = $state;
+	    if($state->isTestCase()) {
+	    	$nodes['t']['data'][] = array($exam->getExamName(), $state);
+	    } elseif($state->isUpcoming()) {
+	    	$nodes['u']['data'][] = array($exam->getExamName(), $state);
 	    } elseif($state->isRunning()) {
-		$nodes['a']['data'][$exam->getExamName()] = $state;
+	    	$nodes['a']['data'][] = array($exam->getExamName(), $state);
 	    } elseif($state->isFinished()) {
-		$nodes['f']['data'][$exam->getExamName()] = $state;
+	    	$nodes['f']['data'][] = array($exam->getExamName(), $state);
 	    }
 	}
 	
 	foreach($nodes as $type => $group) {
 	    if(count($group['data']) > 0) {
 		$node = $root->addChild($group['name']);
-		foreach($group['data'] as $name => $state) {
+		foreach($group['data'] as $data) {
+		    $name  = $data[0];
+		    $state = $data[1];
 		    $child = $node->addChild(utf8_decode($name));
 		    $child->setLink(sprintf("?exam=%d&amp;action=show", $state->getInfo()->getExamID()));
 		    if($this->roles->getManagerRoles() > 0) {
@@ -205,7 +218,20 @@ class ManagerPage extends TeacherPage
 		    if(!$state->hasAnswers()) {
 			$child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete", $state->getInfo()->getExamID()), 
 					_("Deletes the examination along with any questions."));
-		    }		    
+		    } elseif($state->isTestCase()) {
+			$child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=cancel", $state->getInfo()->getExamID()), 
+					_("Deletes the examination along with any questions."));
+		    }
+		    if(!$state->isTestCase() && $state->isUpcoming()) {
+			$child->addLink(_("Test"), sprintf("?exam=%d&amp;action=test", $state->getInfo()->getExamID()),
+					_("Test this examination by creating and opening a copy."),
+					array( "target" => "_blank"));
+		    }
+		    if($state->isTestCase() && !$state->isFinished()) {
+			$child->addLink(_("Test"), sprintf("../exam/index.php?exam=%d", $state->getInfo()->getExamID()),
+					_("Run this test case examination."),
+					array( "target" => "_blank"));
+		    }
 		    $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
 		    $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
 		}
@@ -347,12 +373,43 @@ class ManagerPage extends TeacherPage
 	header(sprintf("location: manager.php?exam=%d&action=edit", $copy->getExamID()));
     }
     
+    // 
+    // Create a test case of the exam and redirect user to it. This is also
+    // known as dry-run, in that the original examination remains unmodified.
+    // 
+    private function testExam()
+    {
+	$test = new TestCase($this->param->exam);
+	$test->create();
+	header(sprintf("location: ../exam/index.php?exam=%d", $test->getExamID()));
+    }
+    
     private function deleteExam()
     {
 	$this->manager->delete();
 	header("location: manager.php");
     }
+    
+    // 
+    // Cancel test case of exam.
+    // 
+    private function cancelExam()
+    {
+	$test = new TestCase($this->param->exam);
+	$test->delete();
+	header("location: manager.php");
+    }
 
+    // 
+    // Finish test case of exam.
+    // 
+    private function finishExam()
+    {
+	$test = new TestCase($this->param->exam);
+	$test->finish();
+	header(sprintf("location: manager.php?exam=%d", $this->param->exam));
+    }
+    
     // 
     // Show properties for this exam.
     // 
@@ -409,7 +466,7 @@ class ManagerPage extends TeacherPage
 						      $examinator->getExamID(),
 						      $examinator->getExaminatorID()),
 				 sprintf(_("Remove %s as an examinator for this examination."),
-					 utf8_decode($this->getCommonName($contributor->getContributorUser()))));
+					 utf8_decode($this->getCommonName($examinator->getExaminatorUser()))));
 	    }
 	}
 	
@@ -427,7 +484,7 @@ class ManagerPage extends TeacherPage
 						  $decoder->getExamID(),
 						  $decoder->getDecoderID()),
 			     sprintf(_("Remove %s as a decoder for this examination."),
-					 utf8_decode($this->getCommonName($contributor->getContributorUser()))));
+				     utf8_decode($this->getCommonName($decoder->getDecoderUser()))));
 	}
 
 	// 
