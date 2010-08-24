@@ -80,6 +80,29 @@ document.onmousedown = pickIt;
 document.onmousemove = dragIt;
 document.onmouseup = dropIt;
 
+function normalize(str)
+{	
+	// See http://blog.moxen.us/2009/08/30/javascript-date-parse-format/
+	ds = str;
+	ds = ds.replace(/\./g, ":");
+	ds = ds.replace(/\-/g, "/");
+	ts = Date.parse(ds);
+	
+	if(isNaN(ts) == true) {
+		return str;
+	}
+	
+	dt = new Date(ts);
+	dv = new Array(dt.getFullYear(), dt.getMonth() + 1, dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
+	for(i = 1; i < dv.length; ++i) {
+		if(dv[i] < 10) {
+			dv[i] = "0" + dv[i];
+		}
+	}
+	ds = dv[0] + "-" + dv[1] + "-" + dv[2] + " " + dv[3] + ":" + dv[4] + ":" + dv[5];
+	return ds;
+}
+
 function NewCssCal(pCtrl,pFormat,pScroller,pShowTime,pTimeMode,pHideSeconds) {
 	// get current date and time
 
@@ -130,6 +153,7 @@ function NewCssCal(pCtrl,pFormat,pScroller,pShowTime,pTimeMode,pHideSeconds) {
     }
 
 	exDateTime=document.getElementById(pCtrl).value;
+	exDateTime=normalize(exDateTime);
 
 	if (exDateTime!="")	{ //Parse existing Date String
 		var Sp1;//Index of Date Separator 1
