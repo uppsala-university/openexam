@@ -13,19 +13,29 @@ printf("<li><a href=\"index.php\" class=\"menubarlink\">%s</a></li>\n", _("Home"
 if(!isset($_REQUEST['exam'])) {
     $roles = Teacher::getRoleCount(phpCAS::getUser());
     if($roles->getManagerRoles() > 0 || $roles->getCreatorRoles() > 0) {
-	printf("<li><a href=\"manager.php\" class=\"menubarlink\">%s</a></li>\n", _("Project"));
+	printf("<li><a href=\"manager.php\" class=\"menubarlink\" title=\"%s\">%s</a></li>\n",
+	       _("Create new examinations or modify properties of existing. Grant or revoke different roles for co-workers."),
+	       _("Project"));
     }
     if($roles->getContributorRoles() > 0) {
-	printf("<li><a href=\"contribute.php\" class=\"menubarlink\">%s</a></li>\n", _("Contribute"));
+	printf("<li><a href=\"contribute.php\" class=\"menubarlink\" title=\"%s\">%s</a></li>\n", 
+	       _("Add, modify or remove questions in examinations where you have been granted the contributor role."),
+	       _("Contribute"));
     }
     if($roles->getExaminatorRoles() > 0) {
-	printf("<li><a href=\"examinator.php\" class=\"menubarlink\">%s</a></li>\n", _("Examination"));
+	printf("<li><a href=\"examinator.php\" class=\"menubarlink\" title=\"%s\">%s</a></li>\n", 
+	       _("Add or remove students from examination. Change the scheduling (start and stop time) of an examination."),
+	       _("Examination"));
     }
     if($roles->getContributorRoles() > 0) {
-	printf("<li><a href=\"correct.php\" class=\"menubarlink\">%s</a></li>\n", _("Correction"));
+	printf("<li><a href=\"correct.php\" class=\"menubarlink\" title=\"%s\">%s</a></li>\n", 
+	       _("Correct answers to questions that you have published or been assigned the corrector role of."),
+	       _("Correction"));
     }
     if($roles->getDecoderRoles() > 0) {
-	printf("<li><a href=\"decoder.php\" class=\"menubarlink\">%s</a></li>\n", _("Decode"));
+	printf("<li><a href=\"decoder.php\" class=\"menubarlink\" title=\"%s\">%s</a></li>\n", 
+	       _("Decode examinations. Download results and send result to students."),
+	       _("Decode"));
     }
 }
 printf("<li><a href=\"help.php\" class=\"menubarlink\">%s</a></li>\n", _("Help"));
