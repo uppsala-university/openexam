@@ -21,6 +21,10 @@ Version 1.5.3 (2010-mm-dd):
 	* Added ability to run the exam in "dry-run" mode (also called
 	  test case). This mode works as a real examination, but using
 	  a copy of the original examination.
+	  
+	* Contributors can now run test case on an exam without being
+	  its creator. This option is configurable (in conf/config.inc) and 
+	  is turned off by default.
 	
 Version 1.5.2 (2010-06-02):
 

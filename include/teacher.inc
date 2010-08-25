@@ -178,11 +178,17 @@ class TeacherPage extends BasePage
 		$links->general->link->overview->name   = _("Overview");
 		$links->general->link->properties->href = sprintf("manager.php?exam=%d&action=edit", $this->param->exam);
 		$links->general->link->properties->name = _("Properties");
+	    }
+	    if($this->manager->isTestCaseAllowed(phpCAS::getUser())) {
+		$links->general->head = _("General");
 		if($this->manager->getInfo()->isTestCase()) {
 		    $links->general->link->testcase->href = sprintf("../exam/index.php?exam=%d", $this->param->exam);
 		    $links->general->link->testcase->name = _("Test");
-		} else {
+		} elseif($this->manager->isCreator(phpCAS::getUser())) {
 		    $links->general->link->testcase->href = sprintf("manager.php?exam=%d&action=test", $this->param->exam);
+		    $links->general->link->testcase->name = _("Test");
+		} elseif($this->manager->isContributor(phpCAS::getUser())) {
+		    $links->general->link->testcase->href = sprintf("contribute.php?exam=%d&action=test", $this->param->exam);
 		    $links->general->link->testcase->name = _("Test");
 		}
 		$links->general->link->testcase->target = "_blank";
