@@ -64,6 +64,7 @@ include "include/exam.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/contribute.inc";
+include "include/teacher/testcase.inc";
 
 // 
 // The contribute page:
@@ -71,7 +72,7 @@ include "include/teacher/contribute.inc";
 class ContributePage extends TeacherPage
 {
     private $params = array( "exam"     => "/^\d+$/",
-			     "action"   => "/^(add|edit|delete|remove|restore)$/",
+			     "action"   => "/^(add|edit|test|delete|remove|restore)$/",
 			     "question" => "/^(\d+|all|active|removed)$/",
 			     "comment"  => "/.*/",
 			     "mode"     => "/^(save)$/",
@@ -132,7 +133,7 @@ class ContributePage extends TeacherPage
 		} elseif($_REQUEST['action'] == "remove") {
 		    if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
 			self::assert(array('question', 'comment'));
- 			self::saveRemoveQuestion();
+			self::saveRemoveQuestion();
 		    } else {
 			self::assert('question');
 			self::formRemoveQuestion();
@@ -140,6 +141,9 @@ class ContributePage extends TeacherPage
 		} elseif($_REQUEST['action'] == "restore") {
 		    self::assert('question');
 		    self::saveRestoreQuestion();
+		} elseif($_REQUEST['action'] == "test") {
+		    self::checkAccess("test");
+		    self::testExam();
 		}
 	    } else {
 		if(isset($_REQUEST['question'])) {
@@ -156,12 +160,20 @@ class ContributePage extends TeacherPage
     // 
     // Verify that the caller has been granted the required role on this exam.
     // 
-    private function checkAccess()
+    private function checkAccess($reason = null)
     {
-	if(!$this->manager->isContributor(phpCAS::getUser())) {
-	    ErrorPage::show(_("Access denied!"),
-			    sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "contributor"));
-	    exit(1);
+	if(!isset($reason)) {
+	    if(!$this->manager->isContributor(phpCAS::getUser())) {
+		ErrorPage::show(_("Access denied!"),
+				sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "contributor"));
+		exit(1);
+	    }
+	} elseif($reason == "test") {
+	    if(!$this->manager->isTestCaseAllowed(phpCAS::getUser())) {
+		ErrorPage::show(_("Access denied!"),
+				_("Only the creator of the examination is allowed to run test case on it. The script processing has halted."));
+		exit(1);
+	    }
 	}
     }
     
@@ -431,7 +443,18 @@ class ContributePage extends TeacherPage
 	$input = $form->addButton(BUTTON_RESET, _("Reset"));
 	$form->output();
     }
-	
+
+    // 
+    // Create a test case of the exam and redirect user to it. This is also
+    // known as dry-run, in that the original examination remains unmodified.
+    // 
+    private function testExam()
+    {
+	$test = new TestCase($this->param->exam);
+	$test->create();
+	header(sprintf("location: ../exam/index.php?exam=%d", $test->getExamID()));
+    }
+    
     // 
     // Show all questions for this exam.
     // 
