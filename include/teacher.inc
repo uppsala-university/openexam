@@ -179,7 +179,7 @@ class TeacherPage extends BasePage
 		$links->general->link->properties->href = sprintf("manager.php?exam=%d&action=edit", $this->param->exam);
 		$links->general->link->properties->name = _("Properties");
 	    }
-	    if($this->manager->isTestCaseAllowed(phpCAS::getUser())) {
+	    if($this->manager->isTestCaseAllowed(phpCAS::getUser()) && !$this->manager->getInfo()->isFinished()) {
 		$links->general->head = _("General");
 		if($this->manager->getInfo()->isTestCase()) {
 		    $links->general->link->testcase->href = sprintf("../exam/index.php?exam=%d", $this->param->exam);
