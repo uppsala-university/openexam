@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-08-25 19:08+0200\n"
+"POT-Creation-Date: 2010-08-25 19:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1247,6 +1247,10 @@ msgstr ""
 msgid "The comment you add here will show up as the reason for question removal on the examination results."
 msgstr ""
 
+#: source/teacher/contribute.php:467
+msgid "Own"
+msgstr ""
+
 #: source/teacher/contribute.php:481
 #, php-format
 msgid "Manage Questions"
@@ -1284,18 +1288,18 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: source/teacher/contribute.php:512
-msgid "View"
-msgstr ""
-
-#: source/teacher/contribute.php:515
-msgid "Preview this question"
-msgstr ""
-
-#: source/teacher/contribute.php:516 source/teacher/examinator.php:331
+#: source/teacher/contribute.php:512 source/teacher/examinator.php:331
 #: source/teacher/manager.php:219 source/teacher/manager.php:222
 #: source/teacher/manager.php:521
 msgid "Delete"
+msgstr ""
+
+#: source/teacher/contribute.php:516
+msgid "View"
+msgstr ""
+
+#: source/teacher/contribute.php:519
+msgid "Preview this question"
 msgstr ""
 
 #: source/teacher/contribute.php:523 source/exam/index.php:461

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-08-25 19:08+0200\n"
-"PO-Revision-Date: 2010-08-25 19:11+0200\n"
+"POT-Creation-Date: 2010-08-25 19:41+0200\n"
+"PO-Revision-Date: 2010-08-25 19:41+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -195,7 +195,7 @@ msgstr "Notera"
 #: include/pdf.inc:348 source/teacher/contribute.php:467
 #: source/teacher/manager.php:531
 msgid "Removed"
-msgstr "Borttagen"
+msgstr "Borttagna"
 
 #: include/pdf.inc:395 source/teacher/correct.php:219
 #: source/teacher/correct.php:425
@@ -872,7 +872,7 @@ msgstr "Kommande"
 #: source/teacher/contribute.php:556 source/teacher/examinator.php:359
 #: source/teacher/manager.php:182 source/teacher/manager.php:508
 msgid "Active"
-msgstr "Aktiv"
+msgstr "Aktiva"
 
 #: source/teacher/correct.php:504
 msgid "Click on this link to open this examination to correct answers."
@@ -1265,6 +1265,10 @@ msgstr "Genom att markera den här frågan som borttagen så kommer alla svar (för 
 msgid "The comment you add here will show up as the reason for question removal on the examination results."
 msgstr "Den kommentar du lägger till här kommer att visas upp som orsaken för borttagningen av frågan i examensresultatet."
 
+#: source/teacher/contribute.php:467
+msgid "Own"
+msgstr "Egna"
+
 #: source/teacher/contribute.php:481
 #, php-format
 msgid "Manage Questions"
@@ -1302,19 +1306,19 @@ msgstr "Klicka på länken för att lägga till en fråga till examinationen."
 msgid "Edit"
 msgstr "Ändra"
 
-#: source/teacher/contribute.php:512
-msgid "View"
-msgstr "Visa"
-
-#: source/teacher/contribute.php:515
-msgid "Preview this question"
-msgstr "Förhandsgranska den här frågan"
-
-#: source/teacher/contribute.php:516 source/teacher/examinator.php:331
+#: source/teacher/contribute.php:512 source/teacher/examinator.php:331
 #: source/teacher/manager.php:219 source/teacher/manager.php:222
 #: source/teacher/manager.php:521
 msgid "Delete"
 msgstr "Ta bort"
+
+#: source/teacher/contribute.php:516
+msgid "View"
+msgstr "Visa"
+
+#: source/teacher/contribute.php:519
+msgid "Preview this question"
+msgstr "Förhandsgranska den här frågan"
 
 #: source/teacher/contribute.php:523 source/exam/index.php:461
 msgid "Video"
@@ -1392,8 +1396,7 @@ msgstr "Examination"
 
 #: source/teacher/topmenu.menu:32
 msgid "Correct answers to questions that you have published youself or been assigned the role of corrector for by the examination creator."
-msgstr ""
-"Rätta svaren till dom frågor som du själv har publiserat eller blivit tilldelad rollen som rättare (corrector) för av examinationens skapare."
+msgstr "Rätta svaren till dom frågor som du själv har publiserat eller blivit tilldelad rollen som rättare (corrector) för av examinationens skapare."
 
 #: source/teacher/topmenu.menu:33
 msgid "Correction"

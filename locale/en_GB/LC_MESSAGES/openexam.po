@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-08-25 19:08+0200\n"
-"PO-Revision-Date: 2010-08-25 19:09+0200\n"
+"POT-Creation-Date: 2010-08-25 19:41+0200\n"
+"PO-Revision-Date: 2010-08-25 19:41+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
 "MIME-Version: 1.0\n"
@@ -1264,6 +1264,10 @@ msgstr "By marking this question as removed, any scores for answers will be igno
 msgid "The comment you add here will show up as the reason for question removal on the examination results."
 msgstr "The comment you add here will show up as the reason for question removal on the examination results."
 
+#: source/teacher/contribute.php:467
+msgid "Own"
+msgstr "Own"
+
 #: source/teacher/contribute.php:481
 #, php-format
 msgid "Manage Questions"
@@ -1301,19 +1305,19 @@ msgstr "Click to add a question to this examination."
 msgid "Edit"
 msgstr "Edit"
 
-#: source/teacher/contribute.php:512
-msgid "View"
-msgstr "View"
-
-#: source/teacher/contribute.php:515
-msgid "Preview this question"
-msgstr "Preview this question"
-
-#: source/teacher/contribute.php:516 source/teacher/examinator.php:331
+#: source/teacher/contribute.php:512 source/teacher/examinator.php:331
 #: source/teacher/manager.php:219 source/teacher/manager.php:222
 #: source/teacher/manager.php:521
 msgid "Delete"
 msgstr "Delete"
+
+#: source/teacher/contribute.php:516
+msgid "View"
+msgstr "View"
+
+#: source/teacher/contribute.php:519
+msgid "Preview this question"
+msgstr "Preview this question"
 
 #: source/teacher/contribute.php:523 source/exam/index.php:461
 msgid "Video"
@@ -1391,8 +1395,7 @@ msgstr "Examination"
 
 #: source/teacher/topmenu.menu:32
 msgid "Correct answers to questions that you have published youself or been assigned the role of corrector for by the examination creator."
-msgstr ""
-"Correct answers to questions that you have published youself or been assigned the role of corrector for by the examination creator."
+msgstr "Correct answers to questions that you have published youself or been assigned the role of corrector for by the examination creator."
 
 #: source/teacher/topmenu.menu:33
 msgid "Correction"
