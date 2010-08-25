@@ -133,10 +133,12 @@ class ExaminationPage extends BasePage
 	
 	if($this->testcase) {
 	    printf("<hr/>\n");
-	    printf("<b>" . ("Test case") .":</b> <a href=\"%s\">%s</a> <a href=\"%s\">%s</a>\n",
+	    printf("<b>" . ("Test case") .":</b> <a href=\"%s\" title=\"%s\">%s</a> <a href=\"%s\" title=\"%s\">%s</a>\n",
 		   sprintf("../teacher/manager.php?exam=%d&amp;action=finish", $_REQUEST['exam']),
+		   _("Stops the examination and allow you to correct and decode results."),
 		   _("Finish"),
 		   sprintf("../teacher/manager.php?exam=%d&amp;action=cancel", $_REQUEST['exam']),
+		   _("Delete this test case and return to the examination manager."),
 		   _("Cancel"));
 	}
     }
