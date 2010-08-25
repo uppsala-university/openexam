@@ -155,6 +155,11 @@ class CorrectionPage extends TeacherPage
 			    sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
 	    exit(1);
 	}
+	if(!$this->manager->getInfo()->isFinished()) {
+	    ErrorPage::show(_("Access denied!"),
+			    _("This examination is not yet finished. Wait until it has finished before correcting any answer."));
+	    exit(1);
+	}
     }
     
     // 
