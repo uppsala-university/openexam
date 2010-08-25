@@ -29,12 +29,12 @@ if(!isset($_REQUEST['exam'])) {
     }
     if($roles->getContributorRoles() > 0) {
 	printf("<li><a href=\"correct.php\" class=\"menubarlink\" title=\"%s\">%s</a></li>\n", 
-	       _("Correct answers to questions that you have published or been assigned the corrector role of."),
+	       _("Correct answers to questions that you have published youself or been assigned the role of corrector for by the examination creator."),
 	       _("Correction"));
     }
     if($roles->getDecoderRoles() > 0) {
 	printf("<li><a href=\"decoder.php\" class=\"menubarlink\" title=\"%s\">%s</a></li>\n", 
-	       _("Decode examinations. Download results and send result to students."),
+	       _("Decode examinations, download results or send result to students."),
 	       _("Decode"));
     }
 }
