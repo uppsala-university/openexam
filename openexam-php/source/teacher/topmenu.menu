@@ -9,17 +9,17 @@
 // 
 
 printf("<ul class=\"menu0\">\n");
-printf("<li><a href=\"index.php\" class=\"menubarlink\">%s</a></li>\n", _("Start"));
+printf("<li><a href=\"index.php\" class=\"menubarlink\">%s</a></li>\n", _("Home"));
 if(!isset($_REQUEST['exam'])) {
     $roles = Teacher::getRoleCount(phpCAS::getUser());
     if($roles->getManagerRoles() > 0 || $roles->getCreatorRoles() > 0) {
-	printf("<li><a href=\"manager.php\" class=\"menubarlink\">%s</a></li>\n", _("Manage"));
+	printf("<li><a href=\"manager.php\" class=\"menubarlink\">%s</a></li>\n", _("Project"));
     }
     if($roles->getContributorRoles() > 0) {
 	printf("<li><a href=\"contribute.php\" class=\"menubarlink\">%s</a></li>\n", _("Contribute"));
     }
     if($roles->getExaminatorRoles() > 0) {
-	printf("<li><a href=\"examinator.php\" class=\"menubarlink\">%s</a></li>\n", _("Examinate"));
+	printf("<li><a href=\"examinator.php\" class=\"menubarlink\">%s</a></li>\n", _("Examination"));
     }
     if($roles->getContributorRoles() > 0) {
 	printf("<li><a href=\"correct.php\" class=\"menubarlink\">%s</a></li>\n", _("Correction"));
