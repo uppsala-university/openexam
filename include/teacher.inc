@@ -312,6 +312,9 @@ class TeacherPage extends BasePage
 	    if($state->value & EXAM_STATE_DECODABLE) {
 		$state->flags[] = "decodable";
 	    }
+	    if($state->value & EXAM_STATE_TEST_CASE) {
+		$state->flags[] = "testcase";
+	    }
 
 	    $scripts = array( 
 			      "manager.php" => "creator",
