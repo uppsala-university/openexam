@@ -586,6 +586,20 @@ class Manager
     }
     
     // 
+    // Return true if user can create and run test cases.
+    // 
+    public function isTestCaseAllowed($user) 
+    {
+	if(self::hasRole($user, "creator")) {
+	    return true;
+	}
+	if(self::hasRole($user, "contributor")) {
+	    return TEST_CASE_ALLOW_CONTRIBUTOR;
+	}
+	return false;
+    }
+    
+    // 
     // Get all users granted contributor rights on this exam.
     // 
     public function getContributors()

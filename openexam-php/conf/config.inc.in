@@ -188,4 +188,9 @@ define ('MEDIA_PLAYER_BUILTIN',      false);                 // Explicit
 //     }
 // }
 
+// 
+// Allow contributor to create and run examination test cases.
+// 
+define ('TEST_CASE_ALLOW_CONTRIBUTOR', false);
+
 ?>
