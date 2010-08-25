@@ -491,15 +491,15 @@ class ManagerPage extends TeacherPage
 	// Build the questions node:
 	// 
 	$quest = $root->addChild(_("Questions"));
-	if($info->isContributable()) {
-	    $quest->addLink(_("Add"), 
-			    sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()),
-			    _("Add a new question for this examination."));
-	    $quest->addLink(_("Remove all"), 
-			    sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all", $data->getExamID()),
-			    _("Remove all questions from this examination."));
-	}
 	if($this->manager->isContributor(phpCAS::getUser())) {
+	    if($info->isContributable()) {
+		$quest->addLink(_("Add"), 
+				sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()),
+				_("Add a new question for this examination."));
+		$quest->addLink(_("Remove all"), 
+				sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all", $data->getExamID()),
+				_("Remove all questions from this examination."));
+	    }
 	    $quest->addLink(_("Show"), 
 			    sprintf("contribute.php?exam=%d", $data->getExamID()),
 			    _("Open the page showing all questions at once, where questions can be edited and previewed."));
@@ -511,22 +511,24 @@ class ManagerPage extends TeacherPage
 	    $subobj = $child->addChild(sprintf("%s %s...", 
 					       utf8_decode($question->getQuestionName()),
 					       utf8_decode(substr(strip_tags($question->getQuestionText()), 0, 55))));
-	    if(!$info->isDecoded()) {
-		$subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
-						    $question->getExamID(),
-						    $question->getQuestionID()),
-				 _("Edit properties for this question"));
-	    }
-	    if($info->isContributable()) {
-		$subobj->addLink(_("Delete"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=%d",
+	    if($this->manager->isContributor(phpCAS::getUser())) {
+		if(!$info->isDecoded()) {
+		    $subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
+							$question->getExamID(),
+							$question->getQuestionID()),
+				     _("Edit properties for this question"));
+		}
+		if($info->isContributable()) {
+		    $subobj->addLink(_("Delete"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=%d",
+							  $question->getExamID(),
+							  $question->getQuestionID()),
+				     _("Permanent delete this question"));
+		}
+		$subobj->addLink(_("Remove"), sprintf("contribute.php?exam=%d&amp;action=remove&amp;question=%d",
 						      $question->getExamID(),
 						      $question->getQuestionID()),
-				 _("Permanent delete this question"));
+				 _("Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."));
 	    }
-	    $subobj->addLink(_("Remove"), sprintf("contribute.php?exam=%d&amp;action=remove&amp;question=%d",
-						  $question->getExamID(),
-						  $question->getQuestionID()),
-			     _("Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."));
 	}
 	$child = $quest->addChild(_("Removed"));
 	$questions = $this->manager->getQuestions('removed');
@@ -534,10 +536,12 @@ class ManagerPage extends TeacherPage
 	    $subobj = $child->addChild(sprintf("%s %s...", 
 					       utf8_decode($question->getQuestionName()),
 					       utf8_decode(substr($question->getQuestionText(), 0, 60))));
-	    $subobj->addLink(_("Restore"), sprintf("contribute.php?exam=%d&amp;action=restore&amp;question=%d",
-						   $question->getExamID(),
-						   $question->getQuestionID()),
-			     _("Flag this question as active again"));
+	    if($this->manager->isContributor(phpCAS::getUser())) {
+		$subobj->addLink(_("Restore"), sprintf("contribute.php?exam=%d&amp;action=restore&amp;question=%d",
+						       $question->getExamID(),
+						       $question->getQuestionID()),
+				 _("Flag this question as active again"));
+	    }
 	}
 	
 	printf("<p>" . 
