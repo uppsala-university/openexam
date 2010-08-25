@@ -509,14 +509,14 @@ class ContributePage extends TeacherPage
 						   $question->getQuestionID()));
 		}
 		if($info->isContributable()) {
-		    $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
-						       $question->getExamID(),
-						       $question->getQuestionID()),
-				    _("Preview this question"), array("target" => "_blank"));
 		    $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", 
 							 $question->getExamID(),
 							 $question->getQuestionID()));
 		}
+		$child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
+						   $question->getExamID(),
+						   $question->getQuestionID()),
+				_("Preview this question"), array("target" => "_blank"));
 	    }
 	    $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
 	    $child->addChild(sprintf("%s: %s", _("Publisher"), $this->getFormatName($question->getQuestionPublisher())));
