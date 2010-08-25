@@ -336,6 +336,10 @@ class ContributePage extends TeacherPage
 	    $input->setLabel(_("Image URL"));
 	    $input->setTitle(_("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question. The resource will be embedded on the question page in the right hand sidebar."));
 	    $input->setSize(70);
+	} else {
+	    $input = $form->addHidden("video", $data->hasQuestionVideo() ? $data->getQuestionVideo() : "");
+	    $input = $form->addHidden("audio", $data->hasQuestionAudio() ? $data->getQuestionAudio() : "");
+	    $input = $form->addHidden("image", $data->hasQuestionImage() ? $data->getQuestionImage() : "");
 	}
 
 	// 
@@ -475,13 +479,13 @@ class ContributePage extends TeacherPage
 	
 	foreach($questions as $question) {
 	    $child = $root->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
-	    if(!$info->isDecoded()) {
-		$child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
+	    if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
+		if(!$info->isDecoded()) {
+		    $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d", 
 						   $question->getExamID(),
 						   $question->getQuestionID()));
-	    }
-	    if($info->isContributable()) {
-		if($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
+		}
+		if($info->isContributable()) {
 		    $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
 						       $question->getExamID(),
 						       $question->getQuestionID()),

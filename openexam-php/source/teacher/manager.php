@@ -511,11 +511,13 @@ class ManagerPage extends TeacherPage
 	    $subobj = $child->addChild(sprintf("%s %s...", 
 					       utf8_decode($question->getQuestionName()),
 					       utf8_decode(substr(strip_tags($question->getQuestionText()), 0, 55))));
-	    if($info->isContributable()) {
+	    if(!$info->isDecoded()) {
 		$subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
 						    $question->getExamID(),
 						    $question->getQuestionID()),
 				 _("Edit properties for this question"));
+	    }
+	    if($info->isContributable()) {
 		$subobj->addLink(_("Delete"), sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=%d",
 						      $question->getExamID(),
 						      $question->getQuestionID()),
