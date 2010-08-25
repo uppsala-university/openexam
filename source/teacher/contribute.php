@@ -73,7 +73,7 @@ class ContributePage extends TeacherPage
 {
     private $params = array( "exam"     => "/^\d+$/",
 			     "action"   => "/^(add|edit|test|delete|remove|restore)$/",
-			     "question" => "/^(\d+|all|active|removed)$/",
+			     "question" => "/^(\d+|all|active|removed|own)$/",
 			     "comment"  => "/.*/",
 			     "mode"     => "/^(save)$/",
 			     "score"    => "/^\d+(\.\d)*$/",
@@ -462,9 +462,9 @@ class ContributePage extends TeacherPage
     {
 	$data = $this->manager->getData();
 	$info = $this->manager->getInfo();
-	$show = isset($this->param->question) ? $this->param->question : "active";
+	$show = isset($this->param->question) ? $this->param->question : "own";
 
-	$mode = array( "all" => _("All"), "active" => _("Active"), "removed" => _("Removed"));
+	$mode = array( "all" => _("All"), "active" => _("Active"), "removed" => _("Removed"), "own" => _("Own"));
 	$disp = array();
 	printf("<span class=\"links viewmode\">\n");
 	foreach($mode as $name => $text) {
