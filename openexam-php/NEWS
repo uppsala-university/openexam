@@ -1,3 +1,8 @@
+Version 1.5.4 (2010-mm-dd):
+
+        * Questions in the exam can now be answered in a 'save' and 'save and
+	  move next' manner.
+	
 Version 1.5.3 (2010-08-25):
 
 	* The session length can now be extended (see conf/config.inc) and
