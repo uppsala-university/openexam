@@ -147,29 +147,7 @@ class ExaminationPage extends BasePage
     {
 	if(isset($_REQUEST['exam'])) {
 	    
-	    $questions = Exam::getQuestions($_REQUEST['exam']);
-	    $answers = Exam::getAnswers($_REQUEST['exam'], phpCAS::getUser());
-	    
-	    // 
-	    // Build the associative array of questions and answers. We are going to need
-	    // this array for proper sectioning of answered/unanswered questions.
-	    // 
-	    // $array = array( "q" => array( ... ), "a" => array( ... );
-	    // 
-	    $menuitem = array();	    
-	    foreach($questions as $question) {
-		$answered = false;
-		foreach($answers as $answer) {
-		    if($question->getQuestionID() == $answer->getQuestionID()) {
-			$menuitem['a'][] = $question;
-			$answered = true;
-			break;
-		    }
-		}
-		if(!$answered) {
-		    $menuitem['q'][] = $question;
-		}
-	    }
+	    $menuitem = self::getQuestions();
 	    
 	    if(isset($menuitem['q'])) {
 		echo "<span id=\"menuhead\">" . _("Questions:") . "</span>\n";
@@ -435,7 +413,10 @@ class ExaminationPage extends BasePage
 	}
 	if(!$this->author) {
 	    $form->addSpace();
-	    $form->addSubmitButton("submit", _("Save"));
+	    $button = $form->addSubmitButton("save", _("Save"));
+	    $button->setTitle(_("Save your answer in the database."));
+	    $button = $form->addSubmitButton("next", _("OK"));
+	    $button->setTitle(_("Save and move on to next unanswered question."));
 	}
 	$form->output();
 	
@@ -451,7 +432,7 @@ class ExaminationPage extends BasePage
 	}
 	if(isset($_REQUEST['status']) && $_REQUEST['status'] == "ok") {
 	    printf("<p><img src=\"icons/nuvola/info.png\" /> " . _("Your answer has been successful saved in the database.") . "</p>\n");
-	}	
+	}
 	printf("</div>\n");
 	
 	if($qdata->hasQuestionMedia()) {
@@ -490,7 +471,47 @@ class ExaminationPage extends BasePage
 	    $answer = json_encode($answer);
 	}
 	Exam::setAnswer($exam, $question, phpCAS::getUser(), utf8_encode($answer));
-	header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
+	if(isset($_REQUEST['save'])) {
+	    header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
+	} elseif(isset($_REQUEST['next'])) {
+	    $menuitem = self::getQuestions();
+	    if(count($menuitem['q']) != 0) {
+		$next = $menuitem['q'][0];
+		$question = $next->getQuestionID();
+	    }
+	    header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
+	}
+    }
+
+    // 
+    // Get questions classified as remaining or already answered.
+    // 
+    private function getQuestions()
+    {
+	$questions = Exam::getQuestions($_REQUEST['exam']);
+	$answers = Exam::getAnswers($_REQUEST['exam'], phpCAS::getUser());
+	
+	// 
+	// Build the associative array of questions and answers. We are going to need
+	// this array for proper sectioning of answered/unanswered questions.
+	// 
+	// $array = array( "q" => array( ... ), "a" => array( ... );
+	// 
+	$menuitem = array();	    
+	foreach($questions as $question) {
+	    $answered = false;
+	    foreach($answers as $answer) {
+		if($question->getQuestionID() == $answer->getQuestionID()) {
+		    $menuitem['a'][] = $question;
+		    $answered = true;
+		    break;
+		}
+	    }
+	    if(!$answered) {
+		$menuitem['q'][] = $question;
+	    }
+	}
+	return $menuitem;
     }
     
     // 
