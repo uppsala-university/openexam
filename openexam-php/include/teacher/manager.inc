@@ -635,17 +635,21 @@ class Manager
     // 
     // Get all questions associated with this exam, optional filter on status. 
     // If status is null, then all question are returned. Possible values for
-    // status are: 'active' or 'removed'.
+    // filter are: 'active', 'removed' or own.
     // 
-    public function getQuestions($status = null)
+    public function getQuestions($filter = null)
     {
 	$sql = sprintf("SELECT id AS QuestionID, exam_id AS ExamID, score AS QuestionScore,
 			       name AS QuestionName, quest AS QuestionText, user AS QuestionPublisher,
 			       video AS QuestionVideo, image AS QuestionImage, audio AS QuestionAudio,
 			       type AS QuestionType, status AS QuestionStatus, comment AS QuestionComment
 			FROM questions WHERE exam_id = %d", $this->exam);
-	if(isset($status)) {
-	    $sql .= sprintf(" AND status = '%s'", $status);
+	if(isset($filter)) {
+	    if($filter == "active" || $filter == "removed") {
+		$sql .= sprintf(" AND status = '%s'", $filter);
+	    } elseif($filter == "own") {
+		$sql .= sprintf(" AND user = '%s'", phpCAS::getUser());
+	    }
 	}
 	$res = Database::getConnection()->query($sql);
 	return new ResultSet($res);			
