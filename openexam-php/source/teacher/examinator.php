@@ -366,18 +366,20 @@ class ExaminatorPage extends TeacherPage
 	    $manager = new Manager($exam->getExamID());
 	    $state = $manager->getInfo();
 	    if($state->isUpcoming()) {
-		$nodes['u']['data'][$exam->getExamName()] = $state;
+		$nodes['u']['data'][] = array($exam->getExamName(), $state);
 	    } elseif($state->isRunning()) {
-		$nodes['a']['data'][$exam->getExamName()] = $state;
+		$nodes['a']['data'][] = array($exam->getExamName(), $state);
 	    } elseif($state->isFinished()) {
-		$nodes['f']['data'][$exam->getExamName()] = $state;
+		$nodes['f']['data'][] = array($exam->getExamName(), $state);
 	    }
 	}
 	
 	foreach($nodes as $type => $group) {
 	    if(count($group['data']) > 0) {
 		$node = $root->addChild($group['name']);
-		foreach($group['data'] as $name => $state) {
+		foreach($group['data'] as $data) {
+		    $name  = $data[0];
+		    $state = $data[1];
 		    $child = $node->addChild(utf8_decode($name));
 		    $child->setLink(sprintf("?exam=%d&action=show", $state->getInfo()->getExamID()), 
 				    _("Click on this link to view and/or edit this examination"));

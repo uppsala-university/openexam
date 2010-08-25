@@ -627,18 +627,20 @@ class DecoderPage extends TeacherPage
 	    $manager = new Manager($exam->getExamID());
 	    $state = $manager->getInfo();
 	    if($state->isDecoded()) {
-		$nodes['d']['data'][$exam->getExamName()] = $state;
+		$nodes['d']['data'][] = array($exam->getExamName(), $state);
 	    } elseif($state->isDecodable()) {
-		$nodes['u']['data'][$exam->getExamName()] = $state;
+		$nodes['u']['data'][] = array($exam->getExamName(), $state);
 	    } else {
-		$nodes['o']['data'][$exam->getExamName()] = $state;
+		$nodes['o']['data'][] = array($exam->getExamName(), $state);
 	    }
 	}
 	
 	foreach($nodes as $type => $group) {
 	    if(count($group['data']) > 0) {
 		$node = $root->addChild($group['name']);
-		foreach($group['data'] as $name => $state) {
+		foreach($group['data'] as $data) {
+		    $name  = $data[0];
+		    $state = $data[1];
 		    $child = $node->addChild(utf8_decode($name));
 		    if($state->isDecodable()) {
 			$child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
