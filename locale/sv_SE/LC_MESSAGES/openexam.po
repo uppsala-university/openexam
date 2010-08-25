@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-08-25 18:31+0200\n"
-"PO-Revision-Date: 2010-08-25 18:37+0200\n"
+"POT-Creation-Date: 2010-08-25 19:08+0200\n"
+"PO-Revision-Date: 2010-08-25 19:11+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -1129,8 +1129,7 @@ msgstr "Endast användare tilldelade rollen %s har åtkomst till den här sidan. Ex
 
 #: source/teacher/contribute.php:174
 msgid "Only the creator of the examination is allowed to run test case on it. The script processing has halted."
-msgstr ""
-"Endast den som skapat examinationen är tillåten att utföra testkörning av den. Exekvering av skriptet har avbrutits."
+msgstr "Endast den som skapat examinationen är tillåten att utföra testkörning av den. Exekvering av skriptet har avbrutits."
 
 #: source/teacher/contribute.php:276
 msgid "Freeform text question"
@@ -1365,34 +1364,55 @@ msgstr "Klicka på den här länken för att se alla frågor i den här examinationen.
 msgid "Home"
 msgstr "Hem"
 
-#: source/teacher/topmenu.menu:16
+#: source/teacher/topmenu.menu:17
+msgid "Create new examinations or modify properties of existing. Grant or revoke different roles for co-workers."
+msgstr "Skapa nya examinationer eller ändra egenskaperna för existerande. Bevilja eller återkalla olika roller tilldelade medarbetare."
+
+#: source/teacher/topmenu.menu:18
 msgid "Project"
 msgstr "Projekt"
 
-#: source/teacher/topmenu.menu:19
+#: source/teacher/topmenu.menu:22
+msgid "Add, modify or remove questions in examinations where you have been granted the contributor role."
+msgstr "Lägg till, ändra eller ta bort frågor i examinationer där du har beviljats rollen som bidragare (contributor)."
+
+#: source/teacher/topmenu.menu:23
 msgid "Contribute"
 msgstr "Bidra"
 
-#: source/teacher/topmenu.menu:22 source/admin/topmenu.menu:14
+#: source/teacher/topmenu.menu:27
+msgid "Add or remove students from examination. Change the scheduling (start and stop time) of an examination."
+msgstr "Lägg till eller ta bort studenter från examinationer. Ändra schemaläggning (start- och sluttid) för en examination."
+
+#: source/teacher/topmenu.menu:28 source/admin/topmenu.menu:14
 #: source/exam/topmenu.menu:14 source/help.php:53 source/topmenu.menu:14
 #, php-format
 msgid "Examination"
 msgstr "Examination"
 
-#: source/teacher/topmenu.menu:25
+#: source/teacher/topmenu.menu:32
+msgid "Correct answers to questions that you have published youself or been assigned the role of corrector for by the examination creator."
+msgstr ""
+"Rätta svaren till dom frågor som du själv har publiserat eller blivit tilldelad rollen som rättare (corrector) för av examinationens skapare."
+
+#: source/teacher/topmenu.menu:33
 msgid "Correction"
 msgstr "Rättning"
 
-#: source/teacher/topmenu.menu:28 source/teacher/decoder.php:648
+#: source/teacher/topmenu.menu:37
+msgid "Decode examinations, download results or send result to students."
+msgstr "Avkoda examinationer, ladda ner resultat eller skicka resultaten till studenterna (examensdeltagarna)."
+
+#: source/teacher/topmenu.menu:38 source/teacher/decoder.php:648
 msgid "Decode"
 msgstr "Avkoda"
 
-#: source/teacher/topmenu.menu:31 source/admin/topmenu.menu:15
+#: source/teacher/topmenu.menu:41 source/admin/topmenu.menu:15
 #: source/exam/topmenu.menu:15 source/topmenu.menu:15
 msgid "Help"
 msgstr "Hjälp"
 
-#: source/teacher/topmenu.menu:32 source/admin/topmenu.menu:16
+#: source/teacher/topmenu.menu:42 source/admin/topmenu.menu:16
 #: source/exam/topmenu.menu:16 source/topmenu.menu:16
 msgid "About"
 msgstr "Om"
@@ -2017,8 +2037,7 @@ msgstr "Examination:"
 
 #: source/exam/index.php:138
 msgid "Stops the examination and allow you to correct and decode results."
-msgstr ""
-"Avbryter examinationen och tillåter dig att rätta och avkoda resultatet."
+msgstr "Avbryter examinationen och tillåter dig att rätta och avkoda resultatet."
 
 #: source/exam/index.php:139
 msgid "Finish"
