@@ -1,4 +1,4 @@
-Version 1.5.3 (2010-mm-dd):
+Version 1.5.3 (2010-08-25):
 
 	* The session length can now be extended (see conf/config.inc) and
 	  the answer form can be automatic posted at regular interval thru 
