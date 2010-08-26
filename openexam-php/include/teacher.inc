@@ -261,6 +261,37 @@ class TeacherPage extends BasePage
 		}
 	    }
 	    
+	    // 
+	    // Views sub menu:
+	    // 
+	    if($this->manager->isCreator(phpCAS::getUser())) {
+		$links->views->link->manager->href = sprintf("manager.php?exam=%d", $this->param->exam);
+		$links->views->link->manager->name = _("Project");
+	    }
+	    if($this->manager->isContributor(phpCAS::getUser()) && 
+	       $this->manager->getInfo()->isContributable()) {
+		$links->views->link->contributor->href = sprintf("contribute.php?exam=%d", $this->param->exam);
+		$links->views->link->contributor->name = _("Contribute");
+	    }
+	    if($this->manager->isExaminator(phpCAS::getUser()) && 
+	       $this->manager->getInfo()->isExaminatable()) {
+		$links->views->link->examinator->href = sprintf("examinator.php?exam=%d", $this->param->exam);
+		$links->views->link->examinator->name = _("Examination");
+	    }
+	    if($this->manager->isCorrector(phpCAS::getUser()) && 
+	       $this->manager->getInfo()->isCorrectable()) {
+		$links->views->link->correction->href = sprintf("correct.php?exam=%d", $this->param->exam);
+		$links->views->link->correction->name = _("Correction");
+	    }
+	    if($this->manager->isDecoder(phpCAS::getUser()) && 
+	       $this->manager->getInfo()->isDecodable()) {
+		$links->views->link->decoder->href = sprintf("decoder.php?exam=%d", $this->param->exam);
+		$links->views->link->decoder->name = _("Decode");
+	    }
+	    if(isset($links->views)) {
+		$links->views->head = _("Views");
+	    }
+	    
             printf("<span id=\"menuhead\">%s:</span>\n", _("This examination"));
 	    printf("<ul>\n");
 	    if(isset($links->general)) {
@@ -274,6 +305,9 @@ class TeacherPage extends BasePage
 	    }
 	    if(isset($links->tasks)) {
 		self::printSubMenu($links->tasks);
+	    }
+	    if(isset($links->views)) {
+		self::printSubMenu($links->views);
 	    }
 	    printf("</ul>\n");
 	}
