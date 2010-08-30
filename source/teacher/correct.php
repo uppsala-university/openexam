@@ -157,7 +157,7 @@ class CorrectionPage extends TeacherPage
 	}
 	if(!$this->manager->getInfo()->isFinished()) {
 	    ErrorPage::show(_("Access denied!"),
-			    _("This examination is not yet finished. Wait until it has finished before correcting any answer."));
+			    _("This examination is not yet finished. You have to wait until its finished before you can correct the answers."));
 	    exit(1);
 	}
     }
