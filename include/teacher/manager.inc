@@ -40,8 +40,11 @@ if(!defined("EXAM_STATE_FINISHED")) {
     define ("EXAM_STATE_FINISHED", 256);
 }
 
-if(!defined("EXAM_STATE_TEST_CASE")) {
-    define ("EXAM_STATE_TEST_CASE", 512);
+if(!defined("EXAM_STATE_TESTCASE")) {
+    define ("EXAM_STATE_TESTCASE", 512);
+}
+if(!defined("EXAM_STATE_LOCKDOWN")) {
+    define ("EXAM_STATE_LOCKDOWN", 1024);
 }
 
 // 
@@ -160,7 +163,8 @@ class ExamState
     private function setInfo($exam)
     {
 	$sql = sprintf("SELECT e.id AS ExamID, e.starttime AS ExamStartTime, e.endtime AS ExamEndTime, 
-			       e.decoded AS ExamDecoded, e.testcase AS ExamTestCase, COUNT(a.id) AS AnswerCount 
+			       e.decoded AS ExamDecoded, e.testcase AS ExamTestCase, e.lockdown AS ExamLockDown,
+			       COUNT(a.id) AS AnswerCount
 			FROM exams e, questions q 
 			LEFT JOIN answers a ON q.id = a.question_id WHERE e.id = %d AND q.exam_id = e.id", $exam);
 	$res = Database::getConnection()->query($sql);
@@ -192,7 +196,10 @@ class ExamState
 	    }
 	}
 	if($this->info->getExamTestCase() == 'Y') {
-	    $this->state |= EXAM_STATE_TEST_CASE;
+	    $this->state |= EXAM_STATE_TESTCASE;
+	}
+	if($this->info->getExamLockDown() == 'Y') {
+	    $this->state |= EXAM_STATE_LOCKDOWN;
 	}
     }
     
@@ -258,7 +265,12 @@ class ExamState
 
     public function isTestCase()
     {
-	return $this->state & EXAM_STATE_TEST_CASE;
+	return $this->state & EXAM_STATE_TESTCASE;
+    }
+
+    public function isLockDown()
+    {
+	return $this->state & EXAM_STATE_LOCKDOWN;
     }
     
     public function readonly()
