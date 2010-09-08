@@ -249,7 +249,7 @@ class RegisterService extends Register
                 $bind = sprintf("%s://%s:%d", $this->type, $this->addr, $this->port);
                 $this->socket = stream_socket_server($bind, $errno, $errstr);
                 if (!$this->socket) {
-                        throw new RegisterException($errstr, $errno);
+                        throw new RegisterException("Failed create service", $errno);
                 }
         }
 
@@ -276,8 +276,8 @@ class RegisterService extends Register
                                 }
                                 fwrite($client, "ERROR: %s\r\n", $exception);
                         }
+                        fclose($client);
                 }
-                fclose($client);
         }
 
 }
@@ -297,8 +297,15 @@ if (isset($_SERVER['SERVER_ADDR'])) {
                 exit(1);
         }
 } else {
-        $register = new RegisterService();
-        $register->setup();
-        $register->handle();
+        try {
+                $register = new RegisterService();
+                $register->setup();
+                $register->handle();
+        } catch (RegisterException $exception) {
+                error_log(sprintf("%s: %s (%d)",
+                                $exception->getMessage(),
+                                socket_strerror($exception->getCode()),
+                                $exception->getCode()));
+        }
 }
 ?>
