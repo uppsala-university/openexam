@@ -90,6 +90,7 @@ class ExaminationPage extends BasePage
     private $params = array( "exam"     => "/^\d+$/",
 			     "question" => "/^(\d+|all)$/" );
     private $author = false;
+    private $testcase = false;
     
     // 
     // Construct the template page.
@@ -231,6 +232,17 @@ class ExaminationPage extends BasePage
 	}
 
 	$this->testcase = $data->getExamTestCase() == 'Y';
+	$this->lockdown = $data->getExamLockDown() == 'Y';
+	if($this->lockdown) {
+	    $this->lockdown();
+	}
+    }
+
+    //
+    // Lockdown this computer.
+    // 
+    private function lockdown()
+    {
     }
 
     // 
