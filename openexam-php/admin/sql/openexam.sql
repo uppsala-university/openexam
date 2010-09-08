@@ -51,6 +51,24 @@ CREATE TABLE `answers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `computers`
+--
+
+DROP TABLE IF EXISTS `computers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `computers` (
+  `id` int(11) NOT NULL auto_increment,
+  `room_id` int(11) NOT NULL default '0',
+  `addr` char(45) NOT NULL,
+  `pass` varchar(32) NOT NULL,
+  `created` datetime NOT NULL,
+  `updated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `contributors`
 --
 
@@ -120,6 +138,8 @@ CREATE TABLE `exams` (
   `decoded` enum('Y','N') NOT NULL default 'N',
   `orgunit` varchar(50) NOT NULL,
   `grades` varchar(200) NOT NULL,
+  `testcase` enum('Y','N') NOT NULL default 'N',
+  `lockdown` enum('Y','N') NOT NULL default 'Y',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -169,6 +189,21 @@ CREATE TABLE `results` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `rooms`
+--
+
+DROP TABLE IF EXISTS `rooms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rooms` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(25) NOT NULL,
+  `description` text,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `students`
 --
 
@@ -209,4 +244,4 @@ CREATE TABLE `teachers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-08-23 14:57:24
+-- Dump completed on 2010-09-08 18:16:03
