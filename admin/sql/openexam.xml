@@ -21,12 +21,13 @@
 	<table_structure name="computers">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
 		<field Field="room_id" Type="int(11)" Null="NO" Key="" Default="0" Extra="" />
-		<field Field="addr" Type="char(45)" Null="NO" Key="" Extra="" />
-		<field Field="pass" Type="varchar(32)" Null="NO" Key="" Extra="" />
+		<field Field="ipaddr" Type="char(45)" Null="NO" Key="" Extra="" />
+		<field Field="port" Type="int(11)" Null="NO" Key="" Default="0" Extra="" />
+		<field Field="password" Type="varchar(32)" Null="NO" Key="" Extra="" />
 		<field Field="created" Type="datetime" Null="NO" Key="" Extra="" />
 		<field Field="updated" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="" />
 		<key Table="computers" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
-		<options Name="computers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2010-09-08 16:01:50" Collation="utf8_general_ci" Create_options="" Comment="InnoDB free: 0 kB" />
+		<options Name="computers" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="0" Avg_row_length="0" Data_length="0" Max_data_length="281474976710655" Index_length="1024" Data_free="0" Auto_increment="1" Create_time="2010-09-08 16:31:17" Update_time="2010-09-08 16:31:17" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="contributors">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />

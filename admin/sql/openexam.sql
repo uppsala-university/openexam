@@ -60,12 +60,13 @@ DROP TABLE IF EXISTS `computers`;
 CREATE TABLE `computers` (
   `id` int(11) NOT NULL auto_increment,
   `room_id` int(11) NOT NULL default '0',
-  `addr` char(45) NOT NULL,
-  `pass` varchar(32) NOT NULL,
+  `ipaddr` char(45) NOT NULL,
+  `port` int(11) NOT NULL default '0',
+  `password` varchar(32) NOT NULL,
   `created` datetime NOT NULL,
   `updated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,4 +245,4 @@ CREATE TABLE `teachers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-09-08 18:16:03
+-- Dump completed on 2010-09-08 19:45:51
