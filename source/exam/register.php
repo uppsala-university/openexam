@@ -165,7 +165,7 @@ class RegisterHandler extends Register
                         $this->pass = $_POST['pass'];
                 }
                 if (isset($_POST['addr'])) {
-                        $this->port = $_POST['addr'];
+                        $this->addr = $_POST['addr'];
                 }
                 if (isset($_POST['port'])) {
                         $this->port = $_POST['port'];
