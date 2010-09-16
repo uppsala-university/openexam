@@ -7,13 +7,18 @@
 // File:   include/locker.inc
 // Author: Anders Lövgren
 // Date:   2010-04-21
-// 
-// This class communicates with the locker daemon/service running on each 
-// computer that participates in the online exam.
+//
+// This file provides classes for communication with the fwexamd lockdown
+// daemon/service running on client computers perticipating in an online exam
+// requiring lockdown. It's worth noticing that lockdown is optional.
 // 
 // The purpose of the locker daemon on the client computer is to configure
 // the local firewall to only accept outgoing connections to those resources
-// (actually URL:s to i.e. a video clip). 
+// (actually URL:s to i.e. a video clip).
+// 
+// The locker service might be configured to register itself in the database
+// at startup, but its also possible to have static registrations of lockdown
+// services.
 // 
 // The resources (URL:s) are defined along with the questions in our database.
 // The lockdown protocol is really simple, it consists of plain text messages
@@ -22,11 +27,16 @@
 //   "initialize"      // Perform initial lockdown, open firewall to common resources.
 //   "permit ipaddr"   // Permit access to this ip-address.
 //   "restore"         // Restore the computer state to pre-initialize state.
-// 
+//
+// The protocol supports authentication and session mode (sending multiple
+// commands over the same connection).
+//
 // All commands should be terminated by a newline. The client responds with
 // an "OK" or "ERROR: message".
-// 
-
+//
+//
+// The default port number of the fwexamd service:
+//
 if (!defined("FWEXAMD_PORT")) {
         define("FWEXAMD_PORT", 3751);
 }
@@ -73,7 +83,7 @@ class ConnectException extends LockerException
                 $this->addr = $addr;
 
                 $errmsg = sprintf("Failed connect to %s:%d (%s)", $addr, $port, $errmsg);
-                $pubmsg = _("Failed connect to lock down service. Please check that the fwexamd daemon/service is running on your computer.");
+                $pubmsg = _("A connection could not be established with the lockdown service for your computer. The fwexamd daemon/service is a required component that must to be accessable from this server to ensure an safe examination environment.");
 
                 parent::__construct($pubmsg, $code, $errmsg);
         }
@@ -172,7 +182,7 @@ class LockerProtocol
 
         public function __construct($ipaddr, $port)
         {
-                $this->ipaddr = $ipadddr;
+                $this->ipaddr = $ipaddr;
                 $this->port = $port;
         }
 
@@ -199,9 +209,9 @@ class LockerProtocol
         //
         public function connect()
         {
-                $this->sock = fsockopen($ipaddr, $port, $errno, $errstr);
+                $this->sock = fsockopen($this->ipaddr, $this->port, $errno, $errstr);
                 if (!$this->sock) {
-                        throw new ConnectException($errstr, $errno, $ipaddr, $port);
+                        throw new ConnectException($errstr, $errno, $this->ipaddr, $this->port);
                 }
         }
 
@@ -319,7 +329,7 @@ class LockerProtocol
                 // Compute the hash checksum of password and nonce using the
                 // selected hashing algorithm:
                 // 
-                $passwd = $this->callback->password();
+                $passwd = $this->callback->password($this->ipaddr, $this->port);
 
                 $context = hash_init($this->hash);
                 hash_update($context, $passwd);
@@ -389,15 +399,16 @@ class LockerProtocol
         }
 
         //
-        // An helper function for resolving ip-addresses from an URL. The returned
-        // result is an list of ip-addresses or FALSE if hostname could not be resolved.
+        // Helper function extracting hostname from the URL and resolving its
+        // IP-addresses. The returned result is an list of ip-addresses or
+        // FALSE if the hostname could not be resolved.
         //
         public function resolve($url)
         {
-                $pattern = "/^(http|https|ftp|ftps|sftp|rtsp|mms):\/\/(.*?)\/(.*)\/(.*?)?([?].*)?$/";
+                $pattern = "#^((.*?)://)*([\w\.\d]*)(:(\d+))*(/(.*?))*([?](.*))*$#";
                 $match = array();
-                if (preg_match($pattern, $url, $match)) {   // host is match index 2
-                        $host = $match[2];
+                if (preg_match($pattern, $url, $match)) {   // hostname is in match index 3
+                        $host = $match[3];
                         return gethostbynamel($host);
                 }
         }
@@ -405,29 +416,229 @@ class LockerProtocol
 }
 
 //
-// This class provides the locker function for clients.
+// This class represent and manage the locking status for an single host and
+// examination. The design goal for this class was to fast answer a simple
+// question: "Has a lock been aquired for this remote address and exam?".
 //
-class Locker implements ProtocolCallback
+// The intended use of this class is:
+//
+//   $locker = new LockerManager($_SERVER['REMOTE_ADDR'], $_REQUEST['exam']);
+//   try {
+//       if(!$locker->locked()) {
+//           $locker->lockdown();
+//       }
+//   } catch(Exception $exception) {
+//       error_log($exception);
+//       die(sprintf("Fatal error: %s", $exception->getMessage());
+//   }
+//
+class LockerManager
 {
 
-        private $protocol;
-        private $exam;
+        private $addr;          // The IP-address.
+        private $exam;          // The exam ID.
+        private $comp;          // The computer ID (see assert).
+        private $locked;        // Lock status.
 
-        public function __construct($exam)
+        public function __construct($addr, $exam)
         {
-                $this->protocol = new LockerProtocol($_SERVER['REMOTE_ADDR'], FWEXAMD_PORT);
+                $this->addr = $addr;
                 $this->exam = $exam;
+                $this->assert();
+        }
+
+        //
+        // Returns true if this exam is locked.
+        //
+        public function locked()
+        {
+                if (!isset($this->locked)) {
+                        $this->refresh();
+                }
+                return $this->locked;
+        }
+
+        //
+        // Refresh locked status by query the database.
+        //
+        public function refresh()
+        {
+                $this->locked = $this->status();
+        }
+
+        // 
+        // Lockdown this exam by connecting to the locker service running on
+        // the host associated with this exam locker object. If the lock was
+        // aquired, update the locked status for this object in the database.
+        //
+        public function lockdown()
+        {
+                $service = LockerService::factory($this->addr);
+                $service->lockdown($this->exam);
+
+                $this->locked = true;
+                $this->flush();
+        }
+
+        // 
+        // Update the locked status in the database. This is a noop if the
+        // locked status hasn't changed.
+        // 
+        private function flush()
+        {
+                if ($this->locked != $this->status()) {
+                        if ($this->locked) {
+                                $sql = sprintf("INSERT INTO locks(computer_id, exam_id) VALUES(%d, %d)",
+                                                $this->comp, $this->exam);
+                        } else {
+                                $sql = sprintf("DELETE FROM locks WHERE computer_id = %d AND exam_id = %d",
+                                                $this->comp, $this->exam);
+                        }
+                        $res = Database::getConnection()->query($sql);
+                        if (PEAR::isError($res)) {
+                                $this->locked = !$this->locked; // Revert state
+                                throw new DatabaseException($res->getMessage());
+                        }
+                }
+        }
+
+        //
+        // Returns true if this object has status locked in the database. This
+        // function doesn't modify the state of this object.
+        //
+        private function status()
+        {
+                $sql = sprintf("SELECT COUNT(*) AS locks
+                                FROM locks l, computers c
+                                WHERE l.computer_id = c.id AND c.ipaddr = '%s' AND l.exam_id = %d",
+                                $this->addr, $this->exam);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+
+                return $row['locks'] != 0;
+        }
+
+        //
+        // Check sanity of database. Throw an exception if no locker service
+        // is registered for this host address.
+        //
+        private function assert()
+        {
+                $sql = sprintf("SELECT id FROM computers WHERE ipaddr = '%s'", $this->addr);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+                $this->comp = $row['id'];
+
+                if ($this->comp == 0) {
+                        $pubmsg = sprintf(_("The current task requires the lockdown service/daemon (fwexamd) being running on your computer, but no such service has registered itself or been pre-registered for your computer address (%s). Make sure that this service (fwexamd) has been started and is configured to register with this system or contact the system administrator for assistance."), $this->addr);
+                        $errmsg = sprintf("The client computer %s has no lockdown service registered in the database.", $this->addr);
+                        throw new LockerException($pubmsg, 0, $errmsg);
+                }
+        }
+
+}
+
+//
+// This class provides interaction with the locker service.
+// 
+class LockerService implements ProtocolCallback
+{
+        const CREATED = 1;      // Registration created
+        const UPDATED = 2;      // Registration updated
+
+        private $pass;          // The locker service password.
+        private $addr;          // The locker service IP-address.
+        private $port;          // The locker service port number.
+        private $host;          // The host address.
+
+        public function __construct($pass, $addr, $port)
+        {
+                $this->pass = $pass;
+                $this->addr = $addr;
+                $this->port = $port;
+                $this->host = gethostbyaddr($addr);
+        }
+
+        //
+        // Create the locker service for this exam and host.
+        // 
+        public static function factory($addr)
+        {
+                $sql = sprintf("SELECT ipaddr, port, password
+                                FROM computers
+                                WHERE ipaddr = '%s'", $addr);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+
+                $service = new LockerService(
+                                $row['password'],
+                                $row['ipaddr'],
+                                $row['port']);
+
+                return $service;
+        }
+
+        //
+        // Register this locker service for this host.
+        //
+        public function register()
+        {
+                $db = Database::getConnection();
+
+                //
+                // Find out whether to create or update:
+                //
+                $sql = sprintf("SELECT COUNT(*) FROM computers
+                                WHERE ipaddr = '%s' AND port = %d", $this->addr, $this->port);
+                $db->setFetchMode(MDB2_FETCHMODE_ORDERED);
+
+                $res = $db->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+                $ret = $row[0] == 0 ? self::CREATED : self::UPDATED;
+                $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+
+                //
+                // Insert new computer or updated existing record:
+                //
+                if ($ret == self::CREATED) {
+                        $sql = sprintf("INSERT INTO computers(hostname, ipaddr, port, password, created)
+                                        VALUES('%s','%s',%d,'%s','%s')",
+                                        $this->host, $this->addr, $this->port, $this->pass, strftime(DATETIME_DB));
+                } else {
+                        $sql = sprintf("UPDATE computers SET password = '%s', hostname = '%s'
+                                        WHERE ipaddr = '%s' AND port = %d",
+                                        $this->pass, $this->host, $this->addr, $this->port);
+                }
+                $res = $db->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+
+                return $ret;
         }
 
         //
         // Call this function to lockdown peer for this exam. Throws LockerException
         // on errors.
         //
-        public function lockdown()
+        public function lockdown($exam)
         {
+                $protocol = new LockerProtocol($this->addr, $this->port);
                 $accept = array();
 
-                $questions = Exam::getQuestions($this->exam);
+                $questions = Exam::getQuestions($exam);
                 foreach ($questions as $question) {
                         //
                         // Collect all required URL's for this question.
@@ -444,7 +655,7 @@ class Locker implements ProtocolCallback
                         }
 
                         foreach ($urls as $url) {
-                                $addresses = $this->protocol->resolve($url);
+                                $addresses = $protocol->resolve($url);
                                 foreach ($addresses as $address) {
                                         $accept[] = $address;
                                 }
@@ -458,49 +669,43 @@ class Locker implements ProtocolCallback
                         //
                         // Set this object as password callback.
                         // 
-                        $this->protocol->setCallback($this);
-                        
+                        $protocol->setCallback($this);
+
                         //
                         // Connection phase including authentication.
                         //
-                        $this->protocol->connect();
-                        $this->protocol->handshake();
+                        $protocol->connect();
+                        $protocol->handshake();
 
                         //
                         // Connected, begin sending configuration commands.
                         //
-                        $this->protocol->begin();
-                        $this->protocol->initialize();
+                        $protocol->begin();
+                        $protocol->initialize();
                         foreach ($accept as $ipaddr) {
-                                $this->protocol->permit($ipaddr);
+                                $protocol->permit($ipaddr);
                         }
-                        $this->protocol->end();
+                        $protocol->end();
 
                         //
                         // Done, disconnect and close socket.
                         // 
-                        $this->protocol->disconnect();
+                        $protocol->disconnect();
                 } catch (LockerException $exception) {
                         if ($exception instanceof ProtocolException) {
-                                $this->protocol->disconnect();
+                                $protocol->disconnect();
                         }
+                        error_log(print_r($protocol, true));
                         throw $exception;
                 }
         }
 
-        // 
-        // Implements the interface.
         //
-        public function password($ipaddr, $port)
+        // Implement the callback interface.
+        //
+        public function password($addr, $port)
         {
-                $sql = sprintf("SELECT password FROM computers
-                                WHERE ipaddr = '%s' AND port = %d", $ipaddr, $port);
-                $res = Database::getConnection()->query($sql);
-                if (PEAR::isError($res)) {
-                        throw new DatabaseException($res->getMessage());
-                }
-                $row = $res->fetchRow();
-                return $row[0];
+                return $this->pass;
         }
 
 }
