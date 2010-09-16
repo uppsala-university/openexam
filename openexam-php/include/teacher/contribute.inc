@@ -32,9 +32,6 @@ class Contribute
 			WHERE e.id = c.exam_id AND c.user = '%s'
 			ORDER BY e.starttime", $user);
 	$res = Database::getConnection()->query($sql);
- 	if(PEAR::isError($res)) {
-	    throw new DatabaseException($res->getMessage());
-	}
 	return new ResultSet($res);
     }
 
