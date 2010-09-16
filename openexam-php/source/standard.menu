@@ -1,13 +1,14 @@
 <?php
+
 // 
 // Include google translate tool if browser prefered language is not one
 // of our supported languages.
 // 
 global $locale;
-if($locale->getPreferedLanguage() != null && 
-   $locale->getPreferedLanguage() != $locale->getLanguage() && 
-   $locale->isAlias($locale->getPreferedLanguage()) != true) {
-    printf("<script src=\"http://www.gmodules.com/ig/ifr?url=http://www.google.com/ig/modules/translatemypage.xml&up_source_language=%s&w=160&h=60&title=&border=1&output=js\"></script>\n", 
-	   $locale->getPreferedLanguage());
+if ($locale->getPreferedLanguage() != null &&
+        $locale->getPreferedLanguage() != $locale->getLanguage() &&
+        $locale->isAlias($locale->getPreferedLanguage()) != true) {
+        printf("<script src=\"http://www.gmodules.com/ig/ifr?url=http://www.google.com/ig/modules/translatemypage.xml&up_source_language=%s&w=160&h=60&title=&border=1&output=js\"></script>\n",
+                $locale->getPreferedLanguage());
 }
 ?>

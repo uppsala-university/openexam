@@ -24,54 +24,57 @@
 
 class TestCase
 {
-    private $exam;    // The exam ID.
-    
-    // 
-    // Construct the test case object.
-    // 
-    public function __construct($exam) 
-    {
-	$this->exam = $exam;
-    }
-    
-    public function getExamID() 
-    {
-	return $this->exam;
-    }
 
-    // 
-    // Create a test case for current exam ID. Upon returning, the exam ID field
-    // has been modified to identify the new test case examination.
-    // 
-    public function create()
-    {
-	$orig = new Manager($this->exam);
-	$copy = $orig->copy(true);	
-	$this->exam = $copy->getExamID();
-    }
-    
-    // 
-    // Delete this test case.
-    // 
-    public function delete()
-    {
-	$manager = new Manager($this->exam);
-	$manager->delete(true);
-    }
+        private $exam;    // The exam ID.
 
-    // 
-    // Mark this test case as finished. This ends the examination and allows
-    // the user to correct anwsers and decode the exam.
-    // 
-    public function finish()
-    {
-	$sql = sprintf("UPDATE exams SET endtime = '%s' WHERE id = %d",
-		       date('Y-m-d G:i:s'), $this->exam);
-        $res = Database::getConnection()->query($sql);
-	if(PEAR::isError($res)) {
-	    throw new DatabaseException($res->getMessage());
-	}
-    }
+        //
+        // Construct the test case object.
+        //
+
+        public function __construct($exam)
+        {
+                $this->exam = $exam;
+        }
+
+        public function getExamID()
+        {
+                return $this->exam;
+        }
+
+        //
+        // Create a test case for current exam ID. Upon returning, the exam ID field
+        // has been modified to identify the new test case examination.
+        //
+        public function create()
+        {
+                $orig = new Manager($this->exam);
+                $copy = $orig->copy(true);
+                $this->exam = $copy->getExamID();
+        }
+
+        //
+        // Delete this test case.
+        //
+        public function delete()
+        {
+                $manager = new Manager($this->exam);
+                $manager->delete(true);
+        }
+
+        //
+        // Mark this test case as finished. This ends the examination and allows
+        // the user to correct anwsers and decode the exam.
+        //
+        public function finish()
+        {
+                $sql = sprintf("UPDATE exams SET endtime = '%s' WHERE id = %d",
+                                date('Y-m-d G:i:s'), $this->exam);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+        }
+
 }
 
 ?>

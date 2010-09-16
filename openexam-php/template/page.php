@@ -16,16 +16,15 @@
 // 
 // The database connection has lazy initialization. Just call 
 // Database::getConnection() to start use it.
-// 
-
+//
 // 
 // System check:
 // 
-if(!file_exists("../conf/database.conf")) {
-    header("location: admin/setup.php?reason=database");
+if (!file_exists("../conf/database.conf")) {
+        header("location: admin/setup.php?reason=database");
 }
-if(!file_exists("../conf/config.inc")) {
-    header("location: admin/setup.php?reason=config");
+if (!file_exists("../conf/config.inc")) {
+        header("location: admin/setup.php?reason=config");
 }
 
 // 
@@ -67,43 +66,46 @@ include "include/locale.inc";
 // 
 class TemplatePage extends BasePage
 {
-    // 
-    // All possible request parameters should be added here along with
-    // the regex pattern to validate its value against.
-    // 
-    private $params = array( "action" => "/^(add|edit|delete)$/" );
-    
-    // 
-    // Construct the template page.
-    // 
-    public function __construct()
-    {	
-	parent::__construct(_("Template:"));   // Internationalized with GNU gettext
-    }
 
-    // 
-    // The template page body.
-    // 
-    public function printBody()
-    {
-    }
-    
-    // 
-    // Validates request parameters.
-    // 
-    public function validate()
-    {
-	foreach($this->params as $param => $pattern) {
-	    if(isset($_REQUEST[$param])) {
-		if(!preg_match($pattern, $_REQUEST[$param])) {
-		    ErrorPage::show(_("Request parameter error!"),
-				    sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
-					    $param, $pattern));
-		    exit(1);
-		}
-	    }
-	}
-    }
+        //
+        // All possible request parameters should be added here along with
+        // the regex pattern to validate its value against.
+        //
+        private $params = array("action" => "/^(add|edit|delete)$/");
+
+        //
+        // Construct the template page.
+        //
+        public function __construct()
+        {
+                parent::__construct(_("Template:"));   // Internationalized with GNU gettext
+        }
+
+        //
+        // The template page body.
+        //
+        public function printBody()
+        {
+                
+        }
+
+        //
+        // Validates request parameters.
+        //
+        public function validate()
+        {
+                foreach ($this->params as $param => $pattern) {
+                        if (isset($_REQUEST[$param])) {
+                                if (!preg_match($pattern, $_REQUEST[$param])) {
+                                        ErrorPage::show(_("Request parameter error!"),
+                                                        sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
+                                                                $param, $pattern));
+                                        exit(1);
+                                }
+                        }
+                }
+        }
+
 }
 
 // 
@@ -112,5 +114,4 @@ class TemplatePage extends BasePage
 $page = new TemplatePage();
 $page->validate();
 $page->render();
-
 ?>
