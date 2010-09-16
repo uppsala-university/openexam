@@ -50,7 +50,8 @@ class Exam
     {
 	$sql = sprintf("SELECT e.id AS ExamID, s.id AS StudentID, e.name AS ExamName, e.descr AS ExamDescription, 
 			       e.starttime AS ExamStartTime, e.endtime AS ExamEndTime, e.created AS ExamCreated,
-			       e.updated AS ExamUpdated, e.creator AS ExamCreator, e.testcase AS ExamTestCase
+			       e.updated AS ExamUpdated, e.creator AS ExamCreator, e.testcase AS ExamTestCase,
+                               e.lockdown AS ExamLockDown
 			FROM students s, exams e
 			WHERE s.user = '%s' AND s.exam_id = e.id AND e.id = %d", $user, $exam);
         $res = Database::getConnection()->query($sql);
