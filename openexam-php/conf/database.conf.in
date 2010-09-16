@@ -1,5 +1,6 @@
-<?php  // -*- php -*-
+<?php
 
+// -*- php -*-
 // 
 // Copyright (C) 2009 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
@@ -13,8 +14,7 @@
 // 
 // Make sure that this file is not readable by anyone other than the web 
 // server and web server administrators (or the application owner).
-// 
-
+//
 // 
 // The global DSN variable is either an array or an string. See the manual for
 // MDB2 for possible keys for the DSN. This variable is passed verbatime when
@@ -31,12 +31,11 @@
 // PEAR manual at http://pear.php.net/manual/en/package.database.mdb2.intro-dsn.php. 
 // 
 
-$GLOBALS['dsn'] = array( 
-     'phptype'  => 'mysqli',		// Database driver
-     'hostspec' => 'localhost:3306',	// Hostname and port
-     'username' => 'user',
-     'password' => 'pass',
-     'database' => 'openexam'
+$GLOBALS['dsn'] = array(
+    'phptype' => 'mysqli', // Database driver
+    'hostspec' => 'localhost:3306', // Hostname and port
+    'username' => 'user',
+    'password' => 'pass',
+    'database' => 'openexam'
 );
-
 ?>

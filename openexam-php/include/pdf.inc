@@ -20,38 +20,38 @@
 // timeout.
 // 
 
-if(!defined('PDF_ENGINE')) {
-    define ('PDF_ENGINE', 'htmldoc');
+if (!defined('PDF_ENGINE')) {
+        define('PDF_ENGINE', 'htmldoc');
 }
-if(!defined('PDF_LOGOTYPE')) {
-    define ('PDF_LOGOTYPE',   sprintf('%s/images/uu-logotype-4f-84.png', BASE_URL));
+if (!defined('PDF_LOGOTYPE')) {
+        define('PDF_LOGOTYPE', sprintf('%s/images/uu-logotype-4f-84.png', BASE_URL));
 }
-if(!defined('PDF_LINK_COLOR')) {
-    define ('PDF_LINK_COLOR', '#000099');
+if (!defined('PDF_LINK_COLOR')) {
+        define('PDF_LINK_COLOR', '#000099');
 }
-if(!defined('PDF_LINK_STYLE')) {
-    define ('PDF_LINK_STYLE', 'plain');
+if (!defined('PDF_LINK_STYLE')) {
+        define('PDF_LINK_STYLE', 'plain');
 }
-if(!defined('PDF_MEDIA_SIZE')) {
-    define ('PDF_MEDIA_SIZE', 'a4');
+if (!defined('PDF_MEDIA_SIZE')) {
+        define('PDF_MEDIA_SIZE', 'a4');
 }
-if(!defined('PDF_MEDIA_TYPE')) {
-    define ('PDF_MEDIA_TYPE', 'plain');
+if (!defined('PDF_MEDIA_TYPE')) {
+        define('PDF_MEDIA_TYPE', 'plain');
 }
-if(!defined('PDF_MEDIA_LANDSCAPE')) {
-    define ('PDF_MEDIA_LANDSCAPE', false);
+if (!defined('PDF_MEDIA_LANDSCAPE')) {
+        define('PDF_MEDIA_LANDSCAPE', false);
 }
-if(!defined('PDF_FRONT_PAGE_MARGIN')) {
-    define ('PDF_FRONT_PAGE_MARGIN', '60mm');
+if (!defined('PDF_FRONT_PAGE_MARGIN')) {
+        define('PDF_FRONT_PAGE_MARGIN', '60mm');
 }
-if(!defined('PDF_GENERATOR')) {
-    define ('PDF_GENERATOR', 'OpenExam PHP');
+if (!defined('PDF_GENERATOR')) {
+        define('PDF_GENERATOR', 'OpenExam PHP');
 }
-if(!defined('PDF_OUTPUT_FORMAT')) {
-    define ('PDF_OUTPUT_FORMAT', 'pdf14');
+if (!defined('PDF_OUTPUT_FORMAT')) {
+        define('PDF_OUTPUT_FORMAT', 'pdf14');
 }
-if(!defined('PDF_QUESTION_MIN_LENGTH')) {
-    define ('PDF_QUESTION_MIN_LENGTH', 12);
+if (!defined('PDF_QUESTION_MIN_LENGTH')) {
+        define('PDF_QUESTION_MIN_LENGTH', 12);
 }
 
 // 
@@ -60,149 +60,148 @@ if(!defined('PDF_QUESTION_MIN_LENGTH')) {
 // 
 interface InputGenerator
 {
-    public function write($stream);
+        public function write($stream);
 }
 
 class HtmlDocPDF
 {
-    protected $title;     // The page title
-    protected $author;    // The publisher
-    
-    protected $debug = false;
-    protected $format = PDF_OUTPUT_FORMAT;
-    protected $frontpage = null;
-    
-    protected function __construct($title, $author)
-    {
-	$this->title  = $title;
-	$this->author = $author;
-    }
 
-    // 
-    // Remember to remove the temporary front page file.
-    // 
-    public function __destruct()
-    {
-	if(file_exists($this->frontpage)) {
-	    unlink($this->frontpage);
-	}
-    }
-    
-    // 
-    // Enable debug (no command is executed and command input is written
-    // to stdout instead).
-    // 
-    public function setDebug($value)
-    {
-	$this->debug = $value;
-    }
-    
-    // 
-    // Specifies the output format. Possible values are: 
-    // 
-    // *) "html":    Output plain HTML.
-    // *) "htmlsep": Separate HTML files for each heading in the table-of-contents.
-    // *) "ps" or
-    //    "ps2":     PostScript Level 2.
-    // *) "ps1":     PostScript Level 1.
-    // *) "ps3":     PostScript Level 3.
-    // *) "pdf11":   PDF 1.1/Acrobat 2.0.
-    // *) "pdf12":   PDF 1.2/Acrobat 3.0.
-    // *) "pdf" or
-    //    "pdf13":   PDF 1.3/Acrobat 4.0.
-    // *) "pdf14":   PDF 1.4/Acrobat 5.0.
-    // 
-    public function setFormat($value)
-    {
-	$this->format = $value;
-    }
-    
-    // 
-    // Get the command string for writing the PDF to target. If target is null,
-    // then output is written to stdout.
-    // 
-    private function getCommand($target)
-    {	
-	$fmt = "htmldoc - --book --format %s --titlefile %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s' --toclevels 2";
-	$cmd = sprintf($fmt, 
-		       $this->format, 
-		       $this->frontpage,
-		       PDF_LINK_STYLE, 
-		       PDF_MEDIA_SIZE, 
-		       PDF_LINK_COLOR, 
-		       _("Table of Contents"));
-	if(isset($target)) {
-	    $cmd .= sprintf(" -f %s", $target);
-	}
-	return $cmd;
-    }
-    
-    // 
-    // Open the HTMLDOC pipeline and call back using the class reference to 
-    // get the input data using the multiplexed stream resource.
-    // 
-    protected function begin($class, $target = null) 
-    {	
-	if($this->debug) {
-	    $pipes = array( fopen("php://stdout", "w") );
-	} else {
-	    $fds = array( 
-			  0 => array("pipe", "r"),
-			  1 => array("pipe", "w"),
-			  2 => array("pipe", "w")
-			  );
-	    
-	    $cmd = $this->getCommand($target);
-	    $env = array( "SHELL" => "/bin/bash", "TZ" => "UTC" );
-	    $pipes = array();
-	    
-	    if(version_compare(phpversion(), "5.0.0") < 0) {
-		$timezone = getenv("TZ");
-		putenv(sprintf("TZ=%s", $env['TZ']));
-		$process = proc_open($cmd, $fds, $pipes);
-		putenv(sprintf("TZ=%s", $timezone));
-	    }
-	    else {
-		$process = proc_open($cmd, $fds, $pipes, null, $env);
-	    }
-	}
-	
-	if(is_resource($process) || $this->debug) {
-	    $class->write($pipes[0]);
-	    
-	    if(!$this->debug) {
-		fclose($pipes[0]);
-		
-		$stdout = stream_get_contents($pipes[1]);
-		$stderr = stream_get_contents($pipes[2]);
-		
-		if(strlen($stderr) > 0) {
-		    // 
-		    // HTMLDOC got the bad habit of writing status info to stderr.
-		    // 
-		    if(!preg_match("/^(BYTES: \d+|PAGES: \d+)$/msU", $stderr)) {
-			throw new Exception(sprintf("Failed generate PDF: %s", $stderr));
-		    }
-		}
-		if(strlen($stdout) > 0) {		    
-		    echo $stdout;
-		}
-		
-		fclose($pipes[1]);
-		fclose($pipes[2]);
-		
-		$result = proc_close($process);
-		
-		//
-		// Check exit status of process.
-		//
-		if($result != 0) {
-		    throw new Exception(sprintf("HTMLDOC finished with non-zero exit code %d", $result), $result);
-		}
-	    }
-	}
-    }
-    
+        protected $title;     // The page title
+        protected $author;    // The publisher
+        protected $debug = false;
+        protected $format = PDF_OUTPUT_FORMAT;
+        protected $frontpage = null;
+
+        protected function __construct($title, $author)
+        {
+                $this->title = $title;
+                $this->author = $author;
+        }
+
+        //
+        // Remember to remove the temporary front page file.
+        //
+        public function __destruct()
+        {
+                if (file_exists($this->frontpage)) {
+                        unlink($this->frontpage);
+                }
+        }
+
+        //
+        // Enable debug (no command is executed and command input is written
+        // to stdout instead).
+        //
+        public function setDebug($value)
+        {
+                $this->debug = $value;
+        }
+
+        //
+        // Specifies the output format. Possible values are:
+        //
+        // *) "html":    Output plain HTML.
+        // *) "htmlsep": Separate HTML files for each heading in the table-of-contents.
+        // *) "ps" or
+        //    "ps2":     PostScript Level 2.
+        // *) "ps1":     PostScript Level 1.
+        // *) "ps3":     PostScript Level 3.
+        // *) "pdf11":   PDF 1.1/Acrobat 2.0.
+        // *) "pdf12":   PDF 1.2/Acrobat 3.0.
+        // *) "pdf" or
+        //    "pdf13":   PDF 1.3/Acrobat 4.0.
+        // *) "pdf14":   PDF 1.4/Acrobat 5.0.
+        //
+        public function setFormat($value)
+        {
+                $this->format = $value;
+        }
+
+        //
+        // Get the command string for writing the PDF to target. If target is null,
+        // then output is written to stdout.
+        //
+        private function getCommand($target)
+        {
+                $fmt = "htmldoc - --book --format %s --titlefile %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s' --toclevels 2";
+                $cmd = sprintf($fmt,
+                                $this->format,
+                                $this->frontpage,
+                                PDF_LINK_STYLE,
+                                PDF_MEDIA_SIZE,
+                                PDF_LINK_COLOR,
+                                _("Table of Contents"));
+                if (isset($target)) {
+                        $cmd .= sprintf(" -f %s", $target);
+                }
+                return $cmd;
+        }
+
+        //
+        // Open the HTMLDOC pipeline and call back using the class reference to
+        // get the input data using the multiplexed stream resource.
+        //
+        protected function begin($class, $target = null)
+        {
+                if ($this->debug) {
+                        $pipes = array(fopen("php://stdout", "w"));
+                } else {
+                        $fds = array(
+                                0 => array("pipe", "r"),
+                                1 => array("pipe", "w"),
+                                2 => array("pipe", "w")
+                        );
+
+                        $cmd = $this->getCommand($target);
+                        $env = array("SHELL" => "/bin/bash", "TZ" => "UTC");
+                        $pipes = array();
+
+                        if (version_compare(phpversion(), "5.0.0") < 0) {
+                                $timezone = getenv("TZ");
+                                putenv(sprintf("TZ=%s", $env['TZ']));
+                                $process = proc_open($cmd, $fds, $pipes);
+                                putenv(sprintf("TZ=%s", $timezone));
+                        } else {
+                                $process = proc_open($cmd, $fds, $pipes, null, $env);
+                        }
+                }
+
+                if (is_resource($process) || $this->debug) {
+                        $class->write($pipes[0]);
+
+                        if (!$this->debug) {
+                                fclose($pipes[0]);
+
+                                $stdout = stream_get_contents($pipes[1]);
+                                $stderr = stream_get_contents($pipes[2]);
+
+                                if (strlen($stderr) > 0) {
+                                        //
+                                        // HTMLDOC got the bad habit of writing status info to stderr.
+                                        //
+                                        if (!preg_match("/^(BYTES: \d+|PAGES: \d+)$/msU", $stderr)) {
+                                                throw new Exception(sprintf("Failed generate PDF: %s", $stderr));
+                                        }
+                                }
+                                if (strlen($stdout) > 0) {
+                                        echo $stdout;
+                                }
+
+                                fclose($pipes[1]);
+                                fclose($pipes[2]);
+
+                                $result = proc_close($process);
+
+                                //
+                                // Check exit status of process.
+                                //
+                                if ($result != 0) {
+                                        throw new Exception(sprintf("HTMLDOC finished with non-zero exit code %d", $result), $result);
+                                }
+                        }
+                }
+        }
+
 }
 
 // 
@@ -212,730 +211,731 @@ class HtmlDocPDF
 // 
 class ResultPDF extends HtmlDocPDF implements InputGenerator
 {
-    private $manager;
-    private $student;   // Current student ID
-    private $exam;      // Exam data
-    private $ldap;      // For LDAP search
-    private $board;     // Score board object
-    private $grade;     // Examination grade object
-    
-    public function __construct($examid)
-    {
-	$this->manager = new Manager($examid);
-	$this->exam = $this->manager->getData();
-	
-	$this->ldap = LDAPSearch::factory();
-	$this->ldap->setAttributeFilter(array("cn", "mail"));
 
-	$this->board = new ScoreBoard($this->exam->getExamID());
-	$this->grade = new ExamGrades($this->exam->getExamGrades());
-	
-	parent::__construct($this->exam->getExamName(), 
-			    $this->exam->getExamOrgUnit());
-    }
-    
-    public function __destruct()
-    {
-	$this->ldap->close();
-    }
+        private $manager;
+        private $student;   // Current student ID
+        private $exam;      // Exam data
+        private $ldap;      // For LDAP search
+        private $board;     // Score board object
+        private $grade;     // Examination grade object
 
-    // 
-    // Create the frontpage. If previous frontpage exists, then it's
-    // unlinked (deleted) before the new one is created.
-    // 
-    private function createFrontPage($name)
-    {		
-	$stream = fopen($this->frontpage, "w");
-	if($stream) {
-	    fprintf($stream, "<html>\n");
-	    fprintf($stream, "<body>\n");
-	    fprintf($stream, "<!-- MEDIA LEFT %s  -->\n", PDF_FRONT_PAGE_MARGIN);
-	    fprintf($stream, "<!-- MEDIA RIGHT %s -->\n", PDF_FRONT_PAGE_MARGIN);
-	    fprintf($stream, "<br/><br/>\n");
-	    fprintf($stream, "<center>\n");
-	    fprintf($stream, "<img src=\"%s\" />\n", PDF_LOGOTYPE);
-	    fprintf($stream, "<br/><br/><br/><br/><br/><br/>\n");
-	    fprintf($stream, "<h1>%s</h1>\n", $this->title);
-	    fprintf($stream, "<h2>%s</h2>\n", $this->author);
-	    fprintf($stream, "<br/><br/><br/><br/>\n");
-	    fprintf($stream, "<table><tr><td align=\"left\">\n");
-	    fprintf($stream, "<h4>%s: %s</h4>\n", _("Examination Date"), strftime(DATE_FORMAT, strtotime($this->exam->getExamStartTime())));
-	    fprintf($stream, "<h4>%s: %s</h4>\n", _("Participant"), $name);
-	    fprintf($stream, "</td></tr></table>\n");
-	    fprintf($stream, "</center>\n");
-	    fprintf($stream, "</body>\n");
-	    fprintf($stream, "</html>\n");
-	    
-	    fclose($stream);
-	}
-    }
-    
-    // 
-    // Output meta data.
-    // 
-    private function printMetaData($stream)
-    {
-	fprintf($stream, "<!-- FOOTER CENTER \"\$CHAPTER\" -->\n");
-	fprintf($stream, "<!-- FOOTER LEFT \"%s\" -->\n", _('Page $PAGE of $PAGES'));
-	fprintf($stream, "<!-- FOOTER RIGHT \"\$DATE \$TIME\" -->\n");
-	
-	fprintf($stream, "<!-- MEDIA SIZE %s -->\n", strtoupper(PDF_MEDIA_SIZE));
-	fprintf($stream, "<!-- MEDIA TYPE %s -->\n", strtoupper(PDF_MEDIA_TYPE));
-	fprintf($stream, "<!-- MEDIA LANDSCAPE %s -->\n", PDF_MEDIA_LANDSCAPE ? "YES" : "NO");
-	
-	fprintf($stream, "<META NAME=\"AUTHOR\" CONTENT=\"%s\" />\n", $this->author);
-	fprintf($stream, "<META NAME=\"GENERATOR\" CONTENT=\"%s\" />\n", PDF_GENERATOR);
-	fprintf($stream, "<META NAME=\"KEYWORDS\" CONTENT=\"exam,openexam,php,online\" />\n");
-	fprintf($stream, "<META NAME=\"SUBJECT\" CONTENT=\"%s\" />\n", $this->title);
-    }
-    
-    // 
-    // Output the examination description section.
-    // 
-    private function printSectionDescription($stream) 
-    {
-	fprintf($stream, "<h1>%s</h1>\n", _("Description"));
-	fprintf($stream, "<p>%s</p>\n", 
-		str_replace("\n", "<br/>", utf8_decode($this->exam->getExamDescription())));
-    }
+        public function __construct($examid)
+        {
+                $this->manager = new Manager($examid);
+                $this->exam = $this->manager->getData();
 
-    // 
-    // Output the scores section.
-    // 
-    private function printSectionScores($stream)
-    {	
-	fprintf($stream, "<h1>%s</h1>\n", _("Examination Result"));
-	
-	// 
-	// The summary section.
-	// 
-	$score = $this->board->getStudentScore($this->student);
-	fprintf($stream, "<h2>%s</h2>\n", _("Summary"));
-	fprintf($stream, "<p>" . _("You scored total %.01f of maximum %.01f points (%.01f%%) on this examination.") . "</p>\n",
-		$score->getSum(), 
-		$this->board->getMaximumScore(), 
-		100 * $score->getSum() / $this->board->getMaximumScore());
+                $this->ldap = LDAPSearch::factory();
+                $this->ldap->setAttributeFilter(array("cn", "mail"));
 
-	// 
-	// The graduation section.
-	// 
-	fprintf($stream, "<h2>%s</h2>\n", _("Graduation"));
-	fprintf($stream, "<p>" . _("Your graduation on this examination is: <b>%s</b>.") . "</p>\n",
-		$this->grade->getGrade($score->getSum()));
-	
-	// 
-	// The answer result details section.
-	// 
-	fprintf($stream, "<h2>%s</h2>\n", _("Score Table"));
-	fprintf($stream, "<p>%s</p>\n",  _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."));
-	fprintf($stream, "<table><tr align=\"right\"><th>%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", 
-		_("Question"), _("Score"), _("Max score"), _("Percent"), _("Notice"));
-	$questions = $this->board->getQuestions();
-	foreach($questions as $question) {
-	    fprintf($stream, "<tr align=\"right\"><td>%s</td><td>&nbsp;</td>", utf8_decode($question->getQuestionName()));
-	    $data = $this->board->getData($this->student, $question->getQuestionID());
-	    if($question->getQuestionStatus() == 'active') {
-		if(isset($data)) {
-		    fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td>",
-			    $data->getResultScore(),
-			    $question->getQuestionScore(),
-			    100 * $data->getResultScore() / $question->getQuestionScore());
-		} else {
-		    fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td>",
-			    $question->getQuestionScore(), 0);		
-		}		
-	    } else {
-		fprintf($stream, "<td>-</td><td>-</td><td>-<td><td>%s</td>", _("Removed"));
-		$this->removed++;
-	    }
-	    fprintf($stream, "</tr>\n");
-	}
-	fprintf($stream, "<tr align=\"right\"><td>---</td><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%.01f</b></td><td><b>%.01f</b></td><td><b>%.01f%%</b></td></tr>\n",
-		_("Summary"), 
-		$score->getSum(), 
-		$this->board->getMaximumScore(), 
-		100 * $score->getSum() / $this->board->getMaximumScore());
-	fprintf($stream, "</table><br/>\n");
-    }
-    
-    // 
-    // Helper function for printing a question and (possibly) the students
-    // answer to it.
-    // 
-    private function printQuestionAnswer($stream, $question, $answer)
-    {
-	fprintf($stream, "<!-- NEED %d -->\n<br/>\n", PDF_QUESTION_MIN_LENGTH);
-	fprintf($stream, "<h2>%s: %s</h2>\n", _("Question"), utf8_decode($question->getQuestionName()));
-	    
-	// 
-	// Output tags for image if question has one:
-	// 
-	if($question->hasQuestionImage()) {
-	    fprintf($stream, "<img src=\"%s\" />\n", $question->getQuestionImage());
-	}
-	
-	// 
-	// Print the block of text containing the question. Format this 
-	// section different depending on the question type.
-	// 
-	if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-	    fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", utf8_decode($question->getQuestionText())));
-	} elseif($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
-		 $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
-	    $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
-	    fprintf($stream, "<p><b>%s</b></p>\n", utf8_decode($qchoice[0]));
-	    
-	    fprintf($stream, "<ol>\n");
-	    foreach($qchoice[1] as $choice => $correct) {
-		fprintf($stream, "<li>%s</li>\n", utf8_decode($choice));
-	    }
-	    fprintf($stream, "</ol>\n");
-	    
-	    fprintf($stream, "%s: %s\n", _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
-	}
-	fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Max score"), $question->getQuestionScore());
-	
-	if($question->getQuestionStatus() == 'removed') {
-	    if($question->getQuestionComment() != null) {
-		fprintf($stream, "<p><b>%s</b>: %s</p>\n", 
-			_("Teachers reason for removal"), 
-			utf8_decode($question->getQuestionComment()));
-	    } else {
-		fprintf($stream, "<p><b>%s</b></p>\n", _("This question was removed without an explanation from the teacher."));
-	    }
-	}
-	
-	// 
-	// The answer together with comment (if set).
-	// 
-	if(isset($answer)) {
-	    fprintf($stream, "<h3>%s</h3>\n", _("Answer"));
-	    if($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-		fprintf($stream, "<p>%s</p>\n", utf8_decode($answer->getAnswerText()));
-	    } elseif($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
-		     $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
-		$achoice = Exam::getQuestionChoice($answer->getQuestionText());
-		fprintf($stream, "<p>%s</p>\n", implode(", ", $achoice[1]));
-	    }
-	    if($answer->hasAnswerComment()) {
-		fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Your comments"), $answer->getAnswerComment());
-	    }
-	    if($answer->hasResultComment()) {
-		fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Teacher comments"), $answer->getResultComment());
-	    }
-	    fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Score"), $answer->getResultScore());
-	}
-    }
-    
-    // 
-    // Output the question/answer section.
-    // 
-    private function printSectionAnswers($stream)
-    {	
-	$handler   = new Correct($this->exam->getExamID());
-	$answers   = $handler->getStudentAnswers($this->student);
-	$questions = $this->manager->getQuestions();
-	
-	//
-	// Build the associative array of answered ('a') and unanswered ('u') questions.
-	//
-	$qadata = array( 'a' => array(), 'u' => array(), 'r' => array() );
-	foreach($questions as $question) {
-	    $answered = false;
-	    foreach($answers as $answer) {
-		if($question->getQuestionID() == $answer->getQuestionID()) {
-		    $answered = true;
-		    break;
-		}
-	    }
-	    if($question->getQuestionStatus() == 'removed') {
-		$qadata['r'][] = array($question, $answered ? $answer : null);
-	    } elseif($answered) {
-		$qadata['a'][] = array($question, $answer);
-	    } else {
-		$qadata['u'][] = array($question, null);
-	    }
-	}
+                $this->board = new ScoreBoard($this->exam->getExamID());
+                $this->grade = new ExamGrades($this->exam->getExamGrades());
 
-	// 
-	// Now loop thru the array of questions and answers. We use two separate 
-	// sections for answered and unanswered questions.
-	// 
+                parent::__construct($this->exam->getExamName(),
+                                $this->exam->getExamOrgUnit());
+        }
 
-	if(count($qadata['a']) > 0) {
-	    fprintf($stream, "<h1>%s</h1>\n", _("Questions and Answers"));
-	    foreach($qadata['a'] as $data) {
-		$this->printQuestionAnswer($stream, $data[0], $data[1]);
-	    }
-	}
-	
-	if(count($qadata['u']) > 0) {
-	    fprintf($stream, "<h1>%s</h1>\n", _("Unanswered Questions"));
-	    foreach($qadata['u'] as $data) {
-		$this->printQuestionAnswer($stream, $data[0], null);
-	    }
-	}
-	
-	if(count($qadata['r']) > 0) {
-	    fprintf($stream, "<h1>%s</h1>\n", _("Removed Questions"));
-	    fprintf($stream, "<p>" .
-		    _("These questions has been removed from this examination. ") .
-		    _("The questions, along with your answers (if any) and the teacher appraisal, is included here for reference, but do not affect your examination score or grade.") .
-		    "</p>\n");
-	    foreach($qadata['r'] as $data) {
-		$this->printQuestionAnswer($stream, $data[0], $data[1]);
-	    }
-	}
-    }
-    
-    // 
-    // Print sub section for examination creator.
-    // 
-    private function printSubSectionExamCreator($stream)
-    {
-	$user = $this->ldap->searchPrincipalName($this->exam->getExamCreator());
-	
-	fprintf($stream, "<h5>%s:</h5>\n", _("Responsable for examination"));
-	fprintf($stream, 
-		"<p><blockquote>" . 
-		_("Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>") . 
-		"</blockquote></p>\n",
-		$user->first()->getMail()->first(), 
-		utf8_decode($user->first()->getCN()->first()));
-    }
+        public function __destruct()
+        {
+                $this->ldap->close();
+        }
 
-    // 
-    // Print sub section for question contributors and answer correctors.
-    // 
-    private function printSubSectionContributors($stream)
-    {
-	$contributors = $this->manager->getContributors();
- 	if($contributors->count()) {
-	    
-	    // 
-	    // Collect contributors first:
-	    // 
-	    $qdata = array();
-	    $questions = $this->manager->getQuestions();
-	    foreach($contributors as $contributor) {
-		foreach($questions as $question) {
-		    if($question->getQuestionPublisher() == $contributor->getContributorUser()) {
-			$uuid = $contributor->getContributorUser();
-			$name = $question->getQuestionName();
-			$qdata[$uuid][] = trim($name, ".");
-		    }
-		}
-	    }
-	    
-	    // 
-	    // Output the list of contributors:
-	    // 
-	    fprintf($stream, "<h5>%s:</h5>\n", _("Correction of answers"));
-	    fprintf($stream, 
-		    "<p><blockquote>" . 
-		    _("These people have contributed questions for the examination and corrected answers.") . 
-		    "</blockquote></p>\n");
-	    fprintf($stream, "<ul>\n");
-	    foreach($qdata as $uuid => $qlist) {
-		$user = $this->ldap->searchPrincipalName($uuid);
-		fprintf($stream, "<li><a href=\"mailto:%s\">%s</a><br/><blockquote>%s: %s</blockquote></li>\n",
-			$user->first()->getMail(), 
-			utf8_decode($user->first()->getCN()->first()),
-			_("Corrected questions"), implode(", ", $qlist));
-	    }
-	    fprintf($stream, "</ul>\n");
-	}
-    }
-    
-    // 
-    // Output the examination statistics section.
-    // 
-    private function printSectionStatistics($stream)
-    {
-	fprintf($stream, "<h1>%s</h1>\n", _("Statistics"));
-	fprintf($stream, "<p>" . _("This section shows overall statistics for all participients on this examination.") . "</p>\n");
-	
-	// 
-	// The grade distribution sub section.
-	// 
-	$grades = array();
-	foreach($this->board->getStudents() as $student) {
-	    $score = $this->board->getStudentScore($student->getStudentID());
-	    $class = $this->grade->getGrade($score->getSum());
-	    $value = sprintf("%.01f", $score->getSum());
-	    $range = intval(floor(10 * $score->getSum() / $this->board->getMaximumScore()));
-	    if(!isset($grades['grade'][$class])) {
-		$grades['grade'][$class] = 1;
-	    } else {
-		$grades['grade'][$class]++;   // One more with this grade
-	    }
-	    if(!isset($grades['score'][$value])) {
-		$grades['score'][$value] = 1;
-	    } else {
-		$grades['score'][$value]++;
-	    }
-	    if(!isset($grades['range'][$range])) {
-		$grades['range'][$range] = 1;
-	    } else {
-		$grades['range'][$range]++;
-	    }
-	}
-	krsort($grades['score']);
-	krsort($grades['range']);
+        //
+        // Create the frontpage. If previous frontpage exists, then it's
+        // unlinked (deleted) before the new one is created.
+        //
+        private function createFrontPage($name)
+        {
+                $stream = fopen($this->frontpage, "w");
+                if ($stream) {
+                        fprintf($stream, "<html>\n");
+                        fprintf($stream, "<body>\n");
+                        fprintf($stream, "<!-- MEDIA LEFT %s  -->\n", PDF_FRONT_PAGE_MARGIN);
+                        fprintf($stream, "<!-- MEDIA RIGHT %s -->\n", PDF_FRONT_PAGE_MARGIN);
+                        fprintf($stream, "<br/><br/>\n");
+                        fprintf($stream, "<center>\n");
+                        fprintf($stream, "<img src=\"%s\" />\n", PDF_LOGOTYPE);
+                        fprintf($stream, "<br/><br/><br/><br/><br/><br/>\n");
+                        fprintf($stream, "<h1>%s</h1>\n", $this->title);
+                        fprintf($stream, "<h2>%s</h2>\n", $this->author);
+                        fprintf($stream, "<br/><br/><br/><br/>\n");
+                        fprintf($stream, "<table><tr><td align=\"left\">\n");
+                        fprintf($stream, "<h4>%s: %s</h4>\n", _("Examination Date"), strftime(DATE_FORMAT, strtotime($this->exam->getExamStartTime())));
+                        fprintf($stream, "<h4>%s: %s</h4>\n", _("Participant"), $name);
+                        fprintf($stream, "</td></tr></table>\n");
+                        fprintf($stream, "</center>\n");
+                        fprintf($stream, "</body>\n");
+                        fprintf($stream, "</html>\n");
 
-	// 
-	// Get mean value and standard deviation. We are going to present
-	// values based on all scores and values where we first remove the
-	// highest and lowest scores.
-	// 
-	$scf = array();
-	foreach($grades['score'] as $key => $val) {
-	    for($i = 0; $i < $val; $i++) {
-		$scf[] = $key;
-	    }
-	}
-	sort($scf);
-	$scs = $scf;
+                        fclose($stream);
+                }
+        }
 
-	while($scs[0] == 0) {
-	    array_shift($scs);	    
-	}
-	array_pop($scs);
-	
-	$sdf = $this->getStandardDeviation($scf);
-	$mvf = $this->getMeanValue($scf);
+        //
+        // Output meta data.
+        //
+        private function printMetaData($stream)
+        {
+                fprintf($stream, "<!-- FOOTER CENTER \"\$CHAPTER\" -->\n");
+                fprintf($stream, "<!-- FOOTER LEFT \"%s\" -->\n", _('Page $PAGE of $PAGES'));
+                fprintf($stream, "<!-- FOOTER RIGHT \"\$DATE \$TIME\" -->\n");
 
-	$sds = $this->getStandardDeviation($scs);
-	$mvs = $this->getMeanValue($scs);
-	
-	// 
-	// Now we are ready to generate the two tables. We use NEED to ensure
-	// that the tables don't get cut apart somewhere in the middle.
-	// 
-	fprintf($stream, "<!-- NEED %d -->\n", count($grades['grade']) + 3);
-	fprintf($stream, "<h2>%s</h2>\n", _("Distribution"));
-	
-	fprintf($stream, "<p>" . _("This table shows the distribution by grades. The number of student allotted for each grade are:") . "</p>\n");
-	fprintf($stream, "<table>\n");
-	fprintf($stream, "<tr align=\"right\"><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Grade"), _("Threshold"), _("Students"), _("Percent"));
-	$sum = array( "st" => 0, "pc" => 0 );
-	foreach($grades['grade'] as $key => $val) {
-	    fprintf($stream, "<tr align=\"right\"><td><b>%s</b></td><td>%.01f</td><td>%d</td><td>%.01f</td></tr>\n",
-		    $key, 
-		    $this->grade->getThreshold($key), 
-		    $val, 
-		    100 * $val / $this->board->getStudents()->count());
-	    $sum['st'] += $val;
-	    $sum['pc'] += 100 * $val / $this->board->getStudents()->count();
-	}
-	fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td><td>---</td></tr>\n");
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%d</b></td><td><b>%.01f%%</b></td></tr>\n",
-		_("Summary"), $sum['st'], $sum['pc']);
-	fprintf($stream, "</table><br/>\n");
-	
-	fprintf($stream, "<!-- NEED %d -->\n", count($grades['score']) + 3);
-	fprintf($stream, "<p>" . _("This table shows the distribution of scores by student on this examination.") . "</p>\n");
- 	fprintf($stream, "<table>\n");
-	fprintf($stream, "<tr><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Score"), _("Percent"), _("Students"));
-	$sum = array( "st" => 0, "sc" => 0 );
-	foreach($grades['score'] as $key => $val) {
-	    fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td><b>%.01f</b></td><td>%.01f</td><td>%d</td></tr>\n",
-		    $key, 100 * $key / $this->board->getMaximumScore(), $val);
-	    $sum['sc'] += $key * $val;
-	    $sum['st'] += $val;
-	}
-	fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f</td><td>&nbsp;</td><td>%d</td></tr>\n",
-		_("Summary"), $sum['sc'], $sum['st']);
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td><td>%.01f%% (%.01f%%)</td></tr>\n",
-		_("Mean Value"), $mvs, $mvf, 100 * $mvs / $this->board->getMaximumScore(), 100 * $mvf / $this->board->getMaximumScore());
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td></tr>\n",
-		_("Standard Deviation"), $sds, $sdf);
-	fprintf($stream, "</table><br/>\n");
+                fprintf($stream, "<!-- MEDIA SIZE %s -->\n", strtoupper(PDF_MEDIA_SIZE));
+                fprintf($stream, "<!-- MEDIA TYPE %s -->\n", strtoupper(PDF_MEDIA_TYPE));
+                fprintf($stream, "<!-- MEDIA LANDSCAPE %s -->\n", PDF_MEDIA_LANDSCAPE ? "YES" : "NO");
 
-	// 
-	// This is funky code, so we better provide some description:
-	// 
-	fprintf($stream, "<p>" . 
-		_("The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. ") . 
-		_("The other values are calculated by first removing the highest and lowest scores.") .
-		"</p>\n");
-	
-	// 
-	// The result ranges sub section.
-	// 
-	fprintf($stream, "<!-- NEED %d -->\n", count($grades['range']) + 3);
-	fprintf($stream, "<h2>%s</h2>\n", _("Ranges"));
-	
-	fprintf($stream, "<p>" . _("This table shows the number of student in each range of percentage correct answers.") . "</p>\n");
- 	fprintf($stream, "<table>\n");
-	fprintf($stream, "<tr><th>%s</th><th>%s</th></tr>\n", _("Range"), _("Students"));
-	$sum = array( "st" => 0 );
-	foreach($grades['range'] as $key => $val) {
-	    $percent = $key * 10;
-	    switch($percent) {
-	     case 0:
-		fprintf($stream, "<tr align=\"right\"><td><b>< 10 %%</b></td><td>%d</td></tr>\n", 
-			$val);
-		break;
-	     case 90:
-		fprintf($stream, "<tr align=\"right\"><td><b>> %d %%</b></td><td>%d</td></tr>\n",
-			$percent, $val);
-		break;
-	     default:
-		fprintf($stream, "<tr align=\"right\"><td><b>%d - %d %%</b></td><td>%d</td></tr>\n",
-			$percent, $percent + 9, $val);
-		break;
-	    }
-	    $sum['st'] += $val;
-	}
-	fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td></tr>\n");
-	fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%d</td></tr>\n",
-		_("Summary"), $sum['st']);
-	fprintf($stream, "</table><br/>\n");
-    }
-    
-    // 
-    // Output the reference section.
-    // 
-    private function printSectionReference($stream)
-    {
-	$openexam = "http://it.bmc.uu.se/andlov/proj/openexam/";
-	$htmldoc  = "http://www.easysw.com/htmldoc/";
-	
-	fprintf($stream, "<h1>%s</h1>\n", _("Reference"));
-	fprintf($stream, "<p>" . _("Information about this examination.") . "</p>\n");
+                fprintf($stream, "<META NAME=\"AUTHOR\" CONTENT=\"%s\" />\n", $this->author);
+                fprintf($stream, "<META NAME=\"GENERATOR\" CONTENT=\"%s\" />\n", PDF_GENERATOR);
+                fprintf($stream, "<META NAME=\"KEYWORDS\" CONTENT=\"exam,openexam,php,online\" />\n");
+                fprintf($stream, "<META NAME=\"SUBJECT\" CONTENT=\"%s\" />\n", $this->title);
+        }
 
-	fprintf($stream, "<h2>%s</h2>\n", _("Contact Information"));
-	fprintf($stream, "<p>" . _("This section lists those people thats been involved in this examination.") . "</p>\n");
+        //
+        // Output the examination description section.
+        //
+        private function printSectionDescription($stream)
+        {
+                fprintf($stream, "<h1>%s</h1>\n", _("Description"));
+                fprintf($stream, "<p>%s</p>\n",
+                        str_replace("\n", "<br/>", utf8_decode($this->exam->getExamDescription())));
+        }
 
-	// 
-	// Print examination creator and question contributors:
-	// 
-	$this->printSubSectionExamCreator($stream);
-	$this->printSubSectionContributors($stream);
+        //
+        // Output the scores section.
+        //
+        private function printSectionScores($stream)
+        {
+                fprintf($stream, "<h1>%s</h1>\n", _("Examination Result"));
 
-	// 
-	// Print document info:
-	// 
-	fprintf($stream, "<h2>%s</h2>\n", _("Document Information"));
-	fprintf($stream, "<p>" . 
-		_("This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s\">%s</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license.") . 
-		"</p>\n", 
-		$openexam, BASE_URL, BASE_URL, $htmldoc);
-	fprintf($stream, "<p>" . 
-		_("OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala University.") .
-		"</p>\n"); 
-    }
+                //
+                // The summary section.
+                //
+                $score = $this->board->getStudentScore($this->student);
+                fprintf($stream, "<h2>%s</h2>\n", _("Summary"));
+                fprintf($stream, "<p>" . _("You scored total %.01f of maximum %.01f points (%.01f%%) on this examination.") . "</p>\n",
+                        $score->getSum(),
+                        $this->board->getMaximumScore(),
+                        100 * $score->getSum() / $this->board->getMaximumScore());
 
-    // 
-    // The arithmetric mean value.
-    // 
-    private function getMeanValue(&$scores)
-    {
-	$n = count($scores);
-	return array_sum($scores) / $n;
-    }
-    
-    // 
-    // The standard deviation.
-    // 
-    private function getStandardDeviation(&$scores)
-    {
-	$n = count($scores);
-	$m = array_sum($scores) / $n;
-	
-	for($i = 0; $i < $n; $i++) {
-	    $sx[$i] = pow(($m - $scores[$i]), 2);
-	}	
-	return sqrt(array_sum($sx) / $n);
-    }
-    
-    // 
-    // This is our callback function implementing the interface InputGenerator.
-    // 
-    public function write($stream)
-    {
-	fprintf($stream, "<html>\n<head><title>%s</title></head>\n<body>\n", $this->title);
-	$this->printMetaData($stream);
-	$this->printSectionDescription($stream);
-	$this->printSectionScores($stream);
-	$this->printSectionAnswers($stream);
-	// if($this->removed > 0) {
-	//     $this->printSectionRemovedQuestions($stream);
-	// }
-	$this->printSectionStatistics($stream);
-	$this->printSectionReference($stream);
-	fprintf($stream, "</body></html>\n");
-    }
-    
-    // 
-    // Feed the HTMLDOC process with HTML (*.book) on stdin. If debug mode is enabled, 
-    // then no process is executed, instead the generated HTML is output on stdout.
-    // 
-    private function generate($target = null)
-    {
-	// 
-	// We must create the frontpage before launching the process.
-	// 
-	$data = $this->manager->getStudentData($this->student);
-	$user = $this->ldap->searchUID($data->getStudentUser());
-	if(!$user->first()->hasCN()) {
-	    $user = $this->ldap->searchPrincipalName($data->getStudentUser());
-	}
-	if($user->first()->hasCN()) {
-	    $name = utf8_decode($user->first()->getCN()->first());
-	} else {
-	    $name = "";
-	}
-	
-	if(file_exists($this->frontpage)) {
-	    unlink($this->frontpage);
-	}
-	$this->frontpage = tempnam("/tmp", "openexam-result");
-	$this->createFrontPage($name);
+                //
+                // The graduation section.
+                //
+                fprintf($stream, "<h2>%s</h2>\n", _("Graduation"));
+                fprintf($stream, "<p>" . _("Your graduation on this examination is: <b>%s</b>.") . "</p>\n",
+                        $this->grade->getGrade($score->getSum()));
 
-	$this->begin($this, $target);
-    }
-    
-    // 
-    // Get result from database and send the output to the browser.
-    // 
-    public function send($student)
-    {
-	$data = $this->manager->getStudentData($student);
-	
-	if(strstr($this->format, "pdf")) {
-	    header("Content-Type: application/pdf");
-	    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
-			   sprintf("%s-%s.pdf", $data->getStudentUser(), $data->getStudentCode())));	    
-	} elseif(strstr($this->format, "ps")) {
-	    header("Content-Type: application/postscript");
-	    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
-			   sprintf("%s-%s.ps", $data->getStudentUser(), $data->getStudentCode())));	    
-	} elseif(strstr($this->format, "html")) {
-	    header("Content-Type: text/html");
-	    header(sprintf("Content-Disposition: attachment; filename=\"%s\"", 
-			   sprintf("%s-%s.html", $data->getStudentUser(), $data->getStudentCode())));	    
-	}
-	
-	$this->student = $student;
-	$this->generate();
-    }
-    
-    // 
-    // Get result from the database and save it to output file.
-    // 
-    public function save($student, $file)
-    {
-	$this->student = $student;
-	$this->generate($file);
-    }
-    
-    // 
-    // Save all student results for this examination. Note that
-    // the destination must be a writable directory.
-    // 
-    public function saveAll($destdir)
-    {
-	$students = $this->manager->getStudents();
-	foreach($students as $student) {
-	    if(strstr($this->format, "pdf")) {
-		$file = sprintf("%s/%s-%s.pdf", 
-				$destdir, 
-				$student->getStudentUser(), 
-				$student->getStudentCode());
-	    } elseif(strstr($this->format, "ps")) {
-		$file = sprintf("%s/%s-%s.ps", 
-				$destdir,
-				$student->getStudentUser(),
-				$student->getStudentCode());
-	    } elseif(strstr($this->format, "html")) {
-		$file = sprintf("%s/%s-%s.html", 
-				$destdir, 
-				$student->getStudentUser(), 
-				$student->getStudentCode());
-	    } else {
-		throw new Exception(sprintf("Unknown format '%s'", $this->format));
-	    }
-	    
-	    $this->student = $student->getStudentID();
-	    $this->generate($file);
-	}
-    }
+                //
+                // The answer result details section.
+                //
+                fprintf($stream, "<h2>%s</h2>\n", _("Score Table"));
+                fprintf($stream, "<p>%s</p>\n", _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."));
+                fprintf($stream, "<table><tr align=\"right\"><th>%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
+                        _("Question"), _("Score"), _("Max score"), _("Percent"), _("Notice"));
+                $questions = $this->board->getQuestions();
+                foreach ($questions as $question) {
+                        fprintf($stream, "<tr align=\"right\"><td>%s</td><td>&nbsp;</td>", utf8_decode($question->getQuestionName()));
+                        $data = $this->board->getData($this->student, $question->getQuestionID());
+                        if ($question->getQuestionStatus() == 'active') {
+                                if (isset($data)) {
+                                        fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td>",
+                                                $data->getResultScore(),
+                                                $question->getQuestionScore(),
+                                                100 * $data->getResultScore() / $question->getQuestionScore());
+                                } else {
+                                        fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td>",
+                                                $question->getQuestionScore(), 0);
+                                }
+                        } else {
+                                fprintf($stream, "<td>-</td><td>-</td><td>-<td><td>%s</td>", _("Removed"));
+                                $this->removed++;
+                        }
+                        fprintf($stream, "</tr>\n");
+                }
+                fprintf($stream, "<tr align=\"right\"><td>---</td><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%.01f</b></td><td><b>%.01f</b></td><td><b>%.01f%%</b></td></tr>\n",
+                        _("Summary"),
+                        $score->getSum(),
+                        $this->board->getMaximumScore(),
+                        100 * $score->getSum() / $this->board->getMaximumScore());
+                fprintf($stream, "</table><br/>\n");
+        }
 
-    // 
-    // Send all results as a zip-file.
-    // 
-    public function sendAll()
-    {
-	$dirname = tempnam("/tmp", "openexam-result");
-	$zipname = tempnam("/tmp", "openexam-result");
+        //
+        // Helper function for printing a question and (possibly) the students
+        // answer to it.
+        //
+        private function printQuestionAnswer($stream, $question, $answer)
+        {
+                fprintf($stream, "<!-- NEED %d -->\n<br/>\n", PDF_QUESTION_MIN_LENGTH);
+                fprintf($stream, "<h2>%s: %s</h2>\n", _("Question"), utf8_decode($question->getQuestionName()));
 
-	if(!$dirname || !$zipname) {
-	    throw new Exception("Failed create temporary file.");
-	}
+                //
+                // Output tags for image if question has one:
+                //
+                if ($question->hasQuestionImage()) {
+                        fprintf($stream, "<img src=\"%s\" />\n", $question->getQuestionImage());
+                }
 
-	// 
-	// For naming the result zip-file. Note that we use RFC 2822 format of date:
-	// 
-	$data = $this->manager->getData();
-	$name = sprintf("%s - %s", $data->getExamName(), date('r', strtotime($data->getExamStartTime())));
-	
-	$zip = new ZipArchive();
-	if(!$zip->open($zipname, ZIPARCHIVE::OVERWRITE)) {
-	    throw new Exception("Failed create zip-archive.");
-	}
-	unlink($dirname);
-	if(!mkdir($dirname)) {
-	    throw new Exception("Failed create temporary directory.");	    
-	}
+                //
+                // Print the block of text containing the question. Format this
+                // section different depending on the question type.
+                //
+                if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+                        fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", utf8_decode($question->getQuestionText())));
+                } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
+                        $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
+                        $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
+                        fprintf($stream, "<p><b>%s</b></p>\n", utf8_decode($qchoice[0]));
 
-	$this->saveAll($dirname);
-	if(!($handle = opendir($dirname))) {
-	    throw new Exception("Failed open zip entry directory.");
-	}
-	
-	// 
-	// Must add all files to zip-file and close the zip before unlinking the
-	// temporary files added to zip-file, otherwise we get an empty archive.
-	// 
-	while(($file = readdir($handle)) !== false) {
-	    if($file == "." || $file == "..") {
-		continue;
-	    }
-	    $path = sprintf("%s/%s", $dirname, $file);
-	    $zip->addFile($path, $file);
-	}
-	$zip->close();
-	rewinddir($handle);
-	while(($file = readdir($handle)) !== false) {
-	    if($file != "." && $file == "..") {
-		$path = sprintf("%s/%s", $dirname, $file);
-		unlink($path);
-	    }
-	}
-	closedir($handle);
-	
-	header("Content-Type: application/zip");
-	header(sprintf("Content-Disposition: attachment;filename=\"%s.zip\"", $name));
-	header("Cache-Control: no-cache");
-	header("Pragma-directive: no-cache");
-	header("Cache-directive: no-cache");
-	header("Pragma: no-cache");
-	header("Expires: 0");
-	
-	readfile($zipname);
-	
-	if(file_exists($zipname)) {
-	    unlink($zipname);
-	}
-	if(file_exists($dirname)) {
-	    rmdir($dirname);
-	}
-    }
-    
+                        fprintf($stream, "<ol>\n");
+                        foreach ($qchoice[1] as $choice => $correct) {
+                                fprintf($stream, "<li>%s</li>\n", utf8_decode($choice));
+                        }
+                        fprintf($stream, "</ol>\n");
+
+                        fprintf($stream, "%s: %s\n", _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
+                }
+                fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Max score"), $question->getQuestionScore());
+
+                if ($question->getQuestionStatus() == 'removed') {
+                        if ($question->getQuestionComment() != null) {
+                                fprintf($stream, "<p><b>%s</b>: %s</p>\n",
+                                        _("Teachers reason for removal"),
+                                        utf8_decode($question->getQuestionComment()));
+                        } else {
+                                fprintf($stream, "<p><b>%s</b></p>\n", _("This question was removed without an explanation from the teacher."));
+                        }
+                }
+
+                //
+                // The answer together with comment (if set).
+                //
+                if (isset($answer)) {
+                        fprintf($stream, "<h3>%s</h3>\n", _("Answer"));
+                        if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
+                                fprintf($stream, "<p>%s</p>\n", utf8_decode($answer->getAnswerText()));
+                        } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
+                                $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
+                                $achoice = Exam::getQuestionChoice($answer->getQuestionText());
+                                fprintf($stream, "<p>%s</p>\n", implode(", ", $achoice[1]));
+                        }
+                        if ($answer->hasAnswerComment()) {
+                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Your comments"), $answer->getAnswerComment());
+                        }
+                        if ($answer->hasResultComment()) {
+                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Teacher comments"), $answer->getResultComment());
+                        }
+                        fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Score"), $answer->getResultScore());
+                }
+        }
+
+        //
+        // Output the question/answer section.
+        //
+        private function printSectionAnswers($stream)
+        {
+                $handler = new Correct($this->exam->getExamID());
+                $answers = $handler->getStudentAnswers($this->student);
+                $questions = $this->manager->getQuestions();
+
+                //
+                // Build the associative array of answered ('a') and unanswered ('u') questions.
+                //
+                $qadata = array('a' => array(), 'u' => array(), 'r' => array());
+                foreach ($questions as $question) {
+                        $answered = false;
+                        foreach ($answers as $answer) {
+                                if ($question->getQuestionID() == $answer->getQuestionID()) {
+                                        $answered = true;
+                                        break;
+                                }
+                        }
+                        if ($question->getQuestionStatus() == 'removed') {
+                                $qadata['r'][] = array($question, $answered ? $answer : null);
+                        } elseif ($answered) {
+                                $qadata['a'][] = array($question, $answer);
+                        } else {
+                                $qadata['u'][] = array($question, null);
+                        }
+                }
+
+                //
+                // Now loop thru the array of questions and answers. We use two separate
+                // sections for answered and unanswered questions.
+                //
+
+                if (count($qadata['a']) > 0) {
+                        fprintf($stream, "<h1>%s</h1>\n", _("Questions and Answers"));
+                        foreach ($qadata['a'] as $data) {
+                                $this->printQuestionAnswer($stream, $data[0], $data[1]);
+                        }
+                }
+
+                if (count($qadata['u']) > 0) {
+                        fprintf($stream, "<h1>%s</h1>\n", _("Unanswered Questions"));
+                        foreach ($qadata['u'] as $data) {
+                                $this->printQuestionAnswer($stream, $data[0], null);
+                        }
+                }
+
+                if (count($qadata['r']) > 0) {
+                        fprintf($stream, "<h1>%s</h1>\n", _("Removed Questions"));
+                        fprintf($stream, "<p>" .
+                                _("These questions has been removed from this examination. ") .
+                                _("The questions, along with your answers (if any) and the teacher appraisal, is included here for reference, but do not affect your examination score or grade.") .
+                                "</p>\n");
+                        foreach ($qadata['r'] as $data) {
+                                $this->printQuestionAnswer($stream, $data[0], $data[1]);
+                        }
+                }
+        }
+
+        //
+        // Print sub section for examination creator.
+        //
+        private function printSubSectionExamCreator($stream)
+        {
+                $user = $this->ldap->searchPrincipalName($this->exam->getExamCreator());
+
+                fprintf($stream, "<h5>%s:</h5>\n", _("Responsable for examination"));
+                fprintf($stream,
+                        "<p><blockquote>" .
+                        _("Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>") .
+                        "</blockquote></p>\n",
+                        $user->first()->getMail()->first(),
+                        utf8_decode($user->first()->getCN()->first()));
+        }
+
+        //
+        // Print sub section for question contributors and answer correctors.
+        //
+        private function printSubSectionContributors($stream)
+        {
+                $contributors = $this->manager->getContributors();
+                if ($contributors->count()) {
+
+                        //
+                        // Collect contributors first:
+                        //
+                        $qdata = array();
+                        $questions = $this->manager->getQuestions();
+                        foreach ($contributors as $contributor) {
+                                foreach ($questions as $question) {
+                                        if ($question->getQuestionPublisher() == $contributor->getContributorUser()) {
+                                                $uuid = $contributor->getContributorUser();
+                                                $name = $question->getQuestionName();
+                                                $qdata[$uuid][] = trim($name, ".");
+                                        }
+                                }
+                        }
+
+                        //
+                        // Output the list of contributors:
+                        //
+                        fprintf($stream, "<h5>%s:</h5>\n", _("Correction of answers"));
+                        fprintf($stream,
+                                "<p><blockquote>" .
+                                _("These people have contributed questions for the examination and corrected answers.") .
+                                "</blockquote></p>\n");
+                        fprintf($stream, "<ul>\n");
+                        foreach ($qdata as $uuid => $qlist) {
+                                $user = $this->ldap->searchPrincipalName($uuid);
+                                fprintf($stream, "<li><a href=\"mailto:%s\">%s</a><br/><blockquote>%s: %s</blockquote></li>\n",
+                                        $user->first()->getMail(),
+                                        utf8_decode($user->first()->getCN()->first()),
+                                        _("Corrected questions"), implode(", ", $qlist));
+                        }
+                        fprintf($stream, "</ul>\n");
+                }
+        }
+
+        //
+        // Output the examination statistics section.
+        //
+        private function printSectionStatistics($stream)
+        {
+                fprintf($stream, "<h1>%s</h1>\n", _("Statistics"));
+                fprintf($stream, "<p>" . _("This section shows overall statistics for all participients on this examination.") . "</p>\n");
+
+                //
+                // The grade distribution sub section.
+                //
+                $grades = array();
+                foreach ($this->board->getStudents() as $student) {
+                        $score = $this->board->getStudentScore($student->getStudentID());
+                        $class = $this->grade->getGrade($score->getSum());
+                        $value = sprintf("%.01f", $score->getSum());
+                        $range = intval(floor(10 * $score->getSum() / $this->board->getMaximumScore()));
+                        if (!isset($grades['grade'][$class])) {
+                                $grades['grade'][$class] = 1;
+                        } else {
+                                $grades['grade'][$class]++;   // One more with this grade
+                        }
+                        if (!isset($grades['score'][$value])) {
+                                $grades['score'][$value] = 1;
+                        } else {
+                                $grades['score'][$value]++;
+                        }
+                        if (!isset($grades['range'][$range])) {
+                                $grades['range'][$range] = 1;
+                        } else {
+                                $grades['range'][$range]++;
+                        }
+                }
+                krsort($grades['score']);
+                krsort($grades['range']);
+
+                //
+                // Get mean value and standard deviation. We are going to present
+                // values based on all scores and values where we first remove the
+                // highest and lowest scores.
+                //
+                $scf = array();
+                foreach ($grades['score'] as $key => $val) {
+                        for ($i = 0; $i < $val; $i++) {
+                                $scf[] = $key;
+                        }
+                }
+                sort($scf);
+                $scs = $scf;
+
+                while ($scs[0] == 0) {
+                        array_shift($scs);
+                }
+                array_pop($scs);
+
+                $sdf = $this->getStandardDeviation($scf);
+                $mvf = $this->getMeanValue($scf);
+
+                $sds = $this->getStandardDeviation($scs);
+                $mvs = $this->getMeanValue($scs);
+
+                //
+                // Now we are ready to generate the two tables. We use NEED to ensure
+                // that the tables don't get cut apart somewhere in the middle.
+                //
+                fprintf($stream, "<!-- NEED %d -->\n", count($grades['grade']) + 3);
+                fprintf($stream, "<h2>%s</h2>\n", _("Distribution"));
+
+                fprintf($stream, "<p>" . _("This table shows the distribution by grades. The number of student allotted for each grade are:") . "</p>\n");
+                fprintf($stream, "<table>\n");
+                fprintf($stream, "<tr align=\"right\"><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Grade"), _("Threshold"), _("Students"), _("Percent"));
+                $sum = array("st" => 0, "pc" => 0);
+                foreach ($grades['grade'] as $key => $val) {
+                        fprintf($stream, "<tr align=\"right\"><td><b>%s</b></td><td>%.01f</td><td>%d</td><td>%.01f</td></tr>\n",
+                                $key,
+                                $this->grade->getThreshold($key),
+                                $val,
+                                100 * $val / $this->board->getStudents()->count());
+                        $sum['st'] += $val;
+                        $sum['pc'] += 100 * $val / $this->board->getStudents()->count();
+                }
+                fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td><td>---</td></tr>\n");
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%d</b></td><td><b>%.01f%%</b></td></tr>\n",
+                        _("Summary"), $sum['st'], $sum['pc']);
+                fprintf($stream, "</table><br/>\n");
+
+                fprintf($stream, "<!-- NEED %d -->\n", count($grades['score']) + 3);
+                fprintf($stream, "<p>" . _("This table shows the distribution of scores by student on this examination.") . "</p>\n");
+                fprintf($stream, "<table>\n");
+                fprintf($stream, "<tr><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Score"), _("Percent"), _("Students"));
+                $sum = array("st" => 0, "sc" => 0);
+                foreach ($grades['score'] as $key => $val) {
+                        fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td><b>%.01f</b></td><td>%.01f</td><td>%d</td></tr>\n",
+                                $key, 100 * $key / $this->board->getMaximumScore(), $val);
+                        $sum['sc'] += $key * $val;
+                        $sum['st'] += $val;
+                }
+                fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f</td><td>&nbsp;</td><td>%d</td></tr>\n",
+                        _("Summary"), $sum['sc'], $sum['st']);
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td><td>%.01f%% (%.01f%%)</td></tr>\n",
+                        _("Mean Value"), $mvs, $mvf, 100 * $mvs / $this->board->getMaximumScore(), 100 * $mvf / $this->board->getMaximumScore());
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td></tr>\n",
+                        _("Standard Deviation"), $sds, $sdf);
+                fprintf($stream, "</table><br/>\n");
+
+                //
+                // This is funky code, so we better provide some description:
+                //
+                fprintf($stream, "<p>" .
+                        _("The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. ") .
+                        _("The other values are calculated by first removing the highest and lowest scores.") .
+                        "</p>\n");
+
+                //
+                // The result ranges sub section.
+                //
+                fprintf($stream, "<!-- NEED %d -->\n", count($grades['range']) + 3);
+                fprintf($stream, "<h2>%s</h2>\n", _("Ranges"));
+
+                fprintf($stream, "<p>" . _("This table shows the number of student in each range of percentage correct answers.") . "</p>\n");
+                fprintf($stream, "<table>\n");
+                fprintf($stream, "<tr><th>%s</th><th>%s</th></tr>\n", _("Range"), _("Students"));
+                $sum = array("st" => 0);
+                foreach ($grades['range'] as $key => $val) {
+                        $percent = $key * 10;
+                        switch ($percent) {
+                                case 0:
+                                        fprintf($stream, "<tr align=\"right\"><td><b>< 10 %%</b></td><td>%d</td></tr>\n",
+                                                $val);
+                                        break;
+                                case 90:
+                                        fprintf($stream, "<tr align=\"right\"><td><b>> %d %%</b></td><td>%d</td></tr>\n",
+                                                $percent, $val);
+                                        break;
+                                default:
+                                        fprintf($stream, "<tr align=\"right\"><td><b>%d - %d %%</b></td><td>%d</td></tr>\n",
+                                                $percent, $percent + 9, $val);
+                                        break;
+                        }
+                        $sum['st'] += $val;
+                }
+                fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td></tr>\n");
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%d</td></tr>\n",
+                        _("Summary"), $sum['st']);
+                fprintf($stream, "</table><br/>\n");
+        }
+
+        //
+        // Output the reference section.
+        //
+        private function printSectionReference($stream)
+        {
+                $openexam = "http://it.bmc.uu.se/andlov/proj/openexam/";
+                $htmldoc = "http://www.easysw.com/htmldoc/";
+
+                fprintf($stream, "<h1>%s</h1>\n", _("Reference"));
+                fprintf($stream, "<p>" . _("Information about this examination.") . "</p>\n");
+
+                fprintf($stream, "<h2>%s</h2>\n", _("Contact Information"));
+                fprintf($stream, "<p>" . _("This section lists those people thats been involved in this examination.") . "</p>\n");
+
+                //
+                // Print examination creator and question contributors:
+                //
+                $this->printSubSectionExamCreator($stream);
+                $this->printSubSectionContributors($stream);
+
+                //
+                // Print document info:
+                //
+                fprintf($stream, "<h2>%s</h2>\n", _("Document Information"));
+                fprintf($stream, "<p>" .
+                        _("This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s\">%s</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license.") .
+                        "</p>\n",
+                        $openexam, BASE_URL, BASE_URL, $htmldoc);
+                fprintf($stream, "<p>" .
+                        _("OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala University.") .
+                        "</p>\n");
+        }
+
+        //
+        // The arithmetric mean value.
+        //
+        private function getMeanValue(&$scores)
+        {
+                $n = count($scores);
+                return array_sum($scores) / $n;
+        }
+
+        //
+        // The standard deviation.
+        //
+        private function getStandardDeviation(&$scores)
+        {
+                $n = count($scores);
+                $m = array_sum($scores) / $n;
+
+                for ($i = 0; $i < $n; $i++) {
+                        $sx[$i] = pow(($m - $scores[$i]), 2);
+                }
+                return sqrt(array_sum($sx) / $n);
+        }
+
+        //
+        // This is our callback function implementing the interface InputGenerator.
+        //
+        public function write($stream)
+        {
+                fprintf($stream, "<html>\n<head><title>%s</title></head>\n<body>\n", $this->title);
+                $this->printMetaData($stream);
+                $this->printSectionDescription($stream);
+                $this->printSectionScores($stream);
+                $this->printSectionAnswers($stream);
+                // if($this->removed > 0) {
+                //     $this->printSectionRemovedQuestions($stream);
+                // }
+                $this->printSectionStatistics($stream);
+                $this->printSectionReference($stream);
+                fprintf($stream, "</body></html>\n");
+        }
+
+        //
+        // Feed the HTMLDOC process with HTML (*.book) on stdin. If debug mode is enabled,
+        // then no process is executed, instead the generated HTML is output on stdout.
+        //
+        private function generate($target = null)
+        {
+                //
+                // We must create the frontpage before launching the process.
+                //
+                $data = $this->manager->getStudentData($this->student);
+                $user = $this->ldap->searchUID($data->getStudentUser());
+                if (!$user->first()->hasCN()) {
+                        $user = $this->ldap->searchPrincipalName($data->getStudentUser());
+                }
+                if ($user->first()->hasCN()) {
+                        $name = utf8_decode($user->first()->getCN()->first());
+                } else {
+                        $name = "";
+                }
+
+                if (file_exists($this->frontpage)) {
+                        unlink($this->frontpage);
+                }
+                $this->frontpage = tempnam("/tmp", "openexam-result");
+                $this->createFrontPage($name);
+
+                $this->begin($this, $target);
+        }
+
+        //
+        // Get result from database and send the output to the browser.
+        //
+        public function send($student)
+        {
+                $data = $this->manager->getStudentData($student);
+
+                if (strstr($this->format, "pdf")) {
+                        header("Content-Type: application/pdf");
+                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"",
+                                        sprintf("%s-%s.pdf", $data->getStudentUser(), $data->getStudentCode())));
+                } elseif (strstr($this->format, "ps")) {
+                        header("Content-Type: application/postscript");
+                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"",
+                                        sprintf("%s-%s.ps", $data->getStudentUser(), $data->getStudentCode())));
+                } elseif (strstr($this->format, "html")) {
+                        header("Content-Type: text/html");
+                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"",
+                                        sprintf("%s-%s.html", $data->getStudentUser(), $data->getStudentCode())));
+                }
+
+                $this->student = $student;
+                $this->generate();
+        }
+
+        //
+        // Get result from the database and save it to output file.
+        //
+        public function save($student, $file)
+        {
+                $this->student = $student;
+                $this->generate($file);
+        }
+
+        //
+        // Save all student results for this examination. Note that
+        // the destination must be a writable directory.
+        //
+        public function saveAll($destdir)
+        {
+                $students = $this->manager->getStudents();
+                foreach ($students as $student) {
+                        if (strstr($this->format, "pdf")) {
+                                $file = sprintf("%s/%s-%s.pdf",
+                                                $destdir,
+                                                $student->getStudentUser(),
+                                                $student->getStudentCode());
+                        } elseif (strstr($this->format, "ps")) {
+                                $file = sprintf("%s/%s-%s.ps",
+                                                $destdir,
+                                                $student->getStudentUser(),
+                                                $student->getStudentCode());
+                        } elseif (strstr($this->format, "html")) {
+                                $file = sprintf("%s/%s-%s.html",
+                                                $destdir,
+                                                $student->getStudentUser(),
+                                                $student->getStudentCode());
+                        } else {
+                                throw new Exception(sprintf("Unknown format '%s'", $this->format));
+                        }
+
+                        $this->student = $student->getStudentID();
+                        $this->generate($file);
+                }
+        }
+
+        //
+        // Send all results as a zip-file.
+        //
+        public function sendAll()
+        {
+                $dirname = tempnam("/tmp", "openexam-result");
+                $zipname = tempnam("/tmp", "openexam-result");
+
+                if (!$dirname || !$zipname) {
+                        throw new Exception("Failed create temporary file.");
+                }
+
+                //
+                // For naming the result zip-file. Note that we use RFC 2822 format of date:
+                //
+                $data = $this->manager->getData();
+                $name = sprintf("%s - %s", $data->getExamName(), date('r', strtotime($data->getExamStartTime())));
+
+                $zip = new ZipArchive();
+                if (!$zip->open($zipname, ZIPARCHIVE::OVERWRITE)) {
+                        throw new Exception("Failed create zip-archive.");
+                }
+                unlink($dirname);
+                if (!mkdir($dirname)) {
+                        throw new Exception("Failed create temporary directory.");
+                }
+
+                $this->saveAll($dirname);
+                if (!($handle = opendir($dirname))) {
+                        throw new Exception("Failed open zip entry directory.");
+                }
+
+                //
+                // Must add all files to zip-file and close the zip before unlinking the
+                // temporary files added to zip-file, otherwise we get an empty archive.
+                //
+                while (($file = readdir($handle)) !== false) {
+                        if ($file == "." || $file == "..") {
+                                continue;
+                        }
+                        $path = sprintf("%s/%s", $dirname, $file);
+                        $zip->addFile($path, $file);
+                }
+                $zip->close();
+                rewinddir($handle);
+                while (($file = readdir($handle)) !== false) {
+                        if ($file != "." && $file == "..") {
+                                $path = sprintf("%s/%s", $dirname, $file);
+                                unlink($path);
+                        }
+                }
+                closedir($handle);
+
+                header("Content-Type: application/zip");
+                header(sprintf("Content-Disposition: attachment;filename=\"%s.zip\"", $name));
+                header("Cache-Control: no-cache");
+                header("Pragma-directive: no-cache");
+                header("Cache-directive: no-cache");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+
+                readfile($zipname);
+
+                if (file_exists($zipname)) {
+                        unlink($zipname);
+                }
+                if (file_exists($dirname)) {
+                        rmdir($dirname);
+                }
+        }
+
 }
 
 ?>

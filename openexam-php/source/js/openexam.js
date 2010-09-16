@@ -10,13 +10,13 @@
 // From: http://blog.movalog.com/a/javascript-toggle-visibility/
 // 
 function toggle_visibility(id) {
-	var e = document.getElementById(id);
-	if(e.style.display == 'block') {
-		e.style.display = 'none';
-	}
-	else {
-		e.style.display = 'block';
-	}
+        var e = document.getElementById(id);
+        if(e.style.display == 'block') {
+                e.style.display = 'none';
+        }
+        else {
+                e.style.display = 'block';
+        }
 }
 
 // 
@@ -24,19 +24,19 @@ function toggle_visibility(id) {
 // 
 function autosave_form(name, seconds, start)
 {
-	var form = document.getElementById(name);
+        var form = document.getElementById(name);
 	
-	// 
-	// Don't post form on first call:
-	// 
-	if(start == null) {
-		form.autosave.value = true;
-		form.submit();
-	}
+        //
+        // Don't post form on first call:
+        //
+        if(start == null) {
+                form.autosave.value = true;
+                form.submit();
+        }
 	
-	// 
-	// Reschedule call:
-	// 
-	var timeout = seconds * 1000;
-	var timer   = setTimeout("autosave_form('" + name + "', " + seconds + ")", timeout);
+        //
+        // Reschedule call:
+        //
+        var timeout = seconds * 1000;
+        var timer   = setTimeout("autosave_form('" + name + "', " + seconds + ")", timeout);
 }
