@@ -72,6 +72,7 @@ include "include/locale.inc";
 // 
 include "include/exam.inc";
 include "include/mplayer.inc";
+include "include/locker.inc";
 
 // 
 // Needed to bypass access checks for contributors (in preview mode):
@@ -90,7 +91,8 @@ class ExaminationPage extends BasePage
     private $params = array( "exam"     => "/^\d+$/",
 			     "question" => "/^(\d+|all)$/" );
     private $author = false;
-    private $testcase = false;
+    private $lockdown = false;  // This examination has lockdown mode enabled.
+    private $testcase = false;  // This examination is a testcase.
     
     // 
     // Construct the template page.
@@ -233,17 +235,26 @@ class ExaminationPage extends BasePage
 
 	$this->testcase = $data->getExamTestCase() == 'Y';
 	$this->lockdown = $data->getExamLockDown() == 'Y';
-	if($this->lockdown) {
-	    $this->lockdown();
-	}
-    }
 
-    //
-    // Lockdown this computer.
-    // 
-    private function lockdown()
-    {
-    }
+	if ($this->lockdown) {
+                        try {
+                                $locker = new LockerManager($_SERVER['REMOTE_ADDR'], $exam);
+                                if (!$locker->locked()) {
+                                        $locker->lockdown();
+                                }
+                        } catch (LockerException $exception) {
+                                error_log($exception->getError());      // Log private message.
+                                ErrorPage::show(_("Computer lockdown failed!"),
+                                                sprintf("<p>" . 
+                                                        _("Securing your computer for this examination has failed: %s") .
+                                                        "<p></p>" .
+                                                        _("If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. ") .
+                                                        _("The examiniation is inaccessable from this computer until the problem has been resolved.") .
+                                                        "</p>", $exception));
+                                exit(1);
+                        }
+                }
+        }
 
     // 
     // Check that the requested question is part of this exam.
