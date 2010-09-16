@@ -488,10 +488,12 @@ class LockerManager
         {
                 if ($this->locked != $this->status()) {
                         if ($this->locked) {
-                                $sql = sprintf("INSERT INTO locks(computer_id, exam_id) VALUES(%d, %d)",
+                                $sql = sprintf("INSERT INTO locks(computer_id, exam_id)
+                                                VALUES(%d, %d)",
                                                 $this->comp, $this->exam);
                         } else {
-                                $sql = sprintf("DELETE FROM locks WHERE computer_id = %d AND exam_id = %d",
+                                $sql = sprintf("DELETE FROM locks
+                                                WHERE computer_id = %d AND exam_id = %d",
                                                 $this->comp, $this->exam);
                         }
                         $res = Database::getConnection()->query($sql);
@@ -508,9 +510,11 @@ class LockerManager
         //
         private function status()
         {
-                $sql = sprintf("SELECT COUNT(*) AS locks
-                                FROM locks l, computers c
-                                WHERE l.computer_id = c.id AND c.ipaddr = '%s' AND l.exam_id = %d",
+                $sql = sprintf("SELECT  COUNT(*) AS locks
+                                FROM    locks l, computers c
+                                WHERE   l.computer_id = c.id AND
+                                        c.ipaddr = '%s' AND
+                                        l.exam_id = %d",
                                 $this->addr, $this->exam);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
@@ -570,9 +574,9 @@ class LockerService implements ProtocolCallback
         // 
         public static function factory($addr)
         {
-                $sql = sprintf("SELECT ipaddr, port, password
-                                FROM computers
-                                WHERE ipaddr = '%s'", $addr);
+                $sql = sprintf("SELECT  ipaddr, port, password
+                                FROM    computers
+                                WHERE   ipaddr = '%s'", $addr);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -598,7 +602,8 @@ class LockerService implements ProtocolCallback
                 // Find out whether to create or update:
                 //
                 $sql = sprintf("SELECT COUNT(*) FROM computers
-                                WHERE ipaddr = '%s' AND port = %d", $this->addr, $this->port);
+                                WHERE ipaddr = '%s' AND port = %d",
+                                $this->addr, $this->port);
                 $db->setFetchMode(MDB2_FETCHMODE_ORDERED);
 
                 $res = $db->query($sql);
@@ -617,8 +622,9 @@ class LockerService implements ProtocolCallback
                                         VALUES('%s','%s',%d,'%s','%s')",
                                         $this->host, $this->addr, $this->port, $this->pass, strftime(DATETIME_DB));
                 } else {
-                        $sql = sprintf("UPDATE computers SET password = '%s', hostname = '%s'
-                                        WHERE ipaddr = '%s' AND port = %d",
+                        $sql = sprintf("UPDATE  computers SET password = '%s', hostname = '%s'
+                                        WHERE   ipaddr = '%s' AND
+                                                port = %d",
                                         $this->pass, $this->host, $this->addr, $this->port);
                 }
                 $res = $db->query($sql);
