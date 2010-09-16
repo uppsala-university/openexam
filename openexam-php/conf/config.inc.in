@@ -122,7 +122,8 @@ define ('RFC822_XMAILER_HEADER', "OpenExam PHP Equinox/1.0");
 //   2. Use '%G-%m-%d %H:%M:%S' for ISO international date format.
 //   3. Place format string within _("") and add translations.
 // 
-define ('DATETIME_ISO', '%G-%m-%d %H:%M');   // Short ISO format
+define ('DATETIME_ISO', '%G-%m-%d %H:%M');      // Short ISO format
+define ('DATETIME_DB',  '%G-%m-%d %H:%M:%S');   // Database datetime format.
 define ('DATETIME_FORMAT', '%x %X');
 define ('TIME_FORMAT', '%X');
 define ('DATE_FORMAT', '%x');
