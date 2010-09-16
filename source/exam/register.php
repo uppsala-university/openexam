@@ -69,6 +69,11 @@ include "conf/database.conf";
 //
 include "include/database.inc";
 
+//
+// Include businness logic:
+//
+include "include/locker.inc";
+
 if (!defined('SERVICE_BIND_ADDR')) {
         define('SERVICE_BIND_ADDR', '0.0.0.0');
 }
@@ -100,49 +105,14 @@ class RegisterException extends Exception
 //
 class Register
 {
-        const CREATED = 1;
-        const UPDATED = 2;
 
         //
         // Store the password for remote addr service.
         //
         protected function store($pass, $addr, $port = 0)
         {
-                $db = Database::getConnection();
-
-                //
-                // Find out whether to create or update:
-                //
-                $sql = sprintf("SELECT COUNT(*) FROM computers
-                                WHERE ipaddr = '%s' AND port = %d", $addr, $port);
-                $db->setFetchMode(MDB2_FETCHMODE_ORDERED);
-
-                $res = $db->query($sql);
-                if (PEAR::isError($res)) {
-                        throw new DatabaseException($res->getMessage());
-                }
-                $row = $res->fetchRow();
-                $ret = $row[0] == 0 ? self::CREATED : self::UPDATED;
-                $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-
-                //
-                // Insert new computer or updated existing record:
-                //
-                if ($ret == self::CREATED) {
-                        $sql = sprintf("INSERT INTO computers(ipaddr, port, password, created)
-                                        VALUES('%s',%d,'%s','%s')",
-                                        $addr, $port, $pass, strftime(DATETIME_FORMAT));
-                } else {
-                        $sql = sprintf("UPDATE computers SET password = '%s'
-                                        WHERE ipaddr = '%s' AND port = %d",
-                                        $pass, $addr, $port);
-                }
-                $res = $db->query($sql);
-                if (PEAR::isError($res)) {
-                        throw new DatabaseException($res->getMessage());
-                }
-
-                return $ret;
+                $service = new LockerService($pass, $addr, $port);
+                return $service->register();
         }
 
 }
@@ -154,7 +124,7 @@ class RegisterHandler extends Register
 {
 
         private $addr;  // IPv4 or IPv6 (possibly tunneled)
-        private $port;  // facilate hosts behind NAT
+        private $port;  // Facilate hosts behind NAT
         private $pass;  // The remote password
 
         public function __construct()
@@ -169,6 +139,8 @@ class RegisterHandler extends Register
                 }
                 if (isset($_POST['port'])) {
                         $this->port = $_POST['port'];
+                } else {
+                        $this->port = SERVICE_BIND_PORT;
                 }
 
                 if (!isset($this->pass)) {
@@ -183,9 +155,9 @@ class RegisterHandler extends Register
         public function handle()
         {
                 $result = $this->store($this->pass, $this->addr, $this->port);
-                if ($result == Register::CREATED) {
+                if ($result == LockerService::CREATED) {
                         echo "OK: created\r\n";
-                } elseif ($result == Register::UPDATED) {
+                } elseif ($result == LockerService::UPDATED) {
                         echo "OK: updated\r\n";
                 }
         }
@@ -210,7 +182,7 @@ class RegisterClient extends Register
                 $this->socket = $socket;
 
                 $this->addr = stream_socket_get_name($this->socket, true);
-                $this->port = 0;
+                $this->port = SERVICE_BIND_PORT;
                 $this->pass = null;
 
                 if (strchr($this->addr, ":")) {
