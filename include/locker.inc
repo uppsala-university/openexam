@@ -248,7 +248,7 @@ class LockerProtocol
                 if (!isset($this->sock)) {
                         throw new InvalidStateException();
                 }
-                fwrite($this->sock, "permit $ipaddr\r\n");
+                fwrite($this->sock, "permit out dest $ipaddr\r\n");
                 if (($response = trim(fgets($this->sock))) != "OK") {
                         throw new ProtocolException($response, self::PROTO_PERMIT, "permit");
                 }
