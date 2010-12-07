@@ -512,8 +512,11 @@ class ExaminationPage extends BasePage
         //
         private function getQuestions()
         {
-                $questions = Exam::getQuestions($_REQUEST['exam']);
-                $answers = Exam::getAnswers($_REQUEST['exam'], phpCAS::getUser());
+                //
+                // Calling getQuestions() will implicit create the question set bindings
+                // in table answers if none exist for this user on this exam.
+                //
+                $questions = Exam::getQuestions($_REQUEST['exam'], phpCAS::getUser());
 
                 //
                 // Build the associative array of questions and answers. We are going to need
@@ -523,15 +526,9 @@ class ExaminationPage extends BasePage
                 //
                 $menuitem = array();
                 foreach ($questions as $question) {
-                        $answered = false;
-                        foreach ($answers as $answer) {
-                                if ($question->getQuestionID() == $answer->getQuestionID()) {
-                                        $menuitem['a'][] = $question;
-                                        $answered = true;
-                                        break;
-                                }
-                        }
-                        if (!$answered) {
+                        if ($question->getQuestionAnswered() == 'Y') {
+                                $menuitem['a'][] = $question;
+                        } else {
                                 $menuitem['q'][] = $question;
                         }
                 }
