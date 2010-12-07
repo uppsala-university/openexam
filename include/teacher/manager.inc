@@ -902,7 +902,7 @@ class Manager
                         //
                         // The exam must be flagged as a test case.
                         //
-                        $sql = sprintf("UPDATE exams SET testcase = 'Y'
+                        $sql = sprintf("UPDATE exams SET testcase = 'Y', lockdown = 'N'
                                         WHERE id = %d", $copy->getExamID());
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {
