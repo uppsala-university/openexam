@@ -379,7 +379,7 @@ class Exam
                         throw new DatabaseException($res->getMessage());
                 }
         }
-        
+
         //
         // Get the ID of this student.
         //
