@@ -252,7 +252,7 @@ class DataRecord
         // returned from the database query. The value is always (?) passed as
         // an array.
         //
-        private function __call($name, $value)
+        public function __call($name, $value)
         {
                 switch (substr($name, 0, 3)) {
                         case "get":

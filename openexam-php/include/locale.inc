@@ -273,7 +273,7 @@ class Locale
         //
         // Convert this object to symbolic name.
         //
-        private function __toString()
+        public function __toString()
         {
                 return $this->map[$this->langcode]["lang"];
         }

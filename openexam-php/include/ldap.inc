@@ -151,7 +151,7 @@ class LDAPDirectoryEntry extends LDAPResultSet
         // Returns an attribute data object for attribute named $name. This
         // allow us to write code as: foreach($entry->mail as $email) { ... }
         //
-        private function __get($name)
+        public function __get($name)
         {
                 return new self::$class($name, $this->data[$name]);
         }
@@ -160,7 +160,7 @@ class LDAPDirectoryEntry extends LDAPResultSet
         // Similar to __get($name), but allow us to write code as:
         // if($entry->hasMail()) { $data = $entry->getMail(); ... }
         //
-        private function __call($name, $value)
+        public function __call($name, $value)
         {
                 switch (substr($name, 0, 3)) {
                         case "get":
@@ -186,7 +186,7 @@ class LDAPAttributeData extends LDAPResultSet
                 parent::__construct($key, $data);
         }
 
-        private function __tostring()
+        public function __tostring()
         {
                 return implode(", ", $this->data);
         }
