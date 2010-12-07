@@ -110,7 +110,7 @@ class MailSender
         //
         // Can be called as i.e. $smtp->getHost()
         //
-        private function __call($name, $value)
+        public function __call($name, $value)
         {
                 switch (substr($name, 0, 3)) {
                         case "get":

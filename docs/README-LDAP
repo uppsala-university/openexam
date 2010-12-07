@@ -31,7 +31,7 @@
    constructor, in this case we like to get attribute collection objects
    back when iterating thru the entry attributes.
 
-   The private __get() and __call() functions let us access the attribute
+   The public __get() and __call() functions let us access the attribute
    objects as properties (i.e. $entry->cn) or using function calls (i.e.
    $entry->hasCN() or $entry->getCN()).
 
@@ -41,7 +41,7 @@
    attribute. Remember that some attributes may be present multiple times in
    a single directory entry (i.e. one person <-> many phone numbers).
    
-   The private member function __tostring() will join together all attribute
+   The public member function __tostring() will join together all attribute
    values to an string when the object is present in an string context, for
    example: printf("email: %s\n", $entry->mail);
 
