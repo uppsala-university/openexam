@@ -65,7 +65,8 @@ class Exam
                                         e.updated AS ExamUpdated,
                                         e.creator AS ExamCreator,
                                         e.testcase AS ExamTestCase,
-                                        e.lockdown AS ExamLockDown
+                                        e.lockdown AS ExamLockDown,
+                                        e.type AS ExamType
                                 FROM    students s, exams e
                                 WHERE   s.user = '%s' AND
                                         s.exam_id = e.id AND
@@ -78,24 +79,191 @@ class Exam
         }
 
         //
-        // Get all active questions for this exam.
-        //
-        public function getQuestions($exam)
+        // Returns true if user has questions assigned on this exam.
+        // 
+        private function hasQuestions($exam, $user)
         {
-                $sql = sprintf("SELECT  q.id AS QuestionID,
-                                        q.exam_id AS ExamID,
-                                        q.score AS QuestionScore,
-                                        q.name AS QuestionName,
-                                        q.quest AS QuestionText,
-                                        q.user AS QuestionPublisher,
-                                        q.video AS QuestionVideo,
-                                        q.image AS QuestionImage,
-                                        q.audio AS QuestionAudio,
-                                        q.type AS QuestionType
-                                FROM    questions q
-                                WHERE   q.exam_id = %d AND
-                                        q.status = 'active'
-                                ORDER BY QuestionID", $exam);
+                $sql = sprintf("SELECT  COUNT(*) AS num
+                                        FROM    students s, answers a
+                                        WHERE   s.id = a.student_id AND
+                                                s.exam_id = %d", $exam);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+                return $row['num'] != 0;
+        }
+
+        //
+        // Set questions for user on this exam. How this is done depends on the
+        // type of examination.
+        //
+        private function setQuestions($exam, $user)
+        {
+                $db = Database::getConnection();
+
+                if ($db->supports('transaction')) {
+                        $db->beginTransaction();
+                }
+
+                $sql = sprintf("SELECT  type
+                                FROM    exams
+                                WHERE   id = %d", $exam);
+                $res = $db->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+
+                if ($row['type'] == "standard") {
+                        $sql = sprintf("INSERT INTO answers(question_id, student_id)
+                                        SELECT  q.id, s.id
+                                        FROM    questions q, students s, exams e
+                                        WHERE   s.exam_id = e.id AND
+                                                e.id = q.exam_id AND
+                                                e.id = %d AND
+                                                s.user = '%s'",
+                                        $exam, $user);
+                        $res = $db->query($sql);
+                        if (PEAR::isError($res)) {
+                                throw new DatabaseException($res->getMessage());
+                        }
+                } elseif ($row['type'] == "dugga") {
+                        // 
+                        // Get list of all topics for this exam. Loop thru the
+                        // list of topics.
+                        //
+                        // a) If randomize == 0, then select all questions in 
+                        //    this topic.
+                        // b) If randomize != 0, then select randomize number
+                        //    of questions from this topic.
+                        //
+                        $sql = sprintf("SELECT  t.*
+                                        FROM    topics t, questions q
+                                        WHERE   q.topic_id = t.id AND
+                                                q.exam_id = %d
+                                        GROUP BY t.id", $exam);
+                        $res = $db->query($sql);
+                        if (PEAR::isError($res)) {
+                                throw new DatabaseException($res->getMessage());
+                        }
+                        $topics = $res->fetchAll();
+                        foreach ($topics as $topic) {
+                                if ($topic['randomize'] != 0) {
+                                        //
+                                        // Using INSERT INTO with this select statement
+                                        // flood the error log with 'Statement may not be safe
+                                        // to log in statement format.'
+                                        // 
+                                        $sql = sprintf("SELECT  q.id AS qid, s.id AS sid
+                                                        FROM    questions q, students s, exams e
+                                                        WHERE   q.exam_id = %d AND
+                                                                q.topic_id = %d AND
+                                                                q.exam_id = e.id AND
+                                                                e.id = s.exam_id AND
+                                                                s.user = '%s'
+                                                        ORDER BY RAND() LIMIT %d",
+                                                        $exam,
+                                                        $topic['id'],
+                                                        $user,
+                                                        $topic['randomize']);
+                                        $res = $db->query($sql);
+                                        if (PEAR::isError($res)) {
+                                                throw new DatabaseException($res->getMessage());
+                                        }
+
+                                        //
+                                        // Loop thru all qid/sid pairs:
+                                        //
+                                        $arr = array();
+                                        while ($row = $res->fetchRow()) {
+                                                $arr[] = sprintf("%d, %d", $row['qid'], $row['sid']);
+                                        }
+
+                                        //
+                                        // Insert dynamic question bindings for this user:
+                                        //
+                                        $sql = sprintf("INSERT INTO answers(question_id, student_id) 
+                                                        VALUES(%s)", implode("),(", $arr));
+                                        $res = $db->query($sql);
+                                        if (PEAR::isError($res)) {
+                                                throw new DatabaseException($res->getMessage());
+                                        }
+                                } else {
+                                        // 
+                                        // This is almost trivial compared to the randomize case:
+                                        //
+                                        $sql = sprintf("INSERT INTO answers(question_id, student_id)
+                                                        SELECT  q.id, s.id
+                                                        FROM    questions q, students s, exams e
+                                                        WHERE   q.exam_id = %d AND
+                                                                q.topic_id = %d AND
+                                                                q.exam_id = e.id AND
+                                                                e.id = s.exam_id AND
+                                                                s.user = '%s'",
+                                                        $exam,
+                                                        $topic['id'],
+                                                        $user);
+                                        $res = $db->query($sql);
+                                        if (PEAR::isError($res)) {
+                                                throw new DatabaseException($res->getMessage());
+                                        }
+                                }
+                        }
+                }
+                if ($db->in_transaction) {
+                        $db->commit();
+                }
+        }
+
+        //
+        // Get all active questions for this exam. If user is set, then the
+        // set of questions assigned to the user account is returned.
+        //
+        public function getQuestions($exam, $user = null)
+        {
+                if (isset($user)) {
+                        //
+                        // Create question set for user if missing.
+                        // 
+                        if (!self::hasQuestions($exam, $user)) {
+                                self::setQuestions($exam, $user);
+                        }
+                        $sql = sprintf("SELECT  q.id AS QuestionID,
+                                                q.exam_id AS ExamID,
+                                                q.score AS QuestionScore,
+                                                q.name AS QuestionName,
+                                                q.quest AS QuestionText,
+                                                q.user AS QuestionPublisher,
+                                                q.video AS QuestionVideo,
+                                                q.image AS QuestionImage,
+                                                q.audio AS QuestionAudio,
+                                                q.type AS QuestionType,
+                                                a.answered AS QuestionAnswered
+                                        FROM    questions q, answers a, students s
+                                        WHERE   q.exam_id = %d AND
+                                                q.status = 'active' AND
+                                                q.id = a.question_id AND
+                                                s.id = a.student_id AND
+                                                s.user = '%s'
+                                        ORDER BY QuestionID", $exam, $user);
+                } else {
+                        $sql = sprintf("SELECT  q.id AS QuestionID,
+                                                q.exam_id AS ExamID,
+                                                q.score AS QuestionScore,
+                                                q.name AS QuestionName,
+                                                q.quest AS QuestionText,
+                                                q.user AS QuestionPublisher,
+                                                q.video AS QuestionVideo,
+                                                q.image AS QuestionImage,
+                                                q.audio AS QuestionAudio,
+                                                q.type AS QuestionType
+                                        FROM    questions q
+                                        WHERE   q.exam_id = %d AND
+                                                q.status = 'active'
+                                        ORDER BY QuestionID", $exam);
+                }
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
@@ -169,8 +337,7 @@ class Exam
                                 FROM    answers a, students s
                                 WHERE   s.exam_id = %d AND
                                         a.student_id = s.id AND
-                                        s.user = '%s' AND
-                                        a.student_id = s.id
+                                        s.user = '%s'
                                 ORDER BY QuestionID", $exam, $user);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
@@ -184,6 +351,7 @@ class Exam
                 $sql = sprintf("SELECT  a.id AS AnswerID,
                                         a.question_id AS QuestionID,
                                         a.student_id AS StudentID,
+                                        a.answered AS Answered,
                                         a.answer AS AnswerText
                                 FROM    answers a, students s
                                 WHERE   a.question_id = %d AND
@@ -201,23 +369,17 @@ class Exam
         //
         public function setAnswer($exam, $question, $user, $answer)
         {
-                $data = self::getAnswerData($question, $user);
-                if (!$data->hasAnswerID()) {
-                        $uid = self::getStudentID($exam, $user);
-                        $sql = sprintf("INSERT INTO answers(question_id, student_id, answer)
-                                        VALUES(%d, %d, '%s')",
-                                        $question, $uid, $answer);
-                } else {
-                        $sql = sprintf("UPDATE answers SET answer = '%s'
-                                        WHERE id = %d",
-                                        $answer, $data->getAnswerID());
-                }
+                $uid = self::getStudentID($exam, $user);
+                $sql = sprintf("UPDATE  answers SET answer = '%s', answered = 'Y'
+                                WHERE   question_id = %d AND
+                                        student_id = %d",
+                                $answer, $question, $uid);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
                 }
         }
-
+        
         //
         // Get the ID of this student.
         //
