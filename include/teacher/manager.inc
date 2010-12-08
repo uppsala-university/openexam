@@ -902,10 +902,10 @@ class Manager
                 //
                 // Copy all questions, but without any associated answers, question status or comments.
                 //
-                $sql = sprintf("INSERT INTO questions(exam_id, score, name, quest, user, video, image, audio, type)
-                                SELECT %d, score, name, quest, user, video, image, audio, type
-                                FROM questions
-                                WHERE exam_id = %d",
+                $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, user, video, image, audio, type)
+                                SELECT  %d, topic_id, score, name, quest, user, video, image, audio, type
+                                FROM    questions
+                                WHERE   exam_id = %d",
                                 $copy->getExamID(),
                                 $this->getExamID());
                 $res = $db->query($sql);
@@ -914,6 +914,43 @@ class Manager
                                 $db->rollback();
                         }
                         throw new DatabaseException($res->getMessage());
+                }
+
+                //
+                // Copy all topics. I can't figure out how this can be done
+                // without looping thru the current topics on this exam.
+                //
+                try {
+                        $sql = sprintf("SELECT  id AS TopicID FROM topics WHERE exam_id = %d", $this->getExamID());
+                        $topics = new ResultSet($db->query($sql));
+
+                        foreach ($topics as $topic) {
+                                $sql = sprintf("INSERT INTO topics(exam_id, name, randomize) 
+                                                SELECT  %d, name, randomize
+                                                FROM    topics
+                                                WHERE   id = %d",
+                                                $copy->getExamID(),
+                                                $topic->getTopicID());
+                                $res = $db->query($sql);
+                                if (PEAR::isError($res)) {
+                                        throw new DatabaseException($res->getMessage());
+                                }
+                                $tid = $db->lastInsertID("topics");
+                                $sql = sprintf("UPDATE  questions
+                                                SET     topic_id = %d
+                                                WHERE   topic_id = %d AND
+                                                        exam_id = %d",
+                                                $tid, $topic->getTopicID(), $copy->getExamID());
+                                $res = $db->query($sql);
+                                if (PEAR::isError($res)) {
+                                        throw new DatabaseException($res->getMessage());
+                                }
+                        }
+                } catch (DatabaseException $exception) {
+                        if ($db->in_transaction) {
+                                $db->rollback();
+                        }
+                        throw $exception;
                 }
 
                 if ($testcase) {
@@ -1018,6 +1055,16 @@ class Manager
                 }
 
                 $sql = sprintf("DELETE FROM questions
+                                WHERE exam_id = %d", $this->exam);
+                $res = $db->query($sql);
+                if (PEAR::isError($res)) {
+                        if ($db->in_transaction) {
+                                $db->rollback();
+                        }
+                        throw new DatabaseException($res->getMessage());
+                }
+
+                $sql = sprintf("DELETE FROM topics
                                 WHERE exam_id = %d", $this->exam);
                 $res = $db->query($sql);
                 if (PEAR::isError($res)) {
