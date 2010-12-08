@@ -294,6 +294,24 @@ class Exam
         }
 
         //
+        // Get data for a single topic.
+        //
+        public function getTopicData($topic)
+        {
+                $sql = sprintf("SELECT  id AS TopicID,
+                                        exam_id AS ExamID,
+                                        name AS TopicName,
+                                        randomize AS TopicRandom
+                                FROM    topics
+                                WHERE   id = %d", $topic);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                return new DataRecord($res->fetchRow());
+        }
+
+        //
         // Parse JSON encoded options from string and return as hashed array. This
         // function can be called with the question text for an mulitple or single
         // option question. It also parses the answer to those question types.

@@ -228,6 +228,8 @@ class TeacherPage extends BasePage
                                 if ($this->manager->getInfo()->isContributable()) {
                                         $links->questions->link->qadd->href = sprintf("contribute.php?exam=%d&action=add", $this->param->exam);
                                         $links->questions->link->qadd->name = _("Add question");
+                                        $links->questions->link->tadd->href = sprintf("contribute.php?exam=%d&action=add&what=topic", $this->param->exam);
+                                        $links->questions->link->tadd->name = _("Add topic");
                                 }
                                 if ($this->manager->isContributor(phpCAS::getUser())) {
                                         $links->questions->link->qshow->href = sprintf("contribute.php?exam=%d", $this->param->exam);
@@ -349,7 +351,7 @@ class TeacherPage extends BasePage
                         if ($state->value & EXAM_STATE_DECODABLE) {
                                 $state->flags[] = "decodable";
                         }
-                        if ($state->value & EXAM_STATE_TEST_CASE) {
+                        if ($state->value & EXAM_STATE_TESTCASE) {
                                 $state->flags[] = "testcase";
                         }
 
