@@ -180,7 +180,7 @@ DROP TABLE IF EXISTS `questions`;
 CREATE TABLE `questions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `exam_id` int(11) NOT NULL,
-  `topic_id` int(11) NOT NULL DEFAULT '1',
+  `topic_id` int(11) NOT NULL,
   `score` float NOT NULL,
   `name` varchar(30) NOT NULL,
   `quest` text NOT NULL,
@@ -273,6 +273,7 @@ DROP TABLE IF EXISTS `topics`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `topics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `exam_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `randomize` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
@@ -288,4 +289,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-12-07 19:06:08
+-- Dump completed on 2010-12-08 16:20:53
