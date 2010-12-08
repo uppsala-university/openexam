@@ -41,6 +41,46 @@ class Contribute
                 return new ResultSet($res);
         }
 
+        public function addTopic($exam, $name, $random)
+        {
+                $sql = sprintf("INSERT INTO topics(exam_id, name, randomize)
+                                VALUES(%d, '%s', %d)",
+                                $exam, $name, $random);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+        }
+
+        public function editTopic($topic, $exam, $name, $random)
+        {
+                $sql = sprintf("UPDATE topics SET exam_id = %d, name = '%s', randomize = %d
+                                WHERE id = %d",
+                                $exam, $name, $random, $topic);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+        }
+
+        public function deleteTopics()
+        {
+                $sql = sprintf("DELETE FROM topics WHERE exam_id = %d", $this->exam);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+        }
+
+        public function deleteTopic($topic)
+        {
+                $sql = sprintf("DELETE FROM topics WHERE id = %d", $topic);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+        }
+
         public function addQuestion($exam, $score, $name, $quest, $type, $user, $video, $audio, $image)
         {
                 $sql = sprintf("INSERT INTO questions(exam_id, score, name, quest, type, user, video, audio, image)
