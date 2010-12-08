@@ -242,6 +242,7 @@ class ContributePage extends TeacherPage
 
                 $contrib = new Contribute($this->param->exam);
                 $contrib->addQuestion($this->param->exam,
+                        $this->param->topic,
                         $this->param->score,
                         utf8_encode($this->param->name),
                         utf8_encode($this->param->quest),
@@ -266,6 +267,7 @@ class ContributePage extends TeacherPage
                 $contrib = new Contribute($this->param->exam);
                 $contrib->editQuestion($this->param->question,
                         $this->param->exam,
+                        $this->param->topic,
                         $this->param->score,
                         utf8_encode($this->param->name),
                         utf8_encode($this->param->quest),
@@ -387,21 +389,29 @@ class ContributePage extends TeacherPage
                         $input = $form->addHidden("image", $data->hasQuestionImage() ? $data->getQuestionImage() : "");
                 }
 
-                //
-                // Only allow the creator of the exam to change the publisher of an question.
-                // This is because the exam creator is the only person who can grant the required
-                // contribute role to the target user.
-                //
+                $sect = $form->addSectionHeader(_("Accounting"));
+                $sect->setClass("secthead");
                 if ($exam->getExamCreator() == phpCAS::getUser()) {
-                        $sect = $form->addSectionHeader(_("Accounting"));
-                        $sect->setClass("secthead");
-
+                        //
+                        // Only allow the creator of the exam to change the publisher of an question.
+                        // This is because the exam creator is the only person who can grant the required
+                        // contribute role to the target user.
+                        //
                         $input = $form->addTextBox("user", $data->hasQuestionPublisher() ? utf8_decode($data->getQuestionPublisher()) : phpCAS::getUser());
                         $input->setLabel(_("Corrector"));
                         $input->setTitle(_("This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting the answers to this question.\n\nBy default, the same person that publish a question is also assigned as its corrector."));
                         $input->setSize(60);
                 } else {
                         $form->addHidden("user", phpCAS::getUser());
+                }
+                $input = $form->addComboBox("topic");
+                $input->setLabel(_("Topic"));
+                $topics = Exam::getTopics($this->param->exam);
+                foreach($topics as $topic) {
+                        $option = $input->addOption($topic->getTopicID(), $topic->getTopicName());
+                        if($data->getTopicID() == $topic->getTopicID()) {
+                                $option->setSelected();
+                        }
                 }
 
                 $form->addSpace();
@@ -423,6 +433,7 @@ class ContributePage extends TeacherPage
                 $info = $this->manager->getInfo();
                 $qrec = new DataRecord(array(
                                 "examid" => $this->param->exam,
+                                "topicid" => $this->param->topic,
                                 "questiontype" => "freetext")
                 );
 
@@ -489,7 +500,7 @@ class ContributePage extends TeacherPage
                         utf8_encode($this->param->name),
                         $this->param->random);
 
-                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
+                header(sprintf("location: contribute.php?exam=%d&question=all", $this->param->exam));
         }
 
         //
@@ -503,7 +514,7 @@ class ContributePage extends TeacherPage
                         utf8_encode($this->param->name),
                         $this->param->random);
 
-                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
+                header(sprintf("location: contribute.php?exam=%d&question=all", $this->param->exam));
         }
 
         //
@@ -707,9 +718,10 @@ class ContributePage extends TeacherPage
                                 $child = $topic->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
                                 if ($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
                                         if (!$info->isDecoded()) {
-                                                $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d",
+                                                $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d&amp;topic=%d",
                                                                 $question->getExamID(),
-                                                                $question->getQuestionID()));
+                                                                $question->getQuestionID(),
+                                                                $question->getTopicID()));
                                         }
                                         if ($info->isContributable()) {
                                                 $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d",
