@@ -145,7 +145,6 @@ CREATE TABLE `exams` (
   `grades` varchar(200) NOT NULL,
   `testcase` enum('Y','N') NOT NULL DEFAULT 'N',
   `lockdown` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `type` enum('standard','dugga') NOT NULL DEFAULT 'standard',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -214,7 +213,7 @@ CREATE TABLE `results` (
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
   CONSTRAINT `results_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -289,4 +288,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-12-08 16:20:53
+-- Dump completed on 2010-12-08 17:28:39
