@@ -724,6 +724,8 @@ class Manager
                                 $sql .= sprintf(" AND q.user = '%s'", phpCAS::getUser());
                         }
                 }
+                $sql .= " ORDER BY TopicID, QuestionID";
+                
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
