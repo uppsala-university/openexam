@@ -107,16 +107,16 @@ class Exam
                         $db->beginTransaction();
                 }
 
-                $sql = sprintf("SELECT  type
-                                FROM    exams
-                                WHERE   id = %d", $exam);
+                $sql = sprintf("SELECT SUM(randomize) AS random
+                                FROM    topics
+                                WHERE exam_id = %d", $exam);
                 $res = $db->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
                 }
                 $row = $res->fetchRow();
 
-                if ($row['type'] == "standard") {
+                if ($row['random'] == 0) {
                         $sql = sprintf("INSERT INTO answers(question_id, student_id)
                                         SELECT  q.id, s.id
                                         FROM    questions q, students s, exams e
@@ -129,7 +129,7 @@ class Exam
                         if (PEAR::isError($res)) {
                                 throw new DatabaseException($res->getMessage());
                         }
-                } elseif ($row['type'] == "dugga") {
+                } else {
                         // 
                         // Get list of all topics for this exam. Loop thru the
                         // list of topics.
