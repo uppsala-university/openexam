@@ -242,6 +242,7 @@ class ManagerPage extends TeacherPage
                                                         _("Run this test case examination."),
                                                         array("target" => "_blank"));
                                         }
+                                        $child->addChild(sprintf("%s: %s", _("Created"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamCreated()))));
                                         $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
                                         $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
                                 }
