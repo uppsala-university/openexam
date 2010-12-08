@@ -82,7 +82,8 @@ class ScoreBoard
         private $questions;
         private $scores = array();    // Two dimensional array
         private $exam;
-        private $maxscore;            // The maximum score on this exam
+        private $maxscore = array();  // The maximum score on this exam
+        private $dugga = false;       // The exam is a dugga (randomized)
 
         public function __construct($exam)
         {
@@ -123,6 +124,7 @@ class ScoreBoard
 
                 $this->questions = $manager->getQuestions();
                 $this->students = $manager->getStudents();
+                $this->dugga = $manager->isDugga();
 
                 $correct = new Correct($exam);
                 $data = $correct->getScoreBoard();
@@ -152,6 +154,26 @@ class ScoreBoard
                 return $score;
         }
 
+        //
+        // The maximum score for this student counting all questions, even
+        // those without an answer.
+        // 
+        public function getStudentMaximum($student)
+        {
+                if (!isset($this->maxscore[$student])) {
+                        $total = 0;
+                        foreach ($this->questions as $question) {
+                                if ($question->getQuestionStatus() == 'active') {
+                                        if (isset($this->scores[$student][$question->getQuestionID()])) {
+                                                $total += $question->getQuestionScore();
+                                        }
+                                }
+                        }
+                        $this->maxscore[$student] = $total;
+                }
+                return $this->maxscore[$student];
+        }
+
         public function getQuestionScore($question)
         {
                 $score = new Score(0, 0);
@@ -169,25 +191,48 @@ class ScoreBoard
                 return $score;
         }
 
+        //
+        // The maximum score of all questions. If the exam is a dugga, then the
+        // maximum score is based on the maximum possible score.
+        //
         public function getMaximumScore()
         {
-                if (!isset($this->maxscore)) {
+                if (!isset($this->maxscore['total'])) {
                         $total = 0;
-                        foreach ($this->questions as $question) {
-                                if ($question->getQuestionStatus() == 'active') {
-                                        $total += $question->getQuestionScore();
+                        if ($this->dugga) {
+                                $scores = array();
+                                foreach ($this->questions as $question) {
+                                        if ($question->getQuestionStatus() == 'active') {
+                                                if ($question->getTopicRandom() != 0) {
+                                                        if (!isset($scores[$question->getTopicID()])) {
+                                                                $scores[$question->getTopicID()] = $question->getTopicRandom() * $question->getQuestionScore();
+                                                        }
+                                                } else {
+                                                        if (!isset($scores[$question->getTopicID()])) {
+                                                                $scores[$question->getTopicID()] = 0;
+                                                        }
+                                                        $scores[$question->getTopicID()] += $question->getQuestionScore();
+                                                }
+                                        }
+                                }
+                                $total = array_sum($scores);
+                        } else {
+                                foreach ($this->questions as $question) {
+                                        if ($question->getQuestionStatus() == 'active') {
+                                                $total += $question->getQuestionScore();
+                                        }
                                 }
                         }
-                        $this->maxscore = $total;
+                        $this->maxscore['total'] = $total;
                 }
-                return $this->maxscore;
+                return $this->maxscore['total'];
         }
 
 }
 
 // 
 // Output formatters:
-// 
+//
 abstract class OutputFormatter
 {
 
@@ -327,7 +372,7 @@ class OutputTextHtml extends OutputFormatter
 
 // 
 // Writes data to the stream using the formatter object.
-// 
+//
 class StreamWriter
 {
 
@@ -364,7 +409,7 @@ class StreamWriter
 
 // 
 // The base class for all sub classes that output score board data.
-// 
+//
 abstract class ScoreBoardOutput
 {
 
@@ -414,7 +459,7 @@ abstract class ScoreBoardOutput
 // Writes an score board to output stream. The output exposes the real 
 // names, so it should only be used from the decoder page. The purpose
 // of this class is to write the score board in different formats.
-// 
+//
 class ScoreBoardWriter extends ScoreBoardOutput
 {
 
@@ -545,7 +590,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
 // This class outputs the score board data as HTML, but is intended to be 
 // called from different places and adopts the output depending on whether
 // the examination is decoded or not.
-// 
+//
 class ScoreBoardPrinter extends ScoreBoardOutput
 {
 
