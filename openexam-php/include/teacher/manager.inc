@@ -166,6 +166,7 @@ class ExamState
         private function setInfo($exam)
         {
                 $sql = sprintf("SELECT  e.id AS ExamID,
+                                        e.created AS ExamCreated,
                                         e.starttime AS ExamStartTime,
                                         e.endtime AS ExamEndTime,
                                         e.decoded AS ExamDecoded,
