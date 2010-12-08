@@ -532,6 +532,25 @@ class Manager
         }
 
         //
+        // Returns true if exam is a dugga, that is, the questions for the
+        // exam is selected by random from a bank of questions divided into
+        // topics.
+        //
+        public function isDugga()
+        {
+                $sql = sprintf("SELECT SUM(randomize) AS random
+                                FROM topics WHERE exam_id = %d",
+                                $this->exam);
+
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+                return $row['random'] != 0;
+        }
+
+        //
         // Returns true if all answers have been corrected.
         //
         public function isCorrected()
