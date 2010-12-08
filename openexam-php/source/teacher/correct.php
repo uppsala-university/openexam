@@ -409,13 +409,13 @@ class CorrectionPage extends TeacherPage
         // Display the form where caller can set scores and comments for all answers
         // at once to a single question.
         //
-        private function markQuestionScore($exam_id, $question_id)
+        private function markQuestionScore()
         {
-                $correct = new Correct($exam_id);
-                $answers = $correct->getQuestionAnswers($question_id);
+                $correct = new Correct($this->param->exam);
+                $answers = $correct->getQuestionAnswers($this->param->question);
 
                 $exam = new Exam();
-                $question = $exam->getQuestionData($question_id);
+                $question = $exam->getQuestionData($this->param->question);
 
                 printf("<h3>" . _("Correct multipe answers for the question '%s'") . "</h3>\n",
                         utf8_decode($question->getQuestionName()));
@@ -442,9 +442,9 @@ class CorrectionPage extends TeacherPage
                 }
 
                 $form = new Form("correct.php", "POST");
-                $form->addHidden("exam", $exam_id);
+                $form->addHidden("exam", $this->param->exam);
                 $form->addHidden("action", "correct");
-                $form->addHidden("question", $question_id);
+                $form->addHidden("question", $this->param->question);
                 $form->addHidden("mode", "save");
                 $table = new Table();
                 $row = $table->addRow();
