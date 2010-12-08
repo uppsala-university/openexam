@@ -407,9 +407,9 @@ class ContributePage extends TeacherPage
                 $input = $form->addComboBox("topic");
                 $input->setLabel(_("Topic"));
                 $topics = Exam::getTopics($this->param->exam);
-                foreach($topics as $topic) {
+                foreach ($topics as $topic) {
                         $option = $input->addOption($topic->getTopicID(), $topic->getTopicName());
-                        if($data->getTopicID() == $topic->getTopicID()) {
+                        if ($data->getTopicID() == $topic->getTopicID()) {
                                 $option->setSelected();
                         }
                 }
@@ -550,6 +550,11 @@ class ContributePage extends TeacherPage
                 printf("}\n");
                 printf("</script>\n");
 
+                printf("<p>" .
+                        _("If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. ") .
+                        _("This value is used for <u>duggor</u>, leave it as zero for ordinary examinations (use all questions).") .
+                        "</p>\n");
+
                 $form = new Form("contribute.php", "GET");
                 $form->setName("topic");
                 $form->addHidden("exam", $data->getExamID());
@@ -574,7 +579,7 @@ class ContributePage extends TeacherPage
                         $input->setSize(60);
 
                         $input = $form->addTextBox("random", $data->getTopicRandom());
-                        $input->setTitle(_("The number of questions to randomly select from this topics question pool. Leave this field empty to use all questions."));
+                        $input->setTitle(_("The number of questions to randomly select from the pool of questions in this topic. Leave this field empty to use all questions."));
                         $input->setLabel(_("Randomize"));
                 }
 
