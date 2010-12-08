@@ -108,7 +108,7 @@ class Exam
 
                 $sql = sprintf("SELECT SUM(randomize) AS random
                                 FROM    topics
-                                WHERE exam_id = %d", $exam);
+                                WHERE   exam_id = %d", $exam);
                 $res = $db->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());

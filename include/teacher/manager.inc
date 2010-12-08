@@ -916,12 +916,20 @@ class Manager
                         throw new DatabaseException($res->getMessage());
                 }
 
-                //
-                // Copy all topics. I can't figure out how this can be done
-                // without looping thru the current topics on this exam.
-                //
                 try {
-                        $sql = sprintf("SELECT  id AS TopicID FROM topics WHERE exam_id = %d", $this->getExamID());
+                        $sql = sprintf("DELETE FROM topics WHERE exam_id = %d", $copy->getExamID());
+                        $res = $db->query($sql);
+                        if (PEAR::isError($res)) {
+                                throw new DatabaseException($res->getMessage());
+                        }
+
+                        //
+                        // Copy all topics. I can't figure out how this can be done
+                        // without looping thru the current topics on this exam.
+                        //
+                        $sql = sprintf("SELECT  id AS TopicID 
+                                        FROM    topics
+                                        WHERE   exam_id = %d", $this->getExamID());
                         $topics = new ResultSet($db->query($sql));
 
                         foreach ($topics as $topic) {
