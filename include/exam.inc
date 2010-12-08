@@ -65,8 +65,7 @@ class Exam
                                         e.updated AS ExamUpdated,
                                         e.creator AS ExamCreator,
                                         e.testcase AS ExamTestCase,
-                                        e.lockdown AS ExamLockDown,
-                                        e.type AS ExamType
+                                        e.lockdown AS ExamLockDown
                                 FROM    students s, exams e
                                 WHERE   s.user = '%s' AND
                                         s.exam_id = e.id AND
