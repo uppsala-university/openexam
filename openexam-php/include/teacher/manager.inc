@@ -692,31 +692,36 @@ class Manager
         }
 
         //
-        // Get all questions associated with this exam, optional filter on status.
-        // If status is null, then all question are returned. Possible values for
-        // filter are: 'active', 'removed' or own.
+        // Get all questions associated with this exam, with optional filtering
+        // on status. If status is null, then all question are returned.
+        // Possible values for filter are: 'active', 'removed' or own.
         //
         public function getQuestions($filter = null)
         {
-                $sql = sprintf("SELECT  id AS QuestionID,
-                                        exam_id AS ExamID,
-                                        score AS QuestionScore,
-                                        name AS QuestionName,
-                                        quest AS QuestionText,
-                                        user AS QuestionPublisher,
-                                        video AS QuestionVideo,
-                                        image AS QuestionImage,
-                                        audio AS QuestionAudio,
-                                        type AS QuestionType,
-                                        status AS QuestionStatus,
-                                        comment AS QuestionComment
-                                FROM questions
-                                WHERE exam_id = %d", $this->exam);
+                $sql = sprintf("SELECT  q.id AS QuestionID,
+                                        t.id AS TopicID,
+                                        q.exam_id AS ExamID,
+                                        q.score AS QuestionScore,
+                                        q.name AS QuestionName,
+                                        q.quest AS QuestionText,
+                                        q.user AS QuestionPublisher,
+                                        q.video AS QuestionVideo,
+                                        q.image AS QuestionImage,
+                                        q.audio AS QuestionAudio,
+                                        q.type AS QuestionType,
+                                        q.status AS QuestionStatus,
+                                        q.comment AS QuestionComment,
+                                        t.name AS TopicName,
+                                        t.randomize AS TopicRandom
+                                FROM    topics t LEFT JOIN questions q
+                                ON      q.topic_id = t.id AND
+                                        q.exam_id = t.exam_id
+                                WHERE   t.exam_id = %d", $this->exam);
                 if (isset($filter)) {
                         if ($filter == "active" || $filter == "removed") {
-                                $sql .= sprintf(" AND status = '%s'", $filter);
+                                $sql .= sprintf(" AND q.status = '%s'", $filter);
                         } elseif ($filter == "own") {
-                                $sql .= sprintf(" AND user = '%s'", phpCAS::getUser());
+                                $sql .= sprintf(" AND q.user = '%s'", phpCAS::getUser());
                         }
                 }
                 $res = Database::getConnection()->query($sql);
