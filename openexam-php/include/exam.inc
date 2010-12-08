@@ -275,6 +275,7 @@ class Exam
         {
                 $sql = sprintf("SELECT  id AS QuestionID,
                                         exam_id AS ExamID,
+                                        topic_id AS TopicID,
                                         score AS QuestionScore,
                                         name AS QuestionName,
                                         quest AS QuestionText,
@@ -291,6 +292,22 @@ class Exam
                         throw new DatabaseException($res->getMessage());
                 }
                 return new DataRecord($res->fetchRow());
+        }
+
+        //
+        // Get all topics in this exam.
+        //
+        public function getTopics($exam)
+        {
+                $sql = sprintf("SELECT  id AS TopicID,
+                                        exam_id AS ExamID,
+                                        name AS TopicName,
+                                        randomize AS TopicRandom
+                                FROM    topics
+                                WHERE   exam_id = %d
+                                ORDER BY TopicID", $exam);
+                $res = Database::getConnection()->query($sql);
+                return new ResultSet($res);
         }
 
         //
