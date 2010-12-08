@@ -85,7 +85,10 @@ class ContributePage extends TeacherPage
                 "status" => "/^(active|removed)$/",
                 "video" => "/^(.*:\/\/.*|)$/",
                 "audio" => "/^(.*:\/\/.*|)$/",
-                "image" => "/^(.*:\/\/.*|)$/");
+                "image" => "/^(.*:\/\/.*|)$/",
+                "what" => "/^(question|topic)$/",
+                "topic" => "/^(\d+|all)$/",
+                "random" => "/^\d*$/");
 
         public function __construct()
         {
@@ -110,26 +113,54 @@ class ContributePage extends TeacherPage
                 if (isset($_REQUEST['exam'])) {
                         if (isset($_REQUEST['action'])) {
                                 if ($_REQUEST['action'] == "add") {
-                                        if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                                self::assert(array('score', 'name', 'quest', 'type', 'user'));
-                                                self::saveAddQuestion();
+                                        if (isset($_REQUEST['what']) && $_REQUEST['what'] == "topic") {
+                                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
+                                                        self::assert(array('name', 'random'));
+                                                        self::saveAddTopic();
+                                                } else {
+                                                        self::formAddTopic();
+                                                }
                                         } else {
-                                                self::formAddQuestion();
+                                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
+                                                        self::assert(array('score', 'name', 'quest', 'type', 'user'));
+                                                        self::saveAddQuestion();
+                                                } else {
+                                                        self::formAddQuestion();
+                                                }
                                         }
                                 } elseif ($_REQUEST['action'] == "edit") {
-                                        if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                                self::assert(array('score', 'name', 'quest', 'type', 'question', 'user'));
-                                                self::saveEditQuestion();
+                                        if (isset($_REQUEST['what']) && $_REQUEST['what'] == "topic") {
+                                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
+                                                        self::assert(array('name', 'random', 'topic'));
+                                                        self::saveEditTopic();
+                                                } else {
+                                                        self::assert('topic');
+                                                        self::formEditTopic();
+                                                }
                                         } else {
-                                                self::assert('question');
-                                                self::formEditQuestion();
+                                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
+                                                        self::assert(array('score', 'name', 'quest', 'type', 'question', 'user'));
+                                                        self::saveEditQuestion();
+                                                } else {
+                                                        self::assert('question');
+                                                        self::formEditQuestion();
+                                                }
                                         }
                                 } elseif ($_REQUEST['action'] == "delete") {
-                                        self::assert('question');
-                                        if ($_REQUEST['question'] == "all") {
-                                                self::saveDeleteQuestions();
+                                        if (isset($_REQUEST['what']) && $_REQUEST['what'] == "topic") {
+                                                self::assert('topic');
+                                                if ($_REQUEST['topic'] == "all") {
+                                                        self::saveDeleteTopics();
+                                                } else {
+                                                        self::saveDeleteTopic();
+                                                }
                                         } else {
-                                                self::saveDeleteQuestion();
+                                                self::assert('question');
+                                                if ($_REQUEST['question'] == "all") {
+                                                        self::saveDeleteQuestions();
+                                                } else {
+                                                        self::saveDeleteQuestion();
+                                                }
                                         }
                                 } elseif ($_REQUEST['action'] == "remove") {
                                         if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
@@ -449,6 +480,140 @@ class ContributePage extends TeacherPage
         }
 
         //
+        // Save answers posted by form.
+        //
+        private function saveAddTopic()
+        {
+                $contrib = new Contribute($this->param->exam);
+                $contrib->addTopic($this->param->exam,
+                        utf8_encode($this->param->name),
+                        $this->param->random);
+
+                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
+        }
+
+        //
+        // Save answers posted by form.
+        //
+        private function saveEditTopic()
+        {
+                $contrib = new Contribute($this->param->exam);
+                $contrib->editTopic($this->param->topic,
+                        $this->param->exam,
+                        utf8_encode($this->param->name),
+                        $this->param->random);
+
+                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
+        }
+
+        //
+        // Delete all topics.
+        //
+        private function saveDeleteTopics()
+        {
+                $contrib = new Contribute($this->param->exam);
+                $contrib->deleteTopics();
+
+                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
+        }
+
+        //
+        // Delete this topic.
+        //
+        private function saveDeleteTopic()
+        {
+                $contrib = new Contribute($this->param->exam);
+                $contrib->deleteTopic($this->param->topic);
+
+                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
+        }
+
+        //
+        // Helper function for adding a new or editing an existing topic.
+        //
+        private function formPostTopic(&$data, $action, &$exam, &$info)
+        {
+                printf("<script type=\"text/javascript\">\n");
+                printf("function clearform(form) {\n");
+                printf("  form.name.value = \"\";  form.random.value = \"\";\n");
+                printf("}\n");
+                printf("</script>\n");
+
+                $form = new Form("contribute.php", "GET");
+                $form->setName("topic");
+                $form->addHidden("exam", $data->getExamID());
+                $form->addHidden("what", "topic");
+                $form->addHidden("mode", "save");
+                $form->addHidden("action", $action);
+                if ($action == "edit") {
+                        $form->addHidden("topic", $data->getTopicID());
+                }
+                if (!$info->isEditable()) {
+                        $form->addHidden("name", utf8_decode($data->getTopicName()));
+                        $form->addHidden("random", $data->getTopicRandom());
+                }
+
+                $sect = $form->addSectionHeader(_("Required fields"));
+                $sect->setClass("secthead");
+
+                if ($info->isEditable()) {
+                        $input = $form->addTextBox("name", $data->hasTopicName() ? utf8_decode($data->getTopicName()) : "");
+                        $input->setTitle(_("The display name of this topic"));
+                        $input->setLabel(_("Name"));
+                        $input->setSize(60);
+
+                        $input = $form->addTextBox("random", $data->getTopicRandom());
+                        $input->setTitle(_("The number of questions to randomly select from this topics question pool. Leave this field empty to use all questions."));
+                        $input->setLabel(_("Randomize"));
+                }
+
+                $form->addSpace();
+                $button = $form->addButton(BUTTON_SUBMIT, _("Submit"));
+                $button->setLabel();
+                $button = $form->addButton(BUTTON_RESET, _("Reset"));
+                $button = $form->addButton(BUTTON_STANDARD, _("Clear"));
+                $button->setEvent(EVENT_ON_CLICK, "clearform(document.question);return false;");
+
+                $form->output();
+        }
+
+        //
+        // Add new topic in exam.
+        //
+        private function formAddTopic()
+        {
+                $data = $this->manager->getData();
+                $info = $this->manager->getInfo();
+                $trec = new DataRecord(array(
+                                "examid" => $this->param->exam,
+                                "topicname" => "",
+                                "topicrandom" => 0)
+                );
+
+                printf("<h3>" . _("Add Topic") . "</h3>\n");
+                printf("<p>" . _("This page let you add a new topic in the examination '%s'") . "</p>\n",
+                        utf8_decode($data->getExamName()));
+
+                self::formPostTopic($trec, "add", $data, $info);
+        }
+
+        //
+        // Edit existing topic in exam.
+        //
+        private function formEditTopic()
+        {
+                $data = $this->manager->getData();
+                $info = $this->manager->getInfo();
+                $trec = Exam::getTopicData($this->param->topic);
+
+                printf("<h3>" . _("Edit Topic") . "</h3>\n");
+                printf("<p>" . _("This page let you edit this existing topic in the examination '%s'") . "</p>\n",
+                        utf8_decode($data->getExamName()));
+
+                self::formPostTopic($trec, "edit", $data, $info);
+        }
+
+        //
         // Create a test case of the exam and redirect user to it. This is also
         // known as dry-run, in that the original examination remains unmodified.
         //
@@ -501,45 +666,75 @@ class ContributePage extends TeacherPage
                 $tree = new TreeBuilder(_("Questions"));
                 $root = $tree->getRoot();
                 if ($info->isContributable()) {
+                        $root->addLink(_("Delete"),
+                                sprintf("?exam=%d&amp;action=delete&amp;what=topic&amp;topic=all",
+                                        $data->getExamID()),
+                                _("Click to delete all topics in this examination. All topics must be empty for this request to succedd."));
                         $root->addLink(_("Add"),
-                                sprintf("?exam=%d&amp;action=add", $data->getExamID()),
-                                _("Click to add a question to this examination."));
+                                sprintf("?exam=%d&amp;action=add&amp;what=topic", $data->getExamID()),
+                                _("Click to add a new topic to this examination."));
                 }
 
                 $status = $show != "all" ? $show : null;
                 $questions = $this->manager->getQuestions($status);
 
+                $topic = new TreeNode(null);
+                $topic->id = 0;
+
                 foreach ($questions as $question) {
-                        $child = $root->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
-                        if ($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
-                                if (!$info->isDecoded()) {
-                                        $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d",
-                                                        $question->getExamID(),
-                                                        $question->getQuestionID()));
-                                }
+                        if ($topic->id != $question->getTopicID()) {
+                                $topic = $root->addChild(sprintf("%s (%d): %s", _("Topic"), $question->getTopicRandom(), $question->getTopicName()));
+                                $topic->id = $question->getTopicID();
                                 if ($info->isContributable()) {
-                                        $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d",
-                                                        $question->getExamID(),
-                                                        $question->getQuestionID()));
+                                        $topic->addLink(_("Edit"),
+                                                sprintf("?exam=%d&amp;action=edit&amp;what=topic&amp;topic=%d",
+                                                        $data->getExamID(),
+                                                        $question->getTopicID()),
+                                                _("Click to edit this topic."));
+                                        $topic->addLink(_("Delete"),
+                                                sprintf("?exam=%d&amp;action=delete&amp;what=topic&amp;topic=%d",
+                                                        $data->getExamID(),
+                                                        $question->getTopicID()),
+                                                _("Click to delete this topic."));
+                                        $topic->addLink(_("Add"),
+                                                sprintf("?exam=%d&amp;action=add&amp;topic=%d",
+                                                        $data->getExamID(),
+                                                        $question->getTopicID()),
+                                                _("Click to add a question in this topic."));
                                 }
-                                $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
-                                                $question->getExamID(),
-                                                $question->getQuestionID()),
-                                        _("Preview this question"), array("target" => "_blank"));
                         }
-                        $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
-                        $child->addChild(sprintf("%s: %s", _("Publisher"), $this->getFormatName($question->getQuestionPublisher())));
-                        $child->addChild(sprintf("%s: %s", _("Video"), $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No")));
-                        $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
-                        $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
-                        $child->addChild(sprintf("%s: %s", _("Type"), $question->getQuestionType()));
-                        if ($question->getQuestionStatus() == "removed") {
-                                $child->addChild(sprintf("%s: %s", _("Status"), $question->getQuestionStatus()));
-                                $child->addChild(sprintf("%s: %s", _("Comment"), utf8_decode($question->getQuestionComment())));
+                        if ($question->getQuestionID()) {
+                                $child = $topic->addChild(sprintf("%s %s", _("Question"), utf8_decode($question->getQuestionName())));
+                                if ($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
+                                        if (!$info->isDecoded()) {
+                                                $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d",
+                                                                $question->getExamID(),
+                                                                $question->getQuestionID()));
+                                        }
+                                        if ($info->isContributable()) {
+                                                $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d",
+                                                                $question->getExamID(),
+                                                                $question->getQuestionID()));
+                                        }
+                                        $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
+                                                        $question->getExamID(),
+                                                        $question->getQuestionID()),
+                                                _("Preview this question"), array("target" => "_blank"));
+                                }
+                                $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
+                                $child->addChild(sprintf("%s: %s", _("Publisher"), $this->getFormatName($question->getQuestionPublisher())));
+                                $child->addChild(sprintf("%s: %s", _("Video"), $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No")));
+                                $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
+                                $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
+                                $child->addChild(sprintf("%s: %s", _("Type"), $question->getQuestionType()));
+                                if ($question->getQuestionStatus() == "removed") {
+                                        $child->addChild(sprintf("%s: %s", _("Status"), $question->getQuestionStatus()));
+                                        $child->addChild(sprintf("%s: %s", _("Comment"), utf8_decode($question->getQuestionComment())));
+                                }
+                                $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
+                                $subobj->addText(sprintf("<div class=\"examquest\">%s</div>",
+                                                utf8_decode(str_replace("\n", "<br>", $question->getQuestionText()))));
                         }
-                        $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
-                        $subobj->addText(sprintf("<div class=\"examquest\">%s</div>",
-                                        utf8_decode(str_replace("\n", "<br>", $question->getQuestionText()))));
                 }
                 $tree->output();
         }
