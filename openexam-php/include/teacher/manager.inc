@@ -517,6 +517,16 @@ class Manager
                 }
                 if ($this->exam == 0) {
                         $this->exam = $db->lastInsertId("exams", "id");
+
+                        //
+                        // The new exam must have an topics record.
+                        // 
+                        $sql = sprintf("INSERT INTO topics(exam_id, name)
+                                        VALUES(%d, 'default')", $this->exam);
+                        $res = $db->query($sql);
+                        if (PEAR::isError($res)) {
+                                throw new DatabaseException($res->getMessage());
+                        }
                 }
         }
 
@@ -725,7 +735,7 @@ class Manager
                         }
                 }
                 $sql .= " ORDER BY TopicID, QuestionID";
-                
+
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
@@ -739,8 +749,8 @@ class Manager
                                         exam_id AS ExamID,
                                         user AS StudentUser,
                                         code AS StudentCode
-                                FROM students
-                                WHERE exam_id = %d
+                                FROM    students
+                                WHERE   exam_id = %d
                                 ORDER BY user", $this->exam);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
@@ -755,8 +765,8 @@ class Manager
                                         exam_id AS ExamID,
                                         user AS StudentUser,
                                         code AS StudentCode
-                                FROM students
-                                WHERE id = %d", $student);
+                                FROM    students
+                                WHERE   id = %d", $student);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
