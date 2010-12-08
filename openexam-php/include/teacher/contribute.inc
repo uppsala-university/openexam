@@ -81,23 +81,23 @@ class Contribute
                 }
         }
 
-        public function addQuestion($exam, $score, $name, $quest, $type, $user, $video, $audio, $image)
+        public function addQuestion($exam, $topic, $score, $name, $quest, $type, $user, $video, $audio, $image)
         {
-                $sql = sprintf("INSERT INTO questions(exam_id, score, name, quest, type, user, video, audio, image)
-                                VALUES(%d, %f, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
-                                $exam, $score, $name, $quest, $type, $user, $video, $audio, $image);
+                $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, type, user, video, audio, image)
+                                VALUES(%d, %d, %f, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                                $exam, $topic, $score, $name, $quest, $type, $user, $video, $audio, $image);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
                 }
         }
 
-        public function editQuestion($question, $exam, $score, $name, $quest, $type, $user, $video, $audio, $image)
+        public function editQuestion($question, $exam, $topic, $score, $name, $quest, $type, $user, $video, $audio, $image)
         {
-                $sql = sprintf("UPDATE questions SET exam_id = %d, score = %f, name = '%s', quest = '%s', type = '%s',
+                $sql = sprintf("UPDATE questions SET exam_id = %d, topic_id = %d, score = %f, name = '%s', quest = '%s', type = '%s',
                                                      user = '%s', video = '%s', audio = '%s', image = '%s'
                                 WHERE id = %d",
-                                $exam, $score, $name, $quest, $type, $user, $video, $audio, $image, $question);
+                                $exam, $topic, $score, $name, $quest, $type, $user, $video, $audio, $image, $question);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
