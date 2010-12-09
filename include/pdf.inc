@@ -613,6 +613,13 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $sds = $this->getStandardDeviation($scs);
                 $mvs = $this->getMeanValue($scs);
 
+                if ($sds == 0) {
+                        $sds = $sdf;
+                }
+                if ($mvs == 0) {
+                        $mvs = $mvf;
+                }
+
                 //
                 // Now we are ready to generate the two tables. We use NEED to ensure
                 // that the tables don't get cut apart somewhere in the middle.
@@ -738,7 +745,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         //
         private function getMeanValue(&$scores)
         {
-                if(count($scores) == 0) {
+                if (count($scores) == 0) {
                         return 0;
                 }
                 $n = count($scores);
@@ -750,10 +757,10 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         //
         private function getStandardDeviation(&$scores)
         {
-                if(count($scores) == 0) {
+                if (count($scores) == 0) {
                         return 0;
                 }
-                
+
                 $n = count($scores);
                 $m = array_sum($scores) / $n;
 
