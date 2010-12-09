@@ -24,6 +24,23 @@ if (!defined("LDAP_LOOKUP_BOTH")) {
         define("LDAP_LOOKUP_BOTH", 3);
 }
 
+if (!defined("LDAP_SEARCH_UID")) {
+        define("LDAP_SEARCH_UID", "(uid=%s)");
+}
+if (!defined("LDAP_SEARCH_SN")) {
+        define("LDAP_SEARCH_SN", "(sn=%s)");
+}
+if (!defined("LDAP_SEARCH_CN")) {
+        define("LDAP_SEARCH_CN", "(cn=%s %s)");
+}
+if (!defined("LDAP_SEARCH_PRINCIPAL")) {
+        define("LDAP_SEARCH_PRINCIPAL", "(edupersonprincipalname=%s@user.uu.se)");
+}
+if (!defined("LDAP_SEARCH_GIVEN_NAME")) {
+        define("LDAP_SEARCH_GIVEN_NAME", "(givenname=%s)");
+}
+
+
 // 
 // Our custom LDAP exception.
 // 
@@ -454,7 +471,7 @@ class LDAPSearch
         //
         public function searchCN($firstname, $lastname)
         {
-                return self::search(sprintf("(cn=%s %s)", $firstname, $lastname), "cn");
+                return self::search(sprintf(LDAP_SEARCH_CN, $firstname, $lastname), "cn");
         }
 
         //
@@ -462,7 +479,7 @@ class LDAPSearch
         //
         public function searchGivenName($firstname)
         {
-                return self::search(sprintf("(givenname=%s)", $firstname), "givenname");
+                return self::search(sprintf(LDAP_SEARCH_GIVEN_NAME, $firstname), "givenname");
         }
 
         //
@@ -470,7 +487,7 @@ class LDAPSearch
         //
         public function searchSN($lastname)
         {
-                return self::search(sprintf("(sn=%s)", $lastname), "sn");
+                return self::search(sprintf(LDAP_SEARCH_SN, $lastname), "sn");
         }
 
         //
@@ -478,7 +495,7 @@ class LDAPSearch
         //
         public function searchUID($account_id)
         {
-                return self::search(sprintf("(uid=%s)", $account_id), "uid");
+                return self::search(sprintf(LDAP_SEARCH_UID, $account_id), "uid");
         }
 
         //
@@ -488,7 +505,7 @@ class LDAPSearch
         //
         public function searchPrincipalName($account_id)
         {
-                return self::search(sprintf("(edupersonprincipalname=%s@anst.uu.se)", $account_id), "principal");
+                return self::search(sprintf(LDAP_SEARCH_PRINCIPAL, $account_id), "principal");
         }
 
 }
