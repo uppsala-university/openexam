@@ -147,7 +147,9 @@ class ScoreBoard
                                         if ($record->getResultScore() != null) {
                                                 $score->addSum($record->getResultScore());
                                         }
-                                        $score->addMax($record->getQuestionScore());
+                                        if ($record->getAnswerExist() != 'N') {
+                                                $score->addMax($record->getQuestionScore());
+                                        }
                                 }
                         }
                 }
@@ -565,7 +567,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                         $array[] = $student->getStudentCode();
                         foreach ($questions as $question) {
                                 $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
-                                if (!isset($data)) {
+                                if (!isset($data) || $data->getAnswerExist() == 'N') {
                                         $array[] = "";
                                 } else {
                                         if ($data->hasResultScore()) {
@@ -707,6 +709,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                                         $question->getQuestionID());
                                         if ($this->colorize) {
                                                 if (!isset($data)) {
+                                                        $obj = $row->addData("-");
+                                                        $obj->setClass("cc qu");
+                                                } elseif ($data->getAnswerExist() == 'N') {
                                                         $obj = $row->addData("?");
                                                         $obj->setClass("cc s0");
                                                 } elseif ($data->hasResultScore()) {
@@ -716,12 +721,18 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                                 } elseif ($data->getQuestionStatus() == 'removed') {
                                                         $obj = $row->addData("-");
                                                         $obj->setClass("cc qr");
-                                                } else {
+                                                } elseif ($data->getAnswerExist() == 'Y') {
                                                         $obj = $row->addData("X");
                                                         $obj->setClass("cc nc");
+                                                } else {
+                                                        $obj = $row->addData("!");
+                                                        $obj->setClass("cc na");
                                                 }
                                         } else {
                                                 if (!isset($data)) {
+                                                        $obj = $row->addData("-");
+                                                        $obj->setClass("cc qu");
+                                                } elseif ($data->getAnswerExist() == 'N') {
                                                         $obj = $row->addData("?");
                                                         $obj->setClass("cc na");
                                                 } elseif ($data->getQuestionStatus() == 'removed') {
@@ -730,9 +741,12 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                                 } elseif ($data->hasResultScore()) {
                                                         $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
                                                         $obj->setClass("cc ac");
-                                                } else {
+                                                } elseif ($data->getAnswerExist() == 'Y') {
                                                         $obj = $row->addData("X");
                                                         $obj->setClass("cc nc");
+                                                } else {
+                                                        $obj = $row->addData("!");
+                                                        $obj->setClass("cc na");
                                                 }
                                         }
 

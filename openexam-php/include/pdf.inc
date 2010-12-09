@@ -330,12 +330,12 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 fprintf($stream, "<p>%s</p>\n", _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."));
                 fprintf($stream, "<table><tr align=\"right\"><th>%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
                         _("Question"), _("Score"), _("Max score"), _("Percent"), _("Notice"));
-                $questions = $this->board->getQuestions();
+                $questions = $this->manager->getQuestions(null, $this->student);
                 foreach ($questions as $question) {
                         fprintf($stream, "<tr align=\"right\"><td>%s</td><td>&nbsp;</td>", utf8_decode($question->getQuestionName()));
                         $data = $this->board->getData($this->student, $question->getQuestionID());
                         if ($question->getQuestionStatus() == 'active') {
-                                if (isset($data)) {
+                                if ($data->getAnswerExist() == 'Y') {
                                         fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td>",
                                                 $data->getResultScore(),
                                                 $question->getQuestionScore(),
@@ -384,7 +384,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
                         $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
                         $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
-                        fprintf($stream, "<p><b>%s</b></p>\n", utf8_decode($qchoice[0]));
+                        fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", utf8_decode($qchoice[0])));
 
                         fprintf($stream, "<ol>\n");
                         foreach ($qchoice[1] as $choice => $correct) {
@@ -412,18 +412,18 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 if (isset($answer)) {
                         fprintf($stream, "<h3>%s</h3>\n", _("Answer"));
                         if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-			        $text = str_replace("\n", "<br/>", htmlentities(utf8_decode($answer->getAnswerText())));
+                                $text = str_replace("\n", "<br/>", htmlentities(utf8_decode($answer->getAnswerText())));
                                 fprintf($stream, "<p>%s</p>\n", $text);
                         } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
                                 $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
-                                $achoice = Exam::getQuestionChoice($answer->getQuestionText());
+                                $achoice = Exam::getQuestionChoice($answer->getAnswerText());
                                 fprintf($stream, "<p>%s</p>\n", implode(", ", $achoice[1]));
                         }
                         if ($answer->hasAnswerComment()) {
-                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Your comments"), $answer->getAnswerComment());
+                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Your comments"), utf8_decode($answer->getAnswerComment()));
                         }
                         if ($answer->hasResultComment()) {
-                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Teacher comments"), $answer->getResultComment());
+                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Teacher comments"), utf8_decode($answer->getResultComment()));
                         }
                         fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Score"), $answer->getResultScore());
                 }
@@ -435,20 +435,23 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         private function printSectionAnswers($stream)
         {
                 $handler = new Correct($this->exam->getExamID());
-                $answers = $handler->getStudentAnswers($this->student);
-                $questions = $this->manager->getQuestions();
+                $answers = $handler->getStudentAnswers($this->student, true);
+                $questions = $this->manager->getQuestions(null, $this->student);
 
                 //
                 // Build the associative array of answered ('a') and unanswered ('u') questions.
                 //
                 $qadata = array('a' => array(), 'u' => array(), 'r' => array());
                 foreach ($questions as $question) {
-                        $answered = false;
                         foreach ($answers as $answer) {
                                 if ($question->getQuestionID() == $answer->getQuestionID()) {
-                                        $answered = true;
                                         break;
                                 }
+                        }
+                        if (isset($answer)) {
+                                $answered = $answer->getAnswerExist() == 'Y';
+                        } else {
+                                $answered = false;
                         }
                         if ($question->getQuestionStatus() == 'removed') {
                                 $qadata['r'][] = array($question, $answered ? $answer : null);
@@ -722,7 +725,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 //
                 fprintf($stream, "<h2>%s</h2>\n", _("Document Information"));
                 fprintf($stream, "<p>" .
-                        _("This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s\">%s</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license.") .
+                        _("This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s/\">%s/</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license.") .
                         "</p>\n",
                         $openexam, BASE_URL, BASE_URL, $htmldoc);
                 fprintf($stream, "<p>" .
@@ -735,6 +738,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         //
         private function getMeanValue(&$scores)
         {
+                if(count($scores) == 0) {
+                        return 0;
+                }
                 $n = count($scores);
                 return array_sum($scores) / $n;
         }
@@ -744,9 +750,14 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         //
         private function getStandardDeviation(&$scores)
         {
+                if(count($scores) == 0) {
+                        return 0;
+                }
+                
                 $n = count($scores);
                 $m = array_sum($scores) / $n;
 
+                $sx = array();
                 for ($i = 0; $i < $n; $i++) {
                         $sx[$i] = pow(($m - $scores[$i]), 2);
                 }
