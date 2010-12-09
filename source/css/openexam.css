@@ -201,6 +201,10 @@ td.ac { /* answer corrected */
 	border: 1px solid #cccccc;
 	background-color: #ffffff;
 }
+td.qu { /* question unassigned */
+        border: 1px solid #333333;
+        background-color: #666666;
+}
 td.qr { /* question flagged as removed */
 	border: 1px solid #00aaaa;
 	background-color: #00ffff;

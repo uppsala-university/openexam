@@ -102,7 +102,10 @@ class Correct
         // result will also contain answers to questions where caller is not the publisher (these
         // should be filtered if required).
         //
-        public function getStudentAnswers($student)
+        // If all is set, then all "answers" is returned, even these where answered
+        // is 'N'.
+        //
+        public function getStudentAnswers($student, $all = false)
         {
                 $sql = sprintf("SELECT  a.id AS AnswerID,
                                         a.question_id AS QuestionID,
@@ -111,6 +114,7 @@ class Correct
                                         s.exam_id AS ExamID,
                                         a.answer AS AnswerText,
                                         a.comment AS AnswerComment,
+                                        a.answered AS AnswerExist,
                                         r.score AS ResultScore,
                                         r.comment AS ResultComment,
                                         s.user AS StudentUser,
@@ -122,9 +126,12 @@ class Correct
                                 WHERE s.id = a.student_id
                                         AND s.id = %d
                                         AND a.question_id = q.id
-                                        AND q.exam_id = %d
-                                ORDER BY a.question_id",
+                                        AND q.exam_id = %d",
                                 $student, $this->exam);
+                if(!$all) {
+                        $sql .= " AND a.answered = 'Y'";
+                }
+                $sql .= " ORDER BY a.question_id";
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
@@ -171,6 +178,7 @@ class Correct
                                         a.question_id AS QuestionID,
                                         s.id AS StudentID,
                                         s.exam_id AS ExamID,
+                                        a.answered AS AnswerExist,
                                         r.score AS ResultScore, 
                                         s.user AS StudentUser,
                                         s.code AS StudentCode,

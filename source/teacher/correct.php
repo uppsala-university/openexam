@@ -601,7 +601,8 @@ class CorrectionPage extends TeacherPage
                                 "no" => _("This answer should be corrected by another person."),
                                 "na" => _("No answer was given for this question."),
                                 "nc" => _("The answer has not yet been corrected."),
-                                "qr" => _("Question is flagged as removed (no scores for this question is counted).")
+                                "qr" => _("Question is flagged as removed (no scores for this question is counted)."),
+                                "qu" => _("This question was not assigned to this student.")
                         );
                 }
                 $table = new Table();

@@ -563,6 +563,7 @@ class Manager
                                         LEFT JOIN results r ON a.id = r.answer_id
                                 WHERE   s.exam_id = %d AND
                                         s.id = a.student_id AND
+                                        a.answered = 'Y' AND
                                         r.id IS NULL", $this->exam);
                 $db = Database::getConnection();
                 $db->setFetchMode(MDB2_FETCHMODE_ORDERED);
@@ -724,37 +725,68 @@ class Manager
         //
         // Get all questions associated with this exam, with optional filtering
         // on status. If status is null, then all question are returned.
-        // Possible values for filter are: 'active', 'removed' or own.
+        // Possible values for filter are: 'active', 'removed' or 'own'.
         //
-        public function getQuestions($filter = null)
+        // If student != 0, then only questions assigned to this student is
+        // returned.
+        //
+        public function getQuestions($filter = null, $student = 0)
         {
-                $sql = sprintf("SELECT  q.id AS QuestionID,
-                                        t.id AS TopicID,
-                                        q.exam_id AS ExamID,
-                                        q.score AS QuestionScore,
-                                        q.name AS QuestionName,
-                                        q.quest AS QuestionText,
-                                        q.user AS QuestionPublisher,
-                                        q.video AS QuestionVideo,
-                                        q.image AS QuestionImage,
-                                        q.audio AS QuestionAudio,
-                                        q.type AS QuestionType,
-                                        q.status AS QuestionStatus,
-                                        q.comment AS QuestionComment,
-                                        t.name AS TopicName,
-                                        t.randomize AS TopicRandom
-                                FROM    topics t LEFT JOIN questions q
-                                ON      q.topic_id = t.id AND
-                                        q.exam_id = t.exam_id
-                                WHERE   t.exam_id = %d", $this->exam);
-                if (isset($filter)) {
-                        if ($filter == "active" || $filter == "removed") {
-                                $sql .= sprintf(" AND q.status = '%s'", $filter);
-                        } elseif ($filter == "own") {
-                                $sql .= sprintf(" AND q.user = '%s'", phpCAS::getUser());
+                if ($student != 0) {
+                        $sql = sprintf("SELECT  q.id AS QuestionID,
+                                                t.id AS TopicID,
+                                                q.exam_id AS ExamID,
+                                                q.score AS QuestionScore,
+                                                q.name AS QuestionName,
+                                                q.quest AS QuestionText,
+                                                q.user AS QuestionPublisher,
+                                                q.video AS QuestionVideo,
+                                                q.image AS QuestionImage,
+                                                q.audio AS QuestionAudio,
+                                                q.type AS QuestionType,
+                                                q.status AS QuestionStatus,
+                                                q.comment AS QuestionComment,
+                                                t.name AS TopicName,
+                                                t.randomize AS TopicRandom
+                                        FROM    topics t
+                                        LEFT JOIN questions q
+                                        ON      q.topic_id = t.id AND
+                                                q.exam_id = t.exam_id
+                                        LEFT JOIN answers a
+                                        ON      q.id = a.question_id
+                                        WHERE   t.exam_id = %d AND
+                                                a.student_id = %d
+                                        ORDER BY QuestionID",
+                                        $this->exam, $student);
+                } else {
+                        $sql = sprintf("SELECT  q.id AS QuestionID,
+                                                t.id AS TopicID,
+                                                q.exam_id AS ExamID,
+                                                q.score AS QuestionScore,
+                                                q.name AS QuestionName,
+                                                q.quest AS QuestionText,
+                                                q.user AS QuestionPublisher,
+                                                q.video AS QuestionVideo,
+                                                q.image AS QuestionImage,
+                                                q.audio AS QuestionAudio,
+                                                q.type AS QuestionType,
+                                                q.status AS QuestionStatus,
+                                                q.comment AS QuestionComment,
+                                                t.name AS TopicName,
+                                                t.randomize AS TopicRandom
+                                        FROM    topics t LEFT JOIN questions q
+                                        ON      q.topic_id = t.id AND
+                                                q.exam_id = t.exam_id
+                                        WHERE   t.exam_id = %d", $this->exam);
+                        if (isset($filter)) {
+                                if ($filter == "active" || $filter == "removed") {
+                                        $sql .= sprintf(" AND q.status = '%s'", $filter);
+                                } elseif ($filter == "own") {
+                                        $sql .= sprintf(" AND q.user = '%s'", phpCAS::getUser());
+                                }
                         }
+                        $sql .= " ORDER BY TopicID, QuestionID";
                 }
-                $sql .= " ORDER BY TopicID, QuestionID";
 
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
