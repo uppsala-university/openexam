@@ -1,0 +1,523 @@
+Exported from the questionbank in PING PONG		
+Format	QI625	
+		
+		
+Question		
+Category	Test	
+Name	Testdugga:Ny fråga1	
+Description	Fråga 1	
+Text	<p align="left"><strong>Vilken program ges kursen analytisk farmaceutisk kemi FK003 p&aring;?</strong></p>	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Apotekarprogrammet	en kurs med samma namn ges även på civilingenjörsprogrammet
+Incorrect	Receptarieprogrammet	
+Incorrect	Biomedicinarprogrammet	
+Incorrect	kemiingenjörsprogrammet	
+		
+Question		
+Category	Validering&titrering	
+Name	Fråga 340	
+Text	<p align="left">Vid en metodvalidering bestämmer man ett antal olika parametrar för att ange metodens prestanda. Vilken/Vilka parametrar brukar man normalt bestämma vid en metodvalidering?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	riktighet	
+Correct	precision	
+Correct	linjäritet av standardkurva	
+Incorrect	molär absorbans	
+Incorrect	pka värden för analyter	
+		
+Question		
+Category	Separation	
+Name	Fråga 326	
+Text	<p align="left">Basen B (pKa 5,0 för den korresponderande syran) separeras från syran HA (pKa 7,0) i ett HPLC-system. Som mobilfas används en 50 mM fosfatbuffert pH 4 och den stationära fasen består av C18-kedjor. Vilket/vilka av nedanstående påståenden är riktigt?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Bägge substansernas retention minskar om 20 % MeOH tillsätts i mobila fasen	
+Incorrect	Substanserna måste derivatiseras om de har polära grupper.	
+Incorrect	Syrans retention minskar om pH sänks i mobila fasen.	
+Incorrect	Separationen baseras på skillnaden i storlek och laddning.	
+Incorrect	Separationen baseras på skillnader i flyktighet.
+<br>
+<br>
+	
+		
+Question		
+Category	Separation	
+Name	Fråga 329	
+Text	<p align="left">Retentionen kan regleras på en mängd olika sätt i reversed phase vätskekromatografi.<br/>Vilket/vilka av nedanstående påståenden är oriktiga?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Det finns ingen interaktion mellan mobilfaskomponenter och prov i den mobila fasen.	
+Incorrect	Ökad andel organiskt lösningsmedel i mobila fasen sänker retentionen för analyterna.	
+Incorrect	Förändring av pH så att en protolyt blir oladdad ökar dess retention.	
+Incorrect	Tillsats av motjon i den mobila fasen kan öka retentionen för laddade analyter.	
+		
+Question		
+Category	Elektrokemi	
+Name	Fråga 350	
+Text	<p align="left"><b>Ange de påståenden som är korrekta:</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Vanliga joner i en saltbrygga är &lt;pp:latex&gt;K^+&lt;/pp:latex&gt; och &lt;pp:latex&gt;NO_3^-&lt;/pp:latex&gt;	
+Correct	Vid anoden sker en oxidation	
+Incorrect	I en elektrolytisk cell sker en spontan elektrokemisk reaktion	
+Incorrect	Elektroner strömmar från katod till anod i en galvanisk cell	
+Incorrect	I en galvanisk cell är anoden är plusladdad	
+		
+Question		
+Category	Test	
+Name	Testdugga:Ny fråga3	
+Description	Fråga 3	
+Text	<p align="left"><b>Var ligger Läkemedelsverket?</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Uppsala	
+Incorrect	Nyköping	
+Incorrect	Härnösand	
+Incorrect	Varberg	
+Incorrect	Kramfors	
+Correct	Glunten (Uppsala Science park)	Japp, och i Uppsala
+Incorrect	Ångström	
+		
+Question		
+Category	Separation	
+Name	Fråga 322	
+Text	<p align="left">Bandbreddning eller zonbreddning är ett fenomen som uppkommer när provzonerna vandrar genom separationskolonnen. Detta fenomen leder till proven blir utspädda och att analystopparna blir breda. Vilket/vilka av nedanstående alternativ är falskt angående bandbreddning?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Bandbreddning är oberoende av flödeshastigheten.	
+Incorrect	Bandbreddning motverkar separationen mellan analyter.	
+Incorrect	Bandbreddning minskar analysmetodens känslighet.	
+Incorrect	Bandbreddning orsakas av molekylär diffusion.	
+Incorrect	Bandbreddning orsakas av att analyten tar olika långa vägar genom kolonnen.	
+		
+Question		
+Category	Validering&titrering	
+Name	Fråga 341	
+Text	<p align="left"><b>Markera de påståenden som är riktiga</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Då hälften av en svag syra titrerats är pH=pKa.	
+Correct	Då en stark bas titreras med en stark syra är pH=7,0 i ekvivalenspunkten.	
+Incorrect	Titrersprångets storlek är oberoende av titrandens koncentration.	
+Incorrect	För svaga syror minskar titrersprånget med minskande pKa.	
+Incorrect	Starka syror titreras vanligen med svaga baser.	
+		
+Question		
+Category	Spektroskopi	
+Name	Fråga 331	
+Text	<p align="left">Du överväger spektrofotometri inom det UV-synliga området för en kvantitativ bestämning av ett läkemedel. Vilket/Vilka av följande påståenden är inkorrekt för en spektrofotometer?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Mäter den mängd elektromagnetisk strålning som analyten emitterar	
+Incorrect	Innehåller en ljuskälla (elektromagnetisk strålning)	
+Incorrect	Innehåller en provkyvett	
+Incorrect	Mäter den mängd elektromagnetisk strålning som transmitteras	
+Incorrect	Innehåller en monokromator	
+		
+Question		
+Category	Test	
+Name	Testdugga:Ny fråga2	
+Description	Fråga 2	
+Text	<p align="left"><b>Vilken termin på detta program ges kursen?</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	1	
+Incorrect	2	
+Incorrect	3	
+Incorrect	4	
+Incorrect	9	
+Incorrect	5	
+Incorrect	6	
+Incorrect	7	
+Incorrect	8	
+		
+Question		
+Category	Elektrokemi	
+Name	Fråga 353	
+Text	<p>Vilket/vilka av nedanst&aring;ende p&aring;st&aring;enden som &auml;r felaktiga?</p>	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Incorrect	Då ett ämne reduceras, så tar det upp elektroner	
+Correct	Då ett ämne reduceras så ökar oxidationstalet	
+Incorrect	Elektroner kan ej förekomma fria i en lösning	
+Incorrect	Fasta, rena ämnen har aktiviteten 1	
+Correct	Aktiviteten för ett ämne är alltid är detsamma som koncentrationen	
+		
+Question		
+Category	Elektrokemi	
+Name	Fråga 352	
+Text	<p>Kryssa f&ouml;r de p&aring;st&aring;enden (g&auml;llande elektrokemi) nedan som &auml;r FELAKTIGA.</p>	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Incorrect	Oxidation innebär ett avgivande av elektroner	
+Correct	I en elektrokemisk cell står lösningarna i förbindelse med varandra genom en badbrygga	
+Correct	I en elektrolytisk cell sker en spontan elektrokemisk process	
+Correct	En enskild cellhalvas potential kan mätas med en voltmeter	
+Incorrect	Ett negativ E0-värde innebär att ämnet har benägenhet att oxideras	
+		
+Question		
+Category	Validering&titrering	
+Name	Fråga 342	
+Text	<p align="left">Vilket/vilka av nedanstående alternativ är sanna för en intern standard?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Den bör vara så strukturellt lik provet som möjligt.	
+Correct	Den kompenserar för förluster vid provupparbetningen.	
+Correct	Kvoten mellan standard och internstandard avsätts i standardkurvan.	
+Correct	Den kompenserar för variation i injektionsvolym.	
+Incorrect	Den späds till olika koncentrationer i standardkurvan.	
+		
+Question		
+Category	Separation	
+Name	Fråga 321	
+Text	<p align="left">Du ska analysera naproxen (en syra med pKa 4.2) med vätskekromatografi men erhåller en för hög retentionsfaktor (k) för analyten och vill därför sänka denna. Du använder en opolär C18-kolonn som stationär fas och en mobilfas bestående av fosfatbuffert med pH 2.2 och 20 % acetonitril. Vilket av förslagen leder till att retentionsfaktorn minskar för naproxen?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Ökat pH i den mobila fasen från 2.2 till 6.2.	
+Incorrect	Sänkt flödeshastighet.	
+Incorrect	Ökad flödeshastighet.	
+Incorrect	Byte av acetonitrilen i den mobila fasen till metanol.	
+Incorrect	Minskad mängd acetonitril i den mobila fasen.	
+		
+Question		
+Category	Test	
+Name	Testdugga:Ny fråga1	
+Description	Fråga 1	
+Text	<p align="left"><strong>Vilken program ges kursen analytisk farmaceutisk kemi FK003 p&aring;?</strong></p>	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Apotekarprogrammet	en kurs med samma namn ges även på civilingenjörsprogrammet
+Incorrect	Receptarieprogrammet	
+Incorrect	Biomedicinarprogrammet	
+Incorrect	kemiingenjörsprogrammet	
+		
+Question		
+Category	Validering&titrering	
+Name	Fråga 343	
+Text	<p><strong>Markera de p&aring;st&aring;enden som &auml;r korrekta:</strong></p>	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Incorrect	Vid titrering av en svag syra är pH i ekvivalenspunkten lika med pKa för syran.	
+Incorrect	En bra indikator ska ha ett omslagsintervall som innefattar titrerkurvans pH i halvtitrerpunkten.	
+Correct	Vid titrering av en svag syra är det i halvtitrerpunkten samma koncentration av syran som av syrans korresponderande bas.	
+Correct	I ekvivalenspunkten har lika många mol av titratorn tillsatts som det fanns mol av titranden från början.	
+Incorrect	Svaga baser titreras alltid med svaga syror.	
+		
+Question		
+Category	Separation	
+Name	Fråga 3216	
+Text	<p align="left"><b><b>Inom HPLC använder man begreppet selektivitet (<pp:latex>&#92;alpha</pp:latex>) för att ange metodens förmåga separera ämnen från varandra. Vilken eller vilka av följande parametrar påverkar selektiviteten?</b></b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	den mobila fasens sammansättning <br>
+	
+Incorrect	injektionsvolymen	
+Incorrect	kolonnens längd	
+Incorrect	flödeshastigheten	
+Incorrect	antalet teoretiska bottnar (N)	
+		
+Question		
+Category	Test	
+Name	Testdugga:Ny fråga3	
+Description	Fråga 3	
+Text	<p align="left"><b>Var ligger Läkemedelsverket?</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Uppsala	
+Incorrect	Nyköping	
+Incorrect	Härnösand	
+Incorrect	Varberg	
+Incorrect	Kramfors	
+Correct	Glunten (Uppsala Science park)	Japp, och i Uppsala
+Incorrect	Ångström	
+		
+Question		
+Category	Separation	
+Name	Fråga 325	
+Text	<p align="left">Vilket/Vilka av nedanstående påståenden om bandbreddning är inte sant?</p>
+<h1 align="left"></h1>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Den molekylära diffusionen får större inflytande ju högre flödet är.	
+Incorrect	I kapillär-GC finns ingen Eddydiffusion.	
+Incorrect	Långsam jämviktsinställning får större inflytande ju högre flödet är.	
+Incorrect	Det linjära flödet kan anges i cm/s	
+Incorrect	Van Deemter-ekvationen beskriver hur höjden av en teoretisk botten varierar då flödet ändras.	
+		
+Question		
+Category	Elektrokemi	
+Name	Fråga 351	
+Description	Elektrokemi	
+Text	<p align="left"><b>- Ag |AgCl (aAg<pp:latex>^+</pp:latex> = 0,050) || AgCl (aAg<pp:latex>^+</pp:latex> = x) Ag <pp:latex>^+</pp:latex><br/><br/>Enoll= 0,799 V<br/>ems = 0,180 V<br/><br/>Ange vilket/vilka av nedanstående påståenden som är riktiga:</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Incorrect	Cellen ovan är en elektrolytisk cell eftersom ems är positiv	
+Correct	Vid katoden sker reduktion	
+Correct	Aktiviteten för Ag (s) är 1	
+Correct	Informationen ovan är tillräcklig för att kunna beräkna x	
+Incorrect	Ett högt Enoll-värde betyder stark reducerande kraft	
+		
+Question		
+Category	Spektroskopi	
+Name	Fråga 339	
+Text	<p align="left"><b>Markera korrekta påståenden:</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Absorbansspektrum är en avsättning av absorbansen (A) som en funktion av våglängden (&lt;pp:latex&gt;\lambda&lt;/pp:latex&gt;).	
+Incorrect	Analytiskt användbara elektronövergångar är 
+<br>
+&lt;pp:latex&gt;\pi \rightarrow \pi^*&lt;/pp:latex&gt; och &lt;pp:latex&gt;n \rightarrow \sigma^*&lt;/pp:latex&gt;	
+Incorrect	Ströljus orsakar störst mätfel vid låga absorbanser.	
+Incorrect	Den molära absorbtiviteten är konstant för ett visst ämne och är oberoende av lösningsmedlet.	
+Incorrect	Energien av det ultravioletta ljuset är lägre än för infrarött ljus.	
+		
+Question		
+Category	Spektroskopi	
+Name	Fråga 332	
+Text	<p align="left">Fluorimetri är en effektiv spektroskopisk analysmetod för organiska ämnen med specifika egenskaper. Vilka är förutsättningarna för att ett ämne (molekyl) skall kunna bestämmas med hjälp av fluorimetri?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Steriskt stel, plan, innehålla aromatiska ringstrukturer eller konjugerade dubbelbindningar	
+Incorrect	Sterisk stel, plan	
+Incorrect	Sterisk stel, plan, innehålla aromatiska ringstrukturer, protolyt	
+Incorrect	Flexibel, plan, innehålla aromatiska ringstrukturer eller konjugerade dubbelbindningar	
+Incorrect	Flexibel, innehålla aromatiska ringstrukturer, protolyt	
+		
+Question		
+Category	Separation	
+Name	Fråga 3211	
+Text	<p align="left">Syran HA(pka 5,0) separeras i ett jonbyteskromatografiskt (IEC) system. Som mobilfas används en 50 mM fosfatbuffert pH 8,0. Vilket/vilka av nedanstående alternativ bör öka retentionen?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Sänkt jonstyrka i den mobila fasen.	
+Incorrect	Ökad jonstyrka i den mobila fasen.	
+Incorrect	Ökat pH i den mobila fasen.	
+Incorrect	Sänkt pH i den mobila fasen.	
+		
+Question		
+Category	Separation	
+Name	Fråga 3215	
+Text	<p align="left"><b>Vilken eller vilka är förutsättningarna för att ett ämne skall kunna analyseras med gaskromatografi (GC)?</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	termostabilt	
+Correct	flyktig	
+Incorrect	innehåller en protolytisk funktion	
+Incorrect	innehåller en kromofor	
+Incorrect	lättlöslig i vatten	
+Incorrect	kemisk reaktiv	
+		
+Question		
+Category	Test	
+Name	Testdugga:Ny fråga2	
+Description	Fråga 2	
+Text	<p align="left"><b>Vilken termin på detta program ges kursen?</b></p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	1	
+Incorrect	2	
+Incorrect	3	
+Incorrect	4	
+Incorrect	9	
+Incorrect	5	
+Incorrect	6	
+Incorrect	7	
+Incorrect	8	
+		
+Question		
+Category	Separation	
+Name	Fråga 3214	
+Text	<p align="left">I vilken vätskekromatografisk metod drivs flödet av kapillärkrafter och retentionen beskrivs med retentionsfaktorn (Rf)?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	TLC	
+Incorrect	SEC	
+Incorrect	LLC	
+Incorrect	GC	
+Incorrect	IEC	
+Incorrect	LSC	
+		
+Question		
+Category	Separation	
+Name	Fråga 323	
+Text	<p align="left">För att använda gaskromatografi som separationsmetod måste analyten uppfylla vissa kriterier. Vad måste analyter som injiceras i gaskromatografen vara för att analysen ska bli lyckad?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Flyktiga.	
+Correct	Termostabila.	
+Incorrect	Protolyserbara.	
+Incorrect	Stela och plana.	
+Incorrect	Stora.	
+		
+Question		
+Category	Separation	
+Name	Fråga 327	
+Text	<p align="left">Fyra olika proteiner skall separeras ifrån varandra. Vilken/vilka av nedanstående tekniker borde vara lämplig att använda?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Tunnskiktskromatografi.	
+Correct	Size Exclusion kromatografi.	
+Incorrect	Gaskromatografi	
+Incorrect	UV spektroskopi	
+Incorrect	Fluorescens	
+		
+Question		
+Category	Provupparbetning/Extraktion	
+Name	Fråga 315	
+Text	<p align="left">Vilken/vilka av nedanstående parametrar är fördelningsförhållandet (D) för en organisk syra är beroende av? </p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	syrans pKa	
+Correct	vattenfasens pH	
+Incorrect	syrans epsilon(molära absorbans vid vald våglängd)i den organiska fasen.	
+Incorrect	volymen vattenfas	
+Incorrect	volymen organisk fas	
+		
+Question		
+Category	Spektroskopi	
+Name	Fråga 338	
+Text	<p align="left"> Naproxen (nedan) skall haltbestämmas i ett biologiskt prov med hjälp av fluorimetri. Vilket/vilka av nedanstående påståenden är sanna?</p>
+<p align="left"><table border='0' cellpadding='0' cellspacing='0' width=1 align="left"><tr>
+<td align="left"><img src="/node.do?id=2606119" ppnodeid="2606119" alt="image" /></td>
+</tr>
+<tr><td height=2><img src="/nill.gif"></td></tr>
+<tr>
+<td class=imgtxt align=left><span class="formatting"><span class="dynamic-data">naproxen</span></span></td>
+</tr>
+</table>
+</p>
+<br clear=all><br>
+
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Fluorimetri är en känsligare detektionsteknik än UV-spektroskopi.	
+Incorrect	I fluorimetri studeras ett analysobjekts absorption av ljus i UV-VIS området.	
+Correct	Fluorimetri är en selektivare detektionsteknik än UV-spektroskopi.	
+Incorrect	Fluorimetrisk detektion kan inte användas för naproxen, eftersom det saknar de strukturelement som är viktiga för att ge fluorescens.	
+Correct	I fluorimetri studeras emitterat ljus från analysobjektet.	
+Correct	Ljuset som emitteras har en våglängd som är densamma eller längre än den våglängd som analyten absorberat.	
+		
+Question		
+Category	Provupparbetning/Extraktion	
+Name	Fråga 313	
+Text	<p align="left">Basen propranolol (pKa 9,5 för korresponderande syra) skall extraheras över kvantitativt till organisk fas. Vilket/vilka av nedanstående påståenden är felaktiga?</p>
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	Ett lägre D ger högre extraktionsgrad.	
+Incorrect	Ett pH över 12 bör väljas på vattenfasen.	
+Incorrect	Vid surt pH kan propranolol extraheras över till organisk fas som jonpar med en anjon.	
+Incorrect	Om Porg &gt;99%, så är extraktionen kvantitativ.	
+Incorrect	Fasvolymsförhållandet mellan organfas och vätskefas kan användas för att reglera extraktionsgraden.	
+		
+Question		
+Category	Spektroskopi	
+Name	Fråga 337	
+Text	<p align="left">Warfarin (nedan) skall studeras med UV-spektroskopi. Vilket/vilka av nedanstående påståenden är sanna?</p>
+<p align="left"><table border='0' cellpadding='0' cellspacing='0' width=1 align="left"><tr>
+<td align="left"><img src="/node.do?id=2606123" ppnodeid="2606123" /></td>
+</tr>
+<tr><td height=2><img src="/nill.gif"></td></tr>
+<tr>
+<td class=imgtxt align=left><span class="formatting"><span class="dynamic-data">warfarin</span></span></td>
+</tr>
+</table>
+</p>
+<br clear=all><br>
+
+	
+Max points	1.0	
+Type	Multiple choice	
+Max choices	0	
+Order	Random	
+Correct	I det ultravioletta området studeras elektroniska övergångar.	
+Correct	Det är framförallt  pi till pi*  och n till pi* övergångas som studeras.	
+Incorrect	I det ultravioletta området studeras rotationsövergångar.	
+Incorrect	Det är framförallt ? till ?* och n till ?* övergångar som studeras.	
+Incorrect	I det ultravioletta området studeras vibrationsövergångar.	
+Incorrect	UV-spektroskopi kan inte användas på warfarin, eftersom det saknar de strukturelement som är viktiga för ljusabsorbtion i UV-området.	
