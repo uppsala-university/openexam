@@ -520,6 +520,9 @@ class ManagerPage extends TeacherPage
                                 $quest->addLink(_("Add"),
                                         sprintf("contribute.php?exam=%d&amp;action=add", $data->getExamID()),
                                         _("Add a new question for this examination."));
+                                $quest->addLink(_("Import"),
+                                        sprintf("contribute.php?exam=%d&amp;action=import", $data->getExamID()),
+                                        _("Import questions from file on disk."));
                                 $quest->addLink(_("Remove all"),
                                         sprintf("contribute.php?exam=%d&amp;action=delete&amp;question=all", $data->getExamID()),
                                         _("Remove all questions from this examination."));

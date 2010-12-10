@@ -14,4 +14,9 @@ These other projects is used in this application:
 
   Download: http://www.rainforestnet.com/datetimepicker.htm
 
+* PHP-ExcelReader:
+
+  An PHP class for reading MS Excel files. Project page and download:
+  http://phpexcelreader.sourceforge.net/
+
 // Anders Lövgren, 2010-08-18

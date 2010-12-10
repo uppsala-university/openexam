@@ -238,6 +238,8 @@ class TeacherPage extends BasePage
                                         $links->questions->link->qadd->name = _("Add question");
                                         $links->questions->link->tadd->href = sprintf("contribute.php?exam=%d&action=add&what=topic", $this->param->exam);
                                         $links->questions->link->tadd->name = _("Add topic");
+                                        $links->questions->link->qimp->href = sprintf("contribute.php?exam=%d&action=import", $this->param->exam);
+                                        $links->questions->link->qimp->name = _("Import");
                                 }
                                 if ($this->manager->isContributor(phpCAS::getUser())) {
                                         $links->questions->link->qshow->href = sprintf("contribute.php?exam=%d", $this->param->exam);
