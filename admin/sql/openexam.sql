@@ -133,7 +133,7 @@ DROP TABLE IF EXISTS `exams`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `exams` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `descr` text,
   `starttime` datetime NOT NULL,
   `endtime` datetime NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE `exams` (
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `creator` char(8) NOT NULL,
   `decoded` enum('Y','N') NOT NULL DEFAULT 'N',
-  `orgunit` varchar(50) NOT NULL,
+  `orgunit` varchar(150) NOT NULL,
   `grades` varchar(200) NOT NULL,
   `testcase` enum('Y','N') NOT NULL DEFAULT 'N',
   `lockdown` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -213,7 +213,7 @@ CREATE TABLE `results` (
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
   CONSTRAINT `results_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,4 +288,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-12-08 17:28:39
+-- Dump completed on 2010-12-10  0:50:13
