@@ -190,11 +190,11 @@ class ImportPingPongExcel extends ImportBase
                 $sheet->cell = $this->data->sheets[0]['cells'];
 
                 if ($sheet->cell[1][1] != self::expect) {
-                        $message = sprintf(_("Expected header '%s' in cell (1,1)"), self::expect);
+                        $message = sprintf(_("Expected header '%s' at index (1,1)"), self::expect);
                         throw new ImportException($message);
                 }
                 if ($sheet->cell[2][2] != self::format) {
-                        $message = sprintf(_("Expected format '%s' in cell (2,2)"), self::format);
+                        $message = sprintf(_("Expected format '%s' at index (2,2)"), self::format);
                         throw new ImportException($message);
                 }
 
@@ -251,6 +251,102 @@ class ImportPingPongExcel extends ImportBase
         public function close()
         {
                 // unlink($this->file);
+        }
+
+}
+
+class ImportPingPongText extends ImportBase
+{
+        const format = "QI625";
+        const expect = "Exported from the questionbank in PING PONG";
+        const accept = "text/plain";
+        const delimiter = "\t";
+
+        private $stream;
+
+        public function __construct($name, $file, $mime, $size, $accept = null)
+        {
+                parent::__construct($name, $file, $mime, $size, self::accept);
+        }
+
+        public function open()
+        {
+                $this->stream = fopen($this->file, "r");
+        }
+
+        private function next()
+        {
+                if (!($str = fgets($this->stream))) {
+                        return null;
+                }
+                return explode(self::delimiter, $str);
+        }
+
+        public function read($exam, &$db)
+        {
+                if (($data = $this->next()) && $data[0] != self::expect) {
+                        $message = sprintf(_("Expected header '%s' at index (1,1)"), self::expect);
+                        throw new ImportException($message);
+                }
+
+                if (($data = $this->next()) && $data[1] != self::format) {
+                        $message = sprintf(_("Expected format '%s' at index (2,2)"), self::format);
+                        throw new ImportException($message);
+                }
+
+                $questions = array();
+                $question = null;
+                $category = null;
+
+                while ($data = $this->next()) {
+                        if (count($data) == 0) {
+                                continue;
+                        }
+                        if ($data[0] == "Question") {
+                                if (isset($question)) {
+                                        $questions[$category][] = $question;
+                                }
+                                $question = array("comment" => "", "score" => 1.0, "user" => $this->user);
+                        }
+                        if ($data[0] == "Category") {
+                                $category = $this->cleanup($data[1]);
+                        }
+                        if ($data[0] == "Name") {
+                                $question['name'] = $this->cleanup($data[1]);
+                        }
+                        if ($data[0] == "Description") {
+                                $question['comment'] = $this->cleanup($data[1]);
+                        }
+                        if ($data[0] == "Text") {
+                                $question['body'] = $this->cleanup($data[1]);
+                        }
+                        if ($data[0] == "Max points") {
+                                $question['score'] = $data[1];
+                        }
+                        if ($data[0] == "Type") {
+                                if ($data[1] == "Multiple choice") {
+                                        $question['type'] = "multiple";
+                                        $question['choice'] = array();
+                                } elseif ($data[1] == "Single choice") {
+                                        $question['type'] = "single";
+                                        $question['choice'] = array();
+                                }
+                        }
+                        if ($data[0] == "Correct") {
+                                $question['choice'][$this->cleanup($data[1])] = true;
+                        }
+                        if ($data[0] == "Incorrect") {
+                                $question['choice'][$this->cleanup($data[1])] = false;
+                        }
+                }
+
+                $inserter = new ImportInsert($exam, $db);
+                $inserter->insert($questions);
+        }
+
+        public function close()
+        {
+                fclose($this->stream);
         }
 
 }
