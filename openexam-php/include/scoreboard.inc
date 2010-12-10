@@ -561,7 +561,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 $students = $this->board->getStudents();
                 foreach ($students as $student) {
                         $array = array();
-                        $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
+                        $student->setStudentName($this->getCommonName($student->getStudentUser()));
                         $array[] = $student->getStudentName();
                         $array[] = $student->getStudentUser();
                         $array[] = $student->getStudentCode();
@@ -681,7 +681,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 foreach ($students as $student) {
                         $row = $table->addRow();
                         if ($this->show->name) {
-                                $obj = $row->addData(utf8_decode($this->getCommonName($student->getStudentUser())));
+                                $obj = $row->addData($this->getCommonName($student->getStudentUser()));
                                 $obj->setNoWrap();
                                 if (!$this->show->user && !$this->show->code) {
                                         $obj->setTitle(sprintf("%s: %s\n%s: %s",
@@ -855,17 +855,17 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 $header->name = sprintf("Q%d", ++$this->index);
                 $header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f\n%s: %s",
                                 _("Question"),
-                                utf8_decode($question->getQuestionName()),
-                                utf8_decode($question->getQuestionBody()),
+                                $question->getQuestionName(),
+                                $question->getQuestionBody(),
                                 _("Max score"),
                                 $question->getQuestionScore(),
                                 _("Publisher"),
-                                utf8_decode($this->getCommonName($question->getQuestionPublisher())));
+                                $this->getCommonName($question->getQuestionPublisher()));
                 if ($question->getQuestionStatus() == 'removed') {
                         if ($question->getQuestionComment() != null) {
                                 $header->desc .= sprintf("\n\n%s: %s",
                                                 _("This question has been removed"),
-                                                utf8_decode($question->getQuestionComment()));
+                                                $question->getQuestionComment());
                         } else {
                                 $header->desc .= sprintf("\n\n%s.",
                                                 _("This question has been removed"));

@@ -243,21 +243,21 @@ class Locale
                         (
                         "se" => array(
                                 "locale" => "sv_SE", // Swedish
-                                "charset" => "iso-8859-15",
+                                "charset" => "utf8",
                                 "lang" => _("Swedish")
                         ),
                         "gb" => array(
                                 "locale" => "en_GB", // English (GB)
-                                "charset" => "iso-8859-1",
+                                "charset" => "utf8",
                                 "lang" => _("English (GB)")
                         ),
                         "us" => array(
                                 "locale" => "en_US", // English (US)
-                                "charset" => "iso-8859-1",
+                                "charset" => "utf8",
                                 "lang" => _("English (US)")
                         ),
                         "c" => array(
-                                "locale" => "C", // Browser default
+                                "locale" => "C",     // Browser default
                                 "charset" => null,
                                 "lang" => _("Browser default")
                         ),

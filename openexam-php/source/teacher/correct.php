@@ -213,16 +213,16 @@ class CorrectionPage extends TeacherPage
                         $row->setClass("question");
                         $row->addData(sprintf("<u>%s: %s</u><br />%s",
                                         _("Question"),
-                                        utf8_decode($question->getQuestionName()),
-                                        utf8_decode(str_replace("\n", "<br/>", $question->getQuestionText()))));
+                                        $question->getQuestionName(),
+                                        str_replace("\n", "<br/>", $question->getQuestionText())));
                 } else {
                         $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
                         $row = $table->addRow();
                         $row->setClass("question");
-                        $row->addData(sprintf("<u>%s: %s</u><br />%s<br/>%s: %s",
+                        $row->addData(sprintf("<u>%s: %s</u><br />%s<br/><br/>%s: %s",
                                         _("Question"),
-                                        utf8_decode($question->getQuestionName()),
-                                        utf8_decode(str_replace("\n", "<br/>", $qchoice[0])),
+                                        $question->getQuestionName(),
+                                        str_replace("\n", "<br/>", $qchoice[0]),
                                         _("Correct answer"), implode(", ", array_keys($qchoice[1], true))));
                 }
 
@@ -238,12 +238,12 @@ class CorrectionPage extends TeacherPage
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         $row->addData(sprintf("<u>%s</u>:<br />%s",
                                         _("Answer"),
-                                        utf8_decode(str_replace("\n", "<br/>", htmlentities($answer->getAnswerText())))));
+                                        str_replace("\n", "<br/>", htmlentities($answer->getAnswerText()))));
                 } else {
                         $achoice = Exam::getQuestionChoice($answer->getAnswerText());
                         $row->addData(sprintf("<u>%s</u>:<br />%s",
                                         _("Answer"),
-                                        utf8_decode(str_replace("\n", "<br/>", implode(", ", $achoice[1])))));
+                                        str_replace("\n", "<br/>", implode(", ", $achoice[1]))));
                 }
                 if ($answer->hasResultID()) {
                         $form->addHidden(sprintf("result[%d]", $answer->getAnswerID()), $answer->getResultID());
@@ -288,7 +288,7 @@ class CorrectionPage extends TeacherPage
                 $row->setClass("comment");
                 $data = $row->addData(_("Comment"));
                 $textbox = $data->addTextBox(sprintf("comment[%d]", $answer->getAnswerID()),
-                                $answer->hasResultComment() ? utf8_decode($answer->getResultComment()) : "");
+                                $answer->hasResultComment() ? $answer->getResultComment() : "");
                 $textbox->setSize(95);
                 $textbox->setTitle(_("This optional field can be used to save an comment for this answer correction."));
         }
@@ -418,16 +418,16 @@ class CorrectionPage extends TeacherPage
                 $question = $exam->getQuestionData($this->param->question);
 
                 printf("<h3>" . _("Correct multipe answers for the question '%s'") . "</h3>\n",
-                        utf8_decode($question->getQuestionName()));
+                        $question->getQuestionName());
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         printf("<p><u>%s</u>:</p><p>%s</p>",
                                 _("Question"),
-                                utf8_decode(str_replace("\n", "<br/>", $question->getQuestionText())));
+                                str_replace("\n", "<br/>", $question->getQuestionText()));
                 } else {
                         $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
                         printf("<p><u>%s</u>:</p><p>%s</p><p>%s: %s<br />%s: %s</p>",
                                 _("Question"),
-                                utf8_decode(str_replace("\n", "<br/>", $qchoice[0])),
+                                str_replace("\n", "<br/>", $qchoice[0]),
                                 _("Choices"), implode(", ", array_keys($qchoice[1])),
                                 _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
                 }
@@ -513,7 +513,7 @@ class CorrectionPage extends TeacherPage
                                 foreach ($group['data'] as $data) {
                                         $name = $data[0];
                                         $state = $data[1];
-                                        $child = $node->addChild(utf8_decode($name));
+                                        $child = $node->addChild($name);
                                         if ($state->isCorrectable()) {
                                                 $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
                                                         _("Click on this link to open this examination to correct answers."));
@@ -542,7 +542,7 @@ class CorrectionPage extends TeacherPage
                         printf("<p>" .
                                 _("This table shows all answers from students to questions for the examination '%s'. ") .
                                 "</p>\n",
-                                utf8_decode($data->getExamName()));
+                                $data->getExamName());
                         printf("<p>" .
                                 _("Correct answers by student (rows), by question (column) or individual (by index). ") .
                                 _("You can only correct answers for those questions published by yourself.") .
@@ -552,7 +552,7 @@ class CorrectionPage extends TeacherPage
                         printf("<p>" .
                                 _("This table shows all answers from students to questions for the examination '%s'. ") .
                                 "</p>\n",
-                                utf8_decode($data->getExamName()));
+                                $data->getExamName());
                         printf("<p>" .
                                 _("The examination has already been decoded, so it's no longer possible to modify any scores or comments.") .
                                 "</p>\n");

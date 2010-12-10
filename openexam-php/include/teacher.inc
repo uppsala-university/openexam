@@ -496,7 +496,7 @@ class TeacherPage extends BasePage
         {
                 $name = $this->getCommonName($user, $lookup);
                 if ($name != $user) {
-                        return sprintf("%s (%s)", utf8_decode($name), $user);
+                        return sprintf("%s (%s)", $name, $user);
                 } else {
                         return $user;
                 }
@@ -544,14 +544,14 @@ class TeacherPage extends BasePage
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);
                         if ($entry->first()->hasMail()) {
-                                return new MailRecepient(utf8_decode($entry->first()->getCN()->first()),
+                                return new MailRecepient($entry->first()->getCN()->first(),
                                         $entry->first()->getMail()->first());
                         }
                 }
                 if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
                         $entry = $this->ldap->searchPrincipalName($user);
                         if ($entry->first()->hasMail()) {
-                                return new MailRecepient(utf8_decode($entry->first()->getCN()->first()),
+                                return new MailRecepient($entry->first()->getCN()->first(),
                                         $entry->first()->getMail()->first());
                         }
                 }

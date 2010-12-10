@@ -116,18 +116,11 @@ class ImportInsert
                         $tid = $this->db->lastInsertID();
                         foreach ($questions as $question) {
                                 //
-                                // json_encode() is trashing data by converting UTF8 to \uxxx encoding. These
-                                // gets stripped when inserting in the database, so we have to encode the
-                                // data by ourself.
+                                // Use PHP builtin serializer instead of JSON as json_encode() convert
+                                // strings to unicode, not utf8.
                                 //
                                 if ($question['type'] == 'multiple' || $question == 'single') {
-                                        $pairs = array();
-                                        foreach ($question['choice'] as $key => $val) {
-                                                $pairs[] = sprintf("\"%s\":%s", $key, $val ? "true" : "false");
-                                        }
-                                        $question['quest'] = sprintf("%s\n\n{%s}",
-                                                        $question['body'],
-                                                        implode(",", $pairs));
+                                        $question['quest'] = sprintf("%s\n\n%s", $question['body'], serialize($question['choice']));
                                 } else {
                                         $question['quest'] = $question['body'];
                                 }

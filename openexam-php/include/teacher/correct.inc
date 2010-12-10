@@ -128,7 +128,7 @@ class Correct
                                         AND a.question_id = q.id
                                         AND q.exam_id = %d",
                                 $student, $this->exam);
-                if(!$all) {
+                if (!$all) {
                         $sql .= " AND a.answered = 'Y'";
                 }
                 $sql .= " ORDER BY a.question_id";
@@ -148,14 +148,20 @@ class Correct
                         if (isset($results[$answer])) {
                                 $sql = sprintf("UPDATE results SET answer_id = %d, score = %f, comment = '%s'
                                                 WHERE id = %d",
-                                                $answer, $scores[$answer], utf8_encode($comments[$answer]), $results[$answer]);
+                                                $answer,
+                                                $scores[$answer],
+                                                $comments[$answer],
+                                                $results[$answer]);
                         } else {
                                 if ($scores[$answer] == "") {
                                         continue;   // Don't save uncorrected answers
                                 }
 
-                                $sql = sprintf("INSERT INTO results(answer_id, score, comment) VALUES(%d, %f, '%s')",
-                                                $answer, $scores[$answer], utf8_encode($comments[$answer]));
+                                $sql = sprintf("INSERT INTO results(answer_id, score, comment)
+                                                VALUES(%d, %f, '%s')",
+                                                $answer,
+                                                $scores[$answer],
+                                                $comments[$answer]);
                         }
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {
