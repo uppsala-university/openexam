@@ -217,7 +217,7 @@ class ManagerPage extends TeacherPage
                                 foreach ($group['data'] as $data) {
                                         $name = $data[0];
                                         $state = $data[1];
-                                        $child = $node->addChild(utf8_decode($name));
+                                        $child = $node->addChild($name);
                                         $child->setLink(sprintf("?exam=%d&amp;action=show", $state->getInfo()->getExamID()));
                                         if ($this->roles->getManagerRoles() > 0) {
                                                 $child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $state->getInfo()->getExamID()),
@@ -268,16 +268,16 @@ class ManagerPage extends TeacherPage
                 }
 
                 $form->addSectionHeader(_("Common Properties"));
-                $input = $form->addTextBox("unit", utf8_decode($data->getExamOrgUnit()));
+                $input = $form->addTextBox("unit", $data->getExamOrgUnit());
                 $input->setLabel(_("Organization"));
                 $input->setSize(50);
-                $input = $form->addTextBox("name", utf8_decode($data->getExamName()));
+                $input = $form->addTextBox("name", $data->getExamName());
                 $input->setLabel(_("Name"));
                 $input->setSize(50);
                 if($action == "add") {
                         $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
                 }
-                $input = $form->addTextArea("desc", utf8_decode($data->getExamDescription()));
+                $input = $form->addTextArea("desc", $data->getExamDescription());
                 $input->setLabel(_("Description"));
                 $input->setClass("description");
                 if($action == "add") {
@@ -301,7 +301,7 @@ class ManagerPage extends TeacherPage
                 }
 
                 $form->addSectionHeader(_("Graduation"));
-                $input = $form->addTextArea("grade", utf8_decode($grades->getText()));
+                $input = $form->addTextArea("grade", $grades->getText());
                 $input->setClass("grade");
                 $input->setLabel();
                 $input->setTitle(_("Input name:value pairs on separate lines defining the graduation levels on this examination. The first line must be on form name:0, denoting the failed grade."));
@@ -324,7 +324,8 @@ class ManagerPage extends TeacherPage
                                         "examorgunit" => $this->getOrganisationUnit(phpCAS::getUser()),
                                         "examname" => _("Name"),
                                         "examdescription" => _("Description"),
-                                        "examgrades" => "{\"U\":0,\"G\":10,\"VG\":18}",
+                                        // "examgrades" => "{\"U\":0,\"G\":10,\"VG\":18}",
+                                        "examgrades" => "a:3:{s:1:\"U\";s:1:\"0\";s:1:\"G\";s:2:\"10\";s:2:\"VG\";s:2:\"18\";}",
                                         "examstarttime" => DATETIME_NONE,
                                         "examendtime" => DATETIME_NONE)
                         );
@@ -336,10 +337,10 @@ class ManagerPage extends TeacherPage
 
                         $this->manager = new Manager(0);
                         $this->manager->setData(
-                                utf8_encode($_REQUEST['unit']),
-                                utf8_encode($_REQUEST['name']),
-                                utf8_encode($_REQUEST['desc']),
-                                utf8_encode($grades->encode()),
+                                $_REQUEST['unit'],
+                                $_REQUEST['name'],
+                                $_REQUEST['desc'],
+                                $grades->encode(),
                                 strtotime($_REQUEST['start']),
                                 strtotime($_REQUEST['end'])
                         );
@@ -375,10 +376,10 @@ class ManagerPage extends TeacherPage
                         }
 
                         $this->manager->setData(
-                                utf8_encode($_REQUEST['unit']),
-                                utf8_encode($_REQUEST['name']),
-                                utf8_encode($_REQUEST['desc']),
-                                utf8_encode($grades->encode()),
+                                $_REQUEST['unit'],
+                                $_REQUEST['name'],
+                                $_REQUEST['desc'],
+                                $grades->encode(),
                                 strtotime($_REQUEST['start']),
                                 strtotime($_REQUEST['end'])
                         );
@@ -445,7 +446,7 @@ class ManagerPage extends TeacherPage
                 //
                 // Build the root node:
                 //
-                $tree = new TreeBuilder(utf8_decode($data->getExamName()));
+                $tree = new TreeBuilder($data->getExamName());
                 $root = $tree->getRoot();
                 if ($this->roles->getManagerRoles() > 0) {
                         $root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()), _("Create a new examination by using this examination as a template."));
@@ -469,7 +470,7 @@ class ManagerPage extends TeacherPage
                                                 $contributor->getExamID(),
                                                 $contributor->getContributorID()),
                                         sprintf(_("Remove %s as a question contributor for this examination."),
-                                                utf8_decode($this->getCommonName($contributor->getContributorUser()))));
+                                                $this->getCommonName($contributor->getContributorUser())));
                         }
                 }
 
@@ -490,7 +491,7 @@ class ManagerPage extends TeacherPage
                                                 $examinator->getExamID(),
                                                 $examinator->getExaminatorID()),
                                         sprintf(_("Remove %s as an examinator for this examination."),
-                                                utf8_decode($this->getCommonName($examinator->getExaminatorUser()))));
+                                                $this->getCommonName($examinator->getExaminatorUser())));
                         }
                 }
 
@@ -508,7 +509,7 @@ class ManagerPage extends TeacherPage
                                         $decoder->getExamID(),
                                         $decoder->getDecoderID()),
                                 sprintf(_("Remove %s as a decoder for this examination."),
-                                        utf8_decode($this->getCommonName($decoder->getDecoderUser()))));
+                                        $this->getCommonName($decoder->getDecoderUser())));
                 }
 
                 //
@@ -536,8 +537,8 @@ class ManagerPage extends TeacherPage
                 $questions = $this->manager->getQuestions('active');
                 foreach ($questions as $question) {
                         $subobj = $child->addChild(sprintf("%s %s...",
-                                                utf8_decode($question->getQuestionName()),
-                                                utf8_decode(substr(strip_tags($question->getQuestionText()), 0, 55))));
+                                                $question->getQuestionName(),
+                                                substr(strip_tags($question->getQuestionText()), 0, 55)));
                         if ($this->manager->isContributor(phpCAS::getUser())) {
                                 if (!$info->isDecoded()) {
                                         $subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
@@ -561,8 +562,8 @@ class ManagerPage extends TeacherPage
                 $questions = $this->manager->getQuestions('removed');
                 foreach ($questions as $question) {
                         $subobj = $child->addChild(sprintf("%s %s...",
-                                                utf8_decode($question->getQuestionName()),
-                                                utf8_decode(substr($question->getQuestionText(), 0, 60))));
+                                                $question->getQuestionName(),
+                                                substr($question->getQuestionText(), 0, 60)));
                         if ($this->manager->isContributor(phpCAS::getUser())) {
                                 $subobj->addLink(_("Restore"), sprintf("contribute.php?exam=%d&amp;action=restore&amp;question=%d",
                                                 $question->getExamID(),
@@ -604,7 +605,7 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         $data = $this->manager->getData();
                         $text = sprintf(_("Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."),
-                                        utf8_decode($data->getExamName()));
+                                        $data->getExamName());
                         return self::addExamRole("contributor", $text);
                 }
 
@@ -623,7 +624,7 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         $data = $this->manager->getData();
                         $text = sprintf(_("Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."),
-                                        utf8_decode($data->getExamName()));
+                                        $data->getExamName());
                         return self::addExamRole("examinator", $text);
                 }
 
@@ -642,7 +643,7 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         $data = $this->manager->getData();
                         $text = sprintf(_("Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."),
-                                        utf8_decode($data->getExamName()));
+                                        $data->getExamName());
                         return self::addExamRole("decoder", $text);
                 }
 

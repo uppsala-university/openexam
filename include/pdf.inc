@@ -296,7 +296,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         {
                 fprintf($stream, "<h1>%s</h1>\n", _("Description"));
                 fprintf($stream, "<p>%s</p>\n",
-                        str_replace("\n", "<br/>", utf8_decode($this->exam->getExamDescription())));
+                        str_replace("\n", "<br/>", $this->exam->getExamDescription()));
         }
 
         //
@@ -332,7 +332,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         _("Question"), _("Score"), _("Max score"), _("Percent"), _("Notice"));
                 $questions = $this->manager->getQuestions(null, $this->student);
                 foreach ($questions as $question) {
-                        fprintf($stream, "<tr align=\"right\"><td>%s</td><td>&nbsp;</td>", utf8_decode($question->getQuestionName()));
+                        fprintf($stream, "<tr align=\"right\"><td>%s</td><td>&nbsp;</td>", $question->getQuestionName());
                         $data = $this->board->getData($this->student, $question->getQuestionID());
                         if ($question->getQuestionStatus() == 'active') {
                                 if ($data->getAnswerExist() == 'Y') {
@@ -366,7 +366,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         private function printQuestionAnswer($stream, $question, $answer)
         {
                 fprintf($stream, "<!-- NEED %d -->\n<br/>\n", PDF_QUESTION_MIN_LENGTH);
-                fprintf($stream, "<h2>%s: %s</h2>\n", _("Question"), utf8_decode($question->getQuestionName()));
+                fprintf($stream, "<h2>%s: %s</h2>\n", _("Question"), $question->getQuestionName());
 
                 //
                 // Output tags for image if question has one:
@@ -380,15 +380,15 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 // section different depending on the question type.
                 //
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-                        fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", utf8_decode($question->getQuestionText())));
+                        fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", $question->getQuestionText()));
                 } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
                         $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
                         $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
-                        fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", utf8_decode($qchoice[0])));
+                        fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", $qchoice[0]));
 
                         fprintf($stream, "<ol>\n");
                         foreach ($qchoice[1] as $choice => $correct) {
-                                fprintf($stream, "<li>%s</li>\n", utf8_decode($choice));
+                                fprintf($stream, "<li>%s</li>\n", $choice);
                         }
                         fprintf($stream, "</ol>\n");
 
@@ -400,7 +400,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         if ($question->getQuestionComment() != null) {
                                 fprintf($stream, "<p><b>%s</b>: %s</p>\n",
                                         _("Teachers reason for removal"),
-                                        utf8_decode($question->getQuestionComment()));
+                                        $question->getQuestionComment());
                         } else {
                                 fprintf($stream, "<p><b>%s</b></p>\n", _("This question was removed without an explanation from the teacher."));
                         }
@@ -412,7 +412,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 if (isset($answer)) {
                         fprintf($stream, "<h3>%s</h3>\n", _("Answer"));
                         if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-                                $text = str_replace("\n", "<br/>", htmlentities(utf8_decode($answer->getAnswerText())));
+                                $text = str_replace("\n", "<br/>", htmlentities($answer->getAnswerText()));
                                 fprintf($stream, "<p>%s</p>\n", $text);
                         } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
                                 $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
@@ -420,10 +420,10 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                                 fprintf($stream, "<p>%s</p>\n", implode(", ", $achoice[1]));
                         }
                         if ($answer->hasAnswerComment()) {
-                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Your comments"), utf8_decode($answer->getAnswerComment()));
+                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Your comments"), $answer->getAnswerComment());
                         }
                         if ($answer->hasResultComment()) {
-                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Teacher comments"), utf8_decode($answer->getResultComment()));
+                                fprintf($stream, "<u>%s</u>: %s<br/>\n", _("Teacher comments"), $answer->getResultComment());
                         }
                         fprintf($stream, "<p>[%s: %.01f]</p>\n", _("Score"), $answer->getResultScore());
                 }
@@ -506,7 +506,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         _("Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>") .
                         "</blockquote></p>\n",
                         $user->first()->getMail()->first(),
-                        utf8_decode($user->first()->getCN()->first()));
+                        $user->first()->getCN()->first());
         }
 
         //
@@ -545,7 +545,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                                 $user = $this->ldap->searchPrincipalName($uuid);
                                 fprintf($stream, "<li><a href=\"mailto:%s\">%s</a><br/><blockquote>%s: %s</blockquote></li>\n",
                                         $user->first()->getMail(),
-                                        utf8_decode($user->first()->getCN()->first()),
+                                        $user->first()->getCN()->first(),
                                         _("Corrected questions"), implode(", ", $qlist));
                         }
                         fprintf($stream, "</ul>\n");
@@ -804,7 +804,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         $user = $this->ldap->searchPrincipalName($data->getStudentUser());
                 }
                 if ($user->first()->hasCN()) {
-                        $name = utf8_decode($user->first()->getCN()->first());
+                        $name = $user->first()->getCN()->first();
                 } else {
                         $name = "";
                 }
