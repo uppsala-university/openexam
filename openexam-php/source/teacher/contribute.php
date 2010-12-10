@@ -60,6 +60,7 @@ include "include/ldap.inc";
 // Business logic:
 // 
 include "include/exam.inc";
+include "include/import.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/contribute.inc";
@@ -73,14 +74,14 @@ class ContributePage extends TeacherPage
 
         private $params = array(
                 "exam" => "/^\d+$/",
-                "action" => "/^(add|edit|test|delete|remove|restore)$/",
+                "action" => "/^(add|edit|test|delete|remove|restore|import)$/",
                 "question" => "/^(\d+|all|active|removed|own)$/",
                 "comment" => "/.*/",
                 "mode" => "/^(save)$/",
                 "score" => "/^\d+(\.\d)*$/",
                 "name" => "/^.*$/",
                 "quest" => "/.*/",
-                "type" => "/^(freetext|single|multiple)$/",
+                "type" => "/^(freetext|single|multiple|pp|oe)$/",
                 "user" => "/^[0-9a-zA-Z]{1,10}$/",
                 "status" => "/^(active|removed)$/",
                 "video" => "/^(.*:\/\/.*|)$/",
@@ -169,6 +170,13 @@ class ContributePage extends TeacherPage
                                         } else {
                                                 self::assert('question');
                                                 self::formRemoveQuestion();
+                                        }
+                                } elseif ($_REQUEST['action'] == "import") {
+                                        if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
+                                                self::assert('type');
+                                                self::saveImportQuestions();
+                                        } else {
+                                                self::formImportQuestions();
                                         }
                                 } elseif ($_REQUEST['action'] == "restore") {
                                         self::assert('question');
@@ -300,6 +308,29 @@ class ContributePage extends TeacherPage
                 $contrib->restoreQuestion($this->param->question, $this->param->comment);
 
                 header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
+        }
+
+        //
+        // Import questions from uploaded file.
+        //
+        private function saveImportQuestions()
+        {
+                try {
+                        $importer = FileImport::getReader(
+                                        $this->param->type,
+                                        $_FILES['file']['name'],
+                                        $_FILES['file']['tmp_name'],
+                                        $_FILES['file']['type'],
+                                        $_FILES['file']['size']
+                        );
+                        $importer->open();
+                        $importer->read($this->param->exam, Database::getConnection());
+                        $importer->close();
+                } catch (ImportException $exception) {
+                        ErrorPage::show(_("Failed Import Questions"), $exception->getMessage());
+                        exit(1);
+                }
+                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
         }
 
         //
@@ -487,6 +518,37 @@ class ContributePage extends TeacherPage
                 $input = $form->addButton(BUTTON_SUBMIT, _("Submit"));
                 $input->setLabel();
                 $input = $form->addButton(BUTTON_RESET, _("Reset"));
+                $form->output();
+        }
+
+        //
+        // Show form for importing questions from file.
+        //
+        private function formImportQuestions()
+        {
+                printf("<h3>" . _("Import Questions") . "</h3>\n");
+                printf("<p>" .
+                        _("Browse your local disk to select an file containing questions to import. ") .
+                        _("Currently, this is the list of question banks can be imported: ") .
+                        "</p>\n");
+                printf("<ul>\n");
+                printf("<li>" . ("Ping-pong: MS Excel and Tab-separated format.") . "</li>\n");
+                printf("<li>" . ("OpenExam:  Questions exported from this system.") . "</li>\n");
+                printf("</ul>\n");
+
+                $form = new Form("contribute.php", "POST");
+                $form->setEncodingType("multipart/form-data");
+                $form->addHidden("exam", $this->param->exam);
+                $form->addHidden("action", "import");
+                $form->addHidden("mode", "save");
+                $form->addHidden("MAX_FILE_SIZE", 500000);
+                $input = $form->addFileInput("file");
+                $input->setLabel(_("Filename"));
+                $input = $form->addSubmitButton(_("Import"));
+                $input = $form->addComboBox("type");
+                $input->addOption("pp", _("Ping-Pong"));
+                $input->addOption("oe", _("OpenExam"));
+                $input->setLabel(_("Type"));
                 $form->output();
         }
 
