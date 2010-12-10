@@ -19,6 +19,11 @@
 // 5 sec for 30 students). For a large axamination, we might hit the script execution
 // timeout.
 // 
+//
+// Version 1.8.27 of HTMLDOC do not support UTF-8. We must explicit convert
+// from UTF-8 from database and LDAP. This causes some other problems, most
+// notable is problem related to using gettext.
+//
 
 if (!defined('PDF_ENGINE')) {
         define('PDF_ENGINE', 'htmldoc');
@@ -61,6 +66,28 @@ if (!defined('PDF_QUESTION_MIN_LENGTH')) {
 interface InputGenerator
 {
         public function write($stream);
+}
+
+// 
+// Encode the output stream from UTF-8 to ISO-8859-1. This class hooks into
+// the stream processing when genrating the HTML for HTMLDOC and converts
+// the character encoding from UTF-8 to ISO-8859-1.
+//
+class ResultStreamEncoder extends php_user_filter
+{
+        const icse = "UTF-8";
+        const ocse = "ISO-8859-1";
+
+        function filter($in, $out, &$consumed, $closing)
+        {
+                while ($bucket = stream_bucket_make_writeable($in)) {
+                        $bucket->data = iconv(self::icse, self::ocse, $bucket->data);
+                        $consumed += $bucket->datalen;
+                        stream_bucket_append($out, $bucket);
+                }
+                return PSFS_PASS_ON;
+        }
+
 }
 
 class HtmlDocPDF
@@ -211,6 +238,8 @@ class HtmlDocPDF
 // 
 class ResultPDF extends HtmlDocPDF implements InputGenerator
 {
+        const filter_name = "result_stream_encoder";
+        const filter_class = "ResultStreamEncoder";
 
         private $manager;
         private $student;   // Current student ID
@@ -230,6 +259,8 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->board = new ScoreBoard($this->exam->getExamID());
                 $this->grade = new ExamGrades($this->exam->getExamGrades());
 
+                stream_filter_register(self::filter_name, self::filter_class);
+
                 parent::__construct($this->exam->getExamName(),
                                 $this->exam->getExamOrgUnit());
         }
@@ -247,10 +278,12 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         {
                 $stream = fopen($this->frontpage, "w");
                 if ($stream) {
+                        $filter = stream_filter_append($stream, self::filter_name);
+                        
                         fprintf($stream, "<html>\n");
                         fprintf($stream, "<body>\n");
-                        fprintf($stream, "<!-- MEDIA LEFT %s  -->\n", PDF_FRONT_PAGE_MARGIN);
-                        fprintf($stream, "<!-- MEDIA RIGHT %s -->\n", PDF_FRONT_PAGE_MARGIN);
+                        fprintf($stream, "<!--MEDIA LEFT %s-->\n", PDF_FRONT_PAGE_MARGIN);
+                        fprintf($stream, "<!--MEDIA RIGHT %s-->\n", PDF_FRONT_PAGE_MARGIN);
                         fprintf($stream, "<br/><br/>\n");
                         fprintf($stream, "<center>\n");
                         fprintf($stream, "<img src=\"%s\" />\n", PDF_LOGOTYPE);
@@ -266,6 +299,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         fprintf($stream, "</body>\n");
                         fprintf($stream, "</html>\n");
 
+                        stream_filter_remove($filter);
                         fclose($stream);
                 }
         }
@@ -456,9 +490,11 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         if ($question->getQuestionStatus() == 'removed') {
                                 $qadata['r'][] = array($question, $answered ? $answer : null);
                         } elseif ($answered) {
+
+
                                 $qadata['a'][] = array($question, $answer);
                         } else {
-                                $qadata['u'][] = array($question, null);
+                                $qadata ['u'][] = array($question, null);
                         }
                 }
 
@@ -482,6 +518,8 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 }
 
                 if (count($qadata['r']) > 0) {
+
+
                         fprintf($stream, "<h1>%s</h1>\n", _("Removed Questions"));
                         fprintf($stream, "<p>" .
                                 _("These questions has been removed from this examination. ") .
@@ -575,9 +613,11 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                                 $grades['grade'][$class]++;   // One more with this grade
                         }
                         if (!isset($grades['score'][$value])) {
+
+
                                 $grades['score'][$value] = 1;
                         } else {
-                                $grades['score'][$value]++;
+                                $grades ['score'] [$value]++;
                         }
                         if (!isset($grades['range'][$range])) {
                                 $grades['range'][$range] = 1;
@@ -776,6 +816,8 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         //
         public function write($stream)
         {
+                $filter = stream_filter_append($stream, self::filter_name);
+
                 fprintf($stream, "<html>\n<head><title>%s</title></head>\n<body>\n", $this->title);
                 $this->printMetaData($stream);
                 $this->printSectionDescription($stream);
@@ -787,6 +829,8 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->printSectionStatistics($stream);
                 $this->printSectionReference($stream);
                 fprintf($stream, "</body></html>\n");
+
+                stream_filter_remove($filter);
         }
 
         //
