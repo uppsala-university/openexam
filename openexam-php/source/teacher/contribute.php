@@ -75,7 +75,7 @@ class ContributePage extends TeacherPage
         private $params = array(
                 "exam" => "/^\d+$/",
                 "action" => "/^(add|edit|test|delete|remove|restore|import)$/",
-                "question" => "/^(\d+|all|active|removed|own)$/",
+                "question" => "/^(\d+|all|active|removed|compact|own)$/",
                 "comment" => "/.*/",
                 "mode" => "/^(save)$/",
                 "score" => "/^\d+(\.\d)*$/",
@@ -709,12 +709,13 @@ class ContributePage extends TeacherPage
         {
                 $data = $this->manager->getData();
                 $info = $this->manager->getInfo();
-                $show = isset($this->param->question) ? $this->param->question : "own";
+                $show = isset($this->param->question) ? $this->param->question : "compact";
 
                 $mode = array(
                         "all" => _("All"),
                         "active" => _("Active"),
                         "removed" => _("Removed"),
+                        "compact" => _("Compact"),
                         "own" => _("Own")
                 );
                 $disp = array();
@@ -800,19 +801,21 @@ class ContributePage extends TeacherPage
                                                         $question->getQuestionID()),
                                                 _("Preview this question"), array("target" => "_blank"));
                                 }
-                                $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
-                                $child->addChild(sprintf("%s: %s", _("Publisher"), $this->getFormatName($question->getQuestionPublisher())));
-                                $child->addChild(sprintf("%s: %s", _("Video"), $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No")));
-                                $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
-                                $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
-                                $child->addChild(sprintf("%s: %s", _("Type"), $question->getQuestionType()));
-                                if ($question->getQuestionStatus() == "removed") {
-                                        $child->addChild(sprintf("%s: %s", _("Status"), $question->getQuestionStatus()));
-                                        $child->addChild(sprintf("%s: %s", _("Comment"), utf8_decode($question->getQuestionComment())));
+                                if ($show != "compact") {
+                                        $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
+                                        $child->addChild(sprintf("%s: %s", _("Publisher"), $this->getFormatName($question->getQuestionPublisher())));
+                                        $child->addChild(sprintf("%s: %s", _("Video"), $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No")));
+                                        $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
+                                        $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
+                                        $child->addChild(sprintf("%s: %s", _("Type"), $question->getQuestionType()));
+                                        if ($question->getQuestionStatus() == "removed") {
+                                                $child->addChild(sprintf("%s: %s", _("Status"), $question->getQuestionStatus()));
+                                                $child->addChild(sprintf("%s: %s", _("Comment"), utf8_decode($question->getQuestionComment())));
+                                        }
+                                        $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
+                                        $subobj->addText(sprintf("<div class=\"examquest\">%s</div>",
+                                                        utf8_decode(str_replace("\n", "<br>", $question->getQuestionText()))));
                                 }
-                                $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
-                                $subobj->addText(sprintf("<div class=\"examquest\">%s</div>",
-                                                utf8_decode(str_replace("\n", "<br>", $question->getQuestionText()))));
                         }
                 }
                 $tree->output();
