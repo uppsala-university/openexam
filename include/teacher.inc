@@ -146,6 +146,14 @@ class TeacherPage extends BasePage
                 }
         }
 
+        private function useDirectoryService()
+        {
+                if (!isset($this->ldap)) {
+                        $this->ldap = LDAPSearch::factory();
+                        $this->ldap->setAttributeFilter(array("cn", "mail", "o", "department"));
+                }
+        }
+
         //
         // An helper function for printing a sub menu.
         //
@@ -462,10 +470,7 @@ class TeacherPage extends BasePage
         //
         protected function getCommonName($user, $lookup = LDAP_LOOKUP_BOTH)
         {
-                if (!isset($this->ldap)) {
-                        $this->ldap = LDAPSearch::factory();
-                        $this->ldap->setAttributeFilter(array("cn", "mail"));
-                }
+                $this->useDirectoryService();
 
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);
@@ -496,14 +501,43 @@ class TeacherPage extends BasePage
         }
 
         //
+        // Return organisation unit from LDAP. This function returns a string
+        // formatted as "organisation, department".
+        //
+        protected function getOrganisationUnit($user, $lookup = LDAP_LOOKUP_BOTH)
+        {
+                $organisation = _("Organisation");
+                $department = _("Department");
+
+                $this->useDirectoryService();
+
+                if ($lookup & LDAP_LOOKUP_UID) {
+                        $entry = $this->ldap->searchUID($user);
+                        if ($entry->first()->hasO()) {
+                                $organisation = $entry->first()->getO()->first();
+                        }
+                        if ($entry->first()->hasDepartment()) {
+                                $department = $entry->first()->getDepartment()->first();
+                        }
+                }
+                if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
+                        $entry = $this->ldap->searchPrincipalName($user);
+                        if ($entry->first()->hasO()) {
+                                $organisation = $entry->first()->getO()->first();
+                        }
+                        if ($entry->first()->hasDepartment()) {
+                                $department = $entry->first()->getDepartment()->first();
+                        }
+                }
+                return sprintf("%s, %s", $organisation, $department);
+        }
+
+        //
         // Get mail address object (MailRecepient).
         //
         protected function getMailRecepient($user, $lookup = LDAP_LOOKUP_BOTH)
         {
-                if (!isset($this->ldap)) {
-                        $this->ldap = LDAPSearch::factory();
-                        $this->ldap->setAttributeFilter(array("cn", "mail"));
-                }
+                $this->useDirectoryService();
 
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);

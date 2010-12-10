@@ -315,9 +315,9 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         printf("<p>" . _("Define the common properties of the exam. Click on the 'Submit' button to create this exam.") . "</p>\n");
                         $data = new DataRecord(array(
-                                        "examorgunit" => "Organization Unit",
-                                        "examname" => "Name",
-                                        "examdescription" => "Description",
+                                        "examorgunit" => $this->getOrganisationUnit(phpCAS::getUser()),
+                                        "examname" => _("Name"),
+                                        "examdescription" => _("Description"),
                                         "examgrades" => "{\"U\":0,\"G\":10,\"VG\":18}",
                                         "examstarttime" => DATETIME_NONE,
                                         "examendtime" => DATETIME_NONE)
