@@ -2,7 +2,18 @@ Version 1.5.4 (2010-mm-dd):
 
         * Questions in the exam can now be answered in a 'save' and 'save and
 	  move next' manner.
-	
+	  
+	* Implemented topics for examinations. This allowes us to create a 
+	  set of questions for each student from a bank of questions. 
+	  
+	  Each topic has an number associated telling how many questions to 
+	  select. If its zero, then all questions are used from that
+	  perticular topic.
+	  
+	* Implemented import of questions. Both Ping-Pong and OpenExam
+	  will be supported. MS Excel, plain text and XML is the supported 
+	  formats.
+	  	
 Version 1.5.3 (2010-08-25):
 
 	* The session length can now be extended (see conf/config.inc) and
