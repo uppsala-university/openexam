@@ -243,17 +243,17 @@ class Locale
                         (
                         "se" => array(
                                 "locale" => "sv_SE", // Swedish
-                                "charset" => "utf8",
+                                "charset" => "utf-8",
                                 "lang" => _("Swedish")
                         ),
                         "gb" => array(
                                 "locale" => "en_GB", // English (GB)
-                                "charset" => "utf8",
+                                "charset" => "utf-8",
                                 "lang" => _("English (GB)")
                         ),
                         "us" => array(
                                 "locale" => "en_US", // English (US)
-                                "charset" => "utf8",
+                                "charset" => "utf-8",
                                 "lang" => _("English (US)")
                         ),
                         "c" => array(
