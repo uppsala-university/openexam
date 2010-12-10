@@ -232,7 +232,7 @@ class ResultApp
         {
                 $exams = Manager::getExams($this->user);
                 foreach ($exams as $exam) {
-                        printf("[%d]\t%s\n", $exam->getExamID(), utf8_decode($exam->getExamName()));
+                        printf("[%d]\t%s\n", $exam->getExamID(), $exam->getExamName());
                         if ($this->verbose) {
                                 printf("\tStart:   %s\n", $exam->getExamStartTime());
                                 printf("\tEnd:     %s\n", $exam->getExamEndTime());
@@ -251,7 +251,7 @@ class ResultApp
                                 }
                         }
                         if ($this->verbose > 2) {
-                                printf("\tDescription:\n\t\t%s\n", str_replace("\n", "\n\t\t", utf8_decode($exam->getExamDescription())));
+                                printf("\tDescription:\n\t\t%s\n", str_replace("\n", "\n\t\t", $exam->getExamDescription()));
                         }
                         if ($this->verbose) {
                                 printf("\n");

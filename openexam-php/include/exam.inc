@@ -328,9 +328,9 @@ class Exam
         }
 
         //
-        // Parse JSON encoded options from string and return as hashed array. This
-        // function can be called with the question text for an mulitple or single
-        // option question. It also parses the answer to those question types.
+        // Parse serialized encoded options from string and return as hashed array.
+        // This function can be called with the question text for an mulitple or
+        // single option question. It also parses the answer to those question types.
         //
         // If answers argument is true, then the returned array contain the correct
         // answers as values with the options as array keys.
@@ -338,19 +338,19 @@ class Exam
         public function getQuestionChoice($str, $answers = false)
         {
                 $match = array();
-                if (preg_match('/^(.*)({.*}).*$/msU', $str, $match)) {
+                if (preg_match('/^(.*)\n(a:\d+:{.*}).*$/msU', $str, $match)) {
                         array_shift($match);   // Remove all matched string
                         if ($answers) {
                                 $match[0] = trim($match[0]);
-                                $match[1] = (array) json_decode($match[1]);
+                                $match[1] = (array) unserialize($match[1]);
                         } else {
                                 $match[0] = trim($match[0]);
-                                $match[1] = array_keys((array) json_decode($match[1]));
+                                $match[1] = array_keys((array) unserialize($match[1]));
                         }
                 } else {
                         if (strlen($str) > 0) {
                                 $match[0] = null;
-                                $match[1] = json_decode($str);
+                                $match[1] = unserialize($str);
                         } else {
                                 $match[0] = null;
                                 $match[1] = array();

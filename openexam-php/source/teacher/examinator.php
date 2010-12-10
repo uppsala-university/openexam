@@ -290,13 +290,13 @@ class ExaminatorPage extends TeacherPage
                 printf("<p>" .
                         _("Showing details for the examination <i>'%s'</i>. ") .
                         _("Use the links to add and remove students, and reschedule the start and end time of the examination. ") .
-                        "</p>\n", utf8_decode($data->getExamDescription()));
+                        "</p>\n", $data->getExamDescription());
 
                 if (!EXAMINATOR_VISIBLE_IDENTITIES) {
                         printf("<p><img src=\"../icons/nuvola/info.png\" /> " . _("No usernames will be exposed unless the examination has already been decoded.") . "</p>\n");
                 }
 
-                $tree = new TreeBuilder(utf8_decode($data->getExamName()));
+                $tree = new TreeBuilder($data->getExamName());
                 $root = $tree->getRoot();
                 $child = $root->addChild(_("Properties:"));
                 $stobj = $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime()))));
@@ -388,7 +388,7 @@ class ExaminatorPage extends TeacherPage
                                 foreach ($group['data'] as $data) {
                                         $name = $data[0];
                                         $state = $data[1];
-                                        $child = $node->addChild(utf8_decode($name));
+                                        $child = $node->addChild($name);
                                         $child->setLink(sprintf("?exam=%d&action=show", $state->getInfo()->getExamID()),
                                                 _("Click on this link to view and/or edit this examination"));
                                         $stobj = $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
