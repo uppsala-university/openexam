@@ -96,7 +96,7 @@ define('LDAP_BASEDN', 'ou=employees');
 define('LDAP_CACHE', true);              // Turn on LDAP result cache.
 //
 // Custom LDAP search strings for overriding defaults defined inline
-// in include/ldap.inc
+// in include/ldap.inc.
 //
 // define("LDAP_SEARCH_UID", "(uid=%s)");
 // define("LDAP_SEARCH_SN", "(sn=%s)");

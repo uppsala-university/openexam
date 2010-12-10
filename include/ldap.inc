@@ -40,7 +40,6 @@ if (!defined("LDAP_SEARCH_GIVEN_NAME")) {
         define("LDAP_SEARCH_GIVEN_NAME", "(givenname=%s)");
 }
 
-
 // 
 // Our custom LDAP exception.
 // 
@@ -500,7 +499,7 @@ class LDAPSearch
 
         //
         // Search for LDAP entries matching the user principal name. The user
-        // principal name is the UU-ID with the domain anst.uu.se appended.
+        // principal name is the UU-ID with the selected domain appended.
         // This is the function to use when searching for employees.
         //
         public function searchPrincipalName($account_id)
