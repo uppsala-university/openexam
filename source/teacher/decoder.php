@@ -327,7 +327,7 @@ class DecoderPage extends TeacherPage
                 $option = $combo->addOption(0, "---");
                 $option->setDisabled();
                 foreach ($students as $student) {
-                        $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
+                        $student->setStudentName($this->getCommonName($student->getStudentUser()));
                         $combo->addOption($student->getStudentID(),
                                 sprintf("%s (%s) [%s]",
                                         $student->getStudentName(),
@@ -374,7 +374,7 @@ class DecoderPage extends TeacherPage
                 printf("<p>" .
                         _("This table shows all answers from students to questions for the examination '%s'. ") .
                         "</p>\n",
-                        utf8_decode($data->getExamName()));
+                        $data->getExamName());
 
                 printf("<span class=\"links viewmode\">");
                 if ($this->param->verbose) {
@@ -558,7 +558,7 @@ class DecoderPage extends TeacherPage
                 $option = $combo->addOption(0, "---");
                 $option->setDisabled();
                 foreach ($students as $student) {
-                        $student->setStudentName(utf8_decode($this->getCommonName($student->getStudentUser())));
+                        $student->setStudentName($this->getCommonName($student->getStudentUser()));
                         $combo->addOption($student->getStudentID(),
                                 sprintf("%s (%s) [%s]",
                                         $student->getStudentName(),
@@ -647,7 +647,7 @@ class DecoderPage extends TeacherPage
                                 foreach ($group['data'] as $data) {
                                         $name = $data[0];
                                         $state = $data[1];
-                                        $child = $node->addChild(utf8_decode($name));
+                                        $child = $node->addChild($name);
                                         if ($state->isDecodable()) {
                                                 $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
                                                         _("Click on this link to decode this examination."));

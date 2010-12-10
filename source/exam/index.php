@@ -164,8 +164,8 @@ class ExaminationPage extends BasePage
                                         printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01fp]</a></li>\n",
                                                 $question->getExamID(),
                                                 $question->getQuestionID(),
-                                                utf8_decode(strip_tags($question->getQuestionText())),
-                                                utf8_decode(strip_tags($question->getQuestionName())),
+                                                strip_tags($question->getQuestionText()),
+                                                strip_tags($question->getQuestionName()),
                                                 $question->getQuestionScore());
                                 }
                                 echo "</ul>\n";
@@ -182,8 +182,8 @@ class ExaminationPage extends BasePage
                                         printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01f]</a></li>\n",
                                                 $question->getExamID(),
                                                 $question->getQuestionID(),
-                                                utf8_decode(strip_tags($question->getQuestionText())),
-                                                utf8_decode(strip_tags($question->getQuestionName())),
+                                                strip_tags($question->getQuestionText()),
+                                                strip_tags($question->getQuestionName()),
                                                 $question->getQuestionScore());
                                 }
                                 echo "</ul>\n";
@@ -296,9 +296,9 @@ class ExaminationPage extends BasePage
                 printf("<p>" . _("These examinations have been assigned to you, click on the button next to the description to begin the examination.") . "</p>\n");
                 foreach ($exams as $exam) {
                         printf("<div class=\"examination\">\n");
-                        printf("<div class=\"examhead\">%s</div>\n", utf8_decode($exam->getExamName()));
+                        printf("<div class=\"examhead\">%s</div>\n", $exam->getExamName());
                         printf("<div class=\"exambody\">%s<p>%s: <b>%s</b></p>\n",
-                                utf8_decode(str_replace("\n", "<br>", $exam->getExamDescription())),
+                                str_replace("\n", "<br>", $exam->getExamDescription()),
                                 _("The examination ends"),
                                 strftime(DATETIME_ISO, strtotime($exam->getExamEndTime())));
 
@@ -325,7 +325,7 @@ class ExaminationPage extends BasePage
                         exit(1);
                 }
 
-                printf("<h3>%s</h3>\n", utf8_decode($exam->getExamName()));
+                printf("<h3>%s</h3>\n", $exam->getExamName());
                 printf("<p>" . _("In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question.") . "</p>\n");
                 printf("<p>" . _("Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished.") . "</p>\n");
                 printf("<p>" . _("Good luck!") . "</p>\n");
@@ -356,8 +356,8 @@ class ExaminationPage extends BasePage
                         }
                         printf("<h5>%s: %s</h5><p>%s</p><p><a href=\"?exam=%d&amp;question=%d\">[%s]</a></p>\n",
                                 _("Question"),
-                                utf8_decode($question->getQuestionName()),
-                                utf8_decode(str_replace("\n", "<br>", $question->getQuestionText())),
+                                $question->getQuestionName(),
+                                str_replace("\n", "<br>", $question->getQuestionText()),
                                 $question->getExamID(),
                                 $question->getQuestionID(),
                                 _("Answer"));
@@ -386,15 +386,15 @@ class ExaminationPage extends BasePage
 
                 printf("<div class=\"left\">\n");
                 printf("<h3>%s %s [%.01fp]</h3>\n", _("Question"),
-                        utf8_decode($qdata->getQuestionName()), $qdata->getQuestionScore());
+                        $qdata->getQuestionName(), $qdata->getQuestionScore());
 
                 if ($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         printf("<div class=\"question\">%s</div>\n",
-                                utf8_decode(str_replace("\n", "<br>", $qdata->getQuestionText())));
+                                str_replace("\n", "<br>", $qdata->getQuestionText()));
                 } else {
                         $options = Exam::getQuestionChoice($qdata->getQuestionText());
                         printf("<div class=\"question\">%s</div>\n",
-                                utf8_decode(str_replace("\n", "<br>", $options[0])));
+                                str_replace("\n", "<br>", $options[0]));
                 }
 
                 printf("<div class=\"answer\">\n");
@@ -412,13 +412,13 @@ class ExaminationPage extends BasePage
                 $form->addHidden("question", $question);
 
                 if ($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-                        $input = $form->addTextArea("answer", utf8_decode($adata->getAnswerText()));
+                        $input = $form->addTextArea("answer", $adata->getAnswerText());
                         $input->setClass("answer");
                 } elseif ($qdata->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
                         $options = Exam::getQuestionChoice($qdata->getQuestionText());
                         $answers = Exam::getQuestionChoice($adata->getAnswerText());
                         foreach ($options[1] as $option) {
-                                $input = $form->addRadioButton("answer[]", utf8_decode($option), utf8_decode($option));
+                                $input = $form->addRadioButton("answer[]", $option, $option);
                                 if (in_array($option, $answers[1])) {
                                         $input->setChecked();
                                 }
@@ -428,7 +428,7 @@ class ExaminationPage extends BasePage
                         $options = Exam::getQuestionChoice($qdata->getQuestionText());
                         $answers = Exam::getQuestionChoice($adata->getAnswerText());
                         foreach ($options[1] as $option) {
-                                $input = $form->addCheckBox("answer[]", utf8_decode($option), utf8_decode($option));
+                                $input = $form->addCheckBox("answer[]", $option, $option);
                                 if (in_array($option, $answers[1])) {
                                         $input->setChecked();
                                 }
@@ -492,9 +492,9 @@ class ExaminationPage extends BasePage
         private function saveQuestion($exam, $question, $answer)
         {
                 if (is_array($answer)) {
-                        $answer = json_encode($answer);
+                        $answer = serialize($answer);
                 }
-                Exam::setAnswer($exam, $question, phpCAS::getUser(), utf8_encode($answer));
+                Exam::setAnswer($exam, $question, phpCAS::getUser(), $answer);
                 if (isset($_REQUEST['save'])) {
                         header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
                 } elseif (isset($_REQUEST['next'])) {

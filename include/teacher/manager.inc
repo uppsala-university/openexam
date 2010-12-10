@@ -56,12 +56,12 @@ class ExamGrades
         private $data = array();
 
         //
-        // Initialize using a json encoded associative array (name => grade).
+        // Initialize using a serialized associative array (name => grade).
         //
-        public function __construct($json = null)
+        public function __construct($data = null)
         {
-                if (isset($json) && strlen($json)) {
-                        $this->decode($json);
+                if (isset($data) && strlen($data)) {
+                        $this->decode($data);
                 }
         }
 
@@ -100,15 +100,15 @@ class ExamGrades
         //
         public function encode()
         {
-                return json_encode($this->data);
+                return serialize($this->data);
         }
 
         //
         // Set data for this object.
         //
-        public function decode($json)
+        public function decode($data)
         {
-                $this->data = json_decode($json, true);
+                $this->data = unserialize($data);
                 asort($this->data);
         }
 
