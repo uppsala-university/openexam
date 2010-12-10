@@ -274,9 +274,15 @@ class ManagerPage extends TeacherPage
                 $input = $form->addTextBox("name", utf8_decode($data->getExamName()));
                 $input->setLabel(_("Name"));
                 $input->setSize(50);
+                if($action == "add") {
+                        $input->setEvent(EVENT_ON_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
+                }
                 $input = $form->addTextArea("desc", utf8_decode($data->getExamDescription()));
                 $input->setLabel(_("Description"));
                 $input->setClass("description");
+                if($action == "add") {
+                        $input->setEvent(EVENT_ON_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
+                }
 
                 if ($this->manager->getExamID() == 0 || $info->isEditable()) {
                         $form->addSectionHeader(_("Scheduling"));
