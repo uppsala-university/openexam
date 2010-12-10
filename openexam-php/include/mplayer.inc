@@ -607,6 +607,7 @@ interface MediaPlayer
         //
         // Prints out the HTML code:
         //
+
         public function output();
 }
 
