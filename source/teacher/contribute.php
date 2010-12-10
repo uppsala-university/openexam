@@ -562,7 +562,7 @@ class ContributePage extends TeacherPage
                         utf8_encode($this->param->name),
                         $this->param->random);
 
-                header(sprintf("location: contribute.php?exam=%d&question=all", $this->param->exam));
+                header(sprintf("location: contribute.php?exam=%d&question=compact", $this->param->exam));
         }
 
         //
@@ -576,7 +576,7 @@ class ContributePage extends TeacherPage
                         utf8_encode($this->param->name),
                         $this->param->random);
 
-                header(sprintf("location: contribute.php?exam=%d&question=all", $this->param->exam));
+                header(sprintf("location: contribute.php?exam=%d&question=compact", $this->param->exam));
         }
 
         //
