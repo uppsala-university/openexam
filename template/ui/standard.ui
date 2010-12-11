@@ -82,8 +82,10 @@ if(!isset($publish)) {
 } else {
     printf(_("Copyright") . " &copy; %s. UPPSALA UNIVERSITET, Box 256, 751 05 Uppsala<br />\n", $publish['published']);
     printf(_("Last modified: %s") . " | " . _("Page responsible:") . " <a href=\"mailto:%s\">%s</a> | <a href=\"%s\">%s</a>\n", 
-	   strftime("%c", $publish['modified']), $publish['mailto']['href'],
-	   $publish['mailto']['name'], $publish['webmaster']['href'],
+	   utf8_encode(strftime("%c", $publish['modified'])), 
+	   $publish['mailto']['href'],
+	   $publish['mailto']['name'], 
+	   $publish['webmaster']['href'],
 	   $publish['webmaster']['name']);
 }
 ?>
