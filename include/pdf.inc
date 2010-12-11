@@ -38,16 +38,13 @@ if (!defined('PDF_LINK_STYLE')) {
         define('PDF_LINK_STYLE', 'plain');
 }
 if (!defined('PDF_MEDIA_SIZE')) {
-        define('PDF_MEDIA_SIZE', 'a4');
+        define('PDF_MEDIA_SIZE', 'A4');
 }
 if (!defined('PDF_MEDIA_TYPE')) {
         define('PDF_MEDIA_TYPE', 'plain');
 }
 if (!defined('PDF_MEDIA_LANDSCAPE')) {
         define('PDF_MEDIA_LANDSCAPE', false);
-}
-if (!defined('PDF_FRONT_PAGE_MARGIN')) {
-        define('PDF_FRONT_PAGE_MARGIN', '60mm');
 }
 if (!defined('PDF_GENERATOR')) {
         define('PDF_GENERATOR', 'OpenExam PHP');
@@ -92,6 +89,8 @@ class ResultStreamEncoder extends php_user_filter
 
 class HtmlDocPDF
 {
+        const filter_name = "result_stream_encoder";
+        const filter_class = "ResultStreamEncoder";
 
         protected $title;     // The page title
         protected $author;    // The publisher
@@ -103,6 +102,8 @@ class HtmlDocPDF
         {
                 $this->title = $title;
                 $this->author = $author;
+
+                stream_filter_register(self::filter_name, self::filter_class);
         }
 
         //
@@ -157,7 +158,7 @@ class HtmlDocPDF
                                 PDF_LINK_STYLE,
                                 PDF_MEDIA_SIZE,
                                 PDF_LINK_COLOR,
-                                _("Table of Contents"));
+                                utf8_decode(_("Table of Contents")));
                 if (isset($target)) {
                         $cmd .= sprintf(" -f %s", $target);
                 }
@@ -194,7 +195,9 @@ class HtmlDocPDF
                 }
 
                 if (is_resource($process) || $this->debug) {
+                        $filter = stream_filter_append($pipes[0], self::filter_name);
                         $class->write($pipes[0]);
+                        stream_filter_remove($filter);
 
                         if (!$this->debug) {
                                 fclose($pipes[0]);
@@ -238,8 +241,6 @@ class HtmlDocPDF
 // 
 class ResultPDF extends HtmlDocPDF implements InputGenerator
 {
-        const filter_name = "result_stream_encoder";
-        const filter_class = "ResultStreamEncoder";
 
         private $manager;
         private $student;   // Current student ID
@@ -259,8 +260,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->board = new ScoreBoard($this->exam->getExamID());
                 $this->grade = new ExamGrades($this->exam->getExamGrades());
 
-                stream_filter_register(self::filter_name, self::filter_class);
-
                 parent::__construct($this->exam->getExamName(),
                                 $this->exam->getExamOrgUnit());
         }
@@ -279,11 +278,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $stream = fopen($this->frontpage, "w");
                 if ($stream) {
                         $filter = stream_filter_append($stream, self::filter_name);
-                        
+
                         fprintf($stream, "<html>\n");
                         fprintf($stream, "<body>\n");
-                        fprintf($stream, "<!--MEDIA LEFT %s-->\n", PDF_FRONT_PAGE_MARGIN);
-                        fprintf($stream, "<!--MEDIA RIGHT %s-->\n", PDF_FRONT_PAGE_MARGIN);
                         fprintf($stream, "<br/><br/>\n");
                         fprintf($stream, "<center>\n");
                         fprintf($stream, "<img src=\"%s\" />\n", PDF_LOGOTYPE);
@@ -816,8 +813,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         //
         public function write($stream)
         {
-                $filter = stream_filter_append($stream, self::filter_name);
-
                 fprintf($stream, "<html>\n<head><title>%s</title></head>\n<body>\n", $this->title);
                 $this->printMetaData($stream);
                 $this->printSectionDescription($stream);
@@ -829,8 +824,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->printSectionStatistics($stream);
                 $this->printSectionReference($stream);
                 fprintf($stream, "</body></html>\n");
-
-                stream_filter_remove($filter);
         }
 
         //
