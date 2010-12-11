@@ -241,6 +241,7 @@ class DecoderPage extends TeacherPage
                         default:
                                 die(sprintf("Format %s is not supported in result mode.", $this->param->format));
                 }
+                exit(0);     // Prevent output of standard footer.
         }
 
         private function saveScores()
