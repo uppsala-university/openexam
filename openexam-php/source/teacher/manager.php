@@ -70,6 +70,16 @@ include "include/teacher/manager.inc";
 include "include/teacher/testcase.inc";
 
 // 
+// Maximum length of question text before its trunkated in the list.
+//
+if (!defined("MANAGER_QUESTION_MAXLEN")) {
+        define("MANAGER_QUESTION_MAXLEN", 70);
+}
+if (!defined("MANAGER_QUESTION_FORMAT")) {
+        define("MANAGER_QUESTION_FORMAT", "%s: <i>%s</i>");
+}
+
+// 
 // The index page:
 // 
 class ManagerPage extends TeacherPage
@@ -274,13 +284,13 @@ class ManagerPage extends TeacherPage
                 $input = $form->addTextBox("name", $data->getExamName());
                 $input->setLabel(_("Name"));
                 $input->setSize(50);
-                if($action == "add") {
+                if ($action == "add") {
                         $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
                 }
                 $input = $form->addTextArea("desc", $data->getExamDescription());
                 $input->setLabel(_("Description"));
                 $input->setClass("description");
-                if($action == "add") {
+                if ($action == "add") {
                         $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
                 }
 
@@ -536,9 +546,17 @@ class ManagerPage extends TeacherPage
                 $child = $quest->addChild(_("Active"));
                 $questions = $this->manager->getQuestions('active');
                 foreach ($questions as $question) {
-                        $subobj = $child->addChild(sprintf("%s %s...",
-                                                $question->getQuestionName(),
-                                                substr(strip_tags($question->getQuestionText()), 0, 55)));
+                        if (strlen($question->getQuestionText()) > MANAGER_QUESTION_MAXLEN) {
+                                $format = sprintf("%s...", MANAGER_QUESTION_FORMAT);
+                                $subobj = $child->addChild(sprintf($format,
+                                                        $question->getQuestionName(),
+                                                        substr(strip_tags($question->getQuestionText()), 0, MANAGER_QUESTION_MAXLEN)));
+                        } else {
+                                $format = MANAGER_QUESTION_FORMAT;
+                                $subobj = $child->addChild(sprintf($format,
+                                                        $question->getQuestionName(),
+                                                        strip_tags($question->getQuestionText())));
+                        }
                         if ($this->manager->isContributor(phpCAS::getUser())) {
                                 if (!$info->isDecoded()) {
                                         $subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d",
