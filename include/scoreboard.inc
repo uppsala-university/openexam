@@ -56,7 +56,7 @@ class Score
 
         public function getPercent()
         {
-                if ($this->num == 0) {
+                if ($this->num == 0 || $this->max == 0) {
                         return 0;
                 }
                 return 100 * $this->sum / $this->max;
