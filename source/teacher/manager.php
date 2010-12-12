@@ -94,7 +94,7 @@ class ManagerPage extends TeacherPage
                 "type" => "/^(op)$/",
                 "user" => "/^\d+$/",
                 "uuid" => "/^[0-9a-zA-Z]{1,10}$/",
-                "name" => "/^[[:ascii:]]+$/"
+                "name" => "/^(\p{L}|\p{N}|\p{Z}|\p{P})+$/u"
         );
 
         public function __construct()
