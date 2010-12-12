@@ -453,7 +453,6 @@ class ManagerPage extends TeacherPage
         //
         private function exportExam()
         {
-                ob_end_clean();
                 $exporter = new Export($this->param->exam);
                 $exporter->send();
                 exit(0);
