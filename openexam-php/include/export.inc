@@ -12,27 +12,32 @@
 //
 // The exported XML document will have this layout:
 //
-// <openexam>
+// <openexam format="version">
 //  <project>
-//    // ... exam project properties (name, description, ...)
+//    // ... project properties (name, description, ...)
 //  </project>
 //  <topics>
 //    <topic id="num">
 //      <name>str</name>
 //      <randomize>num</randomize>
 //    </topic>
+//      ...
 //  </topics>
 //  <questions>
-//    <question topic="ids">
-//      // ... question properties
+//    <question topic="id">
+//      // ... question fields
 //    </question>
-//    <question>
-//      // ... question properties
+//    <question topic="id">
+//      // ... question fields
 //    </question>
-//        ...
+//      ...
 //  </questions>
 // </openexam>
 //
+
+if (!defined("OPENEXAM_EXPORT_FORMAT_VERSION")) {
+        define("OPENEXAM_EXPORT_FORMAT_VERSION", 6071);
+}
 
 class ExportException extends Exception
 {
@@ -55,7 +60,7 @@ class Export
                         throw new ExportException("The SimpleXML extension is not loaded");
                 }
                 if (!extension_loaded("dom")) {
-                        throw new ExportException("The DOM document extension (dom) is not loaded");
+                        throw new ExportException("The DOM Document extension (dom) is not loaded");
                 }
                 $this->manager = new Manager($exam);
         }
@@ -74,7 +79,7 @@ class Export
         public function send()
         {
                 ob_end_clean();
-                
+
                 $data = $this->manager->getData();
                 $name = sprintf("%s - %s - %s",
                                 $data->getExamOrgUnit(),
@@ -99,6 +104,14 @@ class Export
         {
                 $root = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><openexam></openexam>\n");
 
+                // 
+                // Set export format version:
+                //
+                $root->addAttribute("format", OPENEXAM_EXPORT_FORMAT_VERSION);
+
+                //
+                // Get the data to be exported:
+                //
                 $pdata = $this->manager->getData();
                 $qdata = $this->manager->getQuestions();
                 $tdata = array();
