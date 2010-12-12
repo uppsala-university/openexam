@@ -464,7 +464,7 @@ class ImportPingPongText extends ImportBase
                         }
                 }
 
-                $inserter = new ImportInsert($exam, $db);
+                $inserter = new ImportInsertPingPong($exam, $db);
                 $inserter->insert($questions);
 
                 return $inserter->getExamID();
