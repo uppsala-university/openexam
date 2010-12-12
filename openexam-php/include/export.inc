@@ -54,6 +54,9 @@ class Export
                 if (!extension_loaded("SimpleXML")) {
                         throw new ExportException("The SimpleXML extension is not loaded");
                 }
+                if (!extension_loaded("dom")) {
+                        throw new ExportException("The DOM document extension (dom) is not loaded");
+                }
                 $this->manager = new Manager($exam);
         }
 
@@ -156,10 +159,31 @@ class Export
                         $child->addChild("comment", $q->getQuestionComment());
                 }
 
-                if (isset($filename)) {
-                        $root->asXML($filename);
+                // 
+                // Now, the only thing left is to insert a comment line in the
+                // header. Unfortunate, Simple XML don't support comments, but 
+                // we can use DOM for that with a little more code:
+                //
+                if (!($node = dom_import_simplexml($root))) {
+                        throw new ExportException("Failed import XML tree to DOM document.");
+                }
+
+                $dom = new DOMDocument('1.0', 'utf-8');
+                $dom->formatOutput = true;
+
+                $comment = sprintf(_("OpenExam project exported %s"), strftime('%c'));
+                $dom->appendChild($dom->createComment($comment));
+
+                $node = $dom->importNode($node, true);
+                $node = $dom->appendChild($node);
+
+                //
+                // Now send the XML content to its destination:
+                //
+                if (!isset($file)) {
+                        echo $dom->saveXML();
                 } else {
-                        echo $root->asXML();
+                        $dom->save($filename);
                 }
         }
 
