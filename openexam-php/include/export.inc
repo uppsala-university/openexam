@@ -73,6 +73,8 @@ class Export
         //
         public function send()
         {
+                ob_end_clean();
+                
                 $data = $this->manager->getData();
                 $name = sprintf("%s - %s - %s",
                                 $data->getExamOrgUnit(),
