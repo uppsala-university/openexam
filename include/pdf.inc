@@ -443,7 +443,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 if (isset($answer)) {
                         fprintf($stream, "<h3>%s</h3>\n", _("Answer"));
                         if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-                                $text = str_replace("\n", "<br/>", htmlentities($answer->getAnswerText()));
+                                $text = str_replace("\n", "<br/>", htmlspecialchars($answer->getAnswerText()));
                                 fprintf($stream, "<p>%s</p>\n", $text);
                         } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
                                 $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
