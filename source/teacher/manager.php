@@ -337,8 +337,7 @@ class ManagerPage extends TeacherPage
                                         "examorgunit" => $this->getOrganisationUnit(phpCAS::getUser()),
                                         "examname" => _("Name"),
                                         "examdescription" => _("Description"),
-                                        // "examgrades" => "{\"U\":0,\"G\":10,\"VG\":18}",
-                                        "examgrades" => "a:3:{s:1:\"U\";s:1:\"0\";s:1:\"G\";s:2:\"10\";s:2:\"VG\";s:2:\"18\";}",
+                                        "examgrades" => json_encode(array("U" => 0, "G" => 15, "VG" => 20)),
                                         "examstarttime" => DATETIME_NONE,
                                         "examendtime" => DATETIME_NONE)
                         );
