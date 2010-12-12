@@ -147,7 +147,18 @@ class ImportInsertPingPong extends ImportInsert
                         }
                         $tid = $this->db->lastInsertID();
                         foreach ($questions as $question) {
-                                if ($question['type'] == 'multiple' || $question == 'single') {
+                                $question['select'] = 0;
+                                foreach ($question['choice'] as $boolean) {
+                                        if ($boolean == true) {
+                                                $question['select']++;
+                                        }
+                                }
+                                if ($question['select'] > 1) {
+                                        $question['type'] = 'multiple';
+                                } else {
+                                        $question['type'] = 'single';
+                                }
+                                if ($question['type'] == 'multiple' || $question['type'] == 'single') {
                                         $question['quest'] = sprintf("%s\n\n%s", $question['body'], json_encode($question['choice']));
                                         $question['quest'] = $this->db->escape($question['quest']);
                                 } else {
