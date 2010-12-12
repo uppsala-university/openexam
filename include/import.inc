@@ -576,7 +576,7 @@ class FileImport
                                         return new ImportPingPongText($name, $file, $mime, $size);
                                         break;
                                 default:
-                                        throw new ImportException(sprintf(_("Don't know how import *.%s files"), $extension));
+                                        throw new ImportException(sprintf(_("Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."), $extension));
                                         break;
                         }
                 } elseif ($type == "oq") {
