@@ -247,7 +247,7 @@ class ContributePage extends TeacherPage
                 $video = isset($this->param->video) ? $this->param->video : "";
                 $audio = isset($this->param->audio) ? $this->param->audio : "";
                 $image = isset($this->param->image) ? $this->param->image : "";
-                
+
                 $contrib = new Contribute($this->param->exam);
                 $contrib->addQuestion($this->param->exam,
                         $this->param->topic,
@@ -749,6 +749,9 @@ class ContributePage extends TeacherPage
                                 sprintf("?exam=%d&amp;action=delete&amp;what=topic&amp;topic=all",
                                         $data->getExamID()),
                                 _("Click to delete all topics in this examination. All topics must be empty for this request to succedd."));
+                        $root->addLink(_("Import"),
+                                sprintf("contribute.php?exam=%d&action=import", $this->param->exam),
+                                _("Click to open page for importing a question bank."));
                         $root->addLink(_("Add"),
                                 sprintf("?exam=%d&amp;action=add&amp;what=topic", $data->getExamID()),
                                 _("Click to add a new topic to this examination."));
