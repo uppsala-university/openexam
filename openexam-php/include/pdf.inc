@@ -639,7 +639,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 sort($scf);
                 $scs = $scf;
 
-                while ($scs[0] == 0) {
+                while (isset($scs[0]) && $scs[0] == 0) {
                         array_shift($scs);
                 }
                 array_pop($scs);
