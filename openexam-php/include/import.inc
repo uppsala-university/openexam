@@ -45,6 +45,8 @@ interface Import
         // selected exam is updated. This is not supported by all import
         // targets (currently only openexam projects).
         //
+        // Returns the exam ID.
+        //
         function read($exam, &$db);
 
         //
@@ -117,6 +119,11 @@ abstract class ImportInsert
         {
                 $this->exam = $exam;
                 $this->db = $db;
+        }
+
+        public function getExamID()
+        {
+                return $this->exam;
         }
 
         abstract public function insert(&$data, $what = self::questions);
@@ -194,14 +201,14 @@ class ImportInsertOpenExam extends ImportInsert
                                 //
                                 if ($this->exam != 0) {
                                         $sql = sprintf("UPDATE  exams SET
-                                                name = '%s',
-                                                description = '%s',
-                                                orgunit = '%s',
-                                                starttime = '%s',
-                                                endtime = '%s',
-                                                created = '%s',
-                                                grades = '%s'
-                                        WHERE   exam_id = %d",
+                                                                name = '%s',
+                                                                description = '%s',
+                                                                orgunit = '%s',
+                                                                starttime = '%s',
+                                                                endtime = '%s',
+                                                                created = '%s',
+                                                                grades = '%s'
+                                                        WHERE   exam_id = %d",
                                                         $data->project->name,
                                                         $data->project->description,
                                                         $data->project->orgunit,
@@ -215,14 +222,15 @@ class ImportInsertOpenExam extends ImportInsert
                                                 throw new DatabaseException($res->getMessage());
                                         }
                                 } else {
-                                        $sql = sprint("INSERT INTO exams(name, description, orgunit, starttime, endtime, created, grades)
-                                                VALUES('%s','%s','%s','%s','%s','%s','%s'",
+                                        $sql = sprintf("INSERT INTO exams(name, descr, orgunit, starttime, endtime, created, creator, grades)
+                                                        VALUES('%s','%s','%s','%s','%s','%s','%s','%s')",
                                                         $data->project->name,
                                                         $data->project->description,
                                                         $data->project->orgunit,
                                                         $data->project->starttime,
                                                         $data->project->endtime,
                                                         $data->project->created,
+                                                        phpCAS::getUser(),
                                                         $data->project->grades);
                                         $res = $this->db->query($sql);
                                         if (PEAR::isError($res)) {
@@ -365,6 +373,8 @@ class ImportPingPongExcel extends ImportBase
 
                 $inserter = new ImportInsertPingPong($exam, $db);
                 $inserter->insert($questions);
+
+                return $inserter->getExamID();
         }
 
 }
@@ -456,6 +466,8 @@ class ImportPingPongText extends ImportBase
 
                 $inserter = new ImportInsert($exam, $db);
                 $inserter->insert($questions);
+
+                return $inserter->getExamID();
         }
 
         public function close()
@@ -521,7 +533,8 @@ class ImportOpenExamProject extends ImportOpenExam
         function read($exam, &$db)
         {
                 $inserter = new ImportInsertOpenExam($exam, $db);
-                $inserter->insert($this->xmldoc, ImportInsert::project & ImportInsert::questions);
+                $inserter->insert($this->xmldoc, ImportInsert::project | ImportInsert::questions);
+                return $inserter->getExamID();
         }
 
 }
@@ -536,6 +549,7 @@ class ImportOpenExamQuestions extends ImportOpenExam
         {
                 $inserter = new ImportInsertOpenExam($exam, $db);
                 $inserter->insert($this->xmldoc, ImportInsert::questions);
+                return $inserter->getExamID();
         }
 
 }
