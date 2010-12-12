@@ -238,7 +238,7 @@ class CorrectionPage extends TeacherPage
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         $row->addData(sprintf("<u>%s</u>:<br />%s",
                                         _("Answer"),
-                                        str_replace("\n", "<br/>", htmlentities($answer->getAnswerText()))));
+                                        str_replace("\n", "<br/>", htmlspecialchars($answer->getAnswerText()))));
                 } else {
                         $achoice = Exam::getQuestionChoice($answer->getAnswerText());
                         $row->addData(sprintf("<u>%s</u>:<br />%s",
