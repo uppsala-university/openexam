@@ -74,7 +74,7 @@ include "include/export.inc";
 // Maximum length of question text before its trunkated in the list.
 //
 if (!defined("MANAGER_QUESTION_MAXLEN")) {
-        define("MANAGER_QUESTION_MAXLEN", 70);
+        define("MANAGER_QUESTION_MAXLEN", 60);
 }
 if (!defined("MANAGER_QUESTION_FORMAT")) {
         define("MANAGER_QUESTION_FORMAT", "%s: <i>%s</i>");
