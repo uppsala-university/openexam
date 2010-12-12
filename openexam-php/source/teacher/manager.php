@@ -68,6 +68,7 @@ include "include/ldap.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/testcase.inc";
+include "include/export.inc";
 
 // 
 // Maximum length of question text before its trunkated in the list.
@@ -87,7 +88,7 @@ class ManagerPage extends TeacherPage
 
         private $params = array(
                 "exam" => "/^\d+$/",
-                "action" => "/^(add|edit|show|copy|test|delete|cancel|finish)$/",
+                "action" => "/^(add|edit|show|copy|test|delete|cancel|finish|export)$/",
                 "role" => "/^(contributor|examinator|decoder)$/",
                 "user" => "/^\d+$/",
                 "uuid" => "/^[0-9a-zA-Z]{1,10}$/",
@@ -160,6 +161,8 @@ class ManagerPage extends TeacherPage
                                                 self::cancelExam();
                                         } elseif ($_REQUEST['action'] == "finish") {
                                                 self::finishExam();
+                                        } elseif ($_REQUEST['action'] == "export") {
+                                                self::exportExam();
                                         }
                                 }
                         } else {
@@ -446,6 +449,17 @@ class ManagerPage extends TeacherPage
         }
 
         //
+        // Export complete exam.
+        //
+        private function exportExam()
+        {
+                ob_end_clean();
+                $exporter = new Export($this->param->exam);
+                $exporter->send();
+                exit(0);
+        }
+
+        //
         // Show properties for this exam.
         //
         private function showExam()
@@ -460,6 +474,7 @@ class ManagerPage extends TeacherPage
                 $root = $tree->getRoot();
                 if ($this->roles->getManagerRoles() > 0) {
                         $root->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $data->getExamID()), _("Create a new examination by using this examination as a template."));
+                        $root->addLink(_("Export"), sprintf("?exam=%d&amp;action=export", $data->getExamID()), _("Export the examination including its questions as XML data."));
                         $root->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()), _("Edit common properties like name, description or grades for this examination."));   // Should be limited
                 }
 
