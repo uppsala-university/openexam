@@ -41,6 +41,10 @@ interface Import
         //
         // Parse current opened import file and save data to exam.
         //
+        // If exam is exam == 0, then a new exam is created, otherwise the
+        // selected exam is updated. This is not supported by all import
+        // targets (currently only openexam projects).
+        //
         function read($exam, &$db);
 
         //
@@ -89,13 +93,25 @@ abstract class ImportBase implements Import
                 return utf8_encode(strip_tags(html_entity_decode($str)));
         }
 
+        public function open()
+        {
+                // Dummy
+        }
+
+        public function close()
+        {
+                // Dummy
+        }
+
 }
 
-class ImportInsert
+abstract class ImportInsert
 {
+        const questions = 1;    // Insert questions
+        const project = 2;      // Insert/update project
 
-        private $exam;
-        private $db;
+        protected $exam;
+        protected $db;
 
         public function __construct($exam, &$db)
         {
@@ -103,7 +119,16 @@ class ImportInsert
                 $this->db = $db;
         }
 
-        public function insert(&$data)
+        abstract public function insert(&$data, $what = self::questions);
+}
+
+//
+// Insert data imported from ping-pong.
+//
+class ImportInsertPingPong extends ImportInsert
+{
+
+        public function insert(&$data, $what = self::questions)
         {
                 foreach ($data as $topic => $questions) {
                         $sql = sprintf("INSERT INTO topics(exam_id, name)
@@ -141,6 +166,110 @@ class ImportInsert
                                                 $question['user'],
                                                 $question['comment']);
 
+                                $res = $this->db->query($sql);
+                                if (PEAR::isError($res)) {
+                                        throw new DatabaseException($res->getMessage());
+                                }
+                        }
+                }
+        }
+
+}
+
+//
+// Insert openexam project data.
+//
+class ImportInsertOpenExam extends ImportInsert
+{
+
+        //
+        // The data parameter is an SimpleXML object.
+        //
+        public function insert(&$data, $what = self::questions)
+        {
+                if ($what & self::project) {
+                        if ($data['format'] == 6071) {
+                                //
+                                // Set project properties:
+                                //
+                                if ($this->exam != 0) {
+                                        $sql = sprintf("UPDATE  exams SET
+                                                name = '%s',
+                                                description = '%s',
+                                                orgunit = '%s',
+                                                starttime = '%s',
+                                                endtime = '%s',
+                                                created = '%s',
+                                                grades = '%s'
+                                        WHERE   exam_id = %d",
+                                                        $data->project->name,
+                                                        $data->project->description,
+                                                        $data->project->orgunit,
+                                                        $data->project->starttime,
+                                                        $data->project->endtime,
+                                                        $data->project->created,
+                                                        $data->project->grades,
+                                                        $this->exam);
+                                        $res = $this->db->query($sql);
+                                        if (PEAR::isError($res)) {
+                                                throw new DatabaseException($res->getMessage());
+                                        }
+                                } else {
+                                        $sql = sprint("INSERT INTO exams(name, description, orgunit, starttime, endtime, created, grades)
+                                                VALUES('%s','%s','%s','%s','%s','%s','%s'",
+                                                        $data->project->name,
+                                                        $data->project->description,
+                                                        $data->project->orgunit,
+                                                        $data->project->starttime,
+                                                        $data->project->endtime,
+                                                        $data->project->created,
+                                                        $data->project->grades);
+                                        $res = $this->db->query($sql);
+                                        if (PEAR::isError($res)) {
+                                                throw new DatabaseException($res->getMessage());
+                                        }
+                                        $this->exam = $this->db->lastInsertID("exams");
+                                }
+                        }
+                }
+
+                if ($what & self::questions) {
+                        //
+                        // Insert topics:
+                        //
+                        $topicmap = array();
+                        foreach ($data->topics->topic as $topic) {
+                                $sql = sprintf("INSERT INTO topics(exam_id, name, randomize)
+                                                VALUES(%d,'%s','%s')",
+                                                $this->exam,
+                                                $topic->name,
+                                                $topic->randomize);
+                                $res = $this->db->query($sql);
+                                if (PEAR::isError($res)) {
+                                        throw new DatabaseException($res->getMessage());
+                                }
+                                $topicmap[(int) $topic['id']] = $this->db->lastInsertID("topics");
+                        }
+
+                        //
+                        // Insert questions:
+                        //
+                        foreach ($data->questions->question as $question) {
+                                $question->quest = $this->db->escape($question->text);
+                                $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, user, video, image, audio, type, status, comment)
+                                                VALUES(%d,%d,%f,'%s','%s','%s','%s','%s','%s','%s','%s','%s')",
+                                                $this->exam,
+                                                $topicmap[(int) $question['topic']],
+                                                $question->score,
+                                                $question->name,
+                                                $question->quest,
+                                                $question->publisher,
+                                                $question->video,
+                                                $question->image,
+                                                $question->audio,
+                                                $question->type,
+                                                $question->status,
+                                                $question->comment);
                                 $res = $this->db->query($sql);
                                 if (PEAR::isError($res)) {
                                         throw new DatabaseException($res->getMessage());
@@ -234,13 +363,8 @@ class ImportPingPongExcel extends ImportBase
                         }
                 }
 
-                $inserter = new ImportInsert($exam, $db);
+                $inserter = new ImportInsertPingPong($exam, $db);
                 $inserter->insert($questions);
-        }
-
-        public function close()
-        {
-                // unlink($this->file);
         }
 
 }
@@ -341,25 +465,87 @@ class ImportPingPongText extends ImportBase
 
 }
 
+abstract class ImportOpenExam extends ImportBase
+{
+        const accept = "application/xml";
+
+        protected $xmldoc;      // SimpleXML document object
+
+        public function __construct($name, $file, $mime, $size, $accept = null)
+        {
+                if (!extension_loaded("SimpleXML")) {
+                        throw new ImportException("The SimpleXML extension is not loaded");
+                }
+                if (!extension_loaded("dom")) {
+                        throw new ImportException("The DOM Document extension (dom) is not loaded");
+                }
+                parent::__construct($name, $file, $mime, $size, self::accept);
+        }
+
+        public function open()
+        {
+                $this->xmldoc = simplexml_load_file($this->file);
+                $this->verify();
+        }
+
+        //
+        // Verify that loaded document can be imported.
+        //
+        private function verify()
+        {
+                if (!isset($this->xmldoc['format'])) {
+                        $message = _("Missing XML format attribute. This don't look like an OpenExam project data file.");
+                        throw new ImportException($message);
+                }
+
+                $supported = false;
+                foreach (array(6071) as $format) {
+                        if ($this->xmldoc['format'] == $format) {
+                                $supported = true;
+                        }
+                }
+                if (!$supported) {
+                        $message = sprintf(_("Unsupported XML format number: %d. This file can not be imported."), $this->xmldoc['@attributes']['format']);
+                        throw new ImportException($message);
+                }
+        }
+
+}
+
 //
-// TODO: implement import classes
+// Import OpenExam project. See include/export.inc for schema information.
 //
-//class ImportPingPongText implements Import
-//{
+class ImportOpenExamProject extends ImportOpenExam
+{
+
+        function read($exam, &$db)
+        {
+                $inserter = new ImportInsertOpenExam($exam, $db);
+                $inserter->insert($this->xmldoc, ImportInsert::project & ImportInsert::questions);
+        }
+
+}
+
 //
-//}
+// Import OpenExam questions. See include/export.inc for schema information.
 //
-//class ImportOpenExam implements Import
-//{
-//
-//}
+class ImportOpenExamQuestions extends ImportOpenExam
+{
+
+        function read($exam, &$db)
+        {
+                $inserter = new ImportInsertOpenExam($exam, $db);
+                $inserter->insert($this->xmldoc, ImportInsert::questions);
+        }
+
+}
 
 class FileImport
 {
 
         //
         // Factory function returning an importer. These are the parameters:
-        // 
+        //
         //   type: Type of file to import (pp or oe)
         //   name: The name of the uploaded file.
         //   file: An absolute path to the uploaded file.
@@ -369,7 +555,8 @@ class FileImport
         // Description of type argument:
         //
         //   pp - ping pong
-        //   oe - open exam exported questions
+        //   oq - open exam exported questions
+        //   op - open exam complete project
         //
         public static function getReader($type, $name, $file, $mime, $size)
         {
@@ -392,12 +579,16 @@ class FileImport
                                         throw new ImportException(sprintf(_("Don't know how import *.%s files"), $extension));
                                         break;
                         }
-                } elseif ($type == "oe") {
+                } elseif ($type == "oq") {
                         switch ($extension) {
                                 default:
-                                        return new ImportOpenExam($name, $file, $mime,
-                                                $size
-                                        );
+                                        return new ImportOpenExamQuestions($name, $file, $mime, $size);
+                                        break;
+                        }
+                } elseif ($type == "op") {
+                        switch ($extension) {
+                                default:
+                                        return new ImportOpenExamProject($name, $file, $mime, $size);
                                         break;
                         }
                 }
