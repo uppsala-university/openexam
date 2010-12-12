@@ -492,8 +492,10 @@ class ExaminationPage extends BasePage
         private function saveQuestion($exam, $question, $answer)
         {
                 if (is_array($answer)) {
-                        $answer = serialize($answer);
+                        $answer = json_encode($answer);
                 }
+                $answer = Database::getConnection()->escape($answer);
+
                 Exam::setAnswer($exam, $question, phpCAS::getUser(), $answer);
                 if (isset($_REQUEST['save'])) {
                         header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
