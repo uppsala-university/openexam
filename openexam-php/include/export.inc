@@ -186,7 +186,7 @@ class Export
                 $dom = new DOMDocument('1.0', 'utf-8');
                 $dom->formatOutput = true;
 
-                $comment = sprintf(_("OpenExam project exported %s"), strftime('%c'));
+                $comment = sprintf(_(" OpenExam project exported %s "), strftime('%c'));
                 $dom->appendChild($dom->createComment($comment));
 
                 $node = $dom->importNode($node, true);
