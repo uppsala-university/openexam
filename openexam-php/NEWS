@@ -3,16 +3,19 @@ Version 1.5.4 (2010-mm-dd):
         * Questions in the exam can now be answered in a 'save' and 'save and
 	  move next' manner.
 	  
-	* Implemented topics for examinations. This allowes us to create a 
-	  set of questions for each student from a bank of questions. 
+	* Implemented topics for examinations. This allows us to create a set
+	  of questions for each student examination out of a bank of questions.
 	  
-	  Each topic has an number associated telling how many questions to 
-	  select. If its zero, then all questions are used from that
-	  perticular topic.
+	  Each topic has an associated randomize number dictating how many
+          questions to randomly select from the topic. If its zero, then all
+          questions are used from that particular topic.
 	  
-	* Implemented import of questions. Both Ping-Pong and OpenExam
+	* Implemented import of questions banks. Both Ping-Pong and OpenExam
 	  will be supported. MS Excel, plain text and XML is the supported 
 	  formats.
+
+        * OpenExam projects (complete examination with its questions) can now
+          be imported and exported.
 	  	
 Version 1.5.3 (2010-08-25):
 
@@ -45,7 +48,7 @@ Version 1.5.3 (2010-08-25):
 Version 1.5.2 (2010-06-02):
 
 	* Added support for sending the examination result by email. The
-	  emails are multipart encoded (MIME mail with plain text and HTML
+	  emails are multi-part encoded (MIME mail with plain text and HTML
 	  sections). 
 	  
 	* Up to three optional attachments (not counting the result PDF) can
