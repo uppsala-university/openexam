@@ -1,0 +1,168 @@
+<?php
+
+//
+// Copyright (C) 2010 Computing Department BMC,
+// Uppsala Biomedical Centre, Uppsala University.
+//
+// File:   include/export.inc
+// Author: Anders Lövgren
+// Date:   2010-12-11
+//
+// Export utility. Depends on the SimpleXML and DOM extensions.
+//
+// The exported XML document will have this layout:
+//
+// <openexam>
+//  <project>
+//    // ... exam project properties (name, description, ...)
+//  </project>
+//  <topics>
+//    <topic id="num">
+//      <name>str</name>
+//      <randomize>num</randomize>
+//    </topic>
+//  </topics>
+//  <questions>
+//    <question topic="ids">
+//      // ... question properties
+//    </question>
+//    <question>
+//      // ... question properties
+//    </question>
+//        ...
+//  </questions>
+// </openexam>
+//
+
+class ExportException extends Exception
+{
+
+        public function __construct($message)
+        {
+                parent::__construct($message);
+        }
+
+}
+
+class Export
+{
+
+        private $manager;
+
+        public function __construct($exam)
+        {
+                if (!extension_loaded("SimpleXML")) {
+                        throw new ExportException("The SimpleXML extension is not loaded");
+                }
+                $this->manager = new Manager($exam);
+        }
+
+        //
+        // Writes data to file.
+        // 
+        public function write($filename)
+        {
+                $this->output($filename);
+        }
+
+        //
+        // Sends data to peer.
+        //
+        public function send()
+        {
+                $data = $this->manager->getData();
+                $name = sprintf("%s - %s - %s",
+                                $data->getExamOrgUnit(),
+                                $data->getExamName(),
+                                $data->getExamStartTime());
+
+                header("Content-type: application/xml;charset=utf-8\n");
+                header("Content-Disposition: attachment;filename=\"$name.xml\"");
+                header("Cache-Control: no-cache");
+                header("Pragma-directive: no-cache");
+                header("Cache-directive: no-cache");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+
+                $this->output();
+        }
+
+        //
+        // Output exam to stream.
+        //
+        private function output($filename = null)
+        {
+                $root = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><openexam></openexam>\n");
+
+                $pdata = $this->manager->getData();
+                $qdata = $this->manager->getQuestions();
+                $tdata = array();
+
+                //
+                // Collect all topics:
+                //
+                foreach ($qdata as $q) {
+                        if (!isset($tdata[$q->getTopicID()])) {
+                                $tdata[$q->getTopicID()]['name'] = $q->getTopicName();
+                                $tdata[$q->getTopicID()]['randomize'] = $q->getTopicRandom();
+                        }
+                }
+
+                //
+                // The top nodes:
+                //
+                $pnode = $root->addChild("project");
+                $tnode = $root->addChild("topics");
+                $qnode = $root->addChild("questions");
+
+                //
+                // Create project child nodes:
+                //
+                $pnode->addChild("name", $pdata->getExamName());
+                $pnode->addChild("description", $pdata->getExamDescription());
+                $pnode->addChild("orgunit", $pdata->getExamOrgUnit());
+                $pnode->addChild("starttime", $pdata->getExamStartTime());
+                $pnode->addChild("endtime", $pdata->getExamStartTime());
+                $pnode->addChild("created", $pdata->getExamCreated());
+                $pnode->addChild("updated", $pdata->getExamUpdated());
+                $pnode->addChild("creator", $pdata->getExamCreator());
+                $pnode->addChild("grades", $pdata->getExamGrades());
+
+                //
+                // Create all topic nodes:
+                //
+                foreach ($tdata as $id => $t) {
+                        $child = $tnode->addChild("topic");
+                        $child->addAttribute("id", $id);
+                        $child->addChild("name", $t['name']);
+                        $child->addChild("randomize", $t['randomize']);
+                }
+
+                //
+                // Create all question nodes:
+                //
+                foreach ($qdata as $q) {
+                        $child = $qnode->addChild("question");
+                        $child->addAttribute("topic", $q->getTopicID());
+                        $child->addChild("score", $q->getQuestionScore());
+                        $child->addChild("name", $q->getQuestionName());
+                        $child->addChild("text", $q->getQuestionText());
+                        $child->addChild("publisher", $q->getQuestionPublisher());
+                        $child->addChild("video", $q->getQuestionVideo());
+                        $child->addChild("image", $q->getQuestionImage());
+                        $child->addChild("audio", $q->getQuestionAudio());
+                        $child->addChild("type", $q->getQuestionType());
+                        $child->addChild("status", $q->getQuestionStatus());
+                        $child->addChild("comment", $q->getQuestionComment());
+                }
+
+                if (isset($filename)) {
+                        $root->asXML($filename);
+                } else {
+                        echo $root->asXML();
+                }
+        }
+
+}
+
+?>
