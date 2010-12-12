@@ -79,7 +79,7 @@ include "include/locker.inc";
 include "include/teacher/manager.inc";
 
 // 
-// This class implements a basic page.
+// This class implements a standard page.
 // 
 class ExaminationPage extends BasePage
 {
@@ -95,7 +95,7 @@ class ExaminationPage extends BasePage
         private $testcase = false;  // This examination is a testcase.
 
         //
-        // Construct the template page.
+        // Construct the exam page.
         //
 
         public function __construct()
@@ -135,6 +135,9 @@ class ExaminationPage extends BasePage
                         }
                 }
 
+                //
+                // This block is only relevant if running the exam is test mode.
+                //
                 if ($this->testcase) {
                         printf("<hr/>\n");
                         printf("<b>" . ("Test case") . ":</b> <a href=\"%s\" title=\"%s\">%s</a> <a href=\"%s\" title=\"%s\">%s</a>\n",
@@ -237,6 +240,10 @@ class ExaminationPage extends BasePage
                 $this->testcase = $data->getExamTestCase() == 'Y';
                 $this->lockdown = $data->getExamLockDown() == 'Y';
 
+                //
+                // This block is only relevant if the exam is running in "real-mode"
+                // where the client computer should be locked down.
+                //
                 if ($this->lockdown) {
                         try {
                                 $locker = new LockerManager($_SERVER['REMOTE_ADDR'], $exam);
