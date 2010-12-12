@@ -346,7 +346,7 @@ class ExaminationPage extends BasePage
         //
         private function showQuestions($exam)
         {
-                $questions = Exam::getQuestions($exam);
+                $questions = Exam::getQuestions($exam, phpCAS::getUser());
 
                 printf("<h3>" . _("Overview of all questions (no answers included)") . "</h3>\n");
                 foreach ($questions as $question) {
