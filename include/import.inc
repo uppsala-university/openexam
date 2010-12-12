@@ -92,7 +92,7 @@ abstract class ImportBase implements Import
         //
         public function cleanup($str)
         {
-                return utf8_encode(strip_tags(html_entity_decode($str)));
+                return utf8_encode(strip_tags(html_entity_decode(trim($str))));
         }
 
         public function open()
