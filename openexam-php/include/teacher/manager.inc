@@ -100,7 +100,7 @@ class ExamGrades
         //
         public function encode()
         {
-                return serialize($this->data);
+                return json_encode($this->data);
         }
 
         //
@@ -108,7 +108,7 @@ class ExamGrades
         //
         public function decode($data)
         {
-                $this->data = unserialize($data);
+                $this->data = (array) json_decode($data);
                 asort($this->data);
         }
 

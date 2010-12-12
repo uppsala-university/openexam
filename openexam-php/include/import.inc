@@ -115,14 +115,11 @@ class ImportInsert
                         }
                         $tid = $this->db->lastInsertID();
                         foreach ($questions as $question) {
-                                //
-                                // Use PHP builtin serializer instead of JSON as json_encode() convert
-                                // strings to unicode, not utf8.
-                                //
                                 if ($question['type'] == 'multiple' || $question == 'single') {
-                                        $question['quest'] = sprintf("%s\n\n%s", $question['body'], serialize($question['choice']));
+                                        $question['quest'] = sprintf("%s\n\n%s", $question['body'], json_encode($question['choice']));
+                                        $question['quest'] = $this->db->escape($question['quest']);
                                 } else {
-                                        $question['quest'] = $question['body'];
+                                        $question['quest'] = $this->db->escape($question['body']);
                                 }
 
                                 $sql = sprintf("INSERT INTO questions(

@@ -338,19 +338,19 @@ class Exam
         public function getQuestionChoice($str, $answers = false)
         {
                 $match = array();
-                if (preg_match('/^(.*)\n(a:\d+:{.*}).*$/msU', $str, $match)) {
+                if (preg_match('/^(.*)\n({.*}).*$/msU', $str, $match)) {
                         array_shift($match);   // Remove all matched string
                         if ($answers) {
                                 $match[0] = trim($match[0]);
-                                $match[1] = (array) unserialize($match[1]);
+                                $match[1] = (array) json_decode($match[1]);
                         } else {
                                 $match[0] = trim($match[0]);
-                                $match[1] = array_keys((array) unserialize($match[1]));
+                                $match[1] = array_keys((array) json_decode($match[1]));
                         }
                 } else {
                         if (strlen($str) > 0) {
                                 $match[0] = null;
-                                $match[1] = unserialize($str);
+                                $match[1] = json_decode($str);
                         } else {
                                 $match[0] = null;
                                 $match[1] = array();
