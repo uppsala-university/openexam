@@ -69,6 +69,7 @@ include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/testcase.inc";
 include "include/export.inc";
+include "include/import.inc";
 
 // 
 // Maximum length of question text before its trunkated in the list.
@@ -88,8 +89,9 @@ class ManagerPage extends TeacherPage
 
         private $params = array(
                 "exam" => "/^\d+$/",
-                "action" => "/^(add|edit|show|copy|test|delete|cancel|finish|export)$/",
+                "action" => "/^(add|edit|show|copy|test|delete|cancel|finish|export|import)$/",
                 "role" => "/^(contributor|examinator|decoder)$/",
+                "type" => "/^(op)$/",
                 "user" => "/^\d+$/",
                 "uuid" => "/^[0-9a-zA-Z]{1,10}$/",
                 "name" => "/^[[:ascii:]]+$/"
@@ -120,6 +122,8 @@ class ManagerPage extends TeacherPage
                                 self::showAvailableExams();
                         } elseif ($_REQUEST['action'] == "add") {
                                 self::addExam(isset($_REQUEST['name']));
+                        } elseif ($_REQUEST['action'] == "import") {
+                                self::importExam(isset($_FILES['file']));
                         }
                 } else {
                         if (isset($_REQUEST['action'])) {
@@ -184,6 +188,7 @@ class ManagerPage extends TeacherPage
                 $tree = new TreeBuilder(_("Examinations"));
                 $root = $tree->getRoot();
                 if ($this->roles->getManagerRoles() > 0) {
+                        $root->addLink(_("Import"), "?action=import", _("Creates a new examination by importing an OpenExam project."));
                         $root->addLink(_("Add"), "?action=add", _("Creates a new examination."));
                 }
 
@@ -455,6 +460,46 @@ class ManagerPage extends TeacherPage
                 $exporter = new Export($this->param->exam);
                 $exporter->send();
                 exit(0);
+        }
+
+        //
+        // Import complete exam.
+        //
+        private function importExam($store)
+        {
+                if ($store) {
+                        try {
+                                $importer = FileImport::getReader(
+                                                $this->param->type,
+                                                $_FILES['file']['name'],
+                                                $_FILES['file']['tmp_name'],
+                                                $_FILES['file']['type'],
+                                                $_FILES['file']['size']
+                                );
+                                $importer->open();
+                                $this->param->exam = $importer->read(0, Database::getConnection());
+                                $importer->close();
+                        } catch (ImportException $exception) {
+                                ErrorPage::show(_("Failed Import Questions"), $exception->getMessage());
+                                exit(1);
+                        }
+                        header(sprintf("location: manager.php?exam=%d", $this->param->exam));
+                } else {
+                        printf("<p>" .
+                                _("This page let you create a new examination from an OpenExam project file exported earlier. ") .
+                                _("Browse your local disk to select an file containing the OpenExam project to import. ") .
+                                "</p>\n");
+
+                        $form = new Form("manager.php", "POST");
+                        $form->setEncodingType("multipart/form-data");
+                        $form->addHidden("action", "import");
+                        $form->addHidden("type", "op");
+                        $form->addHidden("MAX_FILE_SIZE", 500000);
+                        $input = $form->addFileInput("file");
+                        $input->setLabel(_("Filename"));
+                        $input = $form->addSubmitButton("import", _("Import"));
+                        $form->output();
+                }
         }
 
         //
