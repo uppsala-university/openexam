@@ -81,7 +81,7 @@ class ContributePage extends TeacherPage
                 "score" => "/^\d+(\.\d)*$/",
                 "name" => "/^.*$/",
                 "quest" => "/.*/",
-                "type" => "/^(freetext|single|multiple|pp|oe)$/",
+                "type" => "/^(freetext|single|multiple|pp|oq)$/",
                 "user" => "/^[0-9a-zA-Z]{1,10}$/",
                 "status" => "/^(active|removed)$/",
                 "video" => "/^(.*:\/\/.*|)$/",
@@ -547,7 +547,7 @@ class ContributePage extends TeacherPage
                 $input = $form->addSubmitButton(_("Import"));
                 $input = $form->addComboBox("type");
                 $input->addOption("pp", _("Ping-Pong"));
-                $input->addOption("oe", _("OpenExam"));
+                $input->addOption("oq", _("OpenExam"));
                 $input->setLabel(_("Type"));
                 $form->output();
         }
