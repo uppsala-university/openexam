@@ -545,7 +545,7 @@ class CorrectionPage extends TeacherPage
                                 $data->getExamName());
                         printf("<p>" .
                                 _("Correct answers by student (rows), by question (column) or individual (by index). ") .
-                                _("You can only correct answers for those questions published by yourself.") .
+                                _("You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.") .
                                 "</p>\n");
                 } else {
                         printf("<h3>" . _("Showing Scores") . "</h3>\n");
