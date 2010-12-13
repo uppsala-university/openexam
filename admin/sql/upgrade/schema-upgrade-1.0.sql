@@ -28,7 +28,8 @@ WHERE   s.exam_id = e.id AND
 );
 ALTER TABLE `answers` MODIFY `answer` text;
 ALTER TABLE `answers` ADD `answered` enum('Y','N') DEFAULT 'N' AFTER student_id;
-UPDATE answers SET answered = 'Y' WHERE answer != NULL;
+UPDATE answers SET answered = 'Y' WHERE answer != '';
+UPDATE answers SET answered = 'N' WHERE answer = '';
 
 --
 -- Question topics is a new feature required for 'duggor'.
