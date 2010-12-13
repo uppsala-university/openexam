@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-12-12 18:06+0100\n"
-"PO-Revision-Date: 2010-12-12 18:15+0100\n"
+"POT-Creation-Date: 2010-12-13 19:02+0100\n"
+"PO-Revision-Date: 2010-12-13 19:05+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "Language: \n"
@@ -30,15 +30,15 @@ msgstr "Webmaster"
 msgid "Template:"
 msgstr "Mall:"
 
-#: template/page.php:100 source/index.php:107 source/exam/index.php:267
-#: source/exam/index.php:272 source/exam/index.php:550
-#: source/exam/index.php:557 source/admin/admin.php:90
+#: template/page.php:100 source/index.php:107 source/exam/index.php:274
+#: source/exam/index.php:279 source/exam/index.php:557
+#: source/exam/index.php:564 source/admin/admin.php:90
 #: source/admin/teacher.php:92 include/admin.inc:124 include/teacher.inc:438
 msgid "Request parameter error!"
 msgstr "Problem med anropsparametrarna!"
 
-#: template/page.php:101 source/index.php:108 source/exam/index.php:551
-#: source/exam/index.php:558 include/admin.inc:125 include/teacher.inc:439
+#: template/page.php:101 source/index.php:108 source/exam/index.php:558
+#: source/exam/index.php:565 include/admin.inc:125 include/teacher.inc:439
 #, php-format
 msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
 msgstr "Ogiltigt värde för anropsparametern '%s' (förväntade ett värde som matchar mönstret '%s')."
@@ -130,170 +130,170 @@ msgstr "Admin"
 msgid "Examination:"
 msgstr "Examination:"
 
-#: source/exam/index.php:142
+#: source/exam/index.php:145
 msgid "Stops the examination and allow you to correct and decode results."
 msgstr "Avbryter examinationen och tillåter dig att rätta och avkoda resultatet."
 
-#: source/exam/index.php:143
+#: source/exam/index.php:146
 msgid "Finish"
 msgstr "Avsluta"
 
-#: source/exam/index.php:145
+#: source/exam/index.php:148
 msgid "Delete this test case and return to the examination manager."
 msgstr "Ta bort denna examination och återvänd till projekthanteraren."
 
-#: source/exam/index.php:146
+#: source/exam/index.php:149
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: source/exam/index.php:157
+#: source/exam/index.php:160
 msgid "Questions:"
 msgstr "Frågor:"
 
-#: source/exam/index.php:175 source/teacher/correct.php:374
+#: source/exam/index.php:178 source/teacher/correct.php:374
 msgid "Answered"
 msgstr "Besvarade:"
 
-#: source/exam/index.php:192 source/teacher/decoder.php:175
+#: source/exam/index.php:195 source/teacher/decoder.php:175
 #: source/teacher/contribute.php:731 source/teacher/manager.php:599
 #: source/teacher/correct.php:370
 msgid "Show"
 msgstr "Visa"
 
-#: source/exam/index.php:196
+#: source/exam/index.php:199
 msgid "Show the start page for this examination"
 msgstr "Visa startsidan för denna examination"
 
-#: source/exam/index.php:196
+#: source/exam/index.php:199
 msgid "Start page"
 msgstr "Startsida"
 
-#: source/exam/index.php:199
+#: source/exam/index.php:202
 msgid "Show all questions at the same time"
 msgstr "Visa alla frågor på samma gång"
 
-#: source/exam/index.php:200
+#: source/exam/index.php:203
 msgid "All questions"
 msgstr "Alla frågor"
 
-#: source/exam/index.php:222 source/exam/index.php:286
-#: source/exam/index.php:323
+#: source/exam/index.php:225 source/exam/index.php:293
+#: source/exam/index.php:330
 msgid "Active examination was not found!"
 msgstr "En aktiv examination kunde inte hittas!"
 
-#: source/exam/index.php:223 source/exam/index.php:287
-#: source/exam/index.php:324
+#: source/exam/index.php:226 source/exam/index.php:294
+#: source/exam/index.php:331
 #, php-format
 msgid "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
 msgstr "Systemet kunde inte hitta några examinationer tilldelade till ditt inloggnings ID. Om du tror att detta är fel, var god tag kontakt med examinatorn för ytterligare assistans."
 
-#: source/exam/index.php:232
+#: source/exam/index.php:235
 msgid "This examination is now closed!"
 msgstr "Den här examinationen är nu stängd!"
 
-#: source/exam/index.php:233
+#: source/exam/index.php:236
 #, php-format
 msgid "This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance."
 msgstr "Den här examinationen slutade %s och är nu stängd. Om du tror att detta är fel, var god tag kontakt med examinatorn för ytterligare assistans."
 
-#: source/exam/index.php:248
+#: source/exam/index.php:255
 msgid "Computer lockdown failed!"
 msgstr "Problem med nedlåsning av datorn!"
 
-#: source/exam/index.php:250
+#: source/exam/index.php:257
 #, php-format
 msgid "Securing your computer for this examination has failed: %s"
 msgstr "Ett problem uppstod vid säkringen av din dator för den här examiniationen: %s"
 
-#: source/exam/index.php:252
+#: source/exam/index.php:259
 #, php-format
 msgid "If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. "
 msgstr "Om det här är din dator, kontrollera att fwexamd-tjänsten är startad. I annat fall, tag kontakt med systemadministratören eller assistenten för examiniationen för ytterligare hjälp. "
 
-#: source/exam/index.php:253
+#: source/exam/index.php:260
 #, php-format
 msgid "The examiniation is inaccessable from this computer until the problem has been resolved."
 msgstr "Examinationen är inte tillgänglig från den här datorn innan problemet har lösts."
 
-#: source/exam/index.php:268
+#: source/exam/index.php:275
 #, php-format
 msgid "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
 msgstr "Ingen data kunde hittas för den efterfrågade frågan. Detta ska inte inträffa såtillvida att skriptets parametrar inte avsiktligt har ändrats."
 
-#: source/exam/index.php:273
+#: source/exam/index.php:280
 #, php-format
 msgid "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
 msgstr "Den efterfrågade frågan är inte relaterad till den efterfrågade examinationen. Detta ska inte inträffa såtillvida att skriptets parametrar inte avsiktligt har ändrats."
 
-#: source/exam/index.php:291
+#: source/exam/index.php:298
 #, php-format
 msgid "Select the examination"
 msgstr "Välj examination"
 
-#: source/exam/index.php:293
+#: source/exam/index.php:300
 #, php-format
 msgid "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
 msgstr "Du har blivit tilldelad fler än en examination. Välj examination att genomföra genom att klicka på 'Starta' knappen."
 
-#: source/exam/index.php:296
+#: source/exam/index.php:303
 #, php-format
 msgid "These examinations have been assigned to you, click on the button next to the description to begin the examination."
 msgstr "Dessa examinationer har blivit tilldelade till dig, klicka på knappen bredvid beskrivningen för att starta examinationen."
 
-#: source/exam/index.php:302
+#: source/exam/index.php:309
 msgid "The examination ends"
 msgstr "Examinationen slutar"
 
-#: source/exam/index.php:307
+#: source/exam/index.php:314
 msgid "Begin"
 msgstr "Starta"
 
-#: source/exam/index.php:329
+#: source/exam/index.php:336
 #, php-format
 msgid "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
 msgstr "I menyn till vänster finns alla frågor som hör ihop med denna examination. Redan besvarade frågor finns tillgängliga under 'Besvarade' sektionen. Siffran inom parantes är antal poäng per fråga."
 
-#: source/exam/index.php:330
+#: source/exam/index.php:337
 #, php-format
 msgid "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
 msgstr "Kom ihåg att <u>klicka på spara knappen</u> när du har <u>besvarat en fråga</u>, och gör så innan du går vidare till en annan fråga. Det är OK att spara svaret på en fråga flera gånger. Kom ihåg att logga ut när du avslutar examinationen."
 
-#: source/exam/index.php:331
+#: source/exam/index.php:338
 #, php-format
 msgid "Good luck!"
 msgstr "Lycka till!"
 
-#: source/exam/index.php:335
+#: source/exam/index.php:342
 #, php-format
 msgid "Running in test case mode!"
 msgstr "Körning i testläge!"
 
-#: source/exam/index.php:336
+#: source/exam/index.php:343
 #, php-format
 msgid "This examination is running in test case mode. This mode allows you to review and work with the examination in the same way as the students will."
 msgstr "Denna examination körs i testläge. Detta läge låter dig förhandsgranska och arbeta med examinationen på samma sätt som studenterna kommer att göra."
 
-#: source/exam/index.php:337
+#: source/exam/index.php:344
 #, php-format
 msgid "To exit, click either on the 'finish' or 'cancel' link at bottom of the page. Clicking 'finish' will stop the examination and allow you to correct and decode results, while 'cancel' will delete this test case."
 msgstr "För att avsluta, klicka antingen på länken 'avsluta' eller 'avbryt' nertill på sidan. Klickar du på 'avsluta' så stoppas examinationen och du tillåts att rätta svaren och avkoda resultaten. Om du klickar på 'avbryt' så raderas denna testexamination."
 
-#: source/exam/index.php:338
+#: source/exam/index.php:345
 #, php-format
 msgid "Important"
 msgstr "Viktigt"
 
-#: source/exam/index.php:339
+#: source/exam/index.php:346
 #, php-format
 msgid "Running in test case mode is non-destructive. The original examination remains unaffected as you are working entierly on a copy of it."
 msgstr "Att köra i testläge är säkert och påverkar inte den ursprungliga examinationen på något sätt eftersom du arbetar mot en fullständig kopia av denna."
 
-#: source/exam/index.php:351
+#: source/exam/index.php:358
 #, php-format
 msgid "Overview of all questions (no answers included)"
 msgstr "Översikt av alla frågor (inga svar inkluderade)"
 
-#: source/exam/index.php:358 source/exam/index.php:388
+#: source/exam/index.php:365 source/exam/index.php:395
 #: source/teacher/contribute.php:383 source/teacher/contribute.php:789
 #: source/teacher/correct.php:215 source/teacher/correct.php:223
 #: source/teacher/correct.php:424 source/teacher/correct.php:429
@@ -301,56 +301,56 @@ msgstr "Översikt av alla frågor (inga svar inkluderade)"
 msgid "Question"
 msgstr "Fråga"
 
-#: source/exam/index.php:363 source/teacher/correct.php:240
+#: source/exam/index.php:370 source/teacher/correct.php:240
 #: source/teacher/correct.php:245 source/teacher/correct.php:321
 #: source/teacher/correct.php:393 source/teacher/correct.php:451
 #: include/pdf.inc:444
 msgid "Answer"
 msgstr "Svar"
 
-#: source/exam/index.php:401
+#: source/exam/index.php:408
 #, php-format
 msgid "Answer:"
 msgstr "Svar:"
 
-#: source/exam/index.php:440
+#: source/exam/index.php:447
 msgid "Save"
 msgstr "Spara"
 
-#: source/exam/index.php:441
+#: source/exam/index.php:448
 msgid "Save your answer in the database."
 msgstr "Spara ditt svar till databasen."
 
-#: source/exam/index.php:442
+#: source/exam/index.php:449
 msgid "OK"
 msgstr "OK"
 
-#: source/exam/index.php:443
+#: source/exam/index.php:450
 msgid "Save and move on to next unanswered question."
 msgstr "Spara och fortsätt till nästa obesvarad fråga."
 
-#: source/exam/index.php:455 include/pdf.inc:363
+#: source/exam/index.php:462 include/pdf.inc:363
 msgid "Notice"
 msgstr "Notera"
 
-#: source/exam/index.php:455
+#: source/exam/index.php:462
 msgid "This question is viewed in preview mode (for question author)."
 msgstr "Frågan visas i förhandsgranskningsläget (för författare av frågor)."
 
-#: source/exam/index.php:458
+#: source/exam/index.php:465
 #, php-format
 msgid "Your answer has been successful saved in the database."
 msgstr "Ditt svar har blivit sparat i databasen."
 
-#: source/exam/index.php:466 source/teacher/contribute.php:810
+#: source/exam/index.php:473 source/teacher/contribute.php:810
 msgid "Video"
 msgstr "Video"
 
-#: source/exam/index.php:473 source/teacher/contribute.php:811
+#: source/exam/index.php:480 source/teacher/contribute.php:811
 msgid "Audio"
 msgstr "Ljud"
 
-#: source/exam/index.php:480 source/teacher/contribute.php:812
+#: source/exam/index.php:487 source/teacher/contribute.php:812
 msgid "Image"
 msgstr "Bild"
 
@@ -1476,14 +1476,12 @@ msgstr "Denna sida låter dig ändra på egenskaperna för denna examination. Kl
 #: source/teacher/manager.php:489
 #, php-format
 msgid "This page let you create a new examination from an OpenExam project file exported earlier. "
-msgstr ""
-"Denna sida låter dig skapa en ny examiniation från en tidigare exporterad OpenExam-projektfil. "
+msgstr "Denna sida låter dig skapa en ny examiniation från en tidigare exporterad OpenExam-projektfil. "
 
 #: source/teacher/manager.php:490
 #, php-format
 msgid "Browse your local disk to select an file containing the OpenExam project to import. "
-msgstr ""
-"Bläddra på din lokala hårddisk för att välja en fil innehållande att OpenExam-projekt att importera. "
+msgstr "Bläddra på din lokala hårddisk för att välja en fil innehållande att OpenExam-projekt att importera. "
 
 #: source/teacher/manager.php:520
 msgid "Export"
@@ -1852,8 +1850,9 @@ msgstr "Rätta svaren per student (rader), per fråga (kolumner) eller enstaka s
 
 #: source/teacher/correct.php:548
 #, php-format
-msgid "You can only correct answers for those questions published by yourself."
-msgstr "Du kan endast rätta svaren på dom frågor som du själv publicerat."
+msgid "You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of."
+msgstr ""
+"Du kan endast rätta svaren på dom frågor som du själv publicerat eller blivit tilldelad rollen som rättare f�ör."
 
 #: source/teacher/correct.php:551
 #, php-format
@@ -2345,36 +2344,34 @@ msgstr "Fel MIME-type (%s) på den uppladdade filen %s (förväntade %s)"
 msgid "Empty file %s uploaded"
 msgstr "Tom file %s uppladdad"
 
-#: include/import.inc:320 include/import.inc:412
+#: include/import.inc:331 include/import.inc:423
 #, php-format
 msgid "Expected header '%s' at index (1,1)"
 msgstr "Förväntade headern '%s' på position (1,1)"
 
-#: include/import.inc:324 include/import.inc:417
+#: include/import.inc:335 include/import.inc:428
 #, php-format
 msgid "Expected format '%s' at index (2,2)"
 msgstr "Förväntade formatet '%s' på position (2,2)"
 
-#: include/import.inc:509
-msgid "Missing XML format attribute. This don't look like an OpenExam project data file."
-msgstr ""
-"Saknar ett XML-format attribut. Detta ser inte ut att vara en OpenExam-projektfil."
-
 #: include/import.inc:520
+msgid "Missing XML format attribute. This don't look like an OpenExam project data file."
+msgstr "Saknar ett XML-format attribut. Detta ser inte ut att vara en OpenExam-projektfil."
+
+#: include/import.inc:531
 #, php-format
 msgid "Unsupported XML format number: %d. This file can not be imported."
 msgstr "Osupporterat XML formatnummer: %d. Denna fil kan inte importeras."
 
-#: include/import.inc:580
+#: include/import.inc:591
 #, php-format
 msgid "Possible file upload attack: %s"
 msgstr "Möjlig attack genom uppladdning av fil: %s"
 
-#: include/import.inc:593
+#: include/import.inc:604
 #, php-format
 msgid "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
-msgstr ""
-"Vet ej hur man importerar *.%s-filer. Var god välj en fil innehållande en frågebank från Ping-Pong."
+msgstr "Vet ej hur man importerar *.%s-filer. Var god välj en fil innehållande en frågebank från Ping-Pong."
 
 #: include/locale.inc:247
 msgid "Swedish"
