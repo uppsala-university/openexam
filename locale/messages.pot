@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-12-12 18:06+0100\n"
+"POT-Creation-Date: 2010-12-13 19:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,15 +29,15 @@ msgstr ""
 msgid "Template:"
 msgstr ""
 
-#: template/page.php:100 source/index.php:107 source/exam/index.php:267
-#: source/exam/index.php:272 source/exam/index.php:550
-#: source/exam/index.php:557 source/admin/admin.php:90
+#: template/page.php:100 source/index.php:107 source/exam/index.php:274
+#: source/exam/index.php:279 source/exam/index.php:557
+#: source/exam/index.php:564 source/admin/admin.php:90
 #: source/admin/teacher.php:92 include/admin.inc:124 include/teacher.inc:438
 msgid "Request parameter error!"
 msgstr ""
 
-#: template/page.php:101 source/index.php:108 source/exam/index.php:551
-#: source/exam/index.php:558 include/admin.inc:125 include/teacher.inc:439
+#: template/page.php:101 source/index.php:108 source/exam/index.php:558
+#: source/exam/index.php:565 include/admin.inc:125 include/teacher.inc:439
 #, php-format
 msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
 msgstr ""
@@ -129,170 +129,170 @@ msgstr ""
 msgid "Examination:"
 msgstr ""
 
-#: source/exam/index.php:142
+#: source/exam/index.php:145
 msgid "Stops the examination and allow you to correct and decode results."
 msgstr ""
 
-#: source/exam/index.php:143
+#: source/exam/index.php:146
 msgid "Finish"
 msgstr ""
 
-#: source/exam/index.php:145
+#: source/exam/index.php:148
 msgid "Delete this test case and return to the examination manager."
 msgstr ""
 
-#: source/exam/index.php:146
+#: source/exam/index.php:149
 msgid "Cancel"
 msgstr ""
 
-#: source/exam/index.php:157
+#: source/exam/index.php:160
 msgid "Questions:"
 msgstr ""
 
-#: source/exam/index.php:175 source/teacher/correct.php:374
+#: source/exam/index.php:178 source/teacher/correct.php:374
 msgid "Answered"
 msgstr ""
 
-#: source/exam/index.php:192 source/teacher/decoder.php:175
+#: source/exam/index.php:195 source/teacher/decoder.php:175
 #: source/teacher/contribute.php:731 source/teacher/manager.php:599
 #: source/teacher/correct.php:370
 msgid "Show"
 msgstr ""
 
-#: source/exam/index.php:196
+#: source/exam/index.php:199
 msgid "Show the start page for this examination"
 msgstr ""
 
-#: source/exam/index.php:196
+#: source/exam/index.php:199
 msgid "Start page"
 msgstr ""
 
-#: source/exam/index.php:199
+#: source/exam/index.php:202
 msgid "Show all questions at the same time"
 msgstr ""
 
-#: source/exam/index.php:200
+#: source/exam/index.php:203
 msgid "All questions"
 msgstr ""
 
-#: source/exam/index.php:222 source/exam/index.php:286
-#: source/exam/index.php:323
+#: source/exam/index.php:225 source/exam/index.php:293
+#: source/exam/index.php:330
 msgid "Active examination was not found!"
 msgstr ""
 
-#: source/exam/index.php:223 source/exam/index.php:287
-#: source/exam/index.php:324
+#: source/exam/index.php:226 source/exam/index.php:294
+#: source/exam/index.php:331
 #, php-format
 msgid "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
 msgstr ""
 
-#: source/exam/index.php:232
+#: source/exam/index.php:235
 msgid "This examination is now closed!"
 msgstr ""
 
-#: source/exam/index.php:233
+#: source/exam/index.php:236
 #, php-format
 msgid "This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance."
 msgstr ""
 
-#: source/exam/index.php:248
+#: source/exam/index.php:255
 msgid "Computer lockdown failed!"
 msgstr ""
 
-#: source/exam/index.php:250
+#: source/exam/index.php:257
 #, php-format
 msgid "Securing your computer for this examination has failed: %s"
 msgstr ""
 
-#: source/exam/index.php:252
+#: source/exam/index.php:259
 #, php-format
 msgid "If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. "
 msgstr ""
 
-#: source/exam/index.php:253
+#: source/exam/index.php:260
 #, php-format
 msgid "The examiniation is inaccessable from this computer until the problem has been resolved."
 msgstr ""
 
-#: source/exam/index.php:268
+#: source/exam/index.php:275
 #, php-format
 msgid "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
 msgstr ""
 
-#: source/exam/index.php:273
+#: source/exam/index.php:280
 #, php-format
 msgid "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
 msgstr ""
 
-#: source/exam/index.php:291
+#: source/exam/index.php:298
 #, php-format
 msgid "Select the examination"
 msgstr ""
 
-#: source/exam/index.php:293
+#: source/exam/index.php:300
 #, php-format
 msgid "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
 msgstr ""
 
-#: source/exam/index.php:296
+#: source/exam/index.php:303
 #, php-format
 msgid "These examinations have been assigned to you, click on the button next to the description to begin the examination."
 msgstr ""
 
-#: source/exam/index.php:302
+#: source/exam/index.php:309
 msgid "The examination ends"
 msgstr ""
 
-#: source/exam/index.php:307
+#: source/exam/index.php:314
 msgid "Begin"
-msgstr ""
-
-#: source/exam/index.php:329
-#, php-format
-msgid "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
-msgstr ""
-
-#: source/exam/index.php:330
-#, php-format
-msgid "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
-msgstr ""
-
-#: source/exam/index.php:331
-#, php-format
-msgid "Good luck!"
-msgstr ""
-
-#: source/exam/index.php:335
-#, php-format
-msgid "Running in test case mode!"
 msgstr ""
 
 #: source/exam/index.php:336
 #, php-format
-msgid "This examination is running in test case mode. This mode allows you to review and work with the examination in the same way as the students will."
+msgid "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
 msgstr ""
 
 #: source/exam/index.php:337
 #, php-format
-msgid "To exit, click either on the 'finish' or 'cancel' link at bottom of the page. Clicking 'finish' will stop the examination and allow you to correct and decode results, while 'cancel' will delete this test case."
+msgid "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
 msgstr ""
 
 #: source/exam/index.php:338
 #, php-format
+msgid "Good luck!"
+msgstr ""
+
+#: source/exam/index.php:342
+#, php-format
+msgid "Running in test case mode!"
+msgstr ""
+
+#: source/exam/index.php:343
+#, php-format
+msgid "This examination is running in test case mode. This mode allows you to review and work with the examination in the same way as the students will."
+msgstr ""
+
+#: source/exam/index.php:344
+#, php-format
+msgid "To exit, click either on the 'finish' or 'cancel' link at bottom of the page. Clicking 'finish' will stop the examination and allow you to correct and decode results, while 'cancel' will delete this test case."
+msgstr ""
+
+#: source/exam/index.php:345
+#, php-format
 msgid "Important"
 msgstr ""
 
-#: source/exam/index.php:339
+#: source/exam/index.php:346
 #, php-format
 msgid "Running in test case mode is non-destructive. The original examination remains unaffected as you are working entierly on a copy of it."
 msgstr ""
 
-#: source/exam/index.php:351
+#: source/exam/index.php:358
 #, php-format
 msgid "Overview of all questions (no answers included)"
 msgstr ""
 
-#: source/exam/index.php:358 source/exam/index.php:388
+#: source/exam/index.php:365 source/exam/index.php:395
 #: source/teacher/contribute.php:383 source/teacher/contribute.php:789
 #: source/teacher/correct.php:215 source/teacher/correct.php:223
 #: source/teacher/correct.php:424 source/teacher/correct.php:429
@@ -300,56 +300,56 @@ msgstr ""
 msgid "Question"
 msgstr ""
 
-#: source/exam/index.php:363 source/teacher/correct.php:240
+#: source/exam/index.php:370 source/teacher/correct.php:240
 #: source/teacher/correct.php:245 source/teacher/correct.php:321
 #: source/teacher/correct.php:393 source/teacher/correct.php:451
 #: include/pdf.inc:444
 msgid "Answer"
 msgstr ""
 
-#: source/exam/index.php:401
+#: source/exam/index.php:408
 #, php-format
 msgid "Answer:"
 msgstr ""
 
-#: source/exam/index.php:440
+#: source/exam/index.php:447
 msgid "Save"
 msgstr ""
 
-#: source/exam/index.php:441
+#: source/exam/index.php:448
 msgid "Save your answer in the database."
 msgstr ""
 
-#: source/exam/index.php:442
+#: source/exam/index.php:449
 msgid "OK"
 msgstr ""
 
-#: source/exam/index.php:443
+#: source/exam/index.php:450
 msgid "Save and move on to next unanswered question."
 msgstr ""
 
-#: source/exam/index.php:455 include/pdf.inc:363
+#: source/exam/index.php:462 include/pdf.inc:363
 msgid "Notice"
 msgstr ""
 
-#: source/exam/index.php:455
+#: source/exam/index.php:462
 msgid "This question is viewed in preview mode (for question author)."
 msgstr ""
 
-#: source/exam/index.php:458
+#: source/exam/index.php:465
 #, php-format
 msgid "Your answer has been successful saved in the database."
 msgstr ""
 
-#: source/exam/index.php:466 source/teacher/contribute.php:810
+#: source/exam/index.php:473 source/teacher/contribute.php:810
 msgid "Video"
 msgstr ""
 
-#: source/exam/index.php:473 source/teacher/contribute.php:811
+#: source/exam/index.php:480 source/teacher/contribute.php:811
 msgid "Audio"
 msgstr ""
 
-#: source/exam/index.php:480 source/teacher/contribute.php:812
+#: source/exam/index.php:487 source/teacher/contribute.php:812
 msgid "Image"
 msgstr ""
 
@@ -1827,7 +1827,7 @@ msgstr ""
 
 #: source/teacher/correct.php:548
 #, php-format
-msgid "You can only correct answers for those questions published by yourself."
+msgid "You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of."
 msgstr ""
 
 #: source/teacher/correct.php:551
@@ -2320,31 +2320,31 @@ msgstr ""
 msgid "Empty file %s uploaded"
 msgstr ""
 
-#: include/import.inc:320 include/import.inc:412
+#: include/import.inc:331 include/import.inc:423
 #, php-format
 msgid "Expected header '%s' at index (1,1)"
 msgstr ""
 
-#: include/import.inc:324 include/import.inc:417
+#: include/import.inc:335 include/import.inc:428
 #, php-format
 msgid "Expected format '%s' at index (2,2)"
 msgstr ""
 
-#: include/import.inc:509
+#: include/import.inc:520
 msgid "Missing XML format attribute. This don't look like an OpenExam project data file."
 msgstr ""
 
-#: include/import.inc:520
+#: include/import.inc:531
 #, php-format
 msgid "Unsupported XML format number: %d. This file can not be imported."
 msgstr ""
 
-#: include/import.inc:580
+#: include/import.inc:591
 #, php-format
 msgid "Possible file upload attack: %s"
 msgstr ""
 
-#: include/import.inc:593
+#: include/import.inc:604
 #, php-format
 msgid "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
 msgstr ""
