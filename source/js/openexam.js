@@ -57,6 +57,10 @@ function check_range(textbox, min, max)
         }
 }
 
+//
+// Save the value in textbox. This function is typical called whe triggered
+// by an onfocus event. This is the buddy function to check_range().
+//
 function start_check(textbox)
 {
         boxdata = textbox.value;
