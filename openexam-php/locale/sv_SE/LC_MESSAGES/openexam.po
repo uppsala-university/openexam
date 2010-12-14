@@ -1855,7 +1855,7 @@ msgstr "RÃ¤tta svaren per student (rader), per frÃ¥ga (kolumner) eller ensta
 #: source/teacher/correct.php:554
 #, php-format
 msgid "You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of."
-msgstr "Du kan endast rÃ¤tta svaren pÃ¥ dom frÃ¥gor som du sjÃ¤lv publicerat eller blivit tilldelad rollen som rÃ¤ttare f¶Ã¶r."
+msgstr "Du kan endast rÃ¤tta svaren pÃ¥ dom frÃ¥gor som du sjÃ¤lv publicerat eller blivit tilldelad rollen som rÃ¤ttare fÃ¶r."
 
 #: source/teacher/correct.php:557
 #, php-format
