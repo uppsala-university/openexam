@@ -6,12 +6,20 @@
  ****************************************************************/
 
 --
--- Always create the schemainfo table if not yet exist.
+-- Always create the schemainfo table if it not yet exist.
 --
 CREATE TABLE IF NOT EXISTS `schemainfo` (
-        `major` int(11) NOT NULL,
-        `minor` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+        `id` int(11) NOT NULL DEFAULT '0',
+        `major` int(11) NOT NULL DEFAULT '0',
+        `minor` int(11) NOT NULL DEFAULT '0',
+        `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
+--
+-- This just makes sure the version record exist.
+--
+INSERT INTO schemainfo(id) VALUES(1) ON DUPLICATE KEY UPDATE major = major;
 
 --
 -- Add missing bindings. How an question is considered as answered has changed
