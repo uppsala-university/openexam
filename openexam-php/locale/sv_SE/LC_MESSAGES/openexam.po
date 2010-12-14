@@ -1,20 +1,20 @@
 # Swedish translations for PACKAGE package
-# Svenska översättningar för paket PACKAGE.
+# Svenska Ã¶versÃ¤ttningar fÃ¶r paket PACKAGE.
 # Copyright (C) 2010 Computing Department at BMC, Uppsala Biomedical Centre, Uppsala University
 # This file is distributed under the same license as the PACKAGE package.
-# Anders Lövgren <anders.lovgren@bmc.uu.se>, 2010.
+# Anders LÃ¶vgren <anders.lovgren@bmc.uu.se>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-12-14 05:48+0100\n"
-"PO-Revision-Date: 2010-12-13 19:05+0100\n"
-"Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
+"POT-Creation-Date: 2010-12-14 07:22+0100\n"
+"PO-Revision-Date: 2010-12-14 06:44+0100\n"
+"Last-Translator: Anders LÃ¶vgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -41,36 +41,36 @@ msgstr "Problem med anropsparametrarna!"
 #: source/exam/index.php:566 include/admin.inc:125 include/teacher.inc:440
 #, php-format
 msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
-msgstr "Ogiltigt värde för anropsparametern '%s' (förväntade ett värde som matchar mönstret '%s')."
+msgstr "Ogiltigt vÃ¤rde fÃ¶r anropsparametern '%s' (fÃ¶rvÃ¤ntade ett vÃ¤rde som matchar mÃ¶nstret '%s')."
 
 #: template/ui/standard.ui:56 template/ui/uu-white/standard.ui:51
 #: template/ui/uu-red/standard.ui:43
 msgid "Listen to page/selected text"
-msgstr "Lyssna på sidan/vald text"
+msgstr "Lyssna pÃ¥ sidan/vald text"
 
 #: template/ui/standard.ui:56 template/ui/uu-white/standard.ui:51
 #: template/ui/uu-red/standard.ui:43
 msgid "Say it"
-msgstr "Läs upp"
+msgstr "LÃ¤s upp"
 
 #: template/ui/standard.ui:80 template/ui/standard.ui:83
 #: template/ui/uu-white/standard.ui:75 template/ui/uu-white/standard.ui:78
 #: template/ui/uu-red/standard.ui:81 template/ui/uu-red/standard.ui:84
 #, php-format
 msgid "Copyright"
-msgstr "Upphovsrätt"
+msgstr "UpphovsrÃ¤tt"
 
 #: template/ui/standard.ui:81 template/ui/uu-white/standard.ui:76
 #: template/ui/uu-red/standard.ui:82
 #, php-format
 msgid "Information about writer, publisher and publish date, and webmaster is missing."
-msgstr "Information om författare, publiserare, publiseringsdatum och webbmaster saknas."
+msgstr "Information om fÃ¶rfattare, publiserare, publiseringsdatum och webbmaster saknas."
 
 #: template/ui/standard.ui:84 template/ui/uu-white/standard.ui:79
 #: template/ui/uu-red/standard.ui:85
 #, php-format
 msgid "Last modified: %s"
-msgstr "Senast ändrad: %s"
+msgstr "Senast Ã¤ndrad: %s"
 
 #: template/ui/standard.ui:84 template/ui/uu-white/standard.ui:79
 #: template/ui/uu-red/standard.ui:85
@@ -80,11 +80,11 @@ msgstr "Sidansvarig:"
 
 #: conf/config.inc:18
 msgid "OpenExam PHP - Online examination over the web"
-msgstr "OpenExam PHP - Online examination över webben"
+msgstr "OpenExam PHP - Online examination Ã¶ver webben"
 
 #: conf/config.inc:100
 msgid "System Manager"
-msgstr "Systemförvaltare"
+msgstr "SystemfÃ¶rvaltare"
 
 #: conf/config.inc:110
 msgid "OpenExam PHP"
@@ -97,30 +97,30 @@ msgstr "Index:"
 #: source/index.php:81
 #, php-format
 msgid "Welcome!"
-msgstr "Välkommen!"
+msgstr "VÃ¤lkommen!"
 
 #: source/index.php:82
 #, php-format
 msgid "This system let you do examination online, see <a href=\"%s\">Help</a> for more information. Remember to <u>save your answer at regular interval</u> to prevent losing data caused by automatic logout!"
-msgstr "Detta system låter dig utföra en examination online, se <a href=\"%s\">Hjälp</a> för mer information. Kom ihåg att <u>spara dina svar regelbundet</u> för att undvika att förlora data orsakad av automatisk utloggning!"
+msgstr "Detta system lÃ¥ter dig utfÃ¶ra en examination online, se <a href=\"%s\">HjÃ¤lp</a> fÃ¶r mer information. Kom ihÃ¥g att <u>spara dina svar regelbundet</u> fÃ¶r att undvika att fÃ¶rlora data orsakad av automatisk utloggning!"
 
 #: source/index.php:83
 #, php-format
 msgid "Are you ready to begin the examination?"
-msgstr "Är du redo att börja på med examinationen?"
+msgstr "Ãr du redo att bÃ¶rja pÃ¥ med examinationen?"
 
 #: source/index.php:84
 #, php-format
 msgid "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
-msgstr "Följ länken till <a href=\"%s\">examinationssidan</a> för att starta examinationen. Du kommer att anmodas att logga in med ditt UU-ID/UpUnet-S konto (CAS-inloggning)."
+msgstr "FÃ¶lj lÃ¤nken till <a href=\"%s\">examinationssidan</a> fÃ¶r att starta examinationen. Du kommer att anmodas att logga in med ditt UU-ID/UpUnet-S konto (CAS-inloggning)."
 
 #: source/index.php:92
 msgid "Manager"
-msgstr "Förvaltare"
+msgstr "FÃ¶rvaltare"
 
 #: source/index.php:94
 msgid "Teacher"
-msgstr "Lärare"
+msgstr "LÃ¤rare"
 
 #: source/index.php:95 source/admin/index.php:70
 msgid "Admin"
@@ -132,7 +132,7 @@ msgstr "Examination:"
 
 #: source/exam/index.php:145
 msgid "Stops the examination and allow you to correct and decode results."
-msgstr "Avbryter examinationen och tillåter dig att rätta och avkoda resultatet."
+msgstr "Avbryter examinationen och tillÃ¥ter dig att rÃ¤tta och avkoda resultatet."
 
 #: source/exam/index.php:146
 msgid "Finish"
@@ -140,7 +140,7 @@ msgstr "Avsluta"
 
 #: source/exam/index.php:148
 msgid "Delete this test case and return to the examination manager."
-msgstr "Ta bort denna examination och återvänd till projekthanteraren."
+msgstr "Ta bort denna examination och Ã¥tervÃ¤nd till projekthanteraren."
 
 #: source/exam/index.php:149
 msgid "Cancel"
@@ -148,21 +148,21 @@ msgstr "Avbryt"
 
 #: source/exam/index.php:161
 msgid "Questions:"
-msgstr "Frågor:"
+msgstr "FrÃ¥gor:"
 
 #: source/exam/index.php:179 source/teacher/correct.php:380
 msgid "Answered"
 msgstr "Besvarade:"
 
 #: source/exam/index.php:196 source/teacher/decoder.php:175
-#: source/teacher/contribute.php:731 source/teacher/manager.php:599
+#: source/teacher/contribute.php:739 source/teacher/manager.php:599
 #: source/teacher/correct.php:376
 msgid "Show"
 msgstr "Visa"
 
 #: source/exam/index.php:200
 msgid "Show the start page for this examination"
-msgstr "Visa startsidan för denna examination"
+msgstr "Visa startsidan fÃ¶r denna examination"
 
 #: source/exam/index.php:200
 msgid "Start page"
@@ -170,11 +170,11 @@ msgstr "Startsida"
 
 #: source/exam/index.php:203
 msgid "Show all questions at the same time"
-msgstr "Visa alla frågor på samma gång"
+msgstr "Visa alla frÃ¥gor pÃ¥ samma gÃ¥ng"
 
 #: source/exam/index.php:204
 msgid "All questions"
-msgstr "Alla frågor"
+msgstr "Alla frÃ¥gor"
 
 #: source/exam/index.php:226 source/exam/index.php:294
 #: source/exam/index.php:331
@@ -185,60 +185,60 @@ msgstr "En aktiv examination kunde inte hittas!"
 #: source/exam/index.php:332
 #, php-format
 msgid "The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."
-msgstr "Systemet kunde inte hitta några examinationer tilldelade till ditt inloggnings ID. Om du tror att detta är fel, var god tag kontakt med examinatorn för ytterligare assistans."
+msgstr "Systemet kunde inte hitta nÃ¥gra examinationer tilldelade till ditt inloggnings ID. Om du tror att detta Ã¤r fel, var god tag kontakt med examinatorn fÃ¶r ytterligare assistans."
 
 #: source/exam/index.php:236
 msgid "This examination is now closed!"
-msgstr "Den här examinationen är nu stängd!"
+msgstr "Den hÃ¤r examinationen Ã¤r nu stÃ¤ngd!"
 
 #: source/exam/index.php:237
 #, php-format
 msgid "This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance."
-msgstr "Den här examinationen slutade %s och är nu stängd. Om du tror att detta är fel, var god tag kontakt med examinatorn för ytterligare assistans."
+msgstr "Den hÃ¤r examinationen slutade %s och Ã¤r nu stÃ¤ngd. Om du tror att detta Ã¤r fel, var god tag kontakt med examinatorn fÃ¶r ytterligare assistans."
 
 #: source/exam/index.php:256
 msgid "Computer lockdown failed!"
-msgstr "Problem med nedlåsning av datorn!"
+msgstr "Problem med nedlÃ¥sning av datorn!"
 
 #: source/exam/index.php:258
 #, php-format
 msgid "Securing your computer for this examination has failed: %s"
-msgstr "Ett problem uppstod vid säkringen av din dator för den här examiniationen: %s"
+msgstr "Ett problem uppstod vid sÃ¤kringen av din dator fÃ¶r den hÃ¤r examiniationen: %s"
 
 #: source/exam/index.php:260
 #, php-format
 msgid "If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. "
-msgstr "Om det här är din dator, kontrollera att fwexamd-tjänsten är startad. I annat fall, tag kontakt med systemadministratören eller assistenten för examiniationen för ytterligare hjälp. "
+msgstr "Om det hÃ¤r Ã¤r din dator, kontrollera att fwexamd-tjÃ¤nsten Ã¤r startad. I annat fall, tag kontakt med systemadministratÃ¶ren eller assistenten fÃ¶r examiniationen fÃ¶r ytterligare hjÃ¤lp. "
 
 #: source/exam/index.php:261
 #, php-format
 msgid "The examiniation is inaccessable from this computer until the problem has been resolved."
-msgstr "Examinationen är inte tillgänglig från den här datorn innan problemet har lösts."
+msgstr "Examinationen Ã¤r inte tillgÃ¤nglig frÃ¥n den hÃ¤r datorn innan problemet har lÃ¶sts."
 
 #: source/exam/index.php:276
 #, php-format
 msgid "No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered."
-msgstr "Ingen data kunde hittas för den efterfrågade frågan. Detta ska inte inträffa såtillvida att skriptets parametrar inte avsiktligt har ändrats."
+msgstr "Ingen data kunde hittas fÃ¶r den efterfrÃ¥gade frÃ¥gan. Detta ska inte intrÃ¤ffa sÃ¥tillvida att skriptets parametrar inte avsiktligt har Ã¤ndrats."
 
 #: source/exam/index.php:281
 #, php-format
 msgid "The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered."
-msgstr "Den efterfrågade frågan är inte relaterad till den efterfrågade examinationen. Detta ska inte inträffa såtillvida att skriptets parametrar inte avsiktligt har ändrats."
+msgstr "Den efterfrÃ¥gade frÃ¥gan Ã¤r inte relaterad till den efterfrÃ¥gade examinationen. Detta ska inte intrÃ¤ffa sÃ¥tillvida att skriptets parametrar inte avsiktligt har Ã¤ndrats."
 
 #: source/exam/index.php:299
 #, php-format
 msgid "Select the examination"
-msgstr "Välj examination"
+msgstr "VÃ¤lj examination"
 
 #: source/exam/index.php:301
 #, php-format
 msgid "You have been assigned multiple examinations. Select the one to take by clicking on the examinations 'Begin' button."
-msgstr "Du har blivit tilldelad fler än en examination. Välj examination att genomföra genom att klicka på 'Starta' knappen."
+msgstr "Du har blivit tilldelad fler Ã¤n en examination. VÃ¤lj examination att genomfÃ¶ra genom att klicka pÃ¥ 'Starta' knappen."
 
 #: source/exam/index.php:304
 #, php-format
 msgid "These examinations have been assigned to you, click on the button next to the description to begin the examination."
-msgstr "Dessa examinationer har blivit tilldelade till dig, klicka på knappen bredvid beskrivningen för att starta examinationen."
+msgstr "Dessa examinationer har blivit tilldelade till dig, klicka pÃ¥ knappen bredvid beskrivningen fÃ¶r att starta examinationen."
 
 #: source/exam/index.php:310
 msgid "The examination ends"
@@ -251,12 +251,12 @@ msgstr "Starta"
 #: source/exam/index.php:337
 #, php-format
 msgid "In the left side menu are all questions that belongs to this examination. Questions already answered will appear under the 'Answered' section. The number within paranthesis is the score for each question."
-msgstr "I menyn till vänster finns alla frågor som hör ihop med denna examination. Redan besvarade frågor finns tillgängliga under 'Besvarade' sektionen. Siffran inom parantes är antal poäng per fråga."
+msgstr "I menyn till vÃ¤nster finns alla frÃ¥gor som hÃ¶r ihop med denna examination. Redan besvarade frÃ¥gor finns tillgÃ¤ngliga under 'Besvarade' sektionen. Siffran inom parantes Ã¤r antal poÃ¤ng per frÃ¥ga."
 
 #: source/exam/index.php:338
 #, php-format
 msgid "Remember to <u>press the save button</u> when you have <u>answered a question</u>, and before moving on to another one. It's OK to save the answer to a question multiple times. Logout from the examination when you are finished."
-msgstr "Kom ihåg att <u>klicka på spara knappen</u> när du har <u>besvarat en fråga</u>, och gör så innan du går vidare till en annan fråga. Det är OK att spara svaret på en fråga flera gånger. Kom ihåg att logga ut när du avslutar examinationen."
+msgstr "Kom ihÃ¥g att <u>klicka pÃ¥ spara knappen</u> nÃ¤r du har <u>besvarat en frÃ¥ga</u>, och gÃ¶r sÃ¥ innan du gÃ¥r vidare till en annan frÃ¥ga. Det Ã¤r OK att spara svaret pÃ¥ en frÃ¥ga flera gÃ¥nger. Kom ihÃ¥g att logga ut nÃ¤r du avslutar examinationen."
 
 #: source/exam/index.php:339
 #, php-format
@@ -266,17 +266,17 @@ msgstr "Lycka till!"
 #: source/exam/index.php:343
 #, php-format
 msgid "Running in test case mode!"
-msgstr "Körning i testläge!"
+msgstr "KÃ¶rning i testlÃ¤ge!"
 
 #: source/exam/index.php:344
 #, php-format
 msgid "This examination is running in test case mode. This mode allows you to review and work with the examination in the same way as the students will."
-msgstr "Denna examination körs i testläge. Detta läge låter dig förhandsgranska och arbeta med examinationen på samma sätt som studenterna kommer att göra."
+msgstr "Denna examination kÃ¶rs i testlÃ¤ge. Detta lÃ¤ge lÃ¥ter dig fÃ¶rhandsgranska och arbeta med examinationen pÃ¥ samma sÃ¤tt som studenterna kommer att gÃ¶ra."
 
 #: source/exam/index.php:345
 #, php-format
 msgid "To exit, click either on the 'finish' or 'cancel' link at bottom of the page. Clicking 'finish' will stop the examination and allow you to correct and decode results, while 'cancel' will delete this test case."
-msgstr "För att avsluta, klicka antingen på länken 'avsluta' eller 'avbryt' nertill på sidan. Klickar du på 'avsluta' så stoppas examinationen och du tillåts att rätta svaren och avkoda resultaten. Om du klickar på 'avbryt' så raderas denna testexamination."
+msgstr "FÃ¶r att avsluta, klicka antingen pÃ¥ lÃ¤nken 'avsluta' eller 'avbryt' nertill pÃ¥ sidan. Klickar du pÃ¥ 'avsluta' sÃ¥ stoppas examinationen och du tillÃ¥ts att rÃ¤tta svaren och avkoda resultaten. Om du klickar pÃ¥ 'avbryt' sÃ¥ raderas denna testexamination."
 
 #: source/exam/index.php:346
 #, php-format
@@ -286,20 +286,20 @@ msgstr "Viktigt"
 #: source/exam/index.php:347
 #, php-format
 msgid "Running in test case mode is non-destructive. The original examination remains unaffected as you are working entierly on a copy of it."
-msgstr "Att köra i testläge är säkert och påverkar inte den ursprungliga examinationen på något sätt eftersom du arbetar mot en fullständig kopia av denna."
+msgstr "Att kÃ¶ra i testlÃ¤ge Ã¤r sÃ¤kert och pÃ¥verkar inte den ursprungliga examinationen pÃ¥ nÃ¥got sÃ¤tt eftersom du arbetar mot en fullstÃ¤ndig kopia av denna."
 
 #: source/exam/index.php:359
 #, php-format
 msgid "Overview of all questions (no answers included)"
-msgstr "Översikt av alla frågor (inga svar inkluderade)"
+msgstr "Ãversikt av alla frÃ¥gor (inga svar inkluderade)"
 
 #: source/exam/index.php:366 source/exam/index.php:396
-#: source/teacher/contribute.php:383 source/teacher/contribute.php:789
+#: source/teacher/contribute.php:390 source/teacher/contribute.php:797
 #: source/teacher/correct.php:215 source/teacher/correct.php:223
 #: source/teacher/correct.php:430 source/teacher/correct.php:435
 #: include/pdf.inc:363 include/pdf.inc:400 include/scoreboard.inc:857
 msgid "Question"
-msgstr "Fråga"
+msgstr "FrÃ¥ga"
 
 #: source/exam/index.php:371 source/teacher/correct.php:240
 #: source/teacher/correct.php:245 source/teacher/correct.php:327
@@ -327,7 +327,7 @@ msgstr "OK"
 
 #: source/exam/index.php:451
 msgid "Save and move on to next unanswered question."
-msgstr "Spara och fortsätt till nästa obesvarad fråga."
+msgstr "Spara och fortsÃ¤tt till nÃ¤sta obesvarad frÃ¥ga."
 
 #: source/exam/index.php:463 include/pdf.inc:363
 msgid "Notice"
@@ -335,22 +335,22 @@ msgstr "Notera"
 
 #: source/exam/index.php:463
 msgid "This question is viewed in preview mode (for question author)."
-msgstr "Frågan visas i förhandsgranskningsläget (för författare av frågor)."
+msgstr "FrÃ¥gan visas i fÃ¶rhandsgranskningslÃ¤get (fÃ¶r fÃ¶rfattare av frÃ¥gor)."
 
 #: source/exam/index.php:466
 #, php-format
 msgid "Your answer has been successful saved in the database."
 msgstr "Ditt svar har blivit sparat i databasen."
 
-#: source/exam/index.php:474 source/teacher/contribute.php:810
+#: source/exam/index.php:474 source/teacher/contribute.php:818
 msgid "Video"
 msgstr "Video"
 
-#: source/exam/index.php:481 source/teacher/contribute.php:811
+#: source/exam/index.php:481 source/teacher/contribute.php:819
 msgid "Audio"
 msgstr "Ljud"
 
-#: source/exam/index.php:488 source/teacher/contribute.php:812
+#: source/exam/index.php:488 source/teacher/contribute.php:820
 msgid "Image"
 msgstr "Bild"
 
@@ -369,7 +369,7 @@ msgstr "Examination"
 #: source/exam/topmenu.menu:17 source/topmenu.menu:17
 #: source/teacher/topmenu.menu:42 source/admin/topmenu.menu:17
 msgid "Help"
-msgstr "Hjälp"
+msgstr "HjÃ¤lp"
 
 #: source/exam/topmenu.menu:18 source/topmenu.menu:18
 #: source/teacher/topmenu.menu:43 source/admin/topmenu.menu:18
@@ -383,27 +383,27 @@ msgstr "Om detta system"
 #: source/about.php:42
 #, php-format
 msgid "Information about this system"
-msgstr "Information om det här systemet"
+msgstr "Information om det hÃ¤r systemet"
 
 #: source/about.php:44
 #, php-format
 msgid "End user requirements"
-msgstr "Systemkrav för slutanvändare"
+msgstr "Systemkrav fÃ¶r slutanvÃ¤ndare"
 
 #: source/about.php:46
 #, php-format
 msgid "You have to use a web browser with cookies activated to use this system. "
-msgstr "Du måste använda en webbläsare med cookies aktiverat för att kunna använda det här systemet. "
+msgstr "Du mÃ¥ste anvÃ¤nda en webblÃ¤sare med cookies aktiverat fÃ¶r att kunna anvÃ¤nda det hÃ¤r systemet. "
 
 #: source/about.php:47
 #, php-format
 msgid "The web browser must have support for javascript enabled."
-msgstr "Webbläsaren måste ha stöd för javascript aktiverat."
+msgstr "WebblÃ¤saren mÃ¥ste ha stÃ¶d fÃ¶r javascript aktiverat."
 
 #: source/about.php:50 include/teacher.inc:187 include/teacher.inc:198
 #, php-format
 msgid "General"
-msgstr "Allmänt"
+msgstr "AllmÃ¤nt"
 
 #: source/about.php:52
 #, php-format
@@ -413,7 +413,7 @@ msgstr "Detta system har utvecklats av <a href=\"mailto:%s\">%s</a> (%s). "
 #: source/about.php:53
 #, php-format
 msgid "Please visit the <a href=\"%s\">project page</a> for further information."
-msgstr "Gå till <a href=\"%s\">projektsidan</a> för mer information."
+msgstr "GÃ¥ till <a href=\"%s\">projektsidan</a> fÃ¶r mer information."
 
 #: source/teacher/index.php:69
 msgid "Index"
@@ -422,27 +422,27 @@ msgstr "Index"
 #: source/teacher/index.php:77
 #, php-format
 msgid "Information for teachers"
-msgstr "Information till lärare"
+msgstr "Information till lÃ¤rare"
 
 #: source/teacher/index.php:79
 #, php-format
 msgid "The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. "
-msgstr "Sektionen 'teacher' är till för lärare eller andra personer som blivit tilldelade någon av rollerna teacher, contributor, examinator eller decoder. "
+msgstr "Sektionen 'teacher' Ã¤r till fÃ¶r lÃ¤rare eller andra personer som blivit tilldelade nÃ¥gon av rollerna teacher, contributor, examinator eller decoder. "
 
 #: source/teacher/index.php:80
 #, php-format
 msgid "It allows people manage examinations and result from online exams."
-msgstr "Den tillåter personer att hantera examinationer och resultat från online examinationer."
+msgstr "Den tillÃ¥ter personer att hantera examinationer och resultat frÃ¥n online examinationer."
 
 #: source/teacher/index.php:83
 #, php-format
 msgid "If you wish to create your own online exam, contact %s to gain access to the system. "
-msgstr "Om du önskar att skapa din egen online examination, tag kontakt med %s för att få tillgång till systemet. "
+msgstr "Om du Ã¶nskar att skapa din egen online examination, tag kontakt med %s fÃ¶r att fÃ¥ tillgÃ¥ng till systemet. "
 
 #: source/teacher/index.php:84
 #, php-format
 msgid "General and getting started information can be found on the <a href=\"%s\">Help</a> page."
-msgstr "Allmän och kom igång information finns på <a href=\"%s\">Hjälp</a> sidan."
+msgstr "AllmÃ¤n och kom igÃ¥ng information finns pÃ¥ <a href=\"%s\">HjÃ¤lp</a> sidan."
 
 #: source/teacher/topmenu.menu:13
 msgid "Home"
@@ -450,7 +450,7 @@ msgstr "Hem"
 
 #: source/teacher/topmenu.menu:18
 msgid "Create new examinations or modify properties of existing. Grant or revoke different roles for co-workers."
-msgstr "Skapa nya examinationer eller ändra egenskaperna för existerande. Bevilja eller återkalla olika roller tilldelade medarbetare."
+msgstr "Skapa nya examinationer eller Ã¤ndra egenskaperna fÃ¶r existerande. Bevilja eller Ã¥terkalla olika roller tilldelade medarbetare."
 
 #: source/teacher/topmenu.menu:19 include/teacher.inc:283
 msgid "Project"
@@ -458,7 +458,7 @@ msgstr "Projekt"
 
 #: source/teacher/topmenu.menu:23
 msgid "Add, modify or remove questions in examinations where you have been granted the contributor role."
-msgstr "Lägg till, ändra eller ta bort frågor i examinationer där du har beviljats rollen som bidragare (contributor)."
+msgstr "LÃ¤gg till, Ã¤ndra eller ta bort frÃ¥gor i examinationer dÃ¤r du har beviljats rollen som bidragare (contributor)."
 
 #: source/teacher/topmenu.menu:24 include/teacher.inc:288
 msgid "Contribute"
@@ -466,15 +466,15 @@ msgstr "Bidra"
 
 #: source/teacher/topmenu.menu:28
 msgid "Add or remove students from examination. Change the scheduling (start and stop time) of an examination."
-msgstr "Lägg till eller ta bort studenter från examinationer. Ändra schemaläggning (start- och sluttid) för en examination."
+msgstr "LÃ¤gg till eller ta bort studenter frÃ¥n examinationer. Ãndra schemalÃ¤ggning (start- och sluttid) fÃ¶r en examination."
 
 #: source/teacher/topmenu.menu:33
 msgid "Correct answers to questions that you have published youself or been assigned the role of corrector for by the examination creator."
-msgstr "Rätta svaren till dom frågor som du själv har publiserat eller blivit tilldelad rollen som rättare (corrector) för av examinationens skapare."
+msgstr "RÃ¤tta svaren till dom frÃ¥gor som du sjÃ¤lv har publiserat eller blivit tilldelad rollen som rÃ¤ttare (corrector) fÃ¶r av examinationens skapare."
 
 #: source/teacher/topmenu.menu:34 include/teacher.inc:298
 msgid "Correction"
-msgstr "Rättning"
+msgstr "RÃ¤ttning"
 
 #: source/teacher/topmenu.menu:38
 msgid "Decode examinations, download results or send result to students."
@@ -487,7 +487,7 @@ msgstr "Avkoda"
 
 #: source/teacher/decoder.php:108
 msgid "Decoder Page"
-msgstr "Sida för avkodare"
+msgstr "Sida fÃ¶r avkodare"
 
 #: source/teacher/decoder.php:164
 msgid "Decoder"
@@ -508,7 +508,7 @@ msgstr "Skicka med e-post"
 
 #: source/teacher/decoder.php:172
 msgid "Score board"
-msgstr "Poängtabell"
+msgstr "PoÃ¤ngtabell"
 
 #: source/teacher/decoder.php:189 source/teacher/contribute.php:207
 #: source/teacher/contribute.php:213 source/teacher/examinator.php:144
@@ -517,22 +517,22 @@ msgstr "Poängtabell"
 #: source/teacher/correct.php:161 source/teacher/correct.php:311
 #: include/ui.inc:306 include/admin.inc:116 include/teacher.inc:423
 msgid "Access denied!"
-msgstr "Åtkomst nekad!"
+msgstr "Ãtkomst nekad!"
 
 #: source/teacher/decoder.php:190 source/teacher/contribute.php:208
 #: source/teacher/examinator.php:145 source/teacher/manager.php:744
 #: source/teacher/template.php:104
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
-msgstr "Endast användare tilldelade rollen %s har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
+msgstr "Endast anvÃ¤ndare tilldelade rollen %s har Ã¥tkomst till den hÃ¤r sidan. Exekveringen av skriptet har avbrutits."
 
 #: source/teacher/decoder.php:195 source/teacher/decoder.php:250
 msgid "Can't continue!"
-msgstr "Kan inte fortsätta!"
+msgstr "Kan inte fortsÃ¤tta!"
 
 #: source/teacher/decoder.php:196
 msgid "This examination is not yet decodable, probably becuase not all answers have been corrected yet. The script processing has halted."
-msgstr "Den här examinationen har ännu inte avkodats, förmodligen därför att alla svar ännu inte rättats. Exekveringen av skriptet har avbrutits."
+msgstr "Den hÃ¤r examinationen har Ã¤nnu inte avkodats, fÃ¶rmodligen dÃ¤rfÃ¶r att alla svar Ã¤nnu inte rÃ¤ttats. Exekveringen av skriptet har avbrutits."
 
 #: source/teacher/decoder.php:212
 #, php-format
@@ -542,11 +542,11 @@ msgstr "Avkodad examination"
 #: source/teacher/decoder.php:214
 #, php-format
 msgid "The examination has been successful decoded. It's no longer possible change the correction of answers in this examination."
-msgstr "Examinationen har avkodats utan problem. Det är inte längre möjligt att ändra på bedömningen av svaren till den här examinationen."
+msgstr "Examinationen har avkodats utan problem. Det Ã¤r inte lÃ¤ngre mÃ¶jligt att Ã¤ndra pÃ¥ bedÃ¶mningen av svaren till den hÃ¤r examinationen."
 
 #: source/teacher/decoder.php:251
 msgid "This examination has not been decoded. The script processing has halted."
-msgstr "Den här examinationen har inte blivit avkodad. Exekvering av skriptet har avbrutits."
+msgstr "Den hÃ¤r examinationen har inte blivit avkodad. Exekvering av skriptet har avbrutits."
 
 #: source/teacher/decoder.php:301 source/teacher/correct.php:628
 #, php-format
@@ -556,17 +556,17 @@ msgstr "Ladda ner resultat"
 #: source/teacher/decoder.php:303
 #, php-format
 msgid "This section lets you download the results for all or individual students in different formats. "
-msgstr "Den här avdelningen låter dig ladda ner resultat i olika format för alla studenter samtidigt eller individuellt per student. "
+msgstr "Den hÃ¤r avdelningen lÃ¥ter dig ladda ner resultat i olika format fÃ¶r alla studenter samtidigt eller individuellt per student. "
 
 #: source/teacher/decoder.php:304 source/teacher/decoder.php:531
 #, php-format
 msgid "The result contains the complete examination with answers and scores."
-msgstr "Resulteten innehåller den kompletta examinationen med svar, kommentarer och poäng."
+msgstr "Resulteten innehÃ¥ller den kompletta examinationen med svar, kommentarer och poÃ¤ng."
 
 #: source/teacher/decoder.php:307
 #, php-format
 msgid "Notice that the language used in the generated file will be the same as your currently selected language (%s)."
-msgstr "Notera att språket i dom generade filerna kommer att vara detsamma som ditt för närvarande valda språk (%s)."
+msgstr "Notera att sprÃ¥ket i dom generade filerna kommer att vara detsamma som ditt fÃ¶r nÃ¤rvarande valda sprÃ¥k (%s)."
 
 #: source/teacher/decoder.php:318 source/teacher/decoder.php:358
 #: source/teacher/decoder.php:550
@@ -575,7 +575,7 @@ msgstr "Format"
 
 #: source/teacher/decoder.php:324 source/teacher/decoder.php:555
 msgid "Select"
-msgstr "Välj"
+msgstr "VÃ¤lj"
 
 #: source/teacher/decoder.php:327 source/teacher/decoder.php:558
 msgid "All Students"
@@ -583,17 +583,17 @@ msgstr "Alla studenter"
 
 #: source/teacher/decoder.php:340 source/teacher/decoder.php:597
 msgid "Please note that it might take some time to complete your request, especial if the examination has a lot of students."
-msgstr "Notera att det kan ta en del tid att behandla din förfrågan, speciellt om examinationen hade många studenter."
+msgstr "Notera att det kan ta en del tid att behandla din fÃ¶rfrÃ¥gan, speciellt om examinationen hade mÃ¥nga studenter."
 
 #: source/teacher/decoder.php:346
 #, php-format
 msgid "Download Score Board"
-msgstr "Ladda ner poängtabell"
+msgstr "Ladda ner poÃ¤ngtabell"
 
 #: source/teacher/decoder.php:348
 #, php-format
 msgid "This section lets you download the score board showing a summary view of the examination in different formats. "
-msgstr "Från den här avdelningen kan du ladda ner poängtabellen visande en summering av examinationen och i olika format. "
+msgstr "FrÃ¥n den hÃ¤r avdelningen kan du ladda ner poÃ¤ngtabellen visande en summering av examinationen och i olika format. "
 
 #: source/teacher/decoder.php:351
 msgid "Comma Separated Text"
@@ -614,13 +614,13 @@ msgstr "Enkel HTML-sida"
 #: source/teacher/decoder.php:374
 #, php-format
 msgid "Answer Results"
-msgstr "Resultat på frågorna"
+msgstr "Resultat pÃ¥ frÃ¥gorna"
 
 #: source/teacher/decoder.php:376 source/teacher/correct.php:549
 #: source/teacher/correct.php:559
 #, php-format
 msgid "This table shows all answers from students to questions for the examination '%s'. "
-msgstr "Denna tabell visar alla svar från studenter som genomfört examinationen '%s'. "
+msgstr "Denna tabell visar alla svar frÃ¥n studenter som genomfÃ¶rt examinationen '%s'. "
 
 #: source/teacher/decoder.php:382 source/teacher/decoder.php:384
 #: source/teacher/correct.php:572
@@ -638,7 +638,7 @@ msgstr "Mer"
 #: source/teacher/decoder.php:387 source/teacher/decoder.php:389
 #: source/teacher/correct.php:577
 msgid "Mode"
-msgstr "Läge"
+msgstr "LÃ¤ge"
 
 #: source/teacher/decoder.php:387 source/teacher/correct.php:580
 msgid "Standard"
@@ -646,22 +646,22 @@ msgstr "Standard"
 
 #: source/teacher/decoder.php:389 source/teacher/correct.php:580
 msgid "Colorize"
-msgstr "Färglägg"
+msgstr "FÃ¤rglÃ¤gg"
 
 #: source/teacher/decoder.php:398 source/teacher/correct.php:594
 #, php-format
 msgid "Color Codes"
-msgstr "Färgkoder"
+msgstr "FÃ¤rgkoder"
 
 #: source/teacher/decoder.php:399 source/teacher/correct.php:595
 #, php-format
 msgid "These are the color codes used in the score board:"
-msgstr "Dessa färgkoder används i poängtabellen:"
+msgstr "Dessa fÃ¤rgkoder anvÃ¤nds i poÃ¤ngtabellen:"
 
 #: source/teacher/decoder.php:402 source/teacher/correct.php:598
 #, php-format
 msgid "Less than %d%% of max score."
-msgstr "Mindre än %d%% av max värde."
+msgstr "Mindre Ã¤n %d%% av max vÃ¤rde."
 
 #: source/teacher/decoder.php:403 source/teacher/decoder.php:404
 #: source/teacher/decoder.php:405 source/teacher/decoder.php:406
@@ -669,32 +669,32 @@ msgstr "Mindre än %d%% av max värde."
 #: source/teacher/correct.php:601 source/teacher/correct.php:602
 #, php-format
 msgid "Between %d and %d %% of max score."
-msgstr "Mellan %d och %d %% av max värde."
+msgstr "Mellan %d och %d %% av max vÃ¤rde."
 
 #: source/teacher/decoder.php:407 source/teacher/correct.php:603
 #, php-format
 msgid "%d%% correct answer (full score)."
-msgstr "%d%% rätt svar (alla rätt)."
+msgstr "%d%% rÃ¤tt svar (alla rÃ¤tt)."
 
 #: source/teacher/decoder.php:410 source/teacher/correct.php:606
 msgid "Answer has been corrected."
-msgstr "Svaret har blivit rättat."
+msgstr "Svaret har blivit rÃ¤ttat."
 
 #: source/teacher/decoder.php:411 source/teacher/correct.php:607
 msgid "This answer should be corrected by another person."
-msgstr "Detta svar ska rättas av en annan person."
+msgstr "Detta svar ska rÃ¤ttas av en annan person."
 
 #: source/teacher/decoder.php:412 source/teacher/correct.php:608
 msgid "No answer was given for this question."
-msgstr "Inget svar gavs för den här frågan."
+msgstr "Inget svar gavs fÃ¶r den hÃ¤r frÃ¥gan."
 
 #: source/teacher/decoder.php:413 source/teacher/correct.php:609
 msgid "The answer has not yet been corrected."
-msgstr "Svaret har ännu inte blivit rättat."
+msgstr "Svaret har Ã¤nnu inte blivit rÃ¤ttat."
 
 #: source/teacher/decoder.php:414 source/teacher/correct.php:610
 msgid "Question is flagged as removed (no scores for this question is counted)."
-msgstr "Frågan är markerad som borttagen (inga poäng för den här frågan räknas)."
+msgstr "FrÃ¥gan Ã¤r markerad som borttagen (inga poÃ¤ng fÃ¶r den hÃ¤r frÃ¥gan rÃ¤knas)."
 
 #: source/teacher/decoder.php:432
 #, php-format
@@ -704,7 +704,7 @@ msgstr "Skickar resultat"
 #: source/teacher/decoder.php:493
 #, php-format
 msgid "Failed lookup email address for %s"
-msgstr "Det gick inte att hämta e-postadressen för %s"
+msgstr "Det gick inte att hÃ¤mta e-postadressen fÃ¶r %s"
 
 #: source/teacher/decoder.php:510 source/teacher/decoder.php:514
 #, php-format
@@ -714,12 +714,12 @@ msgstr "Meddelandet till <a href=\"mailto:%s\">%s</a> har skickats"
 #: source/teacher/decoder.php:530
 #, php-format
 msgid "This section lets you send the results to all or individual students in different formats. "
-msgstr "Den här avdelningen låter dig skicka resultat till alla eller enskilda studenter i olika format. "
+msgstr "Den hÃ¤r avdelningen lÃ¥ter dig skicka resultat till alla eller enskilda studenter i olika format. "
 
 #: source/teacher/decoder.php:534
 #, php-format
 msgid "Notice that the language used in the outgoing message will be the same as your currently selected language (%s)."
-msgstr "Notera att språket i utgående meddelande kommer att vara detsamma som ditt för närvarande valda språk (%s)."
+msgstr "Notera att sprÃ¥ket i utgÃ¥ende meddelande kommer att vara detsamma som ditt fÃ¶r nÃ¤rvarande valda sprÃ¥k (%s)."
 
 #: source/teacher/decoder.php:548
 msgid "Send Result"
@@ -743,15 +743,15 @@ msgid ""
 "\n"
 "...and second block.\n"
 msgstr ""
-"Överskrift 1:\n"
+"Ãverskrift 1:\n"
 "---\n"
-"Lite text för denna första avdelning...\n"
+"Lite text fÃ¶r denna fÃ¶rsta avdelning...\n"
 "\n"
-"Överskrift 2:\n"
+"Ãverskrift 2:\n"
 "---\n"
-"Det är möjligt att ha multipla block med text avdelande med radbrytning:\n"
+"Det Ã¤r mÃ¶jligt att ha multipla block med text avdelande med radbrytning:\n"
 "\n"
-"Första blocket med text...\n"
+"FÃ¶rsta blocket med text...\n"
 "\n"
 "... och andra blocket.\n"
 
@@ -761,7 +761,7 @@ msgstr "Text"
 
 #: source/teacher/decoder.php:577
 msgid "Append one or more optional section of text to the message."
-msgstr "Lägg till en eller flera valfria sektioner av text till meddelandet."
+msgstr "LÃ¤gg till en eller flera valfria sektioner av text till meddelandet."
 
 #: source/teacher/decoder.php:583
 msgid "Attachements"
@@ -769,15 +769,15 @@ msgstr "Bifoga filer"
 
 #: source/teacher/decoder.php:588
 msgid "Attach this file to all outgoing messages."
-msgstr "Bifoga denna fil till alla utgående meddelanden."
+msgstr "Bifoga denna fil till alla utgÃ¥ende meddelanden."
 
 #: source/teacher/decoder.php:591
 msgid "Enable mirror mode (dry-run)."
-msgstr "Använd spegelläge (torrkörning)."
+msgstr "AnvÃ¤nd spegellÃ¤ge (torrkÃ¶rning)."
 
 #: source/teacher/decoder.php:592
 msgid "If checked, then your email address will be used as the receiver, with the student address set as the sender."
-msgstr "Om markerad så kommer din e-postadress att användas som mottagare och studentens adress att stå som avsändare."
+msgstr "Om markerad sÃ¥ kommer din e-postadress att anvÃ¤ndas som mottagare och studentens adress att stÃ¥ som avsÃ¤ndare."
 
 #: source/teacher/decoder.php:595
 msgid "Send"
@@ -791,14 +791,14 @@ msgstr "Avkoda examinationer"
 #: source/teacher/decoder.php:608
 #, php-format
 msgid "These are the examinations that you have been granted the decoder role. Click on one of them to decode the examination."
-msgstr "Det här är dom examinationer där du blivit tilldelad rollen 'decoder' (avkodare). Klicka på en av dessa för att avkoda examinationen."
+msgstr "Det hÃ¤r Ã¤r dom examinationer dÃ¤r du blivit tilldelad rollen 'decoder' (avkodare). Klicka pÃ¥ en av dessa fÃ¶r att avkoda examinationen."
 
 #: source/teacher/decoder.php:609
 #, php-format
 msgid "By decoding an examination it will no longer be possible to correct any answers for it. This is to ensure that the anonymity of each student examination."
-msgstr "Genom att avkoda en examination kommer det inte längre vara möjligt att rätta eller ändra bedömningen av några svar på den examinationen. Detta för att säkerställa anonymiteten vid rättning för varje student."
+msgstr "Genom att avkoda en examination kommer det inte lÃ¤ngre vara mÃ¶jligt att rÃ¤tta eller Ã¤ndra bedÃ¶mningen av nÃ¥gra svar pÃ¥ den examinationen. Detta fÃ¶r att sÃ¤kerstÃ¤lla anonymiteten vid rÃ¤ttning fÃ¶r varje student."
 
-#: source/teacher/decoder.php:611 source/teacher/contribute.php:835
+#: source/teacher/decoder.php:611 source/teacher/contribute.php:843
 #: source/teacher/examinator.php:354 source/teacher/manager.php:188
 #: source/teacher/correct.php:476
 msgid "Examinations"
@@ -818,16 +818,16 @@ msgstr "Annat"
 
 #: source/teacher/decoder.php:654 source/teacher/decoder.php:657
 msgid "Click on this link to decode this examination."
-msgstr "Klicka på den här länken för att avkoda examinationen."
+msgstr "Klicka pÃ¥ den hÃ¤r lÃ¤nken fÃ¶r att avkoda examinationen."
 
-#: source/teacher/decoder.php:659 source/teacher/contribute.php:883
+#: source/teacher/decoder.php:659 source/teacher/contribute.php:891
 #: source/teacher/examinator.php:166 source/teacher/examinator.php:302
 #: source/teacher/examinator.php:394 source/teacher/manager.php:264
 #: source/teacher/correct.php:530
 msgid "Starts"
 msgstr "Startar"
 
-#: source/teacher/decoder.php:660 source/teacher/contribute.php:884
+#: source/teacher/decoder.php:660 source/teacher/contribute.php:892
 #: source/teacher/examinator.php:172 source/teacher/examinator.php:303
 #: source/teacher/examinator.php:395 source/teacher/manager.php:265
 #: source/teacher/correct.php:531
@@ -836,44 +836,48 @@ msgstr "Slutar"
 
 #: source/teacher/contribute.php:96
 msgid "Contribute Page"
-msgstr "Sida för att bidra"
+msgstr "Sida fÃ¶r att bidra"
 
 #: source/teacher/contribute.php:214
 msgid "Only the creator of the examination is allowed to run test case on it. The script processing has halted."
-msgstr "Endast den som skapat examinationen är tillåten att utföra testkörning av den. Exekvering av skriptet har avbrutits."
+msgstr "Endast den som skapat examinationen Ã¤r tillÃ¥ten att utfÃ¶ra testkÃ¶rning av den. Exekvering av skriptet har avbrutits."
 
 #: source/teacher/contribute.php:330 source/teacher/manager.php:483
 msgid "Failed Import Questions"
-msgstr "Fel vid import av frågor"
+msgstr "Fel vid import av frÃ¥gor"
 
 #: source/teacher/contribute.php:342
 msgid "Freeform text question"
-msgstr "Fritextfråga"
+msgstr "FritextfrÃ¥ga"
 
 #: source/teacher/contribute.php:343
 msgid "Single choice question"
-msgstr "Envalsfråga"
+msgstr "EnvalsfrÃ¥ga"
 
 #: source/teacher/contribute.php:344
 msgid "Multiple choice question"
-msgstr "Flervalsfråga"
+msgstr "FlervalsfrÃ¥ga"
 
-#: source/teacher/contribute.php:369 source/teacher/contribute.php:634
+#: source/teacher/contribute.php:355
+msgid "The score value is zero"
+msgstr "PoÃ¤ngvÃ¤rdet Ã¤r noll"
+
+#: source/teacher/contribute.php:376 source/teacher/contribute.php:642
 msgid "Required fields"
-msgstr "Erforderliga fält"
+msgstr "Erforderliga fÃ¤lt"
 
-#: source/teacher/contribute.php:374
+#: source/teacher/contribute.php:381
 msgid "A short question name or simply a number"
-msgstr "Ett kort namn på frågan eller ett enkelt nummer"
+msgstr "Ett kort namn pÃ¥ frÃ¥gan eller ett enkelt nummer"
 
-#: source/teacher/contribute.php:375 source/teacher/contribute.php:640
+#: source/teacher/contribute.php:382 source/teacher/contribute.php:648
 #: source/teacher/manager.php:293 source/teacher/manager.php:343
 #: source/admin/admin.php:143 source/admin/teacher.php:145
 #: include/scoreboard.inc:546 include/scoreboard.inc:647
 msgid "Name"
 msgstr "Namn"
 
-#: source/teacher/contribute.php:381
+#: source/teacher/contribute.php:388
 msgid ""
 "Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n"
 "\n"
@@ -884,370 +888,370 @@ msgid ""
 "{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n"
 "-------------------------\n"
 msgstr ""
-"Enkel- eller flervalsfrågor definieras av en frågetext och en JSON-kodad sträng med dom valbara svaren, där det rätta svaret/svaren markeras med 'true' (se exempel nedan). Flervalsfrågor skiljer sig från envalsfrågor genom att fler än ett alternativ markeras som 'true'. En fritextfråga består endast av ren text.\n"
+"Enkel- eller flervalsfrÃ¥gor definieras av en frÃ¥getext och en JSON-kodad strÃ¤ng med dom valbara svaren, dÃ¤r det rÃ¤tta svaret/svaren markeras med 'true' (se exempel nedan). FlervalsfrÃ¥gor skiljer sig frÃ¥n envalsfrÃ¥gor genom att fler Ã¤n ett alternativ markeras som 'true'. En fritextfrÃ¥ga bestÃ¥r endast av ren text.\n"
 "\n"
-"Ett exempel på en flervalsfråga:\n"
+"Ett exempel pÃ¥ en flervalsfrÃ¥ga:\n"
 "-------------------------\n"
-"Vilka av följande personer var med i Thin Lizzy under det klassiska året 1976?\n"
+"Vilka av fÃ¶ljande personer var med i Thin Lizzy under det klassiska Ã¥ret 1976?\n"
 "\n"
 "{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n"
 "-------------------------\n"
 
-#: source/teacher/contribute.php:382
+#: source/teacher/contribute.php:389
 msgid "The actual question is defined here."
-msgstr "Den riktiga frågan definieras här."
+msgstr "Den riktiga frÃ¥gan definieras hÃ¤r."
 
-#: source/teacher/contribute.php:387 source/teacher/contribute.php:551
-#: source/teacher/contribute.php:813
+#: source/teacher/contribute.php:394 source/teacher/contribute.php:559
+#: source/teacher/contribute.php:821
 msgid "Type"
 msgstr "Typ"
 
-#: source/teacher/contribute.php:397 source/teacher/contribute.php:808
+#: source/teacher/contribute.php:404 source/teacher/contribute.php:816
 #: source/teacher/correct.php:328 source/teacher/correct.php:400
 #: source/teacher/correct.php:458 source/teacher/correct.php:655
 #: include/pdf.inc:363 include/pdf.inc:459 include/pdf.inc:688
 #: include/scoreboard.inc:552
 msgid "Score"
-msgstr "Poäng"
+msgstr "PoÃ¤ng"
 
-#: source/teacher/contribute.php:400
+#: source/teacher/contribute.php:407
 msgid "Optional fields"
-msgstr "Frivilliga fält"
+msgstr "Frivilliga fÃ¤lt"
 
-#: source/teacher/contribute.php:404
+#: source/teacher/contribute.php:411
 msgid "Video URL"
 msgstr "Video (URL)"
 
-#: source/teacher/contribute.php:405 source/teacher/contribute.php:410
-#: source/teacher/contribute.php:415
+#: source/teacher/contribute.php:412 source/teacher/contribute.php:417
+#: source/teacher/contribute.php:422
 msgid "An URL address (like http://www.example.com/xxx) linking to an web resource related to this question. The resource will be embedded on the question page in the right hand sidebar."
-msgstr "En URL adress (såsom http://www.example.com/xxx) länkande till en webbresurs relaterad till denna fråga. Webbresursen kommer att bäddas in till höger på frågesidan."
+msgstr "En URL adress (sÃ¥som http://www.example.com/xxx) lÃ¤nkande till en webbresurs relaterad till denna frÃ¥ga. Webbresursen kommer att bÃ¤ddas in till hÃ¶ger pÃ¥ frÃ¥gesidan."
 
-#: source/teacher/contribute.php:409
+#: source/teacher/contribute.php:416
 msgid "Audio URL"
 msgstr "Ljud (URL)"
 
-#: source/teacher/contribute.php:414
+#: source/teacher/contribute.php:421
 msgid "Image URL"
 msgstr "Bild (URL)"
 
-#: source/teacher/contribute.php:423
+#: source/teacher/contribute.php:430
 msgid "Accounting"
-msgstr "Bokföring"
+msgstr "BokfÃ¶ring"
 
-#: source/teacher/contribute.php:432
+#: source/teacher/contribute.php:439
 msgid "Corrector"
-msgstr "Rättare"
+msgstr "RÃ¤ttare"
 
-#: source/teacher/contribute.php:433
+#: source/teacher/contribute.php:440
 msgid ""
 "This field sets the UU-ID (CAS-ID) of the person who's responsible for correcting the answers to this question.\n"
 "\n"
 "By default, the same person that publish a question is also assigned as its corrector."
 msgstr ""
-"Detta fält definierar UU-ID (CAS-ID) för den person som är ansvarig för att rätta svaren på denna fråga.\n"
+"Detta fÃ¤lt definierar UU-ID (CAS-ID) fÃ¶r den person som Ã¤r ansvarig fÃ¶r att rÃ¤tta svaren pÃ¥ denna frÃ¥ga.\n"
 "\n"
-"Som standard är publiserare och rättare för en fråga en och samma person."
+"Som standard Ã¤r publiserare och rÃ¤ttare fÃ¶r en frÃ¥ga en och samma person."
 
-#: source/teacher/contribute.php:439 source/teacher/contribute.php:768
+#: source/teacher/contribute.php:446 source/teacher/contribute.php:776
 msgid "Topic"
-msgstr "Ämne"
+msgstr "Ãmne"
 
-#: source/teacher/contribute.php:449 source/teacher/contribute.php:518
-#: source/teacher/contribute.php:649 source/teacher/examinator.php:178
+#: source/teacher/contribute.php:457 source/teacher/contribute.php:526
+#: source/teacher/contribute.php:657 source/teacher/examinator.php:178
 #: source/teacher/examinator.php:216 source/teacher/examinator.php:231
 #: source/teacher/manager.php:328 source/teacher/correct.php:332
 #: source/teacher/correct.php:410 source/teacher/correct.php:464
 msgid "Submit"
 msgstr "Skicka"
 
-#: source/teacher/contribute.php:451 source/teacher/contribute.php:520
-#: source/teacher/contribute.php:651
+#: source/teacher/contribute.php:459 source/teacher/contribute.php:528
+#: source/teacher/contribute.php:659
 msgid "Reset"
-msgstr "Återställ"
+msgstr "ÃterstÃ¤ll"
 
-#: source/teacher/contribute.php:452 source/teacher/contribute.php:652
+#: source/teacher/contribute.php:460 source/teacher/contribute.php:660
 msgid "Clear"
 msgstr "Rensa"
 
-#: source/teacher/contribute.php:471
+#: source/teacher/contribute.php:479
 #, php-format
 msgid "Add Question"
-msgstr "Lägg till fråga"
+msgstr "LÃ¤gg till frÃ¥ga"
 
-#: source/teacher/contribute.php:472
+#: source/teacher/contribute.php:480
 #, php-format
 msgid "This page let you add a new question in the examination '%s'"
-msgstr "Denna sida låter dig lägga till en ny fråga till examinationen '%s'. "
+msgstr "Denna sida lÃ¥ter dig lÃ¤gga till en ny frÃ¥ga till examinationen '%s'. "
 
-#: source/teacher/contribute.php:487
+#: source/teacher/contribute.php:495
 #, php-format
 msgid "Edit Question"
-msgstr "Ändra på frågan"
+msgstr "Ãndra pÃ¥ frÃ¥gan"
 
-#: source/teacher/contribute.php:488
+#: source/teacher/contribute.php:496
 #, php-format
 msgid "This page let you edit the existing question in the examination '%s'"
-msgstr "Denna sida låter dig ändra på den existerande frågan i examinationen '%s'."
+msgstr "Denna sida lÃ¥ter dig Ã¤ndra pÃ¥ den existerande frÃ¥gan i examinationen '%s'."
 
-#: source/teacher/contribute.php:501
+#: source/teacher/contribute.php:509
 #, php-format
 msgid "Remove Question"
-msgstr "Ta bore frågan"
+msgstr "Ta bore frÃ¥gan"
 
-#: source/teacher/contribute.php:503
+#: source/teacher/contribute.php:511
 #, php-format
 msgid "This page let you mark the question '%s' as removed from this examination. "
-msgstr "Den här sidan låter dig markera frågan '%s' som borttagen från denna examination. "
+msgstr "Den hÃ¤r sidan lÃ¥ter dig markera frÃ¥gan '%s' som borttagen frÃ¥n denna examination. "
 
-#: source/teacher/contribute.php:504
+#: source/teacher/contribute.php:512
 #, php-format
 msgid "By marking this question as removed, any scores for answers will be ignored in the examination result. "
-msgstr "Genom att markera den här frågan som borttagen så kommer alla svar (för denna fråga) att undantas från examinationsresultatet. "
+msgstr "Genom att markera den hÃ¤r frÃ¥gan som borttagen sÃ¥ kommer alla svar (fÃ¶r denna frÃ¥ga) att undantas frÃ¥n examinationsresultatet. "
 
-#: source/teacher/contribute.php:514 source/teacher/contribute.php:816
+#: source/teacher/contribute.php:522 source/teacher/contribute.php:824
 #: source/teacher/correct.php:295
 msgid "Comment"
 msgstr "Kommentar"
 
-#: source/teacher/contribute.php:515
+#: source/teacher/contribute.php:523
 msgid "The comment you add here will show up as the reason for question removal on the examination results."
-msgstr "Den kommentar du lägger till här kommer att visas upp som orsaken för borttagningen av frågan i examensresultatet."
+msgstr "Den kommentar du lÃ¤gger till hÃ¤r kommer att visas upp som orsaken fÃ¶r borttagningen av frÃ¥gan i examensresultatet."
 
-#: source/teacher/contribute.php:529
+#: source/teacher/contribute.php:537
 #, php-format
 msgid "Import Questions"
-msgstr "Importera Frågor"
+msgstr "Importera FrÃ¥gor"
 
-#: source/teacher/contribute.php:531
+#: source/teacher/contribute.php:539
 #, php-format
 msgid "Browse your local disk to select an file containing questions to import. "
-msgstr "Bläddra på din lokala hårddisk för att välja en fil innehållande frågor att importera. "
+msgstr "BlÃ¤ddra pÃ¥ din lokala hÃ¥rddisk fÃ¶r att vÃ¤lja en fil innehÃ¥llande frÃ¥gor att importera. "
 
-#: source/teacher/contribute.php:532
+#: source/teacher/contribute.php:540
 #, php-format
 msgid "Currently, this is the list of question banks can be imported: "
-msgstr "Det här är listan över dom frågebanker som för närvarande kan importeras: "
+msgstr "Det hÃ¤r Ã¤r listan Ã¶ver dom frÃ¥gebanker som fÃ¶r nÃ¤rvarande kan importeras: "
 
-#: source/teacher/contribute.php:546 source/teacher/manager.php:499
+#: source/teacher/contribute.php:554 source/teacher/manager.php:499
 msgid "Filename"
 msgstr "Filnamn"
 
-#: source/teacher/contribute.php:547 source/teacher/contribute.php:752
+#: source/teacher/contribute.php:555 source/teacher/contribute.php:760
 #: source/teacher/manager.php:191 source/teacher/manager.php:500
 #: source/teacher/manager.php:592
 msgid "Import"
 msgstr "Importera"
 
-#: source/teacher/contribute.php:549
+#: source/teacher/contribute.php:557
 msgid "Ping-Pong"
 msgstr "Ping-Pong"
 
-#: source/teacher/contribute.php:550
+#: source/teacher/contribute.php:558
 msgid "OpenExam"
 msgstr "OpenExam"
 
-#: source/teacher/contribute.php:616
+#: source/teacher/contribute.php:624
 #, php-format
 msgid "If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. "
-msgstr "Om talet slumpa är skiljt från noll så definierar det antalet frågor som slumpvis ska väljas ut från poolen av frågor tillgängliga i det aktuella ämnesområdet. "
+msgstr "Om talet slumpa Ã¤r skiljt frÃ¥n noll sÃ¥ definierar det antalet frÃ¥gor som slumpvis ska vÃ¤ljas ut frÃ¥n poolen av frÃ¥gor tillgÃ¤ngliga i det aktuella Ã¤mnesomrÃ¥det. "
 
-#: source/teacher/contribute.php:617
+#: source/teacher/contribute.php:625
 #, php-format
 msgid "This value is used for <u>duggor</u>, leave it as zero for ordinary examinations (use all questions)."
-msgstr "Detta värde används för <u>duggor</u>. Lämna det som noll för ordinära examinationer (använd alla frågor)."
+msgstr "Detta vÃ¤rde anvÃ¤nds fÃ¶r <u>duggor</u>. LÃ¤mna det som noll fÃ¶r ordinÃ¤ra examinationer (anvÃ¤nd alla frÃ¥gor)."
 
-#: source/teacher/contribute.php:639
+#: source/teacher/contribute.php:647
 msgid "The display name of this topic"
-msgstr "Det synliga namnet för detta ämne"
+msgstr "Det synliga namnet fÃ¶r detta Ã¤mne"
 
-#: source/teacher/contribute.php:644
+#: source/teacher/contribute.php:652
 msgid "The number of questions to randomly select from the pool of questions in this topic. Leave this field empty to use all questions."
-msgstr "Antalet frågor att slumpvis välja ut från poolen av frågor i det här ämnesområdet. Lämna detta värde orört (noll) för att använda samtliga tillgängliga frågor."
+msgstr "Antalet frÃ¥gor att slumpvis vÃ¤lja ut frÃ¥n poolen av frÃ¥gor i det hÃ¤r Ã¤mnesomrÃ¥det. LÃ¤mna detta vÃ¤rde orÃ¶rt (noll) fÃ¶r att anvÃ¤nda samtliga tillgÃ¤ngliga frÃ¥gor."
 
-#: source/teacher/contribute.php:645
+#: source/teacher/contribute.php:653
 msgid "Randomize"
 msgstr "Slumpa"
 
-#: source/teacher/contribute.php:671
+#: source/teacher/contribute.php:679
 #, php-format
 msgid "Add Topic"
-msgstr "Lägg till ämne"
+msgstr "LÃ¤gg till Ã¤mne"
 
-#: source/teacher/contribute.php:672
+#: source/teacher/contribute.php:680
 #, php-format
 msgid "This page let you add a new topic in the examination '%s'"
-msgstr "Denna sida låter dig lägga till ett nytt ämnesområde till examinationen '%s'. "
+msgstr "Denna sida lÃ¥ter dig lÃ¤gga till ett nytt Ã¤mnesomrÃ¥de till examinationen '%s'. "
 
-#: source/teacher/contribute.php:687
+#: source/teacher/contribute.php:695
 #, php-format
 msgid "Edit Topic"
-msgstr "Ändra ämnet"
+msgstr "Ãndra Ã¤mnet"
 
-#: source/teacher/contribute.php:688
+#: source/teacher/contribute.php:696
 #, php-format
 msgid "This page let you edit this existing topic in the examination '%s'"
-msgstr "Denna sida låter dig ändra på detta ämnesområde i examinationen '%s'."
+msgstr "Denna sida lÃ¥ter dig Ã¤ndra pÃ¥ detta Ã¤mnesomrÃ¥de i examinationen '%s'."
 
-#: source/teacher/contribute.php:715 source/teacher/correct.php:380
+#: source/teacher/contribute.php:723 source/teacher/correct.php:380
 msgid "All"
 msgstr "Alla"
 
-#: source/teacher/contribute.php:716 source/teacher/contribute.php:848
+#: source/teacher/contribute.php:724 source/teacher/contribute.php:856
 #: source/teacher/examinator.php:364 source/teacher/manager.php:205
 #: source/teacher/manager.php:604 source/teacher/correct.php:497
 msgid "Active"
 msgstr "Aktiva"
 
-#: source/teacher/contribute.php:717 source/teacher/manager.php:637
+#: source/teacher/contribute.php:725 source/teacher/manager.php:637
 #: include/pdf.inc:379
 msgid "Removed"
 msgstr "Borttagna"
 
-#: source/teacher/contribute.php:718
+#: source/teacher/contribute.php:726
 msgid "Compact"
 msgstr "kompakt"
 
-#: source/teacher/contribute.php:719
+#: source/teacher/contribute.php:727
 msgid "Own"
 msgstr "Egna"
 
-#: source/teacher/contribute.php:734
-#, php-format
-msgid "Manage Questions"
-msgstr "Hantera frågor"
-
-#: source/teacher/contribute.php:736
-#, php-format
-msgid "This page let you add, edit and remove questions in the examination '%s'. "
-msgstr "Denna sida låter dig lägga till, ändra eller ta bort på frågor i examinationen '%s'. "
-
-#: source/teacher/contribute.php:737
-#, php-format
-msgid "You can only edit or remove a question if you are the publisher of the question or the creator of this examination."
-msgstr "Du kan endast ändra eller ta bort en fråga som du själv har publiserat eller om du är den person som skapat examinationen."
-
 #: source/teacher/contribute.php:742
 #, php-format
-msgid "Notice: It's no longer possible to contribute or modify questions for this examination."
-msgstr "Notera: Det är inte längre möjligt att bidra med eller ändra på frågor i den här examinationen."
+msgid "Manage Questions"
+msgstr "Hantera frÃ¥gor"
 
-#: source/teacher/contribute.php:745 source/teacher/manager.php:586
+#: source/teacher/contribute.php:744
+#, php-format
+msgid "This page let you add, edit and remove questions in the examination '%s'. "
+msgstr "Denna sida lÃ¥ter dig lÃ¤gga till, Ã¤ndra eller ta bort pÃ¥ frÃ¥gor i examinationen '%s'. "
+
+#: source/teacher/contribute.php:745
+#, php-format
+msgid "You can only edit or remove a question if you are the publisher of the question or the creator of this examination."
+msgstr "Du kan endast Ã¤ndra eller ta bort en frÃ¥ga som du sjÃ¤lv har publiserat eller om du Ã¤r den person som skapat examinationen."
+
+#: source/teacher/contribute.php:750
+#, php-format
+msgid "Notice: It's no longer possible to contribute or modify questions for this examination."
+msgstr "Notera: Det Ã¤r inte lÃ¤ngre mÃ¶jligt att bidra med eller Ã¤ndra pÃ¥ frÃ¥gor i den hÃ¤r examinationen."
+
+#: source/teacher/contribute.php:753 source/teacher/manager.php:586
 #: include/teacher.inc:252
 msgid "Questions"
-msgstr "Frågor"
+msgstr "FrÃ¥gor"
 
-#: source/teacher/contribute.php:748 source/teacher/contribute.php:776
-#: source/teacher/contribute.php:798 source/teacher/examinator.php:333
+#: source/teacher/contribute.php:756 source/teacher/contribute.php:784
+#: source/teacher/contribute.php:806 source/teacher/examinator.php:333
 #: source/teacher/manager.php:247 source/teacher/manager.php:250
 #: source/teacher/manager.php:626 include/teacher.inc:194
 msgid "Delete"
 msgstr "Ta bort"
 
-#: source/teacher/contribute.php:751
+#: source/teacher/contribute.php:759
 msgid "Click to delete all topics in this examination. All topics must be empty for this request to succedd."
-msgstr "Klicka för att ta bort alla ämnesområden i denna examination. Alla ämnesområden måste vara tomma för att det ska lyckas."
+msgstr "Klicka fÃ¶r att ta bort alla Ã¤mnesomrÃ¥den i denna examination. Alla Ã¤mnesomrÃ¥den mÃ¥ste vara tomma fÃ¶r att det ska lyckas."
 
-#: source/teacher/contribute.php:754
+#: source/teacher/contribute.php:762
 msgid "Click to open page for importing a question bank."
-msgstr "Klicka för att öppna sidan för import av frågebanker."
+msgstr "Klicka fÃ¶r att Ã¶ppna sidan fÃ¶r import av frÃ¥gebanker."
 
-#: source/teacher/contribute.php:755 source/teacher/contribute.php:781
-#: source/teacher/contribute.php:879 source/teacher/examinator.php:318
+#: source/teacher/contribute.php:763 source/teacher/contribute.php:789
+#: source/teacher/contribute.php:887 source/teacher/examinator.php:318
 #: source/teacher/examinator.php:397 source/teacher/manager.php:192
 #: source/teacher/manager.php:529 source/teacher/manager.php:550
 #: source/teacher/manager.php:570 source/teacher/manager.php:589
 #: source/teacher/manager.php:675
 msgid "Add"
-msgstr "Lägg till"
+msgstr "LÃ¤gg till"
 
-#: source/teacher/contribute.php:757
+#: source/teacher/contribute.php:765
 msgid "Click to add a new topic to this examination."
-msgstr "Klicka för att lägga till ett nytt ämnesområde i examinationen."
+msgstr "Klicka fÃ¶r att lÃ¤gga till ett nytt Ã¤mnesomrÃ¥de i examinationen."
 
-#: source/teacher/contribute.php:771 source/teacher/contribute.php:792
+#: source/teacher/contribute.php:779 source/teacher/contribute.php:800
 #: source/teacher/manager.php:243 source/teacher/manager.php:521
 #: source/teacher/manager.php:620
 msgid "Edit"
-msgstr "Ändra"
+msgstr "Ãndra"
 
-#: source/teacher/contribute.php:775
+#: source/teacher/contribute.php:783
 msgid "Click to edit this topic."
-msgstr "Klicka för att ändra på detta ämne."
+msgstr "Klicka fÃ¶r att Ã¤ndra pÃ¥ detta Ã¤mne."
 
-#: source/teacher/contribute.php:780
+#: source/teacher/contribute.php:788
 msgid "Click to delete this topic."
-msgstr "Klicka för att radera detta område."
+msgstr "Klicka fÃ¶r att radera detta omrÃ¥de."
 
-#: source/teacher/contribute.php:785
+#: source/teacher/contribute.php:793
 msgid "Click to add a question in this topic."
-msgstr "Klicka för att lägga till en fråga i ämnesområdet."
+msgstr "Klicka fÃ¶r att lÃ¤gga till en frÃ¥ga i Ã¤mnesomrÃ¥det."
 
-#: source/teacher/contribute.php:802
+#: source/teacher/contribute.php:810
 msgid "View"
 msgstr "Visa"
 
-#: source/teacher/contribute.php:805
+#: source/teacher/contribute.php:813
 msgid "Preview this question"
-msgstr "Förhandsgranska den här frågan"
+msgstr "FÃ¶rhandsgranska den hÃ¤r frÃ¥gan"
 
-#: source/teacher/contribute.php:809 include/scoreboard.inc:862
+#: source/teacher/contribute.php:817 include/scoreboard.inc:862
 msgid "Publisher"
 msgstr "Publiserare"
 
-#: source/teacher/contribute.php:810 source/teacher/contribute.php:811
-#: source/teacher/contribute.php:812
+#: source/teacher/contribute.php:818 source/teacher/contribute.php:819
+#: source/teacher/contribute.php:820
 msgid "No"
 msgstr "Nej"
 
-#: source/teacher/contribute.php:815 include/teacher.inc:406
+#: source/teacher/contribute.php:823 include/teacher.inc:406
 msgid "Status"
 msgstr "Status"
 
-#: source/teacher/contribute.php:818
+#: source/teacher/contribute.php:826
 msgid "Question Text"
-msgstr "Frågetext"
+msgstr "FrÃ¥getext"
 
-#: source/teacher/contribute.php:832
+#: source/teacher/contribute.php:840
 #, php-format
 msgid "Contribute Questions"
-msgstr "Bidra med frågor"
+msgstr "Bidra med frÃ¥gor"
 
-#: source/teacher/contribute.php:833
+#: source/teacher/contribute.php:841
 #, php-format
 msgid "Select the examination you wish to contribute questions for (applies only to contributable examinations)."
-msgstr "Välj den examination som du vill bidra med frågor till (gäller endast examinationer som ännu inte hållits)."
+msgstr "VÃ¤lj den examination som du vill bidra med frÃ¥gor till (gÃ¤ller endast examinationer som Ã¤nnu inte hÃ¥llits)."
 
-#: source/teacher/contribute.php:844
+#: source/teacher/contribute.php:852
 msgid "Contributable"
 msgstr "Bigragningsbar"
 
-#: source/teacher/contribute.php:852 source/teacher/examinator.php:368
+#: source/teacher/contribute.php:860 source/teacher/examinator.php:368
 #: source/teacher/manager.php:209
 msgid "Finished"
 msgstr "Avslutad"
 
-#: source/teacher/contribute.php:878
+#: source/teacher/contribute.php:886
 msgid "Click on this link to see all questions in this examination."
-msgstr "Klicka på den här länken för att se alla frågor i den här examinationen."
+msgstr "Klicka pÃ¥ den hÃ¤r lÃ¤nken fÃ¶r att se alla frÃ¥gor i den hÃ¤r examinationen."
 
-#: source/teacher/contribute.php:881
+#: source/teacher/contribute.php:889
 msgid "Click to add a question to this examination."
-msgstr "Klicka på länken för att lägga till en fråga till examinationen."
+msgstr "Klicka pÃ¥ lÃ¤nken fÃ¶r att lÃ¤gga till en frÃ¥ga till examinationen."
 
 #: source/teacher/examinator.php:86
 msgid "Examinator Page"
-msgstr "Sida för examinatorer"
+msgstr "Sida fÃ¶r examinatorer"
 
 #: source/teacher/examinator.php:157
 #, php-format
 msgid "Reschedule Examination"
-msgstr "Ändra schemaläggning av examination"
+msgstr "Ãndra schemalÃ¤ggning av examination"
 
 #: source/teacher/examinator.php:158
 #, php-format
 msgid "This page let you reschedule the start and end time of the examination."
-msgstr "Denna sida låter dig ändra på start- och sluttid för examinationen."
+msgstr "Denna sida lÃ¥ter dig Ã¤ndra pÃ¥ start- och sluttid fÃ¶r examinationen."
 
 #: source/teacher/examinator.php:169 source/teacher/examinator.php:175
 #: source/teacher/manager.php:311 source/teacher/manager.php:317
@@ -1257,21 +1261,21 @@ msgstr "Kalenderikon"
 #: source/teacher/examinator.php:200
 #, php-format
 msgid "Add Students"
-msgstr "Lägg till studenter"
+msgstr "LÃ¤gg till studenter"
 
 #: source/teacher/examinator.php:201
 #, php-format
 msgid "You can add students one by one or as a list of codes/student ID pairs. The list should be a newline separated list of username/code pairs where the username and code is separated by tabs."
-msgstr "Du kan lägga till studenter en och en eller som en lista av kod/användarnamn par. Listan ska vara radbruten mellan kod/användarnamn paren, och varje kod och användarnamn ska vara separerad med tabb-tecken."
+msgstr "Du kan lÃ¤gga till studenter en och en eller som en lista av kod/anvÃ¤ndarnamn par. Listan ska vara radbruten mellan kod/anvÃ¤ndarnamn paren, och varje kod och anvÃ¤ndarnamn ska vara separerad med tabb-tecken."
 
 #: source/teacher/examinator.php:202
 #, php-format
 msgid "If the student code is missing, then the system is going to generate a random code."
-msgstr "Om studentkoden saknas så kommer systemet att generera en slumpvis framställd kod."
+msgstr "Om studentkoden saknas sÃ¥ kommer systemet att generera en slumpvis framstÃ¤lld kod."
 
 #: source/teacher/examinator.php:205
 msgid "Add student one by one:"
-msgstr "Lägg till studenter en och en:"
+msgstr "LÃ¤gg till studenter en och en:"
 
 #: source/teacher/examinator.php:210 source/teacher/correct.php:651
 #: include/scoreboard.inc:548 include/scoreboard.inc:653
@@ -1293,7 +1297,7 @@ msgstr "Stundentens inloggningsnamn."
 
 #: source/teacher/examinator.php:221
 msgid "Add list of students:"
-msgstr "Lägg till en lista med studenter:"
+msgstr "LÃ¤gg till en lista med studenter:"
 
 #: source/teacher/examinator.php:226 source/teacher/examinator.php:305
 #: source/teacher/examinator.php:316 include/pdf.inc:669 include/pdf.inc:688
@@ -1303,7 +1307,7 @@ msgstr "Studenter"
 
 #: source/teacher/examinator.php:227
 msgid "Click inside the textarea to clear its content."
-msgstr "Klicka inuti textarean för att rensa dess innehåll."
+msgstr "Klicka inuti textarean fÃ¶r att rensa dess innehÃ¥ll."
 
 #: source/teacher/examinator.php:289
 #, php-format
@@ -1313,17 +1317,17 @@ msgstr "Visar examination"
 #: source/teacher/examinator.php:291
 #, php-format
 msgid "Showing details for the examination <i>'%s'</i>. "
-msgstr "Visar detaljer för examinationen <i>'%s'</i>. "
+msgstr "Visar detaljer fÃ¶r examinationen <i>'%s'</i>. "
 
 #: source/teacher/examinator.php:292
 #, php-format
 msgid "Use the links to add and remove students, and reschedule the start and end time of the examination. "
-msgstr "Använd länkarna för att lägga till och ta bort studenter, samt ändra på schemaläggningen av examinationen. "
+msgstr "AnvÃ¤nd lÃ¤nkarna fÃ¶r att lÃ¤gga till och ta bort studenter, samt Ã¤ndra pÃ¥ schemalÃ¤ggningen av examinationen. "
 
 #: source/teacher/examinator.php:296
 #, php-format
 msgid "No usernames will be exposed unless the examination has already been decoded."
-msgstr "Inga användarnamn kommer att visas om inte examinationen redan har avkodats."
+msgstr "Inga anvÃ¤ndarnamn kommer att visas om inte examinationen redan har avkodats."
 
 #: source/teacher/examinator.php:301
 msgid "Properties:"
@@ -1336,31 +1340,31 @@ msgstr "Skapare"
 #: source/teacher/examinator.php:308 source/teacher/examinator.php:311
 #: source/teacher/examinator.php:400 source/teacher/examinator.php:403
 msgid "Change"
-msgstr "Ändra"
+msgstr "Ãndra"
 
 #: source/teacher/examinator.php:310 source/teacher/examinator.php:313
 #: source/teacher/examinator.php:402 source/teacher/examinator.php:405
 msgid "Click on this link to reschedule the examination"
-msgstr "Klicka på den här länken för att ändra schemaläggningen av examinationen"
+msgstr "Klicka pÃ¥ den hÃ¤r lÃ¤nken fÃ¶r att Ã¤ndra schemalÃ¤ggningen av examinationen"
 
 #: source/teacher/examinator.php:320 source/teacher/examinator.php:399
 msgid "Click on this link to add students to this examination"
-msgstr "Klicka på den här länken för att lägga till (registrera) studenter på den här examinationen"
+msgstr "Klicka pÃ¥ den hÃ¤r lÃ¤nken fÃ¶r att lÃ¤gga till (registrera) studenter pÃ¥ den hÃ¤r examinationen"
 
 #: source/teacher/examinator.php:336
 #, php-format
 msgid "Click on this link to remove student %s from the exam."
-msgstr "Klicka på den här länken för att ta bort (avregistrera) studenten %s från examinationen"
+msgstr "Klicka pÃ¥ den hÃ¤r lÃ¤nken fÃ¶r att ta bort (avregistrera) studenten %s frÃ¥n examinationen"
 
 #: source/teacher/examinator.php:351
 #, php-format
 msgid "Examinator Tasks"
-msgstr "Uppgifter för examinatorer"
+msgstr "Uppgifter fÃ¶r examinatorer"
 
 #: source/teacher/examinator.php:352
 #, php-format
 msgid "The tree of examinations shows all examination you can reschedule or add students to."
-msgstr "Trädet visar alla examinationer där du kan ändra schemaläggningen eller lägga till studenter."
+msgstr "TrÃ¤det visar alla examinationer dÃ¤r du kan Ã¤ndra schemalÃ¤ggningen eller lÃ¤gga till studenter."
 
 #: source/teacher/examinator.php:360 source/teacher/manager.php:201
 #: source/teacher/correct.php:493
@@ -1369,7 +1373,7 @@ msgstr "Kommande"
 
 #: source/teacher/examinator.php:393
 msgid "Click on this link to view and/or edit this examination"
-msgstr "Klicka på den här länken för att visa och/eller ändra på examinationen"
+msgstr "Klicka pÃ¥ den hÃ¤r lÃ¤nken fÃ¶r att visa och/eller Ã¤ndra pÃ¥ examinationen"
 
 #: source/teacher/manager.php:102 source/teacher/manager.php:110
 msgid "Examination Management"
@@ -1378,12 +1382,12 @@ msgstr "Hantering av examination"
 #: source/teacher/manager.php:184
 #, php-format
 msgid "This page let you create new exams or manage your old ones. "
-msgstr "Denna sida låter dig skapa nya och hantera tidigare skapade examinationer.  "
+msgstr "Denna sida lÃ¥ter dig skapa nya och hantera tidigare skapade examinationer.  "
 
 #: source/teacher/manager.php:185
 #, php-format
 msgid "These are the exams you are the manager of: "
-msgstr "Detta är dom examinationer som du är handläggare för: "
+msgstr "Detta Ã¤r dom examinationer som du Ã¤r handlÃ¤ggare fÃ¶r: "
 
 #: source/teacher/manager.php:191
 msgid "Creates a new examination by importing an OpenExam project."
@@ -1403,15 +1407,15 @@ msgstr "Kopiera"
 
 #: source/teacher/manager.php:242 source/teacher/manager.php:519
 msgid "Create a new examination by using this examination as a template."
-msgstr "Skapa en ny examination genom att använda den här examinationen som en mall."
+msgstr "Skapa en ny examination genom att anvÃ¤nda den hÃ¤r examinationen som en mall."
 
 #: source/teacher/manager.php:244 source/teacher/manager.php:521
 msgid "Edit common properties like name, description or grades for this examination."
-msgstr "Ändra på vanliga egenskaper såsom namn, beskrivning och betygsgradering för denna examination."
+msgstr "Ãndra pÃ¥ vanliga egenskaper sÃ¥som namn, beskrivning och betygsgradering fÃ¶r denna examination."
 
 #: source/teacher/manager.php:248 source/teacher/manager.php:251
 msgid "Deletes the examination along with any questions."
-msgstr "Radera denna examination tillsammans med dess frågor."
+msgstr "Radera denna examination tillsammans med dess frÃ¥gor."
 
 #: source/teacher/manager.php:254 source/teacher/manager.php:259
 #: include/teacher.inc:201 include/teacher.inc:204 include/teacher.inc:207
@@ -1420,11 +1424,11 @@ msgstr "Testa"
 
 #: source/teacher/manager.php:255
 msgid "Test this examination by creating and opening a copy."
-msgstr "Testa denna examination genom att skapa och öppna en kopia."
+msgstr "Testa denna examination genom att skapa och Ã¶ppna en kopia."
 
 #: source/teacher/manager.php:260
 msgid "Run this test case examination."
-msgstr "Kör denna testexamination."
+msgstr "KÃ¶r denna testexamination."
 
 #: source/teacher/manager.php:263
 msgid "Created"
@@ -1445,7 +1449,7 @@ msgstr "Beskrivning"
 
 #: source/teacher/manager.php:306
 msgid "Scheduling"
-msgstr "Schemaläggning"
+msgstr "SchemalÃ¤ggning"
 
 #: source/teacher/manager.php:308
 msgid "Start time"
@@ -1457,31 +1461,31 @@ msgstr "Sluttid"
 
 #: source/teacher/manager.php:321 include/pdf.inc:353
 msgid "Graduation"
-msgstr "Betygssättning"
+msgstr "BetygssÃ¤ttning"
 
 #: source/teacher/manager.php:325
 msgid "Input name:value pairs on separate lines defining the graduation levels on this examination. The first line must be on form name:0, denoting the failed grade."
-msgstr "Lägg in namn:värdepar på separata rader definierande betygsgränserna för den här examinationen. Första raden måste vara namn:0, beskrivande betyget för underkänt."
+msgstr "LÃ¤gg in namn:vÃ¤rdepar pÃ¥ separata rader definierande betygsgrÃ¤nserna fÃ¶r den hÃ¤r examinationen. FÃ¶rsta raden mÃ¥ste vara namn:0, beskrivande betyget fÃ¶r underkÃ¤nt."
 
 #: source/teacher/manager.php:340
 #, php-format
 msgid "Define the common properties of the exam. Click on the 'Submit' button to create this exam."
-msgstr "Definiera dom vanliga egenskaperna för examinationen. Klicka på knappen 'Skicka' för att skapa denna examination."
+msgstr "Definiera dom vanliga egenskaperna fÃ¶r examinationen. Klicka pÃ¥ knappen 'Skicka' fÃ¶r att skapa denna examination."
 
 #: source/teacher/manager.php:382
 #, php-format
 msgid "This page let you edit common properties of the exam. Click on the 'Submit' button to save changes."
-msgstr "Denna sida låter dig ändra på egenskaperna för denna examination. Klicka på knappen 'Skicka' för att spara dina ändringar."
+msgstr "Denna sida lÃ¥ter dig Ã¤ndra pÃ¥ egenskaperna fÃ¶r denna examination. Klicka pÃ¥ knappen 'Skicka' fÃ¶r att spara dina Ã¤ndringar."
 
 #: source/teacher/manager.php:489
 #, php-format
 msgid "This page let you create a new examination from an OpenExam project file exported earlier. "
-msgstr "Denna sida låter dig skapa en ny examiniation från en tidigare exporterad OpenExam-projektfil. "
+msgstr "Denna sida lÃ¥ter dig skapa en ny examiniation frÃ¥n en tidigare exporterad OpenExam-projektfil. "
 
 #: source/teacher/manager.php:490
 #, php-format
 msgid "Browse your local disk to select an file containing the OpenExam project to import. "
-msgstr "Bläddra på din lokala hårddisk för att välja en fil innehållande att OpenExam-projekt att importera. "
+msgstr "BlÃ¤ddra pÃ¥ din lokala hÃ¥rddisk fÃ¶r att vÃ¤lja en fil innehÃ¥llande att OpenExam-projekt att importera. "
 
 #: source/teacher/manager.php:520
 msgid "Export"
@@ -1489,7 +1493,7 @@ msgstr "Exportera"
 
 #: source/teacher/manager.php:520
 msgid "Export the examination including its questions as XML data."
-msgstr "Exportera denna examination inklusive dess frågor som XML-data."
+msgstr "Exportera denna examination inklusive dess frÃ¥gor som XML-data."
 
 #: source/teacher/manager.php:527
 msgid "Contributors"
@@ -1497,7 +1501,7 @@ msgstr "Bidragare (contributor roll)"
 
 #: source/teacher/manager.php:531
 msgid "Add a question contributor to this examination."
-msgstr "Lägg till en person som kan bidra med frågor till denna examination."
+msgstr "LÃ¤gg till en person som kan bidra med frÃ¥gor till denna examination."
 
 #: source/teacher/manager.php:537 source/teacher/manager.php:558
 #: source/teacher/manager.php:576 source/teacher/manager.php:631
@@ -1507,7 +1511,7 @@ msgstr "Ta bort"
 #: source/teacher/manager.php:540
 #, php-format
 msgid "Remove %s as a question contributor for this examination."
-msgstr "Ta bort rollen som bidragare av frågor från %s på denna examination."
+msgstr "Ta bort rollen som bidragare av frÃ¥gor frÃ¥n %s pÃ¥ denna examination."
 
 #: source/teacher/manager.php:548
 msgid "Examinators"
@@ -1515,12 +1519,12 @@ msgstr "Examinatorer (examinator roll)"
 
 #: source/teacher/manager.php:552 source/teacher/manager.php:572
 msgid "Add a person with the examinator role."
-msgstr "Lägg till en person med examinatorroll."
+msgstr "LÃ¤gg till en person med examinatorroll."
 
 #: source/teacher/manager.php:561
 #, php-format
 msgid "Remove %s as an examinator for this examination."
-msgstr "Ta bort rollen som examinator från %s på denna examination."
+msgstr "Ta bort rollen som examinator frÃ¥n %s pÃ¥ denna examination."
 
 #: source/teacher/manager.php:569
 msgid "Decoders"
@@ -1529,15 +1533,15 @@ msgstr "Avkodare (decoder roll)"
 #: source/teacher/manager.php:579
 #, php-format
 msgid "Remove %s as a decoder for this examination."
-msgstr "Ta bort rollen som avkodare (decoder) från %s på denna examination."
+msgstr "Ta bort rollen som avkodare (decoder) frÃ¥n %s pÃ¥ denna examination."
 
 #: source/teacher/manager.php:591
 msgid "Add a new question for this examination."
-msgstr "Lägg till en ny fråga till denna examination."
+msgstr "LÃ¤gg till en ny frÃ¥ga till denna examination."
 
 #: source/teacher/manager.php:594
 msgid "Import questions from file on disk."
-msgstr "Importera frågor från en fil på disken."
+msgstr "Importera frÃ¥gor frÃ¥n en fil pÃ¥ disken."
 
 #: source/teacher/manager.php:595
 msgid "Remove all"
@@ -1545,74 +1549,74 @@ msgstr "Ta bort alla"
 
 #: source/teacher/manager.php:597
 msgid "Remove all questions from this examination."
-msgstr "Ta bort alla frågor från denna examination."
+msgstr "Ta bort alla frÃ¥gor frÃ¥n denna examination."
 
 #: source/teacher/manager.php:601
 msgid "Open the page showing all questions at once, where questions can be edited and previewed."
-msgstr "Öpnnar sidan som visar alla frågor samtidigt, där frågor kan ändras och förhandsgranskas."
+msgstr "Ãpnnar sidan som visar alla frÃ¥gor samtidigt, dÃ¤r frÃ¥gor kan Ã¤ndras och fÃ¶rhandsgranskas."
 
 #: source/teacher/manager.php:623
 msgid "Edit properties for this question"
-msgstr "Ändra egenskaperna för den här frågan"
+msgstr "Ãndra egenskaperna fÃ¶r den hÃ¤r frÃ¥gan"
 
 #: source/teacher/manager.php:629
 msgid "Permanent delete this question"
-msgstr "Permanent raderna denna fråga"
+msgstr "Permanent raderna denna frÃ¥ga"
 
 #: source/teacher/manager.php:634
 msgid "Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."
-msgstr "Markera den här frågan som borttagen (ej permanent borttagen). Kan återställas senare från listan över borttagna frågor."
+msgstr "Markera den hÃ¤r frÃ¥gan som borttagen (ej permanent borttagen). Kan Ã¥terstÃ¤llas senare frÃ¥n listan Ã¶ver borttagna frÃ¥gor."
 
 #: source/teacher/manager.php:644
 msgid "Restore"
-msgstr "Återställ"
+msgstr "ÃterstÃ¤ll"
 
 #: source/teacher/manager.php:647
 msgid "Flag this question as active again"
-msgstr "Markera den här frågan som aktiv igen."
+msgstr "Markera den hÃ¤r frÃ¥gan som aktiv igen."
 
 #: source/teacher/manager.php:652
 #, php-format
 msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
-msgstr "Denna sida låter dig lägg till/ta bort 'contributors', 'decoders', 'examinators' och frågor för denna examination. "
+msgstr "Denna sida lÃ¥ter dig lÃ¤gg till/ta bort 'contributors', 'decoders', 'examinators' och frÃ¥gor fÃ¶r denna examination. "
 
 #: source/teacher/manager.php:653
 #, php-format
 msgid "Not all options might be available, i.e. its not possible to add questions to an already started examination."
-msgstr "Vissa operationer kan saknas, t.ex. det är inte möjligt att lägga till frågor till en examination som redan startat."
+msgstr "Vissa operationer kan saknas, t.ex. det Ã¤r inte mÃ¶jligt att lÃ¤gga till frÃ¥gor till en examination som redan startat."
 
 #: source/teacher/manager.php:656
 #, php-format
 msgid "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
-msgstr "Av integritetsskäl rörande anonymitet bör inte personer med rollen contributor (bidragare) samtidigt inneha rollen som examinator på en och samma examination."
+msgstr "Av integritetsskÃ¤l rÃ¶rande anonymitet bÃ¶r inte personer med rollen contributor (bidragare) samtidigt inneha rollen som examinator pÃ¥ en och samma examination."
 
 #: source/teacher/manager.php:683
 #, php-format
 msgid "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
-msgstr "Tillåt denna användare att bidra med frågor till examinationen '%s' genom att tilldela honom/henne 'contribute' rollen."
+msgstr "TillÃ¥t denna anvÃ¤ndare att bidra med frÃ¥gor till examinationen '%s' genom att tilldela honom/henne 'contribute' rollen."
 
 #: source/teacher/manager.php:702
 #, php-format
 msgid "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
-msgstr "Tillåt denna användare att lägga till studenter till examinationen '%s' genom att bevilja honom/henne 'examinator' rollen."
+msgstr "TillÃ¥t denna anvÃ¤ndare att lÃ¤gga till studenter till examinationen '%s' genom att bevilja honom/henne 'examinator' rollen."
 
 #: source/teacher/manager.php:721
 #, php-format
 msgid "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
-msgstr "Tillåt denna användare att avkoda den riktiga identiteten bakom studenter tillagda för examinationen '%s' genom att bevilja honom/henne 'decoder' rollen."
+msgstr "TillÃ¥t denna anvÃ¤ndare att avkoda den riktiga identiteten bakom studenter tillagda fÃ¶r examinationen '%s' genom att bevilja honom/henne 'decoder' rollen."
 
 #: source/teacher/manager.php:750
 msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
-msgstr "Endast användare som fått rollen 'teacher' tilldelad eller som har rollen 'creator' för åtminstånde en examination har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
+msgstr "Endast anvÃ¤ndare som fÃ¥tt rollen 'teacher' tilldelad eller som har rollen 'creator' fÃ¶r Ã¥tminstÃ¥nde en examination har Ã¥tkomst till den hÃ¤r sidan. Exekveringen av skriptet har avbrutits."
 
 #: source/teacher/help.php:67
 msgid "Help and information to teachers"
-msgstr "Hjälp och information till lärare"
+msgstr "HjÃ¤lp och information till lÃ¤rare"
 
 #: source/teacher/help.php:72 source/help.php:42
 #, php-format
 msgid "Help and information"
-msgstr "Hjälp och information"
+msgstr "HjÃ¤lp och information"
 
 #: source/teacher/help.php:74 source/help.php:44 include/ui.inc:112
 #, php-format
@@ -1622,17 +1626,17 @@ msgstr "Logga in"
 #: source/teacher/help.php:76 source/help.php:46
 #, php-format
 msgid "You have to be logged on using your UU identity (CAS login) for doing administative tasks. "
-msgstr "Du måste vara inloggad med din UU-identitet (CAS-inloggning) för att utföra administrativa uppgifter. "
+msgstr "Du mÃ¥ste vara inloggad med din UU-identitet (CAS-inloggning) fÃ¶r att utfÃ¶ra administrativa uppgifter. "
 
 #: source/teacher/help.php:79 source/help.php:49
 #, php-format
 msgid "You logon to the <a href=\"https://cas.user.uu.se\">CAS-server at Uppsala University</a> using your UU identity and password A. "
-msgstr "Du loggar in till <a href=\"https://cas.user.uu.se\">CAS-servern på Uppsala universitet</a> med din UU-identitet och lösenord A. "
+msgstr "Du loggar in till <a href=\"https://cas.user.uu.se\">CAS-servern pÃ¥ Uppsala universitet</a> med din UU-identitet och lÃ¶senord A. "
 
 #: source/teacher/help.php:80 source/help.php:50
 #, php-format
 msgid "You will be automatically prompted to logon whenever it's required to continue. "
-msgstr "Du kommer automatiskt att anmodas att logga in närhelst det behövs för att fortsätta. "
+msgstr "Du kommer automatiskt att anmodas att logga in nÃ¤rhelst det behÃ¶vs fÃ¶r att fortsÃ¤tta. "
 
 #: source/teacher/help.php:83
 #, php-format
@@ -1642,7 +1646,7 @@ msgstr "Roller"
 #: source/teacher/help.php:85
 #, php-format
 msgid "This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
-msgstr "Detta system tillåter skaparen av en examination att delge (bevilja) rättigheter till andra personer. Det kallas för att ge en roll till andra personer."
+msgstr "Detta system tillÃ¥ter skaparen av en examination att delge (bevilja) rÃ¤ttigheter till andra personer. Det kallas fÃ¶r att ge en roll till andra personer."
 
 #: source/teacher/help.php:88
 #, php-format
@@ -1651,19 +1655,19 @@ msgstr "Dessa roller kan delges:"
 
 #: source/teacher/help.php:91
 msgid "A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
-msgstr "En 'contributor' kan lägga till frågor till examinationen. En person som bidrar med en fråga är också (implicit) definierad som den person som ska rätta svaren på den frågan."
+msgstr "En 'contributor' kan lÃ¤gga till frÃ¥gor till examinationen. En person som bidrar med en frÃ¥ga Ã¤r ocksÃ¥ (implicit) definierad som den person som ska rÃ¤tta svaren pÃ¥ den frÃ¥gan."
 
 #: source/teacher/help.php:93
 msgid "A corrector is a person that has been assigned the task of correcting one or more question answers on an exam. Currently, only the examination creator can publish questions with another person as its corrector."
-msgstr "En 'rättare' (corrector) är en person som har tilldelats uppgiften att rätta svaren till en eller flera frågor på en examination. För närvarande kan endast den som skapat examinationen publisera frågor med en annan än sig själv som rättare."
+msgstr "En 'rÃ¤ttare' (corrector) Ã¤r en person som har tilldelats uppgiften att rÃ¤tta svaren till en eller flera frÃ¥gor pÃ¥ en examination. FÃ¶r nÃ¤rvarande kan endast den som skapat examinationen publisera frÃ¥gor med en annan Ã¤n sig sjÃ¤lv som rÃ¤ttare."
 
 #: source/teacher/help.php:95
 msgid "An examinator can assign (register) student for an examination and re-schedule the start and stop time."
-msgstr "En examinator kan bevilja (registrera) studenter på en examination och ändra dess start- och sluttid."
+msgstr "En examinator kan bevilja (registrera) studenter pÃ¥ en examination och Ã¤ndra dess start- och sluttid."
 
 #: source/teacher/help.php:97
 msgid "An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
-msgstr "En 'decoder' är den person som blivit tilldelad rättigheter att avkoda en examination. Genom att avkoda så blottläggs den rätta identiteten bakom den anonymiserade användaren. Den person som är tilldelad rollen som avkodare är vanligtvis densamma som rapporterar in resulteten till UPPDOK."
+msgstr "En 'decoder' Ã¤r den person som blivit tilldelad rÃ¤ttigheter att avkoda en examination. Genom att avkoda sÃ¥ blottlÃ¤ggs den rÃ¤tta identiteten bakom den anonymiserade anvÃ¤ndaren. Den person som Ã¤r tilldelad rollen som avkodare Ã¤r vanligtvis densamma som rapporterar in resulteten till UPPDOK."
 
 #: source/teacher/help.php:100
 #, php-format
@@ -1673,52 +1677,52 @@ msgstr "Livscykel"
 #: source/teacher/help.php:102
 #, php-format
 msgid "This is an example of how the system is supposed to be used:"
-msgstr "Detta är ett exempel på hur systemet är tänkt att användas:"
+msgstr "Detta Ã¤r ett exempel pÃ¥ hur systemet Ã¤r tÃ¤nkt att anvÃ¤ndas:"
 
 #: source/teacher/help.php:105
 #, php-format
 msgid "A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
-msgstr "En person som har blivit tilldelad 'teacher'-rättigheter skapar examinationen. Han/hon tilldelar andra personer rollerna 'contributor', 'examinator' och 'decoder'. Den med rollen 'teacher' definierar under vilken tidsperiod som examinationen ska pågå."
+msgstr "En person som har blivit tilldelad 'teacher'-rÃ¤ttigheter skapar examinationen. Han/hon tilldelar andra personer rollerna 'contributor', 'examinator' och 'decoder'. Den med rollen 'teacher' definierar under vilken tidsperiod som examinationen ska pÃ¥gÃ¥."
 
 #: source/teacher/help.php:106
 #, php-format
 msgid "The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
-msgstr "Personer som tilldelats rollen 'contributor' lägger till frågor till examinationen. Som standard är den som skapar examinationen också tilldelad rollen 'contributor'."
+msgstr "Personer som tilldelats rollen 'contributor' lÃ¤gger till frÃ¥gor till examinationen. Som standard Ã¤r den som skapar examinationen ocksÃ¥ tilldelad rollen 'contributor'."
 
 #: source/teacher/help.php:107
 #, php-format
 msgid "The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
-msgstr "Dom personer som tilldelats rollen 'examinator' lägger till (registerar) studenter på examinationen. Om studenter dyker upp på examinationsdagen utan att redan vara inlagda, så kan examinatorn gå in i systemet och lägga till studenten."
+msgstr "Dom personer som tilldelats rollen 'examinator' lÃ¤gger till (registerar) studenter pÃ¥ examinationen. Om studenter dyker upp pÃ¥ examinationsdagen utan att redan vara inlagda, sÃ¥ kan examinatorn gÃ¥ in i systemet och lÃ¤gga till studenten."
 
 #: source/teacher/help.php:108
 #, php-format
 msgid "After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
-msgstr "Efter att examinationen genomförts kan dom som bidragit med frågor logga in och rätta svaren på sina frågor. Det är endast möjligt att rätta svaren på dom frågor man själv bidragit med (skapat)."
+msgstr "Efter att examinationen genomfÃ¶rts kan dom som bidragit med frÃ¥gor logga in och rÃ¤tta svaren pÃ¥ sina frÃ¥gor. Det Ã¤r endast mÃ¶jligt att rÃ¤tta svaren pÃ¥ dom frÃ¥gor man sjÃ¤lv bidragit med (skapat)."
 
 #: source/teacher/help.php:109
 #, php-format
 msgid "Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
-msgstr "Så snart alla svar har rättats kan den som har rollen 'decoder' (avkodare) gå in i systemet och synliglägga dom rätta identiteterna bakom svaren. Så snart en examination har avkodats går det inte längre att ändra på poängbedömningen av svaren."
+msgstr "SÃ¥ snart alla svar har rÃ¤ttats kan den som har rollen 'decoder' (avkodare) gÃ¥ in i systemet och synliglÃ¤gga dom rÃ¤tta identiteterna bakom svaren. SÃ¥ snart en examination har avkodats gÃ¥r det inte lÃ¤ngre att Ã¤ndra pÃ¥ poÃ¤ngbedÃ¶mningen av svaren."
 
 #: source/teacher/help.php:112
 #, php-format
 msgid "Restrictions"
-msgstr "Begränsningar"
+msgstr "BegrÃ¤nsningar"
 
 #: source/teacher/help.php:113
 #, php-format
 msgid "Only the person that publish an question for an examination can correct the answers to that question."
-msgstr "Endast den person som bidragit med en fråga kan rätta svaren på denna fråga."
+msgstr "Endast den person som bidragit med en frÃ¥ga kan rÃ¤tta svaren pÃ¥ denna frÃ¥ga."
 
 #: source/teacher/help.php:115
 #, php-format
 msgid "Getting started"
-msgstr "Kom igång"
+msgstr "Kom igÃ¥ng"
 
 #: source/teacher/help.php:116
 #, php-format
 msgid "If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."
-msgstr "Om du önskar att använda detta system för dina egna online-examinationer, kontakta %s för att på lärarbehörighet och ytterligare instruktioner."
+msgstr "Om du Ã¶nskar att anvÃ¤nda detta system fÃ¶r dina egna online-examinationer, kontakta %s fÃ¶r att pÃ¥ lÃ¤rarbehÃ¶righet och ytterligare instruktioner."
 
 #: source/teacher/template.php:70
 msgid "Template Page"
@@ -1726,25 +1730,25 @@ msgstr "Mallsida"
 
 #: source/teacher/correct.php:94
 msgid "Answer Correction Page"
-msgstr "Sida för rättning av svar"
+msgstr "Sida fÃ¶r rÃ¤ttning av svar"
 
 #: source/teacher/correct.php:157
 #, php-format
 msgid "Only users granted the %s or %s role on this exam can access this page. The script processing has halted."
-msgstr "Endast användare tilldelade någon av rollerna %s eller %s har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
+msgstr "Endast anvÃ¤ndare tilldelade nÃ¥gon av rollerna %s eller %s har Ã¥tkomst till den hÃ¤r sidan. Exekveringen av skriptet har avbrutits."
 
 #: source/teacher/correct.php:162
 msgid "This examination is not yet finished. You have to wait until its finished before you can correct the answers."
-msgstr "Denna examination är ännu inte färdig. Du måste vänta till den är klar innan du kan rätta svaren."
+msgstr "Denna examination Ã¤r Ã¤nnu inte fÃ¤rdig. Du mÃ¥ste vÃ¤nta till den Ã¤r klar innan du kan rÃ¤tta svaren."
 
 #: source/teacher/correct.php:226 source/teacher/correct.php:438
 #: include/pdf.inc:426
 msgid "Correct answer"
-msgstr "Rätt svar"
+msgstr "RÃ¤tt svar"
 
 #: source/teacher/correct.php:231
 msgid "This question is flagged as removed. The answer score set here will not affect the student result on this examination."
-msgstr "Frågan är markerad som borttagen. Svarspoängen satt här kommer inte att påverka studentens resultat på den här examiniationen."
+msgstr "FrÃ¥gan Ã¤r markerad som borttagen. SvarspoÃ¤ngen satt hÃ¤r kommer inte att pÃ¥verka studentens resultat pÃ¥ den hÃ¤r examiniationen."
 
 #: source/teacher/correct.php:233
 msgid "Info icon"
@@ -1755,31 +1759,31 @@ msgstr "infoikon"
 #: source/teacher/correct.php:657 include/pdf.inc:363 include/pdf.inc:428
 #: include/scoreboard.inc:554 include/scoreboard.inc:860
 msgid "Max score"
-msgstr "Maxpoäng"
+msgstr "MaxpoÃ¤ng"
 
 #: source/teacher/correct.php:299
 msgid "This optional field can be used to save an comment for this answer correction."
-msgstr "Detta frivilliga fält kan användas för att spara en kommentar från rättningen av detta svar."
+msgstr "Detta frivilliga fÃ¤lt kan anvÃ¤ndas fÃ¶r att spara en kommentar frÃ¥n rÃ¤ttningen av detta svar."
 
 #: source/teacher/correct.php:312
 #, php-format
 msgid "Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."
-msgstr "Rättning av svar för den här frågan har blivit tilldelad till %s, du är inte tillåten att fortsätta. Exekvering av skriptet har avbrutits."
+msgstr "RÃ¤ttning av svar fÃ¶r den hÃ¤r frÃ¥gan har blivit tilldelad till %s, du Ã¤r inte tillÃ¥ten att fortsÃ¤tta. Exekvering av skriptet har avbrutits."
 
 #: source/teacher/correct.php:319
 #, php-format
 msgid "Correct the answer for this question."
-msgstr "Rätta svaret på den här frågan."
+msgstr "RÃ¤tta svaret pÃ¥ den hÃ¤r frÃ¥gan."
 
 #: source/teacher/correct.php:346
 #, php-format
 msgid "Correct all answers at once for this student examination"
-msgstr "Rätta alla svar samtidigt för denna studentexamination"
+msgstr "RÃ¤tta alla svar samtidigt fÃ¶r denna studentexamination"
 
 #: source/teacher/correct.php:347
 #, php-format
 msgid "Only those questions where this student have given an answer for is shown below. Questions published by other people for this examination is hidden."
-msgstr "Endast dom frågor som denna student har svarat på visas nedan. Frågor publiserade av andra personer än dig är inte synliga."
+msgstr "Endast dom frÃ¥gor som denna student har svarat pÃ¥ visas nedan. FrÃ¥gor publiserade av andra personer Ã¤n dig Ã¤r inte synliga."
 
 #: source/teacher/correct.php:350 source/teacher/correct.php:369
 #: source/teacher/correct.php:385 source/teacher/correct.php:445
@@ -1790,22 +1794,22 @@ msgstr "Svar saknas"
 #: source/teacher/correct.php:351
 #, php-format
 msgid "It appears that this student have not answered any questions at all."
-msgstr "Det verkar som att den här studenten inte svarat på några frågor alls."
+msgstr "Det verkar som att den hÃ¤r studenten inte svarat pÃ¥ nÃ¥gra frÃ¥gor alls."
 
 #: source/teacher/correct.php:370
 #, php-format
 msgid "It appears that this student have not answered any of you questions."
-msgstr "Det verkar som den här studenten inte svarat på några av dina frågor."
+msgstr "Det verkar som den hÃ¤r studenten inte svarat pÃ¥ nÃ¥gra av dina frÃ¥gor."
 
 #: source/teacher/correct.php:386
 #, php-format
 msgid "Only answers to removed questions where found. Click <a href=\"%s\">here</a> to view answers for those questions."
-msgstr "Endast svar på borttagna frågor hittades. Klicka <a href=\"%s\">här</a> för att visa svaren på dessa frågor."
+msgstr "Endast svar pÃ¥ borttagna frÃ¥gor hittades. Klicka <a href=\"%s\">hÃ¤r</a> fÃ¶r att visa svaren pÃ¥ dessa frÃ¥gor."
 
 #: source/teacher/correct.php:426
 #, php-format
 msgid "Correct multipe answers for the question '%s'"
-msgstr "Rätta flera svar för frågan '%s'"
+msgstr "RÃ¤tta flera svar fÃ¶r frÃ¥gan '%s'"
 
 #: source/teacher/correct.php:437
 msgid "Choices"
@@ -1814,67 +1818,67 @@ msgstr "Val"
 #: source/teacher/correct.php:446
 #, php-format
 msgid "It appears that no students have answered this question."
-msgstr "Det verkar som om ingen student has besvarat den här frågan."
+msgstr "Det verkar som om ingen student has besvarat den hÃ¤r frÃ¥gan."
 
 #: source/teacher/correct.php:470 source/teacher/correct.php:547
 #, php-format
 msgid "Correct Answers"
-msgstr "Rätta svaren"
+msgstr "RÃ¤tta svaren"
 
 #: source/teacher/correct.php:472
 #, php-format
 msgid "Select the examination you wish to correct answers to questions for (applies only to corractable examinations). "
-msgstr "Välj den examination som du vill rätta svaren för (gäller endast dom examinationer som är rättningsbara)."
+msgstr "VÃ¤lj den examination som du vill rÃ¤tta svaren fÃ¶r (gÃ¤ller endast dom examinationer som Ã¤r rÃ¤ttningsbara)."
 
 #: source/teacher/correct.php:473
 #, php-format
 msgid "You can also follow the link to review an already decoded examination."
-msgstr "Du kan även välja att följa länken för att visa upp en redan avkodad examation."
+msgstr "Du kan Ã¤ven vÃ¤lja att fÃ¶lja lÃ¤nken fÃ¶r att visa upp en redan avkodad examation."
 
 #: source/teacher/correct.php:485
 msgid "Correctable"
-msgstr "Rättningsbar"
+msgstr "RÃ¤ttningsbar"
 
 #: source/teacher/correct.php:525
 msgid "Click on this link to open this examination to correct answers."
-msgstr "Följ denna länk för att öppna examinationen och rätta svaren."
+msgstr "FÃ¶lj denna lÃ¤nk fÃ¶r att Ã¶ppna examinationen och rÃ¤tta svaren."
 
 #: source/teacher/correct.php:528
 msgid "Click on this link to review this examination."
-msgstr "Klicka på den här länken för att visa upp examinationen."
+msgstr "Klicka pÃ¥ den hÃ¤r lÃ¤nken fÃ¶r att visa upp examinationen."
 
 #: source/teacher/correct.php:553
 #, php-format
 msgid "Correct answers by student (rows), by question (column) or individual (by index). "
-msgstr "Rätta svaren per student (rader), per fråga (kolumner) eller enstaka svar (genom index). "
+msgstr "RÃ¤tta svaren per student (rader), per frÃ¥ga (kolumner) eller enstaka svar (genom index). "
 
 #: source/teacher/correct.php:554
 #, php-format
 msgid "You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of."
-msgstr "Du kan endast rätta svaren på dom frågor som du själv publicerat eller blivit tilldelad rollen som rättare f�ör."
+msgstr "Du kan endast rÃ¤tta svaren pÃ¥ dom frÃ¥gor som du sjÃ¤lv publicerat eller blivit tilldelad rollen som rÃ¤ttare f¶Ã¶r."
 
 #: source/teacher/correct.php:557
 #, php-format
 msgid "Showing Scores"
-msgstr "Visar poäng"
+msgstr "Visar poÃ¤ng"
 
 #: source/teacher/correct.php:563
 #, php-format
 msgid "The examination has already been decoded, so it's no longer possible to modify any scores or comments."
-msgstr "Den här examinationen har redan avkodats. Det är inte längre möjligt att ändra på bedömningen av svaren till den här examinationen."
+msgstr "Den hÃ¤r examinationen har redan avkodats. Det Ã¤r inte lÃ¤ngre mÃ¶jligt att Ã¤ndra pÃ¥ bedÃ¶mningen av svaren till den hÃ¤r examinationen."
 
 #: source/teacher/correct.php:611
 msgid "This question was not assigned to this student."
-msgstr "Denna fråga var inte tilldelad till den här studenten."
+msgstr "Denna frÃ¥ga var inte tilldelad till den hÃ¤r studenten."
 
 #: source/teacher/correct.php:629
 #, php-format
 msgid "Click <a href=\"%s\">here</a> to download the score board."
-msgstr "Klicka <a href=\"%s\">här</a> för att ladda ner poängtabellen."
+msgstr "Klicka <a href=\"%s\">hÃ¤r</a> fÃ¶r att ladda ner poÃ¤ngtabellen."
 
 #: source/teacher/correct.php:656 include/scoreboard.inc:553
 msgid "Possible"
-msgstr "Möjliga"
+msgstr "MÃ¶jliga"
 
 #: source/teacher/correct.php:658 include/pdf.inc:363 include/pdf.inc:669
 #: include/pdf.inc:688 include/scoreboard.inc:555 include/scoreboard.inc:670
@@ -1894,7 +1898,7 @@ msgstr "Administration"
 
 #: source/admin/index.php:79
 msgid "The admin pages let you manage almost all aspects of the system. "
-msgstr "Administrationssidorna låter dig hantera i stort sett alla delar av systemet. "
+msgstr "Administrationssidorna lÃ¥ter dig hantera i stort sett alla delar av systemet. "
 
 #: source/admin/index.php:81
 msgid "Common tasks:"
@@ -1902,7 +1906,7 @@ msgstr "Vanliga uppgifter:"
 
 #: source/admin/admin.php:77
 msgid "Supervisor Admin"
-msgstr "Administratörer"
+msgstr "AdministratÃ¶rer"
 
 #: source/admin/admin.php:91 source/admin/teacher.php:93
 msgid "Missing request parameter 'user'."
@@ -1910,17 +1914,17 @@ msgstr "Saknad anropsparameter 'user'."
 
 #: source/admin/admin.php:134
 msgid "This page let you grant and revoke administrative privileges. "
-msgstr "Denna sida låter dig bevilja och återkalla administrativa privilegier. "
+msgstr "Denna sida lÃ¥ter dig bevilja och Ã¥terkalla administrativa privilegier. "
 
 #: source/admin/admin.php:135
 msgid "These users have been granted administrative privileges:"
-msgstr "Dessa användare har blivit beviljade administrativa privilegier:"
+msgstr "Dessa anvÃ¤ndare har blivit beviljade administrativa privilegier:"
 
 #: source/admin/admin.php:144 source/admin/teacher.php:146
 #: include/scoreboard.inc:547 include/scoreboard.inc:650
 #: include/scoreboard.inc:688
 msgid "User"
-msgstr "Användare"
+msgstr "AnvÃ¤ndare"
 
 #: source/admin/admin.php:145 source/admin/teacher.php:147
 #: include/teacher.inc:407
@@ -1929,16 +1933,16 @@ msgstr "Roll"
 
 #: source/admin/admin.php:157 source/admin/teacher.php:159
 msgid "Revoke"
-msgstr "Återkalla"
+msgstr "Ãterkalla"
 
 #: source/admin/admin.php:162
 msgid "Add new administrator:"
-msgstr "Lägg till ny administratör:"
+msgstr "LÃ¤gg till ny administratÃ¶r:"
 
 #: source/admin/admin.php:163
 #, php-format
 msgid "Fill in the user name and click on '%s' to give this user administrative privileges:"
-msgstr "Fyll i användarnamn och klicka på '%s' för att ge denna användare administrativa privilegier:"
+msgstr "Fyll i anvÃ¤ndarnamn och klicka pÃ¥ '%s' fÃ¶r att ge denna anvÃ¤ndare administrativa privilegier:"
 
 #: source/admin/admin.php:163 source/admin/admin.php:169
 #: source/admin/teacher.php:165 source/admin/teacher.php:171
@@ -1947,28 +1951,28 @@ msgstr "Bevilja"
 
 #: source/admin/admin.php:168 source/admin/teacher.php:170
 msgid "Username"
-msgstr "Användarnamn"
+msgstr "AnvÃ¤ndarnamn"
 
 #: source/admin/teacher.php:79
 msgid "Teacher Admin"
-msgstr "Administration av lärare"
+msgstr "Administration av lÃ¤rare"
 
 #: source/admin/teacher.php:136
 msgid "This page let you grant and revoke the teacher role for other users. "
-msgstr "Denna sida låter dig bevilja och återkalla rollen 'teacher' för andra användare. "
+msgstr "Denna sida lÃ¥ter dig bevilja och Ã¥terkalla rollen 'teacher' fÃ¶r andra anvÃ¤ndare. "
 
 #: source/admin/teacher.php:137
 msgid "These users have been granted the teacher role:"
-msgstr "Dessa användare har blivit beviljade lärarrollen ('teacher'):"
+msgstr "Dessa anvÃ¤ndare har blivit beviljade lÃ¤rarrollen ('teacher'):"
 
 #: source/admin/teacher.php:164
 msgid "Add new teacher:"
-msgstr "Lägg till en ny lärare:"
+msgstr "LÃ¤gg till en ny lÃ¤rare:"
 
 #: source/admin/teacher.php:165
 #, php-format
 msgid "Fill in the user name and click on '%s' to grant this user the teacher role:"
-msgstr "Fyll i användarnamn och klicka på '%s' för att bevilja lärarrollen (teacher) till denna användare:"
+msgstr "Fyll i anvÃ¤ndarnamn och klicka pÃ¥ '%s' fÃ¶r att bevilja lÃ¤rarrollen (teacher) till denna anvÃ¤ndare:"
 
 #: source/html.php:33 source/html.php:40
 #, php-format
@@ -1977,17 +1981,17 @@ msgstr "HTML classes test driver"
 
 #: source/help.php:37
 msgid "Help and information to users"
-msgstr "Hjälp och information till användare"
+msgstr "HjÃ¤lp och information till anvÃ¤ndare"
 
 #: source/help.php:55
 #, php-format
 msgid "Begin taking the exam by login on to the CAS server at Uppsala university. Once logged on, the system will present the active exam that has been assigned for you."
-msgstr "Starta examinationen genom att logga in till CAS-servern på Uppsala universitet. När du blivit inloggad kommer systemet att visa upp dom aktiva examinationer som blivit tilldelade till dig."
+msgstr "Starta examinationen genom att logga in till CAS-servern pÃ¥ Uppsala universitet. NÃ¤r du blivit inloggad kommer systemet att visa upp dom aktiva examinationer som blivit tilldelade till dig."
 
 #: source/help.php:58
 #, php-format
 msgid "In the left side menu is all questions, grouped by in two groups: already answered and still to be answered. You can at any time (until the end of the exam) review and modify your previous answered questions."
-msgstr "På vänsta sidan finns alla frågor, grupperade i två grupper: redan besvarade och dom som är kvar att besvaras. Du kan när som helst (tills examinationen slutar) gå tillbaka och ändra i dina tidigare svar."
+msgstr "PÃ¥ vÃ¤nsta sidan finns alla frÃ¥gor, grupperade i tvÃ¥ grupper: redan besvarade och dom som Ã¤r kvar att besvaras. Du kan nÃ¤r som helst (tills examinationen slutar) gÃ¥ tillbaka och Ã¤ndra i dina tidigare svar."
 
 #: source/help.php:61
 #, php-format
@@ -1997,11 +2001,11 @@ msgstr "Anonymitet"
 #: source/help.php:63
 #, php-format
 msgid "Your answers are saved in a database using a code associated with your real identity (your CAS-ID). Only when your exam has been finally corrected (by the teachers), your real identity is disclosed and the result is reported to UPPDOK."
-msgstr "Dina svar sparas i en database användandes en kod associerad med din riktiga identitet (ditt CAS-ID). Endast sedan dina frågor slutgiltigt har rättats (av lärarna) kommer din rätta identitet att avkodas för att resultatet ska kunna rapporteras in till UPPDOK."
+msgstr "Dina svar sparas i en database anvÃ¤ndandes en kod associerad med din riktiga identitet (ditt CAS-ID). Endast sedan dina frÃ¥gor slutgiltigt har rÃ¤ttats (av lÃ¤rarna) kommer din rÃ¤tta identitet att avkodas fÃ¶r att resultatet ska kunna rapporteras in till UPPDOK."
 
 #: include/pdf.inc:161
 msgid "Table of Contents"
-msgstr "Innehållsförteckning"
+msgstr "InnehÃ¥llsfÃ¶rteckning"
 
 #: include/pdf.inc:292
 msgid "Examination Date"
@@ -2017,7 +2021,7 @@ msgstr "Sida $PAGE av $PAGES"
 
 #: include/pdf.inc:338 include/sendmail.inc:205
 msgid "Examination Result"
-msgstr "Resultat från examination"
+msgstr "Resultat frÃ¥n examination"
 
 #: include/pdf.inc:344 include/pdf.inc:386 include/pdf.inc:682
 #: include/pdf.inc:698 include/pdf.inc:743 include/scoreboard.inc:667
@@ -2027,28 +2031,28 @@ msgstr "Summering"
 #: include/pdf.inc:345
 #, php-format
 msgid "You scored total %.01f of maximum %.01f points (%.01f%%) on this examination."
-msgstr "Du har fått totalt %.01f poäng av maximalt %.01f (%.01f%%) på den här examinationen."
+msgstr "Du har fÃ¥tt totalt %.01f poÃ¤ng av maximalt %.01f (%.01f%%) pÃ¥ den hÃ¤r examinationen."
 
 #: include/pdf.inc:354
 #, php-format
 msgid "Your graduation on this examination is: <b>%s</b>."
-msgstr "Din betygssättning på den här examinationen är <b>%s</b>."
+msgstr "Din betygssÃ¤ttning pÃ¥ den hÃ¤r examinationen Ã¤r <b>%s</b>."
 
 #: include/pdf.inc:360
 msgid "Score Table"
-msgstr "Poängtabell"
+msgstr "PoÃ¤ngtabell"
 
 #: include/pdf.inc:361
 msgid "This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."
-msgstr "Den här tabellen visar en summering av din poängsumma jämfört med maximala antalet poäng. Frågor där svar saknas är markerade med '-' i tabellen."
+msgstr "Den hÃ¤r tabellen visar en summering av din poÃ¤ngsumma jÃ¤mfÃ¶rt med maximala antalet poÃ¤ng. FrÃ¥gor dÃ¤r svar saknas Ã¤r markerade med '-' i tabellen."
 
 #: include/pdf.inc:433
 msgid "Teachers reason for removal"
-msgstr "Lärarens orsak för borttagning"
+msgstr "LÃ¤rarens orsak fÃ¶r borttagning"
 
 #: include/pdf.inc:436
 msgid "This question was removed without an explanation from the teacher."
-msgstr "Den här frågan har tagits bort utan en förklaring från läraren."
+msgstr "Den hÃ¤r frÃ¥gan har tagits bort utan en fÃ¶rklaring frÃ¥n lÃ¤raren."
 
 #: include/pdf.inc:454
 msgid "Your comments"
@@ -2056,48 +2060,48 @@ msgstr "Dina kommentarer"
 
 #: include/pdf.inc:457
 msgid "Teacher comments"
-msgstr "Kommentar från lärare"
+msgstr "Kommentar frÃ¥n lÃ¤rare"
 
 #: include/pdf.inc:504
 msgid "Questions and Answers"
-msgstr "Frågor och svar"
+msgstr "FrÃ¥gor och svar"
 
 #: include/pdf.inc:511
 msgid "Unanswered Questions"
-msgstr "Obesvarade frågor"
+msgstr "Obesvarade frÃ¥gor"
 
 #: include/pdf.inc:520
 msgid "Removed Questions"
-msgstr "Borttagna frågor"
+msgstr "Borttagna frÃ¥gor"
 
 #: include/pdf.inc:522
 msgid "These questions has been removed from this examination. "
-msgstr "Dessa frågor har tagits bort från den här examinationen. "
+msgstr "Dessa frÃ¥gor har tagits bort frÃ¥n den hÃ¤r examinationen. "
 
 #: include/pdf.inc:523
 msgid "The questions, along with your answers (if any) and the teacher appraisal, is included here for reference, but do not affect your examination score or grade."
-msgstr "Alla frågor tillsammans med dina svar (om några) samt lärarens bedömning är inkluderad här för referens, men saknar betydelse för poängsättning och bedömning."
+msgstr "Alla frÃ¥gor tillsammans med dina svar (om nÃ¥gra) samt lÃ¤rarens bedÃ¶mning Ã¤r inkluderad hÃ¤r fÃ¶r referens, men saknar betydelse fÃ¶r poÃ¤ngsÃ¤ttning och bedÃ¶mning."
 
 #: include/pdf.inc:538
 msgid "Responsable for examination"
-msgstr "Ansvarig för examinationen"
+msgstr "Ansvarig fÃ¶r examinationen"
 
 #: include/pdf.inc:541
 #, php-format
 msgid "Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>"
-msgstr "Huvudansvarig person för examinationen är <a href=\"mailto:%s\">%s</a>"
+msgstr "Huvudansvarig person fÃ¶r examinationen Ã¤r <a href=\"mailto:%s\">%s</a>"
 
 #: include/pdf.inc:573
 msgid "Correction of answers"
-msgstr "Rättning av svar"
+msgstr "RÃ¤ttning av svar"
 
 #: include/pdf.inc:576
 msgid "These people have contributed questions for the examination and corrected answers."
-msgstr "Dessa personer bar bidragit med frågor till examinationen och rättat svaren."
+msgstr "Dessa personer bar bidragit med frÃ¥gor till examinationen och rÃ¤ttat svaren."
 
 #: include/pdf.inc:584
 msgid "Corrected questions"
-msgstr "Rättade frågor"
+msgstr "RÃ¤ttade frÃ¥gor"
 
 #: include/pdf.inc:595
 msgid "Statistics"
@@ -2105,27 +2109,27 @@ msgstr "Statistik"
 
 #: include/pdf.inc:596
 msgid "This section shows overall statistics for all participients on this examination."
-msgstr "Den här avdelningen visar översiktlig statistik över alla deltagare på den här examinationen."
+msgstr "Den hÃ¤r avdelningen visar Ã¶versiktlig statistik Ã¶ver alla deltagare pÃ¥ den hÃ¤r examinationen."
 
 #: include/pdf.inc:665
 msgid "Distribution"
-msgstr "Fördelning"
+msgstr "FÃ¶rdelning"
 
 #: include/pdf.inc:667
 msgid "This table shows the distribution by grades. The number of student allotted for each grade are:"
-msgstr "Den här tabellen visar fördelningen mellan dom olika betygen. Antalet studenter för varje betyg är:"
+msgstr "Den hÃ¤r tabellen visar fÃ¶rdelningen mellan dom olika betygen. Antalet studenter fÃ¶r varje betyg Ã¤r:"
 
 #: include/pdf.inc:669
 msgid "Threshold"
-msgstr "Gränsvärde"
+msgstr "GrÃ¤nsvÃ¤rde"
 
 #: include/pdf.inc:686
 msgid "This table shows the distribution of scores by student on this examination."
-msgstr "Denna tabell visar fördelningen av poäng per student på den här examinationen."
+msgstr "Denna tabell visar fÃ¶rdelningen av poÃ¤ng per student pÃ¥ den hÃ¤r examinationen."
 
 #: include/pdf.inc:700
 msgid "Mean Value"
-msgstr "Medelvärde"
+msgstr "MedelvÃ¤rde"
 
 #: include/pdf.inc:702
 msgid "Standard Deviation"
@@ -2133,23 +2137,23 @@ msgstr "Standardavvikelse"
 
 #: include/pdf.inc:709
 msgid "The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. "
-msgstr "Meddelvärdet, standardavvikelsen och den procentuell fördelning inom '()' är baserad på samtliga värden. "
+msgstr "MeddelvÃ¤rdet, standardavvikelsen och den procentuell fÃ¶rdelning inom '()' Ã¤r baserad pÃ¥ samtliga vÃ¤rden. "
 
 #: include/pdf.inc:710
 msgid "The other values are calculated by first removing the highest and lowest scores."
-msgstr "Övriga värden är beräknade genom att först ta bort den högsta och den lägsta poängen."
+msgstr "Ãvriga vÃ¤rden Ã¤r berÃ¤knade genom att fÃ¶rst ta bort den hÃ¶gsta och den lÃ¤gsta poÃ¤ngen."
 
 #: include/pdf.inc:717
 msgid "Ranges"
-msgstr "Områden"
+msgstr "OmrÃ¥den"
 
 #: include/pdf.inc:719
 msgid "This table shows the number of student in each range of percentage correct answers."
-msgstr "Denna tabell visar antalet studenter i varje procentuella område av rätta svar."
+msgstr "Denna tabell visar antalet studenter i varje procentuella omrÃ¥de av rÃ¤tta svar."
 
 #: include/pdf.inc:721
 msgid "Range"
-msgstr "Område"
+msgstr "OmrÃ¥de"
 
 #: include/pdf.inc:755
 msgid "Reference"
@@ -2157,7 +2161,7 @@ msgstr "Referens"
 
 #: include/pdf.inc:756
 msgid "Information about this examination."
-msgstr "Information om den här examinationen."
+msgstr "Information om den hÃ¤r examinationen."
 
 #: include/pdf.inc:758
 msgid "Contact Information"
@@ -2165,7 +2169,7 @@ msgstr "Kontaktinformation"
 
 #: include/pdf.inc:759
 msgid "This section lists those people thats been involved in this examination."
-msgstr "Den här avdelningen listar dom personer som har varit involverade i den här examinationen."
+msgstr "Den hÃ¤r avdelningen listar dom personer som har varit involverade i den hÃ¤r examinationen."
 
 #: include/pdf.inc:770
 msgid "Document Information"
@@ -2174,15 +2178,15 @@ msgstr "Dokumentinformation"
 #: include/pdf.inc:772
 #, php-format
 msgid "This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s/\">%s/</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license."
-msgstr "Det här dokumentet är genererat av <a href=\"%s\">OpenExam PHP</a> installerad på <a href=\"%s\">%s</a> användandes open source versionen av <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> släppt under GPL licens."
+msgstr "Det hÃ¤r dokumentet Ã¤r genererat av <a href=\"%s\">OpenExam PHP</a> installerad pÃ¥ <a href=\"%s\">%s</a> anvÃ¤ndandes open source versionen av <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> slÃ¤ppt under GPL licens."
 
 #: include/pdf.inc:776
 msgid "OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala University."
-msgstr "OpenExam PHP är ett system för säkra examinationer utvecklad vid Uppsala Biomedical Centre, Uppsala universitet."
+msgstr "OpenExam PHP Ã¤r ett system fÃ¶r sÃ¤kra examinationer utvecklad vid Uppsala Biomedical Centre, Uppsala universitet."
 
 #: include/database.inc:108
 msgid "Can't use setDSN() on existing connection."
-msgstr "Det går inte att använda setDSN() på en existerande anslutning."
+msgstr "Det gÃ¥r inte att anvÃ¤nda setDSN() pÃ¥ en existerande anslutning."
 
 #: include/ldap.inc:276
 #, php-format
@@ -2192,11 +2196,11 @@ msgstr "Det gick inte att ansluta till LDAP-servern %s:%d"
 #: include/ldap.inc:286
 #, php-format
 msgid "Failed set LDAP protocol version %d"
-msgstr "Det gick inte att sätta LDAP-protokoll till version %d"
+msgstr "Det gick inte att sÃ¤tta LDAP-protokoll till version %d"
 
 #: include/mplayer.inc:563
 msgid "Click on the link to open the URL in an external media player"
-msgstr "Klicka på den här länken för att öppna URL:en i en extern mediaspelare"
+msgstr "Klicka pÃ¥ den hÃ¤r lÃ¤nken fÃ¶r att Ã¶ppna URL:en i en extern mediaspelare"
 
 #: include/mplayer.inc:564
 msgid "External Media Player"
@@ -2220,19 +2224,19 @@ msgstr "Stoppa uppspelning"
 
 #: include/mplayer.inc:1099
 msgid "Seek backward in media stream"
-msgstr "Sök baklänges i mediaströmmen"
+msgstr "SÃ¶k baklÃ¤nges i mediastrÃ¶mmen"
 
 #: include/mplayer.inc:1104
 msgid "Seek forward in media stream"
-msgstr "Sök framlänges i mediaströmmen"
+msgstr "SÃ¶k framlÃ¤nges i mediastrÃ¶mmen"
 
 #: include/mplayer.inc:1111
 msgid "Switch to fullscreen mode"
-msgstr "Ändra till fullskärmsläge"
+msgstr "Ãndra till fullskÃ¤rmslÃ¤ge"
 
 #: include/ui.inc:94
 msgid "Success"
-msgstr "Godkänd"
+msgstr "GodkÃ¤nd"
 
 #: include/ui.inc:103
 msgid "Error"
@@ -2256,16 +2260,16 @@ msgstr "Ej inloggad"
 #: include/ui.inc:141
 #, php-format
 msgid "Select language to use:"
-msgstr "Välj språk att visa:"
+msgstr "VÃ¤lj sprÃ¥k att visa:"
 
 #: include/ui.inc:165
 #, php-format
 msgid "Language:"
-msgstr "Språk:"
+msgstr "SprÃ¥k:"
 
 #: include/ui.inc:166
 msgid "Click on the flag to change language."
-msgstr "Klicka på flaggan för att ändra språk."
+msgstr "Klicka pÃ¥ flaggan fÃ¶r att Ã¤ndra sprÃ¥k."
 
 #: include/ui.inc:221
 msgid "Validator:"
@@ -2273,7 +2277,7 @@ msgstr "Validerare:"
 
 #: include/ui.inc:307
 msgid "Only trusted users with administrative privileges (system users) can access this page. The script processing has halted."
-msgstr "Endast betrodda användare med administrativa privilegier (systemanvändare) har tillgång till den här sidan. Exekveringen av skriptet har avbrutits."
+msgstr "Endast betrodda anvÃ¤ndare med administrativa privilegier (systemanvÃ¤ndare) har tillgÃ¥ng till den hÃ¤r sidan. Exekveringen av skriptet har avbrutits."
 
 #: include/ui.inc:351
 #, php-format
@@ -2283,12 +2287,12 @@ msgstr "Var god rapportera detta till %s."
 #: include/sendmail.inc:121
 #, php-format
 msgid "This message was automatic generated and sent out by the OpenExam PHP system at %s"
-msgstr "Detta meddelande har skapats och skickats ut av systemet OpenExam PHP på %s"
+msgstr "Detta meddelande har skapats och skickats ut av systemet OpenExam PHP pÃ¥ %s"
 
 #: include/sendmail.inc:206
 #, php-format
 msgid "Cheers, %s"
-msgstr "Hälsningar, %s"
+msgstr "HÃ¤lsningar, %s"
 
 #: include/sendmail.inc:252
 msgid "Attached Document"
@@ -2297,27 +2301,27 @@ msgstr "Bifogat dokument"
 #: include/sendmail.inc:253
 #, php-format
 msgid "Your result from the examination in '%s' on %s is attached to this message in the file %s."
-msgstr "Ditt result från examinationen i '%s' %s finns bifogad till detta meddelande i filen %s."
+msgstr "Ditt result frÃ¥n examinationen i '%s' %s finns bifogad till detta meddelande i filen %s."
 
 #: include/admin.inc:45
 msgid "Grant and revoke administrative privileges to trusted users."
-msgstr "Tilldela och återkalla administrativa privilegier för betrodda användare."
+msgstr "Tilldela och Ã¥terkalla administrativa privilegier fÃ¶r betrodda anvÃ¤ndare."
 
 #: include/admin.inc:46
 msgid "Admins"
-msgstr "Administratörer"
+msgstr "AdministratÃ¶rer"
 
 #: include/admin.inc:50
 msgid "Grant and revoke teacher privileges to trusted users."
-msgstr "Tilldela och återkalla lärarprivilegier för betrodda användare."
+msgstr "Tilldela och Ã¥terkalla lÃ¤rarprivilegier fÃ¶r betrodda anvÃ¤ndare."
 
 #: include/admin.inc:51
 msgid "Teachers"
-msgstr "Lärare"
+msgstr "LÃ¤rare"
 
 #: include/admin.inc:117
 msgid "Only users granted administrative privileges (system managers) can access this page. The script processing has halted."
-msgstr "Endast användare tilldelade administrative privilegier (system managers) har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
+msgstr "Endast anvÃ¤ndare tilldelade administrative privilegier (system managers) har Ã¥tkomst till den hÃ¤r sidan. Exekveringen av skriptet har avbrutits."
 
 #: include/admin.inc:143 include/teacher.inc:462
 msgid "Missing required parameter!"
@@ -2331,12 +2335,12 @@ msgstr "Den erforderliga anropsparametern '%s' saknas"
 #: include/error.inc:38
 #, php-format
 msgid "If you think this is a bug in the system, then please report it to %s"
-msgstr "Om du tror att detta är en bugg i systemet, var god rapportera det till %s"
+msgstr "Om du tror att detta Ã¤r en bugg i systemet, var god rapportera det till %s"
 
 #: include/import.inc:75
 #, php-format
 msgid "Wrong MIME type (%s) on uploaded file %s (expected %s)"
-msgstr "Fel MIME-type (%s) på den uppladdade filen %s (förväntade %s)"
+msgstr "Fel MIME-type (%s) pÃ¥ den uppladdade filen %s (fÃ¶rvÃ¤ntade %s)"
 
 #: include/import.inc:78
 #, php-format
@@ -2346,12 +2350,12 @@ msgstr "Tom file %s uppladdad"
 #: include/import.inc:331 include/import.inc:423
 #, php-format
 msgid "Expected header '%s' at index (1,1)"
-msgstr "Förväntade headern '%s' på position (1,1)"
+msgstr "FÃ¶rvÃ¤ntade headern '%s' pÃ¥ position (1,1)"
 
 #: include/import.inc:335 include/import.inc:428
 #, php-format
 msgid "Expected format '%s' at index (2,2)"
-msgstr "Förväntade formatet '%s' på position (2,2)"
+msgstr "FÃ¶rvÃ¤ntade formatet '%s' pÃ¥ position (2,2)"
 
 #: include/import.inc:520
 msgid "Missing XML format attribute. This don't look like an OpenExam project data file."
@@ -2365,12 +2369,12 @@ msgstr "Osupporterat XML formatnummer: %d. Denna fil kan inte importeras."
 #: include/import.inc:591
 #, php-format
 msgid "Possible file upload attack: %s"
-msgstr "Möjlig attack genom uppladdning av fil: %s"
+msgstr "MÃ¶jlig attack genom uppladdning av fil: %s"
 
 #: include/import.inc:604
 #, php-format
 msgid "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
-msgstr "Vet ej hur man importerar *.%s-filer. Var god välj en fil innehållande en frågebank från Ping-Pong."
+msgstr "Vet ej hur man importerar *.%s-filer. Var god vÃ¤lj en fil innehÃ¥llande en frÃ¥gebank frÃ¥n Ping-Pong."
 
 #: include/locale.inc:247
 msgid "Swedish"
@@ -2386,29 +2390,29 @@ msgstr "Engelska (US)"
 
 #: include/locale.inc:262
 msgid "Browser default"
-msgstr "Webbläsarens förvalda"
+msgstr "WebblÃ¤sarens fÃ¶rvalda"
 
 #: include/locker.inc:86
 msgid "A connection could not be established with the lockdown service for your computer. The fwexamd daemon/service is a required component that must to be accessable from this server to ensure an safe examination environment."
-msgstr "En anslutning kunde inte etableras till nedlåsningstjänsten på din dator. Tjänsten fwexamd är en obligatorisk komponent som måste finnas tillgänglig för att säkerställa en säkrad miljö för examinationen."
+msgstr "En anslutning kunde inte etableras till nedlÃ¥sningstjÃ¤nsten pÃ¥ din dator. TjÃ¤nsten fwexamd Ã¤r en obligatorisk komponent som mÃ¥ste finnas tillgÃ¤nglig fÃ¶r att sÃ¤kerstÃ¤lla en sÃ¤krad miljÃ¶ fÃ¶r examinationen."
 
 #: include/locker.inc:111
 msgid "The communication with the lock down service (fwexamd) was lost. Maybe theres a network or system problem with your computer?"
-msgstr "Kommunikationen med nedlåsningstjänsten (fwexamd) förlorades. Det kanske är problem med nätverket eller systemet på din dator?"
+msgstr "Kommunikationen med nedlÃ¥sningstjÃ¤nsten (fwexamd) fÃ¶rlorades. Det kanske Ã¤r problem med nÃ¤tverket eller systemet pÃ¥ din dator?"
 
 #: include/locker.inc:127
 #, php-format
 msgid "Failed send the '%s' command to the lock down service running on your computer. Please report this to the system manager."
-msgstr "Det gick inte att skicka kommandot '%s' till nedlåsningstjänsten på din dator. Var god rapportera detta till systemansvarig."
+msgstr "Det gick inte att skicka kommandot '%s' till nedlÃ¥sningstjÃ¤nsten pÃ¥ din dator. Var god rapportera detta till systemansvarig."
 
 #: include/locker.inc:543
 #, php-format
 msgid "The current task requires the lockdown service/daemon (fwexamd) being running on your computer, but no such service has registered itself or been pre-registered for your computer address (%s). Make sure that this service (fwexamd) has been started and is configured to register with this system or contact the system administrator for assistance."
-msgstr "Aktuell uppgift kräver att nedlåsningstjänsten (fwexamd) är igång på din dator, men ingen sådan tjänst har registrerat sig själv eller blivit förregistrerad för din datoraddress (%s). var god kontrollera att tjänsten har startats och konfigurerats att registrera sig med detta system. Kontakta systemadministratören för ytterligare assistans."
+msgstr "Aktuell uppgift krÃ¤ver att nedlÃ¥sningstjÃ¤nsten (fwexamd) Ã¤r igÃ¥ng pÃ¥ din dator, men ingen sÃ¥dan tjÃ¤nst har registrerat sig sjÃ¤lv eller blivit fÃ¶rregistrerad fÃ¶r din datoraddress (%s). var god kontrollera att tjÃ¤nsten har startats och konfigurerats att registrera sig med detta system. Kontakta systemadministratÃ¶ren fÃ¶r ytterligare assistans."
 
 #: include/teacher.inc:189
 msgid "Overview"
-msgstr "Översikt"
+msgstr "Ãversikt"
 
 #: include/teacher.inc:191
 msgid "Properties"
@@ -2416,15 +2420,15 @@ msgstr "Egenskaper"
 
 #: include/teacher.inc:218
 msgid "Add contributor"
-msgstr "Lägg till bidragare"
+msgstr "LÃ¤gg till bidragare"
 
 #: include/teacher.inc:222
 msgid "Add examinator"
-msgstr "Lägg till examinator"
+msgstr "LÃ¤gg till examinator"
 
 #: include/teacher.inc:225
 msgid "Add decoder"
-msgstr "Lägg till avkodare"
+msgstr "LÃ¤gg till avkodare"
 
 #: include/teacher.inc:227
 msgid "Staff"
@@ -2432,27 +2436,27 @@ msgstr "Stab"
 
 #: include/teacher.inc:239
 msgid "Add question"
-msgstr "Lägg till fråga"
+msgstr "LÃ¤gg till frÃ¥ga"
 
 #: include/teacher.inc:241
 msgid "Add topic"
-msgstr "Lägg till ämne"
+msgstr "LÃ¤gg till Ã¤mne"
 
 #: include/teacher.inc:245
 msgid "Show all questions"
-msgstr "Visa alla frågor"
+msgstr "Visa alla frÃ¥gor"
 
 #: include/teacher.inc:249
 msgid "Correct answers"
-msgstr "Rätta svar"
+msgstr "RÃ¤tta svar"
 
 #: include/teacher.inc:264
 msgid "Add students"
-msgstr "Lägg till studenter"
+msgstr "LÃ¤gg till studenter"
 
 #: include/teacher.inc:266
 msgid "Change schedule"
-msgstr "Ändra schemaläggning"
+msgstr "Ãndra schemalÃ¤ggning"
 
 #: include/teacher.inc:271
 msgid "Decode answers"
@@ -2468,7 +2472,7 @@ msgstr "Vyer"
 
 #: include/teacher.inc:309
 msgid "This examination"
-msgstr "Den här examinationen"
+msgstr "Den hÃ¤r examinationen"
 
 #: include/teacher.inc:396
 #, php-format
@@ -2478,7 +2482,7 @@ msgid ""
 "Supplementary roles:\n"
 "- %s\n"
 msgstr ""
-"Primär roll: %s\n"
+"PrimÃ¤r roll: %s\n"
 "\n"
 "Tillagd roller:\n"
 "- %s\n"
@@ -2494,7 +2498,7 @@ msgstr ""
 
 #: include/teacher.inc:424
 msgid "Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."
-msgstr "Endast användare som blivit tilldelade någon av rollerna teacher, contributor, examinator or decoder har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
+msgstr "Endast anvÃ¤ndare som blivit tilldelade nÃ¥gon av rollerna teacher, contributor, examinator or decoder har Ã¥tkomst till den hÃ¤r sidan. Exekveringen av skriptet har avbrutits."
 
 #: include/teacher.inc:510
 msgid "Organisation"
@@ -2514,7 +2518,7 @@ msgstr "Svar"
 
 #: include/scoreboard.inc:867 include/scoreboard.inc:871
 msgid "This question has been removed"
-msgstr "Den här frågan har tagits bort"
+msgstr "Den hÃ¤r frÃ¥gan har tagits bort"
 
 #: include/export.inc:189
 #, php-format
@@ -2535,7 +2539,7 @@ msgstr "OpenExam projekt exporterat %s"
 
 #, fuzzy
 #~ msgid "General:"
-#~ msgstr "Allmänt"
+#~ msgstr "AllmÃ¤nt"
 
 #~ msgid "Email Results"
 #~ msgstr "Skicka resultat med e-post"
@@ -2556,7 +2560,7 @@ msgstr "OpenExam projekt exporterat %s"
 #~ msgstr "Besvarade:"
 
 #~ msgid "This page let you edit common properties of the exam."
-#~ msgstr "Denna sida låter dig ändra på egenskaperna för denna examination."
+#~ msgstr "Denna sida lÃ¥ter dig Ã¤ndra pÃ¥ egenskaperna fÃ¶r denna examination."
 
 #~ msgid "All students"
 #~ msgstr "Alla studenter"
@@ -2565,7 +2569,7 @@ msgstr "OpenExam projekt exporterat %s"
 #~ msgstr "Visa:"
 
 #~ msgid "It's possible to <a href=\"%s\">review the score board online</a> by following the link."
-#~ msgstr "Det är möjligt att <a href=\"%s\">förhandsvisa poängtabellen online</a> genom att följa länken."
+#~ msgstr "Det Ã¤r mÃ¶jligt att <a href=\"%s\">fÃ¶rhandsvisa poÃ¤ngtabellen online</a> genom att fÃ¶lja lÃ¤nken."
 
 #~ msgid "Missing request parameter!"
 #~ msgstr "Saknad anropsparameter!"
@@ -2574,7 +2578,7 @@ msgstr "OpenExam projekt exporterat %s"
 #~ msgstr "Saknad anropsparameter '%s'."
 
 #~ msgid "Click to add/delete contributors, decoders, examinators and questions"
-#~ msgstr "Klicka för att lägg till/ta bort 'contributors', 'decoders', 'examinators' och frågor"
+#~ msgstr "Klicka fÃ¶r att lÃ¤gg till/ta bort 'contributors', 'decoders', 'examinators' och frÃ¥gor"
 
 #~ msgid "End"
 #~ msgstr "Slutar"
