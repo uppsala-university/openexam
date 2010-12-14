@@ -1,4 +1,4 @@
-Version 1.5.4 (2010-mm-dd):
+Version 1.5.4 (2010-12-13):
 
         * Questions in the exam can now be answered in a 'save' and 'save and
 	  move next' manner.
@@ -14,9 +14,18 @@ Version 1.5.4 (2010-mm-dd):
 	  will be supported. MS Excel, plain text and XML is the supported 
 	  formats.
 
-        * OpenExam projects (complete examination with its questions) can now
-          be imported and exported.
-	  	
+        * OpenExam projects (the complete examination together with questions)
+          can now be imported and exported.
+
+        * Full support for unicode (UTF-8) in user interface, result report
+          and database storage.
+
+        * Added PHP and SQL script for updating the database schema inside the
+          directory admin/sql/upgrade/.
+
+        * Added simple utility that generates MDB2 code creating the database
+          from a MySQL dump.
+
 Version 1.5.3 (2010-08-25):
 
 	* The session length can now be extended (see conf/config.inc) and
