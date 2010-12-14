@@ -53,7 +53,7 @@ class AboutPage extends BasePage
                         _("Please visit the <a href=\"%s\">project page</a> for further information.") .
                         "</p>\n",
                         "anders.lovgren@bmc.uu.se",
-                        "Anders Lövgren",
+                        utf8_encode("Anders Lövgren"),
                         _("Computing Department at BMC"),
                         "http://it.bmc.uu.se/andlov/proj/openexam/");
         }
