@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-12-14 19:23+0100\n"
-"PO-Revision-Date: 2010-12-14 19:27+0100\n"
+"POT-Creation-Date: 2010-12-14 20:55+0100\n"
+"PO-Revision-Date: 2010-12-14 20:56+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English\n"
 "Language: \n"
@@ -81,11 +81,11 @@ msgstr "Page responsible:"
 msgid "OpenExam PHP - Online examination over the web"
 msgstr "OpenExam PHP - Online examination over the web"
 
-#: conf/config.inc:100
+#: conf/config.inc:101
 msgid "System Manager"
 msgstr "System Manager"
 
-#: conf/config.inc:110
+#: conf/config.inc:111
 msgid "OpenExam PHP"
 msgstr "OpenExam PHP"
 
@@ -2550,15 +2550,23 @@ msgstr "Answers"
 msgid "This question has been removed"
 msgstr "This question has been removed"
 
-#: include/uppdok.inc:40
-msgid "It's not possible to fetch group members, please check the system configuration."
+#: include/uppdok.inc:55
+msgid "The system configuration is not setup correct, it's not possible to fetch course information."
 msgstr ""
-"It's not possible to fetch group members, please check the system configuration."
+"The system configuration is not setup correct, it's not possible to fetch course information."
+
+#: include/uppdok.inc:143
+msgid "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
+msgstr ""
+"There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
 
 #: include/export.inc:189
 #, php-format
 msgid " OpenExam project exported %s "
 msgstr " OpenExam project exported %s "
+
+#~ msgid "It's not possible to fetch group members, please check the system configuration"
+#~ msgstr "It's not possible to fetch group members, please check the system configuration"
 
 #~ msgid "Don't know how import *.%s files"
 #~ msgstr "Don't know how import *.%s files"
