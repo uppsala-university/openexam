@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2010-12-14 19:08+0100\n"
-"PO-Revision-Date: 2010-12-14 19:29+0100\n"
+"POT-Creation-Date: 2010-12-14 20:55+0100\n"
+"PO-Revision-Date: 2010-12-14 20:58+0100\n"
 "Last-Translator: Anders LÃ¶vgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "Language: \n"
@@ -82,11 +82,11 @@ msgstr "Sidansvarig:"
 msgid "OpenExam PHP - Online examination over the web"
 msgstr "OpenExam PHP - Online examination Ã¶ver webben"
 
-#: conf/config.inc:100
+#: conf/config.inc:101
 msgid "System Manager"
 msgstr "SystemfÃ¶rvaltare"
 
-#: conf/config.inc:110
+#: conf/config.inc:111
 msgid "OpenExam PHP"
 msgstr "OpenExam PHP"
 
@@ -1306,8 +1306,7 @@ msgstr "Kurskod"
 
 #: source/teacher/examinator.php:239
 msgid "The UPPDOK course code (i.e. 1AB234) to import a list of students from."
-msgstr ""
-"Kurskoden i UPPDOK (t.ex. 1AB234) fÃ¶r vilken en lista pÃ¥ studenter ska hÃ¤mtas."
+msgstr "Kurskoden i UPPDOK (t.ex. 1AB234) fÃ¶r vilken en lista pÃ¥ studenter ska hÃ¤mtas."
 
 #: source/teacher/examinator.php:244
 msgid "Add list of students:"
@@ -2552,15 +2551,23 @@ msgstr "Svar"
 msgid "This question has been removed"
 msgstr "Den hÃ¤r frÃ¥gan har tagits bort"
 
-#: include/uppdok.inc:40
-msgid "Not possible to fetch group members, please check the system configuration."
+#: include/uppdok.inc:55
+msgid "The system configuration is not setup correct, it's not possible to fetch course information."
 msgstr ""
-"Det Ã¤r inte mÃ¶jligt att hÃ¤mta information om gruppmedlemmar, var god kontrollera systemkonfigurationen."
+"Systemet Ã¤r inte correkt uppsatt, det Ã¤r inte mÃ¥jligt att hÃ¤mta kursinformation."
+
+#: include/uppdok.inc:143
+msgid "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
+msgstr ""
+"Det var problem att prata med katalogtjÃ¤nsten, kursinformation Ã¤r inte tillgÃ¤nglig p.g.a. ett nÃ¤tverks- eller konfigurationsproblem"
 
 #: include/export.inc:189
 #, php-format
 msgid " OpenExam project exported %s "
 msgstr "OpenExam projekt exporterat %s"
+
+#~ msgid "It's not possible to fetch group members, please check the system configuration"
+#~ msgstr "Det Ã¤r inte mÃ¶jligt att hÃ¤mta information om gruppmedlemmar, var god kontrollera systemkonfigurationen"
 
 #~ msgid "Don't know how import *.%s files"
 #~ msgstr "Vet ej hur *.%s-file ska importeras"
