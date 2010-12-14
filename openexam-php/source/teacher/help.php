@@ -113,7 +113,7 @@ class HelpPage extends BasePage
                 printf("<p>" . _("Only the person that publish an question for an examination can correct the answers to that question.") . "</p>\n");
 
                 printf("<h5>" . _("Getting started") . "</h5>\n");
-                printf("<p>" . _("If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions.") . "</p>\n", CONTACT_STRING);
+                printf("<p>" . _("If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions.") . "</p>\n", utf8_encode(CONTACT_STRING));
 
                 printf("</p>\n");
         }
