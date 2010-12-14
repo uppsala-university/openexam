@@ -152,7 +152,8 @@ class ExaminationPage extends BasePage
 
         public function printMenu()
         {
-                if (isset($_REQUEST['exam'])) {
+
+                if (isset($_REQUEST['exam']) && !isset($_REQUEST['preview'])) {
 
                         $menuitem = self::getQuestions();
 
