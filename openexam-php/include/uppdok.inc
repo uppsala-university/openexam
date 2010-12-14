@@ -52,7 +52,7 @@ class UppdokData
                         !defined('INFO_CGI_SERVER') ||
                         !defined('INFO_CGI_PORT')) {
                         error_log("One or more configure options for InfoCGI is missing. Please check INFO_CGI_XXX in conf/config.inc");
-                        throw new UppdokException(_("It's not possible to fetch group members, please check the system configuration"));
+                        throw new UppdokException(_("The system configuration is not setup correct, it's not possible to fetch course information."));
                 }
 
                 if ($year == 0) {
@@ -140,7 +140,7 @@ class UppdokData
 
                 if (!$content || $info['http_code'] != 200) {
                         error_log(sprintf("Failed fetch membership information from UPPDOK data: %s", $error));
-                        throw new UppdokException(_("It's not possible to fetch group members, please check the system configuration"));
+                        throw new UppdokException(_("There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"));
                 }
 
                 //
