@@ -37,7 +37,7 @@ class UppdokData
                         !defined('INFO_CGI_SERVER') ||
                         !defined('INFO_CGI_PORT')) {
                         error_log("One or more configure options for InfoCGI is missing. Please check INFO_CGI_XXX in conf/config.inc");
-                        throw new Exception(_("Not possible to fetch group members, please check the system configuration."));
+                        throw new Exception(_("It's not possible to fetch group members, please check the system configuration."));
                 }
 
                 if ($year == 0) {
