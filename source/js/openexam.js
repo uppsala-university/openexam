@@ -40,3 +40,24 @@ function autosave_form(name, seconds, start)
         var timeout = seconds * 1000;
         var timer   = setTimeout("autosave_form('" + name + "', " + seconds + ")", timeout);
 }
+
+//
+// Saved value from focused textbox.
+//
+var boxdata;
+
+//
+// Check that the textbox value is within the given range.
+//
+function check_range(textbox, min, max)
+{
+        if(textbox.value < min || textbox.value > max) {
+                alert('Value must be between ' + min + ' and ' + max);
+                textbox.value = boxdata;
+        }
+}
+
+function start_check(textbox)
+{
+        boxdata = textbox.value;
+}

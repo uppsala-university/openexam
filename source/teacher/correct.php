@@ -254,11 +254,15 @@ class CorrectionPage extends TeacherPage
                         $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()),
                                         sprintf("%.01f", $answer->getResultScore()));
                         $textbox->setSize(8);
+                        $textbox->setEvent(EVENT_ON_FOCUS, "javascript:start_check(this);");
+                        $textbox->setEvent(EVENT_ON_BLUR, sprintf("javascript:check_range(this, 0, %f);", $question->getQuestionScore()));
                 } elseif ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         $data = $row->addData(sprintf("<br/>%s: %.01f", _("Max score"), $question->getQuestionScore()));
                         $data->setValign(TABLE_VALIGN_TOP);
                         $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()), 0.0);
                         $textbox->setSize(8);
+                        $textbox->setEvent(EVENT_ON_FOCUS, "javascript:start_check(this);");
+                        $textbox->setEvent(EVENT_ON_BLUR, sprintf("javascript:check_range(this, 0, %f);", $question->getQuestionScore()));
                 } else {
                         //
                         // Compare student answers against the correct answers
@@ -283,6 +287,8 @@ class CorrectionPage extends TeacherPage
                         $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()),
                                         sprintf("%.01f", ($hits / count($keys)) * $question->getQuestionScore()));
                         $textbox->setSize(8);
+                        $textbox->setEvent(EVENT_ON_FOCUS, "javascript:start_check(this);");
+                        $textbox->setEvent(EVENT_ON_BLUR, sprintf("javascript:check_range(this, 0, %f);", $question->getQuestionScore()));
                 }
                 $row = $table->addRow();
                 $row->setClass("comment");
