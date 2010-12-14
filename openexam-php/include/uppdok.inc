@@ -16,10 +16,10 @@ if (!defined('INFO_CGI_FIELD_SEPARATOR')) {
         define('INFO_CGI_FIELD_SEPARATOR', ";");
 }
 if (!defined('INFO_CGI_DEBUG')) {
-        define('INFO_CGI_DEBUG', false);
+        define('INFO_CGI_DEBUG', true);
 }
 if (!defined('INFO_CGI_VERBOSE')) {
-        define('INFO_CGI_VERBOSE', false);
+        define('INFO_CGI_VERBOSE', true);
 }
 
 class UppdokData
@@ -119,7 +119,13 @@ class UppdokData
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
                 $content = curl_exec($curl);
+                $error = curl_error($curl);
                 curl_close($curl);
+
+                if (!$content) {
+                        error_log(sprintf("Failed fetch membership information from UPPDOK data: %s", $error));
+                        throw new Exception(_("It's not possible to fetch group members, please check the system configuration."));
+                }
 
                 //
                 // We are only interested in UpUnet-S identities, so we cut it out and
