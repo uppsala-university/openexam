@@ -261,8 +261,19 @@ class ManagerPage extends TeacherPage
                                                         array("target" => "_blank"));
                                         }
                                         $child->addChild(sprintf("%s: %s", _("Created"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamCreated()))));
-                                        $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
-                                        $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+                                        $sdate = strtotime($state->getInfo()->getExamStartTime());
+                                        $edate = strtotime($state->getInfo()->getExamEndTime());
+                                        if (date('Ymd', $sdate) == date('Ymd', $edate)) {
+                                                $child->addChild(sprintf("%s: %s %s - %s", _("Occasion"),
+                                                                strftime(DATE_FORMAT, $sdate),
+                                                                strftime(TIME_FORMAT, $sdate),
+                                                                strftime(TIME_FORMAT, $edate)));
+                                        } else {
+                                                $child->addChild(sprintf("%s: %s", _("Starts"),
+                                                                strftime(DATETIME_FORMAT, $sdate)));
+                                                $child->addChild(sprintf("%s: %s", _("Ends"),
+                                                                strftime(DATETIME_FORMAT, $edate)));
+                                        }
                                 }
                         }
                 }
