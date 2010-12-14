@@ -16,6 +16,7 @@
    *) gettext.so  - GNU gettext  (i.e. ngettext(), _(), ...) (recommended).
    *) http.so     - HTTP extension (used to get content type of media URL's).
    *) zip.so      - For bundling results for download (recommended).
+   *) curl.so     - For downloading UPPDOK data (optional).
 
    PEAR Packages:
    

@@ -53,6 +53,7 @@ include "include/html.inc";
 // 
 include "include/database.inc";
 include "include/ldap.inc";
+include "include/uppdok.inc";
 
 // 
 // Business logic:
@@ -73,9 +74,11 @@ class ExaminatorPage extends TeacherPage
 
         private $params = array(
                 "exam" => "/^\d+$/",
+                "what" => "/^(user|users|course)$/",
                 "code" => "/^([0-9a-fA-F]{1,15}|)$/",
                 "user" => "/^[0-9a-zA-Z]{1,10}$/",
                 "users" => "/.*/",
+                "course" => "/^[0-9a-zA-Z]{1,10}$/",
                 "stime" => "/^.*$/",
                 "etime" => "/^.*$/",
                 "action" => "/^(add|edit|show|delete)$/"
@@ -107,12 +110,19 @@ class ExaminatorPage extends TeacherPage
                         }
                         if ($_REQUEST['action'] == "add") {
                                 if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                        if (isset($_REQUEST['code'])) {
-                                                self::assert('user');
-                                                self::saveAddStudent();
-                                        } else {
-                                                self::assert('users');
-                                                self::saveAddStudents();
+                                        if (isset($_REQUEST['what'])) {
+                                                if ($_REQUEST['what'] == "user") {
+                                                        self::assert(array('user', 'code'));
+                                                        self::saveAddStudent();
+                                                } elseif ($_REQUEST['what'] == "users") {
+                                                        self::assert('users');
+                                                        self::saveAddStudents();
+                                                } elseif ($_REQUEST['what'] == "course") {
+                                                        self::assert('course');
+                                                        self::saveAddCourse();
+                                                } else {
+                                                        self::formAddStudents();
+                                                }
                                         }
                                 } else {
                                         self::formAddStudents();
@@ -205,6 +215,7 @@ class ExaminatorPage extends TeacherPage
                 $form->addSectionHeader(_("Add student one by one:"));
                 $form->addHidden("exam", $this->param->exam);
                 $form->addHidden("mode", "save");
+                $form->addHidden("what", "user");
                 $form->addHidden("action", "add");
                 $input = $form->addTextBox("code");
                 $input->setLabel(_("Code"));
@@ -218,14 +229,27 @@ class ExaminatorPage extends TeacherPage
                 $form->output();
 
                 $form = new Form("examinator.php", "POST");
+                $form->addSectionHeader(_("Import from UPPDOK"));
+                $form->addHidden("exam", $this->param->exam);
+                $form->addHidden("mode", "save");
+                $form->addHidden("what", "course");
+                $form->addHidden("action", "add");
+                $input = $form->addTextBox("course");
+                $input->setLabel(_("Course Code"));
+                $input->setTitle(_("The UPPDOK course code (i.e. 1AB234) to import a list of students from."));
+                $input = $form->addSubmitButton("submit", _("Submit"));
+                $form->output();
+
+                $form = new Form("examinator.php", "POST");
                 $form->addSectionHeader(_("Add list of students:"));
                 $form->addHidden("exam", $this->param->exam);
                 $form->addHidden("mode", "save");
+                $form->addHidden("what", "users");
                 $form->addHidden("action", "add");
                 $input = $form->addTextArea("users", "user1\tcode1\nuser2\tcode2\n");
                 $input->setLabel(_("Students"));
-                $input->setTitle(_("Click inside the textarea to clear its content."));
-                $input->setEvent(EVENT_ON_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
+                $input->setTitle(_("Double-click inside the textarea to clear its content."));
+                $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
                 $input->setClass("students");
                 $form->addSpace();
                 $input = $form->addSubmitButton("submit", _("Submit"));
@@ -262,6 +286,30 @@ class ExaminatorPage extends TeacherPage
 
                 $handler = new Examinator($this->param->exam);
                 $handler->addStudents($data);
+                header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
+        }
+
+        //
+        // Save list of students by querying group membership in a directory
+        // service.
+        //
+        private function saveAddCourse()
+        {
+                $uppdok = new UppdokData();
+                $users = $uppdok->members($this->param->course);
+
+                if (count($users) > 0) {
+                        $data = array_combine($users, array_fill(0, count($users), null));
+
+                        $handler = new Examinator($this->param->exam);
+                        $handler->addStudents($data);
+                } else {
+                        ErrorPage::show(_("No members found"),
+                                        sprintf(_("The query for course %s in the directory service returned an empty list. ") .
+                                                _("It looks like no students belongs to this course."), $this->param->course));
+                        exit(1);
+                }
+
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
         }
 
