@@ -16,10 +16,25 @@ if (!defined('INFO_CGI_FIELD_SEPARATOR')) {
         define('INFO_CGI_FIELD_SEPARATOR', ";");
 }
 if (!defined('INFO_CGI_DEBUG')) {
-        define('INFO_CGI_DEBUG', true);
+        define('INFO_CGI_DEBUG', false);
 }
 if (!defined('INFO_CGI_VERBOSE')) {
-        define('INFO_CGI_VERBOSE', true);
+        define('INFO_CGI_VERBOSE', false);
+}
+
+class UppdokException extends Exception
+{
+
+        public function __construct($message, $code = 0, $previous = null)
+        {
+                parent::__construct($message, $code, $previous);
+        }
+
+        public function __toString()
+        {
+                return $this->message;
+        }
+
 }
 
 class UppdokData
@@ -37,7 +52,7 @@ class UppdokData
                         !defined('INFO_CGI_SERVER') ||
                         !defined('INFO_CGI_PORT')) {
                         error_log("One or more configure options for InfoCGI is missing. Please check INFO_CGI_XXX in conf/config.inc");
-                        throw new Exception(_("It's not possible to fetch group members, please check the system configuration."));
+                        throw new UppdokException(_("It's not possible to fetch group members, please check the system configuration"));
                 }
 
                 if ($year == 0) {
@@ -90,12 +105,12 @@ class UppdokData
         public function members($course)
         {
                 if (!extension_loaded("curl")) {
-                        throw new Exception("The curl extension is not loaded");
+                        throw new UppdokException("The curl extension is not loaded");
                 }
 
                 $curl = curl_init();
                 if (!isset($curl)) {
-                        throw new Exception("Failed initialize cURL");
+                        throw new UppdokException("Failed initialize cURL");
                 }
 
                 $url = sprintf(self::url,
@@ -120,11 +135,12 @@ class UppdokData
 
                 $content = curl_exec($curl);
                 $error = curl_error($curl);
+                $info = curl_getinfo($curl);
                 curl_close($curl);
 
-                if (!$content) {
+                if (!$content || $info['http_code'] != 200) {
                         error_log(sprintf("Failed fetch membership information from UPPDOK data: %s", $error));
-                        throw new Exception(_("It's not possible to fetch group members, please check the system configuration."));
+                        throw new UppdokException(_("It's not possible to fetch group members, please check the system configuration"));
                 }
 
                 //
