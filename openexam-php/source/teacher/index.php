@@ -82,7 +82,7 @@ class TeacherIndexPage extends BasePage
                 printf("<p>" .
                         _("If you wish to create your own online exam, contact %s to gain access to the system. ") .
                         _("General and getting started information can be found on the <a href=\"%s\">Help</a> page.") .
-                        "</p>\n", utf8_encode(CONTACT_STRING), "help.php");
+                        "</p>\n", CONTACT_STRING, "help.php");
         }
 
 }

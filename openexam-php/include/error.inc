@@ -36,7 +36,7 @@ class ErrorPage extends BasePage
         {
                 printf("<h3>%s</h3>\n", $this->title);
                 printf("<p>%s<br />" . _("If you think this is a bug in the system, then please report it to %s") . "</p>\n",
-                        $this->message, utf8_encode(CONTACT_STRING));
+                        $this->message, CONTACT_STRING);
         }
 
         public static function show($title, $message)
