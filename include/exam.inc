@@ -220,6 +220,9 @@ class Exam
         // Get all active questions for this exam. If user is set, then the
         // set of questions assigned to the user account is returned.
         //
+        // If the user has no questions assigned yet, then a set of questions
+        // will be assigned.
+        //
         public function getQuestions($exam, $user = null)
         {
                 if (isset($user)) {

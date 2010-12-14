@@ -799,7 +799,7 @@ class ContributePage extends TeacherPage
                                                                 $question->getExamID(),
                                                                 $question->getQuestionID()));
                                         }
-                                        $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d",
+                                        $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d&amp;preview=1",
                                                         $question->getExamID(),
                                                         $question->getQuestionID()),
                                                 _("Preview this question"), array("target" => "_blank"));
