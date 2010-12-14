@@ -233,7 +233,8 @@ class TeacherPage extends BasePage
                         //
                         if ($this->manager->isContributor(phpCAS::getUser()) ||
                                 $this->manager->isCorrector(phpCAS::getUser())) {
-                                if ($this->manager->getInfo()->isContributable()) {
+                                if ($this->manager->getInfo()->isContributable() &&
+                                        $this->manager->isContributor(phpCAS::getUser())) {
                                         $links->questions->link->qadd->href = sprintf("contribute.php?exam=%d&action=add", $this->param->exam);
                                         $links->questions->link->qadd->name = _("Add question");
                                         $links->questions->link->tadd->href = sprintf("contribute.php?exam=%d&action=add&what=topic", $this->param->exam);
