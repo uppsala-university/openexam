@@ -348,7 +348,7 @@ final class PageRender implements TemplatePage
                 try {
                         $this->page->printBody();
                 } catch (Exception $exception) {
-                        $message = sprintf(_("Please report this to %s."), utf8_encode(CONTACT_STRING));
+                        $message = sprintf(_("Please report this to %s."), CONTACT_STRING);
                         $this->page->error(sprintf("%s. %s", $exception, $message));
                         error_log(sprintf("%s: %s (in %s:%d)",
                                         ERROR_LOG_PREFIX,
