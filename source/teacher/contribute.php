@@ -350,6 +350,13 @@ class ContributePage extends TeacherPage
                 printf("  form.score.value = \"\"; form.video.value = \"\";\n");
                 printf("  form.audio.value = \"\"; form.image.value = \"\";\n");
                 printf("}\n");
+                printf("function checkzero(form) {\n");
+                printf("  if(form.score.value == 0) {\n");
+                printf("    alert('%s'); return false;\n", _("The score value is zero"));
+                printf("  } else {\n");
+                printf("    return true;\n");
+                printf("  }\n");
+                printf("}\n");
                 printf("</script>\n");
 
                 $form = new Form("contribute.php", "POST");
@@ -446,11 +453,12 @@ class ContributePage extends TeacherPage
                 }
 
                 $form->addSpace();
+                $form->setEvent(EVENT_ON_SUBMIT, "javascript:return checkzero(this);");
                 $button = $form->addButton(BUTTON_SUBMIT, _("Submit"));
                 $button->setLabel();
                 $button = $form->addButton(BUTTON_RESET, _("Reset"));
                 $button = $form->addButton(BUTTON_STANDARD, _("Clear"));
-                $button->setEvent(EVENT_ON_CLICK, "clearform(document.question);return false;");
+                $button->setEvent(EVENT_ON_CLICK, "javascript:clearform(document.question);return false;");
 
                 $form->output();
         }
