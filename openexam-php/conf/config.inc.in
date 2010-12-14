@@ -76,7 +76,7 @@ define('SMTP_PASS', null);
 
 // 
 // Setttings for InfoCGI:
-// 
+//
 define('INFO_CGI_USER', 'user');
 define('INFO_CGI_PASS', 'pass');
 define('INFO_CGI_SERVER', '');
