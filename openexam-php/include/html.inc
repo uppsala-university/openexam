@@ -275,7 +275,10 @@ if (!defined('BUTTON_STANDARD')) {
 // Some handy inline event handlers:
 // 
 if (!defined('EVENT_HANDLER_CLEAR_CONTENT')) {
-        define('EVENT_HANDLER_CLEAR_CONTENT', "this.value=''");
+        define('EVENT_HANDLER_CLEAR_CONTENT', "javascript:this.value=''");
+}
+if (!defined('EVENT_HANDLER_CONFIRM_DELETE')) {
+        define('EVENT_HANDLER_CONFIRM_DELETE', sprintf("javascript:return confirm('%s');", _("Are you really sure?")));
 }
 
 // 
