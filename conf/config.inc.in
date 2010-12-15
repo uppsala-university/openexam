@@ -51,7 +51,7 @@ define('CAS_DEBUG', false);
 // 
 // Settings for PDF generation:
 // 
-define('PDF_ENGINE', 'htmldoc');        // Currently the only supported generator.
+define('PDF_ENGINE', 'htmldoc');            // Currently the only supported generator.
 define('PDF_GENERATOR', 'OpenExam PHP');
 define('PDF_LOGOTYPE', sprintf('%s/images/uu-logotype-4f-84.png', BASE_URL));
 define('PDF_LINK_COLOR', '#000099');
@@ -65,7 +65,7 @@ define('PDF_OUTPUT_FORMAT', 'pdf14');
 // Settings for SMTP server:
 // 
 define('SMTP_SERVER', 'smtp.example.com');  // Sender hostname
-define('SMTP_HOST', 'smtp.example.com');  // The SMTP server
+define('SMTP_HOST', 'smtp.example.com');    // The SMTP server
 define('SMTP_PORT', 25);
 // 
 // Settings for authenticated SMTP:
@@ -87,13 +87,15 @@ define('INFO_CGI_PORT', 1234);
 // the server should be defined. Setting the LDAP protocol might be
 // required.
 //
+// For SSL: use ldaps://ldap.example.com as server URL and set port == 636.
+//
 define('LDAP_SERVER', 'ldap.example.com');
 define('LDAP_BASEDN', 'ou=employees');
 // define ('LDAP_PORT',   389);
 // define ('LDAP_USER',   'username');
 // define ('LDAP_PASS',   'password');
 // define ('LDAP_PROTOCOL_VERSION', 3);
-define('LDAP_CACHE', true);              // Turn on LDAP result cache.
+define('LDAP_CACHE', true);                 // Turn on LDAP result cache.
 //
 // Custom LDAP search strings for overriding defaults defined inline
 // in include/ldap.inc.
@@ -160,14 +162,14 @@ define("ERROR_LOG_PREFIX", "OpenExam PHP");        // Use this log prefix.
 // 
 // Constant identifiers for different media players:
 // 
-define('MEDIA_PLAYER_WINDOWS', 'wmp');                  // Windows Media Player.
-define('MEDIA_PLAYER_QUICKTIME', 'quicktime');            // Apples QuickTime player.
-define('MEDIA_PLAYER_REALPLAY', 'realplay');             // Real Media Player.
-define('MEDIA_PLAYER_ADOBE_FLASH', 'flash');                // Adobe Flash Player (Flowplayer GPL).
-define('MEDIA_PLAYER_VIDEOLAN', 'vlc');                  // Video LAN Client (VLC Plugin).
-define('MEDIA_PLAYER_GENERIC', 'generic');              // Generic Media Player.
+define('MEDIA_PLAYER_WINDOWS', 'wmp');             // Windows Media Player.
+define('MEDIA_PLAYER_QUICKTIME', 'quicktime');     // Apples QuickTime player.
+define('MEDIA_PLAYER_REALPLAY', 'realplay');       // Real Media Player.
+define('MEDIA_PLAYER_ADOBE_FLASH', 'flash');       // Adobe Flash Player (Flowplayer GPL).
+define('MEDIA_PLAYER_VIDEOLAN', 'vlc');            // Video LAN Client (VLC Plugin).
+define('MEDIA_PLAYER_GENERIC', 'generic');         // Generic Media Player.
 define('MEDIA_PLAYER_DEFAULT', MEDIA_PLAYER_GENERIC);  // Default (for unhandled content types).
-define('MEDIA_PLAYER_BUILTIN', false);                 // Explicit
+define('MEDIA_PLAYER_BUILTIN', false);             // Explicit
 // 
 // Use this class to tweak the builtin media player configuration:
 //   
