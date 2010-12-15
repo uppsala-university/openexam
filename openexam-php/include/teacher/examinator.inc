@@ -107,7 +107,8 @@ class Examinator
                                         user AS StudentUser,
                                         code AS StudentCode
                                 FROM students
-                                WHERE exam_id = %d", $this->exam);
+                                WHERE exam_id = %d
+                                ORDER BY StudentUser", $this->exam);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
