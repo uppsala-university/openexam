@@ -245,7 +245,8 @@ class ManagerPage extends TeacherPage
                                         }
                                         if (!$state->hasAnswers()) {
                                                 $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete", $state->getInfo()->getExamID()),
-                                                        _("Deletes the examination along with any questions."));
+                                                        _("Deletes the examination along with any questions."),
+                                                        array(EVENT_ON_CLICK => EVENT_HANDLER_CONFIRM_DELETE));
                                         } elseif ($state->isTestCase()) {
                                                 $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=cancel", $state->getInfo()->getExamID()),
                                                         _("Deletes the examination along with any questions."));
