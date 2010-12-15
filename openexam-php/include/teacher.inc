@@ -374,6 +374,7 @@ class TeacherPage extends BasePage
 
                         $roles->script = basename($_SERVER['SCRIPT_NAME']);
                         $roles->value = array();
+                        $roles->suppl = array();
 
                         foreach ($scripts as $script => $role) {
                                 if ($roles->script == $script) {
