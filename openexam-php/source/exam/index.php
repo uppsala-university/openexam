@@ -223,7 +223,7 @@ class ExaminationPage extends BasePage
 
                 $data = Exam::getExamData(phpCAS::getUser(), $exam);
                 if (!$data->hasExamID()) {
-                        ErrorPage::show(_("Active examination was not found!"),
+                        ErrorPage::show(_("No examination found!"),
                                         sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                         exit(1);
                 }
@@ -291,7 +291,7 @@ class ExaminationPage extends BasePage
                 $exams = Exam::getActiveExams(phpCAS::getUser());
 
                 if ($exams->count() == 0) {
-                        ErrorPage::show(_("No examination was not found!"),
+                        ErrorPage::show(_("No examination found!"),
                                         sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                         exit(1);
                 }
@@ -328,7 +328,7 @@ class ExaminationPage extends BasePage
         {
                 $exam = Exam::getExamData(phpCAS::getUser(), $exam);
                 if (!$exam->hasExamID()) {
-                        ErrorPage::show(_("Active examination was not found!"),
+                        ErrorPage::show(_("No examination found!"),
                                         sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                         exit(1);
                 }
