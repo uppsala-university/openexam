@@ -286,7 +286,7 @@ class BasePage implements TemplatePage
 }
 
 // 
-// The class for all secured pages (except admin pages) that requires trsuted users.
+// The class for all secured pages (except admin pages) that requires trusted users.
 // 
 class SecurePage extends BasePage
 {
