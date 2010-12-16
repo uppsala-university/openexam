@@ -345,6 +345,27 @@ class TreeNode
                 return $child;
         }
 
+        //
+        // Add dates sub nodes to this tree node.
+        //
+        public function addDates($sdate, $edate)
+        {
+                if (date('Ymd', $sdate) == date('Ymd', $edate)) {
+                        $this->addChild(sprintf("%s: %s %s - %s",
+                                        _("Occasion"),
+                                        strftime(DATE_FORMAT, $sdate),
+                                        strftime(TIME_FORMAT, $sdate),
+                                        strftime(TIME_FORMAT, $edate)));
+                } else {
+                        $this->addChild(sprintf("%s: %s",
+                                        _("Starts"),
+                                        strftime(DATETIME_FORMAT, $sdate)));
+                        $this->addChild(sprintf("%s: %s",
+                                        _("Ends"),
+                                        strftime(DATETIME_FORMAT, $edate)));
+                }
+        }
+
         public function getChilds()
         {
                 return $this->childs;
