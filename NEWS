@@ -1,3 +1,11 @@
+Version 1.5.5 (2010-mm-dd):
+
+        * UPPDOK codes can now be utilized to fetch lists of registered students
+          and add them as participators on an examination.
+
+        * Added an result section from where students can download the result of
+	  completed and all-ready decoded examinations.
+
 Version 1.5.4 (2010-12-13):
 
         * Questions in the exam can now be answered in a 'save' and 'save and
