@@ -266,6 +266,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 
         public function __destruct()
         {
+                parent::__destruct();
                 $this->ldap->close();
         }
 
