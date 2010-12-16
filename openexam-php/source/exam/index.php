@@ -291,7 +291,7 @@ class ExaminationPage extends BasePage
                 $exams = Exam::getActiveExams(phpCAS::getUser());
 
                 if ($exams->count() == 0) {
-                        ErrorPage::show(_("Active examination was not found!"),
+                        ErrorPage::show(_("No examination was not found!"),
                                         sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                         exit(1);
                 }
