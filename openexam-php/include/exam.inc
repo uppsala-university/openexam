@@ -50,6 +50,28 @@ class Exam
                 return new ResultSet($res);
         }
 
+        public function getFinishedExams($user)
+        {
+                $now = date('Y-m-d H:i:s');
+                $sql = sprintf("SELECT  e.id AS ExamID,
+                                        s.id AS StudentID,
+                                        e.name AS ExamName,
+                                        e.descr AS ExamDescription,
+                                        e.starttime AS ExamStartTime,
+                                        e.endtime AS ExamEndTime,
+                                        e.created AS ExamCreated,
+                                        e.updated AS ExamUpdated,
+                                        e.creator AS ExamCreator,
+                                        e.decoded AS ExamDecoded
+                                FROM    students s, exams e
+                                WHERE   s.user = '%s' AND
+                                        s.exam_id = e.id AND
+                                        '%s' >= e.endtime",
+                                $user, $now);
+                $res = Database::getConnection()->query($sql);
+                return new ResultSet($res);
+        }
+
         //
         // Get data for this exam.
         //
@@ -64,6 +86,7 @@ class Exam
                                         e.created AS ExamCreated,
                                         e.updated AS ExamUpdated,
                                         e.creator AS ExamCreator,
+                                        e.decoded AS ExamDecoded,
                                         e.testcase AS ExamTestCase,
                                         e.lockdown AS ExamLockDown
                                 FROM    students s, exams e
