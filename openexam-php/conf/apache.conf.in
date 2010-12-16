@@ -69,3 +69,16 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   Order deny,allow
   Allow from all
 </Directory>
+
+# The directory from where students can download results from their 
+# examinations. This URL should probably be accessable from anywhere.
+<Directory /var/www/localhost/apps/openexam-php/source/result/>
+  Order deny,allow
+  Deny from all
+  Allow from 127.0.0.1 ::1 192.168. 10. 169.254.
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+</Directory>
