@@ -379,14 +379,18 @@ class DecoderPage extends TeacherPage
 
                 printf("<span class=\"links viewmode\">");
                 if ($this->param->verbose) {
-                        printf("%s: <a href=\"?exam=4&amp;action=show&amp;verbose=0\">%s</a>, ", _("Details"), _("Less"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;verbose=0\">%s</a>, ",
+                                _("Details"), $this->param->exam, _("Less"));
                 } else {
-                        printf("%s: <a href=\"?exam=4&amp;action=show&amp;verbose=1\">%s</a>, ", _("Details"), _("More"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;verbose=1\">%s</a>, ", 
+                                _("Details"), $this->param->exam, _("More"));
                 }
                 if ($this->param->colorize) {
-                        printf("%s: <a href=\"?exam=4&amp;action=show&amp;colorize=0\">%s</a>", _("Mode"), _("Standard"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=0\">%s</a>", 
+                                _("Mode"), $this->param->exam, _("Standard"));
                 } else {
-                        printf("%s: <a href=\"?exam=4&amp;action=show&amp;colorize=1\">%s</a>", _("Mode"), _("Colorize"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=1\">%s</a>", 
+                                _("Mode"), $this->param->exam, _("Colorize"));
                 }
                 printf("</span>\n");
 
