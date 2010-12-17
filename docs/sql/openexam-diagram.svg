@@ -7,537 +7,626 @@
   <g>
     <defs id="defs1">
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath1">
-        <path d="M0 0 L745 0 L745 442 L0 442 L0 0 Z" />
+        <path d="M0 0 L581 0 L581 542 L0 542 L0 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath2">
-        <path d="M0 0 L1636.765 0 L1636.765 971.074 L0 971.074 L0 0 Z" />
+        <path d="M0 0 L1162 0 L1162 1084 L0 1084 L0 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath3">
-        <path d="M0 0 L0 19 L120 19 L120 0 Z" />
+        <path d="M0 0 L0 49 L116 49 L116 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath4">
-        <path d="M220 660 L220 679 L340 679 L340 660 Z" />
+        <path d="M481 174 L481 223 L597 223 L597 174 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath5">
-        <path d="M-60 -8.9871 L-60 10.0129 L60 10.0129 L60 -8.9871 Z" />
+        <path d="M-58 -24.6494 L-58 24.3506 L58 24.3506 L58 -24.6494 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath6">
-        <path d="M0 0 L0 120 L164 120 L164 0 Z" />
+        <path d="M0 0 L0 66 L126 66 L126 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath7">
-        <path d="M185 504 L185 624 L349 624 L349 504 Z" />
+        <path d="M482 303 L482 369 L608 369 L608 303 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath8">
-        <path d="M-82.3753 -60.1211 L-82.3753 59.8789 L81.6247 59.8789 L81.6247 -60.1211 Z" />
+        <path d="M-62.7865 -33.0111 L-62.7865 32.9889 L63.2135 32.9889 L63.2135 -33.0111 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath9">
-        <path d="M0 0 L0 52 L149 52 L149 0 Z" />
+        <path d="M0 0 L0 19 L112 19 L112 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath10">
-        <path d="M538 354 L538 406 L687 406 L687 354 Z" />
+        <path d="M483 752 L483 771 L595 771 L595 752 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath11">
-        <path d="M-74.5 -26.0594 L-74.5 25.9406 L74.5 25.9406 L74.5 -26.0594 Z" />
+        <path d="M-56 -8.75 L-56 10.25 L56 10.25 L56 -8.75 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath12">
-        <path d="M0 0 L0 94 L84 94 L84 0 Z" />
+        <path d="M0 0 L0 42 L75 42 L75 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath13">
-        <path d="M85 138 L85 232 L169 232 L169 138 Z" />
+        <path d="M350 646 L350 688 L425 688 L425 646 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath14">
-        <path d="M-41.74 -47 L-41.74 47 L42.26 47 L42.26 -47 Z" />
+        <path d="M-36.9051 -21 L-36.9051 21 L38.0949 21 L38.0949 -21 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath15">
-        <path d="M0 0 L0 19 L149 19 L149 0 Z" />
+        <path d="M0 0 L0 32 L75 32 L75 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath16">
-        <path d="M538 423 L538 442 L687 442 L687 423 Z" />
+        <path d="M350 528 L350 560 L425 560 L425 528 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath17">
-        <path d="M-74.5 -8.7504 L-74.5 10.2496 L74.5 10.2496 L74.5 -8.7504 Z" />
+        <path d="M-36.8181 -16 L-36.8181 16 L38.1819 16 L38.1819 -16 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath18">
-        <path d="M0 0 L0 54 L126 54 L126 0 Z" />
+        <path d="M0 0 L0 49 L160 49 L160 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath19">
-        <path d="M221 191 L221 245 L347 245 L347 191 Z" />
+        <path d="M482 440 L482 489 L642 489 L642 440 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath20">
-        <path d="M-63 -27.75 L-63 26.25 L63 26.25 L63 -27.75 Z" />
+        <path d="M-80 -25.6011 L-80 23.3989 L80 23.3989 L80 -25.6011 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath21">
-        <path d="M0 0 L0 67 L101 67 L101 0 Z" />
+        <path d="M0 0 L0 19 L105 19 L105 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath22">
-        <path d="M393 258 L393 325 L494 325 L494 258 Z" />
+        <path d="M188 404 L188 423 L293 423 L293 404 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath23">
-        <path d="M-49.2166 -33.5 L-49.2166 33.5 L51.7834 33.5 L51.7834 -33.5 Z" />
+        <path d="M-52.5 -8.2321 L-52.5 10.7679 L52.5 10.7679 L52.5 -8.2321 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath24">
-        <path d="M0 0 L0 81 L92 81 L92 0 Z" />
+        <path d="M0 0 L0 103 L172 103 L172 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath25">
-        <path d="M82 333 L82 414 L174 414 L174 333 Z" />
+        <path d="M482 472 L482 575 L654 575 L654 472 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath26">
-        <path d="M-45 -40.5 L-45 40.5 L47 40.5 L47 -40.5 Z" />
+        <path d="M-85.6263 -51.9759 L-85.6263 51.0241 L86.3737 51.0241 L86.3737 -51.9759 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath27">
-        <path d="M0 0 L0 22 L128 22 L128 0 Z" />
+        <path d="M0 0 L0 64 L84 64 L84 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath28">
-        <path d="M221 435 L221 457 L349 457 L349 435 Z" />
+        <path d="M53 113 L53 177 L137 177 L137 113 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath29">
-        <path d="M-64 -11.267 L-64 10.733 L64 10.733 L64 -11.267 Z" />
+        <path d="M-41.2391 -32 L-41.2391 32 L42.7609 32 L42.7609 -32 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath30">
-        <path d="M0 0 L0 19 L138 19 L138 0 Z" />
+        <path d="M0 0 L0 55 L93 55 L93 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath31">
-        <path d="M531 659 L531 678 L669 678 L669 659 Z" />
+        <path d="M50 308 L50 363 L143 363 L143 308 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath32">
-        <path d="M-69 -8.25 L-69 10.75 L69 10.75 L69 -8.25 Z" />
+        <path d="M-45.3693 -27.5 L-45.3693 27.5 L47.6307 27.5 L47.6307 -27.5 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath33">
-        <path d="M0 0 L0 48 L149 48 L149 0 Z" />
+        <path d="M0 0 L0 40 L101 40 L101 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath34">
-        <path d="M538 460 L538 508 L687 508 L687 460 Z" />
+        <path d="M192 169 L192 209 L293 209 L293 169 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath35">
-        <path d="M-74.5 -24.7805 L-74.5 23.2195 L74.5 23.2195 L74.5 -24.7805 Z" />
+        <path d="M-50.5 -20.7289 L-50.5 19.2711 L50.5 19.2711 L50.5 -20.7289 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath36">
-        <path d="M0 0 L0 73 L193 73 L193 0 Z" />
+        <path d="M0 0 L0 59 L101 59 L101 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath37">
-        <path d="M0 0 L0 58 L154 58 L154 0 Z" />
+        <path d="M338 248 L338 307 L439 307 L439 248 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath38">
-        <path d="M0 0 L0 103 L190 103 L190 0 Z" />
+        <path d="M-49.25 -29.5 L-49.25 29.5 L51.75 29.5 L51.75 -29.5 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath39">
-        <path d="M0 0 L0 148 L193 148 L193 0 Z" />
+        <path d="M0 0 L0 19 L160 19 L160 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath40">
-        <path d="M0 0 L0 88 L190 88 L190 0 Z" />
+        <path d="M482 404 L482 423 L642 423 L642 404 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath41">
-        <path d="M0 0 L0 88 L189 88 L189 0 Z" />
+        <path d="M-80 -8.1554 L-80 10.8446 L80 10.8446 L80 -8.1554 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath42">
-        <path d="M0 0 L0 208 L190 208 L190 0 Z" />
+        <path d="M0 0 L0 58 L165 58 L165 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath43">
-        <path d="M0 0 L0 73 L146 73 L146 0 Z" />
+        <path d="M0 0 L0 133 L193 133 L193 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath44">
-        <path d="M0 0 L0 70 L146 70 L146 0 Z" />
+        <path d="M0 0 L0 148 L193 148 L193 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath45">
+        <path d="M0 0 L0 88 L185 88 L185 0 Z" />
+      </clipPath>
+      <clipPath clipPathUnits="userSpaceOnUse" id="clipPath46">
+        <path d="M0 0 L0 88 L165 88 L165 0 Z" />
+      </clipPath>
+      <clipPath clipPathUnits="userSpaceOnUse" id="clipPath47">
+        <path d="M0 0 L0 73 L193 73 L193 0 Z" />
+      </clipPath>
+      <clipPath clipPathUnits="userSpaceOnUse" id="clipPath48">
+        <path d="M0 0 L0 90 L189 90 L189 0 Z" />
+      </clipPath>
+      <clipPath clipPathUnits="userSpaceOnUse" id="clipPath49">
+        <path d="M0 0 L0 73 L146 73 L146 0 Z" />
+      </clipPath>
+      <clipPath clipPathUnits="userSpaceOnUse" id="clipPath50">
         <path d="M0 0 L0 223 L191 223 L191 0 Z" />
       </clipPath>
+      <clipPath clipPathUnits="userSpaceOnUse" id="clipPath51">
+        <path d="M0 0 L0 88 L189 88 L189 0 Z" />
+      </clipPath>
+      <clipPath clipPathUnits="userSpaceOnUse" id="clipPath52">
+        <path d="M0 0 L0 223 L190 223 L190 0 Z" />
+      </clipPath>
+      <clipPath clipPathUnits="userSpaceOnUse" id="clipPath53">
+        <path d="M0 0 L0 88 L191 88 L191 0 Z" />
+      </clipPath>
     </defs>
-    <g style="fill:white; font-family:&apos;Arial&apos;; font-size:13; stroke:white;" transform="scale(2.197,2.197)">
-      <rect height="442" style="clip-path:url(#clipPath1); stroke:none;" width="745" x="0" y="0" />
+    <g style="fill:white; font-family:&apos;Arial&apos;; font-size:13; stroke:white;" transform="scale(2,2)">
+      <rect height="542" style="clip-path:url(#clipPath1); stroke:none;" width="581" x="0" y="0" />
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 339 669 329 674 329 664" style="clip-path:url(#clipPath4); stroke:none;" />
-      <polygon points=" 339 669 329 674 329 664" style="clip-path:url(#clipPath4); fill:none;" />
-      <path d="M221 668.2233 L329 669 M329 669" style="clip-path:url(#clipPath4); fill:none;" />
-      <text style="clip-path:url(#clipPath5); fill:black; stroke:none; stroke-linecap:square;" transform="translate(280,668.9871)" x="-35" xml:space="preserve" y="3">locks_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 596 221 586 222 588 214" style="clip-path:url(#clipPath4); stroke:none;" />
+      <polygon points=" 596 221 586 222 588 214" style="clip-path:url(#clipPath4); fill:none;" />
+      <path d="M482 175.7184 L587 218 M587 218" style="clip-path:url(#clipPath4); fill:none;" />
+      <text style="clip-path:url(#clipPath5); fill:black; stroke:none; stroke-linecap:square;" transform="translate(539,198.6494)" x="-48" xml:space="preserve" y="3">questions_ibfk_2</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 348 505 342 514 338 506" style="clip-path:url(#clipPath7); stroke:none;" />
-      <polygon points=" 348 505 342 514 338 506" style="clip-path:url(#clipPath7); fill:none;" />
-      <path d="M186.7505 623 L340 510 M340 510" style="clip-path:url(#clipPath7); fill:none;" />
-      <text style="clip-path:url(#clipPath8); fill:black; stroke:none; stroke-linecap:square;" transform="translate(267.3753,564.1211)" x="-35" xml:space="preserve" y="3">locks_ibfk_2</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 483 368 489 360 493 368" style="clip-path:url(#clipPath7); stroke:none;" />
+      <polygon points=" 483 368 489 360 493 368" style="clip-path:url(#clipPath7); fill:none;" />
+      <path d="M606.573 304 L491 364 M491 364" style="clip-path:url(#clipPath7); fill:none;" />
+      <text style="clip-path:url(#clipPath8); fill:black; stroke:none; stroke-linecap:square;" transform="translate(544.7865,336.0111)" x="-38" xml:space="preserve" y="3">topics_ibfk_1</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 539 404 547 397 549 405" style="clip-path:url(#clipPath10); stroke:none;" />
-      <polygon points=" 539 404 547 397 549 405" style="clip-path:url(#clipPath10); fill:none;" />
-      <path d="M686 355.9477 L548 401 M548 401" style="clip-path:url(#clipPath10); fill:none;" />
-      <text style="clip-path:url(#clipPath11); fill:black; stroke:none; stroke-linecap:square;" transform="translate(612.5,380.0594)" x="-48" xml:space="preserve" y="3">decoders_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 594 760 584 765 584 755" style="clip-path:url(#clipPath10); stroke:none;" />
+      <polygon points=" 594 760 584 765 584 755" style="clip-path:url(#clipPath10); fill:none;" />
+      <path d="M484 760.8408 L584 760 M584 760" style="clip-path:url(#clipPath10); fill:none;" />
+      <text style="clip-path:url(#clipPath11); fill:black; stroke:none; stroke-linecap:square;" transform="translate(539,760.75)" x="-51" xml:space="preserve" y="3">computers_ibfk_1</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 126 231 121 221 131 221" style="clip-path:url(#clipPath13); stroke:none;" />
-      <polygon points=" 126 231 121 221 131 221" style="clip-path:url(#clipPath13); fill:none;" />
-      <path d="M126.6173 139 L126 221 M126 221" style="clip-path:url(#clipPath13); fill:none;" />
-      <text style="clip-path:url(#clipPath14); fill:black; stroke:none; stroke-linecap:square;" transform="translate(126.74,185)" x="-40" xml:space="preserve" y="3">results_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 387 687 382 677 392 677" style="clip-path:url(#clipPath13); stroke:none;" />
+      <polygon points=" 387 687 382 677 392 677" style="clip-path:url(#clipPath13); fill:none;" />
+      <path d="M386.7785 647 L387 677 M387 677" style="clip-path:url(#clipPath13); fill:none;" />
+      <text style="clip-path:url(#clipPath14); fill:black; stroke:none; stroke-linecap:square;" transform="translate(386.9051,667)" x="-35" xml:space="preserve" y="3">locks_ibfk_1</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 539 433 549 428 549 438" style="clip-path:url(#clipPath16); stroke:none;" />
-      <polygon points=" 539 433 549 428 549 438" style="clip-path:url(#clipPath16); fill:none;" />
-      <path d="M686 430.1197 L549 433 M549 433" style="clip-path:url(#clipPath16); fill:none;" />
-      <text style="clip-path:url(#clipPath17); fill:black; stroke:none; stroke-linecap:square;" transform="translate(612.5,431.7504)" x="-55" xml:space="preserve" y="3">contributors_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 386 529 391 539 381 539" style="clip-path:url(#clipPath16); stroke:none;" />
+      <polygon points=" 386 529 391 539 381 539" style="clip-path:url(#clipPath16); fill:none;" />
+      <path d="M386.7372 559 L386 539 M386 539" style="clip-path:url(#clipPath16); fill:none;" />
+      <text style="clip-path:url(#clipPath17); fill:black; stroke:none; stroke-linecap:square;" transform="translate(386.8181,544)" x="-35" xml:space="preserve" y="3">locks_ibfk_2</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 346 193 338 200 336 192" style="clip-path:url(#clipPath19); stroke:none;" />
-      <polygon points=" 346 193 338 200 336 192" style="clip-path:url(#clipPath19); fill:none;" />
-      <path d="M222 243.9252 L337 196 M337 196" style="clip-path:url(#clipPath19); fill:none;" />
-      <text style="clip-path:url(#clipPath20); fill:black; stroke:none; stroke-linecap:square;" transform="translate(284,218.75)" x="-44" xml:space="preserve" y="3">answers_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 483 443 493 441 491 449" style="clip-path:url(#clipPath19); stroke:none;" />
+      <polygon points=" 483 443 493 441 491 449" style="clip-path:url(#clipPath19); fill:none;" />
+      <path d="M641 487.3775 L492 445 M492 445" style="clip-path:url(#clipPath19); fill:none;" />
+      <text style="clip-path:url(#clipPath20); fill:black; stroke:none; stroke-linecap:square;" transform="translate(562,465.6011)" x="-48" xml:space="preserve" y="3">decoders_ibfk_1</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 442 324 437 314 447 314" style="clip-path:url(#clipPath22); stroke:none;" />
-      <polygon points=" 442 324 437 314 447 314" style="clip-path:url(#clipPath22); fill:none;" />
-      <path d="M441.9269 259 L442 314 M442 314" style="clip-path:url(#clipPath22); fill:none;" />
-      <text style="clip-path:url(#clipPath23); fill:black; stroke:none; stroke-linecap:square;" transform="translate(442.2166,291.5)" x="-48" xml:space="preserve" y="3">questions_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 292 414 282 419 282 409" style="clip-path:url(#clipPath22); stroke:none;" />
+      <polygon points=" 292 414 282 419 282 409" style="clip-path:url(#clipPath22); fill:none;" />
+      <path d="M189 410.3865 L282 414 M282 414" style="clip-path:url(#clipPath22); fill:none;" />
+      <text style="clip-path:url(#clipPath23); fill:black; stroke:none; stroke-linecap:square;" transform="translate(240.5,412.2321)" x="-45" xml:space="preserve" y="3">students_ibfk_1</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 127 413 122 403 132 403" style="clip-path:url(#clipPath25); stroke:none;" />
-      <polygon points=" 127 413 122 403 132 403" style="clip-path:url(#clipPath25); fill:none;" />
-      <path d="M127 334 L127 403 M127 403" style="clip-path:url(#clipPath25); fill:none;" />
-      <text style="clip-path:url(#clipPath26); fill:black; stroke:none; stroke-linecap:square;" transform="translate(127,373.5)" x="-44" xml:space="preserve" y="3">answers_ibfk_2</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 483 473 493 474 489 482" style="clip-path:url(#clipPath25); stroke:none;" />
+      <polygon points=" 483 473 493 474 489 482" style="clip-path:url(#clipPath25); fill:none;" />
+      <path d="M652.2526 574 L491 478 M491 478" style="clip-path:url(#clipPath25); fill:none;" />
+      <text style="clip-path:url(#clipPath26); fill:black; stroke:none; stroke-linecap:square;" transform="translate(567.6263,523.9759)" x="-56" xml:space="preserve" y="3">examinators_ibfk_1</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 348 441 338 446 338 436" style="clip-path:url(#clipPath28); stroke:none;" />
-      <polygon points=" 348 441 338 446 338 436" style="clip-path:url(#clipPath28); fill:none;" />
-      <path d="M222 450.5466 L338 441 M338 441" style="clip-path:url(#clipPath28); fill:none;" />
-      <text style="clip-path:url(#clipPath29); fill:black; stroke:none; stroke-linecap:square;" transform="translate(285,446.267)" x="-45" xml:space="preserve" y="3">students_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 94 176 89 166 99 166" style="clip-path:url(#clipPath28); stroke:none;" />
+      <polygon points=" 94 176 89 166 99 166" style="clip-path:url(#clipPath28); fill:none;" />
+      <path d="M93.5203 114 L94 166 M94 166" style="clip-path:url(#clipPath28); fill:none;" />
+      <text style="clip-path:url(#clipPath29); fill:black; stroke:none; stroke-linecap:square;" transform="translate(94.2391,145)" x="-40" xml:space="preserve" y="3">results_ibfk_1</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 668 665 658 670 658 660" style="clip-path:url(#clipPath31); stroke:none;" />
-      <polygon points=" 668 665 658 670 658 660" style="clip-path:url(#clipPath31); fill:none;" />
-      <path d="M532 668.8002 L658 665 M658 665" style="clip-path:url(#clipPath31); fill:none;" />
-      <text style="clip-path:url(#clipPath32); fill:black; stroke:none; stroke-linecap:square;" transform="translate(600,667.25)" x="-51" xml:space="preserve" y="3">computers_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 95 362 90 352 100 352" style="clip-path:url(#clipPath31); stroke:none;" />
+      <polygon points=" 95 362 90 352 100 352" style="clip-path:url(#clipPath31); fill:none;" />
+      <path d="M95.6915 309 L95 352 M95 352" style="clip-path:url(#clipPath31); fill:none;" />
+      <text style="clip-path:url(#clipPath32); fill:black; stroke:none; stroke-linecap:square;" transform="translate(95.3693,335.5)" x="-44" xml:space="preserve" y="3">answers_ibfk_2</text>
     </g>
-    <g style="fill:rgb(20,19,18); font-family:sans-serif; stroke:rgb(20,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
-      <polygon points=" 539 463 549 461 547 469" style="clip-path:url(#clipPath34); stroke:none;" />
-      <polygon points=" 539 463 549 461 547 469" style="clip-path:url(#clipPath34); fill:none;" />
-      <path d="M686 506.2132 L548 465 M548 465" style="clip-path:url(#clipPath34); fill:none;" />
-      <text style="clip-path:url(#clipPath35); fill:black; stroke:none; stroke-linecap:square;" transform="translate(612.5,484.7805)" x="-56" xml:space="preserve" y="3">examinators_ibfk_1</text>
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 292 171 284 178 282 170" style="clip-path:url(#clipPath34); stroke:none;" />
+      <polygon points=" 292 171 284 178 282 170" style="clip-path:url(#clipPath34); fill:none;" />
+      <path d="M193 207.6205 L283 174 M283 174" style="clip-path:url(#clipPath34); fill:none;" />
+      <text style="clip-path:url(#clipPath35); fill:black; stroke:none; stroke-linecap:square;" transform="translate(242.5,189.7289)" x="-44" xml:space="preserve" y="3">answers_ibfk_1</text>
     </g>
-    <g style="fill:lime; font-family:sans-serif; stroke:lime; text-rendering:optimizeLegibility;" transform="translate(668,627)">
-      <rect height="73" style="clip-path:url(#clipPath36); stroke:none;" width="193" x="0" y="0" />
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 387 306 382 296 392 296" style="clip-path:url(#clipPath37); stroke:none;" />
+      <polygon points=" 387 306 382 296 392 296" style="clip-path:url(#clipPath37); fill:none;" />
+      <path d="M387.1991 249 L387 296 M387 296" style="clip-path:url(#clipPath37); fill:none;" />
+      <text style="clip-path:url(#clipPath38); fill:black; stroke:none; stroke-linecap:square;" transform="translate(387.25,277.5)" x="-48" xml:space="preserve" y="3">questions_ibfk_1</text>
     </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(668,627)">
-      <rect height="72" style="clip-path:url(#clipPath36); fill:none;" width="192" x="0" y="0" />
+    <g style="fill:rgb(19,19,18); font-family:sans-serif; stroke:rgb(19,19,18); stroke-linecap:butt; text-rendering:optimizeLegibility;">
+      <polygon points=" 483 414 493 409 493 419" style="clip-path:url(#clipPath40); stroke:none;" />
+      <polygon points=" 483 414 493 409 493 419" style="clip-path:url(#clipPath40); fill:none;" />
+      <path d="M641 409.7358 L493 414 M493 414" style="clip-path:url(#clipPath40); fill:none;" />
+      <text style="clip-path:url(#clipPath41); fill:black; stroke:none; stroke-linecap:square;" transform="translate(562,412.1554)" x="-55" xml:space="preserve" y="3">contributors_ibfk_1</text>
     </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(668,627)">
-      <text style="clip-path:url(#clipPath36); stroke:none;" x="77" xml:space="preserve" y="13">rooms</text>
-      <line style="clip-path:url(#clipPath36); fill:none;" x1="1" x2="191" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath36); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath36); stroke:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath36); fill:none;" />
-      <text style="clip-path:url(#clipPath36); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath36); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">name</text>
-      <text style="clip-path:url(#clipPath36); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">description</text>
-      <text style="clip-path:url(#clipPath36); font-weight:normal; stroke:none;" x="87" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath36); font-weight:normal; stroke:none;" x="87" xml:space="preserve" y="50">VARCHAR (25)</text>
-      <text style="clip-path:url(#clipPath36); font-weight:normal; stroke:none;" x="87" xml:space="preserve" y="65">TEXT (65535)</text>
+    <g style="fill:rgb(0,0,51); font-family:sans-serif; stroke:rgb(0,0,51); text-rendering:optimizeLegibility;" transform="translate(0,598)">
+      <rect height="58" style="clip-path:url(#clipPath42); stroke:none;" width="165" x="0" y="0" />
     </g>
-    <g style="fill:rgb(0,0,102); font-family:sans-serif; stroke:rgb(0,0,102); text-rendering:optimizeLegibility;" transform="translate(678,50)">
-      <rect height="58" style="clip-path:url(#clipPath37); stroke:none;" width="154" x="0" y="0" />
+    <g style="fill:white; font-family:sans-serif; stroke:white; text-rendering:optimizeLegibility;" transform="translate(0,598)">
+      <rect height="57" style="clip-path:url(#clipPath42); fill:none;" width="164" x="0" y="0" />
     </g>
-    <g style="fill:white; font-family:sans-serif; stroke:white; text-rendering:optimizeLegibility;" transform="translate(678,50)">
-      <rect height="57" style="clip-path:url(#clipPath37); fill:none;" width="153" x="0" y="0" />
-    </g>
-    <g style="fill:white; font-family:sans-serif; font-weight:bold; stroke:white; text-rendering:optimizeLegibility;" transform="translate(678,50)">
-      <text style="clip-path:url(#clipPath37); stroke:none;" x="54" xml:space="preserve" y="13">admins</text>
-      <line style="clip-path:url(#clipPath37); fill:none;" x1="1" x2="152" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath37); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath37); stroke:none;" />
-      <text style="clip-path:url(#clipPath37); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath37); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">user</text>
-      <text style="clip-path:url(#clipPath37); font-weight:normal; stroke:none;" x="48" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath37); font-weight:normal; stroke:none;" x="48" xml:space="preserve" y="50">VARCHAR (10)</text>
-    </g>
-    <g style="fill:aqua; font-family:sans-serif; stroke:aqua; text-rendering:optimizeLegibility;" transform="translate(32,231)">
-      <rect height="103" style="clip-path:url(#clipPath38); stroke:none;" width="190" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(32,231)">
-      <rect height="102" style="clip-path:url(#clipPath38); fill:none;" width="189" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(32,231)">
-      <text style="clip-path:url(#clipPath38); stroke:none;" x="69" xml:space="preserve" y="13">answers</text>
-      <line style="clip-path:url(#clipPath38); fill:none;" x1="1" x2="188" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath38); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath38); stroke:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath38); stroke:none;" />
-      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath38); stroke:none;" />
-      <circle cx="8" cy="92" r="3" style="clip-path:url(#clipPath38); fill:none;" />
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">question_id</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">student_id</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">answer</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">comment</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="65">INT (10)</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="80">TEXT (65535)</text>
-      <text style="clip-path:url(#clipPath38); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="95">TEXT (65535)</text>
-    </g>
-    <g style="fill:rgb(0,0,102); font-family:sans-serif; stroke:rgb(0,0,102); text-rendering:optimizeLegibility;" transform="translate(678,130)">
-      <rect height="58" style="clip-path:url(#clipPath37); stroke:none;" width="154" x="0" y="0" />
-    </g>
-    <g style="fill:white; font-family:sans-serif; stroke:white; text-rendering:optimizeLegibility;" transform="translate(678,130)">
-      <rect height="57" style="clip-path:url(#clipPath37); fill:none;" width="153" x="0" y="0" />
-    </g>
-    <g style="fill:white; font-family:sans-serif; font-weight:bold; stroke:white; text-rendering:optimizeLegibility;" transform="translate(678,130)">
-      <text style="clip-path:url(#clipPath37); stroke:none;" x="51" xml:space="preserve" y="13">teachers</text>
-      <line style="clip-path:url(#clipPath37); fill:none;" x1="1" x2="152" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath37); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath37); stroke:none;" />
-      <text style="clip-path:url(#clipPath37); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath37); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">user</text>
-      <text style="clip-path:url(#clipPath37); font-weight:normal; stroke:none;" x="48" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath37); font-weight:normal; stroke:none;" x="48" xml:space="preserve" y="50">VARCHAR (10)</text>
-    </g>
-    <g style="fill:lime; font-family:sans-serif; stroke:lime; text-rendering:optimizeLegibility;" transform="translate(339,597)">
-      <rect height="148" style="clip-path:url(#clipPath39); stroke:none;" width="193" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(339,597)">
-      <rect height="147" style="clip-path:url(#clipPath39); fill:none;" width="192" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(339,597)">
-      <text style="clip-path:url(#clipPath39); stroke:none;" x="64" xml:space="preserve" y="13">computers</text>
-      <line style="clip-path:url(#clipPath39); fill:none;" x1="1" x2="191" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath39); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath39); fill:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath39); fill:none;" />
-      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath39); stroke:none;" />
-      <circle cx="8" cy="92" r="3" style="clip-path:url(#clipPath39); stroke:none;" />
-      <circle cx="8" cy="107" r="3" style="clip-path:url(#clipPath39); stroke:none;" />
-      <circle cx="8" cy="122" r="3" style="clip-path:url(#clipPath39); stroke:none;" />
-      <circle cx="8" cy="137" r="3" style="clip-path:url(#clipPath39); stroke:none;" />
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">room_id</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">hostname</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">ipaddr</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">port</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="110">password</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="125">created</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="140">updated</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="65">VARCHAR (100)</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="80">VARCHAR (45)</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="95">INT (10)</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="110">VARCHAR (32)</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="125">DATETIME</text>
-      <text style="clip-path:url(#clipPath39); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="140">TIMESTAMP</text>
-    </g>
-    <g style="fill:fuchsia; font-family:sans-serif; stroke:fuchsia; text-rendering:optimizeLegibility;" transform="translate(32,413)">
-      <rect height="88" style="clip-path:url(#clipPath40); stroke:none;" width="190" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(32,413)">
-      <rect height="87" style="clip-path:url(#clipPath40); fill:none;" width="189" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(32,413)">
-      <text style="clip-path:url(#clipPath40); stroke:none;" x="68" xml:space="preserve" y="13">students</text>
-      <line style="clip-path:url(#clipPath40); fill:none;" x1="1" x2="188" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath40); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath40); stroke:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath40); stroke:none;" />
-      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath40); stroke:none;" />
-      <text style="clip-path:url(#clipPath40); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath40); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
-      <text style="clip-path:url(#clipPath40); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">user</text>
-      <text style="clip-path:url(#clipPath40); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">code</text>
-      <text style="clip-path:url(#clipPath40); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath40); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath40); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">CHAR (8)</text>
-      <text style="clip-path:url(#clipPath40); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="80">VARCHAR (15)</text>
-    </g>
-    <g style="fill:lime; font-family:sans-serif; stroke:lime; text-rendering:optimizeLegibility;" transform="translate(32,623)">
-      <rect height="88" style="clip-path:url(#clipPath41); stroke:none;" width="189" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(32,623)">
-      <rect height="87" style="clip-path:url(#clipPath41); fill:none;" width="188" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(32,623)">
-      <text style="clip-path:url(#clipPath41); stroke:none;" x="78" xml:space="preserve" y="13">locks</text>
-      <line style="clip-path:url(#clipPath41); fill:none;" x1="1" x2="187" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath41); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath41); fill:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath41); fill:none;" />
-      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath41); stroke:none;" />
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">computer_id</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">exam_id</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">aquired</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="95" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="95" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="95" xml:space="preserve" y="65">INT (10)</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="95" xml:space="preserve" y="80">TIMESTAMP</text>
-    </g>
-    <g style="fill:aqua; font-family:sans-serif; stroke:aqua; text-rendering:optimizeLegibility;" transform="translate(346,51)">
-      <rect height="208" style="clip-path:url(#clipPath42); stroke:none;" width="190" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(346,51)">
-      <rect height="207" style="clip-path:url(#clipPath42); fill:none;" width="189" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(346,51)">
-      <text style="clip-path:url(#clipPath42); stroke:none;" x="65" xml:space="preserve" y="13">questions</text>
-      <line style="clip-path:url(#clipPath42); fill:none;" x1="1" x2="188" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
+    <g style="fill:white; font-family:sans-serif; font-weight:bold; stroke:white; text-rendering:optimizeLegibility;" transform="translate(0,598)">
+      <text style="clip-path:url(#clipPath42); stroke:none;" x="60" xml:space="preserve" y="13">admins</text>
+      <line style="clip-path:url(#clipPath42); fill:none;" x1="1" x2="163" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath42); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
       <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
-      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
-      <circle cx="8" cy="92" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
-      <circle cx="8" cy="107" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
-      <circle cx="8" cy="122" r="3" style="clip-path:url(#clipPath42); fill:none;" />
-      <circle cx="8" cy="137" r="3" style="clip-path:url(#clipPath42); fill:none;" />
-      <circle cx="8" cy="152" r="3" style="clip-path:url(#clipPath42); fill:none;" />
-      <circle cx="8" cy="167" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
-      <circle cx="8" cy="182" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
-      <circle cx="8" cy="197" r="3" style="clip-path:url(#clipPath42); fill:none;" />
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">score</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">name</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">quest</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="110">user</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="125">video</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="140">image</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="155">audio</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="170">type</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="185">status</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="200">comment</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="65">FLOAT (12)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="80">VARCHAR (30)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="95">TEXT (65535)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="110">CHAR (8)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="125">VARCHAR (512)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="140">VARCHAR (512)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="155">VARCHAR (512)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="170">ENUM (9)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="185">ENUM (7)</text>
-      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="200">TEXT (65535)</text>
+      <text style="clip-path:url(#clipPath42); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">user</text>
+      <text style="clip-path:url(#clipPath42); stroke:none;" x="48" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="48" xml:space="preserve" y="50">VARCHAR (10)</text>
     </g>
-    <g style="fill:yellow; font-family:sans-serif; stroke:yellow; text-rendering:optimizeLegibility;" transform="translate(686,392)">
-      <rect height="73" style="clip-path:url(#clipPath43); stroke:none;" width="146" x="0" y="0" />
+    <g style="fill:aqua; font-family:sans-serif; stroke:aqua; text-rendering:optimizeLegibility;" transform="translate(0,176)">
+      <rect height="133" style="clip-path:url(#clipPath43); stroke:none;" width="193" x="0" y="0" />
     </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(686,392)">
-      <rect height="72" style="clip-path:url(#clipPath43); fill:none;" width="145" x="0" y="0" />
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(0,176)">
+      <rect height="132" style="clip-path:url(#clipPath43); fill:none;" width="192" x="0" y="0" />
     </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(686,392)">
-      <text style="clip-path:url(#clipPath43); stroke:none;" x="35" xml:space="preserve" y="13">contributors</text>
-      <line style="clip-path:url(#clipPath43); fill:none;" x1="1" x2="144" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath43); stroke:none;" />
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(0,176)">
+      <text style="clip-path:url(#clipPath43); stroke:none;" x="71" xml:space="preserve" y="13">answers</text>
+      <line style="clip-path:url(#clipPath43); fill:none;" x1="1" x2="191" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath43); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
       <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath43); stroke:none;" />
       <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath43); stroke:none;" />
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">user</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">CHAR (8)</text>
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath43); fill:none;" />
+      <circle cx="8" cy="92" r="3" style="clip-path:url(#clipPath43); fill:none;" />
+      <circle cx="8" cy="107" r="3" style="clip-path:url(#clipPath43); fill:none;" />
+      <circle cx="8" cy="122" r="3" style="clip-path:url(#clipPath43); stroke:none;" />
+      <text style="clip-path:url(#clipPath43); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">question_id</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">student_id</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">answered</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">answer</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="110">comment</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="125">stamp</text>
+      <text style="clip-path:url(#clipPath43); stroke:none;" x="89" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="65">INT (10)</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="80">ENUM (2)</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="95">TEXT (65535)</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="110">TEXT (65535)</text>
+      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="89" xml:space="preserve" y="125">TIMESTAMP</text>
     </g>
-    <g style="fill:yellow; font-family:sans-serif; stroke:yellow; text-rendering:optimizeLegibility;" transform="translate(686,297)">
-      <rect height="70" style="clip-path:url(#clipPath44); stroke:none;" width="146" x="0" y="0" />
+    <g style="fill:lime; font-family:sans-serif; stroke:lime; text-rendering:optimizeLegibility;" transform="translate(291,687)">
+      <rect height="148" style="clip-path:url(#clipPath44); stroke:none;" width="193" x="0" y="0" />
     </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(686,297)">
-      <rect height="69" style="clip-path:url(#clipPath44); fill:none;" width="145" x="0" y="0" />
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(291,687)">
+      <rect height="147" style="clip-path:url(#clipPath44); fill:none;" width="192" x="0" y="0" />
     </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(686,297)">
-      <text style="clip-path:url(#clipPath44); stroke:none;" x="45" xml:space="preserve" y="13">decoders</text>
-      <line style="clip-path:url(#clipPath44); fill:none;" x1="1" x2="144" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath44); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath44); stroke:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath44); stroke:none;" />
-      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
-      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">user</text>
-      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">CHAR (8)</text>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(291,687)">
+      <text style="clip-path:url(#clipPath44); stroke:none;" x="64" xml:space="preserve" y="13">computers</text>
+      <line style="clip-path:url(#clipPath44); fill:none;" x1="1" x2="191" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath44); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath44); fill:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath44); fill:none;" />
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath44); stroke:none;" />
+      <circle cx="8" cy="92" r="3" style="clip-path:url(#clipPath44); stroke:none;" />
+      <circle cx="8" cy="107" r="3" style="clip-path:url(#clipPath44); stroke:none;" />
+      <circle cx="8" cy="122" r="3" style="clip-path:url(#clipPath44); stroke:none;" />
+      <circle cx="8" cy="137" r="3" style="clip-path:url(#clipPath44); stroke:none;" />
+      <text style="clip-path:url(#clipPath44); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">room_id</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">hostname</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">ipaddr</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">port</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="110">password</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="125">created</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="140">updated</text>
+      <text style="clip-path:url(#clipPath44); stroke:none;" x="79" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="65">VARCHAR (100)</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="80">VARCHAR (45)</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="95">INT (10)</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="110">VARCHAR (32)</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="125">DATETIME</text>
+      <text style="clip-path:url(#clipPath44); font-weight:normal; stroke:none;" x="79" xml:space="preserve" y="140">TIMESTAMP</text>
     </g>
-    <g style="fill:yellow; font-family:sans-serif; stroke:yellow; text-rendering:optimizeLegibility;" transform="translate(686,491)">
-      <rect height="73" style="clip-path:url(#clipPath43); stroke:none;" width="146" x="0" y="0" />
+    <g style="fill:rgb(255,204,0); font-family:sans-serif; stroke:rgb(255,204,0); text-rendering:optimizeLegibility;" transform="translate(0,26)">
+      <rect height="88" style="clip-path:url(#clipPath45); stroke:none;" width="185" x="0" y="0" />
     </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(686,491)">
-      <rect height="72" style="clip-path:url(#clipPath43); fill:none;" width="145" x="0" y="0" />
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(0,26)">
+      <rect height="87" style="clip-path:url(#clipPath45); fill:none;" width="184" x="0" y="0" />
     </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(686,491)">
-      <text style="clip-path:url(#clipPath43); stroke:none;" x="35" xml:space="preserve" y="13">examinators</text>
-      <line style="clip-path:url(#clipPath43); fill:none;" x1="1" x2="144" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath43); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath43); stroke:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath43); stroke:none;" />
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">user</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath43); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">CHAR (8)</text>
-    </g>
-    <g style="fill:rgb(255,204,0); font-family:sans-serif; stroke:rgb(255,204,0); text-rendering:optimizeLegibility;" transform="translate(32,51)">
-      <rect height="88" style="clip-path:url(#clipPath41); stroke:none;" width="189" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(32,51)">
-      <rect height="87" style="clip-path:url(#clipPath41); fill:none;" width="188" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(32,51)">
-      <text style="clip-path:url(#clipPath41); stroke:none;" x="73" xml:space="preserve" y="13">results</text>
-      <line style="clip-path:url(#clipPath41); fill:none;" x1="1" x2="187" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath41); stroke:none;" />
-      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath41); stroke:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath41); stroke:none;" />
-      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath41); fill:none;" />
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">answer_id</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">score</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">comment</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="81" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="81" xml:space="preserve" y="50">INT (10)</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="81" xml:space="preserve" y="65">FLOAT (12)</text>
-      <text style="clip-path:url(#clipPath41); font-weight:normal; stroke:none;" x="81" xml:space="preserve" y="80">TEXT (65535)</text>
-    </g>
-    <g style="fill:aqua; font-family:sans-serif; stroke:aqua; text-rendering:optimizeLegibility;" transform="translate(348,324)">
-      <rect height="223" style="clip-path:url(#clipPath45); stroke:none;" width="191" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(348,324)">
-      <rect height="222" style="clip-path:url(#clipPath45); fill:none;" width="190" x="0" y="0" />
-    </g>
-    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(348,324)">
-      <text style="clip-path:url(#clipPath45); stroke:none;" x="76" xml:space="preserve" y="13">exams</text>
-      <line style="clip-path:url(#clipPath45); fill:none;" x1="1" x2="189" y1="18" y2="18" />
-      <circle cx="8" cy="32" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(0,26)">
+      <text style="clip-path:url(#clipPath45); stroke:none;" x="71" xml:space="preserve" y="13">results</text>
+      <line style="clip-path:url(#clipPath45); fill:none;" x1="1" x2="183" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath45); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
       <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath45); fill:none;" />
-      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="92" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="107" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="122" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="137" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="152" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="167" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="182" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="197" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <circle cx="8" cy="212" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="35">id</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">name</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">descr</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">starttime</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">endtime</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="110">created</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="125">updated</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="140">creator</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="155">decoded</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="170">orgunit</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="185">grades</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="200">testcase</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="215">lockdown</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="35">INT (10)</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="50">VARCHAR (100)</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="65">TEXT (65535)</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="80">DATETIME</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="95">DATETIME</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="110">DATETIME</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="125">TIMESTAMP</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="140">CHAR (8)</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="155">ENUM (2)</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="170">VARCHAR (50)</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="185">VARCHAR (200)</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="200">ENUM (2)</text>
-      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="215">ENUM (2)</text>
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath45); stroke:none;" />
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath45); fill:none;" />
+      <text style="clip-path:url(#clipPath45); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">answer_id</text>
+      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">score</text>
+      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">comment</text>
+      <text style="clip-path:url(#clipPath45); stroke:none;" x="81" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="81" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="81" xml:space="preserve" y="65">FLOAT (12)</text>
+      <text style="clip-path:url(#clipPath45); font-weight:normal; stroke:none;" x="81" xml:space="preserve" y="80">TEXT (65535)</text>
+    </g>
+    <g style="fill:rgb(0,0,51); font-family:sans-serif; stroke:rgb(0,0,51); text-rendering:optimizeLegibility;" transform="translate(0,747)">
+      <rect height="88" style="clip-path:url(#clipPath46); stroke:none;" width="165" x="0" y="0" />
+    </g>
+    <g style="fill:white; font-family:sans-serif; stroke:white; text-rendering:optimizeLegibility;" transform="translate(0,747)">
+      <rect height="87" style="clip-path:url(#clipPath46); fill:none;" width="164" x="0" y="0" />
+    </g>
+    <g style="fill:white; font-family:sans-serif; font-weight:bold; stroke:white; text-rendering:optimizeLegibility;" transform="translate(0,747)">
+      <text style="clip-path:url(#clipPath46); stroke:none;" x="47" xml:space="preserve" y="13">schemainfo</text>
+      <line style="clip-path:url(#clipPath46); fill:none;" x1="1" x2="163" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath46); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath46); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath46); stroke:none;" />
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath46); stroke:none;" />
+      <text style="clip-path:url(#clipPath46); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath46); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">major</text>
+      <text style="clip-path:url(#clipPath46); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">minor</text>
+      <text style="clip-path:url(#clipPath46); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">updated</text>
+      <text style="clip-path:url(#clipPath46); stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath46); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath46); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">INT (10)</text>
+      <text style="clip-path:url(#clipPath46); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="80">TIMESTAMP</text>
+    </g>
+    <g style="fill:lime; font-family:sans-serif; stroke:lime; text-rendering:optimizeLegibility;" transform="translate(594,724)">
+      <rect height="73" style="clip-path:url(#clipPath47); stroke:none;" width="193" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(594,724)">
+      <rect height="72" style="clip-path:url(#clipPath47); fill:none;" width="192" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(594,724)">
+      <text style="clip-path:url(#clipPath47); stroke:none;" x="77" xml:space="preserve" y="13">rooms</text>
+      <line style="clip-path:url(#clipPath47); fill:none;" x1="1" x2="191" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath47); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath47); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath47); fill:none;" />
+      <text style="clip-path:url(#clipPath47); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath47); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">name</text>
+      <text style="clip-path:url(#clipPath47); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">description</text>
+      <text style="clip-path:url(#clipPath47); stroke:none;" x="87" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath47); font-weight:normal; stroke:none;" x="87" xml:space="preserve" y="50">VARCHAR (25)</text>
+      <text style="clip-path:url(#clipPath47); font-weight:normal; stroke:none;" x="87" xml:space="preserve" y="65">TEXT (65535)</text>
+    </g>
+    <g style="fill:rgb(204,0,255); font-family:sans-serif; stroke:rgb(204,0,255); text-rendering:optimizeLegibility;" transform="translate(0,362)">
+      <rect height="90" style="clip-path:url(#clipPath48); stroke:none;" width="189" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(0,362)">
+      <rect height="89" style="clip-path:url(#clipPath48); fill:none;" width="188" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(0,362)">
+      <text style="clip-path:url(#clipPath48); stroke:none;" x="67" xml:space="preserve" y="13">students</text>
+      <line style="clip-path:url(#clipPath48); fill:none;" x1="1" x2="187" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath48); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath48); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath48); stroke:none;" />
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath48); stroke:none;" />
+      <text style="clip-path:url(#clipPath48); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath48); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
+      <text style="clip-path:url(#clipPath48); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">user</text>
+      <text style="clip-path:url(#clipPath48); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">code</text>
+      <text style="clip-path:url(#clipPath48); stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath48); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath48); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">CHAR (8)</text>
+      <text style="clip-path:url(#clipPath48); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="80">VARCHAR (15)</text>
+    </g>
+    <g style="fill:yellow; font-family:sans-serif; stroke:yellow; text-rendering:optimizeLegibility;" transform="translate(641,371)">
+      <rect height="73" style="clip-path:url(#clipPath49); stroke:none;" width="146" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(641,371)">
+      <rect height="72" style="clip-path:url(#clipPath49); fill:none;" width="145" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(641,371)">
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="35" xml:space="preserve" y="13">contributors</text>
+      <line style="clip-path:url(#clipPath49); fill:none;" x1="1" x2="144" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath49); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath49); stroke:none;" />
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">user</text>
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">CHAR (8)</text>
+    </g>
+    <g style="fill:yellow; font-family:sans-serif; stroke:yellow; text-rendering:optimizeLegibility;" transform="translate(641,471)">
+      <rect height="73" style="clip-path:url(#clipPath49); stroke:none;" width="146" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(641,471)">
+      <rect height="72" style="clip-path:url(#clipPath49); fill:none;" width="145" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(641,471)">
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="45" xml:space="preserve" y="13">decoders</text>
+      <line style="clip-path:url(#clipPath49); fill:none;" x1="1" x2="144" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath49); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath49); stroke:none;" />
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">user</text>
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">CHAR (8)</text>
+    </g>
+    <g style="fill:yellow; font-family:sans-serif; stroke:yellow; text-rendering:optimizeLegibility;" transform="translate(641,574)">
+      <rect height="73" style="clip-path:url(#clipPath49); stroke:none;" width="146" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(641,574)">
+      <rect height="72" style="clip-path:url(#clipPath49); fill:none;" width="145" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(641,574)">
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="35" xml:space="preserve" y="13">examinators</text>
+      <line style="clip-path:url(#clipPath49); fill:none;" x1="1" x2="144" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath49); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath49); stroke:none;" />
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">user</text>
+      <text style="clip-path:url(#clipPath49); stroke:none;" x="72" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath49); font-weight:normal; stroke:none;" x="72" xml:space="preserve" y="65">CHAR (8)</text>
+    </g>
+    <g style="fill:rgb(0,0,51); font-family:sans-serif; stroke:rgb(0,0,51); text-rendering:optimizeLegibility;" transform="translate(0,672)">
+      <rect height="58" style="clip-path:url(#clipPath42); stroke:none;" width="165" x="0" y="0" />
+    </g>
+    <g style="fill:white; font-family:sans-serif; stroke:white; text-rendering:optimizeLegibility;" transform="translate(0,672)">
+      <rect height="57" style="clip-path:url(#clipPath42); fill:none;" width="164" x="0" y="0" />
+    </g>
+    <g style="fill:white; font-family:sans-serif; font-weight:bold; stroke:white; text-rendering:optimizeLegibility;" transform="translate(0,672)">
+      <text style="clip-path:url(#clipPath42); stroke:none;" x="56" xml:space="preserve" y="13">teachers</text>
+      <line style="clip-path:url(#clipPath42); fill:none;" x1="1" x2="163" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath42); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath42); stroke:none;" />
+      <text style="clip-path:url(#clipPath42); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">user</text>
+      <text style="clip-path:url(#clipPath42); stroke:none;" x="48" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath42); font-weight:normal; stroke:none;" x="48" xml:space="preserve" y="50">VARCHAR (10)</text>
+    </g>
+    <g style="fill:aqua; font-family:sans-serif; stroke:aqua; text-rendering:optimizeLegibility;" transform="translate(292,306)">
+      <rect height="223" style="clip-path:url(#clipPath50); stroke:none;" width="191" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(292,306)">
+      <rect height="222" style="clip-path:url(#clipPath50); fill:none;" width="190" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(292,306)">
+      <text style="clip-path:url(#clipPath50); stroke:none;" x="76" xml:space="preserve" y="13">exams</text>
+      <line style="clip-path:url(#clipPath50); fill:none;" x1="1" x2="189" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath50); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath50); fill:none;" />
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="92" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="107" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="122" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="137" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="152" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="167" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="182" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="197" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <circle cx="8" cy="212" r="3" style="clip-path:url(#clipPath50); stroke:none;" />
+      <text style="clip-path:url(#clipPath50); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">name</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">descr</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">starttime</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">endtime</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="110">created</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="125">updated</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="140">creator</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="155">decoded</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="170">orgunit</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="185">grades</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="200">testcase</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="215">lockdown</text>
+      <text style="clip-path:url(#clipPath50); stroke:none;" x="77" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="50">VARCHAR (200)</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="65">TEXT (65535)</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="80">DATETIME</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="95">DATETIME</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="110">DATETIME</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="125">TIMESTAMP</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="140">CHAR (8)</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="155">ENUM (2)</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="170">VARCHAR (150)</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="185">VARCHAR (200)</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="200">ENUM (2)</text>
+      <text style="clip-path:url(#clipPath50); font-weight:normal; stroke:none;" x="77" xml:space="preserve" y="215">ENUM (2)</text>
+    </g>
+    <g style="fill:lime; font-family:sans-serif; stroke:lime; text-rendering:optimizeLegibility;" transform="translate(292,559)">
+      <rect height="88" style="clip-path:url(#clipPath51); stroke:none;" width="189" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(292,559)">
+      <rect height="87" style="clip-path:url(#clipPath51); fill:none;" width="188" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(292,559)">
+      <text style="clip-path:url(#clipPath51); stroke:none;" x="78" xml:space="preserve" y="13">locks</text>
+      <line style="clip-path:url(#clipPath51); fill:none;" x1="1" x2="187" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath51); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath51); fill:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath51); fill:none;" />
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath51); stroke:none;" />
+      <text style="clip-path:url(#clipPath51); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath51); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">computer_id</text>
+      <text style="clip-path:url(#clipPath51); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">exam_id</text>
+      <text style="clip-path:url(#clipPath51); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">aquired</text>
+      <text style="clip-path:url(#clipPath51); stroke:none;" x="95" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath51); font-weight:normal; stroke:none;" x="95" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath51); font-weight:normal; stroke:none;" x="95" xml:space="preserve" y="65">INT (10)</text>
+      <text style="clip-path:url(#clipPath51); font-weight:normal; stroke:none;" x="95" xml:space="preserve" y="80">TIMESTAMP</text>
+    </g>
+    <g style="fill:rgb(102,255,255); font-family:sans-serif; stroke:rgb(102,255,255); text-rendering:optimizeLegibility;" transform="translate(292,26)">
+      <rect height="223" style="clip-path:url(#clipPath52); stroke:none;" width="190" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(292,26)">
+      <rect height="222" style="clip-path:url(#clipPath52); fill:none;" width="189" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(292,26)">
+      <text style="clip-path:url(#clipPath52); stroke:none;" x="65" xml:space="preserve" y="13">questions</text>
+      <line style="clip-path:url(#clipPath52); fill:none;" x1="1" x2="188" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath52); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath52); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath52); stroke:none;" />
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath52); stroke:none;" />
+      <circle cx="8" cy="92" r="3" style="clip-path:url(#clipPath52); stroke:none;" />
+      <circle cx="8" cy="107" r="3" style="clip-path:url(#clipPath52); stroke:none;" />
+      <circle cx="8" cy="122" r="3" style="clip-path:url(#clipPath52); stroke:none;" />
+      <circle cx="8" cy="137" r="3" style="clip-path:url(#clipPath52); fill:none;" />
+      <circle cx="8" cy="152" r="3" style="clip-path:url(#clipPath52); fill:none;" />
+      <circle cx="8" cy="167" r="3" style="clip-path:url(#clipPath52); fill:none;" />
+      <circle cx="8" cy="182" r="3" style="clip-path:url(#clipPath52); stroke:none;" />
+      <circle cx="8" cy="197" r="3" style="clip-path:url(#clipPath52); stroke:none;" />
+      <circle cx="8" cy="212" r="3" style="clip-path:url(#clipPath52); fill:none;" />
+      <text style="clip-path:url(#clipPath52); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">topic_id</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">score</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">name</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="110">quest</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="125">user</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="140">video</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="155">image</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="170">audio</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="185">type</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="200">status</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="215">comment</text>
+      <text style="clip-path:url(#clipPath52); stroke:none;" x="76" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="65">INT (10)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="80">FLOAT (12)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="95">VARCHAR (30)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="110">TEXT (65535)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="125">CHAR (8)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="140">VARCHAR (512)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="155">VARCHAR (512)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="170">VARCHAR (512)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="185">ENUM (9)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="200">ENUM (7)</text>
+      <text style="clip-path:url(#clipPath52); font-weight:normal; stroke:none;" x="76" xml:space="preserve" y="215">TEXT (65535)</text>
+    </g>
+    <g style="fill:aqua; font-family:sans-serif; stroke:aqua; text-rendering:optimizeLegibility;" transform="translate(596,216)">
+      <rect height="88" style="clip-path:url(#clipPath53); stroke:none;" width="191" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; text-rendering:optimizeLegibility;" transform="translate(596,216)">
+      <rect height="87" style="clip-path:url(#clipPath53); fill:none;" width="190" x="0" y="0" />
+    </g>
+    <g style="font-family:sans-serif; font-weight:bold; text-rendering:optimizeLegibility;" transform="translate(596,216)">
+      <text style="clip-path:url(#clipPath53); stroke:none;" x="77" xml:space="preserve" y="13">topics</text>
+      <line style="clip-path:url(#clipPath53); fill:none;" x1="1" x2="189" y1="18" y2="18" />
+      <text style="clip-path:url(#clipPath53); stroke:none;" x="5" xml:space="preserve" y="35">#</text>
+      <circle cx="8" cy="47" r="3" style="clip-path:url(#clipPath53); stroke:none;" />
+      <circle cx="8" cy="62" r="3" style="clip-path:url(#clipPath53); stroke:none;" />
+      <circle cx="8" cy="77" r="3" style="clip-path:url(#clipPath53); stroke:none;" />
+      <text style="clip-path:url(#clipPath53); stroke:none;" x="17" xml:space="preserve" y="35">id</text>
+      <text style="clip-path:url(#clipPath53); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">exam_id</text>
+      <text style="clip-path:url(#clipPath53); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">name</text>
+      <text style="clip-path:url(#clipPath53); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">randomize</text>
+      <text style="clip-path:url(#clipPath53); stroke:none;" x="85" xml:space="preserve" y="35">INT (10)</text>
+      <text style="clip-path:url(#clipPath53); font-weight:normal; stroke:none;" x="85" xml:space="preserve" y="50">INT (10)</text>
+      <text style="clip-path:url(#clipPath53); font-weight:normal; stroke:none;" x="85" xml:space="preserve" y="65">VARCHAR (50)</text>
+      <text style="clip-path:url(#clipPath53); font-weight:normal; stroke:none;" x="85" xml:space="preserve" y="80">INT (10)</text>
     </g>
   </g>
 </svg>
