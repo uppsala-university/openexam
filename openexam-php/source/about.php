@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/about.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2009-06-28
 // 
 // Show about info for this system.
@@ -53,7 +53,7 @@ class AboutPage extends BasePage
                         _("Please visit the <a href=\"%s\">project page</a> for further information.") .
                         "</p>\n",
                         "anders.lovgren@bmc.uu.se",
-                        utf8_encode("Anders Lövgren"),
+                        utf8_encode("Anders LÃ¶vgren"),
                         _("Computing Department at BMC"),
                         "http://it.bmc.uu.se/andlov/proj/openexam/");
         }

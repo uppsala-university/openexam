@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   source/exam/index.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-12-13
 //
 // This script generates PHP code for creating the database and its tables

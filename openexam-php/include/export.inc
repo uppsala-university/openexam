@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   include/export.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-12-11
 //
 // Export utility. Depends on the SimpleXML and DOM extensions.
