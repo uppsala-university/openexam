@@ -2,7 +2,7 @@
 #
 # Simple script that dumps the database scheme to SQL and XML-files.
 #
-# Author: Anders Lövgren
+# Author: Anders LÃ¶vgren
 # Date:   2010-05-17
 #
 

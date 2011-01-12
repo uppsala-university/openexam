@@ -2,7 +2,7 @@
 // Support functions for the VideoLAN (VLC) media player plugin. Supports
 // VLC version >= 0.8.5 (using the new unified javascript API).
 // 
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-05-10
 //  
 

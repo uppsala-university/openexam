@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/teacher/correct.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-04-28
 // 
 // Support for correcting exams.

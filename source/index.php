@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/index.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-04-21
 // 
 // The main entry point for the web application.

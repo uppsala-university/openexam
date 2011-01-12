@@ -2,7 +2,7 @@
 # Apache web server configuration for this web application.
 #
 # File:   conf/apache.conf
-# Author: Anders Lövgren
+# Author: Anders LÃ¶vgren
 # Date:   2010-04-27
 #
 # Note: Make sure to modify pathes, including the custom include path below.

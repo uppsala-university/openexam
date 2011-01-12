@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/smtp.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2009-08-30
 // 
 // Support for sending mail thru SMTP. Use the classes like this:
