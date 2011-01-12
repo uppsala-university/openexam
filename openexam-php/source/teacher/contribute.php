@@ -385,7 +385,7 @@ class ContributePage extends TeacherPage
                         $input = $form->addTextArea("quest",
                                         $data->hasQuestionText() || $action == "edit" ?
                                                 $data->getQuestionText() :
-                                                _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n-------------------------\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n-------------------------\n"));
+                                                _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n<hr/>\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n<hr/>\n"));
                         $input->setTitle(_("The actual question is defined here."));
                         $input->setLabel(_("Question"));
                         $input->setClass("question");
