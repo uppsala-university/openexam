@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2011-01-12 13:21+0100\n"
+"POT-Creation-Date: 2011-01-12 15:24+0100\n"
 "PO-Revision-Date: 2011-01-12 14:19+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
@@ -33,14 +33,14 @@ msgstr "Mall:"
 #: template/page.php:100 source/index.php:107 source/exam/index.php:277
 #: source/exam/index.php:282 source/exam/index.php:560
 #: source/exam/index.php:567 source/admin/admin.php:90
-#: source/admin/teacher.php:92 source/result/index.php:242
-#: source/result/index.php:249 include/admin.inc:124 include/teacher.inc:440
+#: source/admin/teacher.php:92 source/result/index.php:247
+#: source/result/index.php:254 include/admin.inc:124 include/teacher.inc:440
 msgid "Request parameter error!"
 msgstr "Problem med anropsparametrarna!"
 
 #: template/page.php:101 source/index.php:108 source/exam/index.php:561
-#: source/exam/index.php:568 source/result/index.php:243
-#: source/result/index.php:250 include/admin.inc:125 include/teacher.inc:441
+#: source/exam/index.php:568 source/result/index.php:248
+#: source/result/index.php:255 include/admin.inc:125 include/teacher.inc:441
 #, php-format
 msgid "Invalid value for request parameter '%s' (expected a value matching pattern '%s')."
 msgstr "Ogiltigt värde för anropsparametern '%s' (förväntade ett värde som matchar mönstret '%s')."
@@ -2083,8 +2083,8 @@ msgstr "Detaljer för examinationen"
 
 #: source/result/index.php:226
 #, php-format
-msgid "Showing description for examiniation %s on %s"
-msgstr "Visar beskrivning för examinationen %s den %s"
+msgid "Showing description for examiniation <u>%s</u> on <u>%s</u>"
+msgstr "Visar beskrivning för examinationen <u>%s</u> den <u>%s</u>"
 
 #: include/pdf.inc:165
 msgid "Table of Contents"
