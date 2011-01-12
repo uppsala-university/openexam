@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/index.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-04-26
 // 
 // The teacher index page. This page is unauthorized (but authenticated), so that 

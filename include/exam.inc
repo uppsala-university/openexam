@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/exam.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-04-21
 // 
 // Support class for the online examination.

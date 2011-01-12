@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/sendmail.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-05-19
 // 
 // Classes for sending email messages for different purposes.

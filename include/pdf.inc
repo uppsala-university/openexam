@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/pdf.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-05-12
 // 
 // Support for generating PDF files.

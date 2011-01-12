@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   include/import.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-12-09
 //
 // Import utility.

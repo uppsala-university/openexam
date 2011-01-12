@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   template/page.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2009-06-25
 // 
 // This is template script does the following:

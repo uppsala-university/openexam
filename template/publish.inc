@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   template/publish.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-04-21
 // 
 // Defines published and contact info for all scripts in the same directory as

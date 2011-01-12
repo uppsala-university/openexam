@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/cas.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2009-06-28
 // 
 // Initialize the CAS connection and, by request, log out user. The file

@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/ldap.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2009-08-27
 // 
 // LDAP search support.

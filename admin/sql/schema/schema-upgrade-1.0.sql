@@ -1,7 +1,7 @@
 /****************************************************************
  * Upgrades OpenExam database schema to version 1.0
  *
- * Author: Anders Lövgren
+ * Author: Anders LÃ¶vgren
  * Date:   2010-12-13
  ****************************************************************/
 
