@@ -27,6 +27,16 @@
    
    *) HTMLDOC    - Generate result PDF from HTML (recommended) [1.8.27].
 
+** CONFIGURATION:
+
+   Turn off magic quotes in php.ini:
+   
+     magic_quotes_gpc = Off
+     magic_quotes_runtime = Off
+   
+   It's no longer recommended to enable magic quotes. This feature defaults 
+   to off in PHP 5.3.x and is scheduled for removal in PHP 6.
+   
 ** INSTALL:
 
    1. Install phpCAS from http://www.ja-sig.org/wiki/display/CASC/phpCAS:
