@@ -51,6 +51,7 @@ CREATE TABLE `topics` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 INSERT INTO topics(exam_id, name) SELECT DISTINCT exam_id, 'standard' FROM questions;
+ALTER TABLE `topics` ADD CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
 ALTER TABLE `questions` ADD `topic_id` int(11) NOT NULL AFTER exam_id;
 UPDATE questions q SET topic_id = (SELECT id FROM topics t WHERE q.exam_id = t.exam_id);
 ALTER TABLE `questions` ADD CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`);
