@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/error.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2009-08-07
 //
 // 

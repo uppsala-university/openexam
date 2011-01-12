@@ -2,7 +2,7 @@
 #
 # Fix permission on database and configure files.
 #
-# Author: Anders Lövgren
+# Author: Anders LÃ¶vgren
 # Date:   2010-02-22
 
 confdir=conf

@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/result/index.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-12-16
 //
 // The page from where students can download results from the examinations.

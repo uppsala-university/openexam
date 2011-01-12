@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/ui.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2008-06-27
 // 
 // This file defines classes for rendering the pages using the user 

@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/help.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2009-08-13
 // 
 // GNU gettext support. 

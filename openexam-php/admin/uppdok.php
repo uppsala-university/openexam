@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   admin/uppdok.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-12-14
 // 
 // This script uses the currently used data sourced configured for UPPDOK.
@@ -64,7 +64,7 @@ class UppdokApp
                 printf("Options:\n");
                 printf("  -c course: One or more course codes to query (i.e. 1AB234)\n");
                 printf("\n");
-                printf("Copyright (c) 2010 Anders Lövgren, Compdept at BMC, Uppsala university.\n");
+                printf("Copyright (c) 2010 Anders LÃ¶vgren, Compdept at BMC, Uppsala university.\n");
         }
 
         public function process()
