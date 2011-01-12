@@ -108,7 +108,8 @@ class Exam
                 $sql = sprintf("SELECT  COUNT(*) AS num
                                         FROM    students s, answers a
                                         WHERE   s.id = a.student_id AND
-                                                s.exam_id = %d", $exam);
+                                                s.user = '%s' AND
+                                                s.exam_id = %d", $user, $exam);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
