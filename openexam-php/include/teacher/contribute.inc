@@ -83,10 +83,11 @@ class Contribute
 
         public function addQuestion($exam, $topic, $score, $name, $quest, $type, $user, $video, $audio, $image)
         {
+                $db = Database::getConnection();
                 $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, type, user, video, audio, image)
                                 VALUES(%d, %d, %f, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
-                                $exam, $topic, $score, $name, $quest, $type, $user, $video, $audio, $image);
-                $res = Database::getConnection()->query($sql);
+                                $exam, $topic, $score, $db->escape($name), $db->escape($quest), $type, $user, $video, $audio, $image);
+                $res = $db->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
                 }
@@ -94,11 +95,12 @@ class Contribute
 
         public function editQuestion($question, $exam, $topic, $score, $name, $quest, $type, $user, $video, $audio, $image)
         {
+                $db = Database::getConnection();
                 $sql = sprintf("UPDATE questions SET exam_id = %d, topic_id = %d, score = %f, name = '%s', quest = '%s', type = '%s',
                                                      user = '%s', video = '%s', audio = '%s', image = '%s'
                                 WHERE id = %d",
-                                $exam, $topic, $score, $name, $quest, $type, $user, $video, $audio, $image, $question);
-                $res = Database::getConnection()->query($sql);
+                                $exam, $topic, $score, $db->escape($name), $db->escape($quest), $type, $user, $video, $audio, $image, $question);
+                $res = $db->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
                 }
