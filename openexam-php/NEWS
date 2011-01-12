@@ -1,10 +1,15 @@
-Version 1.5.5 (2010-mm-dd):
+Version 1.5.5 (2011-01-12):
 
         * UPPDOK codes can now be utilized to fetch lists of registered students
           and add them as participators on an examination.
 
         * Added an result section from where students can download the result of
 	  completed and all-ready decoded examinations.
+	  
+	* Added transliteration for converting between charsets when generating
+	  PDF-files. This should fix most issues with UTF-8 decoding.
+
+        * Improved user experience by adding confirm() calls on delete.
 
 Version 1.5.4 (2010-12-13):
 
