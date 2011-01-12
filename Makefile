@@ -8,10 +8,12 @@ SOURCES  = $(shell find . -type f -name '*.inc' -o -name '*.php' -o -name '*.men
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT   = msgfmt
+MSGCONV  = msgconv
 
 XGETTEXT_OPTIONS = --language=PHP --package-name=$(PACKAGE_NAME) --package-version=$(PACKAGE_VERSION) --msgid-bugs-address=$(PACKAGE_ADDRESS) --copyright-holder=$(PACKAGE_COPYING) --add-comments='//{tr}' --from-code=ISO-8859-1 --no-wrap --output=$(GETTEXT_POTFILE)
-MSGMERGE_OPTIONS = --update --no-wrap
+MSGMERGE_OPTIONS = --no-wrap --update
 MSGFMT_OPTIONS   = --statistics --check --output-file=$@
+MSGCONV_OPTIONS  = --no-wrap --to-code=iso-8859-1
 
 GETTEXT_POTFILE = locale/messages.pot
 GETTEXT_POFILES = $(shell find locale -type f -name *.po)
@@ -32,6 +34,7 @@ gettext-compile : gettext-merge $(GETTEXT_MOFILES)
 
 %.mo : %.po
 	$(MSGFMT) $(MSGFMT_OPTIONS) $+
+	$(MSGCONV) $(MSGCONV_OPTIONS) $+ -o $+
 
 install :
 	@(echo "Sorry, no install exists. See file INSTALL")
