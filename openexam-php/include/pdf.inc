@@ -70,10 +70,14 @@ interface InputGenerator
 // the stream processing when genrating the HTML for HTMLDOC and converts
 // the character encoding from UTF-8 to ISO-8859-1.
 //
+// The //TRANSLIT is appended to the output charset to activate transliteration.
+// This means that when a character can't be represented in the target charset,
+// it can be approximated through one or several similarly looking characters.
+//
 class ResultStreamEncoder extends php_user_filter
 {
         const icse = "UTF-8";
-        const ocse = "ISO-8859-1";
+        const ocse = "ISO-8859-1//TRANSLIT";
 
         function filter($in, $out, &$consumed, $closing)
         {
