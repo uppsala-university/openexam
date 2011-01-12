@@ -398,13 +398,19 @@ class ExaminationPage extends BasePage
                 printf("<h3>%s %s [%.01fp]</h3>\n", _("Question"),
                         $qdata->getQuestionName(), $qdata->getQuestionScore());
 
+                //
+                // Replace multiple '\n' (more than one) with row breaks:
+                //
+                $pattern = "/(\r\n){2,}|(\n|\r){4,}/";
+                $replace = "\n<br/><br/>\n";
+
                 if ($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         printf("<div class=\"question\">%s</div>\n",
-                                str_replace("\n", "<br>", $qdata->getQuestionText()));
+                                preg_replace($pattern, $replace, $qdata->getQuestionText()));
                 } else {
                         $options = Exam::getQuestionChoice($qdata->getQuestionText());
                         printf("<div class=\"question\">%s</div>\n",
-                                str_replace("\n", "<br>", $options[0]));
+                                preg_replace($pattern, $replace, $options[0]));
                 }
 
                 printf("<div class=\"answer\">\n");
