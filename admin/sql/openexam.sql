@@ -43,6 +43,7 @@ CREATE TABLE `answers` (
   `answered` enum('Y','N') DEFAULT 'N',
   `answer` text,
   `comment` text,
+  `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `question_id` (`question_id`),
   KEY `student_id` (`student_id`),
@@ -291,7 +292,9 @@ CREATE TABLE `topics` (
   `exam_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `randomize` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `exam_id` (`exam_id`),
+  CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -304,4 +307,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-12-14 16:13:30
+-- Dump completed on 2011-01-12 10:31:58
