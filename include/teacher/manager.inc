@@ -520,14 +520,20 @@ class Manager
                 if ($this->exam != 0) {
                         $sql = sprintf("UPDATE exams SET orgunit = '%s', name = '%s', descr = '%s', grades = '%s', starttime = '%s', endtime = '%s'
                                         WHERE id = '%d'",
-                                        $unit, $name, $desc, $grades,
+                                        $db->escape($unit),
+                                        $db->escape($name),
+                                        $db->escape($desc),
+                                        $grades,
                                         date('Y-m-d H:i:s', $sdate),
                                         date('Y-m-d H:i:s', $edate),
                                         $this->exam);
                 } else {
                         $sql = sprintf("INSERT INTO exams(orgunit, name, descr, grades, starttime, endtime, created, creator)
                                         VALUES('%s','%s','%s','%s','%s','%s','%s','%s')",
-                                        $unit, $name, $desc, $grades,
+                                        $db->escape($unit),
+                                        $db->escape($name),
+                                        $db->escape($desc),
+                                        $grades,
                                         date('Y-m-d H:i:s', $sdate),
                                         date('Y-m-d H:i:s', $edate),
                                         date('Y-m-d H:i:s', time()),
