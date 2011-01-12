@@ -223,10 +223,15 @@ class ResultPage extends BasePage
         private function showExam($exam)
         {
                 printf("<h3>" . _("Examination details") . "</h3>\n");
-                printf("<p>" . _("Showing description for examiniation %s on %s") . "</p>\n",
+                printf("<p>" . _("Showing description for examiniation %s on %s") . ":</p>\n",
                         $this->data->getExamName(),
                         strftime(DATE_FORMAT, strtotime($this->data->getExamStartTime())));
-                printf("<div class=\"examination\">%s</div>\n", $this->data->getExamDescription());
+                printf("<div class=\"examination\">\n");
+                printf("<div class=\"examhead\">%s</div>\n",
+                        $this->data->getExamName());
+                printf("<div class=\"exambody\">%s</div>\n",
+                        str_replace("\n", "<br/>", $this->data->getExamDescription()));
+                printf("</div>\n");
         }
 
         //
