@@ -88,8 +88,10 @@ class ExaminationPage extends BasePage
         // All possible request parameters should be added here along with
         // the regex pattern to validate its value against.
         //
-        private $params = array("exam" => "/^\d+$/",
-                "question" => "/^(\d+|all)$/");
+        private $params = array(
+                "exam" => "/^\d+$/",
+                "question" => "/^(\d+|all)$/"
+        );
         private $author = false;    // Running in question author mode.
         private $lockdown = false;  // This examination has lockdown mode enabled.
         private $testcase = false;  // This examination is a testcase.
