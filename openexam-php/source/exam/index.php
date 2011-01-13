@@ -494,7 +494,10 @@ class ExaminationPage extends BasePage
                         if ($qdata->hasQuestionImage()) {
                                 printf("<div class=\"media\">\n");
                                 printf("<h3>%s:</h3>\n", _("Image"));
+                                printf("<a href=\"%s\" target=\"_blank\" title=\"%s\">", $qdata->getQuestionImage(),
+                                        _("Click to open the URL in an external media player"));
                                 printf("<img src=\"%s\" class=\"media\" />\n", $qdata->getQuestionImage());
+                                printf("</a>\n");
                                 printf("</div>\n");
                         }
                         printf("</div>\n");
