@@ -309,14 +309,14 @@ if (!extension_loaded('gettext')) {
 
 // 
 // Set language, locale and gettext domain.
-// 
+//
 $locale = new Locale();
 if (isset($_GET['lang'])) {
         if ($_GET['lang'] == "c") {
-                setcookie("lang", $locale->getLanguage());
+                setcookie("lang", $locale->getLanguage(), 0, "/");
         } else {
                 $locale->setLanguage($_GET['lang']);
-                setcookie("lang", $_GET['lang']);
+                setcookie("lang", $_GET['lang'], 0, "/");
         }
 } elseif (isset($_COOKIE['lang'])) {
         $locale->setLanguage($_COOKIE['lang']);
