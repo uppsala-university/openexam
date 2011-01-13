@@ -137,6 +137,7 @@ class TeacherAdminPage extends AdminPage
                 _("These users have been granted the teacher role:") .
                 "</p>\n";
 
+                $addr = array();
                 $ldap = LDAPSearch::factory();
                 $users = Teacher::getTeachers();
 
@@ -148,13 +149,21 @@ class TeacherAdminPage extends AdminPage
                 foreach ($users as $user) {
                         $data = $ldap->searchPrincipalName($user->getUserName());
                         $name = "";
+                        $mail = null;
                         if ($data->first() != null) {
                                 if ($data->first()->hasCN()) {
                                         $name = $data->first()->getCN()->first();
                                 }
+                                if ($data->first()->hasMail()) {
+                                        $mail = $data->first()->getMail()->first();
+                                        $addr[] = $mail;
+                                }
                         }
                         $row = $table->addRow();
-                        $row->addData(iconv("UTF8", $locale->getCharSet(), $name));
+                        $data = $row->addData($name);
+                        if (isset($mail)) {
+                                $data->setLink(sprintf("mailto:%s", $mail));
+                        }
                         $row->addData($user->getUserName());
                         $data = $row->addData(_("Revoke"));
                         $data->setLink(sprintf("?user=%s&amp;action=revoke", $user->getUserID()));
@@ -170,6 +179,12 @@ class TeacherAdminPage extends AdminPage
                 $input->setLabel(_("Username"));
                 $form->addSubmitButton("submit", _("Grant"));
                 $form->output();
+
+                echo "<h5>" . _("Contact:") . "</h5>\n";
+                printf("<p>" .
+                        _("Send an email to <a href=\"%s\">all teachers</a> that have an email address in the LDAP directory.") .
+                        "</p>\n",
+                        sprintf("mailto:%s", implode(";", $addr)));
         }
 
 }
