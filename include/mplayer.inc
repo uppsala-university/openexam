@@ -560,7 +560,7 @@ class MediaPlayerOutput
 
                 printf("<!-- Begin link to launch external media player -->\n");
                 printf("<br/><a href=\"%s\" title=\"%s\" target=\"_blank\">%s</a>\n", $this->url,
-                        _("Click on the link to open the URL in an external media player"),
+                        _("Click to open the URL in an external media player"),
                         _("External Media Player"));
                 printf("<!-- End link to launch external media player -->\n");
 
