@@ -475,7 +475,8 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $questions = $this->manager->getQuestions(null, $this->student);
 
                 //
-                // Build the associative array of answered ('a') and unanswered ('u') questions.
+                // Build the associative array of answered ('a'), unanswered ('u')
+                // and removed ('r') questions.
                 //
                 $qadata = array('a' => array(), 'u' => array(), 'r' => array());
                 foreach ($questions as $question) {
@@ -760,14 +761,16 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 fprintf($stream, "<h1>%s</h1>\n", _("Reference"));
                 fprintf($stream, "<p>" . _("Information about this examination.") . "</p>\n");
 
-                fprintf($stream, "<h2>%s</h2>\n", _("Contact Information"));
-                fprintf($stream, "<p>" . _("This section lists those people thats been involved in this examination.") . "</p>\n");
-
                 //
                 // Print examination creator and question contributors:
                 //
-                $this->printSubSectionExamCreator($stream);
-                $this->printSubSectionContributors($stream);
+                if ($this->exam->getExamDetails() & RESULT_EXPOSE_EMPLOYEES) {
+                        fprintf($stream, "<h2>%s</h2>\n", _("Contact Information"));
+                        fprintf($stream, "<p>" . _("This section lists those people thats been involved in this examination.") . "</p>\n");
+
+                        $this->printSubSectionExamCreator($stream);
+                        $this->printSubSectionContributors($stream);
+                }
 
                 //
                 // Print document info:
@@ -823,10 +826,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->printSectionDescription($stream);
                 $this->printSectionScores($stream);
                 $this->printSectionAnswers($stream);
-                // if($this->removed > 0) {
-                //     $this->printSectionRemovedQuestions($stream);
-                // }
-                $this->printSectionStatistics($stream);
+                if ($this->exam->getExamDetails() & RESULT_OTHERS_STATISTIC) {
+                        $this->printSectionStatistics($stream);
+                }
                 $this->printSectionReference($stream);
                 fprintf($stream, "</body></html>\n");
         }

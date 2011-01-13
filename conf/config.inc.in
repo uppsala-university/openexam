@@ -201,4 +201,16 @@ define('MEDIA_PLAYER_BUILTIN', false);             // Explicit
 // Allow contributor to create and run examination test cases.
 // 
 define('TEST_CASE_ALLOW_CONTRIBUTOR', false);
+
+//
+// Related to PDF gereration. Controls which information to include in the
+// generated result PDF. A bitmask of zero or more of these values is stored
+// for each examiniation in the database.
+//
+define('RESULT_EXPOSE_EMPLOYEES', 1);   // Show responsible people for examination
+define('RESULT_OTHERS_STATISTIC', 2);   // Include statistics of all students
+//
+// The kind of details to include in result by default:
+//
+define('RESULT_DETAILS_DEFAULT', RESULT_EXPOSE_EMPLOYEES | RESULT_OTHERS_STATISTIC);
 ?>
