@@ -94,7 +94,9 @@ class ResultPage extends BasePage
                 // Authorization first:
                 //
                 if (isset($_REQUEST['exam'])) {
-                        self::checkExaminationAccess($_REQUEST['exam']);
+                        self::checkAccess($_REQUEST['exam']);
+                } else {
+                        self::checkAccess();
                 }
 
                 //
@@ -115,15 +117,25 @@ class ResultPage extends BasePage
         }
 
         //
-        // Check that caller is authorized to access this exam.
+        // Check that caller is authorized to access this exam or don't have
+        // an currently active examination.
         //
-        private function checkExaminationAccess($exam)
+        private function checkAccess($exam = 0)
         {
-                $this->data = Exam::getExamData(phpCAS::getUser(), $exam);
-                if (!$this->data->hasExamID()) {
-                        ErrorPage::show(_("No examination found!"),
-                                        sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
-                        exit(1);
+                if ($exam == 0) {
+                        $exams = Exam::getActiveExams(phpCAS::getUser());
+                        if ($exams->count() > 0) {
+                                ErrorPage::show(_("Access denied!"),
+                                                _("Access to results from your previous completed examinations is not available while another examination is taking place."));
+                                exit(1);
+                        }
+                } else {
+                        $this->data = Exam::getExamData(phpCAS::getUser(), $exam);
+                        if (!$this->data->hasExamID()) {
+                                ErrorPage::show(_("No examination found!"),
+                                                _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."));
+                                exit(1);
+                        }
                 }
         }
 
