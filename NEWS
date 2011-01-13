@@ -1,3 +1,10 @@
+Version 1.5.6 (2011-mm-dd):
+
+        * It's now possible to exclude information about correcting person and
+          extended statistics like score distribution from the generated PDF
+          seen by the student (this feature was added as a security measure by
+          request from a teacher).
+
 Version 1.5.5 (2011-01-12):
 
         * UPPDOK codes can now be utilized to fetch lists of registered students
