@@ -816,9 +816,24 @@ class ContributePage extends TeacherPage
                                 if ($show != "compact") {
                                         $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
                                         $child->addChild(sprintf("%s: %s", _("Publisher"), $this->getFormatName($question->getQuestionPublisher())));
-                                        $child->addChild(sprintf("%s: %s", _("Video"), $question->hasQuestionVideo() ? $question->getQuestionVideo() : _("No")));
-                                        $child->addChild(sprintf("%s: %s", _("Audio"), $question->hasQuestionAudio() ? $question->getQuestionAudio() : _("No")));
-                                        $child->addChild(sprintf("%s: %s", _("Image"), $question->hasQuestionImage() ? $question->getQuestionImage() : _("No")));
+                                        if ($question->hasQuestionVideo()) {
+                                                $media = $child->addChild(sprintf("%s: %s", _("Video"), $question->getQuestionVideo()));
+                                                $media->setLink($question->getQuestionVideo());
+                                        } else {
+                                                $child->addChild(sprintf("%s: %s", _("Video"), _("No")));
+                                        }
+                                        if ($question->hasQuestionAudio()) {
+                                                $media = $child->addChild(sprintf("%s: %s", _("Audio"), $question->getQuestionAudio()));
+                                                $media->setLink($question->getQuestionAudio());
+                                        } else {
+                                                $child->addChild(sprintf("%s: %s", _("Audio"), _("No")));
+                                        }
+                                        if ($question->hasQuestionImage()) {
+                                                $media = $child->addChild(sprintf("%s: %s", _("Image"), $question->getQuestionImage()));
+                                                $media->setLink($question->getQuestionImage());
+                                        } else {
+                                                $child->addChild(sprintf("%s: %s", _("Image"), _("No")));
+                                        }
                                         $child->addChild(sprintf("%s: %s", _("Type"), $question->getQuestionType()));
                                         if ($question->getQuestionStatus() == "removed") {
                                                 $child->addChild(sprintf("%s: %s", _("Status"), $question->getQuestionStatus()));
