@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/manager.php
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2010-04-26
 // 
 // This script is for managing exams (the actual test). It let people assigned the
@@ -297,6 +297,9 @@ class ManagerPage extends TeacherPage
                         $form->addHidden("exam", $exam);
                 }
 
+                //
+                // Show common properties:
+                //
                 $form->addSectionHeader(_("Common Properties"));
                 $input = $form->addTextBox("unit", $data->getExamOrgUnit());
                 $input->setLabel(_("Organization"));
@@ -314,6 +317,9 @@ class ManagerPage extends TeacherPage
                         $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
                 }
 
+                //
+                // Show scheduling section:
+                //
                 if ($this->manager->getExamID() == 0 || $info->isEditable()) {
                         $form->addSectionHeader(_("Scheduling"));
                         $input = $form->addTextBox("start", strftime(DATETIME_FORMAT, strtotime($data->getExamStartTime())));
@@ -330,13 +336,37 @@ class ManagerPage extends TeacherPage
                         $image->setEvent(EVENT_ON_CLICK, "javascript:{NewCssCal('etm','yyyymmdd','dropdown',true)}");
                 }
 
+                //
+                // Show graduation section:
+                //
                 $form->addSectionHeader(_("Graduation"));
                 $input = $form->addTextArea("grade", $grades->getText());
                 $input->setClass("grade");
                 $input->setLabel();
                 $input->setTitle(_("Input name:value pairs on separate lines defining the graduation levels on this examination. The first line must be on form name:0, denoting the failed grade."));
 
+                //
+                // Show details in result section:
+                // 
+                $details = $data->getExamDetails();
+
+                $form->addSectionHeader(_("Result"));
+                $input = $form->addCheckBox("details[]", RESULT_EXPOSE_EMPLOYEES, _("Expose responsible people"));
+                $input->setTitle(_("Expose names and contact information for people involved in the creation and correction process in the result PDF seen by the student."));
+                if ($details & RESULT_EXPOSE_EMPLOYEES) {
+                        $input->setChecked();
+                }
+                $input->setLabel();
+
+                $input = $form->addCheckBox("details[]", RESULT_OTHERS_STATISTIC, _("Include other students statistics"));
+                $input->setTitle(_("Include statistics like avarage/mean values and score distribution compared to other students in the result PDF seen by the student."));
+                if ($details & RESULT_OTHERS_STATISTIC) {
+                        $input->setChecked();
+                }
+                $input->setLabel();
+
                 if (!$readonly) {
+                        $form->addSpace();
                         $button = $form->addSubmitButton("submit", _("Submit"));
                         $button->setLabel();
                 }
@@ -356,26 +386,30 @@ class ManagerPage extends TeacherPage
                                         "examdescription" => _("Description"),
                                         "examgrades" => json_encode(array("U" => 0, "G" => 15, "VG" => 20)),
                                         "examstarttime" => DATETIME_NONE,
-                                        "examendtime" => DATETIME_NONE)
+                                        "examendtime" => DATETIME_NONE,
+                                        "examdetails" => RESULT_DETAILS_DEFAULT)
                         );
                         $this->manager = new Manager(0);
                         self::showExamForm(0, $data, "add");
                 } else {
-                        $grades = new ExamGrades();
-                        $grades->setText($_REQUEST['grade']);
+                        $gd = new ExamGrades();
+                        $gd->setText($_REQUEST['grade']);
+
+                        $dd = new ExamDetails($_REQUEST['details']);
 
                         $this->manager = new Manager(0);
                         $this->manager->setData(
                                 $_REQUEST['unit'],
                                 $_REQUEST['name'],
                                 $_REQUEST['desc'],
-                                $grades->encode(),
+                                $gd->encode(),
+                                $dd->getMask(),
                                 strtotime($_REQUEST['start']),
                                 strtotime($_REQUEST['end'])
                         );
 
                         //
-                        // By default, add creator of the exam as contributor, examinator and decoder.
+                        // By default, add creator of the exam as contributor and decoder.
                         //
                         $this->manager->addContributor(phpCAS::getUser());
                         $this->manager->addDecoder(phpCAS::getUser());
@@ -394,8 +428,10 @@ class ManagerPage extends TeacherPage
                         printf("<p>" . _("This page let you edit common properties of the exam. Click on the 'Submit' button to save changes.") . "</p>\n");
                         self::showExamForm($this->param->exam, $data, "edit");
                 } else {
-                        $grades = new ExamGrades();
-                        $grades->setText($_REQUEST['grade']);
+                        $gd = new ExamGrades();
+                        $gd->setText($_REQUEST['grade']);
+
+                        $dd = new ExamDetails($_REQUEST['details']);
 
                         if (!isset($_REQUEST['start'])) {
                                 $_REQUEST['start'] = $data->getExamStartTime();
@@ -408,7 +444,8 @@ class ManagerPage extends TeacherPage
                                 $_REQUEST['unit'],
                                 $_REQUEST['name'],
                                 $_REQUEST['desc'],
-                                $grades->encode(),
+                                $gd->encode(),
+                                $dd->getMask(),
                                 strtotime($_REQUEST['start']),
                                 strtotime($_REQUEST['end'])
                         );

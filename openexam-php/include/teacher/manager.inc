@@ -151,6 +151,31 @@ class ExamGrades
 
 }
 
+//
+// Utility class for what kind of details to expose from the examination when
+// generating the result PDF.
+// 
+class ExamDetails
+{
+
+        private $mask = 0;  // The details mask
+
+        //
+        // The mask value is either an numeric or an array.
+        //
+
+        public function __construct($mask)
+        {
+                $this->mask = is_array($mask) ? array_sum($mask) : $mask;
+        }
+
+        public function getMask()
+        {
+                return $this->mask;
+        }
+
+}
+
 class ExamState
 {
 
@@ -500,6 +525,7 @@ class Manager
                                         creator AS ExamCreator,
                                         decoded AS ExamDecoded,
                                         grades AS ExamGrades,
+                                        details AS ExamDetails,
                                         testcase AS ExamTestCase,
                                         lockdown AS ExamLockDown
                                 FROM exams WHERE id = %d", $this->exam);
@@ -513,27 +539,29 @@ class Manager
         //
         // Set data for this exam or create a new exam in the database (if exam ID is 0).
         //
-        public function setData($unit, $name, $desc, $grades, $sdate, $edate)
+        public function setData($unit, $name, $desc, $grades, $details, $sdate, $edate)
         {
                 $db = Database::getConnection();
 
                 if ($this->exam != 0) {
-                        $sql = sprintf("UPDATE exams SET orgunit = '%s', name = '%s', descr = '%s', grades = '%s', starttime = '%s', endtime = '%s'
+                        $sql = sprintf("UPDATE exams SET orgunit = '%s', name = '%s', descr = '%s', grades = '%s', details = %d, starttime = '%s', endtime = '%s'
                                         WHERE id = '%d'",
                                         $db->escape($unit),
                                         $db->escape($name),
                                         $db->escape($desc),
                                         $grades,
+                                        $details,
                                         date('Y-m-d H:i:s', $sdate),
                                         date('Y-m-d H:i:s', $edate),
                                         $this->exam);
                 } else {
-                        $sql = sprintf("INSERT INTO exams(orgunit, name, descr, grades, starttime, endtime, created, creator)
-                                        VALUES('%s','%s','%s','%s','%s','%s','%s','%s')",
+                        $sql = sprintf("INSERT INTO exams(orgunit, name, descr, grades, details, starttime, endtime, created, creator)
+                                        VALUES('%s','%s','%s','%s',%d,'%s','%s','%s','%s')",
                                         $db->escape($unit),
                                         $db->escape($name),
                                         $db->escape($desc),
                                         $grades,
+                                        $details,
                                         date('Y-m-d H:i:s', $sdate),
                                         date('Y-m-d H:i:s', $edate),
                                         date('Y-m-d H:i:s', time()),
@@ -934,6 +962,7 @@ class Manager
                         $data->getExamName(),
                         $data->getExamDescription(),
                         $data->getExamGrades(),
+                        $data->getExamDetails(),
                         $data->getExamStartTime(),
                         $data->getExamEndTime());
 
