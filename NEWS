@@ -5,6 +5,9 @@ Version 1.5.6 (2011-mm-dd):
           seen by the student (this feature was added as a security measure by
           request from a teacher).
 
+        * Added proxy script for use with external, unsecured URL's. Use the
+          script as: proxy?url=http://www.example.com/xxx
+
 Version 1.5.5 (2011-01-12):
 
         * UPPDOK codes can now be utilized to fetch lists of registered students
