@@ -84,6 +84,11 @@ div.invoice {
 	padding: 5px;
 	border: 1px solid #999999;
 }
+div.hint {
+        border: 1px solid #aaaaaa;
+        background: #f3f3f3;
+        padding: 5px;
+}
 
 /*
  * Links at right hand side in trees.
