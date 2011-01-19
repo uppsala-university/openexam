@@ -28,7 +28,7 @@ if (!isset($_REQUEST['exam'])) {
                         _("Add or remove students from examination. Change the scheduling (start and stop time) of an examination."),
                         _("Examination"));
         }
-        if ($roles->getContributorRoles() > 0) {
+        if ($roles->getCorrectorRoles() > 0) {
                 printf("<li><a href=\"correct.php\" class=\"menubarlink\" title=\"%s\">%s</a></li>\n",
                         _("Correct answers to questions that you have published youself or been assigned the role of corrector for by the examination creator."),
                         _("Correction"));

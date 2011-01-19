@@ -62,12 +62,14 @@ class Teacher
                 //
                 // This query is not that elegant (repeated arguments), but gets the job done quite effective:
                 //
-                $sql = sprintf("SELECT (SELECT COUNT(id) FROM decoders WHERE user = '%s') AS DecoderRoles,
+                $sql = sprintf("SELECT
+                               (SELECT COUNT(id) FROM decoders WHERE user = '%s') AS DecoderRoles,
 		               (SELECT COUNT(id) FROM examinators WHERE user = '%s') AS ExaminatorRoles,
 		               (SELECT COUNT(id) FROM contributors WHERE user = '%s') AS ContributorRoles, 
 		               (SELECT COUNT(id) FROM teachers WHERE user = '%s') AS ManagerRoles, 
-		               (SELECT COUNT(id) FROM exams WHERE creator = '%s') AS CreatorRoles",
-                                $user, $user, $user, $user, $user);
+		               (SELECT COUNT(id) FROM exams WHERE creator = '%s') AS CreatorRoles,
+                               (SELECT COUNT(id) FROM questions WHERE user = '%s') AS CorrectorRoles",
+                                $user, $user, $user, $user, $user, $user);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -419,10 +421,11 @@ class TeacherPage extends BasePage
                         $this->roles->getExaminatorRoles() == 0 &&
                         $this->roles->getContributorRoles() == 0 &&
                         $this->roles->getManagerRoles() == 0 &&
-                        $this->roles->getCreatorRoles() == 0) {
+                        $this->roles->getCreatorRoles() == 0 &&
+                        $this->roles->getCorrectorRoles() == 0) {
 
                         ErrorPage::show(_("Access denied!"),
-                                        _("Only users granted the teacher, contributor, examinator or decoder role can access this page. The script processing has halted."));
+                                        _("Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."));
                         exit(1);
                 }
         }
