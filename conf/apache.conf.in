@@ -8,6 +8,9 @@
 # Note: Make sure to modify pathes, including the custom include path below.
 #
 
+# Direct request for proxy?url=xxx -> media/proxy.php?url=xxx:
+AliasMatch ^/openexam(/.*)?/proxy$ /var/www/localhost/apps/openexam-php/source/media/proxy.php
+
 Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
 
 # The application root directory, its safe to keep this public.
