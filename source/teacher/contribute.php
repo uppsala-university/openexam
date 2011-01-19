@@ -462,6 +462,10 @@ class ContributePage extends TeacherPage
                 $button->setEvent(EVENT_ON_CLICK, "javascript:clearform(document.question);return false;");
 
                 $form->output();
+
+                printf("<div class=\"hint\"><img src=\"../icons/nuvola/hint.png\"/> " .
+                        _("Hint: Some content from external URL's can be delivered over an secure connection by using proxy?url=str, where str is the original URL. This prevents web browsers like Internet Explorer and Firefox from complaining about pages containing mixed secured/unsecured content and works for both media URL's and inside the question body.") .
+                        "</div>\n");
         }
 
         //
