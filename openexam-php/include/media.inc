@@ -357,9 +357,6 @@ class MediaSelect
 
         public function prepare()
         {
-                printf("<style type=\"text/css\">\n");
-                printf("div.media { left: 0px; top: 0px; position: absolute; visibility: hidden; border: 1px solid #aaaaaa; background: #f6f6f6; padding: 5px;}\n");
-                printf("</style>\n");
                 printf("<script language=\"javascript\">\n");
                 printf("var media_target=0;\n");
                 printf("var media_select=null;\n");
@@ -402,20 +399,29 @@ class MediaSelect
                         $sect = $target;
                 }
                 $name = md5($sect);
-                printf("<div id=\"%s\" class=\"media\">\n", $name);
+
+                printf("<div id=\"%s\" class=\"mediamenu\">\n", $name);
+                printf("<span id=\"menuhead\">%s:</span>\n", _("Click to insert URL"));
+                printf("<ul>\n");
                 foreach ($this->media->$sect as $file) {
-                        printf("<a href=\"%s\" onclick=\"return insert_media(this,'%s');\">%s</a><br/>\n",
+                        $title = sprintf("size: %d bytes\nmodified: %s",
+                                        filesize($file->path),
+                                        strftime(DATETIME_FORMAT, filemtime($file->path)));
+                        printf("<li><a href=\"%s\" onclick=\"return insert_media(this,'%s');\" title=\"%s\">%s</a></li>\n",
                                 $file->url,
                                 $name,
+                                $title,
                                 $file->name);
                 }
-                printf("<br>\n");
+                printf("</ul>\n");
+                printf("<p class=\"mediamenu\">\n");
                 printf("<a name=\"\" onclick=\"close_media();\">[%s]</a>\n", _("Close"));
-                printf("<a href=\"%s/media/?exam=%d&amp;action=add&amp;type=%s\" target=\"_blank\">[+]</a>\n",
+                printf("<a href=\"%s/media/?exam=%d&amp;action=add&amp;type=%s\" target=\"_blank\" title=\"%s\">[+]</a>\n",
                         BASE_URL,
                         $this->media->exam,
-                        $sect);
-                printf("</div>\n");
+                        $sect,
+                        _("Add another file to the media library. Remember to reload this page to see the updated list."));
+                printf("</p></div>\n");
                 return sprintf("return show_media('%s','%s',event);", $target, $name);
         }
 

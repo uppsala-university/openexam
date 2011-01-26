@@ -7,82 +7,82 @@
  */
 
 img {
-	border: 0px;
+        border: 0px;
 }
 
 label
 {
-	width: 12em;
-	float: left;
-	text-align: right;
-	margin-right: 0.5em;
-	display: block
+        width: 12em;
+        float: left;
+        text-align: right;
+        margin-right: 0.5em;
+        display: block
 }
 
 input.file {
-	width: 400px;
+        width: 400px;
 }
 
 .submit input
 {
-	margin-left: 8.5em;
+        margin-left: 8.5em;
 }
 
 div.lang-show {
-	margin: 0px;
-	padding: 0px;
-	float: right;
+        margin: 0px;
+        padding: 0px;
+        float: right;
 }
 
 div.lang-show img {
-	vertical-align: middle;
-	padding-right: 3px;
+        vertical-align: middle;
+        padding-right: 3px;
 }
 
 div.lang-select {
-	position: absolute;
-	visibility: hidden;
-	z-index: 1;          /* always on top */
-	left: 820px;
-	top:  0px;
-	background-color: white;
-	border: 1px solid #aaaaaa;
-	padding: 5px;
+        position: absolute;
+        visibility: hidden;
+        z-index: 1;          /* always on top */
+        left: 820px;
+        top:  0px;
+        background-color: white;
+        border: 1px solid #aaaaaa;
+        padding: 5px;
 }
 
 #menuhead {
         margin-left: 10px;
-	font-weight: bold;
-	color: #666666;
-	text-decoration: underline;
+        font-weight: bold;
+        color: #666666;
+        text-decoration: underline;
 }
 
 table td {
-	padding-left: 5px;
+        padding-left: 5px;
 }
 
 th a, th a:hover {
-	color: #000;
+        color: #000;
 }
 
 div.validator {
-	margin-top: 5px;
+        margin-top: 5px;
 }
 
 div.courses {
-	position: relative;
-	left: 25px;
-	top: 5px;
-	width: 560px;
-	background-color: #dddddd;
-	border: 1px solid #777777;
-	display: none;
+        position: relative;
+        left: 25px;
+        top: 5px;
+        width: 560px;
+        background-color: #dddddd;
+        border: 1px solid #777777;
+        display: none;
 }
 
 div.invoice {
-	position: relative;
-	padding: 5px;
-	border: 1px solid #999999;
+        position: relative;
+        padding: 5px;
+        border: 1px solid #999999;
 }
 div.hint {
         border: 1px solid #aaaaaa;
@@ -94,42 +94,42 @@ div.hint {
  * Links at right hand side in trees.
  */
 span.links {
-	position: absolute;
-	left: 630px;
-	width: 340px;
-	text-align: right;
+        position: absolute;
+        left: 630px;
+        width: 340px;
+        text-align: right;
 }
 
 /*
  * Use this class by inherit from span.links, like: <span class="links viewmode">
  */
 span.viewmode {
-	top: 140px;	
+        top: 140px;
 }
 
 tr:nth-child(even) {
-	background: #ffffcc;
+        background: #ffffcc;
 }
 
 tr:nth-child(odd) {
-	background: #efefef;
+        background: #efefef;
 }
 tr.nonth {
-	background: white;
+        background: white;
 }
 
 /* 
  * Used by the correcting page.
  */
 tr.question, tr.comment {
-	background: #ffffcc;
+        background: #ffffcc;
 }
 tr.answer {
-	background: #efefef;
+        background: #efefef;
 }
 td.removed {
-	background: white;
-	border: 2px solid red;
+        background: white;
+        border: 2px solid red;
 }
 
 /*
@@ -137,145 +137,161 @@ td.removed {
  */
 li.program,
 li.stage {
-	border-bottom: 1px solid #ffcccc;
+        border-bottom: 1px solid #ffcccc;
 }
 li.semester,
 li.user,
 li.order {
-	border-bottom: 1px solid #ccccff;
+        border-bottom: 1px solid #ccccff;
 }
 li.course {
-	border-bottom: 1px solid #eeeeee;
+        border-bottom: 1px solid #eeeeee;
 }
 
 /* 
  * Wrap list items depending on nesting level (trees).
  */
 ul.level1 {
-	width: 700px;
+        width: 700px;
 }
 ul.level2 {
-	width: 600px;
+        width: 600px;
 }
 ul.level3 {
-	width: 500px;
+        width: 500px;
 }
 
 /* 
  * The description of an examination.
  */
 div.examination {
-	border: 1px solid gray;
-	padding: 10px;
-	margin-bottom: 10px;
+        border: 1px solid gray;
+        padding: 10px;
+        margin-bottom: 10px;
 }
 div.examhead {
-	color: white;
-	background-color: gray;
-	font-size: 1.5em;
-	padding: 5px;
+        color: white;
+        background-color: gray;
+        font-size: 1.5em;
+        padding: 5px;
 }
 div.examquest {
-	margin-top: 5px;
-	margin-bottom: 10px;
-	padding: 3px;
-	border: 1px solid #dddddd;
-	background: #ffffcc;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        padding: 3px;
+        border: 1px solid #dddddd;
+        background: #ffffcc;
 }
 
 /** 
  *  Color encoding for the score board (author mode).
  */
 td.cc {
-	width: 25px;
-	text-align: center;
+        width: 25px;
+        text-align: center;
 }
 td.no { /* not owner */
-	border: 1px solid #666666;
-	background-color: #999999;
+        border: 1px solid #666666;
+        background-color: #999999;
 }
 td.na { /* no answer */
-	border: 1px solid #880000;
-	background-color: #ee0000;
+        border: 1px solid #880000;
+        background-color: #ee0000;
 }
 td.nc { /* not yet corrected */
-	border: 1px solid #00aa00;
-	background-color: #00ff00;
+        border: 1px solid #00aa00;
+        background-color: #00ff00;
 }
 td.ac { /* answer corrected */
-	border: 1px solid #cccccc;
-	background-color: #ffffff;
+        border: 1px solid #cccccc;
+        background-color: #ffffff;
 }
 td.qu { /* question unassigned */
         border: 1px solid #333333;
         background-color: #666666;
 }
 td.qr { /* question flagged as removed */
-	border: 1px solid #00aaaa;
-	background-color: #00ffff;
+        border: 1px solid #00aaaa;
+        background-color: #00ffff;
 }
 td.aa { /* answer avarage (bottom) */
-	border: 1px solid #dddddd;
-	background-color: #eeeeee;
+        border: 1px solid #dddddd;
+        background-color: #eeeeee;
 }
 tr.avarage,
 tr.colorcode {
-	background-color: #ffffff;
+        background-color: #ffffff;
 }
 
 /** 
  *  Color encoding for the score board (colorized mode).
  */
 td.s0 {
-	border: 1px solid #000000;
-	color: white;
-	background: #000033;
+        border: 1px solid #000000;
+        color: white;
+        background: #000033;
 }
 td.s20 {
-	border: 1px solid #000033;
-	color: white;
-	background: #000066;
+        border: 1px solid #000033;
+        color: white;
+        background: #000066;
 }
 td.s40 {
-	border: 1px solid #000066;
-	color: white;
-	background: #000099;
+        border: 1px solid #000066;
+        color: white;
+        background: #000099;
 }
 td.s60 {
-	border: 1px solid #0099cc;
-	color: black;
-	background: #33ccff;
+        border: 1px solid #0099cc;
+        color: black;
+        background: #33ccff;
 }
 td.s80 {
-	border: 1px solid #aacccc;
-	color: black;
-	background: #ddffff;
+        border: 1px solid #aacccc;
+        color: black;
+        background: #ddffff;
 }
 td.s100 {
-	border: 1px solid #cccccc;
-	color: black;
-	background: #ffffff;
+        border: 1px solid #cccccc;
+        color: black;
+        background: #ffffff;
 }
 
 /**
  *  Decorate content on question answer page.
  */
 div.question {
-	padding-bottom: 10px;
+        padding-bottom: 10px;
 }
 div.answer {
-	padding: 0px 0px 10px 10px;
-	margin-top: 10px;
-	border: 1px solid #cccccc;
-	background-color: #f9f9f9;
+        padding: 0px 0px 10px 10px;
+        margin-top: 10px;
+        border: 1px solid #cccccc;
+        background-color: #f9f9f9;
 }
 p.answer {
-	text-decoration: underline;
-	font-weight: bold;
+        text-decoration: underline;
+        font-weight: bold;
 }
 div.media {
-	border-left: 2px solid #cccccc;
-	padding-left: 10px;
+        border-left: 2px solid #cccccc;
+        padding-left: 10px;
+}
+
+/**
+ *  Select media file popup-menu on question design page:
+ */
+div.mediamenu {
+        position: absolute;
+        visibility: hidden;
+        left: 0px;
+        top: 0px;
+        border: 1px solid #aaaaaa;
+        background: #f6f6f6;
+        padding: 5px;
+}
+p.mediamenu {
+        margin-left: 10px;
 }
 
 /** 
@@ -285,34 +301,34 @@ textarea.message,
 textarea.description,
 textarea.students,
 textarea.question {
-	width: 550px;
-	height: 250px;
+        width: 550px;
+        height: 250px;
 }
 textarea.grade {
-	width: 300px;
-	height: 75px;
+        width: 300px;
+        height: 75px;
 }
 
 /** 
  *  These classes is used in conjunction with grades in score table.
  */
 td.gru {
-	border: 1px solid #880000;
-	background-color: #ee0000;
+        border: 1px solid #880000;
+        background-color: #ee0000;
 }
 td.grg,
 td.gr3 {
-	border: 1px solid #dddddd;
-	background-color: #ffffff;
+        border: 1px solid #dddddd;
+        background-color: #ffffff;
 }
 td.gr4 {
-	border: 1px solid #0000aa;
-	background-color: #6666ff;
+        border: 1px solid #0000aa;
+        background-color: #6666ff;
 }
 td.grvg,
 td.gr5 {
-	border: 1px solid #00aa00;
-	background-color: #00ff00;
+        border: 1px solid #00aa00;
+        background-color: #00ff00;
 }
 
 /**
@@ -320,8 +336,8 @@ td.gr5 {
  */
 h4.secthead {
         color: gray;
-	text-decoration: underline;
-	margin: 0px;
+        text-decoration: underline;
+        margin: 0px;
 }
 
 /**
@@ -342,11 +358,11 @@ h4.secthead {
 div.testcase {
         padding: 10px;
         border: 2px solid #00aa00;
-	background-color: #eeffee;
+        background-color: #eeffee;
 }
 div.testcase h4,
 div.testcase h5,
 div.testcase h6 {
         color: green;
-	text-decoration: underline;
+        text-decoration: underline;
 }
