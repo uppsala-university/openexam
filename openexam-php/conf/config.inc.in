@@ -213,4 +213,16 @@ define('RESULT_OTHERS_STATISTIC', 2);   // Include statistics of all students
 // The kind of details to include in result by default:
 //
 define('RESULT_DETAILS_DEFAULT', RESULT_EXPOSE_EMPLOYEES | RESULT_OTHERS_STATISTIC);
+
+// 
+// Set whether media files can be uploaded thru HTTP POST. The upload directory
+// should be a public accessable directory and its sub directory files should
+// be writable by the web server user.
+//
+// The media upload max size (counted in bytes) must be <= max upload size set
+// in php.ini, check the post_max_size and upload_max_filesize settings!
+// 
+define('MEDIA_UPLOAD_ENABLE', false);
+define('MEDIA_UPLOAD_DIR', realpath(sprintf("%s/../source/media/files", dirname(__FILE__))));
+define('MEDIA_UPLOAD_MAXSIZE', 4 * 1024 * 1024);
 ?>
