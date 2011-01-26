@@ -49,6 +49,7 @@ include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
 include "include/html.inc";
+include "include/media.inc";
 
 // 
 // Include database support:
@@ -405,6 +406,9 @@ class ContributePage extends TeacherPage
                 $input->setLabel(_("Score"));
 
                 if ($info->isEditable()) {
+                        $media = new MediaSelect($this->param->exam);
+                        $media->prepare();
+
                         $sect = $form->addSectionHeader(_("Optional fields"));
                         $sect->setClass("secthead");
 
@@ -412,16 +416,31 @@ class ContributePage extends TeacherPage
                         $input->setLabel(_("Video URL"));
                         $input->setTitle(_("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question. The resource will be embedded on the question page in the right hand sidebar."));
                         $input->setSize(70);
+                        $input->setId($input->getName());
+
+                        $button = $form->addElement(new ImageButton(null, null, "../icons/nuvola/mime/16/video.png", _("Insert")));
+                        $handle = $media->connect($input->getId(), $button->getId());
+                        $button->setEvent(EVENT_ON_CLICK, $handle);
 
                         $input = $form->addTextBox("audio", $data->hasQuestionAudio() ? $data->getQuestionAudio() : "");
                         $input->setLabel(_("Audio URL"));
                         $input->setTitle(_("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question. The resource will be embedded on the question page in the right hand sidebar."));
                         $input->setSize(70);
+                        $input->setId($input->getName());
+
+                        $button = $form->addElement(new ImageButton(null, null, "../icons/nuvola/mime/16/audio.png", _("Insert")));
+                        $handle = $media->connect($input->getId(), $button->getId());
+                        $button->setEvent(EVENT_ON_CLICK, $handle);
 
                         $input = $form->addTextBox("image", $data->hasQuestionImage() ? $data->getQuestionImage() : "");
                         $input->setLabel(_("Image URL"));
                         $input->setTitle(_("An URL address (like http://www.example.com/xxx) linking to an web resource related to this question. The resource will be embedded on the question page in the right hand sidebar."));
                         $input->setSize(70);
+                        $input->setId($input->getName());
+
+                        $button = $form->addElement(new ImageButton(null, null, "../icons/nuvola/mime/16/image.png", _("Insert")));
+                        $handle = $media->connect($input->getId(), $button->getId());
+                        $button->setEvent(EVENT_ON_CLICK, $handle);
                 } else {
                         $input = $form->addHidden("video", $data->hasQuestionVideo() ? $data->getQuestionVideo() : "");
                         $input = $form->addHidden("audio", $data->hasQuestionAudio() ? $data->getQuestionAudio() : "");

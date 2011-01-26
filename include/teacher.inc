@@ -304,6 +304,11 @@ class TeacherPage extends BasePage
                                 $links->views->link->decoder->href = sprintf("decoder.php?exam=%d", $this->param->exam);
                                 $links->views->link->decoder->name = _("Decode");
                         }
+                        if ($this->manager->isContributor(phpCAS::getUser())) {
+                                $links->views->link->media->href = sprintf("../media/index.php?exam=%d", $this->param->exam);
+                                $links->views->link->media->name = _("Media Library");
+                                $links->views->link->media->target = "_blank";
+                        }
                         if (isset($links->views)) {
                                 $links->views->head = _("Views");
                         }
