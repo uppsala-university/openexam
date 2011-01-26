@@ -12,10 +12,10 @@
 //
 
 if (!file_exists("../../conf/database.conf")) {
-        header("location: admin/setup.php?reason=database");
+        header("location: ../admin/setup.php?reason=database");
 }
 if (!file_exists("../../conf/config.inc")) {
-        header("location: admin/setup.php?reason=config");
+        header("location: ../admin/setup.php?reason=config");
 }
 
 // 
