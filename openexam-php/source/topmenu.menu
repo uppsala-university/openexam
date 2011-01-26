@@ -8,6 +8,7 @@ switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
         case "teacher":
         case "exam":
         case "result":
+        case "media":
                 $rootdir = "..";
                 break;
 }

@@ -374,6 +374,14 @@ class Element
         }
 
         //
+        // Get the unique ID of this element.
+        //
+        public function getId()
+        {
+                return $this->id;
+        }
+
+        //
         // Output this HTML element.
         //
         protected function output($mode)
@@ -1183,7 +1191,7 @@ class Form extends Container
                                 return parent::addElement(new SubmitButton($type, $label));
                         case BUTTON_RESET:
                                 return parent::addElement(new ResetButton($type, $label));
-                        default:
+                        case BUTTON_STANDARD:
                                 return parent::addElement(new StandardButton($type, $label));
                 }
         }
