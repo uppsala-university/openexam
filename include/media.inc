@@ -404,8 +404,10 @@ class MediaSelect
                 printf("<span id=\"menuhead\">%s:</span>\n", _("Click to insert URL"));
                 printf("<ul>\n");
                 foreach ($this->media->$sect as $file) {
-                        $title = sprintf("size: %d bytes\nmodified: %s",
+                        $title = sprintf("%s: %d bytes\n%s: %s",
+                                        _("Size"), 
                                         filesize($file->path),
+                                        _("Modified"),
                                         strftime(DATETIME_FORMAT, filemtime($file->path)));
                         printf("<li><a href=\"%s\" onclick=\"return insert_media(this,'%s');\" title=\"%s\">%s</a></li>\n",
                                 $file->url,

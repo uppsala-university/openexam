@@ -243,6 +243,7 @@ class MediaPage extends TeacherPage
                         $row->addHeader(_("Name"));
                         $row->addHeader(_("Type"));
                         $row->addHeader(_("Size"));
+                        $row->addHeader(_("Modified"));
                         $row->addHeader(_("Action"));
                         foreach ($media as $sect => $files) {
                                 foreach ($files as $file) {
@@ -250,6 +251,7 @@ class MediaPage extends TeacherPage
                                         $row->addData($file->name)->setLink($file->url);
                                         $row->addData($file->sect);
                                         $row->addData(filesize($file->path));
+                                        $row->addData(strftime(DATETIME_FORMAT, filemtime($file->path)));
                                         $row->addData(
                                                 _("Delete"))->setLink(
                                                 sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=flat", $this->param->exam, $file->sect, $file->name));
