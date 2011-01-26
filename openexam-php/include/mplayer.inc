@@ -316,7 +316,7 @@ class MediaMimeType
                 ),
                 "video/x-ogm" => array(
                         "ext" => array(""),
-                        "type" => "Ogg/Ogm Video",
+                        "type" => "video",
                         "desc" => "Ogg/Ogm Video"
                 ),
                 "video/x-ogm+ogg" => array(
