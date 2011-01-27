@@ -294,6 +294,28 @@ p.mediamenu {
         margin-left: 10px;
 }
 
+/**
+ *  Media library album view.
+ */
+table.album {
+        background-color: #aaaaaa;
+}
+td.album_head {
+        width: 100%;
+        font-weight: bold;
+}
+td.album_icon {
+        background-color:#f9f9f9;
+        width: 220px;
+        text-align: center;
+        color: #666666;
+}
+span.album_add {
+        float: right;
+        clear: none;
+        margin-right: 5px;
+}
+
 /** 
  *  Standard width and height for text areas:
  */
