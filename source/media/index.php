@@ -84,7 +84,7 @@ class MediaPage extends TeacherPage
                 "action" => "/^(add|delete)$/",
                 "file" => "/.*/",
                 "type" => "/^(audio|image|video|auto)$/",
-                "show" => "/^(tree|flat)$/"
+                "show" => "/^(tree|flat|album)$/"
         );
 
         public function __construct()
@@ -187,6 +187,125 @@ class MediaPage extends TeacherPage
         }
 
         //
+        // Show media files in tree structure.
+        //
+        private function showMediaTree(&$media)
+        {
+                $tree = new TreeBuilder(_("Files"));
+                $root = $tree->getRoot();
+
+                $root->addLink(_("Add"),
+                        sprintf("?exam=%d&amp;action=add", $this->param->exam),
+                        sprintf(_("Click to add an %s file to this examination."), _("media")));
+
+                foreach ($media as $sect => $files) {
+                        $child = $root->addChild($sect);
+                        $child->addLink(_("Add"),
+                                sprintf("?exam=%d&amp;action=add&amp;type=%s", $this->param->exam, $sect),
+                                sprintf(_("Click to add an %s file to this examination."), $sect));
+                        foreach ($files as $file) {
+                                $node = $child->addChild($file->name);
+                                $node->setLink($file->url);
+                                $node->addLink(_("Delete"),
+                                        sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=tree", $this->param->exam, $file->sect, $file->name),
+                                        sprintf(_("Click to delete the %s file %s from to this examination."), $file->sect, $file->name));
+                        }
+                }
+                $tree->output();
+        }
+
+        //
+        // Show media files in table view.
+        //
+        private function showMediaTable(&$media)
+        {
+                $table = new Table();
+                $row = $table->addRow();
+                $row->addHeader(_("Name"));
+                $row->addHeader(_("Type"));
+                $row->addHeader(_("Size"));
+                $row->addHeader(_("Modified"));
+                $row->addHeader(_("Action"));
+                foreach ($media as $sect => $files) {
+                        foreach ($files as $file) {
+                                $row = $table->addRow();
+                                $row->addData($file->name)->setLink($file->url);
+                                $row->addData($file->sect);
+                                $row->addData(filesize($file->path));
+                                $row->addData(strftime(DATETIME_FORMAT, filemtime($file->path)));
+                                $row->addData(
+                                        _("Delete"))->setLink(
+                                        sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=flat", $this->param->exam, $file->sect, $file->name));
+                        }
+                }
+                $table->output();
+
+                $links = array(
+                        _("Audio") => MediaLibrary::audio,
+                        _("Image") => MediaLibrary::image,
+                        _("Video") => MediaLibrary::video
+                );
+                $disp = array();
+                foreach ($links as $text => $name) {
+                        $disp[] = sprintf("<a href=\"?exam=%d&amp;action=add&amp;type=%s\">%s</a>",
+                                        $this->param->exam, $name, $text);
+                }
+
+                printf("<br><p>%s: %s</p>\n", _("Add"), implode(", ", $disp));
+        }
+
+        //
+        // Show media files in album mode.
+        //
+        private function showMediaAlbum(&$media)
+        {
+                $table = new Table();
+                $table->setClass("album");
+                foreach ($media as $sect => $files) {
+                        $index = 0;
+                        $split = 3;
+                        $count = count($files);
+                        $row = $table->addRow();
+                        $link = sprintf("%s/media/?exam=%d&amp;action=add&amp;type=%s", BASE_URL, $this->param->exam, $sect);
+                        $title = sprintf(_("Click to add an %s file to this examination."), $sect);
+                        $cell = $row->addData(sprintf("%s: %d %s <span class=\"album_add\"><a href=\"%s\" title=\"%s\">[+]</a></span>",
+                                                $sect,
+                                                $count,
+                                                ngettext("File", "Files", $count),
+                                                $link,
+                                                $title));
+                        $cell->setColspan($split);
+                        $cell->setClass("album_head");
+
+                        foreach ($files as $file) {
+                                if ($index++ % $split == 0) {
+                                        $row = $table->addRow();
+                                }
+                                $icon = sprintf("%s/icons/nuvola/mime/%s.png", BASE_URL, $sect);
+                                $image = new Image($icon, $file->name);
+                                $cell = $row->addData();
+                                $cell->setClass("album_icon");
+                                $link = new Link(LINK_TYPE_HREF, $file->url);
+                                $link->addElement($image);
+                                $cell->addElement($link);
+                                $cell->addElement(new BR());
+                                $cell->addElement(new Cdata($file->name));
+                                $cell->addElement(new BR());
+                                $time = sprintf("%s: %s", _("Modified"), strftime(DATETIME_FORMAT, filemtime($file->path)));
+                                $cell->addElement(new Cdata($time));
+                                $cell->addElement(new BR());
+                                $size = sprintf("%s: %d bytes", _("Size"), filesize($file->path));
+                                $cell->addElement(new Cdata($size));
+                        }
+                        while ($index++ % $split != 0) {
+                                $cell = $row->addData();
+                                $cell->setClass("album_icon");
+                        }
+                }
+                $table->output();
+        }
+
+        //
         // Show all media files in this examination.
         //
         private function showMediaFiles()
@@ -197,6 +316,7 @@ class MediaPage extends TeacherPage
                 $mode = array(
                         "tree" => _("Tree"),
                         "flat" => _("Flat"),
+                        "album" => _("Album")
                 );
                 $disp = array();
                 $show = isset($this->param->show) ? $this->param->show : "tree";
@@ -216,61 +336,11 @@ class MediaPage extends TeacherPage
                 $media = $lib->files;
 
                 if ($show == "tree") {
-                        $tree = new TreeBuilder(_("Files"));
-                        $root = $tree->getRoot();
-
-                        $root->addLink(_("Add"),
-                                sprintf("?exam=%d&amp;action=add", $this->param->exam),
-                                sprintf(_("Click to add an %s file to this examination."), _("media")));
-
-                        foreach ($media as $sect => $files) {
-                                $child = $root->addChild($sect);
-                                $child->addLink(_("Add"),
-                                        sprintf("?exam=%d&amp;action=add&amp;type=%s", $this->param->exam, $sect),
-                                        sprintf(_("Click to add an %s file to this examination."), $sect));
-                                foreach ($files as $file) {
-                                        $node = $child->addChild($file->name);
-                                        $node->setLink($file->url);
-                                        $node->addLink(_("Delete"),
-                                                sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=tree", $this->param->exam, $file->sect, $file->name),
-                                                sprintf(_("Click to delete the %s file %s from to this examination."), $file->sect, $file->name));
-                                }
-                        }
-                        $tree->output();
+                        $this->showMediaTree($media);
                 } elseif ($show == "flat") {
-                        $table = new Table();
-                        $row = $table->addRow();
-                        $row->addHeader(_("Name"));
-                        $row->addHeader(_("Type"));
-                        $row->addHeader(_("Size"));
-                        $row->addHeader(_("Modified"));
-                        $row->addHeader(_("Action"));
-                        foreach ($media as $sect => $files) {
-                                foreach ($files as $file) {
-                                        $row = $table->addRow();
-                                        $row->addData($file->name)->setLink($file->url);
-                                        $row->addData($file->sect);
-                                        $row->addData(filesize($file->path));
-                                        $row->addData(strftime(DATETIME_FORMAT, filemtime($file->path)));
-                                        $row->addData(
-                                                _("Delete"))->setLink(
-                                                sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=flat", $this->param->exam, $file->sect, $file->name));
-                                }
-                        }
-                        $table->output();
-
-                        $links = array(
-                                _("Audio") => MediaLibrary::audio,
-                                _("Image") => MediaLibrary::image,
-                                _("Video") => MediaLibrary::video
-                        );
-                        $disp = array();
-                        foreach ($links as $text => $name) {
-                                $disp[] = sprintf("<a href=\"?exam=%d&amp;action=add&amp;type=%s\">%s</a>",
-                                                $this->param->exam, $name, $text);
-                        }
-
-                        printf("<br><p>%s: %s</p>\n", _("Add"), implode(", ", $disp));
+                        $this->showMediaTable($media);
+                } elseif ($show == "album") {
+                        $this->showMediaAlbum($media);
                 }
         }
 
