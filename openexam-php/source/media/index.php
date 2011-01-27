@@ -204,8 +204,14 @@ class MediaPage extends TeacherPage
                                 sprintf("?exam=%d&amp;action=add&amp;type=%s", $this->param->exam, $sect),
                                 sprintf(_("Click to add an %s file to this examination."), $sect));
                         foreach ($files as $file) {
+                                $file->title = sprintf("%s: %d bytes\n%s: %s",
+                                                _("Size"),
+                                                filesize($file->path),
+                                                _("Modified"),
+                                                strftime(DATETIME_FORMAT, filemtime($file->path)));
+
                                 $node = $child->addChild($file->name);
-                                $node->setLink($file->url);
+                                $node->setLink($file->url, $file->title);
                                 $node->addLink(_("Delete"),
                                         sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=tree", $this->param->exam, $file->sect, $file->name),
                                         sprintf(_("Click to delete the %s file %s from to this examination."), $file->sect, $file->name));
