@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2011-01-27 03:06+0100\n"
+"POT-Creation-Date: 2011-01-27 03:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -158,7 +158,7 @@ msgstr ""
 
 #: source/exam/index.php:198 source/teacher/decoder.php:175
 #: source/teacher/contribute.php:763 source/teacher/manager.php:648
-#: source/teacher/correct.php:376 source/media/index.php:332
+#: source/teacher/correct.php:376 source/media/index.php:338
 #: source/result/index.php:184
 msgid "Show"
 msgstr ""
@@ -348,19 +348,19 @@ msgstr ""
 
 #: source/exam/index.php:482 source/teacher/contribute.php:843
 #: source/teacher/contribute.php:846 source/media/index.php:144
-#: source/media/index.php:246
+#: source/media/index.php:252
 msgid "Video"
 msgstr ""
 
 #: source/exam/index.php:489 source/teacher/contribute.php:849
 #: source/teacher/contribute.php:852 source/media/index.php:142
-#: source/media/index.php:244
+#: source/media/index.php:250
 msgid "Audio"
 msgstr ""
 
 #: source/exam/index.php:496 source/teacher/contribute.php:855
 #: source/teacher/contribute.php:858 source/media/index.php:143
-#: source/media/index.php:245
+#: source/media/index.php:251
 msgid "Image"
 msgstr ""
 
@@ -537,14 +537,14 @@ msgstr ""
 #: source/teacher/manager.php:792 source/teacher/manager.php:798
 #: source/teacher/template.php:103 source/teacher/correct.php:156
 #: source/teacher/correct.php:161 source/teacher/correct.php:311
-#: source/media/index.php:423 source/result/index.php:128 include/ui.inc:306
+#: source/media/index.php:429 source/result/index.php:128 include/ui.inc:306
 #: include/admin.inc:116 include/teacher.inc:432
 msgid "Access denied!"
 msgstr ""
 
 #: source/teacher/decoder.php:190 source/teacher/contribute.php:209
 #: source/teacher/examinator.php:155 source/teacher/manager.php:793
-#: source/teacher/template.php:104 source/media/index.php:424
+#: source/teacher/template.php:104 source/media/index.php:430
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
 msgstr ""
@@ -813,7 +813,7 @@ msgstr ""
 
 #: source/teacher/decoder.php:615 source/teacher/contribute.php:882
 #: source/teacher/examinator.php:402 source/teacher/manager.php:188
-#: source/teacher/correct.php:476 source/media/index.php:360
+#: source/teacher/correct.php:476 source/media/index.php:366
 #: source/result/index.php:174
 msgid "Examinations"
 msgstr ""
@@ -838,7 +838,7 @@ msgstr ""
 #: source/teacher/decoder.php:663 source/teacher/contribute.php:930
 #: source/teacher/examinator.php:176 source/teacher/examinator.php:350
 #: source/teacher/examinator.php:442 source/teacher/manager.php:273
-#: source/teacher/correct.php:530 source/media/index.php:408
+#: source/teacher/correct.php:530 source/media/index.php:414
 #: include/teacher/manager.inc:386
 msgid "Starts"
 msgstr ""
@@ -846,7 +846,7 @@ msgstr ""
 #: source/teacher/decoder.php:664 source/teacher/contribute.php:931
 #: source/teacher/examinator.php:182 source/teacher/examinator.php:351
 #: source/teacher/examinator.php:443 source/teacher/manager.php:275
-#: source/teacher/correct.php:531 source/media/index.php:409
+#: source/teacher/correct.php:531 source/media/index.php:415
 #: include/teacher/manager.inc:389
 msgid "Ends"
 msgstr ""
@@ -890,7 +890,7 @@ msgstr ""
 #: source/teacher/contribute.php:383 source/teacher/contribute.php:672
 #: source/teacher/manager.php:308 source/teacher/manager.php:385
 #: source/admin/admin.php:143 source/admin/teacher.php:146
-#: source/media/index.php:224 include/scoreboard.inc:546
+#: source/media/index.php:230 include/scoreboard.inc:546
 #: include/scoreboard.inc:647
 msgid "Name"
 msgstr ""
@@ -912,7 +912,7 @@ msgstr ""
 
 #: source/teacher/contribute.php:396 source/teacher/contribute.php:583
 #: source/teacher/contribute.php:860 source/media/index.php:147
-#: source/media/index.php:225
+#: source/media/index.php:231
 msgid "Type"
 msgstr ""
 
@@ -1118,7 +1118,7 @@ msgstr ""
 #: source/teacher/contribute.php:748 source/teacher/contribute.php:895
 #: source/teacher/examinator.php:412 source/teacher/manager.php:205
 #: source/teacher/manager.php:653 source/teacher/correct.php:497
-#: source/media/index.php:373
+#: source/media/index.php:379
 msgid "Active"
 msgstr ""
 
@@ -1163,8 +1163,8 @@ msgstr ""
 #: source/teacher/contribute.php:780 source/teacher/contribute.php:808
 #: source/teacher/contribute.php:830 source/teacher/examinator.php:381
 #: source/teacher/manager.php:247 source/teacher/manager.php:251
-#: source/teacher/manager.php:675 source/media/index.php:209
-#: source/media/index.php:237 include/teacher.inc:196
+#: source/teacher/manager.php:675 source/media/index.php:215
+#: source/media/index.php:243 include/teacher.inc:196
 msgid "Delete"
 msgstr ""
 
@@ -1182,8 +1182,8 @@ msgstr ""
 #: source/teacher/manager.php:578 source/teacher/manager.php:599
 #: source/teacher/manager.php:619 source/teacher/manager.php:638
 #: source/teacher/manager.php:724 source/media/index.php:197
-#: source/media/index.php:203 source/media/index.php:254
-#: source/media/index.php:404
+#: source/media/index.php:203 source/media/index.php:260
+#: source/media/index.php:410
 msgid "Add"
 msgstr ""
 
@@ -1244,12 +1244,12 @@ msgstr ""
 msgid "Select the examination you wish to contribute questions for (applies only to contributable examinations)."
 msgstr ""
 
-#: source/teacher/contribute.php:891 source/media/index.php:369
+#: source/teacher/contribute.php:891 source/media/index.php:375
 msgid "Contributable"
 msgstr ""
 
 #: source/teacher/contribute.php:899 source/teacher/examinator.php:416
-#: source/teacher/manager.php:209 source/media/index.php:377
+#: source/teacher/manager.php:209 source/media/index.php:383
 #: source/result/index.php:192
 msgid "Finished"
 msgstr ""
@@ -2106,8 +2106,8 @@ msgstr ""
 msgid "Media"
 msgstr ""
 
-#: source/media/index.php:125 source/media/index.php:313
-#: source/media/index.php:357 include/teacher.inc:309
+#: source/media/index.php:125 source/media/index.php:319
+#: source/media/index.php:363 include/teacher.inc:309
 #, php-format
 msgid "Media Library"
 msgstr ""
@@ -2117,7 +2117,7 @@ msgstr ""
 msgid "Browse your local harddisk for the media file to submit. Supported types of files are audio, image or video. Maximum size of uploaded file is %0.1f MB, uploading a larger file is silently discarded."
 msgstr ""
 
-#: source/media/index.php:136 source/media/index.php:274
+#: source/media/index.php:136 source/media/index.php:280
 msgid "File"
 msgid_plural "Files"
 msgstr[0] ""
@@ -2137,7 +2137,7 @@ msgid "Files"
 msgstr ""
 
 #: source/media/index.php:199 source/media/index.php:205
-#: source/media/index.php:270
+#: source/media/index.php:276
 #, php-format
 msgid "Click to add an %s file to this examination."
 msgstr ""
@@ -2146,50 +2146,52 @@ msgstr ""
 msgid "media"
 msgstr ""
 
-#: source/media/index.php:211
+#: source/media/index.php:208 source/media/index.php:232
+#: source/media/index.php:303 include/media.inc:408
+msgid "Size"
+msgstr ""
+
+#: source/media/index.php:210 source/media/index.php:233
+#: source/media/index.php:300 include/media.inc:410
+msgid "Modified"
+msgstr ""
+
+#: source/media/index.php:217
 #, php-format
 msgid "Click to delete the %s file %s from to this examination."
 msgstr ""
 
-#: source/media/index.php:226 source/media/index.php:297 include/media.inc:408
-msgid "Size"
-msgstr ""
-
-#: source/media/index.php:227 source/media/index.php:294 include/media.inc:410
-msgid "Modified"
-msgstr ""
-
-#: source/media/index.php:228
+#: source/media/index.php:234
 msgid "Action"
 msgstr ""
 
-#: source/media/index.php:314
+#: source/media/index.php:320
 #, php-format
 msgid "This page shows all files currently uploaded on the server for this examination. The media file URL's can be used when composing questions."
 msgstr ""
 
-#: source/media/index.php:317
+#: source/media/index.php:323
 msgid "Tree"
 msgstr ""
 
-#: source/media/index.php:318
+#: source/media/index.php:324
 msgid "Flat"
 msgstr ""
 
-#: source/media/index.php:319
+#: source/media/index.php:325
 msgid "Album"
 msgstr ""
 
-#: source/media/index.php:358
+#: source/media/index.php:364
 #, php-format
 msgid "Select the examination you wish to handle media files in (applies only to contributable examinations)."
 msgstr ""
 
-#: source/media/index.php:402
+#: source/media/index.php:408
 msgid "Click on this link to browse all media files in this examination."
 msgstr ""
 
-#: source/media/index.php:406
+#: source/media/index.php:412
 msgid "Click to add a media file to this examination."
 msgstr ""
 
