@@ -86,13 +86,27 @@ class HandlerCache
 
         private $type;  // The format type
         private $data;  // The format string
-        private $path;  // The image path
+        private $path;  // The image cache dir
+        private $file;  // The image file
 
         public function __construct($type, $data)
         {
                 $this->type = $type;
                 $this->data = $data;
-                $this->path = sprintf("%s/%s/%s", CACHE_DIR, $type, md5($data));
+                $this->path = sprintf("%s/%s", CACHE_DIR, $type);
+                $this->file = sprintf("%s/%s", $this->path, md5($data));
+
+                $this->setup();
+        }
+
+        private function setup()
+        {
+                if (!file_exists(dirname($this->path))) {
+                        if (!mkdir(dirname($this->path), 0777, true)) {
+                                $message = sprintf("Failed create cache directory %s", $this->path);
+                                throw new HandlerException($message);
+                        }
+                }
         }
 
         public function __get($name)
@@ -102,14 +116,14 @@ class HandlerCache
 
         public function exists()
         {
-                return file_exists($this->path);
+                return file_exists($this->file);
         }
 
         public function send($mime)
         {
                 header(sprintf("Content-Type: %s\n", $mime));
-                header(sprintf("Content-Length: %d\n", filesize($this->path)));
-                readfile($this->path);
+                header(sprintf("Content-Length: %d\n", filesize($this->file)));
+                readfile($this->file);
         }
 
 }

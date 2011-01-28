@@ -60,7 +60,7 @@ try {
 
         $cached = new HandlerCache($_REQUEST['type'], $_REQUEST['data']);
         if (!$cached->exists()) {
-                $handler->process($_REQUEST['data'], $cached->path);
+                $handler->process($_REQUEST['data'], $cached->file);
         }
         $cached->send($handler->mime());
 } catch (HandlerException $exception) {
