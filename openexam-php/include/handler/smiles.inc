@@ -41,7 +41,7 @@ class SmilesHandler implements HandlerType
         }
 
         public function process($data, $path)
-        {
+        {                
                 $this->url = sprintf(HANDLER_SMILES_SERVICE, $data);
 
                 if (!curl_setopt($this->curl, CURLOPT_URL, $this->url)) {
@@ -60,7 +60,7 @@ class SmilesHandler implements HandlerType
                 }
 
                 if (!(file_put_contents($path, $content))) {
-                        $mesage = sprintf("Failed save content to %s", $path);
+                        $message = sprintf("Failed save content to %s", $path);
                         throw new HandlerException($message);
                 }
         }
