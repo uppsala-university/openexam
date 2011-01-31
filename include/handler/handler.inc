@@ -88,21 +88,24 @@ class HandlerCache
         private $data;  // The format string
         private $path;  // The image cache dir
         private $file;  // The image file
+        private $hash;  // A unique hash based on content (data)
 
         public function __construct($type, $data)
         {
                 $this->type = $type;
                 $this->data = $data;
-                $this->path = sprintf("%s/%s", CACHE_DIR, $type);
-                $this->file = sprintf("%s/%s", $this->path, md5($data));
+                $this->hash = md5($data);
+
+                $this->path = sprintf("%s/%s/%s/%s", CACHE_DIR, $type, $this->hash[0], substr($this->hash, 0, 2));
+                $this->file = sprintf("%s/%s", $this->path, $this->hash);
 
                 $this->setup();
         }
 
         private function setup()
         {
-                if (!file_exists(dirname($this->path))) {
-                        if (!mkdir(dirname($this->path), 0777, true)) {
+                if (!file_exists($this->path)) {
+                        if (!mkdir($this->path, 0777, true)) {
                                 $message = sprintf("Failed create cache directory %s", $this->path);
                                 throw new HandlerException($message);
                         }
