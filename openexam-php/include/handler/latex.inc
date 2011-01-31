@@ -31,7 +31,15 @@ class LatexHandler implements HandlerType
                 //
                 if (($handle = fopen($files->tex, "w"))) {
                         fprintf($handle, "\documentclass[10pt]{article}\n");
-                        fprintf($handle, "\pagestyle{empty}\n");
+
+                        fprintf($handle, "% add additional packages here\n");
+                        fprintf($handle, "\usepackage{amsmath}\n");
+                        fprintf($handle, "\usepackage{amsfonts}\n");
+                        fprintf($handle, "\usepackage{amssymb}\n");
+                        fprintf($handle, "\usepackage{pst-plot}\n");
+                        fprintf($handle, "\usepackage{color}\n");
+
+                        fprintf($handle, "\pagestyle{empty}\n");        // no page number
                         fprintf($handle, "\begin{document}\n");
                         fprintf($handle, "%s\n", $data);
                         fprintf($handle, "\end{document}\n");
