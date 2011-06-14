@@ -156,6 +156,18 @@ class ExaminationPage extends BasePage
         {
 
                 if (isset($_REQUEST['exam']) && !isset($_REQUEST['preview'])) {
+                        $exams = Exam::getActiveExams(phpCAS::getUser());
+                        if($exams->count() > 1) {
+                                echo "<span id=\"menuhead\">" . _("Examinations") . ":</span>\n";
+                                echo "<ul>\n";
+                                foreach ($exams as $exam) {
+                                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
+                                                $exam->getExamID(), 
+                                                $exam->getExamDescription(),
+                                                $exam->getExamName());
+                                }
+                                echo "</ul>\n";
+                        }
 
                         $menuitem = self::getQuestions();
 
