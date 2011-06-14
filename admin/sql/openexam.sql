@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.51, for pc-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.1.56, for pc-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: openexam
 -- ------------------------------------------------------
--- Server version	5.1.51-log
+-- Server version	5.1.56-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -43,7 +43,6 @@ CREATE TABLE `answers` (
   `answered` enum('Y','N') DEFAULT 'N',
   `answer` text,
   `comment` text,
-  `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `question_id` (`question_id`),
   KEY `student_id` (`student_id`),
@@ -69,7 +68,7 @@ CREATE TABLE `computers` (
   `created` datetime NOT NULL,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `room_id` (`room_id`),
+  KEY `computers_ibfk_1` (`room_id`),
   CONSTRAINT `computers_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -141,11 +140,12 @@ CREATE TABLE `exams` (
   `created` datetime NOT NULL,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `creator` char(8) NOT NULL,
+  `details` int(11) NOT NULL DEFAULT '3',
   `decoded` enum('Y','N') NOT NULL DEFAULT 'N',
   `orgunit` varchar(150) NOT NULL,
   `grades` varchar(200) NOT NULL,
   `testcase` enum('Y','N') NOT NULL DEFAULT 'N',
-  `lockdown` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `lockdown` enum('Y','N') DEFAULT 'N',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -163,8 +163,8 @@ CREATE TABLE `locks` (
   `exam_id` int(11) DEFAULT NULL,
   `aquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `computer_id` (`computer_id`),
-  KEY `exam_id` (`exam_id`),
+  KEY `locks_ibfk_1` (`computer_id`),
+  KEY `locks_ibfk_2` (`exam_id`),
   CONSTRAINT `locks_ibfk_1` FOREIGN KEY (`computer_id`) REFERENCES `computers` (`id`),
   CONSTRAINT `locks_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -193,7 +193,7 @@ CREATE TABLE `questions` (
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
-  KEY `topic_id` (`topic_id`),
+  KEY `questions_ibfk_2` (`topic_id`),
   CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`),
   CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
@@ -240,11 +240,8 @@ DROP TABLE IF EXISTS `schemainfo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `schemainfo` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `major` int(11) NOT NULL DEFAULT '0',
-  `minor` int(11) NOT NULL DEFAULT '0',
-  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  `major` int(11) NOT NULL,
+  `minor` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -292,9 +289,7 @@ CREATE TABLE `topics` (
   `exam_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `randomize` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `exam_id` (`exam_id`),
-  CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -307,4 +302,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-01-12 10:31:58
+-- Dump completed on 2011-06-14 22:18:32
