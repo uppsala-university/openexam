@@ -20,15 +20,24 @@ if($page->showSidebar()) {
 <?php $page->printHeader(); ?>
 <!-- ReadSpeaker script nedan -->
 <script type="text/javascript" language="JavaScript"> <!--
-function sayit()
-{ if (window.getSelection) // recent Mozilla versions
-{ var selectedString = window.getSelection(); }
-else if (document.all) // MSIE 4+
-{ rng = document.selection.createRange(); selectedString=rng.text; }
-else if (document.getSelection) //older Mozilla versions
-{ var selectedString = document.getSelection(); }
-document.rs_form.rstext.value = selectedString;
-document.rs_form.url.value = document.location.href; } //-->
+function getBodyText(win) {
+	return win.document.getElementById('mainview').textContent;
+}
+function sayit() { 
+	if (window.getSelection) {		// Recent Mozilla versions
+		var selectedString = window.getSelection(); 
+	} else if (document.all) {		// MSIE 4+
+		rng = document.selection.createRange(); 
+		selectedString=rng.text; 
+	} else if (document.getSelection) {	// Older Mozilla versions
+		var selectedString = document.getSelection(); 
+	}
+	if(selectedString == "") {		// Nothing selected
+		selectedString = getBodyText(window);
+	}
+	document.rs_form.rstext.value = selectedString;
+	document.rs_form.url.value = document.location.href; 
+} //-->
 </script>
 </head>
 <body class="grey">
@@ -67,8 +76,9 @@ if($page->showSidebar()) {
 ?>
 <div id="wrapper">
 <div id="maincontent">
+<div id="mainview">
 <?php $page->printBody(); ?>
-
+</div>
 <br />
 <hr />
 <?php 
