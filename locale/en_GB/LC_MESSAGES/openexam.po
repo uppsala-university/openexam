@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2012-01-11 14:52+0100\n"
-"PO-Revision-Date: 2012-01-11 14:57+0100\n"
+"POT-Creation-Date: 2012-01-11 15:07+0100\n"
+"PO-Revision-Date: 2012-01-11 15:08+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
 "Language: \n"
@@ -148,7 +148,7 @@ msgid "Cancel"
 msgstr "Cancel"
 
 #: source/exam/index.php:161 source/teacher/decoder.php:615
-#: source/teacher/contribute.php:882 source/teacher/examinator.php:495
+#: source/teacher/contribute.php:882 source/teacher/examinator.php:498
 #: source/teacher/manager.php:188 source/teacher/correct.php:476
 #: source/media/index.php:366 source/result/index.php:174
 msgid "Examinations"
@@ -846,16 +846,16 @@ msgid "Click on this link to decode this examination."
 msgstr "Click on this link to decode this examination."
 
 #: source/teacher/decoder.php:663 source/teacher/contribute.php:930
-#: source/teacher/examinator.php:197 source/teacher/examinator.php:455
-#: source/teacher/examinator.php:534 source/teacher/manager.php:273
+#: source/teacher/examinator.php:197 source/teacher/examinator.php:458
+#: source/teacher/examinator.php:537 source/teacher/manager.php:273
 #: source/teacher/correct.php:530 source/media/index.php:414
 #: include/teacher/manager.inc:386
 msgid "Starts"
 msgstr "Starts"
 
 #: source/teacher/decoder.php:664 source/teacher/contribute.php:931
-#: source/teacher/examinator.php:203 source/teacher/examinator.php:456
-#: source/teacher/examinator.php:535 source/teacher/manager.php:275
+#: source/teacher/examinator.php:203 source/teacher/examinator.php:459
+#: source/teacher/examinator.php:538 source/teacher/manager.php:275
 #: source/teacher/correct.php:531 source/media/index.php:415
 #: include/teacher/manager.inc:389
 msgid "Ends"
@@ -898,10 +898,10 @@ msgid "A short question name or simply a number"
 msgstr "A short question name or simply a number"
 
 #: source/teacher/contribute.php:383 source/teacher/contribute.php:672
-#: source/teacher/manager.php:308 source/teacher/manager.php:385
-#: source/admin/admin.php:143 source/admin/teacher.php:146
-#: source/media/index.php:230 include/scoreboard.inc:546
-#: include/scoreboard.inc:647
+#: source/teacher/examinator.php:373 source/teacher/manager.php:308
+#: source/teacher/manager.php:385 source/admin/admin.php:143
+#: source/admin/teacher.php:146 source/media/index.php:230
+#: include/scoreboard.inc:546 include/scoreboard.inc:647
 msgid "Name"
 msgstr "Name"
 
@@ -1135,7 +1135,7 @@ msgid "All"
 msgstr "All"
 
 #: source/teacher/contribute.php:748 source/teacher/contribute.php:895
-#: source/teacher/examinator.php:505 source/teacher/manager.php:205
+#: source/teacher/examinator.php:508 source/teacher/manager.php:205
 #: source/teacher/manager.php:653 source/teacher/correct.php:497
 #: source/media/index.php:379
 msgid "Active"
@@ -1180,7 +1180,7 @@ msgid "Questions"
 msgstr "Questions"
 
 #: source/teacher/contribute.php:780 source/teacher/contribute.php:808
-#: source/teacher/contribute.php:830 source/teacher/examinator.php:478
+#: source/teacher/contribute.php:830 source/teacher/examinator.php:481
 #: source/teacher/manager.php:247 source/teacher/manager.php:251
 #: source/teacher/manager.php:675 source/media/index.php:215
 #: source/media/index.php:243 include/teacher.inc:196
@@ -1197,7 +1197,7 @@ msgstr "Click to open page for importing a question bank."
 
 #: source/teacher/contribute.php:787 source/teacher/contribute.php:813
 #: source/teacher/contribute.php:926 source/teacher/examinator.php:245
-#: source/teacher/examinator.php:467 source/teacher/examinator.php:537
+#: source/teacher/examinator.php:470 source/teacher/examinator.php:540
 #: source/teacher/manager.php:192 source/teacher/manager.php:578
 #: source/teacher/manager.php:599 source/teacher/manager.php:619
 #: source/teacher/manager.php:638 source/teacher/manager.php:724
@@ -1267,7 +1267,7 @@ msgstr "Select the examination you wish to contribute questions for (applies onl
 msgid "Contributable"
 msgstr "Contributable"
 
-#: source/teacher/contribute.php:899 source/teacher/examinator.php:509
+#: source/teacher/contribute.php:899 source/teacher/examinator.php:512
 #: source/teacher/manager.php:209 source/media/index.php:383
 #: source/result/index.php:192
 msgid "Finished"
@@ -1300,7 +1300,7 @@ msgstr "This page let you reschedule the start and end time of the examination."
 msgid "Calendar icon"
 msgstr "Calendar icon"
 
-#: source/teacher/examinator.php:227 source/teacher/examinator.php:389
+#: source/teacher/examinator.php:227 source/teacher/examinator.php:392
 #, php-format
 msgid "Add Students"
 msgstr "Add Students"
@@ -1381,8 +1381,8 @@ msgstr "Semester"
 msgid "Add list of students:"
 msgstr "Add list of students:"
 
-#: source/teacher/examinator.php:307 source/teacher/examinator.php:458
-#: source/teacher/examinator.php:465 include/pdf.inc:675 include/pdf.inc:694
+#: source/teacher/examinator.php:307 source/teacher/examinator.php:461
+#: source/teacher/examinator.php:468 include/pdf.inc:675 include/pdf.inc:694
 #: include/pdf.inc:727
 msgid "Students"
 msgstr "Students"
@@ -1396,83 +1396,87 @@ msgstr "Double-click inside the textarea to clear its content."
 msgid "Click the 'Add Students' button to add these students registered on the course %s."
 msgstr "Click the 'Add Students' button to add these students registered on the course %s."
 
-#: source/teacher/examinator.php:392 source/teacher/examinator.php:413
+#: source/teacher/examinator.php:372
+msgid "Login"
+msgstr "Login"
+
+#: source/teacher/examinator.php:395 source/teacher/examinator.php:416
 msgid "No members found"
 msgstr "No members found"
 
-#: source/teacher/examinator.php:392 source/teacher/examinator.php:413
+#: source/teacher/examinator.php:395 source/teacher/examinator.php:416
 #, php-format
 msgid "The query for course %s in the directory service returned an empty list. "
 msgstr "The query for course %s in the directory service returned an empty list. "
 
-#: source/teacher/examinator.php:393 source/teacher/examinator.php:414
+#: source/teacher/examinator.php:396 source/teacher/examinator.php:417
 #, php-format
 msgid "It looks like no students belongs to this course."
 msgstr "It looks like no students belongs to this course."
 
-#: source/teacher/examinator.php:442
+#: source/teacher/examinator.php:445
 #, php-format
 msgid "Showing Examination"
 msgstr "Showing Examination"
 
-#: source/teacher/examinator.php:444
+#: source/teacher/examinator.php:447
 #, php-format
 msgid "Showing details for the examination <i>'%s'</i>. "
 msgstr "Showing details for the examination <i>'%s'</i>. "
 
-#: source/teacher/examinator.php:445
+#: source/teacher/examinator.php:448
 #, php-format
 msgid "Use the links to add and remove students, and reschedule the start and end time of the examination. "
 msgstr "Use the links to add and remove students, and reschedule the start and end time of the examination. "
 
-#: source/teacher/examinator.php:449
+#: source/teacher/examinator.php:452
 #, php-format
 msgid "No usernames will be exposed unless the examination has already been decoded."
 msgstr "No usernames will be exposed unless the examination has already been decoded."
 
-#: source/teacher/examinator.php:454
+#: source/teacher/examinator.php:457
 msgid "Properties:"
 msgstr "Properties:"
 
-#: source/teacher/examinator.php:457
+#: source/teacher/examinator.php:460
 msgid "Creator"
 msgstr "Creator"
 
-#: source/teacher/examinator.php:461 source/teacher/examinator.php:462
-#: source/teacher/examinator.php:538 source/teacher/examinator.php:539
+#: source/teacher/examinator.php:464 source/teacher/examinator.php:465
+#: source/teacher/examinator.php:541 source/teacher/examinator.php:542
 msgid "Change"
 msgstr "Change"
 
-#: source/teacher/examinator.php:461 source/teacher/examinator.php:462
-#: source/teacher/examinator.php:538 source/teacher/examinator.php:539
+#: source/teacher/examinator.php:464 source/teacher/examinator.php:465
+#: source/teacher/examinator.php:541 source/teacher/examinator.php:542
 msgid "Click on this link to reschedule the examination"
 msgstr "Click on this link to reschedule the examination"
 
-#: source/teacher/examinator.php:467 source/teacher/examinator.php:537
+#: source/teacher/examinator.php:470 source/teacher/examinator.php:540
 msgid "Click on this link to add students to this examination"
 msgstr "Click on this link to add students to this examination"
 
-#: source/teacher/examinator.php:478
+#: source/teacher/examinator.php:481
 #, php-format
 msgid "Click on this link to remove student %s from the exam."
 msgstr "Click on this link to remove student %s from the exam."
 
-#: source/teacher/examinator.php:492
+#: source/teacher/examinator.php:495
 #, php-format
 msgid "Examinator Tasks"
 msgstr "Examinator Tasks"
 
-#: source/teacher/examinator.php:493
+#: source/teacher/examinator.php:496
 #, php-format
 msgid "The tree of examinations shows all examination you can reschedule or add students to."
 msgstr "The tree of examinations shows all examination you can reschedule or add students to."
 
-#: source/teacher/examinator.php:501 source/teacher/manager.php:201
+#: source/teacher/examinator.php:504 source/teacher/manager.php:201
 #: source/teacher/correct.php:493
 msgid "Upcoming"
 msgstr "Upcoming"
 
-#: source/teacher/examinator.php:533
+#: source/teacher/examinator.php:536
 msgid "Click on this link to view and/or edit this examination"
 msgstr "Click on this link to view and/or edit this examination"
 
