@@ -169,6 +169,7 @@ class RegisterHandler extends Register
 // 
 class RegisterClient extends Register
 {
+
         const PROTO_MAJOR = 0;
         const PROTO_MINOR = 8;
 
@@ -240,12 +241,7 @@ class RegisterClient extends Register
 
         private function greet()
         {
-                fprintf($this->socket,
-                        "%s %s [%d.%d] ready to serve (see help)\r\n",
-                        SERVICE_NAME,
-                        SERVICE_VERSION,
-                        self::PROTO_MAJOR,
-                        self::PROTO_MINOR);
+                fprintf($this->socket, "%s %s [%d.%d] ready to serve (see help)\r\n", SERVICE_NAME, SERVICE_VERSION, self::PROTO_MAJOR, self::PROTO_MINOR);
         }
 
         private function usage()
@@ -294,8 +290,7 @@ class RegisterService extends Register
                 $this->socket = stream_socket_server($bind, $errno, $errstr);
                 if (!$this->socket) {
                         throw new RegisterException(sprintf(
-                                        "Failed create service: %s (%d)",
-                                        $errstr, $errno)
+                                        "Failed create service: %s (%d)", $errstr, $errno)
                         );
                 }
         }
@@ -306,8 +301,7 @@ class RegisterService extends Register
         public function handle()
         {
                 if ($this->verbose) {
-                        printf("Service ready listening on %s:%d (%s)\n",
-                                $this->addr, $this->port, $this->type);
+                        printf("Service ready listening on %s:%d (%s)\n", $this->addr, $this->port, $this->type);
                 }
 
                 while ($client = stream_socket_accept($this->socket, -1, $this->peer)) {
@@ -335,8 +329,7 @@ if (isset($_SERVER['SERVER_ADDR'])) {
                 $register = new RegisterHandler();
                 $register->handle();
         } catch (RegisterException $exception) {
-                header(sprintf("HTTP/1.0 %d %s", $exception->getCode(),
-                                $exception->getMessage()));
+                header(sprintf("HTTP/1.0 %d %s", $exception->getCode(), $exception->getMessage()));
                 error_log($exception);
                 exit(1);
         } catch (DatabaseException $exception) {
