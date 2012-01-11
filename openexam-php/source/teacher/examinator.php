@@ -368,6 +368,9 @@ class ExaminatorPage extends TeacherPage
                         $paragraph->output();
 
                         $table = new Table();
+                        $row = $table->addRow();
+                        $row->addHeader(_('Login'));
+                        $row->addHeader(_('Name'));
                         foreach ($users as $user) {
                                 if ($user->getUser() != null) {
                                         $row = $table->addRow();
