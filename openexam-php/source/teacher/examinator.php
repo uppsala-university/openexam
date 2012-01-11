@@ -134,11 +134,14 @@ class ExaminatorPage extends TeacherPage
                                                         self::assert('termin');
                                                         self::saveAddCourse();
                                                 } else {
-                                                        self::formAddStudents();
+                                                        self::formAddStudents($_REQUEST['what']);
                                                 }
                                         }
                                 } else {
-                                        self::formAddStudents();
+                                        if (!isset($_REQUEST['what'])) {
+                                                $_REQUEST['what'] = "course";
+                                        }
+                                        self::formAddStudents($_REQUEST['what']);
                                 }
                         } elseif ($_REQUEST['action'] == "edit") {
                                 if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
@@ -216,70 +219,90 @@ class ExaminatorPage extends TeacherPage
         //
         // Show form for adding student(s).
         //
-        private function formAddStudents()
+        private function formAddStudents($what)
         {
                 printf("<h3>" . _("Add Students") . "</h3>\n");
                 printf("<p>" . _("You can add students one by one or as a list of codes/student ID pairs. The list should be a newline separated list of username/code pairs where the username and code is separated by tabs.") . "</p>\n");
                 printf("<p>" . _("If the student code is missing, then the system is going to generate a random code.") . "</p>\n");
 
-                $form = new Form("examinator.php", "GET");
-                $form->addSectionHeader(_("Add student one by one:"));
-                $form->addHidden("exam", $this->param->exam);
-                $form->addHidden("mode", "save");
-                $form->addHidden("what", "user");
-                $form->addHidden("action", "add");
-                $input = $form->addTextBox("code");
-                $input->setLabel(_("Code"));
-                $input->setTitle(_("The anonymous code associated with this student logon."));
-                $input = $form->addTextBox("user");
-                $input->setLabel(_("UU-ID"));
-                $input->setTitle(_("The student logon username."));
-                $form->addSpace();
-                $input = $form->addSubmitButton("submit", _("Submit"));
-                $input->setLabel();
-                $form->output();
-
-                $form = new Form("examinator.php", "POST");
-                $form->addSectionHeader(_("Import from UPPDOK"));
-                $form->addHidden("exam", $this->param->exam);
-                $form->addHidden("mode", "save");
-                $form->addHidden("what", "course");
-                $form->addHidden("action", "add");
-                $input = $form->addTextBox("course");
-                $input->setLabel(_("Course Code"));
-                $input->setTitle(_("The UPPDOK course code (i.e. 1AB234) to import a list of students from."));
-                $combo = $form->addComboBox("year");
-                $combo->addOption(UppdokData::getCurrentYear(), _("Current"));
-                for ($y = 0; $y < EXAMINATOR_YEAR_HISTORY; $y++) {
-                        $year = date('Y') - $y;
-                        $combo->addOption($year, $year);
+                $mode = array(
+                        "user" => _("Single"),
+                        "users" => _("List"),
+                        "course" => _("Import")
+                );
+                $disp = array();
+                printf("<span class=\"links viewmode\">\n");
+                foreach ($mode as $name => $text) {
+                        if ($what != $name) {
+                                $disp[] = sprintf("<a href=\"?exam=%d&amp;action=add&amp;what=%s\">%s</a>",
+                                                $this->param->exam, $name, $text);
+                        } else {
+                                $disp[] = $text;
+                        }
                 }
-                $combo->setLabel(_("Year"));
-                $combo = $form->addComboBox("termin");
-                $combo->addOption(UppdokData::getCurrentSemester(), _("Current"));
-                $combo->addOption(EXAMINATOR_TERMIN_VT, _("VT"));
-                $combo->addOption(EXAMINATOR_TERMIN_HT, _("HT"));
-                $combo->setLabel(_("Semester"));
-                $form->addSpace();
-                $input = $form->addSubmitButton("submit", _("Submit"));
-                $input->setLabel();
-                $form->output();
-
-                $form = new Form("examinator.php", "POST");
-                $form->addSectionHeader(_("Add list of students:"));
-                $form->addHidden("exam", $this->param->exam);
-                $form->addHidden("mode", "save");
-                $form->addHidden("what", "users");
-                $form->addHidden("action", "add");
-                $input = $form->addTextArea("users", "user1\tcode1\nuser2\tcode2\n");
-                $input->setLabel(_("Students"));
-                $input->setTitle(_("Double-click inside the textarea to clear its content."));
-                $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
-                $input->setClass("students");
-                $form->addSpace();
-                $input = $form->addSubmitButton("submit", _("Submit"));
-                $input->setLabel();
-                $form->output();
+                printf("%s: %s\n", _("Add"), implode(", ", $disp));
+                printf("</span>\n");
+                
+                if ($what == "user") {
+                        $form = new Form("examinator.php", "GET");
+                        $form->addSectionHeader(_("Add student one by one:"));
+                        $form->addHidden("exam", $this->param->exam);
+                        $form->addHidden("mode", "save");
+                        $form->addHidden("what", "user");
+                        $form->addHidden("action", "add");
+                        $input = $form->addTextBox("code");
+                        $input->setLabel(_("Code"));
+                        $input->setTitle(_("The anonymous code associated with this student logon."));
+                        $input = $form->addTextBox("user");
+                        $input->setLabel(_("UU-ID"));
+                        $input->setTitle(_("The student logon username."));
+                        $form->addSpace();
+                        $input = $form->addSubmitButton("submit", _("Submit"));
+                        $input->setLabel();
+                        $form->output();
+                } elseif ($what == "course") {
+                        $form = new Form("examinator.php", "POST");
+                        $form->addSectionHeader(_("Import from UPPDOK"));
+                        $form->addHidden("exam", $this->param->exam);
+                        $form->addHidden("mode", "save");
+                        $form->addHidden("what", "course");
+                        $form->addHidden("action", "add");
+                        $input = $form->addTextBox("course");
+                        $input->setLabel(_("Course Code"));
+                        $input->setTitle(_("The UPPDOK course code (i.e. 1AB234) to import a list of students from."));
+                        $combo = $form->addComboBox("year");
+                        $combo->addOption(UppdokData::getCurrentYear(), _("Current"));
+                        for ($y = 0; $y < EXAMINATOR_YEAR_HISTORY; $y++) {
+                                $year = date('Y') - $y;
+                                $combo->addOption($year, $year);
+                        }
+                        $combo->setLabel(_("Year"));
+                        $combo = $form->addComboBox("termin");
+                        $combo->addOption(UppdokData::getCurrentSemester(), _("Current"));
+                        $combo->addOption(EXAMINATOR_TERMIN_VT, _("VT"));
+                        $combo->addOption(EXAMINATOR_TERMIN_HT, _("HT"));
+                        $combo->setLabel(_("Semester"));
+                        $form->addSpace();
+                        $input = $form->addSubmitButton("submit", _("Submit"));
+                        $input->setLabel();
+                        $form->output();
+                } else {
+                        $form = new Form("examinator.php", "POST");
+                        $form->addSectionHeader(_("Add list of students:"));
+                        $form->addHidden("exam", $this->param->exam);
+                        $form->addHidden("mode", "save");
+                        $form->addHidden("what", "users");
+                        $form->addHidden("action", "add");
+                        $input = $form->addTextArea("users", "user1\tcode1\nuser2\tcode2\n");
+                        $input->setLabel(_("Students"));
+                        $input->setTitle(_("Double-click inside the textarea to clear its content."));
+                        $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
+                        $input->setClass("students");
+                        $form->addSpace();
+                        $input = $form->addSubmitButton("submit", _("Submit"));
+                        $input->setLabel();
+                        $form->output();
+                }
         }
 
         //
