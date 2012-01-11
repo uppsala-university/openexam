@@ -57,9 +57,14 @@ class UppdokData
 
                 if ($year == 0) {
                         $this->year = self::getCurrentYear();
+                } else {
+                        $this->year = $year;
                 }
+
                 if ($termin == 0) {
                         $this->termin = self::getCurrentSemester();
+                } else {
+                        $this->termin = $termin;
                 }
         }
 
@@ -113,14 +118,7 @@ class UppdokData
                         throw new UppdokException("Failed initialize cURL");
                 }
 
-                $url = sprintf(self::url,
-                                INFO_CGI_SERVER,
-                                INFO_CGI_PORT,
-                                $course,
-                                $this->year,
-                                $this->termin,
-                                INFO_CGI_USER,
-                                INFO_CGI_PASS);
+                $url = sprintf(self::url, INFO_CGI_SERVER, INFO_CGI_PORT, $course, $this->year, $this->termin, INFO_CGI_USER, INFO_CGI_PASS);
 
                 if (INFO_CGI_DEBUG) {
                         curl_setopt($curl, CURLOPT_HEADER, 1);
