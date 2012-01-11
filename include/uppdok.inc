@@ -1,7 +1,7 @@
 <?php
 
 //
-// Copyright (C) 2010 Computing Department BMC,
+// Copyright (C) 2010-2012 Computing Department BMC,
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   include/uppdok.inc
@@ -21,6 +21,12 @@ if (!defined('INFO_CGI_DEBUG')) {
 if (!defined('INFO_CGI_VERBOSE')) {
         define('INFO_CGI_VERBOSE', false);
 }
+if (!defined('INFO_CGI_FIELD_USER')) {
+        define('INFO_CGI_FIELD_USER', 1);
+}
+if (!defined('INFO_CGI_FIELD_NAME')) {
+        define('INFO_CGI_FIELD_NAME', 3);
+}
 
 class UppdokException extends Exception
 {
@@ -33,6 +39,44 @@ class UppdokException extends Exception
         public function __toString()
         {
                 return $this->message;
+        }
+
+}
+
+class UppdokRecord
+{
+
+        private $data;
+
+        public function __construct($data)
+        {
+                for ($i = 0; $i < count($data); ++$i) {
+                        $data[$i] = utf8_encode($data[$i]);
+                }
+                $this->data = $data;
+        }
+
+        public function getUser()
+        {
+                return $this->data[INFO_CGI_FIELD_USER];
+        }
+
+        public function getName()
+        {
+                return $this->data[INFO_CGI_FIELD_NAME];
+        }
+
+        public function getData()
+        {
+                return $this->data;
+        }
+
+        public function getField($index)
+        {
+                if ($index < count($this->data)) {
+                        return $this->data[$index];
+                }
+                return null;
         }
 
 }
@@ -102,6 +146,11 @@ class UppdokData
                 return $this->termin;
         }
 
+        public function setCompactMode($enable = true)
+        {
+                $this->compact = $enable;
+        }
+
         //
         // Get all members on this course. The course argument is an UPPDOK code (i.e.
         // 1AB234). The function should return an array of UpUnet-S identities (a.k.a.
@@ -151,9 +200,9 @@ class UppdokData
                         $arr = split(INFO_CGI_FIELD_SEPARATOR, $line);
                         if ($arr[0] == 1) {
                                 if ($this->compact) {
-                                        array_push($result, $arr[1]);
+                                        array_push($result, $arr[INFO_CGI_FIELD_USER]);
                                 } else {
-                                        array_push($result, $arr);
+                                        array_push($result, new UppdokRecord($arr));
                                 }
                         }
                 }
