@@ -119,7 +119,7 @@ class ExamGrades
         {
                 $str = "";
                 foreach ($this->data as $name => $grade) {
-                        $str .= sprintf("%s:%d\n", $name, $grade);
+                        $str .= sprintf("%s:%s\n", $name, $grade);      // grade are stored as string
                 }
                 return $str;
         }
