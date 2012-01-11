@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/examinator.php
@@ -84,6 +84,7 @@ class ExaminatorPage extends TeacherPage
         private $params = array(
                 "exam" => "/^\d+$/",
                 "what" => "/^(user|users|course)$/",
+                "mode" => "/^(save|show)$/",
                 "code" => "/^([0-9a-fA-F]{1,15}|)$/",
                 "user" => "/^[0-9a-zA-Z]{1,10}$/",
                 "users" => "/.*/",
@@ -137,6 +138,11 @@ class ExaminatorPage extends TeacherPage
                                                         self::formAddStudents($_REQUEST['what']);
                                                 }
                                         }
+                                } elseif (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "show") {
+                                        self::assert('course');
+                                        self::assert('year');
+                                        self::assert('termin');
+                                        self::showAddCourse();
                                 } else {
                                         if (!isset($_REQUEST['what'])) {
                                                 $_REQUEST['what'] = "course";
@@ -216,10 +222,7 @@ class ExaminatorPage extends TeacherPage
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
         }
 
-        //
-        // Show form for adding student(s).
-        //
-        private function formAddStudents($what)
+        private function showAddCommon($what)
         {
                 printf("<h3>" . _("Add Students") . "</h3>\n");
                 printf("<p>" . _("You can add students one by one or as a list of codes/student ID pairs. The list should be a newline separated list of username/code pairs where the username and code is separated by tabs.") . "</p>\n");
@@ -234,15 +237,22 @@ class ExaminatorPage extends TeacherPage
                 printf("<span class=\"links viewmode\">\n");
                 foreach ($mode as $name => $text) {
                         if ($what != $name) {
-                                $disp[] = sprintf("<a href=\"?exam=%d&amp;action=add&amp;what=%s\">%s</a>",
-                                                $this->param->exam, $name, $text);
+                                $disp[] = sprintf("<a href=\"?exam=%d&amp;action=add&amp;what=%s\">%s</a>", $this->param->exam, $name, $text);
                         } else {
                                 $disp[] = $text;
                         }
                 }
                 printf("%s: %s\n", _("Add"), implode(", ", $disp));
                 printf("</span>\n");
-                
+        }
+
+        //
+        // Show form for adding student(s).
+        //
+        private function formAddStudents($what)
+        {
+                $this->showAddCommon($what);
+
                 if ($what == "user") {
                         $form = new Form("examinator.php", "GET");
                         $form->addSectionHeader(_("Add student one by one:"));
@@ -264,7 +274,7 @@ class ExaminatorPage extends TeacherPage
                         $form = new Form("examinator.php", "POST");
                         $form->addSectionHeader(_("Import from UPPDOK"));
                         $form->addHidden("exam", $this->param->exam);
-                        $form->addHidden("mode", "save");
+                        $form->addHidden("mode", "show");
                         $form->addHidden("what", "course");
                         $form->addHidden("action", "add");
                         $input = $form->addTextBox("course");
@@ -283,7 +293,7 @@ class ExaminatorPage extends TeacherPage
                         $combo->addOption(EXAMINATOR_TERMIN_HT, _("HT"));
                         $combo->setLabel(_("Semester"));
                         $form->addSpace();
-                        $input = $form->addSubmitButton("submit", _("Submit"));
+                        $input = $form->addSubmitButton("submit", _("Show"));
                         $input->setLabel();
                         $form->output();
                 } else {
@@ -335,6 +345,54 @@ class ExaminatorPage extends TeacherPage
                 $handler = new Examinator($this->param->exam);
                 $handler->addStudents($data);
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
+        }
+
+        //
+        // Show list of students that is going to be added.
+        //
+        private function showAddCourse()
+        {
+                $this->showAddCommon("course");
+
+                $header = new H4(_("Import from UPPDOK"));
+                $header->setClass("secthead");
+                $header->output();
+
+                $uppdok = new UppdokData($this->param->year, $this->param->termin);
+                $uppdok->setCompactMode(false);
+                $users = $uppdok->members($this->param->course);
+
+                if (count($users) > 0) {
+                        $paragraph = new Paragraph();
+                        $paragraph->addText(sprintf(_("Click the 'Add Students' button to add these students registered on the course %s."), $this->param->course));
+                        $paragraph->output();
+
+                        $table = new Table();
+                        foreach ($users as $user) {
+                                if ($user->getUser() != null) {
+                                        $row = $table->addRow();
+                                        $row->addData($user->getUser());
+                                        $row->addData($user->getName());
+                                }
+                        }
+                        $table->output();
+
+                        $form = new Form("examinator.php", "POST");
+                        $form->addHidden("exam", $this->param->exam);
+                        $form->addHidden("mode", "save");
+                        $form->addHidden("what", "course");
+                        $form->addHidden("year", $this->param->year);
+                        $form->addHidden("termin", $this->param->termin);
+                        $form->addHidden("course", $this->param->course);
+                        $form->addHidden("action", "add");
+                        $form->addSpace();
+                        $input = $form->addSubmitButton("submit", _("Add Students"));
+                        $form->output();
+                } else {
+                        ErrorPage::show(_("No members found"), sprintf(_("The query for course %s in the directory service returned an empty list. ") .
+                                        _("It looks like no students belongs to this course."), $this->param->course));
+                        exit(1);
+                }
         }
 
         //
