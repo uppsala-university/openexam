@@ -65,6 +65,15 @@ include "include/teacher/examinator.inc";
 if (!defined("EXAMINATOR_VISIBLE_IDENTITIES")) {
         define("EXAMINATOR_VISIBLE_IDENTITIES", true);
 }
+if (!defined("EXAMINATOR_TERMIN_VT")) {
+        define("EXAMINATOR_TERMIN_VT", 1);
+}
+if (!defined("EXAMINATOR_TERMIN_HT")) {
+        define("EXAMINATOR_TERMIN_HT", 2);
+}
+if (!defined("EXAMINATOR_YEAR_HISTORY")) {
+        define("EXAMINATOR_YEAR_HISTORY", 5);
+}
 
 // 
 // The examinator page:
@@ -81,7 +90,9 @@ class ExaminatorPage extends TeacherPage
                 "course" => "/^[0-9a-zA-Z]{1,10}$/",
                 "stime" => "/^.*$/",
                 "etime" => "/^.*$/",
-                "action" => "/^(add|edit|show|delete)$/"
+                "action" => "/^(add|edit|show|delete)$/",
+                "year" => "/^[0-9]{4}$/",
+                "termin" => "/^[1-2]$/"
         );
 
         public function __construct()
@@ -119,6 +130,8 @@ class ExaminatorPage extends TeacherPage
                                                         self::saveAddStudents();
                                                 } elseif ($_REQUEST['what'] == "course") {
                                                         self::assert('course');
+                                                        self::assert('year');
+                                                        self::assert('termin');
                                                         self::saveAddCourse();
                                                 } else {
                                                         self::formAddStudents();
@@ -151,8 +164,7 @@ class ExaminatorPage extends TeacherPage
         private function checkAccess()
         {
                 if (!$this->manager->isExaminator(phpCAS::getUser())) {
-                        ErrorPage::show(_("Access denied!"),
-                                        sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "examinator"));
+                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "examinator"));
                         exit(1);
                 }
         }
@@ -196,8 +208,7 @@ class ExaminatorPage extends TeacherPage
         private function saveEditSchedule()
         {
                 $handler = new Examinator($this->param->exam);
-                $handler->setSchedule(strtotime($this->param->stime),
-                        strtotime($this->param->etime));
+                $handler->setSchedule(strtotime($this->param->stime), strtotime($this->param->etime));
 
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
         }
@@ -237,7 +248,21 @@ class ExaminatorPage extends TeacherPage
                 $input = $form->addTextBox("course");
                 $input->setLabel(_("Course Code"));
                 $input->setTitle(_("The UPPDOK course code (i.e. 1AB234) to import a list of students from."));
+                $combo = $form->addComboBox("year");
+                $combo->addOption(UppdokData::getCurrentYear(), _("Current"));
+                for ($y = 0; $y < EXAMINATOR_YEAR_HISTORY; $y++) {
+                        $year = date('Y') - $y;
+                        $combo->addOption($year, $year);
+                }
+                $combo->setLabel(_("Year"));
+                $combo = $form->addComboBox("termin");
+                $combo->addOption(UppdokData::getCurrentSemester(), _("Current"));
+                $combo->addOption(EXAMINATOR_TERMIN_VT, _("VT"));
+                $combo->addOption(EXAMINATOR_TERMIN_HT, _("HT"));
+                $combo->setLabel(_("Semester"));
+                $form->addSpace();
                 $input = $form->addSubmitButton("submit", _("Submit"));
+                $input->setLabel();
                 $form->output();
 
                 $form = new Form("examinator.php", "POST");
@@ -295,7 +320,7 @@ class ExaminatorPage extends TeacherPage
         //
         private function saveAddCourse()
         {
-                $uppdok = new UppdokData();
+                $uppdok = new UppdokData($this->param->year, $this->param->termin);
                 $users = $uppdok->members($this->param->course);
 
                 if (count($users) > 0) {
@@ -304,9 +329,8 @@ class ExaminatorPage extends TeacherPage
                         $handler = new Examinator($this->param->exam);
                         $handler->addStudents($data);
                 } else {
-                        ErrorPage::show(_("No members found"),
-                                        sprintf(_("The query for course %s in the directory service returned an empty list. ") .
-                                                _("It looks like no students belongs to this course."), $this->param->course));
+                        ErrorPage::show(_("No members found"), sprintf(_("The query for course %s in the directory service returned an empty list. ") .
+                                        _("It looks like no students belongs to this course."), $this->param->course));
                         exit(1);
                 }
 
@@ -353,19 +377,13 @@ class ExaminatorPage extends TeacherPage
                 $child->addChild(sprintf("%s: %d", _("Students"), $students->count()));
 
                 if ($info->isExaminatable()) {
-                        $stobj->addLink(_("Change"),
-                                sprintf("?exam=%d&amp;action=edit", $data->getExamID()),
-                                _("Click on this link to reschedule the examination"));
-                        $etobj->addLink(_("Change"),
-                                sprintf("?exam=%d&amp;action=edit", $data->getExamID()),
-                                _("Click on this link to reschedule the examination"));
+                        $stobj->addLink(_("Change"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()), _("Click on this link to reschedule the examination"));
+                        $etobj->addLink(_("Change"), sprintf("?exam=%d&amp;action=edit", $data->getExamID()), _("Click on this link to reschedule the examination"));
                 }
 
                 $child = $root->addChild(_("Students"));
                 if ($info->isExaminatable()) {
-                        $child->addLink(_("Add"),
-                                sprintf("?exam=%d&amp;action=add", $data->getExamID()),
-                                _("Click on this link to add students to this examination"));
+                        $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $data->getExamID()), _("Click on this link to add students to this examination"));
                 }
                 if ($students->count() > 0) {
                         foreach ($students as $student) {
@@ -374,15 +392,9 @@ class ExaminatorPage extends TeacherPage
                                 } else {
                                         $student->setStudentName("xxx");
                                 }
-                                $subobj = $child->addChild(sprintf("<code>%s -> %s</code>",
-                                                        $student->getStudentCode(),
-                                                        $student->getStudentName()));
+                                $subobj = $child->addChild(sprintf("<code>%s -> %s</code>", $student->getStudentCode(), $student->getStudentName()));
                                 if ($info->isExaminatable()) {
-                                        $subobj->addLink(_("Delete"),
-                                                sprintf("?exam=%d&amp;action=delete&amp;user=%d",
-                                                        $data->getExamID(), $student->getStudentID()),
-                                                sprintf(_("Click on this link to remove student %s from the exam."),
-                                                        $student->getStudentCode()));
+                                        $subobj->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;user=%d", $data->getExamID(), $student->getStudentID()), sprintf(_("Click on this link to remove student %s from the exam."), $student->getStudentCode()));
                                 }
                         }
                 }
@@ -437,20 +449,13 @@ class ExaminatorPage extends TeacherPage
                                         $name = $data[0];
                                         $state = $data[1];
                                         $child = $node->addChild($name);
-                                        $child->setLink(sprintf("?exam=%d&action=show", $state->getInfo()->getExamID()),
-                                                _("Click on this link to view and/or edit this examination"));
+                                        $child->setLink(sprintf("?exam=%d&action=show", $state->getInfo()->getExamID()), _("Click on this link to view and/or edit this examination"));
                                         $stobj = $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
                                         $etobj = $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
                                         if ($state->isExaminatable()) {
-                                                $child->addLink(_("Add"),
-                                                        sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()),
-                                                        _("Click on this link to add students to this examination"));
-                                                $stobj->addLink(_("Change"),
-                                                        sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()),
-                                                        _("Click on this link to reschedule the examination"));
-                                                $etobj->addLink(_("Change"),
-                                                        sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()),
-                                                        _("Click on this link to reschedule the examination"));
+                                                $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()), _("Click on this link to add students to this examination"));
+                                                $stobj->addLink(_("Change"), sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Click on this link to reschedule the examination"));
+                                                $etobj->addLink(_("Change"), sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Click on this link to reschedule the examination"));
                                         }
                                 }
                         }
