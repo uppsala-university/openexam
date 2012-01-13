@@ -68,8 +68,7 @@ class Teacher
 		               (SELECT COUNT(id) FROM contributors WHERE user = '%s') AS ContributorRoles, 
 		               (SELECT COUNT(id) FROM teachers WHERE user = '%s') AS ManagerRoles, 
 		               (SELECT COUNT(id) FROM exams WHERE creator = '%s') AS CreatorRoles,
-                               (SELECT COUNT(id) FROM questions WHERE user = '%s') AS CorrectorRoles",
-                                $user, $user, $user, $user, $user, $user);
+                               (SELECT COUNT(id) FROM questions WHERE user = '%s') AS CorrectorRoles", $user, $user, $user, $user, $user, $user);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -141,17 +140,10 @@ class TeacherPage extends BasePage
                 parent::__construct($title, $template);
         }
 
-        public function __destruct()
-        {
-                if (isset($this->ldap)) {
-                        $this->ldap->close();
-                }
-        }
-
         private function useDirectoryService()
         {
                 if (!isset($this->ldap)) {
-                        $this->ldap = LDAPSearch::factory();
+                        $this->ldap = new LdapSearch(LdapConnection::create());
                         $this->ldap->setAttributeFilter(array("cn", "mail", "o", "department"));
                 }
         }
@@ -165,11 +157,9 @@ class TeacherPage extends BasePage
                 printf("<ul>\n");
                 foreach ($sect->link as $obj) {
                         if (isset($obj->target)) {
-                                printf("<li><a href=\"%s\" target=\"%s\">%s</a></li>\n",
-                                        $obj->href, $obj->target, $obj->name);
+                                printf("<li><a href=\"%s\" target=\"%s\">%s</a></li>\n", $obj->href, $obj->target, $obj->name);
                         } else {
-                                printf("<li><a href=\"%s\">%s</a></li>\n",
-                                        $obj->href, $obj->name);
+                                printf("<li><a href=\"%s\">%s</a></li>\n", $obj->href, $obj->name);
                         }
                 }
                 printf("</ul>\n");
@@ -401,11 +391,8 @@ class TeacherPage extends BasePage
                                 }
                         }
 
-                        $roles->title = sprintf(_("Primary role: %s\n\nSupplementary roles:\n- %s\n"),
-                                        $roles->primary,
-                                        implode("\n- ", $roles->suppl));
-                        $state->title = sprintf(_("Additional status flags:\n- %s\n"),
-                                        implode("\n- ", $state->flags));
+                        $roles->title = sprintf(_("Primary role: %s\n\nSupplementary roles:\n- %s\n"), $roles->primary, implode("\n- ", $roles->suppl));
+                        $state->title = sprintf(_("Additional status flags:\n- %s\n"), implode("\n- ", $state->flags));
 
                         printf("<style type=\"text/css\">\n");
                         printf("dt { font-weight: bold; float: left; }\n");
@@ -429,8 +416,7 @@ class TeacherPage extends BasePage
                         $this->roles->getCreatorRoles() == 0 &&
                         $this->roles->getCorrectorRoles() == 0) {
 
-                        ErrorPage::show(_("Access denied!"),
-                                        _("Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."));
+                        ErrorPage::show(_("Access denied!"), _("Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."));
                         exit(1);
                 }
         }
@@ -445,9 +431,7 @@ class TeacherPage extends BasePage
                 foreach ($this->params as $param => $pattern) {
                         if (isset($_REQUEST[$param])) {
                                 if (!preg_match($pattern, $_REQUEST[$param])) {
-                                        ErrorPage::show(_("Request parameter error!"),
-                                                        sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
-                                                                $param, $pattern));
+                                        ErrorPage::show(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
                                         exit(1);
                                 } elseif (isset($_GET[$param])) {
                                         $this->param->$param = $_GET[$param];     // Inject washed parameter
@@ -468,8 +452,7 @@ class TeacherPage extends BasePage
                 }
                 foreach ($names as $name) {
                         if (!isset($_REQUEST[$name])) {
-                                ErrorPage::show(_("Missing required parameter!"),
-                                                sprintf(_("The required request parameter '%s' is missing"), $name));
+                                ErrorPage::show(_("Missing required parameter!"), sprintf(_("The required request parameter '%s' is missing"), $name));
                                 exit(1);
                         }
                 }
@@ -553,14 +536,14 @@ class TeacherPage extends BasePage
                         $entry = $this->ldap->searchUID($user);
                         if ($entry->first()->hasMail()) {
                                 return new MailRecepient($entry->first()->getCN()->first(),
-                                        $entry->first()->getMail()->first());
+                                                $entry->first()->getMail()->first());
                         }
                 }
                 if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
                         $entry = $this->ldap->searchPrincipalName($user);
                         if ($entry->first()->hasMail()) {
                                 return new MailRecepient($entry->first()->getCN()->first(),
-                                        $entry->first()->getMail()->first());
+                                                $entry->first()->getMail()->first());
                         }
                 }
                 return null;
