@@ -421,13 +421,9 @@ abstract class ScoreBoardOutput
         public function __construct($exam)
         {
                 $this->board = new ScoreBoard($exam);
-        }
-
-        public function __destruct()
-        {
-                if (isset($this->ldap)) {
-                        $this->ldap->close();
-                }
+                
+                $this->ldap = new LdapSearch(LdapConnection::instance());
+                $this->ldap->setAttributeFilter(array("cn"));
         }
 
         //
@@ -435,11 +431,6 @@ abstract class ScoreBoardOutput
         //
         protected function getCommonName($user, $lookup = LDAP_LOOKUP_BOTH)
         {
-                if (!isset($this->ldap)) {
-                        $this->ldap = LDAPSearch::factory();
-                }
-                $this->ldap->setAttributeFilter(array("cn"));
-
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);
                         if ($entry->first()->hasCN()) {
@@ -515,11 +506,8 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 $this->writer->writeFooter();
 
                 if ($content) {
-                        header(sprintf("Content-Type: %s",
-                                        $this->format->getMimeType()));
-                        header(sprintf("Content-Disposition: attachment;filename=\"%s.%s\"",
-                                        $this->board->getExam()->getExamName(),
-                                        $this->format->getExtension()));
+                        header(sprintf("Content-Type: %s", $this->format->getMimeType()));
+                        header(sprintf("Content-Disposition: attachment;filename=\"%s.%s\"", $this->board->getExam()->getExamName(), $this->format->getExtension()));
                         header("Cache-Control: no-cache");
                         header("Pragma-directive: no-cache");
                         header("Cache-directive: no-cache");
@@ -684,9 +672,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                 $obj = $row->addData($this->getCommonName($student->getStudentUser()));
                                 $obj->setNoWrap();
                                 if (!$this->show->user && !$this->show->code) {
-                                        $obj->setTitle(sprintf("%s: %s\n%s: %s",
-                                                        _("User"), $student->getStudentUser(),
-                                                        _("Code"), $student->getStudentCode()));
+                                        $obj->setTitle(sprintf("%s: %s\n%s: %s", _("User"), $student->getStudentUser(), _("Code"), $student->getStudentCode()));
                                 }
                         }
                         if ($this->show->user) {
@@ -695,9 +681,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                         if ($this->show->code) {
                                 $obj = $row->addData($student->getStudentCode());
                                 if ($this->show->links) {
-                                        $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;student=%d",
-                                                        $student->getExamID(),
-                                                        $student->getStudentID()));
+                                        $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;student=%d", $student->getExamID(), $student->getStudentID()));
                                 }
                         }
                         if ($this->show->score) {
@@ -705,8 +689,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                 // Print all answers for this student:
                                 //
                                 foreach ($questions as $question) {
-                                        $data = $this->board->getData($student->getStudentID(),
-                                                        $question->getQuestionID());
+                                        $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
                                         if ($this->colorize) {
                                                 if (!isset($data)) {
                                                         $obj = $row->addData("-");
@@ -759,9 +742,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 
                                         if ($question->getQuestionStatus() != 'removed') {
                                                 if ($question->getQuestionPublisher() == phpCAS::getUser()) {
-                                                        $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d",
-                                                                        $data->getExamID(),
-                                                                        $data->getAnswerID()));
+                                                        $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d", $data->getExamID(), $data->getAnswerID()));
                                                 } else {
                                                         if (!$this->colorize) {
                                                                 $obj->setClass("cc no");
@@ -817,9 +798,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                         } else {
                                 $obj->setClass("cc aa");
                         }
-                        $obj->setTitle(sprintf("%s: %d\n%s: %.01f%%",
-                                        _("Answers"), $score->getNum(),
-                                        _("Percent"), $score->getPercent()));
+                        $obj->setTitle(sprintf("%s: %d\n%s: %.01f%%", _("Answers"), $score->getNum(), _("Percent"), $score->getPercent()));
                 }
 
                 $table->output();
@@ -839,9 +818,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
         private function getHeaderData($question)
         {
                 if ($question->getQuestionPublisher() == phpCAS::getUser()) {
-                        $header->link = sprintf("?exam=%d&amp;action=correct&amp;question=%d",
-                                        $question->getExamID(),
-                                        $question->getQuestionID());
+                        $header->link = sprintf("?exam=%d&amp;action=correct&amp;question=%d", $question->getExamID(), $question->getQuestionID());
                 }
 
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
@@ -853,22 +830,12 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 }
 
                 $header->name = sprintf("Q%d", ++$this->index);
-                $header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f\n%s: %s",
-                                _("Question"),
-                                $question->getQuestionName(),
-                                $question->getQuestionBody(),
-                                _("Max score"),
-                                $question->getQuestionScore(),
-                                _("Publisher"),
-                                $this->getCommonName($question->getQuestionPublisher()));
+                $header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f\n%s: %s", _("Question"), $question->getQuestionName(), $question->getQuestionBody(), _("Max score"), $question->getQuestionScore(), _("Publisher"), $this->getCommonName($question->getQuestionPublisher()));
                 if ($question->getQuestionStatus() == 'removed') {
                         if ($question->getQuestionComment() != null) {
-                                $header->desc .= sprintf("\n\n%s: %s",
-                                                _("This question has been removed"),
-                                                $question->getQuestionComment());
+                                $header->desc .= sprintf("\n\n%s: %s", _("This question has been removed"), $question->getQuestionComment());
                         } else {
-                                $header->desc .= sprintf("\n\n%s.",
-                                                _("This question has been removed"));
+                                $header->desc .= sprintf("\n\n%s.", _("This question has been removed"));
                         }
                 }
                 return $header;

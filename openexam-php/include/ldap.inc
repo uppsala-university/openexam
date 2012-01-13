@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2009-2010 Computing Department BMC, 
+// Copyright (C) 2009-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/ldap.inc
@@ -33,9 +33,6 @@ if (!defined("LDAP_SEARCH_SN")) {
 if (!defined("LDAP_SEARCH_CN")) {
         define("LDAP_SEARCH_CN", "(cn=%s %s)");
 }
-if (!defined("LDAP_SEARCH_PRINCIPAL")) {
-        define("LDAP_SEARCH_PRINCIPAL", "(edupersonprincipalname=%s@user.uu.se)");
-}
 if (!defined("LDAP_SEARCH_GIVEN_NAME")) {
         define("LDAP_SEARCH_GIVEN_NAME", "(givenname=%s)");
 }
@@ -43,7 +40,7 @@ if (!defined("LDAP_SEARCH_GIVEN_NAME")) {
 // 
 // Our custom LDAP exception.
 // 
-class LDAPException extends Exception
+class LdapException extends Exception
 {
 
         function __construct($message, $code = 0)
@@ -61,7 +58,7 @@ class LDAPException extends Exception
 // 
 // The LDAP result set of entries. Note that this is actually a collection.
 // 
-class LDAPResultSet implements Iterator
+class LdapResultSet implements Iterator
 {
 
         protected $data = array();
@@ -153,10 +150,10 @@ class LDAPResultSet implements Iterator
 // Represent a single directory entry. This is also a collection of 
 // attributes.
 // 
-class LDAPDirectoryEntry extends LDAPResultSet
+class LdapDirectoryEntry extends LdapResultSet
 {
 
-        private static $class = "LDAPAttributeData";
+        private static $class = "LdapAttributeData";
 
         public function __construct($key, $data)
         {
@@ -194,7 +191,7 @@ class LDAPDirectoryEntry extends LDAPResultSet
 // Represent the collection of attribute values for a single 
 // directory entry attribute.
 // 
-class LDAPAttributeData extends LDAPResultSet
+class LdapAttributeData extends LdapResultSet
 {
 
         public function __construct($key, $data)
@@ -212,7 +209,7 @@ class LDAPAttributeData extends LDAPResultSet
 // 
 // A simple LDAP query cache.
 // 
-class LDAPCache
+class LdapResultCache
 {
 
         private $cache = array();
@@ -237,7 +234,7 @@ class LDAPCache
 // This class implements the LDAP search functionality. The attribute that's
 // returned can be filtered by calling setAttributeFilter().
 // 
-class LDAPSearch
+class LdapConnection
 {
 
         private $basedn;
@@ -245,10 +242,9 @@ class LDAPSearch
         private $port = LDAP_STANDARD_PORT;
         private $user = null;    // Optional username (for binding).
         private $pass = null;    // Optional password (for binding).
-        private $attr = null;    // Search attribute list.
         private $dc = null;
         private $db = null;
-        private $cache;
+        private static $instance;
 
         public function __construct($server = null, $basedn = null)
         {
@@ -259,6 +255,26 @@ class LDAPSearch
         public function __destruct()
         {
                 $this->close();
+        }
+
+        public function __get($name)
+        {
+                return $this->$name;
+        }
+
+        public function __set($name, $value)
+        {
+                $this->$name = $value;
+        }
+
+        public function __toString()
+        {
+                return sprintf("%s@%s:%d/%s", $this->user, $this->server, $this->port, $this->basedn);
+        }
+
+        public function connected()
+        {
+                return $this->dc != null;
         }
 
         //
@@ -272,9 +288,8 @@ class LDAPSearch
                 //
                 $this->dc = ldap_connect($this->server, $this->port);
                 if (!$this->dc) {
-                        throw new LDAPException(sprintf(
-                                        _("Failed connect to LDAP server %s:%d"),
-                                        $this->server, $this->port));
+                        throw new LdapException(sprintf(
+                                        _("Failed connect to LDAP server %s:%d"), $this->server, $this->port));
                 }
 
                 //
@@ -282,9 +297,8 @@ class LDAPSearch
                 //
                 if (defined("LDAP_PROTOCOL_VERSION")) {
                         if (!ldap_set_option($this->dc, LDAP_OPT_PROTOCOL_VERSION, LDAP_PROTOCOL_VERSION)) {
-                                throw new LDAPException(sprintf(
-                                                _("Failed set LDAP protocol version %d"),
-                                                LDAP_PROTOCOL_VERSION));
+                                throw new LdapException(sprintf(
+                                                _("Failed set LDAP protocol version %d"), LDAP_PROTOCOL_VERSION));
                         }
                 }
 
@@ -302,7 +316,8 @@ class LDAPSearch
                         $this->db = ldap_bind($this->dc);    // Anonymous
                 }
                 if (!$this->db) {
-                        throw new LDAPException(ldap_error($this->dc), ldap_errno($this->dc));
+                    printf("%s\n", $this);
+                        throw new LdapException(ldap_error($this->dc), ldap_errno($this->dc));
                 }
         }
 
@@ -313,7 +328,7 @@ class LDAPSearch
                         // Disconnect from LDAP server:
                         //
                         if (!ldap_unbind($this->dc)) {
-                                throw new LDAPException(ldap_error($this->dc), ldap_errno($this->dc));
+                                throw new LdapException(ldap_error($this->dc), ldap_errno($this->dc));
                         } else {
                                 $this->dc = null;
                         }
@@ -323,75 +338,96 @@ class LDAPSearch
         //
         // Create a LDAP search object based on the settings in conf/config.inc
         //
-        public static function factory()
+        public static function create()
         {
-                $ldap = new LDAPSearch();
+                $ldap = new LdapConnection();
 
                 if (defined('LDAP_SERVER')) {
-                        $ldap->setServer(LDAP_SERVER);
+                        $ldap->server = LDAP_SERVER;
                 }
                 if (defined('LDAP_BASEDN')) {
-                        $ldap->setBaseDN(LDAP_BASEDN);
+                        $ldap->basedn = LDAP_BASEDN;
                 }
                 if (defined('LDAP_PORT')) {
-                        $ldap->setPort(LDAP_PORT);
+                        $ldap->port = LDAP_PORT;
                 }
                 if (defined('LDAP_USER')) {
-                        $ldap->setUserName(LDAP_USER);
+                        $ldap->user = LDAP_USER;
                 }
                 if (defined('LDAP_PASS')) {
-                        $ldap->setPassword(LDAP_PASS);
-                }
-                if (defined('LDAP_CACHE') && LDAP_CACHE) {
-                        $ldap->setCache(new LDAPCache());
+                        $ldap->pass = LDAP_PASS;
                 }
 
                 return $ldap;
         }
 
-        public function setBaseDN($basedn)
+        // 
+        // Get shared LDAP connection instance. A new connection is created if
+        // required by calling create().
+        // 
+        public static function instance()
         {
-                $this->basedn = $basedn;
+                if (!isset(self::$instance)) {
+                        self::$instance = self::create();
+                }
+                return self::$instance;
         }
 
-        public function getBaseDN()
+        public function search($filter, $attr)
         {
-                return $this->basedn;
+                //
+                // Open connection on first search.
+                //
+                if (!isset($this->dc)) {
+                        $this->open();
+                }
+
+                //
+                // Perform the search against using the supplied filter:
+                //
+                if (isset($this->attr)) {
+                        $rs = ldap_search($this->dc, $this->basedn, $filter, $attr);
+                } else {
+                        $rs = ldap_search($this->dc, $this->basedn, $filter);
+                }
+                if (!$rs) {
+                        throw new LdapException(ldap_error($this->dc), ldap_errno($this->dc));
+                }
+
+                //
+                // Get all entries:
+                //
+                $de = ldap_get_entries($this->dc, $rs);
+                if (!$de) {
+                        throw new LdapException(ldap_error($this->dc), ldap_errno($this->dc));
+                }
+
+                //
+                // Return LDAP result object.
+                //
+                return new LdapResultSet(null, $de, "LdapDirectoryEntry");
         }
 
-        public function setServer($server)
-        {
-                $this->server = $server;
-        }
+}
 
-        public function getServer()
-        {
-                return $this->server;
-        }
+class LdapSearch
+{
 
-        public function setPort($port)
-        {
-                $this->port = $port;
-        }
+        private $connection;
+        private $attr = null;    // Search attribute list.
+        private $cache;
 
-        public function getPort()
+        /**
+         * Constructor.
+         * @param LdapConnection $connection The LDAP connection.
+         */
+        public function __construct($connection)
         {
-                return $this->port;
-        }
+                $this->connection = $connection;
 
-        public function setPassword($pass)
-        {
-                $this->pass = $pass;
-        }
-
-        public function setUserName($user)
-        {
-                $this->user = $user;
-        }
-
-        public function getUserName()
-        {
-                return $this->user;
+                if (defined('LDAP_CACHE') && LDAP_CACHE) {
+                        $this->cache = new LdapResultCache();
+                }
         }
 
         //
@@ -411,10 +447,19 @@ class LDAPSearch
                 $this->cache = $cache;
         }
 
+        /**
+         * @return LdapConnection
+         */
+        public function getConnection()
+        {
+                return $this->connection;
+        }
+
         //
-        // This function performs the search against the LDAP server
-        // and returns a LDAP result object that might contain multiple
-        // matched entries.
+        // This function performs the search against the LDAP server and returns 
+        // a LDAP result object that might contain multiple matched entries.
+        // 
+        // The $attr parameter works as a tag into the result cache.
         //
         private function search($filter, $attr)
         {
@@ -428,37 +473,8 @@ class LDAPSearch
                         }
                 }
 
-                //
-                // Open connection on first search.
-                //
-                if (!isset($this->dc)) {
-                        $this->open();
-                }
+                $result = $this->connection->search($filter, $this->attr);
 
-                //
-                // Perform the search against using the supplied filter:
-                //
-                if (isset($this->attr)) {
-                        $rs = ldap_search($this->dc, $this->basedn, $filter, $this->attr);
-                } else {
-                        $rs = ldap_search($this->dc, $this->basedn, $filter);
-                }
-                if (!$rs) {
-                        throw new LDAPException(ldap_error($this->dc), ldap_errno($this->dc));
-                }
-
-                //
-                // Get all entries:
-                //
-                $de = ldap_get_entries($this->dc, $rs);
-                if (!$de) {
-                        throw new LDAPException(ldap_error($this->dc), ldap_errno($this->dc));
-                }
-
-                //
-                // Return LDAP result object.
-                //
-                $result = new LDAPResultSet(null, $de, "LDAPDirectoryEntry");
                 if (isset($this->cache)) {
                         $this->cache->store($attr, $filter, $result);
                 }
@@ -470,7 +486,7 @@ class LDAPSearch
         //
         public function searchCN($firstname, $lastname)
         {
-                return self::search(sprintf(LDAP_SEARCH_CN, $firstname, $lastname), "cn");
+                return $this->search(sprintf(LDAP_SEARCH_CN, $firstname, $lastname), "cn");
         }
 
         //
@@ -478,7 +494,7 @@ class LDAPSearch
         //
         public function searchGivenName($firstname)
         {
-                return self::search(sprintf(LDAP_SEARCH_GIVEN_NAME, $firstname), "givenname");
+                return $this->search(sprintf(LDAP_SEARCH_GIVEN_NAME, $firstname), "givenname");
         }
 
         //
@@ -486,7 +502,7 @@ class LDAPSearch
         //
         public function searchSN($lastname)
         {
-                return self::search(sprintf(LDAP_SEARCH_SN, $lastname), "sn");
+                return $this->search(sprintf(LDAP_SEARCH_SN, $lastname), "sn");
         }
 
         //
@@ -494,7 +510,7 @@ class LDAPSearch
         //
         public function searchUID($account_id)
         {
-                return self::search(sprintf(LDAP_SEARCH_UID, $account_id), "uid");
+                return $this->search(sprintf(LDAP_SEARCH_UID, $account_id), "uid");
         }
 
         //
@@ -504,7 +520,7 @@ class LDAPSearch
         //
         public function searchPrincipalName($account_id)
         {
-                return self::search(sprintf(LDAP_SEARCH_PRINCIPAL, $account_id), "principal");
+                return $this->search(sprintf(LDAP_SEARCH_PRINCIPAL, $account_id), "principal");
         }
 
 }
