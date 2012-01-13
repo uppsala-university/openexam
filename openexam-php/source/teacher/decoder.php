@@ -434,7 +434,7 @@ class DecoderPage extends TeacherPage
         private function sendResult()
         {
                 printf("<h5>" . _("Sending Result") . "</h5>\n");
-
+                
                 $from = $this->getMailRecepient(phpCAS::getUser());
                 $data = $this->manager->getData();
                 $mail = new MailResult($data->getExamName(), $data->getExamStartTime(), $from, $from);

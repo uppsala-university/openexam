@@ -258,7 +258,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->manager = new Manager($examid);
                 $this->exam = $this->manager->getData();
 
-                $this->ldap = LDAPSearch::factory();
+                $this->ldap = new LdapSearch(LdapConnection::instance());
                 $this->ldap->setAttributeFilter(array("cn", "mail"));
 
                 $this->board = new ScoreBoard($this->exam->getExamID());
@@ -271,7 +271,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         public function __destruct()
         {
                 parent::__destruct();
-                $this->ldap->close();
         }
 
         //

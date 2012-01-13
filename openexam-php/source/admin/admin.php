@@ -135,7 +135,7 @@ class SupervisorAdminPage extends AdminPage
                 _("These users have been granted administrative privileges:") .
                 "</p>\n";
 
-                $ldap = LDAPSearch::factory();
+                $ldap = new LdapSearch(LdapConnection::instance());
                 $users = Admin::getAdminUsers();
 
                 $table = new Table();
