@@ -138,7 +138,7 @@ class TeacherAdminPage extends AdminPage
                 "</p>\n";
 
                 $addr = array();
-                $ldap = LDAPSearch::factory();
+                $ldap = new LdapSearch(LdapConnection::instance());
                 $users = Teacher::getTeachers();
 
                 $table = new Table();
