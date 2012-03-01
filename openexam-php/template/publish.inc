@@ -25,7 +25,7 @@ function get_publish_info()
                         "href" => "http://www.bmc.uu.se/",
                         "name" => _("Webmaster")
                 ),
-                "published" => "2010",
+                "published" => "2010-2012",
                 "modified" => getlastmod()
         );
 }
