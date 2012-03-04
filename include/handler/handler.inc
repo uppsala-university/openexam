@@ -68,10 +68,7 @@ class HandlerFactory
                         include($this->path);
                         return new $this->name();
                 } else {
-                        $message = sprintf("No handler class %s for format type %s exist in %s",
-                                        $this->name,
-                                        $this->type,
-                                        $this->file);
+                        $message = sprintf("No handler class %s for format type %s exist in %s", $this->name, $this->type, $this->file);
                         throw new HandlerException($message);
                 }
         }
@@ -127,6 +124,35 @@ class HandlerCache
                 header(sprintf("Content-Type: %s\n", $mime));
                 header(sprintf("Content-Length: %d\n", filesize($this->file)));
                 readfile($this->file);
+        }
+
+}
+
+// 
+// Question text scanner class.
+// 
+class HandlerScanner
+{
+
+        private $text;  // question text
+
+        const PATTERN = "/<%(\w+)[\s\n]*((\n|.)*?)[\s\n]%>/m";
+        const REPLACE = "<img src='images/handler.php?type=%s&data=%s'>";
+
+        public function __construct($text)
+        {
+                $this->text = $text;
+        }
+
+        // 
+        // Replace all <%type data %> escape sequences with HTML code that
+        // calls the handler with proper encoded arguments.
+        // 
+        public function expand()
+        {
+                return preg_replace_callback(self::PATTERN, function($match) {
+                                return sprintf(HandlerScanner::REPLACE, $match[1], urlencode($match[2]));
+                        }, $this->text);
         }
 
 }

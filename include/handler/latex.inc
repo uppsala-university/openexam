@@ -14,6 +14,7 @@
 
 class LatexHandler implements HandlerType
 {
+
         const mime = "image/png";
 
         public function process($data, $path)
