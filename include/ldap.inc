@@ -286,10 +286,9 @@ class LdapConnection
                 // Establish connection with the LDAP server. Returns a link
                 // resource that we use in subsequent calls.
                 //
-                $this->dc = ldap_connect($this->server, $this->port);
-                if (!$this->dc) {
+                if (!($this->dc = ldap_connect($this->server, $this->port))) {
                         throw new LdapException(sprintf(
-                                        _("Failed connect to LDAP server %s:%d"), $this->server, $this->port));
+                                _("Failed connect to LDAP server %s:%d"), $this->server, $this->port));
                 }
 
                 //
@@ -298,7 +297,7 @@ class LdapConnection
                 if (defined("LDAP_PROTOCOL_VERSION")) {
                         if (!ldap_set_option($this->dc, LDAP_OPT_PROTOCOL_VERSION, LDAP_PROTOCOL_VERSION)) {
                                 throw new LdapException(sprintf(
-                                                _("Failed set LDAP protocol version %d"), LDAP_PROTOCOL_VERSION));
+                                        _("Failed set LDAP protocol version %d"), LDAP_PROTOCOL_VERSION));
                         }
                 }
 
@@ -316,7 +315,6 @@ class LdapConnection
                         $this->db = ldap_bind($this->dc);    // Anonymous
                 }
                 if (!$this->db) {
-                    printf("%s\n", $this);
                         throw new LdapException(ldap_error($this->dc), ldap_errno($this->dc));
                 }
         }
@@ -373,7 +371,7 @@ class LdapConnection
                 return self::$instance;
         }
 
-        public function search($filter, $attr)
+        public function search($filter, $attr = null)
         {
                 //
                 // Open connection on first search.
@@ -385,7 +383,7 @@ class LdapConnection
                 //
                 // Perform the search against using the supplied filter:
                 //
-                if (isset($this->attr)) {
+                if (isset($attr)) {
                         $rs = ldap_search($this->dc, $this->basedn, $filter, $attr);
                 } else {
                         $rs = ldap_search($this->dc, $this->basedn, $filter);
