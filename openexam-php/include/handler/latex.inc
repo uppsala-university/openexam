@@ -32,7 +32,8 @@ class LatexHandler implements HandlerType
                 if (($handle = fopen($files->tex, "w"))) {
                         fprintf($handle, "\documentclass[10pt]{article}\n");
 
-                        fprintf($handle, "% add additional packages here\n");
+                        fprintf($handle, "%% add additional packages here\n");
+                        fprintf($handle, "\usepackage[utf8]{inputenc}\n");
                         fprintf($handle, "\usepackage{amsmath}\n");
                         fprintf($handle, "\usepackage{amsfonts}\n");
                         fprintf($handle, "\usepackage{amssymb}\n");
@@ -54,7 +55,7 @@ class LatexHandler implements HandlerType
                 // Transform LaTeX input to DVI, then create the PNG-file.
                 //
                 exec(sprintf("/usr/bin/latex %s", $files->tex));
-                exec(sprintf("/usr/bin/dvipng %s -o %s", $files->dvi, $path));
+                exec(sprintf("/usr/bin/dvipng %s -T tight -o %s", $files->dvi, $path));
 
                 //
                 // Check that result file exists:
