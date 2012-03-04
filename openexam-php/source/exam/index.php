@@ -55,6 +55,7 @@ include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
 include "include/html.inc";
+include "include/handler/handler.inc";
 
 // 
 // Include database support:
@@ -415,12 +416,20 @@ class ExaminationPage extends BasePage
                 //
                 $pattern = "/(\r\n){2,}|(\n|\r){4,}/";
                 $replace = "\n<br/><br/>\n";
+                
+                // 
+                // Expands handler escape sequencess:
+                // 
+                $scanner = new HandlerScanner($qdata->getQuestionText());
 
+                // 
+                // Output question text:
+                // 
                 if ($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         printf("<div class=\"question\">%s</div>\n",
-                                preg_replace($pattern, $replace, $qdata->getQuestionText()));
+                                preg_replace($pattern, $replace, $scanner->expand()));
                 } else {
-                        $options = Exam::getQuestionChoice($qdata->getQuestionText());
+                        $options = Exam::getQuestionChoice($scanner->expand());
                         printf("<div class=\"question\">%s</div>\n",
                                 preg_replace($pattern, $replace, $options[0]));
                 }

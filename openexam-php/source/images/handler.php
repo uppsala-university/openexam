@@ -16,8 +16,8 @@
 //
 //   <%name str %>  ->  <img src="images/handler.php?type=name&data=enc">
 //
-// The enc value for parameter data is str HTML encoded. The name of parameter
-// type is copied verbatime.
+// The enc value for parameter data is str encoded using urlencode(). The name 
+// of parameter type is copied verbatime.
 // 
 // A request to this script checks if a handler exist. Handlers for different
 // format types is stored under include/handler:
