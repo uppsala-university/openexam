@@ -5,7 +5,7 @@
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/database.inc
-// Author: Anders Lövgren
+// Author: Anders LÃ¶vgren
 // Date:   2009-06-25
 // 
 // Datebase related classes. It's usage are:
