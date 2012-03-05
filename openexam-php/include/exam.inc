@@ -26,6 +26,41 @@ if (!defined("QUESTION_TYPE_MULTI_CHOICE")) {
 class Exam
 {
 
+        // 
+        // Get all exams between start and end, excluding test cases if false.
+        // The stime and etime argument is either null or an UNIX timestamp.
+        // 
+        public static function getExamList($stime = null, $etime = null, $testcase = false)
+        {
+                $arg = array();
+                $sql = sprintf("SELECT  id AS ExamID,
+                                        name AS ExamName,
+                                        descr AS ExamDescription,
+                                        starttime AS ExamStartTime,
+                                        endtime AS ExamEndTime,
+                                        created AS ExamCreated,
+                                        updated AS ExamUpdated,
+                                        creator AS ExamCreator
+                                FROM    exams");
+
+                if (isset($stime)) {
+                        $arg[] = sprintf("starttime > '%s'", strftime(DATETIME_DB, $stime));
+                }
+                if (isset($etime)) {
+                        $arg[] = sprintf("endtime < '%s'", strftime(DATETIME_DB, $etime));
+                }
+                if (!$testcase) {
+                        $arg[] = sprintf("testcase = 'N'");
+                }
+
+                if (count($arg) != 0) {
+                        $sql .= sprintf(" WHERE %s", implode(" AND ", $arg));
+                }
+
+                $res = Database::getConnection()->query($sql);
+                return new ResultSet($res);
+        }
+
         //
         // Get all exams that has been assigned to this user and is active right now.
         //
@@ -44,8 +79,7 @@ class Exam
                                 FROM    students s, exams e
                                 WHERE   s.user = '%s' AND
                                         s.exam_id = e.id AND
-                                        '%s' BETWEEN e.starttime AND e.endtime",
-                                $user, $now);
+                                        '%s' BETWEEN e.starttime AND e.endtime", $user, $now);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
@@ -66,8 +100,7 @@ class Exam
                                 FROM    students s, exams e
                                 WHERE   s.user = '%s' AND
                                         s.exam_id = e.id AND
-                                        '%s' >= e.endtime",
-                                $user, $now);
+                                        '%s' >= e.endtime", $user, $now);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
@@ -146,8 +179,7 @@ class Exam
                                         WHERE   s.exam_id = e.id AND
                                                 e.id = q.exam_id AND
                                                 e.id = %d AND
-                                                s.user = '%s'",
-                                        $exam, $user);
+                                                s.user = '%s'", $exam, $user);
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {
                                 throw new DatabaseException($res->getMessage());
@@ -186,11 +218,7 @@ class Exam
                                                                 q.exam_id = e.id AND
                                                                 e.id = s.exam_id AND
                                                                 s.user = '%s'
-                                                        ORDER BY RAND() LIMIT %d",
-                                                        $exam,
-                                                        $topic['id'],
-                                                        $user,
-                                                        $topic['randomize']);
+                                                        ORDER BY RAND() LIMIT %d", $exam, $topic['id'], $user, $topic['randomize']);
                                         $res = $db->query($sql);
                                         if (PEAR::isError($res)) {
                                                 throw new DatabaseException($res->getMessage());
@@ -224,10 +252,7 @@ class Exam
                                                                 q.topic_id = %d AND
                                                                 q.exam_id = e.id AND
                                                                 e.id = s.exam_id AND
-                                                                s.user = '%s'",
-                                                        $exam,
-                                                        $topic['id'],
-                                                        $user);
+                                                                s.user = '%s'", $exam, $topic['id'], $user);
                                         $res = $db->query($sql);
                                         if (PEAR::isError($res)) {
                                                 throw new DatabaseException($res->getMessage());
@@ -433,8 +458,7 @@ class Exam
                 $uid = self::getStudentID($exam, $user);
                 $sql = sprintf("UPDATE  answers SET answer = '%s', answered = 'Y'
                                 WHERE   question_id = %d AND
-                                        student_id = %d",
-                                $answer, $question, $uid);
+                                        student_id = %d", $answer, $question, $uid);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
