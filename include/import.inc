@@ -71,8 +71,28 @@ abstract class ImportBase implements Import
 
         public function __construct($name, $file, $mime, $size, $accept = "")
         {
-                if (isset($mime) && $mime != $accept) {
-                        throw new ImportException(sprintf(_("Wrong MIME type (%s) on uploaded file %s (expected %s)"), $mime, $name, $accept));
+                $accepted = false;
+                $expected = is_array($accept) ? implode("|", $accept) : $accept;
+
+                if (!isset($mime)) {
+                        $accepted = true;       // Give it a try
+                } else {
+                        if (is_array($accept)) {
+                                foreach ($accept as $type) {
+                                        if ($type == $mime) {
+                                                $accepted = true;
+                                                break;
+                                        }
+                                }
+                        } else {
+                                if ($mime == $accept) {
+                                        $accepted = true;
+                                }
+                        }
+                }
+
+                if (!$accepted) {
+                        throw new ImportException(sprintf(_("Wrong MIME type (%s) on uploaded file %s (expected %s)"), $mime, $name, $expected));
                 }
                 if ($size == 0) {
                         throw new ImportException(sprintf(_("Empty file %s uploaded"), $name));
@@ -109,6 +129,7 @@ abstract class ImportBase implements Import
 
 abstract class ImportInsert
 {
+
         const questions = 1;    // Insert questions
         const project = 2;      // Insert/update project
 
@@ -139,8 +160,7 @@ class ImportInsertPingPong extends ImportInsert
         {
                 foreach ($data as $topic => $questions) {
                         $sql = sprintf("INSERT INTO topics(exam_id, name)
-                                        VALUES(%d, '%s')",
-                                        $this->exam, $topic);
+                                        VALUES(%d, '%s')", $this->exam, $topic);
                         $res = $this->db->query($sql);
                         if (PEAR::isError($res)) {
                                 throw new DatabaseException($res->getMessage());
@@ -174,15 +194,7 @@ class ImportInsertPingPong extends ImportInsert
                                                                 type,
                                                                 user,
                                                                 comment)
-                                                VALUES(%d,%d,%f,'%s','%s','%s','%s','%s')",
-                                                $this->exam,
-                                                $tid,
-                                                $question['score'],
-                                                $question['name'],
-                                                $question['quest'],
-                                                $question['type'],
-                                                $question['user'],
-                                                $question['comment']);
+                                                VALUES(%d,%d,%f,'%s','%s','%s','%s','%s')", $this->exam, $tid, $question['score'], $question['name'], $question['quest'], $question['type'], $question['user'], $question['comment']);
 
                                 $res = $this->db->query($sql);
                                 if (PEAR::isError($res)) {
@@ -219,30 +231,14 @@ class ImportInsertOpenExam extends ImportInsert
                                                                 endtime = '%s',
                                                                 created = '%s',
                                                                 grades = '%s'
-                                                        WHERE   exam_id = %d",
-                                                        $data->project->name,
-                                                        $data->project->description,
-                                                        $data->project->orgunit,
-                                                        $data->project->starttime,
-                                                        $data->project->endtime,
-                                                        $data->project->created,
-                                                        $data->project->grades,
-                                                        $this->exam);
+                                                        WHERE   exam_id = %d", $data->project->name, $data->project->description, $data->project->orgunit, $data->project->starttime, $data->project->endtime, $data->project->created, $data->project->grades, $this->exam);
                                         $res = $this->db->query($sql);
                                         if (PEAR::isError($res)) {
                                                 throw new DatabaseException($res->getMessage());
                                         }
                                 } else {
                                         $sql = sprintf("INSERT INTO exams(name, descr, orgunit, starttime, endtime, created, creator, grades)
-                                                        VALUES('%s','%s','%s','%s','%s','%s','%s','%s')",
-                                                        $data->project->name,
-                                                        $data->project->description,
-                                                        $data->project->orgunit,
-                                                        $data->project->starttime,
-                                                        $data->project->endtime,
-                                                        $data->project->created,
-                                                        phpCAS::getUser(),
-                                                        $data->project->grades);
+                                                        VALUES('%s','%s','%s','%s','%s','%s','%s','%s')", $data->project->name, $data->project->description, $data->project->orgunit, $data->project->starttime, $data->project->endtime, $data->project->created, phpCAS::getUser(), $data->project->grades);
                                         $res = $this->db->query($sql);
                                         if (PEAR::isError($res)) {
                                                 throw new DatabaseException($res->getMessage());
@@ -259,10 +255,7 @@ class ImportInsertOpenExam extends ImportInsert
                         $topicmap = array();
                         foreach ($data->topics->topic as $topic) {
                                 $sql = sprintf("INSERT INTO topics(exam_id, name, randomize)
-                                                VALUES(%d,'%s','%s')",
-                                                $this->exam,
-                                                $topic->name,
-                                                $topic->randomize);
+                                                VALUES(%d,'%s','%s')", $this->exam, $topic->name, $topic->randomize);
                                 $res = $this->db->query($sql);
                                 if (PEAR::isError($res)) {
                                         throw new DatabaseException($res->getMessage());
@@ -276,19 +269,7 @@ class ImportInsertOpenExam extends ImportInsert
                         foreach ($data->questions->question as $question) {
                                 $question->quest = $this->db->escape($question->text);
                                 $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, user, video, image, audio, type, status, comment)
-                                                VALUES(%d,%d,%f,'%s','%s','%s','%s','%s','%s','%s','%s','%s')",
-                                                $this->exam,
-                                                $topicmap[(int) $question['topic']],
-                                                $question->score,
-                                                $question->name,
-                                                $question->quest,
-                                                $question->publisher,
-                                                $question->video,
-                                                $question->image,
-                                                $question->audio,
-                                                $question->type,
-                                                $question->status,
-                                                $question->comment);
+                                                VALUES(%d,%d,%f,'%s','%s','%s','%s','%s','%s','%s','%s','%s')", $this->exam, $topicmap[(int) $question['topic']], $question->score, $question->name, $question->quest, $question->publisher, $question->video, $question->image, $question->audio, $question->type, $question->status, $question->comment);
                                 $res = $this->db->query($sql);
                                 if (PEAR::isError($res)) {
                                         throw new DatabaseException($res->getMessage());
@@ -301,6 +282,7 @@ class ImportInsertOpenExam extends ImportInsert
 
 class ImportPingPongExcel extends ImportBase
 {
+
         const format = "QI625";
         const expect = "Exported from the questionbank in PING PONG";
         const accept = "application/vnd.ms-excel";
@@ -392,6 +374,7 @@ class ImportPingPongExcel extends ImportBase
 
 class ImportPingPongText extends ImportBase
 {
+
         const format = "QI625";
         const expect = "Exported from the questionbank in PING PONG";
         const accept = "text/plain";
@@ -490,8 +473,8 @@ class ImportPingPongText extends ImportBase
 
 abstract class ImportOpenExam extends ImportBase
 {
-        const accept = "application/xml";
 
+        private $accept = array("application/xml", "text/xml");
         protected $xmldoc;      // SimpleXML document object
 
         public function __construct($name, $file, $mime, $size, $accept = null)
@@ -502,7 +485,7 @@ abstract class ImportOpenExam extends ImportBase
                 if (!extension_loaded("dom")) {
                         throw new ImportException("The DOM Document extension (dom) is not loaded");
                 }
-                parent::__construct($name, $file, $mime, $size, self::accept);
+                parent::__construct($name, $file, $mime, $size, $this->accept);
         }
 
         public function open()
