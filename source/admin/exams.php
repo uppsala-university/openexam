@@ -375,6 +375,8 @@ class ExamAdminPage extends AdminPage
                         }
                 }
                 $table->output();
+
+                printf("<p><b>%s:</b> %d</p>\n", _("Count"), $data->count());
         }
 
 }
