@@ -231,7 +231,7 @@ class ImportInsertOpenExam extends ImportInsert
                                                                 endtime = '%s',
                                                                 created = '%s',
                                                                 grades = '%s'
-                                                        WHERE   exam_id = %d", $data->project->name, $data->project->description, $data->project->orgunit, $data->project->starttime, $data->project->endtime, $data->project->created, $data->project->grades, $this->exam);
+                                                        WHERE   id = %d", $data->project->name, $data->project->description, $data->project->orgunit, $data->project->starttime, $data->project->endtime, $data->project->created, $data->project->grades, $this->exam);
                                         $res = $this->db->query($sql);
                                         if (PEAR::isError($res)) {
                                                 throw new DatabaseException($res->getMessage());
@@ -244,6 +244,20 @@ class ImportInsertOpenExam extends ImportInsert
                                                 throw new DatabaseException($res->getMessage());
                                         }
                                         $this->exam = $this->db->lastInsertID("exams");
+                                }
+
+                                // 
+                                // Need to fix past start time.
+                                // 
+                                if (strtotime($data->project->starttime) < time()) {
+                                        $sql = sprintf("UPDATE  exams SET 
+                                                                starttime = '%s', 
+                                                                endtime = '%s' 
+                                                        WHERE id = %d", DATETIME_NONE, DATETIME_NONE, $this->exam);
+                                        $res = $this->db->query($sql);
+                                        if (PEAR::isError($res)) {
+                                                throw new DatabaseException($res->getMessage());
+                                        }
                                 }
                         }
                 }
