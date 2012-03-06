@@ -1,14 +1,14 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
-// File:   source/admin/admin.php
+// File:   source/admin/exams.php
 // Author: Anders Lövgren
-// Date:   2010-03-05
+// Date:   2012-03-05
 // 
-// The main admin page.
+// The exams admin page.
 //
 // 
 // Force logon for unauthenticated users:
@@ -70,7 +70,9 @@ class ExamAdminPage extends AdminPage
 
         private $params = array(
             "data" => "/^(all|real|upcoming|today)$/",
-            "compact" => "/.*/"
+            "compact" => "/.*/",
+            "submit" => "/.*/",
+            "export" => "/.*/"
         );
 
         public function __construct()
@@ -83,12 +85,12 @@ class ExamAdminPage extends AdminPage
         //
         public function printBody()
         {
-                if (!isset($_REQUEST['data'])) {
-                        $_REQUEST['data'] = 'upcoming';
+                if (!isset($this->param->data)) {
+                        $this->param->data = 'upcoming';
                 }
 
-                if (isset($_REQUEST['export'])) {
-                        switch ($_REQUEST['data']) {
+                if (isset($this->param->export)) {
+                        switch ($this->param->data) {
                                 case 'all':
                                         $this->saveAllExams();
                                         break;
@@ -103,7 +105,7 @@ class ExamAdminPage extends AdminPage
                                         break;
                         }
                 } else {
-                        switch ($_REQUEST['data']) {
+                        switch ($this->param->data) {
                                 case 'all':
                                         $this->showAllExams();
                                         break;
@@ -334,8 +336,10 @@ class ExamAdminPage extends AdminPage
                         $row->addData($r->getExamName());
                         $row->addData($r->getExamStartTime());
                         $row->addData($r->getExamEndTime());
-                        $cell = $row->addData(_("Open"));
+                        $cell = $row->addData(_("Open"));       // View properties
                         $cell->setLink(sprintf("../teacher/manager.php?exam=%d&action=show", $r->getExamID()));
+                        $cell = $row->addData(_("Adjust"));     // Adjust scores
+                        $cell->setLink(sprintf("adjust.php?exam=%d", $r->getExamID()));
 
                         if (!isset($this->param->compact)) {
                                 $row = $table->addRow();
