@@ -64,7 +64,7 @@ class NotesPage extends BasePage
 
         public function __construct()
         {
-                parent::__construct(_("Notes for teachers"));
+                parent::__construct(_("Keynotes"));
         }
 
         public function printBody()
