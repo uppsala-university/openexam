@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2012-03-06 16:46+0100\n"
+"POT-Creation-Date: 2012-03-06 17:20+0100\n"
 "PO-Revision-Date: 2012-03-06 16:58+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
@@ -2968,7 +2968,7 @@ msgstr "The system configuration is not setup correct, it's not possible to fetc
 msgid "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
 msgstr "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
 
-#: include/export.inc:189
+#: include/export.inc:186
 #, php-format
 msgid " OpenExam project exported %s "
 msgstr " OpenExam project exported %s "
