@@ -82,7 +82,7 @@ class HelpPage extends BasePage
 
                 printf("<h5>" . _("Manual") . "</h5>\n");
                 printf("<p>\n");
-                printf(_("The <a href=\"%s\">system user manual</a> is available online with tips and examples."), "http://it.bmc.uu.se/andlov/proj/openexam/manual/");
+                printf(_("The <a href=\"%s\" target=\"_blank\">system user manual</a> is available online with tips and examples."), "http://it.bmc.uu.se/andlov/proj/openexam/manual/");
                 printf("</p>\n");
 
                 printf("<h5>" . _("Getting started") . "</h5>\n");
