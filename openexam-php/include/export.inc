@@ -81,10 +81,7 @@ class Export
                 ob_end_clean();
 
                 $data = $this->manager->getData();
-                $name = sprintf("%s - %s - %s",
-                                $data->getExamOrgUnit(),
-                                $data->getExamName(),
-                                $data->getExamStartTime());
+                $name = sprintf("%s - %s - %s", $data->getExamOrgUnit(), $data->getExamName(), $data->getExamStartTime());
 
                 header("Content-type: application/xml;charset=utf-8\n");
                 header("Content-Disposition: attachment;filename=\"$name.xml\"");
@@ -195,10 +192,10 @@ class Export
                 //
                 // Now send the XML content to its destination:
                 //
-                if (!isset($file)) {
-                        echo $dom->saveXML();
-                } else {
+                if (isset($filename)) {
                         $dom->save($filename);
+                } else {
+                        echo $dom->saveXML();
                 }
         }
 
