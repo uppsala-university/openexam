@@ -8,6 +8,15 @@ Version 1.5.6 (2011-mm-dd):
         * Added proxy script for use with external, unsecured URL's. Use the
           script as: proxy?url=http://www.example.com/xxx
 
+        * Added admin page for exporting casual information on all examinations.
+
+        * It is now possible to update answer scores after an examination has
+          been decoded. This function is handled by source/admin/adjust.php and
+          is only available for supervisor users.
+
+        * Examinations can be exported from the source/admin/exams.php page by
+          supervisor users.
+
 Version 1.5.5 (2011-01-12):
 
         * UPPDOK codes can now be utilized to fetch lists of registered students
