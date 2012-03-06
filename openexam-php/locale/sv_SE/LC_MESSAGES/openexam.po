@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2012-03-06 19:14+0100\n"
-"PO-Revision-Date: 2012-03-06 19:13+0100\n"
+"POT-Creation-Date: 2012-03-06 19:20+0100\n"
+"PO-Revision-Date: 2012-03-06 19:21+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "Language: \n"
@@ -1781,8 +1781,8 @@ msgstr "Manual"
 
 #: source/teacher/help.php:85
 #, php-format
-msgid "The <a href=\"%s\">system user manual</a> is available online with tips and examples."
-msgstr "Systemets <a href=\"%s\">användarmanual</a> finns tillgänglig på nätet med tips och exempel."
+msgid "The <a href=\"%s\" target=\"_blank\">system user manual</a> is available online with tips and examples."
+msgstr "Systemets <a href=\"%s\" target=\"_blank\">användarmanual</a> finns tillgänglig på nätet med tips och exem"
 
 #: source/teacher/help.php:88
 #, php-format
