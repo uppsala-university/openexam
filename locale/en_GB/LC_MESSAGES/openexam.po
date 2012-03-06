@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2012-03-06 17:20+0100\n"
-"PO-Revision-Date: 2012-03-06 16:58+0100\n"
+"POT-Creation-Date: 2012-03-06 19:14+0100\n"
+"PO-Revision-Date: 2012-03-06 19:13+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
 "Language: \n"
@@ -1775,89 +1775,109 @@ msgstr "You will be automatically prompted to logon whenever it's required to co
 
 #: source/teacher/help.php:83
 #, php-format
-msgid "Roles"
-msgstr "Roles"
+msgid "Manual"
+msgstr "Manual"
 
 #: source/teacher/help.php:85
 #, php-format
-msgid "This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
-msgstr "This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
+msgid "The <a href=\"%s\">system user manual</a> is available online with tips and examples."
+msgstr "The <a href=\"%s\">system user manual</a> is available online with tips and examples."
 
 #: source/teacher/help.php:88
-#, php-format
-msgid "These are the roles that can be delegated:"
-msgstr "These are the roles that can be delegated:"
-
-#: source/teacher/help.php:91
-msgid "A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
-msgstr "A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
-
-#: source/teacher/help.php:93
-msgid "A corrector is a person that has been assigned the task of correcting one or more question answers on an exam. Currently, only the examination creator can publish questions with another person as its corrector."
-msgstr "A corrector is a person that has been assigned the task of correcting one or more question answers on an exam. Currently, only the examination creator can publish questions with another person as its corrector."
-
-#: source/teacher/help.php:95
-msgid "An examinator can assign (register) student for an examination and re-schedule the start and stop time."
-msgstr "An examinator can assign (register) student for an examination and re-schedule the start and stop time."
-
-#: source/teacher/help.php:97
-msgid "An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
-msgstr "An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
-
-#: source/teacher/help.php:100
-#, php-format
-msgid "Lifecycle"
-msgstr "Lifecycle"
-
-#: source/teacher/help.php:102
-#, php-format
-msgid "This is an example of how the system is supposed to be used:"
-msgstr "This is an example of how the system is supposed to be used:"
-
-#: source/teacher/help.php:105
-#, php-format
-msgid "A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
-msgstr "A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
-
-#: source/teacher/help.php:106
-#, php-format
-msgid "The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
-msgstr "The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
-
-#: source/teacher/help.php:107
-#, php-format
-msgid "The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
-msgstr "The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
-
-#: source/teacher/help.php:108
-#, php-format
-msgid "After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
-msgstr "After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
-
-#: source/teacher/help.php:109
-#, php-format
-msgid "Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
-msgstr "Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
-
-#: source/teacher/help.php:112
-#, php-format
-msgid "Restrictions"
-msgstr "Restrictions"
-
-#: source/teacher/help.php:113
-#, php-format
-msgid "Only the person that publish an question for an examination can correct the answers to that question."
-msgstr "Only the person that publish an question for an examination can correct the answers to that question."
-
-#: source/teacher/help.php:115
 #, php-format
 msgid "Getting started"
 msgstr "Getting started"
 
-#: source/teacher/help.php:116
+#: source/teacher/help.php:89
 #, php-format
 msgid "If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."
 msgstr "If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."
+
+#: source/teacher/help.php:90
+#, php-format
+msgid "The <a href=\"%s\" target=\"_blank\">keynotes page</a> contains a short introduction to the most fundamental parts of the system."
+msgstr "The <a href=\"%s\" target=\"_blank\">keynotes page</a> contains a short introduction to the most fundamental parts of the system."
+
+#: source/teacher/keynotes.php:67 source/teacher/keynotes.php:72
+#, php-format
+msgid "Keynotes"
+msgstr "Keynotes"
+
+#: source/teacher/keynotes.php:74
+#, php-format
+msgid "Roles"
+msgstr "Roles"
+
+#: source/teacher/keynotes.php:76
+#, php-format
+msgid "This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
+msgstr "This system allows the creator of the examination to delegate (grant) permissions to other people. Its called giving roles to other people."
+
+#: source/teacher/keynotes.php:79
+#, php-format
+msgid "These are the roles that can be delegated:"
+msgstr "These are the roles that can be delegated:"
+
+#: source/teacher/keynotes.php:82
+msgid "A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
+msgstr "A contributor can add questions to the examination. A person that contributes a question is also (implicit) defined as the person that should correct the answers to that question."
+
+#: source/teacher/keynotes.php:84
+msgid "A corrector is a person that has been assigned the task of correcting one or more question answers on an exam. Currently, only the examination creator can publish questions with another person as its corrector."
+msgstr "A corrector is a person that has been assigned the task of correcting one or more question answers on an exam. Currently, only the examination creator can publish questions with another person as its corrector."
+
+#: source/teacher/keynotes.php:86
+msgid "An examinator can assign (register) student for an examination and re-schedule the start and stop time."
+msgstr "An examinator can assign (register) student for an examination and re-schedule the start and stop time."
+
+#: source/teacher/keynotes.php:88
+msgid "An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
+msgstr "An decoder is the person that is granted permissions to decode the examination. By decoding, the real identity behind the anonymous identity is disclosed. A person assigned as the decoder of the examination is usually the same that reports the result to UPPDOK."
+
+#: source/teacher/keynotes.php:91
+#, php-format
+msgid "Lifecycle"
+msgstr "Lifecycle"
+
+#: source/teacher/keynotes.php:93
+#, php-format
+msgid "This is an example of how the system is supposed to be used:"
+msgstr "This is an example of how the system is supposed to be used:"
+
+#: source/teacher/keynotes.php:96
+#, php-format
+msgid "A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
+msgstr "A person granted the teacher permission creates the examination. He/she grants other people the contributor, examinator and decoder roles. The teacher defines when and for how long the examination will last."
+
+#: source/teacher/keynotes.php:97
+#, php-format
+msgid "The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
+msgstr "The people assigned as contributors adds questions to the examination. By default, the teacher is also assigned the contributor role."
+
+#: source/teacher/keynotes.php:98
+#, php-format
+msgid "The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
+msgstr "The people assigned the examinator role adds those students that should take the exam. If students shows up at the examination day, they can be added by the examinator."
+
+#: source/teacher/keynotes.php:99
+#, php-format
+msgid "After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
+msgstr "After the examination day, those that have contributed questions logs on and corrects the answers. The contributor can only correct answers to those questions they have created."
+
+#: source/teacher/keynotes.php:100
+#, php-format
+msgid "Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
+msgstr "Once all answers have been corrected, the decoder can logon and disclose the anonymous identities behind the answers. Once the examination has been decoded, its no longer possible to modify the scores to the answers."
+
+#: source/teacher/keynotes.php:103
+#, php-format
+msgid "Restrictions"
+msgstr "Restrictions"
+
+#: source/teacher/keynotes.php:104
+#, php-format
+msgid "Only the person that publish an question for an examination can correct the answers to that question."
+msgstr "Only the person that publish an question for an examination can correct the answers to that question."
 
 #: source/teacher/template.php:70
 msgid "Template Page"
@@ -2078,6 +2098,10 @@ msgstr "Open"
 #: source/admin/exams.php:358
 msgid "Adjust"
 msgstr "Adjust"
+
+#: source/admin/exams.php:379
+msgid "Count"
+msgstr "Count"
 
 #: source/admin/adjust.php:84 source/admin/adjust.php:156
 msgid "Adjust Scores"
@@ -2777,41 +2801,41 @@ msgstr "Add another file to the media library. Remember to reload this page to s
 msgid "If you think this is a bug in the system, then please report it to %s"
 msgstr "If you think this is a bug in the system, then please report it to %s"
 
-#: include/import.inc:75
+#: include/import.inc:95
 #, php-format
 msgid "Wrong MIME type (%s) on uploaded file %s (expected %s)"
 msgstr "Wrong MIME type (%s) on uploaded file %s (expected %s)"
 
-#: include/import.inc:78
+#: include/import.inc:98
 #, php-format
 msgid "Empty file %s uploaded"
 msgstr "Empty file %s uploaded"
 
-#: include/import.inc:331 include/import.inc:423
+#: include/import.inc:327 include/import.inc:420
 #, php-format
 msgid "Expected header '%s' at index (1,1)"
 msgstr "Expected header '%s' at index (1,1)"
 
-#: include/import.inc:335 include/import.inc:428
+#: include/import.inc:331 include/import.inc:425
 #, php-format
 msgid "Expected format '%s' at index (2,2)"
 msgstr "Expected format '%s' at index (2,2)"
 
-#: include/import.inc:520
+#: include/import.inc:517
 msgid "Missing XML format attribute. This don't look like an OpenExam project data file."
 msgstr "Missing XML format attribute. This don't look like an OpenExam project data file."
 
-#: include/import.inc:531
+#: include/import.inc:528
 #, php-format
 msgid "Unsupported XML format number: %d. This file can not be imported."
 msgstr "Unsupported XML format number: %d. This file can not be imported."
 
-#: include/import.inc:591
+#: include/import.inc:588
 #, php-format
 msgid "Possible file upload attack: %s"
 msgstr "Possible file upload attack: %s"
 
-#: include/import.inc:604
+#: include/import.inc:601
 #, php-format
 msgid "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
 msgstr "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
@@ -2972,6 +2996,9 @@ msgstr "There was a problem talking to the directory service, course information
 #, php-format
 msgid " OpenExam project exported %s "
 msgstr " OpenExam project exported %s "
+
+#~ msgid "Notes for teachers"
+#~ msgstr "Notes for teachers"
 
 #~ msgid "Locking Page"
 #~ msgstr "Locking Page"
