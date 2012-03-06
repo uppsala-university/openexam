@@ -69,7 +69,7 @@ class NotesPage extends BasePage
 
         public function printBody()
         {
-                printf("<h3>" . _("Notes") . "</h3>\n");
+                printf("<h3>" . _("Keynotes") . "</h3>\n");
 
                 printf("<h5>" . _("Roles") . "</h5>\n");
                 printf("<p>");
