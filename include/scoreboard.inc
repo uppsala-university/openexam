@@ -421,7 +421,7 @@ abstract class ScoreBoardOutput
         public function __construct($exam)
         {
                 $this->board = new ScoreBoard($exam);
-                
+
                 $this->ldap = new LdapSearch(LdapConnection::instance());
                 $this->ldap->setAttributeFilter(array("cn"));
         }
@@ -444,6 +444,89 @@ abstract class ScoreBoardOutput
                         }
                 }
                 return $user;
+        }
+
+}
+
+// 
+// Shows the score board in admin mode. This class should only be used in 
+// admin pages. It is similar to ScoreBoardPrinter, but we can ignore if 
+// the exam is decoded or not.
+// 
+class ScoreBoardAdmin extends ScoreBoardOutput
+{
+
+        public function __construct($exam)
+        {
+                parent::__construct($exam);
+        }
+
+        public function output()
+        {
+                $this->index = 0;
+                $questions = $this->board->getQuestions();
+
+                $table = new Table();
+
+                //
+                // Print headers:
+                //
+                $row = $table->addRow();
+                $row->addHeader(_("Name"));
+                $row->addHeader(_("User"));
+                $row->addHeader(_("Code"));
+
+                // 
+                // Question headers:
+                // 
+                foreach ($questions as $question) {
+                        $row->addHeader(sprintf("Q%d", ++$this->index));
+                }
+
+                //
+                // Print all students:
+                //
+                $students = $this->board->getStudents();
+                foreach ($students as $student) {
+                        $row = $table->addRow();
+                        $obj = $row->addData($this->getCommonName($student->getStudentUser()));
+                        $obj->setNoWrap();
+                        $row->addData($student->getStudentUser());
+                        $row->addData($student->getStudentCode());
+
+                        //
+                        // Print all answers for this student:
+                        //
+                        foreach ($questions as $question) {
+                                $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
+
+                                if (!isset($data)) {
+                                        $obj = $row->addData("-");
+                                        $obj->setClass("cc qu");
+                                } elseif ($data->getAnswerExist() == 'N') {
+                                        $obj = $row->addData("?");
+                                        $obj->setClass("cc na");
+                                } elseif ($data->getQuestionStatus() == 'removed') {
+                                        $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+                                        $obj->setClass("cc qr");
+                                } elseif ($data->hasResultScore()) {
+                                        $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+                                        $obj->setClass("cc ac");
+                                } elseif ($data->getAnswerExist() == 'Y') {
+                                        $obj = $row->addData("X");
+                                        $obj->setClass("cc nc");
+                                } else {
+                                        $obj = $row->addData("!");
+                                        $obj->setClass("cc na");
+                                }
+
+                                if ($question->getQuestionStatus() != 'removed') {
+                                        $obj->setLink(sprintf("?exam=%d&amp;answer=%d", $data->getExamID(), $data->getAnswerID()));
+                                }
+                        }
+                }
+
+                $table->output();
         }
 
 }
@@ -752,8 +835,8 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                 }
                         }
                         if ($this->show->summary ||
-                                $this->show->percent ||
-                                $this->show->grade) {
+                            $this->show->percent ||
+                            $this->show->grade) {
                                 $score = $this->board->getStudentScore($student->getStudentID());
                                 $grade = $grades->getGrade($score->getSum());
                                 if ($this->show->summary) {
@@ -824,7 +907,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         $question->setQuestionBody(strip_tags($question->getQuestionText()));
                 } elseif ($question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE ||
-                        $question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
+                    $question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
                         $options = Exam::getQuestionChoice($question->getQuestionText());
                         $question->setQuestionBody(strip_tags($options[0]));
                 }
