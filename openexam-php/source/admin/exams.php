@@ -96,7 +96,7 @@ class ExamAdminPage extends AdminPage
                         if (isset($this->param->exam)) {
                                 $this->exportExam();    // Stops execution here!
                         }
-                        
+
                         switch ($this->param->data) {
                                 case 'all':
                                         $this->saveAllExams();
@@ -364,15 +364,15 @@ class ExamAdminPage extends AdminPage
                                 $row = $table->addRow();
                                 $cell = $row->addData(sprintf("<b>%s:</b><br/>%s\n", _("Description"), $r->getExamDescription()));
                                 $cell->setColspan(4);
+
+                                $row = $table->addRow();
+                                $cell = $row->addData(sprintf("<b>%s:</b> %s", _("Created"), $r->getExamCreated()));
+                                $cell->setColspan(2);
+                                $cell = $row->addData(sprintf("<b>%s:</b> %s", _("Creator"), $r->getExamCreator()));
+                                $cell->setColspan(2);
+
+                                $table->addRow()->addData()->setStyle("background: white");
                         }
-
-                        $row = $table->addRow();
-                        $cell = $row->addData(sprintf("<b>%s:</b> %s", _("Created"), $r->getExamCreated()));
-                        $cell->setColspan(2);
-                        $cell = $row->addData(sprintf("<b>%s:</b> %s", _("Creator"), $r->getExamCreator()));
-                        $cell->setColspan(2);
-
-                        $table->addRow()->addData()->setStyle("background: white");
                 }
                 $table->output();
         }
