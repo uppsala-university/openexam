@@ -61,6 +61,8 @@ include "include/ldap.inc";
 // 
 include "include/admin.inc";
 include "include/exam.inc";
+include "include/teacher/manager.inc";
+include "include/export.inc";
 
 // 
 // The index page:
@@ -70,6 +72,7 @@ class ExamAdminPage extends AdminPage
 
         private $params = array(
             "data" => "/^(all|real|upcoming|today)$/",
+            "exam" => "/^\d+$/",
             "compact" => "/.*/",
             "submit" => "/.*/",
             "export" => "/.*/"
@@ -90,6 +93,10 @@ class ExamAdminPage extends AdminPage
                 }
 
                 if (isset($this->param->export)) {
+                        if (isset($this->param->exam)) {
+                                $this->exportExam();    // Stops execution here!
+                        }
+                        
                         switch ($this->param->data) {
                                 case 'all':
                                         $this->saveAllExams();
@@ -273,6 +280,16 @@ class ExamAdminPage extends AdminPage
                 $this->printExamList($data);
         }
 
+        //
+        // Export complete exam.
+        //
+        private function exportExam()
+        {
+                $exporter = new Export($this->param->exam);
+                $exporter->send();
+                exit(0);
+        }
+
         private function printExamList(&$data)
         {
                 printf("<h3>%s</h3>\n", _("Exams"));
@@ -340,6 +357,8 @@ class ExamAdminPage extends AdminPage
                         $cell->setLink(sprintf("../teacher/manager.php?exam=%d&action=show", $r->getExamID()));
                         $cell = $row->addData(_("Adjust"));     // Adjust scores
                         $cell->setLink(sprintf("adjust.php?exam=%d", $r->getExamID()));
+                        $cell = $row->addData(_("Export"));
+                        $cell->setLink(sprintf("?exam=%d&export=1", $r->getExamID()));
 
                         if (!isset($this->param->compact)) {
                                 $row = $table->addRow();
