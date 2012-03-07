@@ -77,13 +77,13 @@ class CorrectionPage extends TeacherPage
 {
 
         private $params = array(
-                "exam" => "/^\d+$/",
-                "answer" => "/^\d+$/",
+                "exam"     => "/^\d+$/",
+                "answer"   => "/^\d+$/",
                 "question" => "/^\d+$/",
-                "student" => "/^\d+$/",
-                "verbose" => "/^\d+$/",
+                "student"  => "/^\d+$/",
+                "verbose"  => "/^\d+$/",
                 "colorize" => "/^\d+$/",
-                "mode" => "/^(mark|save)$/"
+                "mode"     => "/^(mark|save)$/"
         );
 
         public function __construct()
@@ -111,7 +111,8 @@ class CorrectionPage extends TeacherPage
                 //
                 if (isset($_REQUEST['exam'])) {
                         if (isset($_REQUEST['question'])) {
-                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
+                                if (isset($_REQUEST['mode']) &&
+                                        $_REQUEST['mode'] == "save") {
                                         self::assert(array('score', 'comment'));
                                         self::saveQuestionScore();
                                 } else {
@@ -153,13 +154,11 @@ class CorrectionPage extends TeacherPage
 
                 if (!$this->manager->hasRole(phpCAS::getUser(), $role1) &&
                         !$this->manager->hasRole(phpCAS::getUser(), $role2)) {
-                        ErrorPage::show(_("Access denied!"),
-                                        sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
+                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
                         exit(1);
                 }
                 if (!$this->manager->getInfo()->isFinished()) {
-                        ErrorPage::show(_("Access denied!"),
-                                        _("This examination is not yet finished. You have to wait until its finished before you can correct the answers."));
+                        ErrorPage::show(_("Access denied!"), _("This examination is not yet finished. You have to wait until its finished before you can correct the answers."));
                         exit(1);
                 }
         }
@@ -211,19 +210,12 @@ class CorrectionPage extends TeacherPage
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         $row = $table->addRow();
                         $row->setClass("question");
-                        $row->addData(sprintf("<u>%s: %s</u><br />%s",
-                                        _("Question"),
-                                        $question->getQuestionName(),
-                                        str_replace("\n", "<br/>", $question->getQuestionText())));
+                        $row->addData(sprintf("<u>%s: %s</u><br />%s", _("Question"), $question->getQuestionName(), str_replace("\n", "<br/>", $question->getQuestionText())));
                 } else {
                         $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
                         $row = $table->addRow();
                         $row->setClass("question");
-                        $row->addData(sprintf("<u>%s: %s</u><br />%s<br/><br/>%s: %s",
-                                        _("Question"),
-                                        $question->getQuestionName(),
-                                        str_replace("\n", "<br/>", $qchoice[0]),
-                                        _("Correct answer"), implode(", ", array_keys($qchoice[1], true))));
+                        $row->addData(sprintf("<u>%s: %s</u><br />%s<br/><br/>%s: %s", _("Question"), $question->getQuestionName(), str_replace("\n", "<br/>", $qchoice[0]), _("Correct answer"), implode(", ", array_keys($qchoice[1], true))));
                 }
 
                 if ($question->getQuestionStatus() == 'removed') {
@@ -236,14 +228,10 @@ class CorrectionPage extends TeacherPage
                 $row = $table->addRow();
                 $row->setClass("answer");
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-                        $row->addData(sprintf("<u>%s</u>:<br />%s",
-                                        _("Answer"),
-                                        str_replace("\n", "<br/>", htmlspecialchars($answer->getAnswerText()))));
+                        $row->addData(sprintf("<u>%s</u>:<br />%s", _("Answer"), str_replace("\n", "<br/>", htmlspecialchars($answer->getAnswerText()))));
                 } else {
                         $achoice = Exam::getQuestionChoice($answer->getAnswerText());
-                        $row->addData(sprintf("<u>%s</u>:<br />%s",
-                                        _("Answer"),
-                                        str_replace("\n", "<br/>", implode(", ", $achoice[1]))));
+                        $row->addData(sprintf("<u>%s</u>:<br />%s", _("Answer"), str_replace("\n", "<br/>", implode(", ", $achoice[1]))));
                 }
                 if ($answer->hasResultID()) {
                         $form->addHidden(sprintf("result[%d]", $answer->getAnswerID()), $answer->getResultID());
@@ -251,8 +239,7 @@ class CorrectionPage extends TeacherPage
                 if ($answer->hasResultScore()) {
                         $data = $row->addData(sprintf("<br/>%s: %.01f", _("Max score"), $question->getQuestionScore()));
                         $data->setValign(TABLE_VALIGN_TOP);
-                        $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()),
-                                        sprintf("%.01f", $answer->getResultScore()));
+                        $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()), sprintf("%.01f", $answer->getResultScore()));
                         $textbox->setSize(8);
                         $textbox->setEvent(EVENT_ON_FOCUS, "javascript:start_check(this);");
                         $textbox->setEvent(EVENT_ON_BLUR, sprintf("javascript:check_range(this, 0, %f);", $question->getQuestionScore()));
@@ -284,19 +271,20 @@ class CorrectionPage extends TeacherPage
                         }
                         $data = $row->addData(sprintf("<br/>%s: %.01f", _("Max score"), $question->getQuestionScore()));
                         $data->setValign(TABLE_VALIGN_TOP);
-                        $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()),
-                                        sprintf("%.01f", ($hits / count($keys)) * $question->getQuestionScore()));
+                        $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()), sprintf("%.01f", ($hits / count($keys)) * $question->getQuestionScore()));
                         $textbox->setSize(8);
                         $textbox->setEvent(EVENT_ON_FOCUS, "javascript:start_check(this);");
                         $textbox->setEvent(EVENT_ON_BLUR, sprintf("javascript:check_range(this, 0, %f);", $question->getQuestionScore()));
                 }
                 $row = $table->addRow();
                 $row->setClass("comment");
-                $data = $row->addData(_("Comment"));
-                $textbox = $data->addTextBox(sprintf("comment[%d]", $answer->getAnswerID()),
-                                $answer->hasResultComment() ? $answer->getResultComment() : "");
-                $textbox->setSize(95);
-                $textbox->setTitle(_("This optional field can be used to save an comment for this answer correction."));
+                $data = $row->addData("(" . _("Comment") . ")");
+                $textarea = $data->addElement(
+                        new TextArea(sprintf("comment[%d]", $answer->getAnswerID()),
+                                $answer->hasResultComment() ? $answer->getResultComment() : ""));
+                $textarea->setTitle(_("This optional field can be used to save an comment for this answer correction."));
+                $textarea->setRows(2);
+                $textarea->setColumns(90);
         }
 
         //
@@ -308,8 +296,7 @@ class CorrectionPage extends TeacherPage
                 $answer = $correct->getQuestionAnswer($this->param->answer);
 
                 if ($answer->getQuestionPublisher() != phpCAS::getUser()) {
-                        ErrorPage::show(_("Access denied!"),
-                                        sprintf(_("Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."), $this->getFormatName($answer->getQuestionPublisher())));
+                        ErrorPage::show(_("Access denied!"), sprintf(_("Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."), $this->getFormatName($answer->getQuestionPublisher())));
                         exit(1);
                 }
 
@@ -372,20 +359,13 @@ class CorrectionPage extends TeacherPage
                 }
                 if ($found->removed > 0) {
                         printf("<span class=\"links viewmode\">");
-                        printf("%s: <a href=\"?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=%d\">%s</a>",
-                                _("Show"),
-                                $this->param->exam,
-                                $this->param->student,
-                                $this->param->verbose == false,
-                                $this->param->verbose ? _("Answered") : _("All"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=%d\">%s</a>", _("Show"), $this->param->exam, $this->param->student, $this->param->verbose == false, $this->param->verbose ? _("Answered") : _("All"));
                         printf("</span>\n");
                 }
                 if ($found->answers - $found->removed == 0 &&
                         $this->param->verbose == false) {
                         printf("<h5>" . _("No Answers Found") . "</h5>\n");
-                        printf("<p>" . _("Only answers to removed questions where found. Click <a href=\"%s\">here</a> to view answers for those questions.") . "</p>\n",
-                                sprintf("?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=1",
-                                        $this->param->exam, $this->param->student));
+                        printf("<p>" . _("Only answers to removed questions where found. Click <a href=\"%s\">here</a> to view answers for those questions.") . "</p>\n", sprintf("?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=1", $this->param->exam, $this->param->student));
                         return;
                 }
 
@@ -423,23 +403,14 @@ class CorrectionPage extends TeacherPage
                 $exam = new Exam();
                 $question = $exam->getQuestionData($this->param->question);
 
-                printf("<h3>" . _("Correct multipe answers for the question '%s'") . "</h3>\n",
-                        $question->getQuestionName());
+                printf("<h3>" . _("Correct multipe answers for the question '%s'") . "</h3>\n", $question->getQuestionName());
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-                        printf("<p><u>%s</u>:</p><p>%s</p>",
-                                _("Question"),
-                                str_replace("\n", "<br/>", $question->getQuestionText()));
+                        printf("<p><u>%s</u>:</p><p>%s</p>", _("Question"), str_replace("\n", "<br/>", $question->getQuestionText()));
                 } else {
                         $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
-                        printf("<p><u>%s</u>:</p><p>%s</p><p>%s: %s<br />%s: %s</p>",
-                                _("Question"),
-                                str_replace("\n", "<br/>", $qchoice[0]),
-                                _("Choices"), implode(", ", array_keys($qchoice[1])),
-                                _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
+                        printf("<p><u>%s</u>:</p><p>%s</p><p>%s: %s<br />%s: %s</p>", _("Question"), str_replace("\n", "<br/>", $qchoice[0]), _("Choices"), implode(", ", array_keys($qchoice[1])), _("Correct answer"), implode(", ", array_keys($qchoice[1], true)));
                 }
-                printf("<p><u>%s</u>: %.01f</p>",
-                        _("Max score"),
-                        $question->getQuestionScore());
+                printf("<p><u>%s</u>: %.01f</p>", _("Max score"), $question->getQuestionScore());
 
                 if ($answers->count() == 0) {
                         printf("<h5>" . _("No Answers Found") . "</h5>\n");
@@ -521,11 +492,9 @@ class CorrectionPage extends TeacherPage
                                         $state = $data[1];
                                         $child = $node->addChild($name);
                                         if ($state->isCorrectable()) {
-                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
-                                                        _("Click on this link to open this examination to correct answers."));
+                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to open this examination to correct answers."));
                                         } elseif ($state->isDecoded()) {
-                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
-                                                        _("Click on this link to review this examination."));
+                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to review this examination."));
                                         }
                                         $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
                                         $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
@@ -547,8 +516,7 @@ class CorrectionPage extends TeacherPage
                         printf("<h3>" . _("Correct Answers") . "</h3>\n");
                         printf("<p>" .
                                 _("This table shows all answers from students to questions for the examination '%s'. ") .
-                                "</p>\n",
-                                $data->getExamName());
+                                "</p>\n", $data->getExamName());
                         printf("<p>" .
                                 _("Correct answers by student (rows), by question (column) or individual (by index). ") .
                                 _("You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.") .
@@ -557,8 +525,7 @@ class CorrectionPage extends TeacherPage
                         printf("<h3>" . _("Showing Scores") . "</h3>\n");
                         printf("<p>" .
                                 _("This table shows all answers from students to questions for the examination '%s'. ") .
-                                "</p>\n",
-                                $data->getExamName());
+                                "</p>\n", $data->getExamName());
                         printf("<p>" .
                                 _("The examination has already been decoded, so it's no longer possible to modify any scores or comments.") .
                                 "</p>\n");
@@ -568,16 +535,8 @@ class CorrectionPage extends TeacherPage
                 // Links for customize output:
                 //
                 printf("<span class=\"links viewmode\">");
-                printf("%s: <a href=\"?exam=%d&amp;verbose=%d\">%s</a>, ",
-                        _("Details"),
-                        $this->param->exam,
-                        $this->param->verbose == false,
-                        $this->param->verbose ? _("Less") : _("More"));
-                printf("%s: <a href=\"?exam=%d&amp;colorize=%d\">%s</a>",
-                        _("Mode"),
-                        $this->param->exam,
-                        $this->param->colorize == false,
-                        $this->param->colorize ? _("Standard") : _("Colorize"));
+                printf("%s: <a href=\"?exam=%d&amp;verbose=%d\">%s</a>, ", _("Details"), $this->param->exam, $this->param->verbose == false, $this->param->verbose ? _("Less") : _("More"));
+                printf("%s: <a href=\"?exam=%d&amp;colorize=%d\">%s</a>", _("Mode"), $this->param->exam, $this->param->colorize == false, $this->param->colorize ? _("Standard") : _("Colorize"));
                 printf("</span>\n");
 
                 //
@@ -595,20 +554,20 @@ class CorrectionPage extends TeacherPage
                 printf("<p>" . _("These are the color codes used in the score board:") . "</p>\n");
                 if ($this->param->colorize) {
                         $codes = array(
-                                "s0" => sprintf(_("Less than %d%% of max score."), 20),
-                                "s20" => sprintf(_("Between %d and %d %% of max score."), 20, 40),
-                                "s40" => sprintf(_("Between %d and %d %% of max score."), 40, 60),
-                                "s60" => sprintf(_("Between %d and %d %% of max score."), 60, 80),
-                                "s80" => sprintf(_("Between %d and %d %% of max score."), 80, 99),
+                                "s0"   => sprintf(_("Less than %d%% of max score."), 20),
+                                "s20"  => sprintf(_("Between %d and %d %% of max score."), 20, 40),
+                                "s40"  => sprintf(_("Between %d and %d %% of max score."), 40, 60),
+                                "s60"  => sprintf(_("Between %d and %d %% of max score."), 60, 80),
+                                "s80"  => sprintf(_("Between %d and %d %% of max score."), 80, 99),
                                 "s100" => sprintf(_("%d%% correct answer (full score)."), 100));
                 } else {
                         $codes = array(
-                                "ac" => _("Answer has been corrected."),
-                                "no" => _("This answer should be corrected by another person."),
-                                "na" => _("No answer was given for this question."),
-                                "nc" => _("The answer has not yet been corrected."),
-                                "qr" => _("Question is flagged as removed (no scores for this question is counted)."),
-                                "qu" => _("This question was not assigned to this student.")
+                                "ac"   => _("Answer has been corrected."),
+                                "no"   => _("This answer should be corrected by another person."),
+                                "na"   => _("No answer was given for this question."),
+                                "nc"   => _("The answer has not yet been corrected."),
+                                "qr"   => _("Question is flagged as removed (no scores for this question is counted)."),
+                                "qu"   => _("This question was not assigned to this student.")
                         );
                 }
                 $table = new Table();
@@ -626,8 +585,7 @@ class CorrectionPage extends TeacherPage
                 // formats using class ScoreBoardWriter (see decoded.php).
                 //
                 printf("<h5>" . _("Download Result") . "</h5>\n");
-                printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n",
-                        sprintf("?exam=%d&amp;mode=save", $this->param->exam));
+                printf("<p>" . _("Click <a href=\"%s\">here</a> to download the score board.") . "</p>\n", sprintf("?exam=%d&amp;mode=save", $this->param->exam));
         }
 
         private function saveScoreBoard()
