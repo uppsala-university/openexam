@@ -91,7 +91,8 @@ class Correct
                                         LEFT JOIN results r ON a.id = r.answer_id
                                 WHERE s.id = a.student_id
                                         AND a.question_id = %d
-                                        AND s.exam_id = %d",
+                                        AND s.exam_id = %d
+                                        AND a.answered = 'Y'",
                                 $question, $this->exam);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
