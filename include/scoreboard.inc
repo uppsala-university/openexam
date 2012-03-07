@@ -825,7 +825,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 
                                         if ($question->getQuestionStatus() != 'removed') {
                                                 if ($question->getQuestionPublisher() == phpCAS::getUser()) {
-                                                        $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d", $data->getExamID(), $data->getAnswerID()));
+                                                        if ($data->getAnswerExist() == 'Y') {
+                                                                $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d", $data->getExamID(), $data->getAnswerID()));
+                                                        }
                                                 } else {
                                                         if (!$this->colorize) {
                                                                 $obj->setClass("cc no");
