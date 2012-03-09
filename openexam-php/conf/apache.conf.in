@@ -14,7 +14,7 @@ AliasMatch ^/openexam(/.*)?/proxy$ /var/www/localhost/apps/openexam-php/source/m
 Alias /openexam/icons/  /var/www/localhost/apps/openexam-php/source/icons/nuvola/
 Alias /openexam/images/ /var/www/localhost/apps/openexam-php/source/images/
 Alias /openexam/css/    /var/www/localhost/apps/openexam-php/source/css/
-Alias /openexam/js/     /var/www/localhost/apps/openexam-php/source/js
+Alias /openexam/js/     /var/www/localhost/apps/openexam-php/source/js/
 
 Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
 
