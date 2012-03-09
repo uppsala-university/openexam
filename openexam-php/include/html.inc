@@ -2576,7 +2576,7 @@ class MessageBox extends Container
         /**
          * Constructor.
          * @param string $type Type of messagebox.
-         * @param string|Image $icon The messagebox icon.
+         * @param string|Image $icon The messagebox icon. Pass null to use default icon.
          * @param string $title The title text.
          * @param string $text The message string.
          */
@@ -2586,7 +2586,7 @@ class MessageBox extends Container
                 parent::setClass($type);
 
                 if (!isset($icon)) {
-                        $icon = sprintf("%s.png", $type);
+                        $icon = sprintf("/openexam/icons/%s.png", $type);
                 }
 
                 $this->setTitle($title);
@@ -2603,7 +2603,7 @@ class MessageBox extends Container
          * calls display() on it.
          * 
          * @param string $type Type of messagebox.
-         * @param string|Image $icon The messagebox icon.
+         * @param string|Image $icon The messagebox icon. Pass null to use default icon.
          * @param string $title The title text.
          * @param string $text The message string.
          */
