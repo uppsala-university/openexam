@@ -4,10 +4,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
 <title><?php $page->printTitle(); ?></title>
-<link rel="stylesheet" type="text/css" href="css/uu_css/mainstyleuu.css" />
-<link rel="stylesheet" type="text/css" href="css/uu_css/rightuu.css" />
-<link rel="stylesheet" type="text/css" href="css/uu_css/text_content.css" />
-<link rel="stylesheet" type="text/css" href="css/uu_css/flikmeny.css" />
+<link rel="stylesheet" type="text/css" href="/openexam/css/uu_css/mainstyleuu.css" />
+<link rel="stylesheet" type="text/css" href="/openexam/css/uu_css/rightuu.css" />
+<link rel="stylesheet" type="text/css" href="/openexam/css/uu_css/text_content.css" />
+<link rel="stylesheet" type="text/css" href="/openexam/css/uu_css/flikmeny.css" />
 <?php
 // Functionality inside css/uu_css/rightuu.css ?
 if($page->showSidebar()) {
@@ -57,7 +57,7 @@ $page->printLanguageSelect();
   <!-- 
 	<img src="<?php printf("%s://www.uu.se/Logo/uulogo_white.gif", isset($_SERVER['HTTPS']) ? "https" : "http"); ?>" width="160" height="160" alt="Uppsala universitet" /> 
     -->
-  <img src="images/uu_red/uulogo_white.gif" width="160" height="160" alt="Uppsala universitet" />
+  <img src="/openexam/images/uu_red/uulogo_white.gif" width="160" height="160" alt="Uppsala universitet" />
 </a>
 <!-- lyssna-knapp -->
 <div id="knapp">
