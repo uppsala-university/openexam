@@ -403,7 +403,7 @@ class ExaminationPage extends BasePage
                         $qdata->setQuestionMedia(true);
                         include "../css/multimedia.css";  // Inline CSS
                 } else {
-                        printf("textarea.answer { width: 755px; height: 230px; }\n");
+                        printf("textarea.answer { width: 735px; height: 230px; }\n");
                 }
                 printf("</style>\n");
 

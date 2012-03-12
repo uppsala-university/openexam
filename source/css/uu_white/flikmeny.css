@@ -1,7 +1,7 @@
 /*Toppmeny*/
 #topmenu {
 	float:right;
-	width:350px;
+	width:330px;
 	height: 0px;
 }
 
@@ -18,7 +18,7 @@
 
 #uppermenustyle ul {margin: 0; padding: 0;}	
 #uppermenustyle li {display: inline; list-style: none;}
-#uppermenustyle a:link, #uppermenustyle a:visited {color: #900; background-color: transparent; display: block; float: right; padding: 2px 6px 0 9px; text-decoration:none;}
+#uppermenustyle a:link, #uppermenustyle a:visited {color: #900; background-color: transparent; display: block; float: right; padding: 1px 6px 0 9px; text-decoration:none;}
 #uppermenustyle a:hover {color:#900; background-color: transparent; text-decoration:underline;}
 #uppermenustyle img { display:inline; vertical-align:middle;}
 
@@ -38,7 +38,7 @@
 /*Flikmeny*/
 .menu0 {
        position: relative;
-       top: 45px;
+       top: 35px;
        }    
        
 #toppbildbmc .menu0 {
@@ -53,9 +53,9 @@
 	height: 1.9em;
 	list-style:none;
 	}
-.menu0 ul {margin:0; padding:5px 0 0 11px; list-style:none; height:21px;}	
-.menu0 li {display:block; float:left; list-style:none; margin:0; width:110px; padding:2px 0;}
-.menu0 li a:link, .menu0 li a:visited {background:transparent url(/openexam/images/uu/bgtopmeny.gif) no-repeat; color:#900; padding:2px 0px 4px 10px; margin: 0; text-decoration:none; width:101px; display:block;}
+.menu0 ul {margin:0; padding:5px 0 0 11px; list-style:none; height:20px;}	
+.menu0 li {display:block; float:left; list-style:none; margin:0px; width:110px; padding:0px 0;}
+.menu0 li a:link, .menu0 li a:visited {background:transparent url(/openexam/images/uu/bgtopmeny.gif) no-repeat; color:#900; padding:1px 0px 2px 10px; margin: 1px; text-decoration:none; width:101px; display:block;}
 .menu0 li a:hover {color:#333; background:transparent url(/openexam/images/uu/bgtopmenyover.gif) no-repeat; }
 /*End Flikmeny*/
 
@@ -83,13 +83,13 @@ color:#333;
 /* bakgrundsbild*/
 #toppbildbmc {
 	/*position: relative;*/
-	background:#fff url(/openexam/images/uu/topimgbmc.jpg) top left no-repeat;
+	background:#fff url(/openexam/images/uu/topimgbmc.jpg) top right no-repeat;
 	margin: 0 0 20px 180px;
 	width: 800px;  
-	height:131px;
+	height:120px;
 }
 /* END bakgrundsbild*/
-/* Grundinställningar för  sidfoten */
+/* Grundinstï¿½llningar fï¿½r  sidfoten */
 #footer {
 	/*position: absolute;*/
 	background:#fff;
