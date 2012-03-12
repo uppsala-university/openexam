@@ -1,37 +1,37 @@
  
 html, body {  	
-	/* nedanstående rad saboterar marginalen för IE/Mac 5.x  */
+	/* nedanstï¿½ende rad saboterar marginalen fï¿½r IE/Mac 5.x  */
 	/* background-color: transparent; */
 	margin: 0;
 	padding: 0;
 	font-family : Verdana, arial, Sans-serif;
-	font-size: 84%;  /* skall fontstorlek ändras, gör det här! */
+	font-size: 84%;  /* skall fontstorlek ï¿½ndras, gï¿½r det hï¿½r! */
 	height:100%;
 }
 html>body {
-	font-size: 84% /* Var snäll mot Opera  */;
+	font-size: 84% /* Var snï¿½ll mot Opera  */;
 }
 
-body.grey {   /* Ger grå vänstermarginal */
-	background-image: url(/openexam/images/uu/greyedge.gif); 
+body.grey {   /* Ger grï¿½ vï¿½nstermarginal */
+/*	background-image: url(/openexam/images/uu/greyedge.gif); */
 	background-repeat: repeat-y; 
 }
 
-/* basix för vänstermarginalen */
+/* basix fï¿½r vï¿½nstermarginalen */
 #leftcolumn {
 	position: absolute;
 	left:0;
 	top:0;
 	width:160px;
-	height:100%; /* funkar bara om parent container har höjdvärde */ 
+	height:100%; /* funkar bara om parent container har hï¿½jdvï¿½rde */ 
     font: normal 1.0em/1.6em Verdana, Helvetica, Sans-serif;
 }
-/* Ser till att text i vänsterkolumn (på röd marginal) är vit */
+/* Ser till att text i vï¿½nsterkolumn (pï¿½ rï¿½d marginal) ï¿½r vit */
 #leftcolumn p {
    	padding: 0 5px 3px 8px;
 	color: #fff;
 }
-/* Ser till att länkar i vänsterkolumn (på röd marginal) är vita */
+/* Ser till att lï¿½nkar i vï¿½nsterkolumn (pï¿½ rï¿½d marginal) ï¿½r vita */
 #leftcolumn A {
 	color: #fff;	
 	text-decoration: none;
@@ -40,12 +40,12 @@ body.grey {   /* Ger grå vänstermarginal */
 	text-decoration: underline;
 	color: #fff;
 }
-/* Ser till att text i vänsterkolumn (på vit marginal) är svart */
+/* Ser till att text i vï¿½nsterkolumn (pï¿½ vit marginal) ï¿½r svart */
 body.white #leftcolumn p {
    	padding: 0 5px 3px 8px;
 	color: #000;
 }
-/* Ser till att länkar i vänsterkolumn (på vit marginal) är röda */
+/* Ser till att lï¿½nkar i vï¿½nsterkolumn (pï¿½ vit marginal) ï¿½r rï¿½da */
 body.white #leftcolumn A {
 	color: #9A0000;	
 	text-decoration: none;
@@ -54,12 +54,12 @@ body.white #leftcolumn A:hover {
 	text-decoration: underline;
 	color: #00f;
 }
-/* Ser till att text i vänsterkolumn (på grå marginal) är svart */
+/* Ser till att text i vï¿½nsterkolumn (pï¿½ grï¿½ marginal) ï¿½r svart */
 body.grey #leftcolumn p {
 	padding: 0 5px 3px 8px;
 	color: #000;
 }
-/* Ser till att länkar i vänsterkolumn (på grå marginal) är röda */
+/* Ser till att lï¿½nkar i vï¿½nsterkolumn (pï¿½ grï¿½ marginal) ï¿½r rï¿½da */
 body.grey #leftcolumn A {
 	color: #900;	
 	text-decoration: none;
@@ -68,27 +68,14 @@ body.grey #leftcolumn A:hover {
 	text-decoration: underline;
 	color: #900;
 }
-/* Grundinställningar för huvudytan */
+/* Grundinstï¿½llningar fï¿½r huvudytan */
 #wrapper {
 	min-height:670px;
-}
-#maincontent {
-	/* position: relative;  */
-	background:#fff;
-	margin-left: 180px;
-	width: 380px;
-/*	border-left:1px solid #CCCCCC;
-	border-right:1px solid #CCCCCC;*/
-
-	/* box model hack 	
-	voice-family: "\"}\""; 
-	voice-family:inherit;
-	width: 430px; */	
 }
 /* html>#maincontent 	{
 	width: 430px;
 	} */
-/* Grundinställningar för smulraden */
+/* Grundinstï¿½llningar fï¿½r smulraden */
 #smulrad {
 	/*position: relative;*/
 	background:#fff;
@@ -108,7 +95,7 @@ body.grey #leftcolumn A:hover {
 	font-family : Verdana, arial, Sans-serif;
 	font-size: 1.0em;
 }
-/* Grundinställningar för  sidfoten */
+/* Grundinstï¿½llningar fï¿½r  sidfoten */
 #footer {
 	/*position: absolute;*/
 	background:#fff;
@@ -128,7 +115,7 @@ body.grey #leftcolumn A:hover {
 	padding: 3px;
 	font: normal 95% Verdana, Helvetica, Sans-serif;
 }
-/* Ingen högerkolumn. Önskas dylik måste rightcol.css importeras  */		
+/* Ingen hï¿½gerkolumn. ï¿½nskas dylik mï¿½ste rightcol.css importeras  */		
 #rightcolumn {
 	display:none
 }
@@ -238,7 +225,7 @@ A:hover {
 	text-decoration: underline;
 	color: #900;
 }
-/* Ser till att länkar i smulrad och sidfot inte fetas */
+/* Ser till att lï¿½nkar i smulrad och sidfot inte fetas */
 #smulrad A, #footer A {
 	color: #990000;	
 	text-decoration: none;
@@ -281,7 +268,7 @@ A.blockingang:hover {
 	color : black;
 	font-family : Verdana, arial, Sans-serif;
 }
-/* Här definierar vi olika typer av inramningar, rutor, whatever.. */
+/* Hï¿½r definierar vi olika typer av inramningar, rutor, whatever.. */
 .ruta { 
 	border: 1px #000 solid; background-color: #CCC; 
 	padding: 10px;
@@ -302,8 +289,8 @@ blockquote {
 	color : black;
 	font-family : Verdana, arial, Sans-serif;
 }
-/* En div av klass boxhdr används med fördel ovanför en div med klass box */
-/* Gör sig bra i högerkolumn                                              */
+/* En div av klass boxhdr anvï¿½nds med fï¿½rdel ovanfï¿½r en div med klass box */
+/* Gï¿½r sig bra i hï¿½gerkolumn                                              */
 .boxhdr {
 	font-size: 1.1em;
 	font-family:Verdana, Arial, Helvetica, sans-serif; 
@@ -432,7 +419,7 @@ hr.red {
 		
 	}
 }
-/* Ger stil till formulärknappar */
+/* Ger stil till formulï¿½rknappar */
 .button{
 	border-bottom : solid 1px #767065;
 	border-left : solid 1px #ccc;
@@ -443,7 +430,7 @@ hr.red {
 	font-weight:700;
 	 cursor: pointer;
 }
-/* Stajla Läs Upp-knappen */
+/* Stajla Lï¿½s Upp-knappen */
 .saysubmit {
 	border-bottom : solid 1px #666;
 	border-left : solid 1px #fff;

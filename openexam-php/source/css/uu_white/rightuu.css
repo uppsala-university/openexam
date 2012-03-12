@@ -1,12 +1,12 @@
 
-/* inställningar för huvudytan */
+/* instï¿½llningar fï¿½r huvudytan */
 #maincontent {
 	/* position: relative;  */
 	background:#fff;
 	margin-left: 180px;
-	width: 780px;
-	padding-top: 10px;
+	width: 800px;
 	height: 400px;
+        padding-top: 10px;
 }
 #maincontent_under {
 	/* position: relative;  */
@@ -20,7 +20,7 @@
 	margin-left: 180px;
 	width: 580px;
 }
-/* Grundinställningar för smulraden */
+/* Grundinstï¿½llningar fï¿½r smulraden */
 
 .smulrad {
 	color : black;
@@ -28,7 +28,7 @@
 	font-size: 1.0em;
 }
 
-/* Grundinställningar för högerkolumn  */		
+/* Grundinstï¿½llningar fï¿½r hï¿½gerkolumn  */		
 #rightcolumn {
 	background: transparent;
 	position: absolute;

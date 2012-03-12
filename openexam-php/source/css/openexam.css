@@ -50,6 +50,14 @@ div.lang-select {
         padding: 5px;
 }
 
+#mainview {
+    border-radius: 15px 15px 15px 15px;
+    border: 5px solid #eee;
+/*    -moz-box-shadow: 1px 1px 10px #00f; -webkit-box-shadow: 1px 1px 10px #00f; -khtml-box-shadow: 1px 1px 10px #00f; box-shadow: 1px 1px 10px #00f;*/
+/*    -moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; box-shadow: inset 1px 1px 10px #999;*/
+    padding: 10px;
+}
+
 #menuhead {
         margin-left: 10px;
         font-weight: bold;
@@ -95,7 +103,7 @@ div.hint {
  */
 span.links {
         position: absolute;
-        left: 630px;
+        left: 610px;
         width: 340px;
         text-align: right;
 }
@@ -104,7 +112,7 @@ span.links {
  * Use this class by inherit from span.links, like: <span class="links viewmode">
  */
 span.viewmode {
-        top: 140px;
+        top: 125px;
 }
 
 tr:nth-child(even) {
@@ -323,7 +331,7 @@ textarea.message,
 textarea.description,
 textarea.students,
 textarea.question {
-        width: 550px;
+        width: 530px;
         height: 250px;
 }
 textarea.grade {
