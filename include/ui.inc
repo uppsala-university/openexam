@@ -38,6 +38,7 @@
 // 
 interface TemplatePage
 {
+
         public function printHeader();      // Extra headers
 
         public function printTitle();       // Page title
@@ -90,8 +91,10 @@ class BasePage implements TemplatePage
         //
         public function success($message)
         {
-                printf("<img src=\"%s/icons/nuvola/ok.png\" alt=\"%s\"/> %s<br/>\n",
-                        BASE_URL, _("Success"), $message);
+                $messagebox = new MessageBox(MessageBox::success);
+                $messagebox->setTitle(_("Success"));
+                $messagebox->setMessage($message);
+                $messagebox->display();
         }
 
         //
@@ -99,15 +102,16 @@ class BasePage implements TemplatePage
         //
         public function error($message)
         {
-                printf("<img src=\"%s/icons/nuvola/error.png\" alt=\"%s\"/><b> %s:</b> %s<br/>\n",
-                        BASE_URL, _("Error"), _("Error"), $message);
+                $messagebox = new MessageBox(MessageBox::error);
+                $messagebox->setTitle(_("Error"));
+                $messagebox->setMessage($message);
+                $messagebox->display();
         }
 
         final public function printLogonStatus()
         {
                 if (phpCAS::isAuthenticated()) {
-                        printf(_("Logged on as") . " <b>%s</b> | <a href=\"?logout\">" . _("Logout") . "</a>\n",
-                                phpCAS::getUser());
+                        printf(_("Logged on as") . " <b>%s</b> | <a href=\"?logout\">" . _("Logout") . "</a>\n", phpCAS::getUser());
                 } else {
                         printf(_("Not logged on") . " | <a href=\"?logon\">" . _("Logon") . "</a>\n");
                 }
@@ -142,8 +146,7 @@ class BasePage implements TemplatePage
                 foreach ($locale->getLanguageList() as $lang) {
                         if (!$locale->isAlias($lang)) {
                                 $data = $locale->getLanguageData($lang);
-                                printf("<a href=\"%slang=%s\"><img src=\"images/flag/%s.png\" alt=\"Flag\" />&nbsp;%s</a><br />\n",
-                                        $request, $lang, $lang, _($data["lang"]));
+                                printf("<a href=\"%slang=%s\"><img src=\"/openexam/images/flag/%s.png\" alt=\"Flag\" />&nbsp;%s</a><br />\n", $request, $lang, $lang, _($data["lang"]));
                         }
                 }
                 printf("</div>\n");
@@ -162,9 +165,7 @@ class BasePage implements TemplatePage
                 // Print current language in use:
                 //
                 printf("<div class=\"lang-show\">\n");
-                printf(_("Language:") . " <a href=\"#\" onmousedown=\"showLanguageSelect(); return false;\" title=\"%s\"><img src=\"images/flag/%s.png\" alt=\"Flag\" /></a>\n",
-                        _("Click on the flag to change language."),
-                        $locale->getLanguage());
+                printf(_("Language:") . " <a href=\"#\" onmousedown=\"showLanguageSelect(); return false;\" title=\"%s\"><img src=\"/openexam/images/flag/%s.png\" alt=\"Flag\" /></a>\n", _("Click on the flag to change language."), $locale->getLanguage());
                 printf("</div>\n");
         }
 
@@ -193,8 +194,7 @@ class BasePage implements TemplatePage
                 global $locale;
                 $data = $locale->getLanguageData($locale->getLanguage());
 
-                printf("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=%s\" />\n",
-                        $data['charset']);
+                printf("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=%s\" />\n", $data['charset']);
                 printf("<meta name=\"publisher\" content=\"BMC Administration - Uppsala Biomedical Centre - Uppsala Univertitet\" />\n");
                 printf("<meta name=\"description\" content=\"Locker room booking system\" />\n");
                 printf("<meta name=\"author\" content=\"http://it.bmc.uu.se/andlov/proj/\" />\n");
@@ -225,14 +225,8 @@ class BasePage implements TemplatePage
                                 // The validator requires an explicit URL when using HTTPS. We
                                 // also need to serve a cached image as W3C don't support HTTPS.
                                 //
-                                printf("<li><div class=\"validator\"><a href=\"http://validator.w3.org/check?uri=%s\"><img src=\"%s/images/w3c/valid-xhtml10\" alt=\"Valid XHTML 1.0!\" height=\"31\" width=\"88\" /></a></div></li>\n",
-                                        urlencode(sprintf("https://%s%s",
-                                                        $_SERVER['SERVER_NAME'],
-                                                        $_SERVER['REQUEST_URI'])), BASE_URL);
-                                printf("<li><div class=\"validator\"><a href=\"http://jigsaw.w3.org/css-validator/validator?uri=%s\"><img src=\"%s/images/w3c/vcss-blue\" alt=\"Valid CSS!\" height=\"31\" width=\"88\" /></a></div></li>\n",
-                                        urlencode(sprintf("https://%s%s",
-                                                        $_SERVER['SERVER_NAME'],
-                                                        $_SERVER['REQUEST_URI'])), BASE_URL);
+                                printf("<li><div class=\"validator\"><a href=\"http://validator.w3.org/check?uri=%s\"><img src=\"%s/images/w3c/valid-xhtml10\" alt=\"Valid XHTML 1.0!\" height=\"31\" width=\"88\" /></a></div></li>\n", urlencode(sprintf("https://%s%s", $_SERVER['SERVER_NAME'], $_SERVER['REQUEST_URI'])), BASE_URL);
+                                printf("<li><div class=\"validator\"><a href=\"http://jigsaw.w3.org/css-validator/validator?uri=%s\"><img src=\"%s/images/w3c/vcss-blue\" alt=\"Valid CSS!\" height=\"31\" width=\"88\" /></a></div></li>\n", urlencode(sprintf("https://%s%s", $_SERVER['SERVER_NAME'], $_SERVER['REQUEST_URI'])), BASE_URL);
                         } else {
                                 printf("<li><div class=\"validator\"><a href=\"http://validator.w3.org/check?uri=referer\"><img src=\"http://www.w3.org/Icons/valid-xhtml10\" alt=\"Valid XHTML 1.0!\" height=\"31\" width=\"88\" /></a></div></li>\n");
                                 printf("<li><div class=\"validator\"><a href=\"http://jigsaw.w3.org/css-validator/check/referer\"><img src=\"http://jigsaw.w3.org/css-validator/images/vcss-blue\" alt=\"Valid CSS!\" height=\"31\" width=\"88\" /></a></div></li>\n");
@@ -303,8 +297,7 @@ class SecurePage extends BasePage
         private function validate()
         {
                 if (!self::userIsTrusted(phpCAS::getUser())) {
-                        ErrorPage::show(_("Access denied!"),
-                                        _("Only trusted users with administrative privileges (system users) can access this page. The script processing has halted."));
+                        ErrorPage::show(_("Access denied!"), _("Only trusted users with administrative privileges (system users) can access this page. The script processing has halted."));
                         exit(1);
                 }
         }
@@ -350,11 +343,7 @@ final class PageRender implements TemplatePage
                 } catch (Exception $exception) {
                         $message = sprintf(_("Please report this to %s."), CONTACT_STRING);
                         $this->page->error(sprintf("<p>%s</p><p>%s</p>", $exception, $message));
-                        error_log(sprintf("%s: %s (in %s:%d)",
-                                        ERROR_LOG_PREFIX,
-                                        $exception->getMessage(),
-                                        $exception->getFile(),
-                                        $exception->getLine()));
+                        error_log(sprintf("%s: %s (in %s:%d)", ERROR_LOG_PREFIX, $exception->getMessage(), $exception->getFile(), $exception->getLine()));
                         if ($exception instanceof DatabaseException) {
                                 error_log(sprintf("%s: %s", ERROR_LOG_PREFIX, $exception->getUserInfo()));
                         }
