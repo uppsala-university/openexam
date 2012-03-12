@@ -317,6 +317,31 @@ if (!defined('FORM_ACTION_DEFAULT')) {
         define('FORM_ACTION_DEFAULT', FORM_ACTION_GET);
 }
 
+// 
+// MessageBox icons URL:
+// 
+if (!defined('MESSAGEBOX_ICON_URL')) {
+        define('MESSAGEBOX_ICON_URL', '/openexam/icons');
+}
+// 
+// MessageBox standard titles:
+// 
+if (!defined('MESSAGEBOX_TITLE_HINT')) {
+        define('MESSAGEBOX_TITLE_HINT', _('Hint'));
+}
+if (!defined('MESSAGEBOX_TITLE_SUCCESS')) {
+        define('MESSAGEBOX_TITLE_SUCCESS', _('Success'));
+}
+if (!defined('MESSAGEBOX_TITLE_INFO')) {
+        define('MESSAGEBOX_TITLE_INFO', _('Information'));
+}
+if (!defined('MESSAGEBOX_TITLE_WARN')) {
+        define('MESSAGEBOX_TITLE_WARN', _('Warning'));
+}
+if (!defined('MESSAGEBOX_TITLE_ERROR')) {
+        define('MESSAGEBOX_TITLE_ERROR', _('Error'));
+}
+
 /**
  * This class serves as the base class for component and container classes.
  *
@@ -328,8 +353,8 @@ if (!defined('FORM_ACTION_DEFAULT')) {
 class Element
 {
 
-        private $tag;                // The tag name (i.e. h2)
         private $class;              // The classname (CSS)
+        private $tag;                // The tag name (i.e. h2)
         private $id;                 // The unique ID (CSS)
         private $style;              // Inline style
         private $title;              // The title attribute.
@@ -1608,7 +1633,7 @@ class ImageButton extends Input
          */
         public function setAltText($text)
         {
-                parent::setAttr("alt", $alt);
+                parent::setAttr("alt", $text);
         }
 
 }
@@ -2512,8 +2537,8 @@ class Content
  * MessageBox class.
  *
  * This class defines a messagebox providing an standardized look-and-feel
- * for the displayed message. The messagebox is either used to display success,
- * information, warnings or error messages.
+ * for the displayed message. The messagebox is either used to display hinting,
+ * success, information, warnings or error messages.
  *
  * The hint type is an extension to the standard messagebox types, and is
  * intended for display of user hints (like short usage tips).
@@ -2533,11 +2558,11 @@ class Content
  * $messagebox->display();
  *
  * $messagebox = new MessageBox(
- * MessageBox::information,
- * $icon, $title, $text);
+ *     MessageBox::information,
+ *     $text, $title, $icon);
  * $messagebox->display();
  *
- * MessageBox::show(MessageBox::information, $icon, $title, $text);
+ * MessageBox::show(MessageBox::information, $text, $title, $icon);
  * ?>
  * </code>
  *
@@ -2551,7 +2576,7 @@ class Content
  * </div>
  * </code>
  *
- * By default, the messagebox will be of imformation type. The type is either
+ * By default, the messagebox will be of information type. The type is either
  * set at construction time or later by calling setClass() on the messagebox
  * object.
  *
@@ -2576,24 +2601,27 @@ class MessageBox extends Container
         /**
          * Constructor.
          * @param string $type Type of messagebox.
-         * @param string|Image $icon The messagebox icon. Pass null to use default icon.
-         * @param string $title The title text.
          * @param string $text The message string.
+         * @param string|bool $title The title text or true to use default title. Pass null to exclude title message.
+         * @param string|Image $icon The messagebox icon. Pass null to use default icon.
          */
-        public function __construct($type = self::information, $icon = null, $title = null, $text = "")
+        public function __construct($type = self::information, $text = "", $title = true, $icon = null)
         {
                 parent::__construct("div");
                 parent::setClass($type);
 
-                if (!isset($icon)) {
-                        $icon = sprintf("/openexam/icons/%s.png", $type);
+                if (!isset($icon)) {                    // deduce icon from type
+                        $icon = sprintf("%s/%s.png", MESSAGEBOX_ICON_URL, $type);
+                }
+                if (is_bool($title) && $title) {        // deduce title from type
+                        $title = constant(sprintf("MESSAGEBOX_TITLE_%s", strtoupper($type)));
                 }
 
                 $this->setTitle($title);
                 $this->setIcon($icon);
                 $this->setMessage($text);
 
-                parent::addElement($this);      // add output hook
+                parent::addElement($this);              // add output hook
         }
 
         /**
@@ -2603,13 +2631,13 @@ class MessageBox extends Container
          * calls display() on it.
          * 
          * @param string $type Type of messagebox.
-         * @param string|Image $icon The messagebox icon. Pass null to use default icon.
-         * @param string $title The title text.
          * @param string $text The message string.
+         * @param string|bool $title The title text or true to use default title. Pass null to exclude title message.
+         * @param string|Image $icon The messagebox icon. Pass null to use default icon.
          */
-        public static function show($type = self::information, $icon = null, $title = null, $text = "")
+        public static function show($type = self::information, $text = "", $title = true, $icon = null)
         {
-                $messagebox = new MessageBox($type, $icon, $title, $text);
+                $messagebox = new MessageBox($type, $text, $title, $icon);
                 $messagebox->display();
         }
 
@@ -2628,11 +2656,13 @@ class MessageBox extends Container
 
         /**
          * Set the messagebox title.
-         * @param string $title The title text.
+         * @param string $title The title text or null to exclude title message.
          */
         public function setTitle($text)
         {
-                if (!is_null($text)) {
+                if (!isset($text)) {
+                        $this->title = null;
+                } elseif (is_string($text)) {
                         $this->title = new H3($text);
                 }
         }
