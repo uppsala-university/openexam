@@ -74,23 +74,23 @@ class ContributePage extends TeacherPage
 {
 
         private static $params = array(
-                "exam"     => "/^\d+$/",
+                "exam"     => parent::pattern_index,
                 "action"   => "/^(add|edit|test|delete|remove|restore|import)$/",
                 "question" => "/^(\d+|all|active|removed|compact|own)$/",
-                "comment"  => "/.*/",
+                "comment"  => parent::pattern_text,
                 "mode"     => "/^(save)$/",
-                "score"    => "/^\d+(\.\d)*$/",
-                "name"     => "/^.*$/",
-                "quest"    => "/.*/",
+                "score"    => parent::pattern_float,
+                "name"     => parent::pattern_text,
+                "quest"    => parent::pattern_text,
                 "type"     => "/^(freetext|single|multiple|pp|oq)$/",
-                "user"     => "/^[0-9a-zA-Z]{1,10}$/",
+                "user"     => parent::pattern_user,
                 "status"   => "/^(active|removed)$/",
-                "video"    => "/^(.*:\/\/.*|)$/",
-                "audio"    => "/^(.*:\/\/.*|)$/",
-                "image"    => "/^(.*:\/\/.*|)$/",
+                "video"    => parent::pattern_url,
+                "audio"    => parent::pattern_url,
+                "image"    => parent::pattern_url,
                 "what"     => "/^(question|topic)$/",
                 "topic"    => "/^(\d+|all)$/",
-                "random"   => "/^\d*$/");
+                "random"   => parent::pattern_index);
 
         public function __construct()
         {

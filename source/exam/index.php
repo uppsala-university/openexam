@@ -90,7 +90,7 @@ class ExaminationPage extends BasePage
         // the regex pattern to validate its value against.
         //
         private static $params = array(
-                "exam"     => "/^\d+$/",
+                "exam"     => parent::pattern_index,
                 "question" => "/^(\d+|all)$/"
         );
         private $author = false;    // Running in question author mode.

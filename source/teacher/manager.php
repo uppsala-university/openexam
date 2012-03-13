@@ -88,13 +88,13 @@ class ManagerPage extends TeacherPage
 {
 
         private static $params = array(
-                "exam"   => "/^\d+$/",
+                "exam"   => parent::pattern_index,
                 "action" => "/^(add|edit|show|copy|test|delete|cancel|finish|export|import)$/",
                 "role"   => "/^(contributor|examinator|decoder)$/",
                 "type"   => "/^(op)$/",
-                "user"   => "/^\d+$/",
-                "uuid"   => "/^[0-9a-zA-Z]{1,10}$/",
-                "name"   => "/^(\p{L}|\p{N}|\p{Z}|\p{P})+$/u"
+                "user"   => parent::pattern_index,
+                "uuid"   => parent::pattern_user,
+                "name"   => parent::pattern_name
         );
 
         public function __construct()

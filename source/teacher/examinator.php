@@ -82,18 +82,18 @@ class ExaminatorPage extends TeacherPage
 {
 
         private static $params = array(
-                "exam"   => "/^\d+$/",
+                "exam"   => parent::pattern_index,
                 "what"   => "/^(user|users|course)$/",
                 "mode"   => "/^(save|show)$/",
-                "code"   => "/^([0-9a-fA-F]{1,15}|)$/",
-                "user"   => "/^[0-9a-zA-Z]{1,10}$/",
-                "users"  => "/.*/",
-                "course" => "/^[0-9a-zA-Z]{1,10}$/",
-                "stime"  => "/^.*$/",
-                "etime"  => "/^.*$/",
+                "code"   => parent::pattern_code,
+                "user"   => parent::pattern_user,
+                "users"  => parent::pattern_text,
+                "course" => parent::pattern_course,
+                "stime"  => parent::pattern_text,
+                "etime"  => parent::pattern_text,
                 "action" => "/^(add|edit|show|delete)$/",
-                "year"   => "/^[0-9]{4}$/",
-                "termin" => "/^[1-2]$/"
+                "year"   => parent::pattern_year,
+                "termin" => parent::pattern_termin
         );
 
         public function __construct()
