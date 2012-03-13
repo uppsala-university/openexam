@@ -80,11 +80,11 @@ class MediaPage extends TeacherPage
 {
 
         private $params = array(
-                "exam" => "/^\d+$/",
+                "exam"   => "/^\d+$/",
                 "action" => "/^(add|delete)$/",
-                "file" => "/.*/",
-                "type" => "/^(audio|image|video|auto)$/",
-                "show" => "/^(tree|flat|album)$/"
+                "file"   => "/.*/",
+                "type"   => "/^(audio|image|video|auto)$/",
+                "show"   => "/^(tree|flat|album)$/"
         );
 
         public function __construct()
@@ -123,8 +123,7 @@ class MediaPage extends TeacherPage
         private function showSubmitForm()
         {
                 printf("<h3>" . _("Media Library") . "</h3>\n");
-                printf("<p>" . _("Browse your local harddisk for the media file to submit. Supported types of files are audio, image or video. Maximum size of uploaded file is %0.1f MB, uploading a larger file is silently discarded.") . "</p>\n",
-                        MEDIA_UPLOAD_MAXSIZE / (1024 * 1024));
+                printf("<p>" . _("Browse your local harddisk for the media file to submit. Supported types of files are audio, image or video. Maximum size of uploaded file is %0.1f MB, uploading a larger file is silently discarded.") . "</p>\n", MEDIA_UPLOAD_MAXSIZE / (1024 * 1024));
 
                 $form = new Form("index.php", "POST", "file");
                 $form->setEncodingType("multipart/form-data");
@@ -139,9 +138,9 @@ class MediaPage extends TeacherPage
 
                 $types = array(
                         _("Auto detect") => "auto",
-                        _("Audio") => MediaLibrary::audio,
-                        _("Image") => MediaLibrary::image,
-                        _("Video") => MediaLibrary::video
+                        _("Audio")       => MediaLibrary::audio,
+                        _("Image")       => MediaLibrary::image,
+                        _("Video")       => MediaLibrary::video
                 );
                 $combo = $form->addComboBox("type");
                 $combo->setLabel(_("Type"));
@@ -154,9 +153,7 @@ class MediaPage extends TeacherPage
 
                 $form->output();
 
-                printf("<br/><div class=\"hint\"><img src=\"../icons/nuvola/hint.png\"/> " .
-                        _("Hint: If file type is set to auto, then server side will try to auto detected and categorize the uploaded file.") .
-                        "</div>\n");
+                MessageBox::show(MessageBox::hint, _("If file type is set to auto, then server side will try to auto detected and categorize the uploaded file."));
         }
 
         //
@@ -194,27 +191,17 @@ class MediaPage extends TeacherPage
                 $tree = new TreeBuilder(_("Files"));
                 $root = $tree->getRoot();
 
-                $root->addLink(_("Add"),
-                        sprintf("?exam=%d&amp;action=add", $this->param->exam),
-                        sprintf(_("Click to add an %s file to this examination."), _("media")));
+                $root->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $this->param->exam), sprintf(_("Click to add an %s file to this examination."), _("media")));
 
                 foreach ($media as $sect => $files) {
                         $child = $root->addChild($sect);
-                        $child->addLink(_("Add"),
-                                sprintf("?exam=%d&amp;action=add&amp;type=%s", $this->param->exam, $sect),
-                                sprintf(_("Click to add an %s file to this examination."), $sect));
+                        $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;type=%s", $this->param->exam, $sect), sprintf(_("Click to add an %s file to this examination."), $sect));
                         foreach ($files as $file) {
-                                $file->title = sprintf("%s: %d bytes\n%s: %s",
-                                                _("Size"),
-                                                filesize($file->path),
-                                                _("Modified"),
-                                                strftime(DATETIME_FORMAT, filemtime($file->path)));
+                                $file->title = sprintf("%s: %d bytes\n%s: %s", _("Size"), filesize($file->path), _("Modified"), strftime(DATETIME_FORMAT, filemtime($file->path)));
 
                                 $node = $child->addChild($file->name);
                                 $node->setLink($file->url, $file->title);
-                                $node->addLink(_("Delete"),
-                                        sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=tree", $this->param->exam, $file->sect, $file->name),
-                                        sprintf(_("Click to delete the %s file %s from to this examination."), $file->sect, $file->name));
+                                $node->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=tree", $this->param->exam, $file->sect, $file->name), sprintf(_("Click to delete the %s file %s from to this examination."), $file->sect, $file->name));
                         }
                 }
                 $tree->output();
@@ -253,8 +240,7 @@ class MediaPage extends TeacherPage
                 );
                 $disp = array();
                 foreach ($links as $text => $name) {
-                        $disp[] = sprintf("<a href=\"?exam=%d&amp;action=add&amp;type=%s\">%s</a>",
-                                        $this->param->exam, $name, $text);
+                        $disp[] = sprintf("<a href=\"?exam=%d&amp;action=add&amp;type=%s\">%s</a>", $this->param->exam, $name, $text);
                 }
 
                 printf("<br><p>%s: %s</p>\n", _("Add"), implode(", ", $disp));
@@ -274,12 +260,7 @@ class MediaPage extends TeacherPage
                         $row = $table->addRow();
                         $link = sprintf("%s/media/?exam=%d&amp;action=add&amp;type=%s", BASE_URL, $this->param->exam, $sect);
                         $title = sprintf(_("Click to add an %s file to this examination."), $sect);
-                        $cell = $row->addData(sprintf("%s: %d %s <span class=\"album_add\"><a href=\"%s\" title=\"%s\">[+]</a></span>",
-                                                $sect,
-                                                $count,
-                                                ngettext("File", "Files", $count),
-                                                $link,
-                                                $title));
+                        $cell = $row->addData(sprintf("%s: %d %s <span class=\"album_add\"><a href=\"%s\" title=\"%s\">[+]</a></span>", $sect, $count, ngettext("File", "Files", $count), $link, $title));
                         $cell->setColspan($split);
                         $cell->setClass("album_head");
 
@@ -287,7 +268,7 @@ class MediaPage extends TeacherPage
                                 if ($index++ % $split == 0) {
                                         $row = $table->addRow();
                                 }
-                                $icon = sprintf("%s/icons/nuvola/mime/%s.png", BASE_URL, $sect);
+                                $icon = sprintf("/openexam/icons/mime/%s.png", $sect);
                                 $image = new Image($icon, $file->name);
                                 $cell = $row->addData();
                                 $cell->setClass("album_icon");
@@ -320,8 +301,8 @@ class MediaPage extends TeacherPage
                 printf("<p>" . _("This page shows all files currently uploaded on the server for this examination. The media file URL's can be used when composing questions.") . "</p>\n");
 
                 $mode = array(
-                        "tree" => _("Tree"),
-                        "flat" => _("Flat"),
+                        "tree"  => _("Tree"),
+                        "flat"  => _("Flat"),
                         "album" => _("Album")
                 );
                 $disp = array();
@@ -329,8 +310,7 @@ class MediaPage extends TeacherPage
                 printf("<span class=\"links viewmode\">\n");
                 foreach ($mode as $name => $text) {
                         if ($show != $name) {
-                                $disp[] = sprintf("<a href=\"?exam=%d&amp;show=%s\">%s</a>",
-                                                $this->param->exam, $name, $text);
+                                $disp[] = sprintf("<a href=\"?exam=%d&amp;show=%s\">%s</a>", $this->param->exam, $name, $text);
                         } else {
                                 $disp[] = $text;
                         }
@@ -352,7 +332,7 @@ class MediaPage extends TeacherPage
 
         public function printMenu()
         {
-
+                
         }
 
         //
@@ -404,12 +384,9 @@ class MediaPage extends TeacherPage
                                         $name = $data[0];
                                         $state = $data[1];
                                         $child = $node->addChild($name);
-                                        $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
-                                                _("Click on this link to browse all media files in this examination."));
+                                        $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to browse all media files in this examination."));
                                         if ($state->isContributable()) {
-                                                $child->addLink(_("Add"),
-                                                        sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()),
-                                                        _("Click to add a media file to this examination."));
+                                                $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()), _("Click to add a media file to this examination."));
                                         }
                                         $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
                                         $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
@@ -426,8 +403,7 @@ class MediaPage extends TeacherPage
         private function checkAccess()
         {
                 if (!$this->manager->isContributor(phpCAS::getUser())) {
-                        ErrorPage::show(_("Access denied!"),
-                                        sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "decoder"));
+                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "decoder"));
                         exit(1);
                 }
         }

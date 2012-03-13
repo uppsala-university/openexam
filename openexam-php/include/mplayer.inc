@@ -1123,7 +1123,7 @@ class VLCMediaPlayer extends AbstractMediaPlayer
                         printf("<div class=\"%s\">\n", $group);
                         foreach ($buttons as $button) {
                                 if (!isset($button['media']) || $button['media'] == $this->mime->getMediaType()) {
-                                        printf("<img src=\"../icons/nuvola/player/%s\" onclick=\"javascript:%s\" title=\"%s\" />\n",
+                                        printf("<img src=\"/openexam/icons/player/%s\" onclick=\"javascript:%s\" title=\"%s\" />\n",
                                                 $button['icon'], $button['func'], $button['title']);
                                 }
                         }
