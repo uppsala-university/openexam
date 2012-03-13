@@ -219,9 +219,9 @@ class TeacherPage extends BasePage
                         // Questions sub menu:
                         //
                         if ($this->manager->isContributor(phpCAS::getUser()) ||
-                                $this->manager->isCorrector(phpCAS::getUser())) {
+                            $this->manager->isCorrector(phpCAS::getUser())) {
                                 if ($this->manager->getInfo()->isContributable() &&
-                                        $this->manager->isContributor(phpCAS::getUser())) {
+                                    $this->manager->isContributor(phpCAS::getUser())) {
                                         $links->questions->link->qadd->href = sprintf("contribute.php?exam=%d&action=add", $this->param->exam);
                                         $links->questions->link->qadd->name = _("Add question");
                                         $links->questions->link->tadd->href = sprintf("contribute.php?exam=%d&action=add&what=topic", $this->param->exam);
@@ -244,16 +244,16 @@ class TeacherPage extends BasePage
                         // Tasks sub menu:
                         //
                         if ($this->manager->isExaminator(phpCAS::getUser()) ||
-                                $this->manager->isDecoder(phpCAS::getUser())) {
+                            $this->manager->isDecoder(phpCAS::getUser())) {
                                 if ($this->manager->isExaminator(phpCAS::getUser()) &&
-                                        $this->manager->getInfo()->isFinished() == false) {
+                                    $this->manager->getInfo()->isFinished() == false) {
                                         $links->tasks->link->addstud->href = sprintf("examinator.php?exam=%d&action=add", $this->param->exam);
                                         $links->tasks->link->addstud->name = _("Add students");
                                         $links->tasks->link->schedule->href = sprintf("examinator.php?exam=%d&action=edit", $this->param->exam);
                                         $links->tasks->link->schedule->name = _("Change schedule");
                                 }
                                 if ($this->manager->isDecoder(phpCAS::getUser()) &&
-                                        $this->manager->getInfo()->isDecodable()) {
+                                    $this->manager->getInfo()->isDecodable()) {
                                         $links->tasks->link->decode->href = sprintf("decoder.php?exam=%d", $this->param->exam);
                                         $links->tasks->link->decode->name = _("Decode answers");
                                 }
@@ -270,22 +270,22 @@ class TeacherPage extends BasePage
                                 $links->views->link->manager->name = _("Project");
                         }
                         if ($this->manager->isContributor(phpCAS::getUser()) &&
-                                $this->manager->getInfo()->isContributable()) {
+                            $this->manager->getInfo()->isContributable()) {
                                 $links->views->link->contributor->href = sprintf("contribute.php?exam=%d", $this->param->exam);
                                 $links->views->link->contributor->name = _("Contribute");
                         }
                         if ($this->manager->isExaminator(phpCAS::getUser()) &&
-                                $this->manager->getInfo()->isExaminatable()) {
+                            $this->manager->getInfo()->isExaminatable()) {
                                 $links->views->link->examinator->href = sprintf("examinator.php?exam=%d", $this->param->exam);
                                 $links->views->link->examinator->name = _("Examination");
                         }
                         if ($this->manager->isCorrector(phpCAS::getUser()) &&
-                                $this->manager->getInfo()->isCorrectable()) {
+                            $this->manager->getInfo()->isCorrectable()) {
                                 $links->views->link->correction->href = sprintf("correct.php?exam=%d", $this->param->exam);
                                 $links->views->link->correction->name = _("Correction");
                         }
                         if ($this->manager->isDecoder(phpCAS::getUser()) &&
-                                $this->manager->getInfo()->isDecodable()) {
+                            $this->manager->getInfo()->isDecodable()) {
                                 $links->views->link->decoder->href = sprintf("decoder.php?exam=%d", $this->param->exam);
                                 $links->views->link->decoder->name = _("Decode");
                         }
@@ -405,11 +405,11 @@ class TeacherPage extends BasePage
         private function authorize()
         {
                 if ($this->roles->getDecoderRoles() == 0 &&
-                        $this->roles->getExaminatorRoles() == 0 &&
-                        $this->roles->getContributorRoles() == 0 &&
-                        $this->roles->getManagerRoles() == 0 &&
-                        $this->roles->getCreatorRoles() == 0 &&
-                        $this->roles->getCorrectorRoles() == 0) {
+                    $this->roles->getExaminatorRoles() == 0 &&
+                    $this->roles->getContributorRoles() == 0 &&
+                    $this->roles->getManagerRoles() == 0 &&
+                    $this->roles->getCreatorRoles() == 0 &&
+                    $this->roles->getCorrectorRoles() == 0) {
 
                         ErrorPage::show(_("Access denied!"), _("Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."));
                         exit(1);
@@ -494,14 +494,14 @@ class TeacherPage extends BasePage
                         $entry = $this->ldap->searchUID($user);
                         if ($entry->first()->hasMail()) {
                                 return new MailRecepient($entry->first()->getCN()->first(),
-                                                $entry->first()->getMail()->first());
+                                        $entry->first()->getMail()->first());
                         }
                 }
                 if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
                         $entry = $this->ldap->searchPrincipalName($user);
                         if ($entry->first()->hasMail()) {
                                 return new MailRecepient($entry->first()->getCN()->first(),
-                                                $entry->first()->getMail()->first());
+                                        $entry->first()->getMail()->first());
                         }
                 }
                 return null;

@@ -71,7 +71,6 @@ class Database
         private static $instance = null;   // This class object.
         //
         // Private to prevent explicit instantiation:
-
         //
 
         private function __construct()
@@ -180,8 +179,8 @@ class ResultSet implements Iterator
         {
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage(),
-                                $res->getCode(),
-                                $res->getUserInfo());
+                            $res->getCode(),
+                            $res->getUserInfo());
                 }
                 $this->rows = $res->fetchAll();
         }

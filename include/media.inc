@@ -63,11 +63,9 @@ class MediaFile
         public function __get($name)
         {
                 if ($name == "url") {
-                        return sprintf("%s/media/files/%s/%d/%s",
-                                BASE_URL, $this->sect, $this->exam, $this->name);
+                        return sprintf("%s/media/files/%s/%d/%s", BASE_URL, $this->sect, $this->exam, $this->name);
                 } elseif ($name == "path") {
-                        return sprintf("%s/%s/%d/%s",
-                                MEDIA_UPLOAD_DIR, $this->sect, $this->exam, $this->name);
+                        return sprintf("%s/%s/%d/%s", MEDIA_UPLOAD_DIR, $this->sect, $this->exam, $this->name);
                 } else {
                         return $this->$name;
                 }
@@ -80,6 +78,7 @@ class MediaFile
 // 
 class MediaLibrary
 {
+
         const audio = "audio";
         const image = "image";
         const video = "video";
@@ -404,25 +403,13 @@ class MediaSelect
                 printf("<span id=\"menuhead\">%s:</span>\n", _("Click to insert URL"));
                 printf("<ul>\n");
                 foreach ($this->media->$sect as $file) {
-                        $title = sprintf("%s: %d bytes\n%s: %s",
-                                        _("Size"), 
-                                        filesize($file->path),
-                                        _("Modified"),
-                                        strftime(DATETIME_FORMAT, filemtime($file->path)));
-                        printf("<li><a href=\"%s\" onclick=\"return insert_media(this,'%s');\" title=\"%s\">%s</a></li>\n",
-                                $file->url,
-                                $name,
-                                $title,
-                                $file->name);
+                        $title = sprintf("%s: %d bytes\n%s: %s", _("Size"), filesize($file->path), _("Modified"), strftime(DATETIME_FORMAT, filemtime($file->path)));
+                        printf("<li><a href=\"%s\" onclick=\"return insert_media(this,'%s');\" title=\"%s\">%s</a></li>\n", $file->url, $name, $title, $file->name);
                 }
                 printf("</ul>\n");
                 printf("<p class=\"mediamenu\">\n");
                 printf("<a name=\"\" onclick=\"close_media();\">[%s]</a>\n", _("Close"));
-                printf("<a href=\"%s/media/?exam=%d&amp;action=add&amp;type=%s\" target=\"_blank\" title=\"%s\">[+]</a>\n",
-                        BASE_URL,
-                        $this->media->exam,
-                        $sect,
-                        _("Add another file to the media library. Remember to reload this page to see the updated list."));
+                printf("<a href=\"%s/media/?exam=%d&amp;action=add&amp;type=%s\" target=\"_blank\" title=\"%s\">[+]</a>\n", BASE_URL, $this->media->exam, $sect, _("Add another file to the media library. Remember to reload this page to see the updated list."));
                 printf("</p></div>\n");
                 return sprintf("return show_media('%s','%s',event);", $target, $name);
         }

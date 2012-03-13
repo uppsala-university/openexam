@@ -98,254 +98,254 @@ class MediaMimeType
         private $ext;
         private $mime = MEDIA_PLAYER_MIME_TYPE;
         private static $map =
-                array(
+            array(
                 "application/ogg" => array(
-                        "ext" => array("ogx"),
+                        "ext"  => array("ogx"),
                         "type" => "media",
                         "desc" => "Ogg Multimedia File"
                 ),
                 "application/ram" => array(
-                        "ext" => array("ram"),
+                        "ext"  => array("ram"),
                         "type" => "media",
                         "desc" => "RealMedia MetaFile"
                 ),
                 "application/vnd.ms-asf" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "media",
                         "desc" => "Microsoft Media Format"
                 ),
                 "application/vnd.rn-realmedia" => array(
-                        "ext" => array("rm", "rmj", "rmm", "rms", "rmvb", "rmx"),
+                        "ext"  => array("rm", "rmj", "rmm", "rms", "rmvb", "rmx"),
                         "type" => "media",
                         "desc" => "RealMedia Document"
                 ),
                 "application/x-ogg" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "media",
                         "desc" => "Ogg Multimedia File"
                 ),
                 "application/xspf+xml" => array(
-                        "ext" => array("xspf"),
+                        "ext"  => array("xspf"),
                         "type" => "media",
                         "desc" => "XSPF Playlist"
                 ),
                 "application/x-shockwave-flash" => array(
-                        "ext" => array("spl", "swf"),
+                        "ext"  => array("spl", "swf"),
                         "type" => "media",
                         "desc" => "Shockwave Flash File"
                 ),
                 "audio/aac" => array(
-                        "ext" => array("aac"),
+                        "ext"  => array("aac"),
                         "type" => "audio",
                         "desc" => "AAC Sound"
                 ),
                 "audio/ac3" => array(
-                        "ext" => array("ac3"),
+                        "ext"  => array("ac3"),
                         "type" => "audio",
                         "desc" => "Dolby Digital Audio"
                 ),
                 "audio/flac" => array(
-                        "ext" => array("flac"),
+                        "ext"  => array("flac"),
                         "type" => "audio",
                         "desc" => "FLAC Audio"
                 ),
                 "audio/m3u" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "audio",
                         "desc" => "MP3 Audio"
                 ),
                 "audio/midi" => array(
-                        "ext" => array("kar", "mid", "midi"),
+                        "ext"  => array("kar", "mid", "midi"),
                         "type" => "audio",
                         "desc" => "MIDI Audio"
                 ),
                 "audio/mp2" => array(
-                        "ext" => array("mp2"),
+                        "ext"  => array("mp2"),
                         "type" => "audio",
                         "desc" => "MP2 Audio"
                 ),
                 "audio/mp4" => array(
-                        "ext" => array("aac", "m4a"),
+                        "ext"  => array("aac", "m4a"),
                         "type" => "audio",
                         "desc" => "MPEG-4 Audio"
                 ),
                 "audio/mpeg" => array(
-                        "ext" => array("mp3", "mpga"),
+                        "ext"  => array("mp3", "mpga"),
                         "type" => "audio",
                         "desc" => "MP3 Audio"
                 ),
                 "audio/ogg" => array(
-                        "ext" => array("oga", "ogg", "spx"),
+                        "ext"  => array("oga", "ogg", "spx"),
                         "type" => "audio",
                         "desc" => "Ogg Audio"
                 ),
                 "audio/vnd.rn-realaudio" => array(
-                        "ext" => array("ra", "rax"),
+                        "ext"  => array("ra", "rax"),
                         "type" => "audio",
                         "desc" => "RealAudio Document"
                 ),
                 "audio/vorbis" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "audio",
                         "desc" => "Vorbis Audio"
                 ),
                 "audio/x-aiff" => array(
-                        "ext" => array("aif", "aifc", "aiff"),
+                        "ext"  => array("aif", "aifc", "aiff"),
                         "type" => "audio",
                         "desc" => "AIFF/Amiga/Mac Audio"
                 ),
                 "audio/x-aiffc" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "audio",
                         "desc" => "AIFF Audio"
                 ),
                 "audio/x-flac+ogg" => array(
-                        "ext" => array("ogg"),
+                        "ext"  => array("ogg"),
                         "type" => "audio",
                         "desc" => "Ogg FLAC Audio"
                 ),
                 "audio/x-mpegurl" => array(
-                        "ext" => array("m3u", "m3u8", "vlc"),
+                        "ext"  => array("m3u", "m3u8", "vlc"),
                         "type" => "audio",
                         "desc" => "MP3 Audio Streamed"
                 ),
                 "audio/x-ms-asx" => array(
-                        "ext" => array("asx", "wax", "wmx", "wvx"),
+                        "ext"  => array("asx", "wax", "wmx", "wvx"),
                         "type" => "media",
                         "desc" => "Microsoft ASX Playlist"
                 ),
                 "audio/x-ms-wma" => array(
-                        "ext" => array("wma"),
+                        "ext"  => array("wma"),
                         "type" => "audio",
                         "desc" => "Windows Media Audio"
                 ),
                 "audio/x-oggflac" => array(
-                        "ext" => array("audio"),
+                        "ext"  => array("audio"),
                         "type" => "audio",
                         "desc" => "MP2 Audio"
                 ),
                 "audio/x-pn-realaudio" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "audio",
                         "desc" => "RealAudio Plugin File"
                 ),
                 "audio/x-speex+ogg" => array(
-                        "ext" => array("ogg"),
+                        "ext"  => array("ogg"),
                         "type" => "audio",
                         "desc" => "Ogg Speex Audio"
                 ),
                 "audio/x-vorbis+ogg" => array(
-                        "ext" => array("ogg"),
+                        "ext"  => array("ogg"),
                         "type" => "audio",
                         "desc" => "Ogg Vorbis Audio"
                 ),
                 "audio/x-wav" => array(
-                        "ext" => array("wav"),
+                        "ext"  => array("wav"),
                         "type" => "audio",
                         "desc" => "WAV Audio"
                 ),
                 "video/3gpp" => array(
-                        "ext" => array("3g2", "3ga", "3gp", "3gpp"),
+                        "ext"  => array("3g2", "3ga", "3gp", "3gpp"),
                         "type" => "media",
                         "desc" => "3GPP Multimedia File"
                 ),
                 "video/dv" => array(
-                        "ext" => array("dv"),
+                        "ext"  => array("dv"),
                         "type" => "video",
                         "desc" => "DV Video"
                 ),
                 "video/mp4" => array(
-                        "ext" => array("m4v", "mp4"),
+                        "ext"  => array("m4v", "mp4"),
                         "type" => "video",
                         "desc" => "MPEG-4 Video"
                 ),
                 "video/mpeg" => array(
-                        "ext" => array("m2t", "mp2", "mpe", "mpeg", "vob"),
+                        "ext"  => array("m2t", "mp2", "mpe", "mpeg", "vob"),
                         "type" => "video",
                         "desc" => "MPEG Video"
                 ),
                 "video/ogm+ogg" => array(
-                        "ext" => array("ogm"),
+                        "ext"  => array("ogm"),
                         "type" => "video",
                         "desc" => "OGM Video"
                 ),
                 "video/ogg" => array(
-                        "ext" => array("ogg"),
+                        "ext"  => array("ogg"),
                         "type" => "video",
                         "desc" => "Ogg Video"
                 ),
                 "video/quicktime" => array(
-                        "ext" => array("moov", "mov", "qt", "qtvr"),
+                        "ext"  => array("moov", "mov", "qt", "qtvr"),
                         "type" => "video",
                         "desc" => "QuickTime Video"
                 ),
                 "video/vnd.rn-realvideo" => array(
-                        "ext" => array("rv", "rvx"),
+                        "ext"  => array("rv", "rvx"),
                         "type" => "video",
                         "desc" => "RealVideo Document"
                 ),
                 "video/x-flv" => array(
-                        "ext" => array("flv"),
+                        "ext"  => array("flv"),
                         "type" => "video",
                         "desc" => "Flash Video"
                 ),
                 "video/x-ms-asf" => array(
-                        "ext" => array("asf"),
+                        "ext"  => array("asf"),
                         "type" => "video",
                         "desc" => "ASF Video"
                 ),
                 "video/x-ms-wmp" => array(
-                        "ext" => array("wmp"),
+                        "ext"  => array("wmp"),
                         "type" => "media",
                         "desc" => "Microsoft Media Format"
                 ),
                 "video/x-ms-wmv" => array(
-                        "ext" => array("wmv"),
+                        "ext"  => array("wmv"),
                         "type" => "video",
                         "desc" => "Windows Media Video"
                 ),
                 "video/x-msvideo" => array(
-                        "ext" => array("avi", "divx"),
+                        "ext"  => array("avi", "divx"),
                         "type" => "video",
                         "desc" => "AVI Video"
                 ),
                 "video/x-nsv" => array(
-                        "ext" => array("nsv"),
+                        "ext"  => array("nsv"),
                         "type" => "video",
                         "desc" => "NullSoft Video"
                 ),
                 "video/x-ogm" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "video",
                         "desc" => "Ogg/Ogm Video"
                 ),
                 "video/x-ogm+ogg" => array(
-                        "ext" => array("ogm"),
+                        "ext"  => array("ogm"),
                         "type" => "video",
                         "desc" => "OGM Video"
                 ),
                 "video/x-sgi-movie" => array(
-                        "ext" => array("movie"),
+                        "ext"  => array("movie"),
                         "type" => "video",
                         "desc" => "SGI Video"
                 ),
                 "video/x-theora+ogg" => array(
-                        "ext" => array("ogg"),
+                        "ext"  => array("ogg"),
                         "type" => "video",
                         "desc" => "Ogg Theora Video"
                 ),
                 "video/x-theora" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "video",
                         "desc" => "Ogg/Ogm Video"
                 ),
                 "uri/rtspt" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "media",
                         "desc" => "Realtime Streaming Protocol Transport"
                 ),
                 "uri/rtspu" => array(
-                        "ext" => array(""),
+                        "ext"  => array(""),
                         "type" => "media",
                         "desc" => "Realtime Streaming Protocol URI List"
                 )
@@ -538,19 +538,13 @@ class MediaPlayerOutput
 
                 if (isset($this->window)) {
                         printf("<!-- Begin %s window -->\n", $this->type);
-                        self::object($this->type,
-                                        $this->window->object,
-                                        $this->window->param,
-                                        $this->window->embed);
+                        self::object($this->type, $this->window->object, $this->window->param, $this->window->embed);
                         printf("<!-- End %s window -->\n", $this->type);
                 }
 
                 if (isset($this->control)) {
                         printf("<!-- Begin %s controller -->\n", $this->type);
-                        self::object($this->type,
-                                        $this->control->object,
-                                        $this->control->param,
-                                        $this->control->embed);
+                        self::object($this->type, $this->control->object, $this->control->param, $this->control->embed);
                         printf("<!-- End %s controller -->\n", $this->type);
                 }
 
@@ -559,9 +553,7 @@ class MediaPlayerOutput
                 }
 
                 printf("<!-- Begin link to launch external media player -->\n");
-                printf("<br/><a href=\"%s\" title=\"%s\" target=\"_blank\">%s</a>\n", $this->url,
-                        _("Click to open the URL in an external media player"),
-                        _("External Media Player"));
+                printf("<br/><a href=\"%s\" title=\"%s\" target=\"_blank\">%s</a>\n", $this->url, _("Click to open the URL in an external media player"), _("External Media Player"));
                 printf("<!-- End link to launch external media player -->\n");
 
                 printf("<!-- End embedded %s file -->\n", $this->name);
@@ -766,6 +758,7 @@ class GenericMediaPlayer extends AbstractMediaPlayer
 // 
 class QuickTimeMediaPlayer extends AbstractMediaPlayer
 {
+
         const classid = "clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B";
         const codebase = "http://www.apple.com/qtactivex/qtplugin.cab";
 
@@ -813,6 +806,7 @@ class QuickTimeMediaPlayer extends AbstractMediaPlayer
 // 
 class WindowsMediaPlayer extends AbstractMediaPlayer
 {
+
         const objectid = "mediaPlayer";
         const classid = "clsid:22d6f312-b0f6-11d0-94ab-0080c74c7e95";
         const codebase = "http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701";
@@ -875,6 +869,7 @@ class WindowsMediaPlayer extends AbstractMediaPlayer
 // 
 class RealMediaPlayer extends AbstractMediaPlayer
 {
+
         const objectid = "rvocx";
         const classid = "clsid:CFCDAA03-8BE4-11CF-B84B-0020AFBBCCFA";
 
@@ -935,9 +930,9 @@ class RealMediaPlayer extends AbstractMediaPlayer
 // 
 class FlashMediaPlayer extends AbstractMediaPlayer
 {
+
         const classid = "clsid:D27CDB6E-AE6D-11CF-96B8-444553540000";
         const codebase = "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0";
-
         const quality = "high";
         const bgcolor = "#ffffff";
 
@@ -960,8 +955,7 @@ class FlashMediaPlayer extends AbstractMediaPlayer
                 if ($this->mime->getMimeType() == "video/x-flv") {
                         $player->name = "flowplayer";
                         $player->url = sprintf("%s/media/flowplayer/flowplayer-3.2.0.swf", BASE_URL);
-                        $player->conf = sprintf("config={'clip':{'url':'%s','autoPlay':%s,'scaling':'fit'}}",
-                                        $this->url, $this->autostart ? "true" : "false");
+                        $player->conf = sprintf("config={'clip':{'url':'%s','autoPlay':%s,'scaling':'fit'}}", $this->url, $this->autostart ? "true" : "false");
 
                         $media->name = "Flash";
                         $media->type = $this->mime->getMediaType();
@@ -1035,6 +1029,7 @@ class FlashMediaPlayer extends AbstractMediaPlayer
 // 
 class VLCMediaPlayer extends AbstractMediaPlayer
 {
+
         const objectid = "vlc";
         const version = "VideoLAN.VLCPlugin.2";
 
@@ -1077,37 +1072,37 @@ class VLCMediaPlayer extends AbstractMediaPlayer
         {
                 $panel = array("vlc-play" => array(
                                 array(
-                                        "func" => "play()",
-                                        "icon" => "media-playback-start.png",
+                                        "func"  => "play()",
+                                        "icon"  => "media-playback-start.png",
                                         "title" => _("Start playback"),
                                 ),
                                 array(
-                                        "func" => "pause()",
-                                        "icon" => "media-playback-pause.png",
+                                        "func"  => "pause()",
+                                        "icon"  => "media-playback-pause.png",
                                         "title" => _("Pause playback")
                                 ),
                                 array(
-                                        "func" => "stop()",
-                                        "icon" => "media-playback-stop.png",
-                                        "title" => _("Stop playback")
+                                        "func"     => "stop()",
+                                        "icon"     => "media-playback-stop.png",
+                                        "title"    => _("Stop playback")
                                 )
                         ),
                         "vlc-seek" => array(
                                 array(
-                                        "func" => "backward()",
-                                        "icon" => "media-seek-backward.png",
+                                        "func"  => "backward()",
+                                        "icon"  => "media-seek-backward.png",
                                         "title" => _("Seek backward in media stream")
                                 ),
                                 array(
-                                        "func" => "forward()",
-                                        "icon" => "media-seek-forward.png",
-                                        "title" => _("Seek forward in media stream")
+                                        "func"       => "forward()",
+                                        "icon"       => "media-seek-forward.png",
+                                        "title"      => _("Seek forward in media stream")
                                 )
                         ),
                         "vlc-screen" => array(
                                 array(
-                                        "func" => "fullscreen()",
-                                        "icon" => "view-fullscreen.png",
+                                        "func"  => "fullscreen()",
+                                        "icon"  => "view-fullscreen.png",
                                         "title" => _("Switch to fullscreen mode"),
                                         "media" => "video"
                                 )
@@ -1123,8 +1118,7 @@ class VLCMediaPlayer extends AbstractMediaPlayer
                         printf("<div class=\"%s\">\n", $group);
                         foreach ($buttons as $button) {
                                 if (!isset($button['media']) || $button['media'] == $this->mime->getMediaType()) {
-                                        printf("<img src=\"/openexam/icons/player/%s\" onclick=\"javascript:%s\" title=\"%s\" />\n",
-                                                $button['icon'], $button['func'], $button['title']);
+                                        printf("<img src=\"/openexam/icons/player/%s\" onclick=\"javascript:%s\" title=\"%s\" />\n", $button['icon'], $button['func'], $button['title']);
                                 }
                         }
                         printf("</div>\n");

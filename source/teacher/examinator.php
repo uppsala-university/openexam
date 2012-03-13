@@ -393,7 +393,7 @@ class ExaminatorPage extends TeacherPage
                         $form->output();
                 } else {
                         ErrorPage::show(_("No members found"), sprintf(_("The query for course %s in the directory service returned an empty list. ") .
-                                        _("It looks like no students belongs to this course."), $this->param->course));
+                                _("It looks like no students belongs to this course."), $this->param->course));
                         exit(1);
                 }
         }
@@ -414,7 +414,7 @@ class ExaminatorPage extends TeacherPage
                         $handler->addStudents($data);
                 } else {
                         ErrorPage::show(_("No members found"), sprintf(_("The query for course %s in the directory service returned an empty list. ") .
-                                        _("It looks like no students belongs to this course."), $this->param->course));
+                                _("It looks like no students belongs to this course."), $this->param->course));
                         exit(1);
                 }
 
@@ -444,9 +444,9 @@ class ExaminatorPage extends TeacherPage
 
                 printf("<h3>" . _("Showing Examination") . "</h3>\n");
                 printf("<p>" .
-                        _("Showing details for the examination <i>'%s'</i>. ") .
-                        _("Use the links to add and remove students, and reschedule the start and end time of the examination. ") .
-                        "</p>\n", $data->getExamDescription());
+                    _("Showing details for the examination <i>'%s'</i>. ") .
+                    _("Use the links to add and remove students, and reschedule the start and end time of the examination. ") .
+                    "</p>\n", $data->getExamDescription());
 
                 if (!EXAMINATOR_VISIBLE_IDENTITIES) {
                         MessageBox::show(MessageBox::information, _("No usernames will be exposed unless the examination has already been decoded."));

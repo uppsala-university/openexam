@@ -26,9 +26,9 @@ class TestCase
 {
 
         private $exam;    // The exam ID.
-
         //
         // Construct the test case object.
+
         //
 
         public function __construct($exam)
@@ -67,8 +67,7 @@ class TestCase
         //
         public function finish()
         {
-                $sql = sprintf("UPDATE exams SET endtime = '%s' WHERE id = %d",
-                                date('Y-m-d G:i:s'), $this->exam);
+                $sql = sprintf("UPDATE exams SET endtime = '%s' WHERE id = %d", date('Y-m-d G:i:s'), $this->exam);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());

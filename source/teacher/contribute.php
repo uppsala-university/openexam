@@ -297,7 +297,7 @@ class ContributePage extends TeacherPage
         {
                 try {
                         $importer = FileImport::getReader(
-                                        $this->param->type, $_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']
+                                $this->param->type, $_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']
                         );
                         $importer->open();
                         $importer->read($this->param->exam, Database::getConnection());
@@ -359,8 +359,8 @@ class ContributePage extends TeacherPage
                         $input->setSize(60);
 
                         $input = $form->addTextArea("quest", $data->hasQuestionText() || $action == "edit" ?
-                                        $data->getQuestionText() :
-                                        _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n<hr/>\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n<hr/>\n"));
+                                $data->getQuestionText() :
+                                _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n<hr/>\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n<hr/>\n"));
                         $input->setTitle(_("The actual question is defined here. Double click inside the textarea to clear its content."));
                         $input->setLabel(_("Question"));
                         $input->setClass("question");
@@ -467,9 +467,9 @@ class ContributePage extends TeacherPage
                 $data = $this->manager->getData();
                 $info = $this->manager->getInfo();
                 $qrec = new DataRecord(array(
-                                "examid"       => $this->param->exam,
-                                "topicid"      => $this->param->topic,
-                                "questiontype" => "freetext")
+                            "examid"       => $this->param->exam,
+                            "topicid"      => $this->param->topic,
+                            "questiontype" => "freetext")
                 );
 
                 printf("<h3>" . _("Add Question") . "</h3>\n");
@@ -502,9 +502,9 @@ class ContributePage extends TeacherPage
 
                 printf("<h3>" . _("Remove Question") . "</h3>\n");
                 printf("<p>" .
-                        _("This page let you mark the question '%s' as removed from this examination. ") .
-                        _("By marking this question as removed, any scores for answers will be ignored in the examination result. ") .
-                        "</p>\n", $qrecord->getQuestionName());
+                    _("This page let you mark the question '%s' as removed from this examination. ") .
+                    _("By marking this question as removed, any scores for answers will be ignored in the examination result. ") .
+                    "</p>\n", $qrecord->getQuestionName());
 
                 $form = new Form("contribute.php", "POST");
                 $form->addHidden("exam", $this->param->exam);
@@ -529,9 +529,9 @@ class ContributePage extends TeacherPage
         {
                 printf("<h3>" . _("Import Questions") . "</h3>\n");
                 printf("<p>" .
-                        _("Browse your local disk to select an file containing questions to import. ") .
-                        _("Currently, this is the list of question banks can be imported: ") .
-                        "</p>\n");
+                    _("Browse your local disk to select an file containing questions to import. ") .
+                    _("Currently, this is the list of question banks can be imported: ") .
+                    "</p>\n");
                 printf("<ul>\n");
                 printf("<li>" . ("Ping-pong: MS Excel and Tab-separated format.") . "</li>\n");
                 printf("<li>" . ("OpenExam:  Questions exported from this system.") . "</li>\n");
@@ -609,9 +609,9 @@ class ContributePage extends TeacherPage
                 printf("</script>\n");
 
                 printf("<p>" .
-                        _("If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. ") .
-                        _("This value is used for <u>duggor</u>, leave it as zero for ordinary examinations (use all questions).") .
-                        "</p>\n");
+                    _("If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. ") .
+                    _("This value is used for <u>duggor</u>, leave it as zero for ordinary examinations (use all questions).") .
+                    "</p>\n");
 
                 $form = new Form("contribute.php", "GET");
                 $form->setName("topic");
@@ -659,9 +659,9 @@ class ContributePage extends TeacherPage
                 $data = $this->manager->getData();
                 $info = $this->manager->getInfo();
                 $trec = new DataRecord(array(
-                                "examid"      => $this->param->exam,
-                                "topicname"   => "",
-                                "topicrandom" => 0)
+                            "examid"      => $this->param->exam,
+                            "topicname"   => "",
+                            "topicrandom" => 0)
                 );
 
                 printf("<h3>" . _("Add Topic") . "</h3>\n");
@@ -726,9 +726,9 @@ class ContributePage extends TeacherPage
 
                 printf("<h3>" . _("Manage Questions") . "</h3>\n");
                 printf("<p>" .
-                        _("This page let you add, edit and remove questions in the examination '%s'. ") .
-                        _("You can only edit or remove a question if you are the publisher of the question or the creator of this examination.") .
-                        "</p>\n", $data->getExamName());
+                    _("This page let you add, edit and remove questions in the examination '%s'. ") .
+                    _("You can only edit or remove a question if you are the publisher of the question or the creator of this examination.") .
+                    "</p>\n", $data->getExamName());
 
                 if (!$info->isContributable()) {
                         printf("<p>" . _("Notice: It's no longer possible to contribute or modify questions for this examination.") . "</p>\n");
