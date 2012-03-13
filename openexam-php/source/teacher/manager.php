@@ -504,8 +504,7 @@ class ManagerPage extends TeacherPage
                                 $this->param->exam = $importer->read(0, Database::getConnection());
                                 $importer->close();
                         } catch (ImportException $exception) {
-                                ErrorPage::show(_("Failed Import Questions"), $exception->getMessage());
-                                exit(1);
+                                $this->fatal(_("Failed Import Questions"), $exception->getMessage());
                         }
                         header(sprintf("location: manager.php?exam=%d", $this->param->exam));
                 } else {
@@ -717,13 +716,11 @@ class ManagerPage extends TeacherPage
         {
                 if (isset($this->param->exam)) {
                         if (!$this->manager->isCreator(phpCAS::getUser())) {
-                                ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "creator"));
-                                exit(1);
+                                $this->fatal(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "creator"));
                         }
                 } else {
                         if ($this->roles->getCreatorRoles() == 0 && $this->roles->getManagerRoles() == 0) {
-                                ErrorPage::show(_("Access denied!"), _("Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."));
-                                exit(1);
+                                $this->fatal(_("Access denied!"), _("Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."));
                         }
                 }
         }

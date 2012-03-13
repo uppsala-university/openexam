@@ -186,13 +186,11 @@ class DecoderPage extends TeacherPage
         private function checkAccess()
         {
                 if (!$this->manager->isDecoder(phpCAS::getUser())) {
-                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "decoder"));
-                        exit(1);
+                        $this->fatal(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "decoder"));
                 }
 
                 if (!$this->manager->getInfo()->isDecodable()) {
-                        ErrorPage::show(_("Can't continue!"), _("This examination is not yet decodable, probably becuase not all answers have been corrected yet. The script processing has halted."));
-                        exit(1);
+                        $this->fatal(_("Can't continue!"), _("This examination is not yet decodable, probably becuase not all answers have been corrected yet. The script processing has halted."));
                 }
         }
 
@@ -245,8 +243,7 @@ class DecoderPage extends TeacherPage
         private function saveScores()
         {
                 if (!$this->manager->getInfo()->isDecoded()) {
-                        ErrorPage::show(_("Can't continue!"), _("This examination has not been decoded. The script processing has halted."));
-                        exit(1);
+                        $this->fatal(_("Can't continue!"), _("This examination has not been decoded. The script processing has halted."));
                 }
 
                 ob_end_clean();

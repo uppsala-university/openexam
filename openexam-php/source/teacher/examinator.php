@@ -173,8 +173,7 @@ class ExaminatorPage extends TeacherPage
         private function checkAccess()
         {
                 if (!$this->manager->isExaminator(phpCAS::getUser())) {
-                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "examinator"));
-                        exit(1);
+                        $this->fatal(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "examinator"));
                 }
         }
 
@@ -392,9 +391,8 @@ class ExaminatorPage extends TeacherPage
                         $input = $form->addSubmitButton("submit", _("Add Students"));
                         $form->output();
                 } else {
-                        ErrorPage::show(_("No members found"), sprintf(_("The query for course %s in the directory service returned an empty list. ") .
+                        $this->fatal(_("No members found"), sprintf(_("The query for course %s in the directory service returned an empty list. ") .
                                 _("It looks like no students belongs to this course."), $this->param->course));
-                        exit(1);
                 }
         }
 
@@ -413,9 +411,8 @@ class ExaminatorPage extends TeacherPage
                         $handler = new Examinator($this->param->exam);
                         $handler->addStudents($data);
                 } else {
-                        ErrorPage::show(_("No members found"), sprintf(_("The query for course %s in the directory service returned an empty list. ") .
+                        $this->fatal(_("No members found"), sprintf(_("The query for course %s in the directory service returned an empty list. ") .
                                 _("It looks like no students belongs to this course."), $this->param->course));
-                        exit(1);
                 }
 
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
