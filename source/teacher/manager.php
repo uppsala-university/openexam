@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/manager.php
@@ -88,13 +88,19 @@ class ManagerPage extends TeacherPage
 {
 
         private static $params = array(
-                "exam"   => parent::pattern_index,
-                "action" => "/^(add|edit|show|copy|test|delete|cancel|finish|export|import)$/",
-                "role"   => "/^(contributor|examinator|decoder)$/",
-                "type"   => "/^(op)$/",
-                "user"   => parent::pattern_index,
-                "uuid"   => parent::pattern_user,
-                "name"   => parent::pattern_name
+                "exam"    => parent::pattern_index,
+                "action"  => "/^(add|edit|show|copy|test|delete|cancel|finish|export|import)$/",
+                "role"    => "/^(contributor|examinator|decoder)$/",
+                "type"    => "/^(op)$/",
+                "user"    => parent::pattern_index,
+                "uuid"    => parent::pattern_user, // username
+                "name"    => parent::pattern_name, // person name
+                "unit"    => parent::pattern_text, // organization unit
+                "desc"    => parent::pattern_text, // exam description
+                "grade"   => parent::pattern_text, // grades
+                "details" => parent::pattern_text,
+                "start"   => parent::pattern_text, // start date/time
+                "end"     => parent::pattern_text       // end date/time
         );
 
         public function __construct()
@@ -112,65 +118,65 @@ class ManagerPage extends TeacherPage
                 //
                 // Authorization first:
                 //
-                self::checkAccess();
+                $this->checkAccess();
 
                 //
                 // Bussiness logic:
                 //
-                if (!isset($_REQUEST['exam'])) {
-                        if (!isset($_REQUEST['action'])) {
+                if (!isset($this->param->exam)) {
+                        if (!isset($this->param->action)) {
                                 self::showAvailableExams();
-                        } elseif ($_REQUEST['action'] == "add") {
-                                self::addExam(isset($_REQUEST['name']));
-                        } elseif ($_REQUEST['action'] == "import") {
-                                self::importExam(isset($_FILES['file']));
+                        } elseif ($this->param->action == "add") {
+                                $this->addExam(isset($this->param->name));
+                        } elseif ($this->param->action == "import") {
+                                $this->importExam(isset($_FILES['file']));
                         }
                 } else {
-                        if (isset($_REQUEST['action'])) {
-                                if (isset($_REQUEST['role'])) {
-                                        if ($_REQUEST['action'] == "delete") {
-                                                self::assert('user');
+                        if (isset($this->param->action)) {
+                                if (isset($this->param->role)) {
+                                        if ($this->param->action == "delete") {
+                                                $this->assert('user');
                                         }
-                                        if ($_REQUEST['role'] == "contributor") {
-                                                if ($_REQUEST['action'] == "add") {
-                                                        self::addContributor(isset($_REQUEST['uuid']));
-                                                } elseif ($_REQUEST['action'] == "delete") {
-                                                        self::deleteContributor();
+                                        if ($this->param->role == "contributor") {
+                                                if ($this->param->action == "add") {
+                                                        $this->addContributor(isset($this->param->uuid));
+                                                } elseif ($this->param->action == "delete") {
+                                                        $this->deleteContributor();
                                                 }
-                                        } elseif ($_REQUEST['role'] == "examinator") {
-                                                if ($_REQUEST['action'] == "add") {
-                                                        self::addExaminator(isset($_REQUEST['uuid']));
-                                                } elseif ($_REQUEST['action'] == "delete") {
-                                                        self::deleteExaminator();
+                                        } elseif ($this->param->role == "examinator") {
+                                                if ($this->param->action == "add") {
+                                                        $this->addExaminator(isset($this->param->uuid));
+                                                } elseif ($this->param->action == "delete") {
+                                                        $this->deleteExaminator();
                                                 }
-                                        } elseif ($_REQUEST['role'] == "decoder") {
-                                                if ($_REQUEST['action'] == "add") {
-                                                        self::addDecoder(isset($_REQUEST['uuid']));
-                                                } elseif ($_REQUEST['action'] == "delete") {
-                                                        self::deleteDecoder();
+                                        } elseif ($this->param->role == "decoder") {
+                                                if ($this->param->action == "add") {
+                                                        $this->addDecoder(isset($this->param->uuid));
+                                                } elseif ($this->param->action == "delete") {
+                                                        $this->deleteDecoder();
                                                 }
                                         }
                                 } else {
-                                        if ($_REQUEST['action'] == "show") {
-                                                self::showExam();
-                                        } elseif ($_REQUEST['action'] == "edit") {
-                                                self::editExam(isset($_REQUEST['name']));
-                                        } elseif ($_REQUEST['action'] == "copy") {
-                                                self::copyExam();
-                                        } elseif ($_REQUEST['action'] == "test") {
-                                                self::testExam();
-                                        } elseif ($_REQUEST['action'] == "delete") {
-                                                self::deleteExam();
-                                        } elseif ($_REQUEST['action'] == "cancel") {
-                                                self::cancelExam();
-                                        } elseif ($_REQUEST['action'] == "finish") {
-                                                self::finishExam();
-                                        } elseif ($_REQUEST['action'] == "export") {
-                                                self::exportExam();
+                                        if ($this->param->action == "show") {
+                                                $this->showExam();
+                                        } elseif ($this->param->action == "edit") {
+                                                $this->editExam(isset($this->param->name));
+                                        } elseif ($this->param->action == "copy") {
+                                                $this->copyExam();
+                                        } elseif ($this->param->action == "test") {
+                                                $this->testExam();
+                                        } elseif ($this->param->action == "delete") {
+                                                $this->deleteExam();
+                                        } elseif ($this->param->action == "cancel") {
+                                                $this->cancelExam();
+                                        } elseif ($this->param->action == "finish") {
+                                                $this->finishExam();
+                                        } elseif ($this->param->action == "export") {
+                                                $this->exportExam();
                                         }
                                 }
                         } else {
-                                self::showExam();
+                                $this->showExam();
                         }
                 }
         }
@@ -178,7 +184,7 @@ class ManagerPage extends TeacherPage
         //
         // Show all exams the current user is the owner of.
         //
-        private function showAvailableExams()
+        private static function showAvailableExams()
         {
                 printf("<p>" .
                     _("This page let you create new exams or manage your old ones. ") .
@@ -381,17 +387,16 @@ class ManagerPage extends TeacherPage
                                     "examdetails"   => RESULT_DETAILS_DEFAULT)
                         );
                         $this->manager = new Manager(0);
-                        self::showExamForm(0, $data, "add");
+                        $this->showExamForm(0, $data, "add");
                 } else {
                         $gd = new ExamGrades();
-                        $gd->setText($_REQUEST['grade']);
+                        $gd->setText($this->param->grade);
 
-                        $dd = new ExamDetails($_REQUEST['details']);
+                        $dd = new ExamDetails($this->param->details);
 
                         $this->manager = new Manager(0);
                         $this->manager->setData(
-                            $_REQUEST['unit'], $_REQUEST['name'], $_REQUEST['desc'], $gd->encode(), $dd->getMask(), strtotime($_REQUEST['start']), strtotime($_REQUEST['end'])
-                        );
+                            $this->param->unit, $this->param->name, $this->param->desc, $gd->encode(), $dd->getMask(), strtotime($this->param->start), strtotime($this->param->end));
 
                         //
                         // By default, add creator of the exam as contributor and decoder.
@@ -411,22 +416,22 @@ class ManagerPage extends TeacherPage
 
                 if (!$store) {
                         printf("<p>" . _("This page let you edit common properties of the exam. Click on the 'Submit' button to save changes.") . "</p>\n");
-                        self::showExamForm($this->param->exam, $data, "edit");
+                        $this->showExamForm($this->param->exam, $data, "edit");
                 } else {
                         $gd = new ExamGrades();
-                        $gd->setText($_REQUEST['grade']);
+                        $gd->setText($this->param->grade);
 
-                        $dd = new ExamDetails($_REQUEST['details']);
+                        $dd = new ExamDetails($this->param->details);
 
-                        if (!isset($_REQUEST['start'])) {
-                                $_REQUEST['start'] = $data->getExamStartTime();
+                        if (!isset($this->param->start)) {
+                                $this->param->start = $data->getExamStartTime();
                         }
-                        if (!isset($_REQUEST['end'])) {
-                                $_REQUEST['end'] = $data->getExamEndTime();
+                        if (!isset($this->param->end)) {
+                                $this->param->end = $data->getExamEndTime();
                         }
 
                         $this->manager->setData(
-                            $_REQUEST['unit'], $_REQUEST['name'], $_REQUEST['desc'], $gd->encode(), $dd->getMask(), strtotime($_REQUEST['start']), strtotime($_REQUEST['end'])
+                            $this->param->unit, $this->param->name, $this->param->desc, $gd->encode(), $dd->getMask(), strtotime($this->param->start), strtotime($this->param->end)
                         );
                         header(sprintf("location: manager.php?exam=%d", $this->param->exam));
                 }
@@ -660,10 +665,10 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         $data = $this->manager->getData();
                         $text = sprintf(_("Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."), $data->getExamName());
-                        return self::addExamRole("contributor", $text);
+                        return $this->addExamRole("contributor", $text);
                 }
 
-                $this->manager->addContributor($_REQUEST['uuid']);
+                $this->manager->addContributor($this->param->uuid);
                 header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
         }
 
@@ -678,10 +683,10 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         $data = $this->manager->getData();
                         $text = sprintf(_("Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."), $data->getExamName());
-                        return self::addExamRole("examinator", $text);
+                        return $this->addExamRole("examinator", $text);
                 }
 
-                $this->manager->addExaminator($_REQUEST['uuid']);
+                $this->manager->addExaminator($this->param->uuid);
                 header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
         }
 
@@ -696,10 +701,10 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         $data = $this->manager->getData();
                         $text = sprintf(_("Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."), $data->getExamName());
-                        return self::addExamRole("decoder", $text);
+                        return $this->addExamRole("decoder", $text);
                 }
 
-                $this->manager->addDecoder($_REQUEST['uuid']);
+                $this->manager->addDecoder($this->param->uuid);
                 header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
         }
 

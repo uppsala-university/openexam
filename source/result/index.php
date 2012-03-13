@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/result/index.php
@@ -69,10 +69,6 @@ include "include/teacher/correct.inc";
 class ResultPage extends BasePage
 {
 
-        //
-        // All possible request parameters should be added here along with
-        // the regex pattern to validate its value against.
-        //
         private static $params = array(
                 "exam"   => parent::pattern_index,
                 "action" => "/^(details|download)$/",
@@ -93,25 +89,21 @@ class ResultPage extends BasePage
                 //
                 // Authorization first:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        self::checkAccess($_REQUEST['exam']);
-                } else {
-                        self::checkAccess();
-                }
+                $this->checkAccess();
 
                 //
                 // Bussiness logic:
                 //
-                if (!isset($_REQUEST['exam']) && !isset($_REQUEST['action'])) {
-                        self::showAvailableExams();
+                if (!isset($this->param->exam) && !isset($this->param->action)) {
+                        $this->showAvailableExams();
                 } else {
-                        if ($_REQUEST['action'] == "download") {
-                                if (!isset($_REQUEST['format'])) {
-                                        $_REQUEST['format'] = "pdf";
+                        if ($this->param->action == "download") {
+                                if (!isset($this->param->format)) {
+                                        $this->param->format = "pdf";
                                 }
-                                self::sendExam($_REQUEST['exam'], $_REQUEST['format']);
-                        } elseif ($_REQUEST['action'] == "details") {
-                                self::showExam($_REQUEST['exam']);
+                                $this->sendExam();
+                        } elseif ($this->param->action == "details") {
+                                $this->showExam();
                         }
                 }
         }
@@ -120,15 +112,15 @@ class ResultPage extends BasePage
         // Check that caller is authorized to access this exam or don't have
         // an currently active examination.
         //
-        private function checkAccess($exam = 0)
+        private function checkAccess()
         {
-                if ($exam == 0) {
+                if (!isset($this->param->exam)) {
                         $exams = Exam::getActiveExams(phpCAS::getUser());
                         if ($exams->count() > 0) {
                                 $this->fatal(_("Access denied!"), _("Access to results from your previous completed examinations is not available while another examination is taking place."));
                         }
                 } else {
-                        $this->data = Exam::getExamData(phpCAS::getUser(), $exam);
+                        $this->data = Exam::getExamData(phpCAS::getUser(), $this->param->exam);
                         if (!$this->data->hasExamID()) {
                                 $this->fatal(_("No examination found!"), _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."));
                         }
@@ -197,7 +189,7 @@ class ResultPage extends BasePage
         //
         // Send result to peer as either PDF or HTML.
         //
-        private function sendExam($exam, $format)
+        private function sendExam()
         {
                 //
                 // Make sure we don't leak information:
@@ -211,8 +203,8 @@ class ResultPage extends BasePage
                 // the requested format.
                 //
                 ob_end_clean();
-                $pdf = new ResultPDF($exam);
-                $pdf->setFormat($format);
+                $pdf = new ResultPDF($this->param->exam);
+                $pdf->setFormat($this->param->format);
                 $pdf->send($this->data->getStudentID());
                 exit(0);
         }
@@ -220,7 +212,7 @@ class ResultPage extends BasePage
         //
         // Show details for this examination.
         // 
-        private function showExam($exam)
+        private function showExam()
         {
                 printf("<h3>" . _("Examination details") . "</h3>\n");
                 printf("<p>" . _("Showing description for examiniation <u>%s</u> on <u>%s</u>") . ":</p>\n", $this->data->getExamName(), strftime(DATE_FORMAT, strtotime($this->data->getExamStartTime())));

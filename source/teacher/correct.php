@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/correct.php
@@ -79,11 +79,13 @@ class CorrectionPage extends TeacherPage
         private static $params = array(
                 "exam"     => parent::pattern_index,
                 "answer"   => parent::pattern_index,
+                "result"   => parent::pattern_index,
                 "question" => parent::pattern_index,
                 "student"  => parent::pattern_index,
                 "verbose"  => parent::pattern_index,
                 "colorize" => parent::pattern_index,
                 "score"    => parent::pattern_float,
+                "comment"  => parent::pattern_text,
                 "mode"     => "/^(mark|save)$/"
         );
 
@@ -103,44 +105,40 @@ class CorrectionPage extends TeacherPage
                 //
                 // Authorization first:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        self::checkAccess();
-                }
-                if (isset($_REQUEST['comment'])) {
-                        $this->param->comment = $_REQUEST['comment'];
+                if (isset($this->param->exam)) {
+                        $this->checkAccess();
                 }
 
                 //
                 // Bussiness logic:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        if (isset($_REQUEST['question'])) {
-                                if (isset($_REQUEST['mode']) &&
-                                    $_REQUEST['mode'] == "save") {
-                                        self::assert(array('score', 'comment'));
-                                        self::saveQuestionScore();
+                if (isset($this->param->exam)) {
+                        if (isset($this->param->question)) {
+                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                        $this->assert(array('score', 'comment'));
+                                        $this->saveQuestionScore();
                                 } else {
-                                        self::markQuestionScore();
+                                        $this->markQuestionScore();
                                 }
-                        } elseif (isset($_REQUEST['student'])) {
-                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                        self::assert(array('score', 'comment'));
-                                        self::saveStudentScore();
+                        } elseif (isset($this->param->student)) {
+                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                        $this->assert(array('score', 'comment'));
+                                        $this->saveStudentScore();
                                 } else {
-                                        self::markStudentScore();
+                                        $this->markStudentScore();
                                 }
-                        } elseif (isset($_REQUEST['answer'])) {
-                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                        self::assert(array('score', 'comment'));
-                                        self::saveAnswerScore();
+                        } elseif (isset($this->param->answer)) {
+                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                        $this->assert(array('score', 'comment'));
+                                        $this->saveAnswerScore();
                                 } else {
-                                        self::markAnswerScore();
+                                        $this->markAnswerScore();
                                 }
                         } else {
-                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                        self::saveScoreBoard();
+                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                        $this->saveScoreBoard();
                                 } else {
-                                        self::showScoreBoard();
+                                        $this->showScoreBoard();
                                 }
                         }
                 } else {
@@ -170,9 +168,9 @@ class CorrectionPage extends TeacherPage
         //
         private function saveAnswerResult()
         {
-                $results = isset($_REQUEST['result']) ? $_REQUEST['result'] : array();
+                $results = isset($this->param->result) ? $this->param->result : array();
                 $correct = new Correct($this->param->exam);
-                $correct->setAnswerResult($_REQUEST['score'], $_REQUEST['comment'], $results);
+                $correct->setAnswerResult($this->param->score, $this->param->comment, $results);
                 header(sprintf("location: correct.php?exam=%d", $this->param->exam));
         }
 
@@ -181,7 +179,7 @@ class CorrectionPage extends TeacherPage
         //
         private function saveAnswerScore()
         {
-                self::saveAnswerResult();
+                $this->saveAnswerResult();
         }
 
         //
@@ -189,7 +187,7 @@ class CorrectionPage extends TeacherPage
         //
         private function saveStudentScore()
         {
-                self::saveAnswerResult();
+                $this->saveAnswerResult();
         }
 
         //
@@ -197,7 +195,7 @@ class CorrectionPage extends TeacherPage
         //
         private function saveQuestionScore()
         {
-                self::saveAnswerResult();
+                $this->saveAnswerResult();
         }
 
         //
@@ -314,7 +312,7 @@ class CorrectionPage extends TeacherPage
                 $row = $table->addRow();
                 $row->addHeader(_("Answer"));
                 $row->addHeader(_("Score"));
-                self::viewQuestionAnswer($question, $answer, $table, $form);
+                $this->viewQuestionAnswer($question, $answer, $table, $form);
                 $form->addElement($table);
                 $form->addSpace();
                 $form->addSubmitButton("submit", _("Submit"));
@@ -390,7 +388,7 @@ class CorrectionPage extends TeacherPage
                                 continue;   // Not publisher of this question.
                         }
                         $question = $exam->getQuestionData($answer->getQuestionID());
-                        self::viewQuestionAnswer($question, $answer, $table, $form);
+                        $this->viewQuestionAnswer($question, $answer, $table, $form);
                 }
                 $form->addElement($table);
                 $form->addSpace();
@@ -437,7 +435,7 @@ class CorrectionPage extends TeacherPage
                 $row->addHeader(_("Answer"));
                 $row->addHeader(_("Score"));
                 foreach ($answers as $answer) {
-                        self::viewQuestionAnswer($question, $answer, $table, $form);
+                        $this->viewQuestionAnswer($question, $answer, $table, $form);
                 }
                 $form->addElement($table);
                 $form->addSpace();
@@ -445,7 +443,7 @@ class CorrectionPage extends TeacherPage
                 $form->output();
         }
 
-        private function showAvailableExams()
+        private static function showAvailableExams()
         {
                 printf("<h3>" . _("Correct Answers") . "</h3>\n");
                 printf("<p>" .

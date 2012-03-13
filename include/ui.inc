@@ -188,7 +188,7 @@ class BasePage implements TemplatePage
         }
 
         //
-        // Check that the array of required parameters is set.
+        // Check that the array of required parameters is passed.
         //
         final public function assert($names)
         {
