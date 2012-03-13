@@ -82,17 +82,17 @@ class ExaminatorPage extends TeacherPage
 {
 
         private $params = array(
-                "exam" => "/^\d+$/",
-                "what" => "/^(user|users|course)$/",
-                "mode" => "/^(save|show)$/",
-                "code" => "/^([0-9a-fA-F]{1,15}|)$/",
-                "user" => "/^[0-9a-zA-Z]{1,10}$/",
-                "users" => "/.*/",
+                "exam"   => "/^\d+$/",
+                "what"   => "/^(user|users|course)$/",
+                "mode"   => "/^(save|show)$/",
+                "code"   => "/^([0-9a-fA-F]{1,15}|)$/",
+                "user"   => "/^[0-9a-zA-Z]{1,10}$/",
+                "users"  => "/.*/",
                 "course" => "/^[0-9a-zA-Z]{1,10}$/",
-                "stime" => "/^.*$/",
-                "etime" => "/^.*$/",
+                "stime"  => "/^.*$/",
+                "etime"  => "/^.*$/",
                 "action" => "/^(add|edit|show|delete)$/",
-                "year" => "/^[0-9]{4}$/",
+                "year"   => "/^[0-9]{4}$/",
                 "termin" => "/^[1-2]$/"
         );
 
@@ -229,8 +229,8 @@ class ExaminatorPage extends TeacherPage
                 printf("<p>" . _("If the student code is missing, then the system is going to generate a random code.") . "</p>\n");
 
                 $mode = array(
-                        "user" => _("Single"),
-                        "users" => _("List"),
+                        "user"   => _("Single"),
+                        "users"  => _("List"),
                         "course" => _("Import")
                 );
                 $disp = array();
@@ -449,7 +449,7 @@ class ExaminatorPage extends TeacherPage
                         "</p>\n", $data->getExamDescription());
 
                 if (!EXAMINATOR_VISIBLE_IDENTITIES) {
-                        printf("<p><img src=\"../icons/nuvola/info.png\" /> " . _("No usernames will be exposed unless the examination has already been decoded.") . "</p>\n");
+                        MessageBox::show(MessageBox::information, _("No usernames will be exposed unless the examination has already been decoded."));
                 }
 
                 $tree = new TreeBuilder($data->getExamName());

@@ -90,13 +90,12 @@ class ExaminationPage extends BasePage
         // the regex pattern to validate its value against.
         //
         private $params = array(
-                "exam" => "/^\d+$/",
+                "exam"     => "/^\d+$/",
                 "question" => "/^(\d+|all)$/"
         );
         private $author = false;    // Running in question author mode.
         private $lockdown = false;  // This examination has lockdown mode enabled.
         private $testcase = false;  // This examination is a testcase.
-
         //
         // Construct the exam page.
         //
@@ -143,13 +142,7 @@ class ExaminationPage extends BasePage
                 //
                 if ($this->testcase) {
                         printf("<hr/>\n");
-                        printf("<b>" . ("Test case") . ":</b> <a href=\"%s\" title=\"%s\">%s</a> <a href=\"%s\" title=\"%s\">%s</a>\n",
-                                sprintf("../teacher/manager.php?exam=%d&amp;action=finish", $_REQUEST['exam']),
-                                _("Stops the examination and allow you to correct and decode results."),
-                                _("Finish"),
-                                sprintf("../teacher/manager.php?exam=%d&amp;action=cancel", $_REQUEST['exam']),
-                                _("Delete this test case and return to the examination manager."),
-                                _("Cancel"));
+                        printf("<b>" . ("Test case") . ":</b> <a href=\"%s\" title=\"%s\">%s</a> <a href=\"%s\" title=\"%s\">%s</a>\n", sprintf("../teacher/manager.php?exam=%d&amp;action=finish", $_REQUEST['exam']), _("Stops the examination and allow you to correct and decode results."), _("Finish"), sprintf("../teacher/manager.php?exam=%d&amp;action=cancel", $_REQUEST['exam']), _("Delete this test case and return to the examination manager."), _("Cancel"));
                 }
         }
 
@@ -158,14 +151,11 @@ class ExaminationPage extends BasePage
 
                 if (isset($_REQUEST['exam']) && !isset($_REQUEST['preview'])) {
                         $exams = Exam::getActiveExams(phpCAS::getUser());
-                        if($exams->count() > 1) {
+                        if ($exams->count() > 1) {
                                 echo "<span id=\"menuhead\">" . _("Examinations") . ":</span>\n";
                                 echo "<ul>\n";
                                 foreach ($exams as $exam) {
-                                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
-                                                $exam->getExamID(), 
-                                                $exam->getExamDescription(),
-                                                $exam->getExamName());
+                                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $exam->getExamID(), $exam->getExamDescription(), $exam->getExamName());
                                 }
                                 echo "</ul>\n";
                         }
@@ -180,12 +170,7 @@ class ExaminationPage extends BasePage
                                                 $options = Exam::getQuestionChoice($question->getQuestionText());
                                                 $question->setQuestionText($options[0]);
                                         }
-                                        printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01fp]</a></li>\n",
-                                                $question->getExamID(),
-                                                $question->getQuestionID(),
-                                                strip_tags($question->getQuestionText()),
-                                                strip_tags($question->getQuestionName()),
-                                                $question->getQuestionScore());
+                                        printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01fp]</a></li>\n", $question->getExamID(), $question->getQuestionID(), strip_tags($question->getQuestionText()), strip_tags($question->getQuestionName()), $question->getQuestionScore());
                                 }
                                 echo "</ul>\n";
                         }
@@ -198,25 +183,15 @@ class ExaminationPage extends BasePage
                                                 $options = Exam::getQuestionChoice($question->getQuestionText());
                                                 $question->setQuestionText($options[0]);
                                         }
-                                        printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01f]</a></li>\n",
-                                                $question->getExamID(),
-                                                $question->getQuestionID(),
-                                                strip_tags($question->getQuestionText()),
-                                                strip_tags($question->getQuestionName()),
-                                                $question->getQuestionScore());
+                                        printf("<li><a href=\"?exam=%d&amp;question=%d\" title=\"%s\">%s [%.01f]</a></li>\n", $question->getExamID(), $question->getQuestionID(), strip_tags($question->getQuestionText()), strip_tags($question->getQuestionName()), $question->getQuestionScore());
                                 }
                                 echo "</ul>\n";
                         }
 
                         echo "<span id=\"menuhead\">" . _("Show") . ":</span>\n";
                         echo "<ul>\n";
-                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n",
-                                $_REQUEST['exam'],
-                                _("Show the start page for this examination"), _("Start page"));
-                        printf("<li><a href=\"?exam=%d&amp;question=all\" title=\"%s\">%s</a></li>\n",
-                                $_REQUEST['exam'],
-                                _("Show all questions at the same time"),
-                                _("All questions"));
+                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $_REQUEST['exam'], _("Show the start page for this examination"), _("Start page"));
+                        printf("<li><a href=\"?exam=%d&amp;question=all\" title=\"%s\">%s</a></li>\n", $_REQUEST['exam'], _("Show all questions at the same time"), _("All questions"));
                         echo "</ul>\n";
                 }
         }
@@ -238,8 +213,7 @@ class ExaminationPage extends BasePage
 
                 $data = Exam::getExamData(phpCAS::getUser(), $exam);
                 if (!$data->hasExamID()) {
-                        ErrorPage::show(_("No examination found!"),
-                                        sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+                        ErrorPage::show(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                         exit(1);
                 }
 
@@ -248,8 +222,7 @@ class ExaminationPage extends BasePage
                 $etime = strtotime($data->getExamEndTime());
 
                 if (!($stime <= $now && $now <= $etime)) {
-                        ErrorPage::show(_("This examination is now closed!"),
-                                        sprintf("<p>" . _("This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance.") . "</p>", strftime(DATETIME_FORMAT, $etime)));
+                        ErrorPage::show(_("This examination is now closed!"), sprintf("<p>" . _("This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance.") . "</p>", strftime(DATETIME_FORMAT, $etime)));
                         exit(1);
                 }
 
@@ -268,13 +241,12 @@ class ExaminationPage extends BasePage
                                 }
                         } catch (LockerException $exception) {
                                 error_log($exception->getError());      // Log private message.
-                                ErrorPage::show(_("Computer lockdown failed!"),
-                                                sprintf("<p>" .
-                                                        _("Securing your computer for this examination has failed: %s") .
-                                                        "<p></p>" .
-                                                        _("If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. ") .
-                                                        _("The examiniation is inaccessable from this computer until the problem has been resolved.") .
-                                                        "</p>", $exception));
+                                ErrorPage::show(_("Computer lockdown failed!"), sprintf("<p>" .
+                                                _("Securing your computer for this examination has failed: %s") .
+                                                "<p></p>" .
+                                                _("If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. ") .
+                                                _("The examiniation is inaccessable from this computer until the problem has been resolved.") .
+                                                "</p>", $exception));
                                 exit(1);
                         }
                 }
@@ -287,13 +259,11 @@ class ExaminationPage extends BasePage
         {
                 $data = Exam::getQuestionData($question);
                 if (!$data->hasQuestionID()) {
-                        ErrorPage::show(_("Request parameter error!"),
-                                        sprintf("<p>" . _("No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
+                        ErrorPage::show(_("Request parameter error!"), sprintf("<p>" . _("No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
                         exit(1);
                 }
                 if ($data->getExamID() != $exam) {
-                        ErrorPage::show(_("Request parameter error!"),
-                                        sprintf("<p>" . _("The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
+                        ErrorPage::show(_("Request parameter error!"), sprintf("<p>" . _("The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
                         exit(1);
                 }
         }
@@ -306,8 +276,7 @@ class ExaminationPage extends BasePage
                 $exams = Exam::getActiveExams(phpCAS::getUser());
 
                 if ($exams->count() == 0) {
-                        ErrorPage::show(_("No examination found!"),
-                                        sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+                        ErrorPage::show(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                         exit(1);
                 }
 
@@ -320,10 +289,7 @@ class ExaminationPage extends BasePage
                 foreach ($exams as $exam) {
                         printf("<div class=\"examination\">\n");
                         printf("<div class=\"examhead\">%s</div>\n", $exam->getExamName());
-                        printf("<div class=\"exambody\">%s<p>%s: <b>%s</b></p>\n",
-                                str_replace("\n", "<br>", $exam->getExamDescription()),
-                                _("The examination ends"),
-                                strftime(DATETIME_ISO, strtotime($exam->getExamEndTime())));
+                        printf("<div class=\"exambody\">%s<p>%s: <b>%s</b></p>\n", str_replace("\n", "<br>", $exam->getExamDescription()), _("The examination ends"), strftime(DATETIME_ISO, strtotime($exam->getExamEndTime())));
 
                         $form = new Form("index.php", "GET");
                         $form->addHidden("exam", $exam->getExamID());
@@ -343,8 +309,7 @@ class ExaminationPage extends BasePage
         {
                 $exam = Exam::getExamData(phpCAS::getUser(), $exam);
                 if (!$exam->hasExamID()) {
-                        ErrorPage::show(_("No examination found!"),
-                                        sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+                        ErrorPage::show(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                         exit(1);
                 }
 
@@ -377,13 +342,7 @@ class ExaminationPage extends BasePage
                                 $options = Exam::getQuestionChoice($question->getQuestionText());
                                 $question->setQuestionText($options[0]);
                         }
-                        printf("<h5>%s: %s</h5><p>%s</p><p><a href=\"?exam=%d&amp;question=%d\">[%s]</a></p>\n",
-                                _("Question"),
-                                $question->getQuestionName(),
-                                str_replace("\n", "<br>", $question->getQuestionText()),
-                                $question->getExamID(),
-                                $question->getQuestionID(),
-                                _("Answer"));
+                        printf("<h5>%s: %s</h5><p>%s</p><p><a href=\"?exam=%d&amp;question=%d\">[%s]</a></p>\n", _("Question"), $question->getQuestionName(), str_replace("\n", "<br>", $question->getQuestionText()), $question->getExamID(), $question->getQuestionID(), _("Answer"));
                 }
         }
 
@@ -408,15 +367,14 @@ class ExaminationPage extends BasePage
                 printf("</style>\n");
 
                 printf("<div class=\"left\">\n");
-                printf("<h3>%s %s [%.01fp]</h3>\n", _("Question"),
-                        $qdata->getQuestionName(), $qdata->getQuestionScore());
+                printf("<h3>%s %s [%.01fp]</h3>\n", _("Question"), $qdata->getQuestionName(), $qdata->getQuestionScore());
 
                 //
                 // Replace multiple '\n' (more than one) with row breaks:
                 //
                 $pattern = "/(\r\n){2,}|(\n|\r){4,}/";
                 $replace = "\n<br/><br/>\n";
-                
+
                 // 
                 // Expands handler escape sequencess:
                 // 
@@ -426,12 +384,10 @@ class ExaminationPage extends BasePage
                 // Output question text:
                 // 
                 if ($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
-                        printf("<div class=\"question\">%s</div>\n",
-                                preg_replace($pattern, $replace, $scanner->expand()));
+                        printf("<div class=\"question\">%s</div>\n", preg_replace($pattern, $replace, $scanner->expand()));
                 } else {
                         $options = Exam::getQuestionChoice($scanner->expand());
-                        printf("<div class=\"question\">%s</div>\n",
-                                preg_replace($pattern, $replace, $options[0]));
+                        printf("<div class=\"question\">%s</div>\n", preg_replace($pattern, $replace, $options[0]));
                 }
 
                 printf("<div class=\"answer\">\n");
@@ -488,11 +444,10 @@ class ExaminationPage extends BasePage
                 printf("</script>\n");
                 printf("</div>\n");
                 if ($this->author) {
-                        printf("<br/><img src=\"icons/nuvola/info.png\" />\n%s: <i>%s</i>\n",
-                                _("Notice"), _("This question is viewed in preview mode (for question author)."));
+                        MessageBox::show(MessageBox::information, _("This question is viewed in preview mode (for question author)."), _("notice"));
                 }
                 if (isset($_REQUEST['status']) && $_REQUEST['status'] == "ok") {
-                        printf("<p><img src=\"icons/nuvola/info.png\" /> " . _("Your answer has been successful saved in the database.") . "</p>\n");
+                        MessageBox::show(MessageBox::success, _("Your answer has been successful saved in the database."));
                 }
                 printf("</div>\n");
 
@@ -515,8 +470,7 @@ class ExaminationPage extends BasePage
                         if ($qdata->hasQuestionImage()) {
                                 printf("<div class=\"media\">\n");
                                 printf("<h3>%s:</h3>\n", _("Image"));
-                                printf("<a href=\"%s\" target=\"_blank\" title=\"%s\">", $qdata->getQuestionImage(),
-                                        _("Click to open the URL in an external media player"));
+                                printf("<a href=\"%s\" target=\"_blank\" title=\"%s\">", $qdata->getQuestionImage(), _("Click to open the URL in an external media player"));
                                 printf("<img src=\"%s\" class=\"media\" />\n", $qdata->getQuestionImage());
                                 printf("</a>\n");
                                 printf("</div>\n");
@@ -587,16 +541,12 @@ class ExaminationPage extends BasePage
                                 if (is_array($_REQUEST[$param])) {
                                         foreach ($_REQUEST[$param] as $value) {
                                                 if (!preg_match($pattern, $value)) {
-                                                        ErrorPage::show(_("Request parameter error!"),
-                                                                        sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
-                                                                                $param, $pattern));
+                                                        ErrorPage::show(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
                                                         exit(1);
                                                 }
                                         }
                                 } elseif (!preg_match($pattern, $_REQUEST[$param])) {
-                                        ErrorPage::show(_("Request parameter error!"),
-                                                        sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
-                                                                $param, $pattern));
+                                        ErrorPage::show(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
                                         exit(1);
                                 }
                         }

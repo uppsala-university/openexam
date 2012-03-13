@@ -71,11 +71,11 @@ class ExamAdminPage extends AdminPage
 {
 
         private $params = array(
-            "data" => "/^(all|real|upcoming|today)$/",
-            "exam" => "/^\d+$/",
-            "compact" => "/.*/",
-            "submit" => "/.*/",
-            "export" => "/.*/"
+                "data"    => "/^(all|real|upcoming|today)$/",
+                "exam"    => "/^\d+$/",
+                "compact" => "/.*/",
+                "submit"  => "/.*/",
+                "export"  => "/.*/"
         );
 
         public function __construct()
@@ -296,10 +296,10 @@ class ExamAdminPage extends AdminPage
                 printf("<p>" . _("This page shows exams created by all system users matching the selected filter option.") . "</p>\n");
 
                 $options = array(
-                    "all" => _("All"),
-                    "real" => _("Real"),
-                    "upcoming" => _("Upcoming"),
-                    "today" => _("Today")
+                        "all"      => _("All"),
+                        "real"     => _("Real"),
+                        "upcoming" => _("Upcoming"),
+                        "today"    => _("Today")
                 );
 
                 $form = new Form("exams.php");
@@ -322,7 +322,7 @@ class ExamAdminPage extends AdminPage
                 printf("<br/>\n");
 
                 if ($data->count() == 0) {
-                        printf("<br/><div class=\"hint\"><img src=\"../icons/nuvola/info.png\"/> %s</div>\n", _("No records matching the selected filter options."));
+                        MessageBox::show(MessageBox::information, _("No records matching the selected filter options."));
                         return;
                 }
 
