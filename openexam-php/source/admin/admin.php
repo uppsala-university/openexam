@@ -67,14 +67,14 @@ include "include/admin.inc";
 class SupervisorAdminPage extends AdminPage
 {
 
-        private $params = array(
+        private static $params = array(
                 "action" => "/^(grant|revoke)$/",
-                "user" => "/^[0-9a-z]{1,8}$/"
+                "user"   => "/^[0-9a-z]{1,8}$/"
         );
 
         public function __construct()
         {
-                parent::__construct(_("Supervisor Admin"), $this->params);
+                parent::__construct(_("Supervisor Admin"), self::$params);
         }
 
         //
@@ -87,8 +87,7 @@ class SupervisorAdminPage extends AdminPage
                         // Check required request parameters:
                         //
                         if (!isset($_REQUEST['user'])) {
-                                ErrorPage::show(_("Request parameter error!"),
-                                                _("Missing request parameter 'user'."));
+                                ErrorPage::show(_("Request parameter error!"), _("Missing request parameter 'user'."));
                                 exit(1);
                         }
                         //

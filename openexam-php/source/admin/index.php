@@ -67,7 +67,7 @@ class MainAdminPage extends AdminPage
 
         public function __construct()
         {
-                parent::__construct(_("Admin"), array());
+                parent::__construct(_("Admin"));
         }
 
         //

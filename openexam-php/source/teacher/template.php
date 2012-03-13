@@ -63,11 +63,11 @@ include "include/teacher.inc";
 class TemplatePage extends TeacherPage
 {
 
-        private $params = array("exam" => "/^\d+$/");
+        private static $params = array("exam" => "/^\d+$/");
 
         public function __construct()
         {
-                parent::__construct(_("Template Page"), $this->params);
+                parent::__construct(_("Template Page"), self::$params);
         }
 
         //
@@ -100,8 +100,7 @@ class TemplatePage extends TeacherPage
                 $role = "contributor";
 
                 if (!$this->manager->hasRole(phpCAS::getUser(), $role)) {
-                        ErrorPage::show(_("Access denied!"),
-                                        sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
+                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
                         exit(1);
                 }
         }
