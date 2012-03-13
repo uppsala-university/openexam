@@ -125,7 +125,7 @@ class ManagerPage extends TeacherPage
                 //
                 if (!isset($this->param->exam)) {
                         if (!isset($this->param->action)) {
-                                self::showAvailableExams();
+                                $this->showAvailableExams();
                         } elseif ($this->param->action == "add") {
                                 $this->addExam(isset($this->param->name));
                         } elseif ($this->param->action == "import") {
@@ -184,7 +184,7 @@ class ManagerPage extends TeacherPage
         //
         // Show all exams the current user is the owner of.
         //
-        private static function showAvailableExams()
+        private function showAvailableExams()
         {
                 printf("<p>" .
                     _("This page let you create new exams or manage your old ones. ") .
