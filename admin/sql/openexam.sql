@@ -41,7 +41,7 @@ CREATE TABLE `answers` (
   `question_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `answered` enum('Y','N') DEFAULT 'N',
-  `answer` text,
+  `answer` mediumtext,
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `question_id` (`question_id`),
@@ -302,4 +302,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-06-28 16:50:04
+-- Dump completed on 2012-03-13 18:35:47
