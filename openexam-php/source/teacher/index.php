@@ -76,13 +76,13 @@ class TeacherIndexPage extends BasePage
         {
                 printf("<h3>" . _("Information for teachers") . "</h3>\n");
                 printf("<p>" .
-                        _("The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. ") .
-                        _("It allows people manage examinations and result from online exams.") .
-                        "</p>\n");
+                    _("The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. ") .
+                    _("It allows people manage examinations and result from online exams.") .
+                    "</p>\n");
                 printf("<p>" .
-                        _("If you wish to create your own online exam, contact %s to gain access to the system. ") .
-                        _("General and getting started information can be found on the <a href=\"%s\">Help</a> page.") .
-                        "</p>\n", CONTACT_STRING, "help.php");
+                    _("If you wish to create your own online exam, contact %s to gain access to the system. ") .
+                    _("General and getting started information can be found on the <a href=\"%s\">Help</a> page.") .
+                    "</p>\n", CONTACT_STRING, "help.php");
         }
 
 }

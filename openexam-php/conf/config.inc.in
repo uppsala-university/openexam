@@ -110,8 +110,7 @@ define('LDAP_CACHE', true);                 // Turn on LDAP result cache.
 // 
 define('CONTACT_NAME', _('System Manager'));
 define('CONTACT_ADDRESS', 'sysadm@localhost');
-define('CONTACT_STRING', sprintf("<a href=\"mailto:%s\">%s</a>",
-                CONTACT_ADDRESS, CONTACT_NAME));
+define('CONTACT_STRING', sprintf("<a href=\"mailto:%s\">%s</a>", CONTACT_ADDRESS, CONTACT_NAME));
 
 // 
 // The addresses and subject for emails (for future extensions).

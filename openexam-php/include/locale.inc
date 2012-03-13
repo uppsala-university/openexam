@@ -50,7 +50,6 @@ class Locale
         private $map;             // The language <-> locale map.
         //
         // Construct the gettext and locale object.
-
         //
 
         public function __construct()

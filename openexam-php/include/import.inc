@@ -344,7 +344,7 @@ class ImportPingPongExcel extends ImportBase
                                 if (isset($question)) {
                                         $questions[$category][] = $question;
                                 }
-                                $question = array("comment" => "", "score" => 1.0, "user" => $this->user);
+                                $question = array("comment" => "", "score"   => 1.0, "user"    => $this->user);
                         }
                         if ($sheet->cell[$i][1] == "Category") {
                                 $category = $this->cleanup($sheet->cell[$i][2]);
@@ -438,7 +438,7 @@ class ImportPingPongText extends ImportBase
                                 if (isset($question)) {
                                         $questions[$category][] = $question;
                                 }
-                                $question = array("comment" => "", "score" => 1.0, "user" => $this->user);
+                                $question = array("comment" => "", "score"   => 1.0, "user"    => $this->user);
                         }
                         if ($data[0] == "Category") {
                                 $category = $this->cleanup($data[1]);

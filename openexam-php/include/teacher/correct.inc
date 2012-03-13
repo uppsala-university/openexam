@@ -92,8 +92,7 @@ class Correct
                                 WHERE s.id = a.student_id
                                         AND a.question_id = %d
                                         AND s.exam_id = %d
-                                        AND a.answered = 'Y'",
-                                $question, $this->exam);
+                                        AND a.answered = 'Y'", $question, $this->exam);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
@@ -127,8 +126,7 @@ class Correct
                                 WHERE s.id = a.student_id
                                         AND s.id = %d
                                         AND a.question_id = q.id
-                                        AND q.exam_id = %d",
-                                $student, $this->exam);
+                                        AND q.exam_id = %d", $student, $this->exam);
                 if (!$all) {
                         $sql .= " AND a.answered = 'Y'";
                 }
@@ -148,21 +146,14 @@ class Correct
                 foreach (array_keys($scores) as $answer) {
                         if (isset($results[$answer])) {
                                 $sql = sprintf("UPDATE results SET answer_id = %d, score = %f, comment = '%s'
-                                                WHERE id = %d",
-                                                $answer,
-                                                $scores[$answer],
-                                                $comments[$answer],
-                                                $results[$answer]);
+                                                WHERE id = %d", $answer, $scores[$answer], $comments[$answer], $results[$answer]);
                         } else {
                                 if ($scores[$answer] == "") {
                                         continue;   // Don't save uncorrected answers
                                 }
 
                                 $sql = sprintf("INSERT INTO results(answer_id, score, comment)
-                                                VALUES(%d, %f, '%s')",
-                                                $answer,
-                                                $scores[$answer],
-                                                $comments[$answer]);
+                                                VALUES(%d, %f, '%s')", $answer, $scores[$answer], $comments[$answer]);
                         }
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {

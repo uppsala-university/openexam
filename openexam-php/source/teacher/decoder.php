@@ -90,13 +90,13 @@ class DecoderPage extends TeacherPage
 {
 
         private static $params = array(
-                "exam" => "/^\d+$/",
-                "mode" => "/^(result|scores)$/",
-                "action" => "/^(save|show|mail|download)$/",
-                "format" => "/^(pdf|html|ps|csv|tab|xml)$/",
-                "student" => "/^(\d+|all)$/",
+                "exam"     => "/^\d+$/",
+                "mode"     => "/^(result|scores)$/",
+                "action"   => "/^(save|show|mail|download)$/",
+                "format"   => "/^(pdf|html|ps|csv|tab|xml)$/",
+                "student"  => "/^(\d+|all)$/",
                 "colorize" => "/^\d+$/",
-                "verbose" => "/^\d+$/"
+                "verbose"  => "/^\d+$/"
         );
         private $decoder;
 
@@ -186,14 +186,12 @@ class DecoderPage extends TeacherPage
         private function checkAccess()
         {
                 if (!$this->manager->isDecoder(phpCAS::getUser())) {
-                        ErrorPage::show(_("Access denied!"),
-                                        sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "decoder"));
+                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "decoder"));
                         exit(1);
                 }
 
                 if (!$this->manager->getInfo()->isDecodable()) {
-                        ErrorPage::show(_("Can't continue!"),
-                                        _("This examination is not yet decodable, probably becuase not all answers have been corrected yet. The script processing has halted."));
+                        ErrorPage::show(_("Can't continue!"), _("This examination is not yet decodable, probably becuase not all answers have been corrected yet. The script processing has halted."));
                         exit(1);
                 }
         }
@@ -247,8 +245,7 @@ class DecoderPage extends TeacherPage
         private function saveScores()
         {
                 if (!$this->manager->getInfo()->isDecoded()) {
-                        ErrorPage::show(_("Can't continue!"),
-                                        _("This examination has not been decoded. The script processing has halted."));
+                        ErrorPage::show(_("Can't continue!"), _("This examination has not been decoded. The script processing has halted."));
                         exit(1);
                 }
 
@@ -300,14 +297,14 @@ class DecoderPage extends TeacherPage
                 //
                 printf("<h5>" . _("Download Result") . "</h5>\n");
                 printf("<p>" .
-                        _("This section lets you download the results for all or individual students in different formats. ") .
-                        _("The result contains the complete examination with answers and scores.") .
-                        "</p>\n");
+                    _("This section lets you download the results for all or individual students in different formats. ") .
+                    _("The result contains the complete examination with answers and scores.") .
+                    "</p>\n");
                 printf("<p>" .
-                        _("Notice that the language used in the generated file will be the same as your currently selected language (%s).") .
-                        "</p>\n", _($locale));
+                    _("Notice that the language used in the generated file will be the same as your currently selected language (%s).") .
+                    "</p>\n", _($locale));
 
-                $options = array("pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML");
+                $options = array("pdf"  => "Adobe PDF", "ps"   => "PostScript", "html" => "HTML");
 
                 $form = new Form("decoder.php", "GET");
                 $form->addHidden("exam", $this->param->exam);
@@ -329,11 +326,7 @@ class DecoderPage extends TeacherPage
                 $option->setDisabled();
                 foreach ($students as $student) {
                         $student->setStudentName($this->getCommonName($student->getStudentUser()));
-                        $combo->addOption($student->getStudentID(),
-                                sprintf("%s (%s) [%s]",
-                                        $student->getStudentName(),
-                                        $student->getStudentUser(),
-                                        $student->getStudentCode()));
+                        $combo->addOption($student->getStudentID(), sprintf("%s (%s) [%s]", $student->getStudentName(), $student->getStudentUser(), $student->getStudentCode()));
                 }
                 $button = $form->addSubmitButton("submit", _("Download"));
                 $button->setLabel();
@@ -345,10 +338,10 @@ class DecoderPage extends TeacherPage
                 //
                 printf("<h5>" . _("Download Score Board") . "</h5>\n");
                 printf("<p>" .
-                        _("This section lets you download the score board showing a summary view of the examination in different formats. ") .
-                        "</p>\n");
+                    _("This section lets you download the score board showing a summary view of the examination in different formats. ") .
+                    "</p>\n");
 
-                $options = array("csv" => _("Comma Separated Text"), "tab" => _("Tab Separated Text"), "xml" => _("XML Format Data"), "html" => _("Single HTML Page"));
+                $options = array("csv"  => _("Comma Separated Text"), "tab"  => _("Tab Separated Text"), "xml"  => _("XML Format Data"), "html" => _("Single HTML Page"));
 
                 $form = new Form("decoder.php", "GET");
                 $form->addHidden("exam", $this->param->exam);
@@ -373,24 +366,19 @@ class DecoderPage extends TeacherPage
 
                 printf("<h5>" . _("Answer Results") . "</h5>\n");
                 printf("<p>" .
-                        _("This table shows all answers from students to questions for the examination '%s'. ") .
-                        "</p>\n",
-                        $data->getExamName());
+                    _("This table shows all answers from students to questions for the examination '%s'. ") .
+                    "</p>\n", $data->getExamName());
 
                 printf("<span class=\"links viewmode\">");
                 if ($this->param->verbose) {
-                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;verbose=0\">%s</a>, ",
-                                _("Details"), $this->param->exam, _("Less"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;verbose=0\">%s</a>, ", _("Details"), $this->param->exam, _("Less"));
                 } else {
-                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;verbose=1\">%s</a>, ", 
-                                _("Details"), $this->param->exam, _("More"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;verbose=1\">%s</a>, ", _("Details"), $this->param->exam, _("More"));
                 }
                 if ($this->param->colorize) {
-                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=0\">%s</a>", 
-                                _("Mode"), $this->param->exam, _("Standard"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=0\">%s</a>", _("Mode"), $this->param->exam, _("Standard"));
                 } else {
-                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=1\">%s</a>", 
-                                _("Mode"), $this->param->exam, _("Colorize"));
+                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=1\">%s</a>", _("Mode"), $this->param->exam, _("Colorize"));
                 }
                 printf("</span>\n");
 
@@ -403,19 +391,19 @@ class DecoderPage extends TeacherPage
                 printf("<p>" . _("These are the color codes used in the score board:") . "</p>\n");
                 if ($this->param->colorize) {
                         $codes = array(
-                                "s0" => sprintf(_("Less than %d%% of max score."), 20),
-                                "s20" => sprintf(_("Between %d and %d %% of max score."), 20, 40),
-                                "s40" => sprintf(_("Between %d and %d %% of max score."), 40, 60),
-                                "s60" => sprintf(_("Between %d and %d %% of max score."), 60, 80),
-                                "s80" => sprintf(_("Between %d and %d %% of max score."), 80, 99),
+                                "s0"   => sprintf(_("Less than %d%% of max score."), 20),
+                                "s20"  => sprintf(_("Between %d and %d %% of max score."), 20, 40),
+                                "s40"  => sprintf(_("Between %d and %d %% of max score."), 40, 60),
+                                "s60"  => sprintf(_("Between %d and %d %% of max score."), 60, 80),
+                                "s80"  => sprintf(_("Between %d and %d %% of max score."), 80, 99),
                                 "s100" => sprintf(_("%d%% correct answer (full score)."), 100));
                 } else {
                         $codes = array(
-                                "ac" => _("Answer has been corrected."),
-                                "no" => _("This answer should be corrected by another person."),
-                                "na" => _("No answer was given for this question."),
-                                "nc" => _("The answer has not yet been corrected."),
-                                "qr" => _("Question is flagged as removed (no scores for this question is counted).")
+                                "ac"   => _("Answer has been corrected."),
+                                "no"   => _("This answer should be corrected by another person."),
+                                "na"   => _("No answer was given for this question."),
+                                "nc"   => _("The answer has not yet been corrected."),
+                                "qr"   => _("Question is flagged as removed (no scores for this question is counted).")
                         );
                 }
                 $table = new Table();
@@ -434,7 +422,7 @@ class DecoderPage extends TeacherPage
         private function sendResult()
         {
                 printf("<h5>" . _("Sending Result") . "</h5>\n");
-                
+
                 $from = $this->getMailRecepient(phpCAS::getUser());
                 $data = $this->manager->getData();
                 $mail = new MailResult($data->getExamName(), $data->getExamStartTime(), $from, $from);
@@ -445,9 +433,7 @@ class DecoderPage extends TeacherPage
                 for ($i = 0; $i < ATTACH_MAX_NUM_FILES; $i++) {
                         if ($_FILES['attach']['error'][$i] == 0 && $_FILES['attach']['size'][$i] > 0) {    // successful uploaded
                                 if (is_uploaded_file($_FILES['attach']['tmp_name'][$i])) {
-                                        $mail->addAttachment($_FILES['attach']['name'][$i],
-                                                $_FILES['attach']['type'][$i],
-                                                $_FILES['attach']['tmp_name'][$i]);
+                                        $mail->addAttachment($_FILES['attach']['name'][$i], $_FILES['attach']['type'][$i], $_FILES['attach']['tmp_name'][$i]);
                                 }
                         }
                 }
@@ -531,17 +517,17 @@ class DecoderPage extends TeacherPage
                 // The form for sending the results by email:
                 //
                 printf("<p>" .
-                        _("This section lets you send the results to all or individual students in different formats. ") .
-                        _("The result contains the complete examination with answers and scores.") .
-                        "</p>\n");
+                    _("This section lets you send the results to all or individual students in different formats. ") .
+                    _("The result contains the complete examination with answers and scores.") .
+                    "</p>\n");
                 printf("<p>" .
-                        _("Notice that the language used in the outgoing message will be the same as your currently selected language (%s).") .
-                        "</p>\n", _($locale));
+                    _("Notice that the language used in the outgoing message will be the same as your currently selected language (%s).") .
+                    "</p>\n", _($locale));
 
                 //
                 // The format and student select section:
                 //
-                $options = array("pdf" => "Adobe PDF", "ps" => "PostScript", "html" => "HTML");
+                $options = array("pdf"  => "Adobe PDF", "ps"   => "PostScript", "html" => "HTML");
                 $form = new Form("decoder.php", "POST");
                 $form->setEncodingType("multipart/form-data");
                 $form->addHidden("MAX_FILE_SIZE", ATTACH_MAX_FILE_SIZE);
@@ -564,11 +550,7 @@ class DecoderPage extends TeacherPage
                 $option->setDisabled();
                 foreach ($students as $student) {
                         $student->setStudentName($this->getCommonName($student->getStudentUser()));
-                        $combo->addOption($student->getStudentID(),
-                                sprintf("%s (%s) [%s]",
-                                        $student->getStudentName(),
-                                        $student->getStudentUser(),
-                                        $student->getStudentCode()));
+                        $combo->addOption($student->getStudentID(), sprintf("%s (%s) [%s]", $student->getStudentName(), $student->getStudentUser(), $student->getStudentCode()));
                 }
 
                 //
@@ -654,11 +636,8 @@ class DecoderPage extends TeacherPage
                                         $state = $data[1];
                                         $child = $node->addChild($name);
                                         if ($state->isDecodable()) {
-                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
-                                                        _("Click on this link to decode this examination."));
-                                                $child->addLink(_("Decode"),
-                                                        sprintf("?exam=%d", $state->getInfo()->getExamID()),
-                                                        _("Click on this link to decode this examination."));
+                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to decode this examination."));
+                                                $child->addLink(_("Decode"), sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to decode this examination."));
                                         }
                                         $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
                                         $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));

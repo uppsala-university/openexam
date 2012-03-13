@@ -44,8 +44,7 @@ class Contribute
         public function addTopic($exam, $name, $random)
         {
                 $sql = sprintf("INSERT INTO topics(exam_id, name, randomize)
-                                VALUES(%d, '%s', %d)",
-                                $exam, $name, $random);
+                                VALUES(%d, '%s', %d)", $exam, $name, $random);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -55,8 +54,7 @@ class Contribute
         public function editTopic($topic, $exam, $name, $random)
         {
                 $sql = sprintf("UPDATE topics SET exam_id = %d, name = '%s', randomize = %d
-                                WHERE id = %d",
-                                $exam, $name, $random, $topic);
+                                WHERE id = %d", $exam, $name, $random, $topic);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -85,8 +83,7 @@ class Contribute
         {
                 $db = Database::getConnection();
                 $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, type, user, video, audio, image)
-                                VALUES(%d, %d, %f, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
-                                $exam, $topic, $score, $db->escape($name), $db->escape($quest), $type, $user, $video, $audio, $image);
+                                VALUES(%d, %d, %f, '%s', '%s', '%s', '%s', '%s', '%s', '%s')", $exam, $topic, $score, $db->escape($name), $db->escape($quest), $type, $user, $video, $audio, $image);
                 $res = $db->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -98,8 +95,7 @@ class Contribute
                 $db = Database::getConnection();
                 $sql = sprintf("UPDATE questions SET exam_id = %d, topic_id = %d, score = %f, name = '%s', quest = '%s', type = '%s',
                                                      user = '%s', video = '%s', audio = '%s', image = '%s'
-                                WHERE id = %d",
-                                $exam, $topic, $score, $db->escape($name), $db->escape($quest), $type, $user, $video, $audio, $image, $question);
+                                WHERE id = %d", $exam, $topic, $score, $db->escape($name), $db->escape($quest), $type, $user, $video, $audio, $image, $question);
                 $res = $db->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());

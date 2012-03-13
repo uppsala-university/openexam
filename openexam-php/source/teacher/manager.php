@@ -88,13 +88,13 @@ class ManagerPage extends TeacherPage
 {
 
         private static $params = array(
-            "exam" => "/^\d+$/",
-            "action" => "/^(add|edit|show|copy|test|delete|cancel|finish|export|import)$/",
-            "role" => "/^(contributor|examinator|decoder)$/",
-            "type" => "/^(op)$/",
-            "user" => "/^\d+$/",
-            "uuid" => "/^[0-9a-zA-Z]{1,10}$/",
-            "name" => "/^(\p{L}|\p{N}|\p{Z}|\p{P})+$/u"
+                "exam"   => "/^\d+$/",
+                "action" => "/^(add|edit|show|copy|test|delete|cancel|finish|export|import)$/",
+                "role"   => "/^(contributor|examinator|decoder)$/",
+                "type"   => "/^(op)$/",
+                "user"   => "/^\d+$/",
+                "uuid"   => "/^[0-9a-zA-Z]{1,10}$/",
+                "name"   => "/^(\p{L}|\p{N}|\p{Z}|\p{P})+$/u"
         );
 
         public function __construct()
@@ -197,22 +197,22 @@ class ManagerPage extends TeacherPage
                 //
                 $exams = Manager::getExams(phpCAS::getUser());
                 $nodes = array(
-                    'u' => array(
-                        'name' => _("Upcoming"),
-                        'data' => array()
-                    ),
-                    'a' => array(
-                        'name' => _("Active"),
-                        'data' => array()
-                    ),
-                    'f' => array(
-                        'name' => _("Finished"),
-                        'data' => array()
-                    ),
-                    't' => array(
-                        'name' => _("Testing"),
-                        'data' => array()
-                    )
+                        'u' => array(
+                                'name' => _("Upcoming"),
+                                'data' => array()
+                        ),
+                        'a' => array(
+                                'name' => _("Active"),
+                                'data' => array()
+                        ),
+                        'f' => array(
+                                'name' => _("Finished"),
+                                'data' => array()
+                        ),
+                        't' => array(
+                                'name' => _("Testing"),
+                                'data' => array()
+                        )
                 );
 
                 foreach ($exams as $exam) {
@@ -368,13 +368,17 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         printf("<p>" . _("Define the common properties of the exam. Click on the 'Submit' button to create this exam.") . "</p>\n");
                         $data = new DataRecord(array(
-                                "examorgunit" => $this->getOrganisationUnit(phpCAS::getUser()),
-                                "examname" => _("Name"),
-                                "examdescription" => _("Description"),
-                                "examgrades" => json_encode(array("U" => 0, "G" => 15, "VG" => 20)),
-                                "examstarttime" => DATETIME_NONE,
-                                "examendtime" => DATETIME_NONE,
-                                "examdetails" => RESULT_DETAILS_DEFAULT)
+                                    "examorgunit"     => $this->getOrganisationUnit(phpCAS::getUser()),
+                                    "examname"        => _("Name"),
+                                    "examdescription" => _("Description"),
+                                    "examgrades"      => json_encode(array(
+                                            "U"             => 0,
+                                            "G"             => 15,
+                                            "VG"            => 20)
+                                    ),
+                                    "examstarttime" => DATETIME_NONE,
+                                    "examendtime"   => DATETIME_NONE,
+                                    "examdetails"   => RESULT_DETAILS_DEFAULT)
                         );
                         $this->manager = new Manager(0);
                         self::showExamForm(0, $data, "add");
