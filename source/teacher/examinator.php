@@ -81,7 +81,7 @@ if (!defined("EXAMINATOR_YEAR_HISTORY")) {
 class ExaminatorPage extends TeacherPage
 {
 
-        private $params = array(
+        private static $params = array(
                 "exam"   => "/^\d+$/",
                 "what"   => "/^(user|users|course)$/",
                 "mode"   => "/^(save|show)$/",
@@ -98,7 +98,7 @@ class ExaminatorPage extends TeacherPage
 
         public function __construct()
         {
-                parent::__construct(_("Examinator Page"), $this->params);
+                parent::__construct(_("Examinator Page"), self::$params);
         }
 
         //

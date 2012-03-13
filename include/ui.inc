@@ -67,12 +67,23 @@ class BasePage implements TemplatePage
 {
 
         private $title;
+        protected $param;     // Washed request parameters
+        private $params;
         private $template;
 
-        public function __construct($title, $template = "standard")
+        protected function __construct($title, &$params = array(), $template = "standard")
         {
                 $this->title = $title;
+                $this->params = $params;
                 $this->template = $template;
+
+                // 
+                // We must use self::validate() to ensure that we are calling
+                // validate() in this class and *not* an overridden validate()
+                // in derived class. This truely shows that PHP's is not a true 
+                // OOP language :-(
+                // 
+                self::validate();
                 ob_start();
         }
 
@@ -89,7 +100,7 @@ class BasePage implements TemplatePage
         //
         // Prints a successful message.
         //
-        public function success($message)
+        final public function success($message)
         {
                 MessageBox::show(MessageBox::success, $message);
         }
@@ -97,9 +108,67 @@ class BasePage implements TemplatePage
         //
         // Prints an error message.
         //
-        public function error($message)
+        final public function error($message)
         {
                 MessageBox::show(MessageBox::error, $message);
+        }
+
+        //
+        // Validate access and request parameters. All validated request parameters
+        // are automatic injected into $this->param, but only if they origins from
+        // a GET or POST request.
+        //
+        public function validate()
+        {
+                foreach ($this->params as $param => $pattern) {
+                        if (isset($_REQUEST[$param])) {
+                                if (is_array($_REQUEST[$param])) {
+                                        foreach ($_REQUEST[$param] as $value) {
+                                                self::check($param, $pattern);
+                                        }
+                                } else {
+                                        self::check($param, $pattern);
+                                }
+                        }
+                }
+        }
+
+        // 
+        // Helper function for validate().
+        // 
+        final private function check($param, $pattern)
+        {
+                if (!preg_match($pattern, $_REQUEST[$param])) {
+                        $this->fatal(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
+                } elseif (isset($_GET[$param])) {
+                        $this->param->$param = $_GET[$param];     // Inject washed parameter
+                } elseif (isset($_POST[$param])) {
+                        $this->param->$param = $_POST[$param];    // Inject washed parameter
+                }
+        }
+
+        //
+        // Check that the array of required parameters is set.
+        //
+        final public function assert($names)
+        {
+                if (!is_array($names)) {
+                        $names = array($names);
+                }
+                foreach ($names as $name) {
+                        if (!isset($_REQUEST[$name])) {
+                                $this->fatal(_("Missing required parameter!"), sprintf(_("The required request parameter '%s' is missing"), $name));
+                        }
+                }
+        }
+
+        // 
+        // Display error page and terminate script with the given error code.
+        // 
+        final public function fatal($title, $message, $exitcode = 1)
+        {
+                ErrorPage::show($title, $message);
+                exit($exitcode);
         }
 
         final public function printLogonStatus()
@@ -269,46 +338,6 @@ class BasePage implements TemplatePage
                         include("template/publish.inc");
                 }
                 return get_publish_info();
-        }
-
-}
-
-// 
-// The class for all secured pages (except admin pages) that requires trusted users.
-// 
-class SecurePage extends BasePage
-{
-
-        public function __construct($title, $template = "standard")
-        {
-                $this->validate();
-                parent::__construct($title, $template);
-        }
-
-        //
-        // Validate that caller is trusted to access this page.
-        //
-        private function validate()
-        {
-                if (!self::userIsTrusted(phpCAS::getUser())) {
-                        ErrorPage::show(_("Access denied!"), _("Only trusted users with administrative privileges (system users) can access this page. The script processing has halted."));
-                        exit(1);
-                }
-        }
-
-        private static function userIsTrusted($user)
-        {
-                $db = Database::getConnection();
-                $db->setFetchMode(MDB2_FETCHMODE_ORDERED);
-                $sql = sprintf("SELECT COUNT(*) FROM users WHERE user = '%s'", $user);
-                $res = $db->query($sql);
-                if (PEAR::isError($res)) {
-                        throw new DatabaseException($res->getMessage());
-                }
-                $row = $res->fetchRow();
-
-                $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-                return intval($row[0]) == 1;
         }
 
 }

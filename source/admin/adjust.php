@@ -71,17 +71,17 @@ include "include/scoreboard.inc";
 class AdjustScoreAdminPage extends AdminPage
 {
 
-        private $params = array(
-            "exam" => "/^\d+$/",
-            "answer" => "/^\d+$/",
-            "result" => "/^\d+$/",
-            "score" => "/^\d+(\.\d)*$/",
-            "comment" => "/^.*^/"
+        private static $params = array(
+                "exam"    => "/^\d+$/",
+                "answer"  => "/^\d+$/",
+                "result"  => "/^\d+$/",
+                "score"   => "/^\d+(\.\d)*$/",
+                "comment" => "/^.*^/"
         );
 
         public function __construct()
         {
-                parent::__construct(_("Adjust Scores"), $this->params);
+                parent::__construct(_("Adjust Scores"), self::$params);
         }
 
         //
@@ -155,9 +155,9 @@ class AdjustScoreAdminPage extends AdminPage
         {
                 printf("<h3>%s</h3>\n", _("Adjust Scores"));
                 printf("<p>" .
-                    _("This page allows scores to be adjusted even after an exam has been decoded. ") .
-                    _("You should only set scores thru this page on direct demand from the exam creator.") .
-                    "</p>\n");
+                        _("This page allows scores to be adjusted even after an exam has been decoded. ") .
+                        _("You should only set scores thru this page on direct demand from the exam creator.") .
+                        "</p>\n");
 
                 $board = new ScoreBoardAdmin($this->param->exam);
                 $board->output();
