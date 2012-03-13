@@ -91,10 +91,7 @@ class BasePage implements TemplatePage
         //
         public function success($message)
         {
-                $messagebox = new MessageBox(MessageBox::success);
-                $messagebox->setTitle(_("Success"));
-                $messagebox->setMessage($message);
-                $messagebox->display();
+                MessageBox::show(MessageBox::success, $message);
         }
 
         //
@@ -102,10 +99,7 @@ class BasePage implements TemplatePage
         //
         public function error($message)
         {
-                $messagebox = new MessageBox(MessageBox::error);
-                $messagebox->setTitle(_("Error"));
-                $messagebox->setMessage($message);
-                $messagebox->display();
+                MessageBox::show(MessageBox::error, $message);
         }
 
         final public function printLogonStatus()
