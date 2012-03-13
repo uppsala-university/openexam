@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/template.php
@@ -79,7 +79,7 @@ class TemplatePage extends TeacherPage
                 // Authorization first:
                 //
                 if (isset($this->param->exam)) {
-                        self::checkAccess($this->param->exam);
+                        $this->checkAccess($this->param->exam);
                 }
 
                 //
@@ -95,7 +95,7 @@ class TemplatePage extends TeacherPage
         // This example code checks if caller is assigned the contributor role. New
         // roles can be added in include/teacher/manager.inc
         //
-        private function checkAccess($exam)
+        private function checkAccess()
         {
                 $role = "contributor";
 

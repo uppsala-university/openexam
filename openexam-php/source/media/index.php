@@ -1,7 +1,7 @@
 <?php
 
 //
-// Copyright (C) 2011 Computing Department BMC,
+// Copyright (C) 2011-2012 Computing Department BMC,
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   source/media/index.php
@@ -97,16 +97,16 @@ class MediaPage extends TeacherPage
                 //
                 // Authorization first:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        self::checkAccess();
+                if (isset($this->param->exam)) {
+                        $this->checkAccess();
                 }
 
                 //
                 // Bussiness logic:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        if (isset($_REQUEST['action'])) {
-                                if ($_REQUEST['action'] == "add") {
+                if (isset($this->param->exam)) {
+                        if (isset($this->param->action)) {
+                                if ($this->param->action == "add") {
                                         $this->addMediaFile();
                                 } else {
                                         $this->assert(array("type", "file"));
@@ -116,7 +116,7 @@ class MediaPage extends TeacherPage
                                 $this->showMediaFiles();
                         }
                 } else {
-                        $this->showAvailableExams();
+                        self::showAvailableExams();
                 }
         }
 
@@ -338,7 +338,7 @@ class MediaPage extends TeacherPage
         //
         // Show all exams where caller has been granted the contribute role.
         //
-        private function showAvailableExams()
+        private static function showAvailableExams()
         {
                 printf("<h3>" . _("Media Library") . "</h3>\n");
                 printf("<p>" . _("Select the examination you wish to handle media files in (applies only to contributable examinations).") . "</p>\n");

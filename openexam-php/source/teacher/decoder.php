@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/decoder.php
@@ -92,9 +92,11 @@ class DecoderPage extends TeacherPage
         private static $params = array(
                 "exam"     => parent::pattern_index,
                 "mode"     => "/^(result|scores)$/",
+                "mirror"   => parent::pattern_text, // button
                 "action"   => "/^(save|show|mail|download)$/",
                 "format"   => "/^(pdf|html|ps|csv|tab|xml)$/",
                 "student"  => "/^(\d+|all)$/",
+                "message"  => parent::pattern_text,
                 "colorize" => parent::pattern_index,
                 "verbose"  => parent::pattern_index
         );
@@ -107,8 +109,8 @@ class DecoderPage extends TeacherPage
 
                 parent::__construct(_("Decoder Page"), self::$params);
 
-                if (isset($_REQUEST['exam'])) {
-                        $this->decoder = new Decoder($_REQUEST['exam']);
+                if (isset($this->param->exam)) {
+                        $this->decoder = new Decoder($this->param->exam);
                 }
         }
 
@@ -120,37 +122,37 @@ class DecoderPage extends TeacherPage
                 //
                 // Authorization first:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        self::checkAccess();
-                        self::setDecoded();
+                if (isset($this->param->exam)) {
+                        $this->checkAccess();
+                        $this->setDecoded();
                 }
 
                 //
                 // Bussiness logic:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        if (!isset($_REQUEST['action'])) {
-                                $_REQUEST['action'] = "download";
+                if (isset($this->param->exam)) {
+                        if (!isset($this->param->action)) {
+                                $this->param->action = "download";
                         }
-                        if ($_REQUEST['action'] == "download") {
-                                self::showDownload();
-                        } elseif ($_REQUEST['action'] == "show") {
-                                self::showScores();
-                        } elseif ($_REQUEST['action'] == "save") {
-                                self::assert("mode");
-                                if ($_REQUEST['mode'] == "result") {
-                                        self::assert(array("format", "student"));
-                                        self::saveResult();
-                                } elseif ($_REQUEST['mode'] == "scores") {
-                                        self::assert("format");
-                                        self::saveScores();
+                        if ($this->param->action == "download") {
+                                $this->showDownload();
+                        } elseif ($this->param->action == "show") {
+                                $this->showScores();
+                        } elseif ($this->param->action == "save") {
+                                $this->assert("mode");
+                                if ($this->param->mode == "result") {
+                                        $this->assert(array("format", "student"));
+                                        $this->saveResult();
+                                } elseif ($this->param->mode == "scores") {
+                                        $this->assert("format");
+                                        $this->saveScores();
                                 }
-                        } elseif ($_REQUEST['action'] == "mail") {
-                                if (isset($_REQUEST['student'])) {
-                                        self::assert("format");
-                                        self::sendResult();
+                        } elseif ($this->param->action == "mail") {
+                                if (isset($this->param->student)) {
+                                        $this->assert("format");
+                                        $this->sendResult();
                                 } else {
-                                        self::mailResult();
+                                        $this->mailResult();
                                 }
                         }
                 } else {
@@ -160,19 +162,19 @@ class DecoderPage extends TeacherPage
 
         public function printMenu()
         {
-                if (isset($_REQUEST['exam'])) {
+                if (isset($this->param->exam)) {
                         printf("<span id=\"menuhead\">%s:</span>\n", _("Decoder"));
                         printf("<ul>\n");
                         printf("<span id=\"menuhead\">%s:</span>\n", _("Result"));
                         printf("<ul>\n");
-                        printf("<li><a href=\"?exam=%d&amp;action=download\">%s</a></li>\n", $_REQUEST['exam'], _("Download"));
-                        printf("<li><a href=\"?exam=%d&amp;action=mail\">%s</a></li>\n", $_REQUEST['exam'], _("Send by email"));
+                        printf("<li><a href=\"?exam=%d&amp;action=download\">%s</a></li>\n", $this->param->exam, _("Download"));
+                        printf("<li><a href=\"?exam=%d&amp;action=mail\">%s</a></li>\n", $this->param->exam, _("Send by email"));
                         printf("</ul>\n");
                         printf("<br/>\n");
                         printf("<span id=\"menuhead\">%s:</span>\n", _("Score board"));
                         printf("<ul>\n");
-                        printf("<li><a href=\"?exam=%d&amp;action=download\">%s</a></li>\n", $_REQUEST['exam'], _("Download"));
-                        printf("<li><a href=\"?exam=%d&amp;action=show\">%s</a></li>\n", $_REQUEST['exam'], _("Show"));
+                        printf("<li><a href=\"?exam=%d&amp;action=download\">%s</a></li>\n", $this->param->exam, _("Download"));
+                        printf("<li><a href=\"?exam=%d&amp;action=show\">%s</a></li>\n", $this->param->exam, _("Show"));
                         printf("</ul>\n");
                         printf("<br/>\n");
                         printf("</ul>\n");
@@ -438,8 +440,8 @@ class DecoderPage extends TeacherPage
                 //
                 // Append optional message.
                 //
-                if (isset($_REQUEST['message'])) {
-                        $lines = split("\n", $_REQUEST['message']);
+                if (isset($this->param->message)) {
+                        $lines = split("\n", $this->param->message);
                         if (count($lines) > 0) {
                                 $sect = array();
                                 foreach ($lines as $line) {
@@ -491,7 +493,7 @@ class DecoderPage extends TeacherPage
                                 $attach = new MailAttachment("result.html", "text/html", $file);
                         }
 
-                        if (isset($_REQUEST['mirror'])) {
+                        if (isset($this->param->mirror)) {
                                 $mail->setFrom($addr);
                                 $mail->send($from, $attach);
                                 $this->success(sprintf(_("Successful sent message to <a href=\"mailto:%s\">%s</a>"), $from->getEmail(), $from->getName()));
@@ -585,7 +587,7 @@ class DecoderPage extends TeacherPage
         //
         // Show all exams where caller has been granted the decoder role.
         //
-        private function showAvailableExams()
+        private static function showAvailableExams()
         {
                 printf("<h3>" . _("Decode Examinations") . "</h3>\n");
                 printf("<p>" . _("These are the examinations that you have been granted the decoder role. Click on one of them to decode the examination.") . "</p>\n");
