@@ -80,9 +80,9 @@ class MediaPage extends TeacherPage
 {
 
         private static $params = array(
-                "exam"   => "/^\d+$/",
+                "exam"   => parent::pattern_index,
+                "file"   => parent::pattern_text,
                 "action" => "/^(add|delete)$/",
-                "file"   => "/.*/",
                 "type"   => "/^(audio|image|video|auto)$/",
                 "show"   => "/^(tree|flat|album)$/"
         );

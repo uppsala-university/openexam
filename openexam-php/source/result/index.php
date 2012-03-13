@@ -74,7 +74,7 @@ class ResultPage extends BasePage
         // the regex pattern to validate its value against.
         //
         private static $params = array(
-                "exam"   => "/^\d+$/",
+                "exam"   => parent::pattern_index,
                 "action" => "/^(details|download)$/",
                 "format" => "/^(pdf|html)$/"
         );

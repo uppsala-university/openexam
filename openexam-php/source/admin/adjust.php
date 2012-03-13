@@ -72,11 +72,11 @@ class AdjustScoreAdminPage extends AdminPage
 {
 
         private static $params = array(
-                "exam"    => "/^\d+$/",
-                "answer"  => "/^\d+$/",
-                "result"  => "/^\d+$/",
-                "score"   => "/^\d+(\.\d)*$/",
-                "comment" => "/^.*^/"
+                "exam"    => parent::pattern_index,
+                "answer"  => parent::pattern_index,
+                "result"  => parent::pattern_index,
+                "score"   => parent::pattern_float,
+                "comment" => parent::pattern_text
         );
 
         public function __construct()
