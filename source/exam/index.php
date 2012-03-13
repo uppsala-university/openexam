@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/exam/index.php
@@ -91,13 +91,18 @@ class ExaminationPage extends BasePage
         //
         private static $params = array(
                 "exam"     => parent::pattern_index,
-                "question" => "/^(\d+|all)$/"
+                "answer"   => parent::pattern_text,
+                "question" => "/^(\d+|all)$/",
+                "status"   => "/^(ok)$/",
+                "save"     => parent::pattern_text, // button
+                "next"     => parent::pattern_text  // button
         );
         private $author = false;    // Running in question author mode.
         private $lockdown = false;  // This examination has lockdown mode enabled.
         private $testcase = false;  // This examination is a testcase.
         //
         // Construct the exam page.
+
         //
 
         public function __construct()
@@ -113,27 +118,27 @@ class ExaminationPage extends BasePage
                 //
                 // Authorization first:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        self::checkExaminationAccess($_REQUEST['exam']);
-                        if (isset($_REQUEST['question']) && $_REQUEST['question'] != "all") {
-                                self::checkQuestionAccess($_REQUEST['exam'], $_REQUEST['question']);
+                if (isset($this->param->exam)) {
+                        $this->checkExaminationAccess();
+                        if (isset($this->param->question) && $this->param->question != "all") {
+                                $this->checkQuestionAccess();
                         }
                 }
 
                 //
                 // Bussiness logic:
                 //
-                if (!isset($_REQUEST['exam'])) {
-                        self::showAvailableExams();
+                if (!isset($this->param->exam)) {
+                        $this->showAvailableExams();
                 } else {
-                        if (!isset($_REQUEST['question'])) {
-                                self::showInstructions($_REQUEST['exam']);
-                        } elseif ($_REQUEST['question'] == "all") {
-                                self::showQuestions($_REQUEST['exam']);
-                        } elseif (isset($_REQUEST['answer'])) {
-                                self::saveQuestion($_REQUEST['exam'], $_REQUEST['question'], $_REQUEST['answer']);
+                        if (!isset($this->param->question)) {
+                                $this->showInstructions();
+                        } elseif ($this->param->question == "all") {
+                                $this->showQuestions();
+                        } elseif (isset($this->param->answer)) {
+                                $this->saveQuestion();
                         } else {
-                                self::showQuestion($_REQUEST['exam'], $_REQUEST['question']);
+                                $this->showQuestion();
                         }
                 }
 
@@ -142,14 +147,14 @@ class ExaminationPage extends BasePage
                 //
                 if ($this->testcase) {
                         printf("<hr/>\n");
-                        printf("<b>" . ("Test case") . ":</b> <a href=\"%s\" title=\"%s\">%s</a> <a href=\"%s\" title=\"%s\">%s</a>\n", sprintf("../teacher/manager.php?exam=%d&amp;action=finish", $_REQUEST['exam']), _("Stops the examination and allow you to correct and decode results."), _("Finish"), sprintf("../teacher/manager.php?exam=%d&amp;action=cancel", $_REQUEST['exam']), _("Delete this test case and return to the examination manager."), _("Cancel"));
+                        printf("<b>" . ("Test case") . ":</b> <a href=\"%s\" title=\"%s\">%s</a> <a href=\"%s\" title=\"%s\">%s</a>\n", sprintf("../teacher/manager.php?exam=%d&amp;action=finish", $this->param->exam), _("Stops the examination and allow you to correct and decode results."), _("Finish"), sprintf("../teacher/manager.php?exam=%d&amp;action=cancel", $this->param->exam), _("Delete this test case and return to the examination manager."), _("Cancel"));
                 }
         }
 
         public function printMenu()
         {
 
-                if (isset($_REQUEST['exam']) && !isset($_REQUEST['preview'])) {
+                if (isset($this->param->exam) && !isset($this->param->preview)) {
                         $exams = Exam::getActiveExams(phpCAS::getUser());
                         if ($exams->count() > 1) {
                                 echo "<span id=\"menuhead\">" . _("Examinations") . ":</span>\n";
@@ -190,8 +195,8 @@ class ExaminationPage extends BasePage
 
                         echo "<span id=\"menuhead\">" . _("Show") . ":</span>\n";
                         echo "<ul>\n";
-                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $_REQUEST['exam'], _("Show the start page for this examination"), _("Start page"));
-                        printf("<li><a href=\"?exam=%d&amp;question=all\" title=\"%s\">%s</a></li>\n", $_REQUEST['exam'], _("Show all questions at the same time"), _("All questions"));
+                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show the start page for this examination"), _("Start page"));
+                        printf("<li><a href=\"?exam=%d&amp;question=all\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show all questions at the same time"), _("All questions"));
                         echo "</ul>\n";
                 }
         }
@@ -199,19 +204,19 @@ class ExaminationPage extends BasePage
         //
         // Check that caller is authorized to access this exam.
         //
-        private function checkExaminationAccess($exam)
+        private function checkExaminationAccess()
         {
                 //
                 // Allow contributors to bypass normal user checks (for previewing questions).
                 //
-                $manager = new Manager($exam);
+                $manager = new Manager($this->param->exam);
                 $this->author = $manager->isContributor(phpCAS::getUser());
                 if ($this->author) {
                         $this->testcase = false;
                         return;
                 }
 
-                $data = Exam::getExamData(phpCAS::getUser(), $exam);
+                $data = Exam::getExamData(phpCAS::getUser(), $this->param->exam);
                 if (!$data->hasExamID()) {
                         $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
@@ -233,7 +238,7 @@ class ExaminationPage extends BasePage
                 //
                 if ($this->lockdown) {
                         try {
-                                $locker = new LockerManager($_SERVER['REMOTE_ADDR'], $exam);
+                                $locker = new LockerManager($_SERVER['REMOTE_ADDR'], $this->param->exam);
                                 if (!$locker->locked()) {
                                         $locker->lockdown();
                                 }
@@ -252,13 +257,13 @@ class ExaminationPage extends BasePage
         //
         // Check that the requested question is part of this exam.
         //
-        private function checkQuestionAccess($exam, $question)
+        private function checkQuestionAccess()
         {
-                $data = Exam::getQuestionData($question);
+                $data = Exam::getQuestionData($this->param->question);
                 if (!$data->hasQuestionID()) {
                         $this->fatal(_("Request parameter error!"), sprintf("<p>" . _("No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
                 }
-                if ($data->getExamID() != $exam) {
+                if ($data->getExamID() != $this->param->exam) {
                         $this->fatal(_("Request parameter error!"), sprintf("<p>" . _("The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
                 }
         }
@@ -299,9 +304,9 @@ class ExaminationPage extends BasePage
         // Show some simple instructions on how to doing the exam, along with
         // information about the selected exam.
         //
-        private function showInstructions($exam)
+        private function showInstructions()
         {
-                $exam = Exam::getExamData(phpCAS::getUser(), $exam);
+                $exam = Exam::getExamData(phpCAS::getUser(), $this->param->exam);
                 if (!$exam->hasExamID()) {
                         $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
@@ -328,9 +333,9 @@ class ExaminationPage extends BasePage
         //
         // Show all questions at once.
         //
-        private function showQuestions($exam)
+        private function showQuestions()
         {
-                $questions = Exam::getQuestions($exam, phpCAS::getUser());
+                $questions = Exam::getQuestions($this->param->exam, phpCAS::getUser());
 
                 printf("<h3>" . _("Overview of all questions (no answers included)") . "</h3>\n");
                 foreach ($questions as $question) {
@@ -345,10 +350,10 @@ class ExaminationPage extends BasePage
         //
         // Show the selected question.
         //
-        private function showQuestion($exam, $question)
+        private function showQuestion()
         {
-                $qdata = Exam::getQuestionData($question);
-                $adata = Exam::getAnswerData($question, phpCAS::getUser());
+                $qdata = Exam::getQuestionData($this->param->question);
+                $adata = Exam::getAnswerData($this->param->question, phpCAS::getUser());
 
                 //
                 // Use custom CSS depending on whether displaying media or not.
@@ -397,8 +402,8 @@ class ExaminationPage extends BasePage
                 if (SESSION_AUTOSAVE != 0) {
                         $form->addHidden("autosave", false);
                 }
-                $form->addHidden("exam", $exam);
-                $form->addHidden("question", $question);
+                $form->addHidden("exam", $this->param->exam);
+                $form->addHidden("question", $this->param->question);
 
                 if ($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         $input = $form->addTextArea("answer", $adata->getAnswerText());
@@ -433,16 +438,16 @@ class ExaminationPage extends BasePage
                 }
                 $form->output();
 
-                printf("<script type=\"text/javascript\">\n");
                 if (SESSION_AUTOSAVE != 0) {
+                        printf("<script type=\"text/javascript\">\n");
                         printf("autosave_form('answerform', %d, true);\n", SESSION_AUTOSAVE);
+                        printf("</script>\n");
                 }
-                printf("</script>\n");
                 printf("</div>\n");
                 if ($this->author) {
                         MessageBox::show(MessageBox::information, _("This question is viewed in preview mode (for question author)."), _("notice"));
                 }
-                if (isset($_REQUEST['status']) && $_REQUEST['status'] == "ok") {
+                if (isset($this->param->status) && $this->param->status == "ok") {
                         MessageBox::show(MessageBox::success, _("Your answer has been successful saved in the database."));
                 }
                 printf("</div>\n");
@@ -479,23 +484,23 @@ class ExaminationPage extends BasePage
         //
         // Save the answer for an question.
         //
-        private function saveQuestion($exam, $question, $answer)
+        private function saveQuestion()
         {
-                if (is_array($answer)) {
-                        $answer = json_encode($answer);
+                if (is_array($this->param->answer)) {
+                        $this->param->answer = json_encode($this->param->answer);
                 }
-                $answer = Database::getConnection()->escape($answer);
+                $this->param->answer = Database::getConnection()->escape($this->param->answer);
 
-                Exam::setAnswer($exam, $question, phpCAS::getUser(), $answer);
-                if (isset($_REQUEST['save'])) {
-                        header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
-                } elseif (isset($_REQUEST['next'])) {
+                Exam::setAnswer($this->param->exam, $this->param->question, phpCAS::getUser(), $this->param->answer);
+                if (isset($this->param->save)) {
+                        header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $this->param->exam, $this->param->question));
+                } elseif (isset($this->param->next)) {
                         $menuitem = self::getQuestions();
                         if (count($menuitem['q']) != 0) {
                                 $next = $menuitem['q'][0];
-                                $question = $next->getQuestionID();
+                                $this->param->question = $next->getQuestionID();
                         }
-                        header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $exam, $question));
+                        header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $this->param->exam, $this->param->question));
                 }
         }
 
@@ -508,7 +513,7 @@ class ExaminationPage extends BasePage
                 // Calling getQuestions() will implicit create the question set bindings
                 // in table answers if none exist for this user on this exam.
                 //
-                $questions = Exam::getQuestions($_REQUEST['exam'], phpCAS::getUser());
+                $questions = Exam::getQuestions($this->param->exam, phpCAS::getUser());
 
                 //
                 // Build the associative array of questions and answers. We are going to need
