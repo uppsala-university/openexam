@@ -145,7 +145,7 @@ class Correct
                 $db = Database::getConnection();
                 foreach (array_keys($scores) as $answer) {
                         if (isset($results[$answer])) {
-                                $sql = sprintf("UPDATE results SET answer_id = %d, score = %f, comment = '%s'
+                                $sql = sprintf("UPDATE results SET answer_id = %d, score = %F, comment = '%s'
                                                 WHERE id = %d", $answer, $scores[$answer], $comments[$answer], $results[$answer]);
                         } else {
                                 if ($scores[$answer] == "") {
@@ -153,8 +153,9 @@ class Correct
                                 }
 
                                 $sql = sprintf("INSERT INTO results(answer_id, score, comment)
-                                                VALUES(%d, %f, '%s')", $answer, $scores[$answer], $comments[$answer]);
+                                                VALUES(%d, %F, '%s')", $answer, $scores[$answer], $comments[$answer]);
                         }
+                        die($sql);
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {
                                 throw new DatabaseException($res->getMessage());

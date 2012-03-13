@@ -194,7 +194,7 @@ class ImportInsertPingPong extends ImportInsert
                                                                 type,
                                                                 user,
                                                                 comment)
-                                                VALUES(%d,%d,%f,'%s','%s','%s','%s','%s')", $this->exam, $tid, $question['score'], $question['name'], $question['quest'], $question['type'], $question['user'], $question['comment']);
+                                                VALUES(%d,%d,%F,'%s','%s','%s','%s','%s')", $this->exam, $tid, $question['score'], $question['name'], $question['quest'], $question['type'], $question['user'], $question['comment']);
 
                                 $res = $this->db->query($sql);
                                 if (PEAR::isError($res)) {
@@ -283,7 +283,7 @@ class ImportInsertOpenExam extends ImportInsert
                         foreach ($data->questions->question as $question) {
                                 $question->quest = $this->db->escape($question->text);
                                 $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, user, video, image, audio, type, status, comment)
-                                                VALUES(%d,%d,%f,'%s','%s','%s','%s','%s','%s','%s','%s','%s')", $this->exam, $topicmap[(int) $question['topic']], $question->score, $question->name, $question->quest, $question->publisher, $question->video, $question->image, $question->audio, $question->type, $question->status, $question->comment);
+                                                VALUES(%d,%d,%F,'%s','%s','%s','%s','%s','%s','%s','%s','%s')", $this->exam, $topicmap[(int) $question['topic']], $question->score, $question->name, $question->quest, $question->publisher, $question->video, $question->image, $question->audio, $question->type, $question->status, $question->comment);
                                 $res = $this->db->query($sql);
                                 if (PEAR::isError($res)) {
                                         throw new DatabaseException($res->getMessage());
