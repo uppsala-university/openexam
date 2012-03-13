@@ -68,8 +68,8 @@ class SupervisorAdminPage extends AdminPage
 {
 
         private static $params = array(
-                "action" => "/^(grant|revoke)$/",
-                "user"   => "/^[0-9a-z]{1,8}$/"
+                "user"   => parent::pattern_user,
+                "action" => "/^(grant|revoke)$/"
         );
 
         public function __construct()

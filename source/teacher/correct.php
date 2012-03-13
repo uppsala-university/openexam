@@ -77,14 +77,14 @@ class CorrectionPage extends TeacherPage
 {
 
         private static $params = array(
-                "exam"     => "/^\d+$/",
-                "answer"   => "/^\d+$/",
-                "question" => "/^\d+$/",
-                "student"  => "/^\d+$/",
-                "verbose"  => "/^\d+$/",
-                "colorize" => "/^\d+$/",
-                "mode"     => "/^(mark|save)$/",
-                "score"    => "/^\d+([,.]\d+)*$/"
+                "exam"     => parent::pattern_index,
+                "answer"   => parent::pattern_index,
+                "question" => parent::pattern_index,
+                "student"  => parent::pattern_index,
+                "verbose"  => parent::pattern_index,
+                "colorize" => parent::pattern_index,
+                "score"    => parent::pattern_float,
+                "mode"     => "/^(mark|save)$/"
         );
 
         public function __construct()

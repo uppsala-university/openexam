@@ -72,10 +72,10 @@ class ExamAdminPage extends AdminPage
 
         private static $params = array(
                 "data"    => "/^(all|real|upcoming|today)$/",
-                "exam"    => "/^\d+$/",
-                "compact" => "/.*/",
-                "submit"  => "/.*/",
-                "export"  => "/.*/"
+                "exam"    => parent::pattern_index,
+                "compact" => parent::pattern_text, // button name
+                "submit"  => parent::pattern_text, // button name
+                "export"  => parent::pattern_text       // button name
         );
 
         public function __construct()

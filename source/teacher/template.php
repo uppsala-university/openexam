@@ -63,7 +63,7 @@ include "include/teacher.inc";
 class TemplatePage extends TeacherPage
 {
 
-        private static $params = array("exam" => "/^\d+$/");
+        private static $params = array("exam" => parent::pattern_index);
 
         public function __construct()
         {
