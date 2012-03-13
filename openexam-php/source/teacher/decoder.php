@@ -90,13 +90,13 @@ class DecoderPage extends TeacherPage
 {
 
         private static $params = array(
-                "exam"     => "/^\d+$/",
+                "exam"     => parent::pattern_index,
                 "mode"     => "/^(result|scores)$/",
                 "action"   => "/^(save|show|mail|download)$/",
                 "format"   => "/^(pdf|html|ps|csv|tab|xml)$/",
                 "student"  => "/^(\d+|all)$/",
-                "colorize" => "/^\d+$/",
-                "verbose"  => "/^\d+$/"
+                "colorize" => parent::pattern_index,
+                "verbose"  => parent::pattern_index
         );
         private $decoder;
 
