@@ -17,6 +17,9 @@ Version 1.5.6 (2011-mm-dd):
         * Examinations can be exported from the source/admin/exams.php page by
           supervisor users.
 
+        * Increased the possible storage size for answers to ~16MB. See
+          docs/README-MYSQL for details.
+
 Version 1.5.5 (2011-01-12):
 
         * UPPDOK codes can now be utilized to fetch lists of registered students
