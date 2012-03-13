@@ -89,8 +89,7 @@ class TeacherAdminPage extends AdminPage
                         // Check required request parameters:
                         //
                         if (!isset($_REQUEST['user'])) {
-                                ErrorPage::show(_("Request parameter error!"), _("Missing request parameter 'user'."));
-                                exit(1);
+                                $this->fatal(_("Request parameter error!"), _("Missing request parameter 'user'."));
                         }
                         //
                         // Grant or revoke admin privileges:

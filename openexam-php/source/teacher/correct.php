@@ -158,12 +158,10 @@ class CorrectionPage extends TeacherPage
 
                 if (!$this->manager->hasRole(phpCAS::getUser(), $role1) &&
                     !$this->manager->hasRole(phpCAS::getUser(), $role2)) {
-                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
-                        exit(1);
+                        $this->fatal(_("Access denied!"), sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
                 }
                 if (!$this->manager->getInfo()->isFinished()) {
-                        ErrorPage::show(_("Access denied!"), _("This examination is not yet finished. You have to wait until its finished before you can correct the answers."));
-                        exit(1);
+                        $this->fatal(_("Access denied!"), _("This examination is not yet finished. You have to wait until its finished before you can correct the answers."));
                 }
         }
 
@@ -300,8 +298,7 @@ class CorrectionPage extends TeacherPage
                 $answer = $correct->getQuestionAnswer($this->param->answer);
 
                 if ($answer->getQuestionPublisher() != phpCAS::getUser()) {
-                        ErrorPage::show(_("Access denied!"), sprintf(_("Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."), $this->getFormatName($answer->getQuestionPublisher())));
-                        exit(1);
+                        $this->fatal(_("Access denied!"), sprintf(_("Correction of answers to this question has been assigned to %s, you are not allowed to continue. The script processing has halted."), $this->getFormatName($answer->getQuestionPublisher())));
                 }
 
                 $exam = new Exam();
