@@ -362,21 +362,6 @@ h4.secthead {
 }
 
 /**
- *  The info section about test case mode.
-*/
-div.testcase {
-    padding: 10px;
-    border: 2px solid #00aa00;
-    background-color: #eeffee;
-}
-div.testcase h4,
-div.testcase h5,
-div.testcase h6 {
-    color: green;
-    text-decoration: underline;
-}
-
-/**
  *  Message box style (#1: mostly square boxes with background).
 **/
 div.mbox {

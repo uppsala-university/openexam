@@ -319,13 +319,16 @@ class ExaminationPage extends BasePage
                 printf("<p>" . _("Good luck!") . "</p>\n");
 
                 if ($this->testcase) {
-                        printf("<div class=\"testcase\">\n");
-                        printf("<h4>" . _("Running in test case mode!") . "</h4>\n");
-                        printf("<p>" . _("This examination is running in test case mode. This mode allows you to review and work with the examination in the same way as the students will.") . "</p>\n");
-                        printf("<p>" . _("To exit, click either on the 'finish' or 'cancel' link at bottom of the page. Clicking 'finish' will stop the examination and allow you to correct and decode results, while 'cancel' will delete this test case.") . "</p>\n");
-                        printf("<h6>" . _("Important") . ":</h6>\n");
-                        printf("<p>" . _("Running in test case mode is non-destructive. The original examination remains unaffected as you are working entierly on a copy of it.") . "</p>\n");
-                        printf("</div>\n");
+                        $text = new Content();
+                        $text->addParagraph(_("This examination is running in test case mode. This mode allows you to review and work with the examination in the same way as the students will."));
+                        $text->addParagraph(_("To exit, click either on the 'finish' or 'cancel' link at bottom of the page. Clicking 'finish' will stop the examination and allow you to correct and decode results, while 'cancel' will delete this test case."));
+                        $text->addHeader(_("Important"), 6);
+                        $text->addParagraph(_("Running in test case mode is non-destructive. The original examination remains unaffected as you are working entierly on a copy of it."));
+                        
+                        $mbox = new MessageBox();
+                        $mbox->setTitle(_("Running in test case mode!"));
+                        $mbox->setMessage($text);
+                        $mbox->display();
                 }
         }
 
