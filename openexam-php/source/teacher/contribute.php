@@ -74,23 +74,23 @@ class ContributePage extends TeacherPage
 {
 
         private $params = array(
-                "exam" => "/^\d+$/",
-                "action" => "/^(add|edit|test|delete|remove|restore|import)$/",
+                "exam"     => "/^\d+$/",
+                "action"   => "/^(add|edit|test|delete|remove|restore|import)$/",
                 "question" => "/^(\d+|all|active|removed|compact|own)$/",
-                "comment" => "/.*/",
-                "mode" => "/^(save)$/",
-                "score" => "/^\d+(\.\d)*$/",
-                "name" => "/^.*$/",
-                "quest" => "/.*/",
-                "type" => "/^(freetext|single|multiple|pp|oq)$/",
-                "user" => "/^[0-9a-zA-Z]{1,10}$/",
-                "status" => "/^(active|removed)$/",
-                "video" => "/^(.*:\/\/.*|)$/",
-                "audio" => "/^(.*:\/\/.*|)$/",
-                "image" => "/^(.*:\/\/.*|)$/",
-                "what" => "/^(question|topic)$/",
-                "topic" => "/^(\d+|all)$/",
-                "random" => "/^\d*$/");
+                "comment"  => "/.*/",
+                "mode"     => "/^(save)$/",
+                "score"    => "/^\d+(\.\d)*$/",
+                "name"     => "/^.*$/",
+                "quest"    => "/.*/",
+                "type"     => "/^(freetext|single|multiple|pp|oq)$/",
+                "user"     => "/^[0-9a-zA-Z]{1,10}$/",
+                "status"   => "/^(active|removed)$/",
+                "video"    => "/^(.*:\/\/.*|)$/",
+                "audio"    => "/^(.*:\/\/.*|)$/",
+                "image"    => "/^(.*:\/\/.*|)$/",
+                "what"     => "/^(question|topic)$/",
+                "topic"    => "/^(\d+|all)$/",
+                "random"   => "/^\d*$/");
 
         public function __construct()
         {
@@ -205,14 +205,12 @@ class ContributePage extends TeacherPage
         {
                 if (!isset($reason)) {
                         if (!$this->manager->isContributor(phpCAS::getUser())) {
-                                ErrorPage::show(_("Access denied!"),
-                                                sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "contributor"));
+                                ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "contributor"));
                                 exit(1);
                         }
                 } elseif ($reason == "test") {
                         if (!$this->manager->isTestCaseAllowed(phpCAS::getUser())) {
-                                ErrorPage::show(_("Access denied!"),
-                                                _("Only the creator of the examination is allowed to run test case on it. The script processing has halted."));
+                                ErrorPage::show(_("Access denied!"), _("Only the creator of the examination is allowed to run test case on it. The script processing has halted."));
                                 exit(1);
                         }
                 }
@@ -250,16 +248,7 @@ class ContributePage extends TeacherPage
                 $image = isset($this->param->image) ? $this->param->image : "";
 
                 $contrib = new Contribute($this->param->exam);
-                $contrib->addQuestion($this->param->exam,
-                        $this->param->topic,
-                        $this->param->score,
-                        $this->param->name,
-                        $this->param->quest,
-                        $this->param->type,
-                        $this->param->user,
-                        $video,
-                        $audio,
-                        $image);
+                $contrib->addQuestion($this->param->exam, $this->param->topic, $this->param->score, $this->param->name, $this->param->quest, $this->param->type, $this->param->user, $video, $audio, $image);
 
                 header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
         }
@@ -274,17 +263,7 @@ class ContributePage extends TeacherPage
                 $image = isset($this->param->image) ? $this->param->image : "";
 
                 $contrib = new Contribute($this->param->exam);
-                $contrib->editQuestion($this->param->question,
-                        $this->param->exam,
-                        $this->param->topic,
-                        $this->param->score,
-                        $this->param->name,
-                        $this->param->quest,
-                        $this->param->type,
-                        $this->param->user,
-                        $video,
-                        $audio,
-                        $image);
+                $contrib->editQuestion($this->param->question, $this->param->exam, $this->param->topic, $this->param->score, $this->param->name, $this->param->quest, $this->param->type, $this->param->user, $video, $audio, $image);
 
                 header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
         }
@@ -318,11 +297,7 @@ class ContributePage extends TeacherPage
         {
                 try {
                         $importer = FileImport::getReader(
-                                        $this->param->type,
-                                        $_FILES['file']['name'],
-                                        $_FILES['file']['tmp_name'],
-                                        $_FILES['file']['type'],
-                                        $_FILES['file']['size']
+                                        $this->param->type, $_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']
                         );
                         $importer->open();
                         $importer->read($this->param->exam, Database::getConnection());
@@ -341,7 +316,7 @@ class ContributePage extends TeacherPage
         {
                 $options = array(
                         "freetext" => _("Freeform text question"),
-                        "single" => _("Single choice question"),
+                        "single"   => _("Single choice question"),
                         "multiple" => _("Multiple choice question")
                 );
 
@@ -383,10 +358,9 @@ class ContributePage extends TeacherPage
                         $input->setLabel(_("Name"));
                         $input->setSize(60);
 
-                        $input = $form->addTextArea("quest",
-                                        $data->hasQuestionText() || $action == "edit" ?
-                                                $data->getQuestionText() :
-                                                _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n<hr/>\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n<hr/>\n"));
+                        $input = $form->addTextArea("quest", $data->hasQuestionText() || $action == "edit" ?
+                                        $data->getQuestionText() :
+                                        _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n<hr/>\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n<hr/>\n"));
                         $input->setTitle(_("The actual question is defined here. Double click inside the textarea to clear its content."));
                         $input->setLabel(_("Question"));
                         $input->setClass("question");
@@ -418,7 +392,7 @@ class ContributePage extends TeacherPage
                         $input->setSize(70);
                         $input->setId($input->getName());
 
-                        $button = $form->addElement(new ImageButton(null, null, "../icons/nuvola/mime/16/video.png", _("Insert")));
+                        $button = $form->addElement(new ImageButton(null, null, "/openexam/icons/mime/16/video.png", _("Insert")));
                         $handle = $media->connect($input->getId(), $button->getId());
                         $button->setEvent(EVENT_ON_CLICK, $handle);
 
@@ -428,7 +402,7 @@ class ContributePage extends TeacherPage
                         $input->setSize(70);
                         $input->setId($input->getName());
 
-                        $button = $form->addElement(new ImageButton(null, null, "../icons/nuvola/mime/16/audio.png", _("Insert")));
+                        $button = $form->addElement(new ImageButton(null, null, "/openexam/icons/mime/16/audio.png", _("Insert")));
                         $handle = $media->connect($input->getId(), $button->getId());
                         $button->setEvent(EVENT_ON_CLICK, $handle);
 
@@ -438,7 +412,7 @@ class ContributePage extends TeacherPage
                         $input->setSize(70);
                         $input->setId($input->getName());
 
-                        $button = $form->addElement(new ImageButton(null, null, "../icons/nuvola/mime/16/image.png", _("Insert")));
+                        $button = $form->addElement(new ImageButton(null, null, "/openexam/icons/mime/16/image.png", _("Insert")));
                         $handle = $media->connect($input->getId(), $button->getId());
                         $button->setEvent(EVENT_ON_CLICK, $handle);
                 } else {
@@ -482,9 +456,7 @@ class ContributePage extends TeacherPage
 
                 $form->output();
 
-                printf("<div class=\"hint\"><img src=\"../icons/nuvola/hint.png\"/> " .
-                        _("Hint: Some content from external URL's can be delivered over an secure connection by using proxy?url=str, where str is the original URL. This prevents web browsers like Internet Explorer and Firefox from complaining about pages containing mixed secured/unsecured content and works for both media URL's and inside the question body.") .
-                        "</div>\n");
+                MessageBox::show(MessageBox::hint, _("Some content from external URL's can be delivered over an secure connection by using proxy?url=str, where str is the original URL. This prevents web browsers like Internet Explorer and Firefox from complaining about pages containing mixed secured/unsecured content and works for both media URL's and inside the question body."));
         }
 
         //
@@ -495,14 +467,13 @@ class ContributePage extends TeacherPage
                 $data = $this->manager->getData();
                 $info = $this->manager->getInfo();
                 $qrec = new DataRecord(array(
-                                "examid" => $this->param->exam,
-                                "topicid" => $this->param->topic,
+                                "examid"       => $this->param->exam,
+                                "topicid"      => $this->param->topic,
                                 "questiontype" => "freetext")
                 );
 
                 printf("<h3>" . _("Add Question") . "</h3>\n");
-                printf("<p>" . _("This page let you add a new question in the examination '%s'") . "</p>\n",
-                        $data->getExamName());
+                printf("<p>" . _("This page let you add a new question in the examination '%s'") . "</p>\n", $data->getExamName());
 
                 self::formPostQuestion($qrec, "add", $data, $info);
         }
@@ -517,8 +488,7 @@ class ContributePage extends TeacherPage
                 $qrec = Exam::getQuestionData($this->param->question);
 
                 printf("<h3>" . _("Edit Question") . "</h3>\n");
-                printf("<p>" . _("This page let you edit the existing question in the examination '%s'") . "</p>\n",
-                        $data->getExamName());
+                printf("<p>" . _("This page let you edit the existing question in the examination '%s'") . "</p>\n", $data->getExamName());
 
                 self::formPostQuestion($qrec, "edit", $data, $info);
         }
@@ -534,8 +504,7 @@ class ContributePage extends TeacherPage
                 printf("<p>" .
                         _("This page let you mark the question '%s' as removed from this examination. ") .
                         _("By marking this question as removed, any scores for answers will be ignored in the examination result. ") .
-                        "</p>\n",
-                        $qrecord->getQuestionName());
+                        "</p>\n", $qrecord->getQuestionName());
 
                 $form = new Form("contribute.php", "POST");
                 $form->addHidden("exam", $this->param->exam);
@@ -590,9 +559,7 @@ class ContributePage extends TeacherPage
         private function saveAddTopic()
         {
                 $contrib = new Contribute($this->param->exam);
-                $contrib->addTopic($this->param->exam,
-                        $this->param->name,
-                        $this->param->random);
+                $contrib->addTopic($this->param->exam, $this->param->name, $this->param->random);
 
                 header(sprintf("location: contribute.php?exam=%d&question=compact", $this->param->exam));
         }
@@ -603,10 +570,7 @@ class ContributePage extends TeacherPage
         private function saveEditTopic()
         {
                 $contrib = new Contribute($this->param->exam);
-                $contrib->editTopic($this->param->topic,
-                        $this->param->exam,
-                        $this->param->name,
-                        $this->param->random);
+                $contrib->editTopic($this->param->topic, $this->param->exam, $this->param->name, $this->param->random);
 
                 header(sprintf("location: contribute.php?exam=%d&question=compact", $this->param->exam));
         }
@@ -695,14 +659,13 @@ class ContributePage extends TeacherPage
                 $data = $this->manager->getData();
                 $info = $this->manager->getInfo();
                 $trec = new DataRecord(array(
-                                "examid" => $this->param->exam,
-                                "topicname" => "",
+                                "examid"      => $this->param->exam,
+                                "topicname"   => "",
                                 "topicrandom" => 0)
                 );
 
                 printf("<h3>" . _("Add Topic") . "</h3>\n");
-                printf("<p>" . _("This page let you add a new topic in the examination '%s'") . "</p>\n",
-                        $data->getExamName());
+                printf("<p>" . _("This page let you add a new topic in the examination '%s'") . "</p>\n", $data->getExamName());
 
                 self::formPostTopic($trec, "add", $data, $info);
         }
@@ -717,8 +680,7 @@ class ContributePage extends TeacherPage
                 $trec = Exam::getTopicData($this->param->topic);
 
                 printf("<h3>" . _("Edit Topic") . "</h3>\n");
-                printf("<p>" . _("This page let you edit this existing topic in the examination '%s'") . "</p>\n",
-                        $data->getExamName());
+                printf("<p>" . _("This page let you edit this existing topic in the examination '%s'") . "</p>\n", $data->getExamName());
 
                 self::formPostTopic($trec, "edit", $data, $info);
         }
@@ -744,18 +706,17 @@ class ContributePage extends TeacherPage
                 $show = isset($this->param->question) ? $this->param->question : "compact";
 
                 $mode = array(
-                        "all" => _("All"),
-                        "active" => _("Active"),
+                        "all"     => _("All"),
+                        "active"  => _("Active"),
                         "removed" => _("Removed"),
                         "compact" => _("Compact"),
-                        "own" => _("Own")
+                        "own"     => _("Own")
                 );
                 $disp = array();
                 printf("<span class=\"links viewmode\">\n");
                 foreach ($mode as $name => $text) {
                         if ($show != $name) {
-                                $disp[] = sprintf("<a href=\"?exam=%d&amp;question=%s\">%s</a>",
-                                                $this->param->exam, $name, $text);
+                                $disp[] = sprintf("<a href=\"?exam=%d&amp;question=%s\">%s</a>", $this->param->exam, $name, $text);
                         } else {
                                 $disp[] = $text;
                         }
@@ -767,8 +728,7 @@ class ContributePage extends TeacherPage
                 printf("<p>" .
                         _("This page let you add, edit and remove questions in the examination '%s'. ") .
                         _("You can only edit or remove a question if you are the publisher of the question or the creator of this examination.") .
-                        "</p>\n",
-                        $data->getExamName());
+                        "</p>\n", $data->getExamName());
 
                 if (!$info->isContributable()) {
                         printf("<p>" . _("Notice: It's no longer possible to contribute or modify questions for this examination.") . "</p>\n");
@@ -777,16 +737,9 @@ class ContributePage extends TeacherPage
                 $tree = new TreeBuilder(_("Questions"));
                 $root = $tree->getRoot();
                 if ($info->isContributable()) {
-                        $root->addLink(_("Delete"),
-                                sprintf("?exam=%d&amp;action=delete&amp;what=topic&amp;topic=all",
-                                        $data->getExamID()),
-                                _("Click to delete all topics in this examination. All topics must be empty for this request to succedd."));
-                        $root->addLink(_("Import"),
-                                sprintf("contribute.php?exam=%d&action=import", $this->param->exam),
-                                _("Click to open page for importing a question bank."));
-                        $root->addLink(_("Add"),
-                                sprintf("?exam=%d&amp;action=add&amp;what=topic", $data->getExamID()),
-                                _("Click to add a new topic to this examination."));
+                        $root->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;what=topic&amp;topic=all", $data->getExamID()), _("Click to delete all topics in this examination. All topics must be empty for this request to succedd."));
+                        $root->addLink(_("Import"), sprintf("contribute.php?exam=%d&action=import", $this->param->exam), _("Click to open page for importing a question bank."));
+                        $root->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;what=topic", $data->getExamID()), _("Click to add a new topic to this examination."));
                 }
 
                 $status = $show != "all" ? $show : null;
@@ -800,41 +753,21 @@ class ContributePage extends TeacherPage
                                 $topic = $root->addChild(sprintf("%s (%d): %s", _("Topic"), $question->getTopicRandom(), $question->getTopicName()));
                                 $topic->id = $question->getTopicID();
                                 if ($info->isContributable()) {
-                                        $topic->addLink(_("Edit"),
-                                                sprintf("?exam=%d&amp;action=edit&amp;what=topic&amp;topic=%d",
-                                                        $data->getExamID(),
-                                                        $question->getTopicID()),
-                                                _("Click to edit this topic."));
-                                        $topic->addLink(_("Delete"),
-                                                sprintf("?exam=%d&amp;action=delete&amp;what=topic&amp;topic=%d",
-                                                        $data->getExamID(),
-                                                        $question->getTopicID()),
-                                                _("Click to delete this topic."));
-                                        $topic->addLink(_("Add"),
-                                                sprintf("?exam=%d&amp;action=add&amp;topic=%d",
-                                                        $data->getExamID(),
-                                                        $question->getTopicID()),
-                                                _("Click to add a question in this topic."));
+                                        $topic->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;what=topic&amp;topic=%d", $data->getExamID(), $question->getTopicID()), _("Click to edit this topic."));
+                                        $topic->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;what=topic&amp;topic=%d", $data->getExamID(), $question->getTopicID()), _("Click to delete this topic."));
+                                        $topic->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;topic=%d", $data->getExamID(), $question->getTopicID()), _("Click to add a question in this topic."));
                                 }
                         }
                         if ($question->getQuestionID()) {
                                 $child = $topic->addChild(sprintf("%s %s", _("Question"), $question->getQuestionName()));
                                 if ($question->getQuestionPublisher() == phpCAS::getUser() || $data->getExamCreator() == phpCAS::getUser()) {
                                         if (!$info->isDecoded()) {
-                                                $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d&amp;topic=%d",
-                                                                $question->getExamID(),
-                                                                $question->getQuestionID(),
-                                                                $question->getTopicID()));
+                                                $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;question=%d&amp;topic=%d", $question->getExamID(), $question->getQuestionID(), $question->getTopicID()));
                                         }
                                         if ($info->isContributable()) {
-                                                $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d",
-                                                                $question->getExamID(),
-                                                                $question->getQuestionID()));
+                                                $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", $question->getExamID(), $question->getQuestionID()));
                                         }
-                                        $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d&amp;preview=1",
-                                                        $question->getExamID(),
-                                                        $question->getQuestionID()),
-                                                _("Preview this question"), array("target" => "_blank"));
+                                        $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d&amp;preview=1", $question->getExamID(), $question->getQuestionID()), _("Preview this question"), array("target" => "_blank"));
                                 }
                                 if ($show != "compact") {
                                         $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
@@ -863,8 +796,7 @@ class ContributePage extends TeacherPage
                                                 $child->addChild(sprintf("%s: %s", _("Comment"), $question->getQuestionComment()));
                                         }
                                         $subobj = $child->addChild(sprintf("%s:", _("Question Text")));
-                                        $subobj->addText(sprintf("<div class=\"examquest\">%s</div>",
-                                                        str_replace("\n", "<br>", $question->getQuestionText())));
+                                        $subobj->addText(sprintf("<div class=\"examquest\">%s</div>", str_replace("\n", "<br>", $question->getQuestionText())));
                                 }
                         }
                 }
@@ -921,11 +853,8 @@ class ContributePage extends TeacherPage
                                         $state = $data[1];
                                         $child = $node->addChild($name);
                                         if ($state->isContributable()) {
-                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()),
-                                                        _("Click on this link to see all questions in this examination."));
-                                                $child->addLink(_("Add"),
-                                                        sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()),
-                                                        _("Click to add a question to this examination."));
+                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to see all questions in this examination."));
+                                                $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()), _("Click to add a question to this examination."));
                                         }
                                         $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
                                         $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
