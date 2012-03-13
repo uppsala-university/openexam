@@ -68,7 +68,7 @@ class BasePage implements TemplatePage
 
         const pattern_float = "/^\d+([,.]\d+)*$/";      // match float point
         const pattern_index = "/^\d+$/";                // match database index
-        const pattern_text = "/^.*/";                   // generic text or any
+        const pattern_text = "/.*/";                    // generic text or any
         const pattern_user = "/^[0-9a-zA-Z]{1,10}$/";   // username
         const pattern_url = "/^(.*:\/\/.*|)$/";         // i.e. http://server/file
         const pattern_course = "/^[0-9a-zA-Z]{1,10}$/"; // course code
