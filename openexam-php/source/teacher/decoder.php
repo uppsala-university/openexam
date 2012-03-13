@@ -89,7 +89,7 @@ if (!defined('ATTACH_MAX_NUM_FILES')) {
 class DecoderPage extends TeacherPage
 {
 
-        private $params = array(
+        private static $params = array(
                 "exam" => "/^\d+$/",
                 "mode" => "/^(result|scores)$/",
                 "action" => "/^(save|show|mail|download)$/",
@@ -105,7 +105,7 @@ class DecoderPage extends TeacherPage
                 $this->param->verbose = false;
                 $this->param->colorize = false;
 
-                parent::__construct(_("Decoder Page"), $this->params);
+                parent::__construct(_("Decoder Page"), self::$params);
 
                 if (isset($_REQUEST['exam'])) {
                         $this->decoder = new Decoder($_REQUEST['exam']);

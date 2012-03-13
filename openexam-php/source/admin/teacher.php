@@ -69,14 +69,14 @@ include "include/teacher.inc";
 class TeacherAdminPage extends AdminPage
 {
 
-        private $params = array(
+        private static $params = array(
                 "action" => "/^(grant|revoke)$/",
-                "user" => "/^[0-9a-z]{1,8}$/"
+                "user"   => "/^[0-9a-z]{1,8}$/"
         );
 
         public function __construct()
         {
-                parent::__construct(_("Teacher Admin"), $this->params);
+                parent::__construct(_("Teacher Admin"), self::$params);
         }
 
         //
@@ -89,8 +89,7 @@ class TeacherAdminPage extends AdminPage
                         // Check required request parameters:
                         //
                         if (!isset($_REQUEST['user'])) {
-                                ErrorPage::show(_("Request parameter error!"),
-                                                _("Missing request parameter 'user'."));
+                                ErrorPage::show(_("Request parameter error!"), _("Missing request parameter 'user'."));
                                 exit(1);
                         }
                         //
@@ -183,8 +182,7 @@ class TeacherAdminPage extends AdminPage
                 echo "<h5>" . _("Contact:") . "</h5>\n";
                 printf("<p>" .
                         _("Send an email to <a href=\"%s\">all teachers</a> that have an email address in the LDAP directory.") .
-                        "</p>\n",
-                        sprintf("mailto:%s", implode(";", $addr)));
+                        "</p>\n", sprintf("mailto:%s", implode(";", $addr)));
         }
 
 }

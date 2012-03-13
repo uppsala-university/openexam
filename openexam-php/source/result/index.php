@@ -73,8 +73,8 @@ class ResultPage extends BasePage
         // All possible request parameters should be added here along with
         // the regex pattern to validate its value against.
         //
-        private $params = array(
-                "exam" => "/^\d+$/",
+        private static $params = array(
+                "exam"   => "/^\d+$/",
                 "action" => "/^(details|download)$/",
                 "format" => "/^(pdf|html)$/"
         );
@@ -82,7 +82,7 @@ class ResultPage extends BasePage
 
         public function __construct()
         {
-                parent::__construct(_("Result:"));   // Internationalized with GNU gettext
+                parent::__construct(_("Result:"), self::$params);   // Internationalized with GNU gettext
         }
 
         //
@@ -125,15 +125,13 @@ class ResultPage extends BasePage
                 if ($exam == 0) {
                         $exams = Exam::getActiveExams(phpCAS::getUser());
                         if ($exams->count() > 0) {
-                                ErrorPage::show(_("Access denied!"),
-                                                _("Access to results from your previous completed examinations is not available while another examination is taking place."));
+                                ErrorPage::show(_("Access denied!"), _("Access to results from your previous completed examinations is not available while another examination is taking place."));
                                 exit(1);
                         }
                 } else {
                         $this->data = Exam::getExamData(phpCAS::getUser(), $exam);
                         if (!$this->data->hasExamID()) {
-                                ErrorPage::show(_("No examination found!"),
-                                                _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."));
+                                ErrorPage::show(_("No examination found!"), _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance."));
                                 exit(1);
                         }
                 }
@@ -147,8 +145,7 @@ class ResultPage extends BasePage
                 $exams = Exam::getFinishedExams(phpCAS::getUser());
 
                 if ($exams->count() == 0) {
-                        ErrorPage::show(_("No examination found!"),
-                                        sprintf("<p>" . _("The system could not found any finished examiniations for your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+                        ErrorPage::show(_("No examination found!"), sprintf("<p>" . _("The system could not found any finished examiniations for your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                         exit(1);
                 }
 
@@ -179,12 +176,9 @@ class ResultPage extends BasePage
                         foreach ($data['d'] as $exam) {
                                 $node = $sect->addChild($exam->getExamName());
                                 $node->addDates(strtotime($exam->getExamStartTime()), strtotime($exam->getExamEndTime()));
-                                $node->addLink(_("Download"),
-                                        sprintf("?exam=%d&amp;action=download", $exam->getExamID()));
-                                $node->addLink(_("Show"),
-                                        sprintf("?exam=%d&amp;action=download&amp;format=html", $exam->getExamID()));
-                                $node->addLink(_("Details"),
-                                        sprintf("?exam=%d&amp;action=details", $exam->getExamID()));
+                                $node->addLink(_("Download"), sprintf("?exam=%d&amp;action=download", $exam->getExamID()));
+                                $node->addLink(_("Show"), sprintf("?exam=%d&amp;action=download&amp;format=html", $exam->getExamID()));
+                                $node->addLink(_("Details"), sprintf("?exam=%d&amp;action=details", $exam->getExamID()));
                         }
                 }
 
@@ -193,8 +187,7 @@ class ResultPage extends BasePage
                         foreach ($data['f'] as $exam) {
                                 $node = $sect->addChild($exam->getExamName());
                                 $node->addDates(strtotime($exam->getExamStartTime()), strtotime($exam->getExamEndTime()));
-                                $node->addLink(_("Details"),
-                                        sprintf("?exam=%d&amp;action=details", $exam->getExamID()));
+                                $node->addLink(_("Details"), sprintf("?exam=%d&amp;action=details", $exam->getExamID()));
                         }
                 }
 
@@ -213,8 +206,7 @@ class ResultPage extends BasePage
                 // Make sure we don't leak information:
                 //
                 if ($this->data->getExamDecoded() != 'Y') {
-                        ErrorPage::show(_("No access"),
-                                        _("This examiniation has not yet been decoded."));
+                        ErrorPage::show(_("No access"), _("This examiniation has not yet been decoded."));
                         exit(1);
                 }
 
@@ -235,41 +227,11 @@ class ResultPage extends BasePage
         private function showExam($exam)
         {
                 printf("<h3>" . _("Examination details") . "</h3>\n");
-                printf("<p>" . _("Showing description for examiniation <u>%s</u> on <u>%s</u>") . ":</p>\n",
-                        $this->data->getExamName(),
-                        strftime(DATE_FORMAT, strtotime($this->data->getExamStartTime())));
+                printf("<p>" . _("Showing description for examiniation <u>%s</u> on <u>%s</u>") . ":</p>\n", $this->data->getExamName(), strftime(DATE_FORMAT, strtotime($this->data->getExamStartTime())));
                 printf("<div class=\"examination\">\n");
-                printf("<div class=\"examhead\">%s</div>\n",
-                        $this->data->getExamName());
-                printf("<div class=\"exambody\">%s</div>\n",
-                        str_replace("\n", "<br/>", $this->data->getExamDescription()));
+                printf("<div class=\"examhead\">%s</div>\n", $this->data->getExamName());
+                printf("<div class=\"exambody\">%s</div>\n", str_replace("\n", "<br/>", $this->data->getExamDescription()));
                 printf("</div>\n");
-        }
-
-        //
-        // Validates request parameters.
-        //
-        public function validate()
-        {
-                foreach ($this->params as $param => $pattern) {
-                        if (isset($_REQUEST[$param])) {
-                                if (is_array($_REQUEST[$param])) {
-                                        foreach ($_REQUEST[$param] as $value) {
-                                                if (!preg_match($pattern, $value)) {
-                                                        ErrorPage::show(_("Request parameter error!"),
-                                                                        sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
-                                                                                $param, $pattern));
-                                                        exit(1);
-                                                }
-                                        }
-                                } elseif (!preg_match($pattern, $_REQUEST[$param])) {
-                                        ErrorPage::show(_("Request parameter error!"),
-                                                        sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
-                                                                $param, $pattern));
-                                        exit(1);
-                                }
-                        }
-                }
         }
 
 }
@@ -278,6 +240,5 @@ class ResultPage extends BasePage
 // Validate request parameters and (if validate succeeds) render the page.
 // 
 $page = new ResultPage();
-$page->validate();
 $page->render();
 ?>

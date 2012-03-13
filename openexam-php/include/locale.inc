@@ -48,9 +48,9 @@ class Locale
         private $langpref = null; // The browsers prefered language.
         private $langcode = null; // The two letter country code.
         private $map;             // The language <-> locale map.
-
         //
         // Construct the gettext and locale object.
+
         //
 
         public function __construct()
@@ -242,31 +242,31 @@ class Locale
                 return array
                         (
                         "se" => array(
-                                "locale" => "sv_SE", // Swedish
+                                "locale"  => "sv_SE", // Swedish
                                 "charset" => "utf-8",
-                                "lang" => _("Swedish")
+                                "lang"    => _("Swedish")
                         ),
-                        "gb" => array(
-                                "locale" => "en_GB", // English (GB)
+                        "gb"      => array(
+                                "locale"  => "en_GB", // English (GB)
                                 "charset" => "utf-8",
-                                "lang" => _("English (GB)")
+                                "lang"    => _("English (GB)")
                         ),
-                        "us" => array(
-                                "locale" => "en_US", // English (US)
+                        "us"      => array(
+                                "locale"  => "en_US", // English (US)
                                 "charset" => "utf-8",
-                                "lang" => _("English (US)")
+                                "lang"    => _("English (US)")
                         ),
-                        "c" => array(
-                                "locale" => "C",     // Browser default
+                        "c"       => array(
+                                "locale"  => "C", // Browser default
                                 "charset" => null,
-                                "lang" => _("Browser default")
+                                "lang"    => _("Browser default")
                         ),
-                        "sv" => "se",
-                        "sv-se" => "se",
-                        "sv-fi" => "se",
-                        "en" => "gb",
-                        "en-gb" => "gb",
-                        "en-us" => "us"
+                        "sv"      => "se",
+                        "sv-se"   => "se",
+                        "sv-fi"   => "se",
+                        "en"      => "gb",
+                        "en-gb"   => "gb",
+                        "en-us"   => "us"
                 );
         }
 
@@ -297,7 +297,7 @@ if (!extension_loaded('gettext')) {
 
         function bindtextdomain($package, $dir)
         {
-
+                
         }
 
         function textdomain($package)

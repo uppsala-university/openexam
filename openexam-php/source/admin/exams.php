@@ -70,7 +70,7 @@ include "include/export.inc";
 class ExamAdminPage extends AdminPage
 {
 
-        private $params = array(
+        private static $params = array(
                 "data"    => "/^(all|real|upcoming|today)$/",
                 "exam"    => "/^\d+$/",
                 "compact" => "/.*/",
@@ -80,7 +80,7 @@ class ExamAdminPage extends AdminPage
 
         public function __construct()
         {
-                parent::__construct(_("Exam Admin"), $this->params);
+                parent::__construct(_("Exam Admin"), self::$params);
         }
 
         //

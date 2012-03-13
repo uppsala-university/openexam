@@ -89,7 +89,7 @@ class ExaminationPage extends BasePage
         // All possible request parameters should be added here along with
         // the regex pattern to validate its value against.
         //
-        private $params = array(
+        private static $params = array(
                 "exam"     => "/^\d+$/",
                 "question" => "/^(\d+|all)$/"
         );
@@ -102,7 +102,7 @@ class ExaminationPage extends BasePage
 
         public function __construct()
         {
-                parent::__construct(_("Examination:"));   // Internationalized with GNU gettext
+                parent::__construct(_("Examination:"), self::$params);   // Internationalized with GNU gettext
         }
 
         //
@@ -324,7 +324,7 @@ class ExaminationPage extends BasePage
                         $text->addParagraph(_("To exit, click either on the 'finish' or 'cancel' link at bottom of the page. Clicking 'finish' will stop the examination and allow you to correct and decode results, while 'cancel' will delete this test case."));
                         $text->addHeader(_("Important"), 6);
                         $text->addParagraph(_("Running in test case mode is non-destructive. The original examination remains unaffected as you are working entierly on a copy of it."));
-                        
+
                         $mbox = new MessageBox();
                         $mbox->setTitle(_("Running in test case mode!"));
                         $mbox->setMessage($text);
@@ -534,34 +534,11 @@ class ExaminationPage extends BasePage
                 return $menuitem;
         }
 
-        //
-        // Validates request parameters.
-        //
-        public function validate()
-        {
-                foreach ($this->params as $param => $pattern) {
-                        if (isset($_REQUEST[$param])) {
-                                if (is_array($_REQUEST[$param])) {
-                                        foreach ($_REQUEST[$param] as $value) {
-                                                if (!preg_match($pattern, $value)) {
-                                                        ErrorPage::show(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
-                                                        exit(1);
-                                                }
-                                        }
-                                } elseif (!preg_match($pattern, $_REQUEST[$param])) {
-                                        ErrorPage::show(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
-                                        exit(1);
-                                }
-                        }
-                }
-        }
-
 }
 
 // 
 // Validate request parameters and (if validate succeeds) render the page.
 // 
 $page = new ExaminationPage();
-$page->validate();
 $page->render();
 ?>

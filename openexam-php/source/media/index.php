@@ -79,7 +79,7 @@ include "include/teacher/contribute.inc";
 class MediaPage extends TeacherPage
 {
 
-        private $params = array(
+        private static $params = array(
                 "exam"   => "/^\d+$/",
                 "action" => "/^(add|delete)$/",
                 "file"   => "/.*/",
@@ -89,7 +89,7 @@ class MediaPage extends TeacherPage
 
         public function __construct()
         {
-                parent::__construct(_("Media"), $this->params);
+                parent::__construct(_("Media"), self::$params);
         }
 
         public function printBody()

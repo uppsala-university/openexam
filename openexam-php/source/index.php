@@ -60,12 +60,6 @@ class IndexPage extends BasePage
 {
 
         //
-        // All possible request parameters should be added here along with
-        // the regex pattern to validate its value against.
-        //
-        private $params = array();
-
-        //
         // Construct the start page.
         //
         public function __construct()
@@ -96,29 +90,11 @@ class IndexPage extends BasePage
                 printf("</ul>\n");
         }
 
-        //
-        // Validates request parameters.
-        //
-        public function validate()
-        {
-                foreach ($this->params as $param => $pattern) {
-                        if (isset($_REQUEST[$param])) {
-                                if (!preg_match($pattern, $_REQUEST[$param])) {
-                                        ErrorPage::show(_("Request parameter error!"),
-                                                        sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
-                                                                $param, $pattern));
-                                        exit(1);
-                                }
-                        }
-                }
-        }
-
 }
 
 // 
 // Validate request parameters and (if validate succeeds) render the page.
 // 
 $page = new IndexPage();
-$page->validate();
 $page->render();
 ?>

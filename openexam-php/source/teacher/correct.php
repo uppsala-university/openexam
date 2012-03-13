@@ -76,14 +76,15 @@ include "include/scoreboard.inc";
 class CorrectionPage extends TeacherPage
 {
 
-        private $params = array(
+        private static $params = array(
                 "exam"     => "/^\d+$/",
                 "answer"   => "/^\d+$/",
                 "question" => "/^\d+$/",
                 "student"  => "/^\d+$/",
                 "verbose"  => "/^\d+$/",
                 "colorize" => "/^\d+$/",
-                "mode"     => "/^(mark|save)$/"
+                "mode"     => "/^(mark|save)$/",
+                "score"    => "/^\d+([,.]\d+)*$/"
         );
 
         public function __construct()
@@ -91,7 +92,7 @@ class CorrectionPage extends TeacherPage
                 $this->param->verbose = false;
                 $this->param->colorize = false;
 
-                parent::__construct(_("Answer Correction Page"), $this->params);
+                parent::__construct(_("Answer Correction Page"), self::$params);
         }
 
         //
@@ -104,6 +105,9 @@ class CorrectionPage extends TeacherPage
                 //
                 if (isset($_REQUEST['exam'])) {
                         self::checkAccess();
+                }
+                if (isset($_REQUEST['comment'])) {
+                        $this->param->comment = $_REQUEST['comment'];
                 }
 
                 //

@@ -73,7 +73,7 @@ include "include/teacher/testcase.inc";
 class ContributePage extends TeacherPage
 {
 
-        private $params = array(
+        private static $params = array(
                 "exam"     => "/^\d+$/",
                 "action"   => "/^(add|edit|test|delete|remove|restore|import)$/",
                 "question" => "/^(\d+|all|active|removed|compact|own)$/",
@@ -94,7 +94,7 @@ class ContributePage extends TeacherPage
 
         public function __construct()
         {
-                parent::__construct(_("Contribute Page"), $this->params);
+                parent::__construct(_("Contribute Page"), self::$params);
         }
 
         //
