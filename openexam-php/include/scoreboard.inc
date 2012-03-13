@@ -331,7 +331,7 @@ class OutputTextXml extends OutputFormatter
 
         public function getHeader()
         {
-                return "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n<rows>\n";
+                return "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<rows>\n";
         }
 
         public function getFooter()
