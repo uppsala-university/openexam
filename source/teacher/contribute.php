@@ -205,12 +205,11 @@ class ContributePage extends TeacherPage
         {
                 if (!isset($reason)) {
                         if (!$this->manager->isContributor(phpCAS::getUser())) {
-                                ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "contributor"));
-                                exit(1);
+                                $this->fatal(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), "contributor"));
                         }
                 } elseif ($reason == "test") {
                         if (!$this->manager->isTestCaseAllowed(phpCAS::getUser())) {
-                                ErrorPage::show(_("Access denied!"), _("Only the creator of the examination is allowed to run test case on it. The script processing has halted."));
+                                $this->fatal(_("Access denied!"), _("Only the creator of the examination is allowed to run test case on it. The script processing has halted."));
                                 exit(1);
                         }
                 }
@@ -303,8 +302,7 @@ class ContributePage extends TeacherPage
                         $importer->read($this->param->exam, Database::getConnection());
                         $importer->close();
                 } catch (ImportException $exception) {
-                        ErrorPage::show(_("Failed Import Questions"), $exception->getMessage());
-                        exit(1);
+                        $this->fatal(_("Failed Import Questions"), $exception->getMessage());
                 }
                 header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
         }

@@ -126,8 +126,7 @@ class AdminPage extends BasePage
         public function authorize()
         {
                 if (!Admin::userIsAdmin(phpCAS::getUser())) {
-                        ErrorPage::show(_("Access denied!"), _("Only users granted administrative privileges (system managers) can access this page. The script processing has halted."));
-                        exit(1);
+                        $this->fatal(_("Access denied!"), _("Only users granted administrative privileges (system managers) can access this page. The script processing has halted."));
                 }
         }
 
