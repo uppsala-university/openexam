@@ -69,9 +69,9 @@ class Database
         private $dsn;                      // DSN array or string.
         private $connection = null;        // MDB2 connection.
         private static $instance = null;   // This class object.
-
         //
         // Private to prevent explicit instantiation:
+
         //
 
         private function __construct()
@@ -279,6 +279,27 @@ class DataRecord
                 if (is_string($stamp)) {
                         return strftime(DATETIME_FORMAT, strtotime($stamp));
                 }
+        }
+
+        //
+        // From reinaldorock on http://php.net/manual/en/language.types.float.php.
+        // 
+        // Converts a locale specific string to a float point number. Users 
+        // typical submit floating point numbers having country specific decimal
+        // separator. This might lead to truncation errors.
+        // 
+        // This function could be used to convert request parameters (input) to 
+        // float point numbers that is stored in the database.
+        //
+        public static function str2num($str)
+        {
+                if (strpos($str, '.') < strpos($str, ',')) {
+                        $str = str_replace('.', '', $str);
+                        $str = strtr($str, ',', '.');
+                } else {
+                        $str = str_replace(',', '', $str);
+                }
+                return (float) $str;
         }
 
 }
