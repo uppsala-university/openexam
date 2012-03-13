@@ -124,10 +124,12 @@ class BasePage implements TemplatePage
                         if (isset($_REQUEST[$param])) {
                                 if (is_array($_REQUEST[$param])) {
                                         foreach ($_REQUEST[$param] as $value) {
-                                                self::check($param, $pattern);
+                                                self::check($param, $pattern, $value);
                                         }
+                                        self::inject($param, $pattern);
                                 } else {
-                                        self::check($param, $pattern);
+                                        self::check($param, $pattern, $_REQUEST[$param]);
+                                        self::inject($param, $pattern);
                                 }
                         }
                 }
@@ -136,15 +138,42 @@ class BasePage implements TemplatePage
         // 
         // Helper function for validate().
         // 
-        final private function check($param, $pattern)
+        final private function check($param, $pattern, $value)
         {
-                if (!preg_match($pattern, $_REQUEST[$param])) {
+                if (!preg_match($pattern, $value)) {
                         $this->fatal(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
-                } elseif (isset($_GET[$param])) {
-                        $this->param->$param = $_GET[$param];     // Inject washed parameter
-                } elseif (isset($_POST[$param])) {
-                        $this->param->$param = $_POST[$param];    // Inject washed parameter
                 }
+        }
+
+        // 
+        // Inject washed parameter.
+        // 
+        final private function inject($param, $pattern)
+        {
+                if (isset($_GET[$param])) {
+                        $this->param->$param = $_GET[$param];
+                } elseif (isset($_POST[$param])) {
+                        $this->param->$param = $_POST[$param];
+                }
+
+                if ($pattern == self::pattern_float) {
+                        self::convert($this->param->$param);
+                }
+        }
+
+        // 
+        // Float point number convertor.
+        // 
+        final private function convert(&$data)
+        {
+                if (is_array($data)) {
+                        foreach ($data as $key => $val) {
+                                $data[$key] = DataRecord::str2num($val);
+                        }
+                } else {
+                        $data = DataRecord::str2num($data);
+                }
+                print_r($data);
         }
 
         //
