@@ -98,7 +98,6 @@ class ExaminationPage extends BasePage
         private $testcase = false;  // This examination is a testcase.
         //
         // Construct the exam page.
-
         //
 
         public function __construct()
@@ -214,8 +213,7 @@ class ExaminationPage extends BasePage
 
                 $data = Exam::getExamData(phpCAS::getUser(), $exam);
                 if (!$data->hasExamID()) {
-                        ErrorPage::show(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
-                        exit(1);
+                        $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
 
                 $now = time();
@@ -223,8 +221,7 @@ class ExaminationPage extends BasePage
                 $etime = strtotime($data->getExamEndTime());
 
                 if (!($stime <= $now && $now <= $etime)) {
-                        ErrorPage::show(_("This examination is now closed!"), sprintf("<p>" . _("This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance.") . "</p>", strftime(DATETIME_FORMAT, $etime)));
-                        exit(1);
+                        $this->fatal(_("This examination is now closed!"), sprintf("<p>" . _("This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance.") . "</p>", strftime(DATETIME_FORMAT, $etime)));
                 }
 
                 $this->testcase = $data->getExamTestCase() == 'Y';
@@ -242,13 +239,12 @@ class ExaminationPage extends BasePage
                                 }
                         } catch (LockerException $exception) {
                                 error_log($exception->getError());      // Log private message.
-                                ErrorPage::show(_("Computer lockdown failed!"), sprintf("<p>" .
+                                $this->fatal(_("Computer lockdown failed!"), sprintf("<p>" .
                                         _("Securing your computer for this examination has failed: %s") .
                                         "<p></p>" .
                                         _("If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. ") .
                                         _("The examiniation is inaccessable from this computer until the problem has been resolved.") .
                                         "</p>", $exception));
-                                exit(1);
                         }
                 }
         }
@@ -260,12 +256,10 @@ class ExaminationPage extends BasePage
         {
                 $data = Exam::getQuestionData($question);
                 if (!$data->hasQuestionID()) {
-                        ErrorPage::show(_("Request parameter error!"), sprintf("<p>" . _("No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
-                        exit(1);
+                        $this->fatal(_("Request parameter error!"), sprintf("<p>" . _("No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
                 }
                 if ($data->getExamID() != $exam) {
-                        ErrorPage::show(_("Request parameter error!"), sprintf("<p>" . _("The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
-                        exit(1);
+                        $this->fatal(_("Request parameter error!"), sprintf("<p>" . _("The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
                 }
         }
 
@@ -277,8 +271,7 @@ class ExaminationPage extends BasePage
                 $exams = Exam::getActiveExams(phpCAS::getUser());
 
                 if ($exams->count() == 0) {
-                        ErrorPage::show(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
-                        exit(1);
+                        $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
 
                 printf("<h3>" . _("Select the examination") . "</h3>\n");
@@ -310,8 +303,7 @@ class ExaminationPage extends BasePage
         {
                 $exam = Exam::getExamData(phpCAS::getUser(), $exam);
                 if (!$exam->hasExamID()) {
-                        ErrorPage::show(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
-                        exit(1);
+                        $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
 
                 printf("<h3>%s</h3>\n", $exam->getExamName());

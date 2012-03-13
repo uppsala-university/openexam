@@ -410,9 +410,7 @@ class TeacherPage extends BasePage
                     $this->roles->getManagerRoles() == 0 &&
                     $this->roles->getCreatorRoles() == 0 &&
                     $this->roles->getCorrectorRoles() == 0) {
-
-                        ErrorPage::show(_("Access denied!"), _("Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."));
-                        exit(1);
+                        $this->fatal(_("Access denied!"), _("Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."));
                 }
         }
 

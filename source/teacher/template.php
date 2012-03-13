@@ -100,8 +100,7 @@ class TemplatePage extends TeacherPage
                 $role = "contributor";
 
                 if (!$this->manager->hasRole(phpCAS::getUser(), $role)) {
-                        ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
-                        exit(1);
+                        $this->fatal(_("Access denied!"), sprintf(_("Only users granted the %s role on this exam can access this page. The script processing has halted."), $role));
                 }
         }
 
