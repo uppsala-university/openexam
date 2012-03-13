@@ -461,7 +461,7 @@ class Element
         protected function output($mode)
         {
                 if ($mode == ELEMENT_OUTPUT_CONTAINER_START ||
-                        $mode == ELEMENT_OUTPUT_COMPONENT) {
+                    $mode == ELEMENT_OUTPUT_COMPONENT) {
                         printf("<%s", $this->tag);
                         if (isset($this->class)) {
                                 printf(" class=\"%s\"", $this->class);

@@ -41,9 +41,7 @@ class MailRecepient
         //
         public function getAddress()
         {
-                return sprintf("%s <%s>",
-                        mb_encode_mimeheader($this->name, "UTF8", "Q"),
-                        $this->addr);
+                return sprintf("%s <%s>", mb_encode_mimeheader($this->name, "UTF8", "Q"), $this->addr);
         }
 
 }
@@ -128,19 +126,11 @@ class MailBody
         {
                 if (!isset($this->text)) {
                         $delimiter = "--------------------------------------------------------";
-                        $this->text = sprintf("%s\n%s\n\n",
-                                        $this->title,
-                                        $delimiter);
+                        $this->text = sprintf("%s\n%s\n\n", $this->title, $delimiter);
                         foreach ($this->sections as $section) {
-                                $this->text .= sprintf("* %s:\n%s\n%s\n\n",
-                                                $section['head'],
-                                                $delimiter,
-                                                $section['text']);
+                                $this->text .= sprintf("* %s:\n%s\n%s\n\n", $section['head'], $delimiter, $section['text']);
                         }
-                        $this->text .= sprintf("// %s\n\n%s\n%s\n",
-                                        $this->greeting,
-                                        $delimiter,
-                                        $this->getSystemInfo());
+                        $this->text .= sprintf("// %s\n\n%s\n%s\n", $this->greeting, $delimiter, $this->getSystemInfo());
                 }
                 return $this->text;
         }
@@ -152,19 +142,14 @@ class MailBody
         {
                 if (!isset($this->html)) {
                         $this->html = sprintf("<html style=\"height: 90%%\"><head><style>h2 { color: #666; text-decoration: underline; }\n" .
-                                        "hr { border-top: 1px dashed #999; border-bottom: none; }\n" .
-                                        "td { vertical-align: top; }\n" .
-                                        "td.logo { background-color: #eaeaea; }\n" .
-                                        "td.body { padding-right: 10px; }</style></head><body style=\"height: 100%%\"><table width=\"100%%\" style=\"height: 80%%\"><tr><td class=\"body\" width=\"100%%\"><h2>%s</h2>",
-                                        $this->title);
+                            "hr { border-top: 1px dashed #999; border-bottom: none; }\n" .
+                            "td { vertical-align: top; }\n" .
+                            "td.logo { background-color: #eaeaea; }\n" .
+                            "td.body { padding-right: 10px; }</style></head><body style=\"height: 100%%\"><table width=\"100%%\" style=\"height: 80%%\"><tr><td class=\"body\" width=\"100%%\"><h2>%s</h2>", $this->title);
                         foreach ($this->sections as $section) {
-                                $this->html .= sprintf("<p><b><u>%s</u></b><br/><br/>%s<br/><br/>",
-                                                $section['head'],
-                                                str_replace("\n", "<br>", $section['text']));
+                                $this->html .= sprintf("<p><b><u>%s</u></b><br/><br/>%s<br/><br/>", $section['head'], str_replace("\n", "<br>", $section['text']));
                         }
-                        $this->html .= sprintf("<hr/><i>%s</i><hr/>%s</td><td class=\"logo\"><img src=\"http://www.uu.se/Logo/uulogo_white.gif\"/></td></tr></table></body></html>}\n",
-                                        $this->greeting,
-                                        $this->getSystemInfo());
+                        $this->html .= sprintf("<hr/><i>%s</i><hr/>%s</td><td class=\"logo\"><img src=\"http://www.uu.se/Logo/uulogo_white.gif\"/></td></tr></table></body></html>}\n", $this->greeting, $this->getSystemInfo());
                 }
                 return $this->html;
         }
@@ -187,10 +172,10 @@ class MailResult
         private $subject;
         private $greeting;
         private $message = array();  // Optional message
-
         //
         // Construct the email message. The name is the name of the examination.
         // All other arguemnts should be MailRecepient objects.
+
         //
 
         public function __construct($name, $date, $from, $bcc, $cc = null)
@@ -249,16 +234,12 @@ class MailResult
                 foreach ($this->message as $section) {
                         $body->addSection($section['head'], $section['text']);
                 }
-                $body->addSection(_("Attached Document"),
-                        sprintf(_("Your result from the examination in '%s' on %s is attached to this message in the file %s."),
-                                $this->name, $this->date, $result->getName()));
+                $body->addSection(_("Attached Document"), sprintf(_("Your result from the examination in '%s' on %s is attached to this message in the file %s."), $this->name, $this->date, $result->getName()));
 
                 $smtp = new MailSender();
                 $mime = $smtp->getComposer();
 
-                $headers = $smtp->getHeaders($this->recv->getAddress(),
-                                $this->from->getAddress(),
-                                sprintf("%s: %s", $this->subject, $this->name));
+                $headers = $smtp->getHeaders($this->recv->getAddress(), $this->from->getAddress(), sprintf("%s: %s", $this->subject, $this->name));
 
                 $mime->setTXTBody($body->getText());
                 $mime->setHTMLBody($body->getHtml());
@@ -276,9 +257,7 @@ class MailResult
                 }
 
                 $body = $mime->get();
-                $res = $smtp->send($this->recv->getAddress(),
-                                $mime->headers($headers),
-                                $body);
+                $res = $smtp->send($this->recv->getAddress(), $mime->headers($headers), $body);
                 if (PEAR::isError($res)) {
                         throw new MailException($res);
                 }

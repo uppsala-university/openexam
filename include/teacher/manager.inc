@@ -159,7 +159,6 @@ class ExamDetails
 {
 
         private $mask = 0;  // The details mask
-
         //
         // The mask value is either an numeric or an array.
         //
@@ -309,7 +308,7 @@ class ExamState
 
         public function readonly()
         {
-                return!$this->isEditable();
+                return !$this->isEditable();
         }
 
 }
@@ -334,7 +333,7 @@ class TreeNode
         public function setLink($url, $title = null)  // This node links to...
         {
                 if (isset($title)) {
-                        $this->link = array("href" => $url, "title" => $title);
+                        $this->link = array("href"  => $url, "title" => $title);
                 } else {
                         $this->link = array("href" => $url);
                 }
@@ -343,7 +342,7 @@ class TreeNode
         public function addLink($name, $url, $title = null, $attr = null)
         {
                 if (isset($title)) {
-                        $this->links[$name] = array("href" => $url, "title" => $title);
+                        $this->links[$name] = array("href"  => $url, "title" => $title);
                 } else {
                         $this->links[$name] = array("href" => $url);
                 }
@@ -376,18 +375,10 @@ class TreeNode
         public function addDates($sdate, $edate)
         {
                 if (date('Ymd', $sdate) == date('Ymd', $edate)) {
-                        $this->addChild(sprintf("%s: %s %s - %s",
-                                        _("Occasion"),
-                                        strftime(DATE_FORMAT, $sdate),
-                                        strftime(TIME_FORMAT, $sdate),
-                                        strftime(TIME_FORMAT, $edate)));
+                        $this->addChild(sprintf("%s: %s %s - %s", _("Occasion"), strftime(DATE_FORMAT, $sdate), strftime(TIME_FORMAT, $sdate), strftime(TIME_FORMAT, $edate)));
                 } else {
-                        $this->addChild(sprintf("%s: %s",
-                                        _("Starts"),
-                                        strftime(DATETIME_FORMAT, $sdate)));
-                        $this->addChild(sprintf("%s: %s",
-                                        _("Ends"),
-                                        strftime(DATETIME_FORMAT, $edate)));
+                        $this->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, $sdate)));
+                        $this->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, $edate)));
                 }
         }
 
@@ -545,27 +536,10 @@ class Manager
 
                 if ($this->exam != 0) {
                         $sql = sprintf("UPDATE exams SET orgunit = '%s', name = '%s', descr = '%s', grades = '%s', details = %d, starttime = '%s', endtime = '%s'
-                                        WHERE id = '%d'",
-                                        $db->escape($unit),
-                                        $db->escape($name),
-                                        $db->escape($desc),
-                                        $grades,
-                                        $details,
-                                        date('Y-m-d H:i:s', $sdate),
-                                        date('Y-m-d H:i:s', $edate),
-                                        $this->exam);
+                                        WHERE id = '%d'", $db->escape($unit), $db->escape($name), $db->escape($desc), $grades, $details, date('Y-m-d H:i:s', $sdate), date('Y-m-d H:i:s', $edate), $this->exam);
                 } else {
                         $sql = sprintf("INSERT INTO exams(orgunit, name, descr, grades, details, starttime, endtime, created, creator)
-                                        VALUES('%s','%s','%s','%s',%d,'%s','%s','%s','%s')",
-                                        $db->escape($unit),
-                                        $db->escape($name),
-                                        $db->escape($desc),
-                                        $grades,
-                                        $details,
-                                        date('Y-m-d H:i:s', $sdate),
-                                        date('Y-m-d H:i:s', $edate),
-                                        date('Y-m-d H:i:s', time()),
-                                        phpCAS::getUser());
+                                        VALUES('%s','%s','%s','%s',%d,'%s','%s','%s','%s')", $db->escape($unit), $db->escape($name), $db->escape($desc), $grades, $details, date('Y-m-d H:i:s', $sdate), date('Y-m-d H:i:s', $edate), date('Y-m-d H:i:s', time()), phpCAS::getUser());
                 }
                 $res = $db->query($sql);
                 if (PEAR::isError($res)) {
@@ -594,8 +568,7 @@ class Manager
         public function isDugga()
         {
                 $sql = sprintf("SELECT SUM(randomize) AS random
-                                FROM topics WHERE exam_id = %d",
-                                $this->exam);
+                                FROM topics WHERE exam_id = %d", $this->exam);
 
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
@@ -647,20 +620,17 @@ class Manager
                 switch ($role) {
                         case "creator":
                                 $sql = sprintf("SELECT COUNT(*) FROM exams 
-                                                WHERE id = %d AND creator = '%s'",
-                                                $this->exam, $user);
+                                                WHERE id = %d AND creator = '%s'", $this->exam, $user);
                                 break;
                         case "contributor":
                         case "examinator":
                         case "decoder":
                                 $sql = sprintf("SELECT COUNT(*) FROM ${role}s
-                                                WHERE exam_id = %d AND user = '%s'",
-                                                $this->exam, $user);
+                                                WHERE exam_id = %d AND user = '%s'", $this->exam, $user);
                                 break;
                         case "corrector":
                                 $sql = sprintf("SELECT COUNT(*) FROM questions 
-                                                WHERE exam_id = %d AND user = '%s'",
-                                                $this->exam, $user);
+                                                WHERE exam_id = %d AND user = '%s'", $this->exam, $user);
                                 break;
                         default:
                                 return false;
@@ -811,8 +781,7 @@ class Manager
                                         ON      q.id = a.question_id
                                         WHERE   t.exam_id = %d AND
                                                 a.student_id = %d
-                                        ORDER BY QuestionID",
-                                        $this->exam, $student);
+                                        ORDER BY QuestionID", $this->exam, $student);
                 } else {
                         $sql = sprintf("SELECT  q.id AS QuestionID,
                                                 t.id AS TopicID,
@@ -887,8 +856,8 @@ class Manager
 
         private function grantExamRole($user, $role)
         {
-                $sql = sprintf("INSERT INTO ${role}s(exam_id, user)
-                                VALUES(%d, '%s')", $this->exam, $user);
+                $sql = sprintf("INSERT INTO %ss(exam_id, user)
+                                VALUES(%d, '%s')", $role, $this->exam, $user);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -897,9 +866,9 @@ class Manager
 
         private function revokeExamRole($user, $role)
         {
-                $sql = sprintf("DELETE FROM ${role}s 
+                $sql = sprintf("DELETE FROM %ss 
                                 WHERE   exam_id = %d AND
-                                        id = '%s'", $this->exam, $user);
+                                        id = '%s'", $role, $this->exam, $user);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -958,13 +927,7 @@ class Manager
                         $data->setExamEndTime(strtotime(DATETIME_NONE));
                 }
                 $copy = new Manager(0);
-                $copy->setData($data->getExamOrgUnit(),
-                        $data->getExamName(),
-                        $data->getExamDescription(),
-                        $data->getExamGrades(),
-                        $data->getExamDetails(),
-                        $data->getExamStartTime(),
-                        $data->getExamEndTime());
+                $copy->setData($data->getExamOrgUnit(), $data->getExamName(), $data->getExamDescription(), $data->getExamGrades(), $data->getExamDetails(), $data->getExamStartTime(), $data->getExamEndTime());
 
                 if (!$testcase) {
                         //
@@ -974,9 +937,7 @@ class Manager
                                 $sql = sprintf("INSERT INTO %s(exam_id, user)
                                                 SELECT %d, user
                                                 FROM %s
-                                                WHERE id = %d",
-                                                $table, $copy->getExamID(),
-                                                $table, $this->getExamID());
+                                                WHERE id = %d", $table, $copy->getExamID(), $table, $this->getExamID());
                                 $res = $db->query($sql);
                                 if (PEAR::isError($res)) {
                                         if ($db->in_transaction) {
@@ -1012,9 +973,7 @@ class Manager
                 $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, user, video, image, audio, type)
                                 SELECT  %d, topic_id, score, name, quest, user, video, image, audio, type
                                 FROM    questions
-                                WHERE   exam_id = %d",
-                                $copy->getExamID(),
-                                $this->getExamID());
+                                WHERE   exam_id = %d", $copy->getExamID(), $this->getExamID());
                 $res = $db->query($sql);
                 if (PEAR::isError($res)) {
                         if ($db->in_transaction) {
@@ -1043,9 +1002,7 @@ class Manager
                                 $sql = sprintf("INSERT INTO topics(exam_id, name, randomize) 
                                                 SELECT  %d, name, randomize
                                                 FROM    topics
-                                                WHERE   id = %d",
-                                                $copy->getExamID(),
-                                                $topic->getTopicID());
+                                                WHERE   id = %d", $copy->getExamID(), $topic->getTopicID());
                                 $res = $db->query($sql);
                                 if (PEAR::isError($res)) {
                                         throw new DatabaseException($res->getMessage());
@@ -1054,8 +1011,7 @@ class Manager
                                 $sql = sprintf("UPDATE  questions
                                                 SET     topic_id = %d
                                                 WHERE   topic_id = %d AND
-                                                        exam_id = %d",
-                                                $tid, $topic->getTopicID(), $copy->getExamID());
+                                                        exam_id = %d", $tid, $topic->getTopicID(), $copy->getExamID());
                                 $res = $db->query($sql);
                                 if (PEAR::isError($res)) {
                                         throw new DatabaseException($res->getMessage());
@@ -1086,10 +1042,7 @@ class Manager
                         // Add caller as an participient on this exam:
                         //
                         $sql = sprintf("INSERT INTO students(exam_id, user, code)
-                                        VALUES(%d, '%s', '%s')",
-                                        $copy->getExamID(),
-                                        phpCAS::getUser(),
-                                        sprintf("TEST%.04d", $copy->getExamID()));
+                                        VALUES(%d, '%s', '%s')", $copy->getExamID(), phpCAS::getUser(), sprintf("TEST%.04d", $copy->getExamID()));
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {
                                 if ($db->in_transaction) {
@@ -1130,8 +1083,7 @@ class Manager
                                 //
                                 $sql = sprintf("DELETE r FROM results AS r
                                                 LEFT JOIN answers AS a ON r.answer_id = a.id
-                                                WHERE a.question_id = %d",
-                                                $question->getQuestionID());
+                                                WHERE a.question_id = %d", $question->getQuestionID());
                                 $res = $db->query($sql);
                                 if (PEAR::isError($res)) {
                                         if ($db->in_transaction) {
@@ -1144,8 +1096,7 @@ class Manager
                                 // Now delete the answers to this question:
                                 //
                                 $sql = sprintf("DELETE FROM answers 
-                                                WHERE question_id = %d",
-                                                $question->getQuestionID());
+                                                WHERE question_id = %d", $question->getQuestionID());
                                 $res = $db->query($sql);
                                 if (PEAR::isError($res)) {
                                         if ($db->in_transaction) {
@@ -1157,8 +1108,8 @@ class Manager
                 }
 
                 foreach (array("contributor", "examinator", "decoder", "student") as $role) {
-                        $sql = sprintf("DELETE FROM ${role}s
-                                        WHERE exam_id = %d", $this->exam);
+                        $sql = sprintf("DELETE FROM %ss
+                                        WHERE exam_id = %d", $role, $this->exam);
                         printf("sql: $sql\n");
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {

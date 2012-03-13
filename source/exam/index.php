@@ -98,6 +98,7 @@ class ExaminationPage extends BasePage
         private $testcase = false;  // This examination is a testcase.
         //
         // Construct the exam page.
+
         //
 
         public function __construct()
@@ -242,11 +243,11 @@ class ExaminationPage extends BasePage
                         } catch (LockerException $exception) {
                                 error_log($exception->getError());      // Log private message.
                                 ErrorPage::show(_("Computer lockdown failed!"), sprintf("<p>" .
-                                                _("Securing your computer for this examination has failed: %s") .
-                                                "<p></p>" .
-                                                _("If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. ") .
-                                                _("The examiniation is inaccessable from this computer until the problem has been resolved.") .
-                                                "</p>", $exception));
+                                        _("Securing your computer for this examination has failed: %s") .
+                                        "<p></p>" .
+                                        _("If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. ") .
+                                        _("The examiniation is inaccessable from this computer until the problem has been resolved.") .
+                                        "</p>", $exception));
                                 exit(1);
                         }
                 }

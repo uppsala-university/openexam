@@ -162,8 +162,8 @@ class ResultPage extends BasePage
                 }
                 printf("<h3>" . _("Completed examinations:") . "</h3>\n");
                 printf("<p>" . _("Your allready completed examinations are either in the state finished or decoded. ") .
-                        _("An finished examination is still in the phase of being corrected, while a decoded has already been corrected and got results ready to be downloaded.") .
-                        "</p>");
+                    _("An finished examination is still in the phase of being corrected, while a decoded has already been corrected and got results ready to be downloaded.") .
+                    "</p>");
 
                 //
                 // Build the tree of decoded and finished examinations:

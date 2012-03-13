@@ -181,8 +181,8 @@ class TeacherAdminPage extends AdminPage
 
                 echo "<h5>" . _("Contact:") . "</h5>\n";
                 printf("<p>" .
-                        _("Send an email to <a href=\"%s\">all teachers</a> that have an email address in the LDAP directory.") .
-                        "</p>\n", sprintf("mailto:%s", implode(";", $addr)));
+                    _("Send an email to <a href=\"%s\">all teachers</a> that have an email address in the LDAP directory.") .
+                    "</p>\n", sprintf("mailto:%s", implode(";", $addr)));
         }
 
 }
