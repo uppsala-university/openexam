@@ -18,6 +18,7 @@ if (!defined('HANDLER_SMILES_SERVICE')) {
 
 class SmilesHandler implements HandlerType
 {
+
         const mime = "image/png";
 
         private $curl;
@@ -41,7 +42,7 @@ class SmilesHandler implements HandlerType
         }
 
         public function process($data, $path)
-        {                
+        {
                 $this->url = sprintf(HANDLER_SMILES_SERVICE, $data);
 
                 if (!curl_setopt($this->curl, CURLOPT_URL, $this->url)) {

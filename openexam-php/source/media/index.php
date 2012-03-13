@@ -227,8 +227,8 @@ class MediaPage extends TeacherPage
                                 $row->addData(filesize($file->path));
                                 $row->addData(strftime(DATETIME_FORMAT, filemtime($file->path)));
                                 $row->addData(
-                                        _("Delete"))->setLink(
-                                        sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=flat", $this->param->exam, $file->sect, $file->name));
+                                    _("Delete"))->setLink(
+                                    sprintf("?exam=%d&amp;action=delete&amp;type=%s&amp;file=%s&amp;show=flat", $this->param->exam, $file->sect, $file->name));
                         }
                 }
                 $table->output();

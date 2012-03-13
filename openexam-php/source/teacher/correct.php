@@ -116,7 +116,7 @@ class CorrectionPage extends TeacherPage
                 if (isset($_REQUEST['exam'])) {
                         if (isset($_REQUEST['question'])) {
                                 if (isset($_REQUEST['mode']) &&
-                                        $_REQUEST['mode'] == "save") {
+                                    $_REQUEST['mode'] == "save") {
                                         self::assert(array('score', 'comment'));
                                         self::saveQuestionScore();
                                 } else {
@@ -157,7 +157,7 @@ class CorrectionPage extends TeacherPage
                 $role2 = "corrector";
 
                 if (!$this->manager->hasRole(phpCAS::getUser(), $role1) &&
-                        !$this->manager->hasRole(phpCAS::getUser(), $role2)) {
+                    !$this->manager->hasRole(phpCAS::getUser(), $role2)) {
                         ErrorPage::show(_("Access denied!"), sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
                         exit(1);
                 }
@@ -284,8 +284,8 @@ class CorrectionPage extends TeacherPage
                 $row->setClass("comment");
                 $data = $row->addData("(" . _("Comment") . ")");
                 $textarea = $data->addElement(
-                        new TextArea(sprintf("comment[%d]", $answer->getAnswerID()),
-                                $answer->hasResultComment() ? $answer->getResultComment() : ""));
+                    new TextArea(sprintf("comment[%d]", $answer->getAnswerID()),
+                        $answer->hasResultComment() ? $answer->getResultComment() : ""));
                 $textarea->setTitle(_("This optional field can be used to save an comment for this answer correction."));
                 $textarea->setRows(2);
                 $textarea->setColumns(90);
@@ -452,9 +452,9 @@ class CorrectionPage extends TeacherPage
         {
                 printf("<h3>" . _("Correct Answers") . "</h3>\n");
                 printf("<p>" .
-                        _("Select the examination you wish to correct answers to questions for (applies only to corractable examinations). ") .
-                        _("You can also follow the link to review an already decoded examination.") .
-                        "</p>\n");
+                    _("Select the examination you wish to correct answers to questions for (applies only to corractable examinations). ") .
+                    _("You can also follow the link to review an already decoded examination.") .
+                    "</p>\n");
 
                 $tree = new TreeBuilder(_("Examinations"));
                 $root = $tree->getRoot();
@@ -527,20 +527,20 @@ class CorrectionPage extends TeacherPage
                 if ($data->getExamDecoded() == 'N') {
                         printf("<h3>" . _("Correct Answers") . "</h3>\n");
                         printf("<p>" .
-                                _("This table shows all answers from students to questions for the examination '%s'. ") .
-                                "</p>\n", $data->getExamName());
+                            _("This table shows all answers from students to questions for the examination '%s'. ") .
+                            "</p>\n", $data->getExamName());
                         printf("<p>" .
-                                _("Correct answers by student (rows), by question (column) or individual (by index). ") .
-                                _("You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.") .
-                                "</p>\n");
+                            _("Correct answers by student (rows), by question (column) or individual (by index). ") .
+                            _("You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.") .
+                            "</p>\n");
                 } else {
                         printf("<h3>" . _("Showing Scores") . "</h3>\n");
                         printf("<p>" .
-                                _("This table shows all answers from students to questions for the examination '%s'. ") .
-                                "</p>\n", $data->getExamName());
+                            _("This table shows all answers from students to questions for the examination '%s'. ") .
+                            "</p>\n", $data->getExamName());
                         printf("<p>" .
-                                _("The examination has already been decoded, so it's no longer possible to modify any scores or comments.") .
-                                "</p>\n");
+                            _("The examination has already been decoded, so it's no longer possible to modify any scores or comments.") .
+                            "</p>\n");
                 }
 
                 //

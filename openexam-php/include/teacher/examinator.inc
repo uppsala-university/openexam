@@ -121,8 +121,7 @@ class Examinator
         //
         public function setSchedule($stime, $etime)
         {
-                $sql = sprintf("UPDATE exams SET starttime = '%s', endtime = '%s' WHERE id = %d",
-                                date('Y-m-d H:i:s', $stime), date('Y-m-d H:i:s', $etime), $this->exam);
+                $sql = sprintf("UPDATE exams SET starttime = '%s', endtime = '%s' WHERE id = %d", date('Y-m-d H:i:s', $stime), date('Y-m-d H:i:s', $etime), $this->exam);
 
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {

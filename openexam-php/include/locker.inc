@@ -148,6 +148,7 @@ interface ProtocolCallback
 // 
 class LockerProtocol
 {
+
         const PROTO_STATE = 0; // Invalid state
         const PROTO_INITIALIZE = -1;
         const PROTO_PERMIT = -2;
@@ -307,9 +308,9 @@ class LockerProtocol
                 //
                 if (!extension_loaded("hash")) {
                         throw new ProtocolException(
-                                "Required hash extension is not loaded",
-                                self::PROTO_AUTH,
-                                "auth"
+                            "Required hash extension is not loaded",
+                            self::PROTO_AUTH,
+                            "auth"
                         );
                 }
 
@@ -358,14 +359,12 @@ class LockerProtocol
                 // version information. Fall back to matching without version.
                 //
                 $match = array();
-                if (preg_match("/(\w+) (\d+\.\d+\.\d) \[(\d+\.\d+)\] \(mode: (.*)\)/",
-                                $greeting, $match)) {
+                if (preg_match("/(\w+) (\d+\.\d+\.\d) \[(\d+\.\d+)\] \(mode: (.*)\)/", $greeting, $match)) {
                         $this->service = $match[1];
                         $this->version = $match[2];
                         $this->proto = $match[3];
                         $this->feature = $match[4];
-                } elseif (preg_match("/(\w+) \[\d+\.\d+\] \(mode: (.*)\)/",
-                                $greeting, $match)) {
+                } elseif (preg_match("/(\w+) \[\d+\.\d+\] \(mode: (.*)\)/", $greeting, $match)) {
                         $this->service = $match[1];
                         $this->proto = $match[2];
                         $this->feature = $match[3];
@@ -489,12 +488,10 @@ class LockerManager
                 if ($this->locked != $this->status()) {
                         if ($this->locked) {
                                 $sql = sprintf("INSERT INTO locks(computer_id, exam_id)
-                                                VALUES(%d, %d)",
-                                                $this->comp, $this->exam);
+                                                VALUES(%d, %d)", $this->comp, $this->exam);
                         } else {
                                 $sql = sprintf("DELETE FROM locks
-                                                WHERE computer_id = %d AND exam_id = %d",
-                                                $this->comp, $this->exam);
+                                                WHERE computer_id = %d AND exam_id = %d", $this->comp, $this->exam);
                         }
                         $res = Database::getConnection()->query($sql);
                         if (PEAR::isError($res)) {
@@ -514,8 +511,7 @@ class LockerManager
                                 FROM    locks l, computers c
                                 WHERE   l.computer_id = c.id AND
                                         c.ipaddr = '%s' AND
-                                        l.exam_id = %d",
-                                $this->addr, $this->exam);
+                                        l.exam_id = %d", $this->addr, $this->exam);
                 $res = Database::getConnection()->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -553,6 +549,7 @@ class LockerManager
 // 
 class LockerService implements ProtocolCallback
 {
+
         const CREATED = 1;      // Registration created
         const UPDATED = 2;      // Registration updated
 
@@ -584,9 +581,9 @@ class LockerService implements ProtocolCallback
                 $row = $res->fetchRow();
 
                 $service = new LockerService(
-                                $row['password'],
-                                $row['ipaddr'],
-                                $row['port']);
+                        $row['password'],
+                        $row['ipaddr'],
+                        $row['port']);
 
                 return $service;
         }
@@ -602,8 +599,7 @@ class LockerService implements ProtocolCallback
                 // Find out whether to create or update:
                 //
                 $sql = sprintf("SELECT COUNT(*) FROM computers
-                                WHERE ipaddr = '%s' AND port = %d",
-                                $this->addr, $this->port);
+                                WHERE ipaddr = '%s' AND port = %d", $this->addr, $this->port);
                 $db->setFetchMode(MDB2_FETCHMODE_ORDERED);
 
                 $res = $db->query($sql);
@@ -619,13 +615,11 @@ class LockerService implements ProtocolCallback
                 //
                 if ($ret == self::CREATED) {
                         $sql = sprintf("INSERT INTO computers(hostname, ipaddr, port, password, created)
-                                        VALUES('%s','%s',%d,'%s','%s')",
-                                        $this->host, $this->addr, $this->port, $this->pass, strftime(DATETIME_DB));
+                                        VALUES('%s','%s',%d,'%s','%s')", $this->host, $this->addr, $this->port, $this->pass, strftime(DATETIME_DB));
                 } else {
                         $sql = sprintf("UPDATE  computers SET password = '%s', hostname = '%s'
                                         WHERE   ipaddr = '%s' AND
-                                                port = %d",
-                                        $this->pass, $this->host, $this->addr, $this->port);
+                                                port = %d", $this->pass, $this->host, $this->addr, $this->port);
                 }
                 $res = $db->query($sql);
                 if (PEAR::isError($res)) {

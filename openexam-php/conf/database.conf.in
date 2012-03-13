@@ -32,10 +32,10 @@
 // 
 
 $GLOBALS['dsn'] = array(
-    'phptype' => 'mysqli', // Database driver
-    'hostspec' => 'localhost:3306', // Hostname and port
-    'username' => 'user',
-    'password' => 'pass',
-    'database' => 'openexam'
+        'phptype'  => 'mysqli', // Database driver
+        'hostspec' => 'localhost:3306', // Hostname and port
+        'username' => 'user',
+        'password' => 'pass',
+        'database' => 'openexam'
 );
 ?>

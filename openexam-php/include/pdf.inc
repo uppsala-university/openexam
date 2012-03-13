@@ -62,6 +62,7 @@ if (!defined('PDF_QUESTION_MIN_LENGTH')) {
 // 
 interface InputGenerator
 {
+
         public function write($stream);
 }
 
@@ -76,6 +77,7 @@ interface InputGenerator
 //
 class ResultStreamEncoder extends php_user_filter
 {
+
         const icse = "UTF-8";
         const ocse = "ISO-8859-1//TRANSLIT";
 
@@ -93,6 +95,7 @@ class ResultStreamEncoder extends php_user_filter
 
 class HtmlDocPDF
 {
+
         const filter_name = "result_stream_encoder";
         const filter_class = "ResultStreamEncoder";
 
@@ -156,13 +159,7 @@ class HtmlDocPDF
         private function getCommand($target)
         {
                 $fmt = "htmldoc - --book --format %s --titlefile %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s' --toclevels 2";
-                $cmd = sprintf($fmt,
-                                $this->format,
-                                $this->frontpage,
-                                PDF_LINK_STYLE,
-                                PDF_MEDIA_SIZE,
-                                PDF_LINK_COLOR,
-                                utf8_decode(_("Table of Contents")));
+                $cmd = sprintf($fmt, $this->format, $this->frontpage, PDF_LINK_STYLE, PDF_MEDIA_SIZE, PDF_LINK_COLOR, utf8_decode(_("Table of Contents")));
                 if (isset($target)) {
                         $cmd .= sprintf(" -f %s", $target);
                 }
@@ -185,7 +182,7 @@ class HtmlDocPDF
                         );
 
                         $cmd = $this->getCommand($target);
-                        $env = array("SHELL" => "/bin/bash", "TZ" => "UTC");
+                        $env = array("SHELL" => "/bin/bash", "TZ"    => "UTC");
                         $pipes = array();
 
                         if (version_compare(phpversion(), "5.0.0") < 0) {
@@ -264,8 +261,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->board = new ScoreBoard($this->exam->getExamID());
                 $this->grade = new ExamGrades($this->exam->getExamGrades());
 
-                parent::__construct($this->exam->getExamName(),
-                                $this->exam->getExamOrgUnit());
+                parent::__construct($this->exam->getExamName(), $this->exam->getExamOrgUnit());
         }
 
         public function __destruct()
@@ -330,8 +326,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         private function printSectionDescription($stream)
         {
                 fprintf($stream, "<h1>%s</h1>\n", _("Description"));
-                fprintf($stream, "<p>%s</p>\n",
-                        str_replace("\n", "<br/>", $this->exam->getExamDescription()));
+                fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", $this->exam->getExamDescription()));
         }
 
         //
@@ -346,38 +341,29 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 //
                 $score = $this->board->getStudentScore($this->student);
                 fprintf($stream, "<h2>%s</h2>\n", _("Summary"));
-                fprintf($stream, "<p>" . _("You scored total %.01f of maximum %.01f points (%.01f%%) on this examination.") . "</p>\n",
-                        $score->getSum(),
-                        $this->board->getMaximumScore(),
-                        100 * $score->getSum() / $this->board->getMaximumScore());
+                fprintf($stream, "<p>" . _("You scored total %.01f of maximum %.01f points (%.01f%%) on this examination.") . "</p>\n", $score->getSum(), $this->board->getMaximumScore(), 100 * $score->getSum() / $this->board->getMaximumScore());
 
                 //
                 // The graduation section.
                 //
                 fprintf($stream, "<h2>%s</h2>\n", _("Graduation"));
-                fprintf($stream, "<p>" . _("Your graduation on this examination is: <b>%s</b>.") . "</p>\n",
-                        $this->grade->getGrade($score->getSum()));
+                fprintf($stream, "<p>" . _("Your graduation on this examination is: <b>%s</b>.") . "</p>\n", $this->grade->getGrade($score->getSum()));
 
                 //
                 // The answer result details section.
                 //
                 fprintf($stream, "<h2>%s</h2>\n", _("Score Table"));
                 fprintf($stream, "<p>%s</p>\n", _("This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."));
-                fprintf($stream, "<table><tr align=\"right\"><th>%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
-                        _("Question"), _("Score"), _("Max score"), _("Percent"), _("Notice"));
+                fprintf($stream, "<table><tr align=\"right\"><th>%s</th><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Question"), _("Score"), _("Max score"), _("Percent"), _("Notice"));
                 $questions = $this->manager->getQuestions(null, $this->student);
                 foreach ($questions as $question) {
                         fprintf($stream, "<tr align=\"right\"><td>%s</td><td>&nbsp;</td>", $question->getQuestionName());
                         $data = $this->board->getData($this->student, $question->getQuestionID());
                         if ($question->getQuestionStatus() == 'active') {
                                 if ($data->getAnswerExist() == 'Y') {
-                                        fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td>",
-                                                $data->getResultScore(),
-                                                $question->getQuestionScore(),
-                                                100 * $data->getResultScore() / $question->getQuestionScore());
+                                        fprintf($stream, "<td>%.01f</td><td>%.01f</td><td>%.01f<td>", $data->getResultScore(), $question->getQuestionScore(), 100 * $data->getResultScore() / $question->getQuestionScore());
                                 } else {
-                                        fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td>",
-                                                $question->getQuestionScore(), 0);
+                                        fprintf($stream, "<td>-</td><td>%.01f</td><td>%.01f<td>", $question->getQuestionScore(), 0);
                                 }
                         } else {
                                 fprintf($stream, "<td>-</td><td>-</td><td>-<td><td>%s</td>", _("Removed"));
@@ -386,11 +372,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         fprintf($stream, "</tr>\n");
                 }
                 fprintf($stream, "<tr align=\"right\"><td>---</td><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
-                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%.01f</b></td><td><b>%.01f</b></td><td><b>%.01f%%</b></td></tr>\n",
-                        _("Summary"),
-                        $score->getSum(),
-                        $this->board->getMaximumScore(),
-                        100 * $score->getSum() / $this->board->getMaximumScore());
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%.01f</b></td><td><b>%.01f</b></td><td><b>%.01f%%</b></td></tr>\n", _("Summary"), $score->getSum(), $this->board->getMaximumScore(), 100 * $score->getSum() / $this->board->getMaximumScore());
                 fprintf($stream, "</table><br/>\n");
         }
 
@@ -417,7 +399,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", $question->getQuestionText()));
                 } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
-                        $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
+                    $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
                         $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
                         fprintf($stream, "<p>%s</p>\n", str_replace("\n", "<br/>", $qchoice[0]));
 
@@ -433,9 +415,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 
                 if ($question->getQuestionStatus() == 'removed') {
                         if ($question->getQuestionComment() != null) {
-                                fprintf($stream, "<p><b>%s</b>: %s</p>\n",
-                                        _("Teachers reason for removal"),
-                                        $question->getQuestionComment());
+                                fprintf($stream, "<p><b>%s</b>: %s</p>\n", _("Teachers reason for removal"), $question->getQuestionComment());
                         } else {
                                 fprintf($stream, "<p><b>%s</b></p>\n", _("This question was removed without an explanation from the teacher."));
                         }
@@ -450,7 +430,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                                 $text = str_replace("\n", "<br/>", htmlspecialchars($answer->getAnswerText()));
                                 fprintf($stream, "<p>%s</p>\n", $text);
                         } elseif ($question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE ||
-                                $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
+                            $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE) {
                                 $achoice = Exam::getQuestionChoice($answer->getAnswerText());
                                 fprintf($stream, "<p>%s</p>\n", implode(", ", $achoice[1]));
                         }
@@ -524,9 +504,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 
                         fprintf($stream, "<h1>%s</h1>\n", _("Removed Questions"));
                         fprintf($stream, "<p>" .
-                                _("These questions has been removed from this examination. ") .
-                                _("The questions, along with your answers (if any) and the teacher appraisal, is included here for reference, but do not affect your examination score or grade.") .
-                                "</p>\n");
+                            _("These questions has been removed from this examination. ") .
+                            _("The questions, along with your answers (if any) and the teacher appraisal, is included here for reference, but do not affect your examination score or grade.") .
+                            "</p>\n");
                         foreach ($qadata['r'] as $data) {
                                 $this->printQuestionAnswer($stream, $data[0], $data[1]);
                         }
@@ -541,12 +521,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $user = $this->ldap->searchPrincipalName($this->exam->getExamCreator());
 
                 fprintf($stream, "<h5>%s:</h5>\n", _("Responsable for examination"));
-                fprintf($stream,
-                        "<p><blockquote>" .
-                        _("Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>") .
-                        "</blockquote></p>\n",
-                        $user->first()->getMail()->first(),
-                        $user->first()->getCN()->first());
+                fprintf($stream, "<p><blockquote>" .
+                    _("Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>") .
+                    "</blockquote></p>\n", $user->first()->getMail()->first(), $user->first()->getCN()->first());
         }
 
         //
@@ -576,17 +553,13 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         // Output the list of contributors:
                         //
                         fprintf($stream, "<h5>%s:</h5>\n", _("Correction of answers"));
-                        fprintf($stream,
-                                "<p><blockquote>" .
-                                _("These people have contributed questions for the examination and corrected answers.") .
-                                "</blockquote></p>\n");
+                        fprintf($stream, "<p><blockquote>" .
+                            _("These people have contributed questions for the examination and corrected answers.") .
+                            "</blockquote></p>\n");
                         fprintf($stream, "<ul>\n");
                         foreach ($qdata as $uuid => $qlist) {
                                 $user = $this->ldap->searchPrincipalName($uuid);
-                                fprintf($stream, "<li><a href=\"mailto:%s\">%s</a><br/><blockquote>%s: %s</blockquote></li>\n",
-                                        $user->first()->getMail(),
-                                        $user->first()->getCN()->first(),
-                                        _("Corrected questions"), implode(", ", $qlist));
+                                fprintf($stream, "<li><a href=\"mailto:%s\">%s</a><br/><blockquote>%s: %s</blockquote></li>\n", $user->first()->getMail(), $user->first()->getCN()->first(), _("Corrected questions"), implode(", ", $qlist));
                         }
                         fprintf($stream, "</ul>\n");
                 }
@@ -674,17 +647,12 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 fprintf($stream, "<tr align=\"right\"><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Grade"), _("Threshold"), _("Students"), _("Percent"));
                 $sum = array("st" => 0, "pc" => 0);
                 foreach ($grades['grade'] as $key => $val) {
-                        fprintf($stream, "<tr align=\"right\"><td><b>%s</b></td><td>%.01f</td><td>%d</td><td>%.01f</td></tr>\n",
-                                $key,
-                                $this->grade->getThreshold($key),
-                                $val,
-                                100 * $val / $this->board->getStudents()->count());
+                        fprintf($stream, "<tr align=\"right\"><td><b>%s</b></td><td>%.01f</td><td>%d</td><td>%.01f</td></tr>\n", $key, $this->grade->getThreshold($key), $val, 100 * $val / $this->board->getStudents()->count());
                         $sum['st'] += $val;
                         $sum['pc'] += 100 * $val / $this->board->getStudents()->count();
                 }
                 fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td><td>---</td></tr>\n");
-                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%d</b></td><td><b>%.01f%%</b></td></tr>\n",
-                        _("Summary"), $sum['st'], $sum['pc']);
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>&nbsp;</td><td><b>%d</b></td><td><b>%.01f%%</b></td></tr>\n", _("Summary"), $sum['st'], $sum['pc']);
                 fprintf($stream, "</table><br/>\n");
 
                 fprintf($stream, "<!-- NEED %d -->\n", count($grades['score']) + 3);
@@ -693,27 +661,23 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 fprintf($stream, "<tr><th>&nbsp;</th><th>%s</th><th>%s</th><th>%s</th></tr>\n", _("Score"), _("Percent"), _("Students"));
                 $sum = array("st" => 0, "sc" => 0);
                 foreach ($grades['score'] as $key => $val) {
-                        fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td><b>%.01f</b></td><td>%.01f</td><td>%d</td></tr>\n",
-                                $key, 100 * $key / $this->board->getMaximumScore(), $val);
+                        fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td><b>%.01f</b></td><td>%.01f</td><td>%d</td></tr>\n", $key, 100 * $key / $this->board->getMaximumScore(), $val);
                         $sum['sc'] += $key * $val;
                         $sum['st'] += $val;
                 }
                 fprintf($stream, "<tr align=\"right\"><td>&nbsp;</td><td>---</td><td>---</td><td>---</td></tr>\n");
-                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f</td><td>&nbsp;</td><td>%d</td></tr>\n",
-                        _("Summary"), $sum['sc'], $sum['st']);
-                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td><td>%.01f%% (%.01f%%)</td></tr>\n",
-                        _("Mean Value"), $mvs, $mvf, 100 * $mvs / $this->board->getMaximumScore(), 100 * $mvf / $this->board->getMaximumScore());
-                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td></tr>\n",
-                        _("Standard Deviation"), $sds, $sdf);
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f</td><td>&nbsp;</td><td>%d</td></tr>\n", _("Summary"), $sum['sc'], $sum['st']);
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td><td>%.01f%% (%.01f%%)</td></tr>\n", _("Mean Value"), $mvs, $mvf, 100 * $mvs / $this->board->getMaximumScore(), 100 * $mvf / $this->board->getMaximumScore());
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%.01f (%.01f)</td></tr>\n", _("Standard Deviation"), $sds, $sdf);
                 fprintf($stream, "</table><br/>\n");
 
                 //
                 // This is funky code, so we better provide some description:
                 //
                 fprintf($stream, "<p>" .
-                        _("The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. ") .
-                        _("The other values are calculated by first removing the highest and lowest scores.") .
-                        "</p>\n");
+                    _("The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. ") .
+                    _("The other values are calculated by first removing the highest and lowest scores.") .
+                    "</p>\n");
 
                 //
                 // The result ranges sub section.
@@ -729,23 +693,19 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         $percent = $key * 10;
                         switch ($percent) {
                                 case 0:
-                                        fprintf($stream, "<tr align=\"right\"><td><b>< 10 %%</b></td><td>%d</td></tr>\n",
-                                                $val);
+                                        fprintf($stream, "<tr align=\"right\"><td><b>< 10 %%</b></td><td>%d</td></tr>\n", $val);
                                         break;
                                 case 90:
-                                        fprintf($stream, "<tr align=\"right\"><td><b>> %d %%</b></td><td>%d</td></tr>\n",
-                                                $percent, $val);
+                                        fprintf($stream, "<tr align=\"right\"><td><b>> %d %%</b></td><td>%d</td></tr>\n", $percent, $val);
                                         break;
                                 default:
-                                        fprintf($stream, "<tr align=\"right\"><td><b>%d - %d %%</b></td><td>%d</td></tr>\n",
-                                                $percent, $percent + 9, $val);
+                                        fprintf($stream, "<tr align=\"right\"><td><b>%d - %d %%</b></td><td>%d</td></tr>\n", $percent, $percent + 9, $val);
                                         break;
                         }
                         $sum['st'] += $val;
                 }
                 fprintf($stream, "<tr align=\"right\"><td>---</td><td>---</td><td>---</td></tr>\n");
-                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%d</td></tr>\n",
-                        _("Summary"), $sum['st']);
+                fprintf($stream, "<tr align=\"right\"><td><b>%s:</b></td><td>%d</td></tr>\n", _("Summary"), $sum['st']);
                 fprintf($stream, "</table><br/>\n");
         }
 
@@ -776,12 +736,11 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 //
                 fprintf($stream, "<h2>%s</h2>\n", _("Document Information"));
                 fprintf($stream, "<p>" .
-                        _("This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s/\">%s/</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license.") .
-                        "</p>\n",
-                        $openexam, BASE_URL, BASE_URL, $htmldoc);
+                    _("This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s/\">%s/</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license.") .
+                    "</p>\n", $openexam, BASE_URL, BASE_URL, $htmldoc);
                 fprintf($stream, "<p>" .
-                        _("OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala University.") .
-                        "</p>\n");
+                    _("OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala University.") .
+                    "</p>\n");
         }
 
         //
@@ -870,16 +829,13 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
 
                 if (strstr($this->format, "pdf")) {
                         header("Content-Type: application/pdf");
-                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"",
-                                        sprintf("%s-%s.pdf", $data->getStudentUser(), $data->getStudentCode())));
+                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"", sprintf("%s-%s.pdf", $data->getStudentUser(), $data->getStudentCode())));
                 } elseif (strstr($this->format, "ps")) {
                         header("Content-Type: application/postscript");
-                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"",
-                                        sprintf("%s-%s.ps", $data->getStudentUser(), $data->getStudentCode())));
+                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"", sprintf("%s-%s.ps", $data->getStudentUser(), $data->getStudentCode())));
                 } elseif (strstr($this->format, "html")) {
                         header("Content-Type: text/html");
-                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"",
-                                        sprintf("%s-%s.html", $data->getStudentUser(), $data->getStudentCode())));
+                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"", sprintf("%s-%s.html", $data->getStudentUser(), $data->getStudentCode())));
                 }
 
                 $this->student = $student;
@@ -904,20 +860,11 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $students = $this->manager->getStudents();
                 foreach ($students as $student) {
                         if (strstr($this->format, "pdf")) {
-                                $file = sprintf("%s/%s-%s.pdf",
-                                                $destdir,
-                                                $student->getStudentUser(),
-                                                $student->getStudentCode());
+                                $file = sprintf("%s/%s-%s.pdf", $destdir, $student->getStudentUser(), $student->getStudentCode());
                         } elseif (strstr($this->format, "ps")) {
-                                $file = sprintf("%s/%s-%s.ps",
-                                                $destdir,
-                                                $student->getStudentUser(),
-                                                $student->getStudentCode());
+                                $file = sprintf("%s/%s-%s.ps", $destdir, $student->getStudentUser(), $student->getStudentCode());
                         } elseif (strstr($this->format, "html")) {
-                                $file = sprintf("%s/%s-%s.html",
-                                                $destdir,
-                                                $student->getStudentUser(),
-                                                $student->getStudentCode());
+                                $file = sprintf("%s/%s-%s.html", $destdir, $student->getStudentUser(), $student->getStudentCode());
                         } else {
                                 throw new Exception(sprintf("Unknown format '%s'", $this->format));
                         }

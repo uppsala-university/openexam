@@ -290,7 +290,7 @@ class RegisterService extends Register
                 $this->socket = stream_socket_server($bind, $errno, $errstr);
                 if (!$this->socket) {
                         throw new RegisterException(sprintf(
-                                        "Failed create service: %s (%d)", $errstr, $errno)
+                                "Failed create service: %s (%d)", $errstr, $errno)
                         );
                 }
         }
