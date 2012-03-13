@@ -138,6 +138,7 @@ class Locale
                 $this->setLocale(LC_MESSAGES);
                 $this->setLocale(LC_CTYPE);
                 $this->setLocale(LC_TIME);
+                $this->setLocale(LC_NUMERIC);
                 $this->setTextDomain();
         }
 
