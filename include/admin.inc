@@ -40,16 +40,16 @@ class Admin
         public static function getCommonTasks()
         {
                 $tasks = array(
-                    "admin" => array(
-                        "href" => "admin.php",
-                        "desc" => _("Grant and revoke administrative privileges to trusted users."),
-                        "name" => _("Admins")
-                    ),
-                    "teacher" => array(
-                        "href" => "teacher.php",
-                        "desc" => _("Grant and revoke teacher privileges to trusted users."),
-                        "name" => _("Teachers")
-                    )
+                        "admin" => array(
+                                "href"    => "admin.php",
+                                "desc"    => _("Grant and revoke administrative privileges to trusted users."),
+                                "name"    => _("Admins")
+                        ),
+                        "teacher" => array(
+                                "href" => "teacher.php",
+                                "desc" => _("Grant and revoke teacher privileges to trusted users."),
+                                "name" => _("Teachers")
+                        )
                 );
                 return $tasks;
         }
@@ -97,15 +97,10 @@ class Admin
 class AdminPage extends BasePage
 {
 
-        private $params;
-        protected $param;     // Washed request parameters
-
-        public function __construct($title, $params)
+        public function __construct($title, &$params = array())
         {
-                $this->params = $params;
+                parent::__construct($title, $params);
                 $this->validate();
-
-                parent::__construct($title);
         }
 
         public function printMenu()
@@ -133,35 +128,6 @@ class AdminPage extends BasePage
                 if (!Admin::userIsAdmin(phpCAS::getUser())) {
                         ErrorPage::show(_("Access denied!"), _("Only users granted administrative privileges (system managers) can access this page. The script processing has halted."));
                         exit(1);
-                }
-
-                foreach ($this->params as $param => $pattern) {
-                        if (isset($_REQUEST[$param])) {
-                                if (!preg_match($pattern, $_REQUEST[$param])) {
-                                        ErrorPage::show(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
-                                        exit(1);
-                                } elseif (isset($_GET[$param])) {
-                                        $this->param->$param = $_GET[$param];     // Inject washed parameter
-                                } elseif (isset($_POST[$param])) {
-                                        $this->param->$param = $_POST[$param];    // Inject washed parameter
-                                }
-                        }
-                }
-        }
-
-        //
-        // Check that the array of required parameters is set.
-        //
-        public function assert($names)
-        {
-                if (!is_array($names)) {
-                        $names = array($names);
-                }
-                foreach ($names as $name) {
-                        if (!isset($_REQUEST[$name])) {
-                                ErrorPage::show(_("Missing required parameter!"), sprintf(_("The required request parameter '%s' is missing"), $name));
-                                exit(1);
-                        }
                 }
         }
 

@@ -119,25 +119,20 @@ class Teacher
 class TeacherPage extends BasePage
 {
 
-        private $params;
         protected $roles;
-        protected $param;     // Washed request parameters
         protected $manager;
         private $ldap;
 
-        public function __construct($title, $params, $template = "standard")
+        public function __construct($title, &$params, $template = "standard")
         {
-                $this->params = $params;
-                $this->roles = Teacher::getRoleCount(phpCAS::getUser());
+                parent::__construct($title, $params, $template);
 
+                $this->roles = Teacher::getRoleCount(phpCAS::getUser());
                 $this->authorize();
-                $this->validate();
 
                 if (isset($this->param->exam)) {
                         $this->manager = new Manager($this->param->exam);
                 }
-
-                parent::__construct($title, $template);
         }
 
         private function useDirectoryService()
@@ -362,11 +357,11 @@ class TeacherPage extends BasePage
                         }
 
                         $scripts = array(
-                                "manager.php" => "creator",
+                                "manager.php"    => "creator",
                                 "contribute.php" => "contributor",
                                 "examinator.php" => "examinator",
-                                "correct.php" => "corrector",
-                                "decoder.php" => "decoder"
+                                "correct.php"    => "corrector",
+                                "decoder.php"    => "decoder"
                         );
 
                         $roles->script = basename($_SERVER['SCRIPT_NAME']);
@@ -418,43 +413,6 @@ class TeacherPage extends BasePage
 
                         ErrorPage::show(_("Access denied!"), _("Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."));
                         exit(1);
-                }
-        }
-
-        //
-        // Validate access and request parameters. All validated request parameters
-        // are automatic injected into $this->param, but only if they origins from
-        // a GET or POST request.
-        //
-        public function validate()
-        {
-                foreach ($this->params as $param => $pattern) {
-                        if (isset($_REQUEST[$param])) {
-                                if (!preg_match($pattern, $_REQUEST[$param])) {
-                                        ErrorPage::show(_("Request parameter error!"), sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."), $param, $pattern));
-                                        exit(1);
-                                } elseif (isset($_GET[$param])) {
-                                        $this->param->$param = $_GET[$param];     // Inject washed parameter
-                                } elseif (isset($_POST[$param])) {
-                                        $this->param->$param = $_POST[$param];    // Inject washed parameter
-                                }
-                        }
-                }
-        }
-
-        //
-        // Check that the array of required parameters is set.
-        //
-        public function assert($names)
-        {
-                if (!is_array($names)) {
-                        $names = array($names);
-                }
-                foreach ($names as $name) {
-                        if (!isset($_REQUEST[$name])) {
-                                ErrorPage::show(_("Missing required parameter!"), sprintf(_("The required request parameter '%s' is missing"), $name));
-                                exit(1);
-                        }
                 }
         }
 

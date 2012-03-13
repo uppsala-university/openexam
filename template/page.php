@@ -71,14 +71,14 @@ class TemplatePage extends BasePage
         // All possible request parameters should be added here along with
         // the regex pattern to validate its value against.
         //
-        private $params = array("action" => "/^(add|edit|delete)$/");
+        private static $params = array("action" => "/^(add|edit|delete)$/");
 
         //
         // Construct the template page.
         //
         public function __construct()
         {
-                parent::__construct(_("Template:"));   // Internationalized with GNU gettext
+                parent::__construct(_("Template:"), self::$params);   // Internationalized with GNU gettext
         }
 
         //
@@ -89,29 +89,11 @@ class TemplatePage extends BasePage
                 
         }
 
-        //
-        // Validates request parameters.
-        //
-        public function validate()
-        {
-                foreach ($this->params as $param => $pattern) {
-                        if (isset($_REQUEST[$param])) {
-                                if (!preg_match($pattern, $_REQUEST[$param])) {
-                                        ErrorPage::show(_("Request parameter error!"),
-                                                        sprintf(_("Invalid value for request parameter '%s' (expected a value matching pattern '%s')."),
-                                                                $param, $pattern));
-                                        exit(1);
-                                }
-                        }
-                }
-        }
-
 }
 
 // 
-// Validate request parameters and (if validate succeeds) render the page.
+// Render the page. The request parameters are already validated by parent class. 
 // 
 $page = new TemplatePage();
-$page->validate();
 $page->render();
 ?>

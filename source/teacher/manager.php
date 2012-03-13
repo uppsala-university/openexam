@@ -87,7 +87,7 @@ if (!defined("MANAGER_QUESTION_FORMAT")) {
 class ManagerPage extends TeacherPage
 {
 
-        private $params = array(
+        private static $params = array(
             "exam" => "/^\d+$/",
             "action" => "/^(add|edit|show|copy|test|delete|cancel|finish|export|import)$/",
             "role" => "/^(contributor|examinator|decoder)$/",
@@ -99,7 +99,7 @@ class ManagerPage extends TeacherPage
 
         public function __construct()
         {
-                parent::__construct(_("Examination Management"), $this->params);
+                parent::__construct(_("Examination Management"), self::$params);
         }
 
         //
