@@ -109,58 +109,54 @@ class ExaminatorPage extends TeacherPage
                 //
                 // Authorization first:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        self::checkAccess();
+                if (isset($this->param->exam)) {
+                        $this->checkAccess();
                 }
 
                 //
                 // Bussiness logic:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        if (!isset($_REQUEST['action'])) {
-                                $_REQUEST['action'] = "show";
+                if (isset($this->param->exam)) {
+                        if (!isset($this->param->action)) {
+                                $this->param->action = "show";
                         }
-                        if ($_REQUEST['action'] == "add") {
-                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                        if (isset($_REQUEST['what'])) {
-                                                if ($_REQUEST['what'] == "user") {
-                                                        self::assert(array('user', 'code'));
-                                                        self::saveAddStudent();
-                                                } elseif ($_REQUEST['what'] == "users") {
-                                                        self::assert('users');
-                                                        self::saveAddStudents();
-                                                } elseif ($_REQUEST['what'] == "course") {
-                                                        self::assert('course');
-                                                        self::assert('year');
-                                                        self::assert('termin');
-                                                        self::saveAddCourse();
+                        if ($this->param->action == "add") {
+                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                        if (isset($this->param->what)) {
+                                                if ($this->param->what == "user") {
+                                                        $this->assert(array('user', 'code'));
+                                                        $this->saveAddStudent();
+                                                } elseif ($this->param->what == "users") {
+                                                        $this->assert('users');
+                                                        $this->saveAddStudents();
+                                                } elseif ($this->param->what == "course") {
+                                                        $this->assert(array('course', 'year', 'termin'));
+                                                        $this->saveAddCourse();
                                                 } else {
-                                                        self::formAddStudents($_REQUEST['what']);
+                                                        $this->formAddStudents($this->param->what);
                                                 }
                                         }
-                                } elseif (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "show") {
-                                        self::assert('course');
-                                        self::assert('year');
-                                        self::assert('termin');
-                                        self::showAddCourse();
+                                } elseif (isset($this->param->mode) && $this->param->mode == "show") {
+                                        $this->assert(array('course', 'year', 'termin'));
+                                        $this->showAddCourse();
                                 } else {
-                                        if (!isset($_REQUEST['what'])) {
-                                                $_REQUEST['what'] = "course";
+                                        if (!isset($this->param->what)) {
+                                                $this->param->what = "course";
                                         }
-                                        self::formAddStudents($_REQUEST['what']);
+                                        $this->formAddStudents($this->param->what);
                                 }
-                        } elseif ($_REQUEST['action'] == "edit") {
-                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                        self::assert(array('stime', 'etime'));
-                                        self::saveEditSchedule();
+                        } elseif ($this->param->action == "edit") {
+                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                        $this->assert(array('stime', 'etime'));
+                                        $this->saveEditSchedule();
                                 } else {
-                                        self::formEditSchedule();
+                                        $this->formEditSchedule();
                                 }
-                        } elseif ($_REQUEST['action'] == "show") {
-                                self::showExam($_REQUEST['exam']);
-                        } elseif ($_REQUEST['action'] == "delete") {
-                                self::assert('user');
-                                self::deleteStudent();
+                        } elseif ($this->param->action == "show") {
+                                $this->showExam();
+                        } elseif ($this->param->action == "delete") {
+                                $this->assert('user');
+                                $this->deleteStudent();
                         }
                 } else {
                         self::showAvailableExams();
@@ -487,7 +483,7 @@ class ExaminatorPage extends TeacherPage
         // Show a tree of all examinations where caller has been assigned the
         // examinator role.
         //
-        private function showAvailableExams()
+        private static function showAvailableExams()
         {
                 printf("<h3>" . _("Examinator Tasks") . "</h3>\n");
                 printf("<p>" . _("The tree of examinations shows all examination you can reschedule or add students to.") . "</p>\n");

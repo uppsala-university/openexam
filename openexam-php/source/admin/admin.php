@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/admin/admin.php
@@ -82,41 +82,40 @@ class SupervisorAdminPage extends AdminPage
         //
         public function printBody()
         {
-                if (isset($_REQUEST['action'])) {
+                if (isset($this->param->action)) {
                         //
                         // Check required request parameters:
                         //
-                        if (!isset($_REQUEST['user'])) {
-                                $this->fatal(_("Request parameter error!"), _("Missing request parameter 'user'."));
-                        }
+                        $this->assert("user");
+                        
                         //
                         // Grant or revoke admin privileges:
                         //
-                        if ($_REQUEST['action'] == "grant") {
-                                self::grantUserRights($_REQUEST['user']);
-                        } elseif ($_REQUEST['action'] == "revoke") {
-                                self::revokeUserRights($_REQUEST['user']);
+                        if ($this->param->action == "grant") {
+                                $this->grantUserRights();
+                        } elseif ($this->param->action == "revoke") {
+                                $this->revokeUserRights();
                         }
                 } else {
-                        self::listAdminUsers();
+                        $this->listAdminUsers();
                 }
         }
 
         //
         // Grant administrative privileges to user.
         //
-        private function grantUserRights($user)
+        private function grantUserRights()
         {
-                Admin::grantUserRights($user);
+                Admin::grantUserRights($this->param->user);
                 header(sprintf("Location: %s/admin/admin.php", BASE_URL));
         }
 
         //
         // Revoke administrative privileges from user.
         //
-        private function revokeUserRights($user)
+        private function revokeUserRights()
         {
-                Admin::revokeUserRights($user);
+                Admin::revokeUserRights($this->param->user);
                 header(sprintf("Location: %s/admin/admin.php", BASE_URL));
         }
 

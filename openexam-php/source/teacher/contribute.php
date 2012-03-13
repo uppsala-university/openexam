@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2012 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/contribute.php
@@ -105,92 +105,92 @@ class ContributePage extends TeacherPage
                 //
                 // Authorization first:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        self::checkAccess();
+                if (isset($this->param->exam)) {
+                        $this->checkAccess();
                 }
 
                 //
                 // Bussiness logic:
                 //
-                if (isset($_REQUEST['exam'])) {
-                        if (isset($_REQUEST['action'])) {
-                                if ($_REQUEST['action'] == "add") {
-                                        if (isset($_REQUEST['what']) && $_REQUEST['what'] == "topic") {
-                                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                                        self::assert(array('name', 'random'));
-                                                        self::saveAddTopic();
+                if (isset($this->param->exam)) {
+                        if (isset($this->param->action)) {
+                                if ($this->param->action == "add") {
+                                        if (isset($this->param->what) && $this->param->what == "topic") {
+                                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                                        $this->assert(array('name', 'random'));
+                                                        $this->saveAddTopic();
                                                 } else {
-                                                        self::formAddTopic();
+                                                        $this->formAddTopic();
                                                 }
                                         } else {
-                                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                                        self::assert(array('score', 'name', 'quest', 'type', 'user'));
-                                                        self::saveAddQuestion();
+                                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                                        $this->assert(array('score', 'name', 'quest', 'type', 'user'));
+                                                        $this->saveAddQuestion();
                                                 } else {
-                                                        self::formAddQuestion();
+                                                        $this->formAddQuestion();
                                                 }
                                         }
-                                } elseif ($_REQUEST['action'] == "edit") {
-                                        if (isset($_REQUEST['what']) && $_REQUEST['what'] == "topic") {
-                                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                                        self::assert(array('name', 'random', 'topic'));
-                                                        self::saveEditTopic();
+                                } elseif ($this->param->action == "edit") {
+                                        if (isset($this->param->what) && $this->param->what == "topic") {
+                                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                                        $this->assert(array('name', 'random', 'topic'));
+                                                        $this->saveEditTopic();
                                                 } else {
-                                                        self::assert('topic');
-                                                        self::formEditTopic();
-                                                }
-                                        } else {
-                                                if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                                        self::assert(array('score', 'name', 'quest', 'type', 'question', 'user'));
-                                                        self::saveEditQuestion();
-                                                } else {
-                                                        self::assert('question');
-                                                        self::formEditQuestion();
-                                                }
-                                        }
-                                } elseif ($_REQUEST['action'] == "delete") {
-                                        if (isset($_REQUEST['what']) && $_REQUEST['what'] == "topic") {
-                                                self::assert('topic');
-                                                if ($_REQUEST['topic'] == "all") {
-                                                        self::saveDeleteTopics();
-                                                } else {
-                                                        self::saveDeleteTopic();
+                                                        $this->assert('topic');
+                                                        $this->formEditTopic();
                                                 }
                                         } else {
-                                                self::assert('question');
-                                                if ($_REQUEST['question'] == "all") {
-                                                        self::saveDeleteQuestions();
+                                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                                        $this->assert(array('score', 'name', 'quest', 'type', 'question', 'user'));
+                                                        $this->saveEditQuestion();
                                                 } else {
-                                                        self::saveDeleteQuestion();
+                                                        $this->assert('question');
+                                                        $this->formEditQuestion();
                                                 }
                                         }
-                                } elseif ($_REQUEST['action'] == "remove") {
-                                        if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                                self::assert(array('question', 'comment'));
-                                                self::saveRemoveQuestion();
+                                } elseif ($this->param->action == "delete") {
+                                        if (isset($this->param->what) && $this->param->what == "topic") {
+                                                $this->assert('topic');
+                                                if ($this->param->topic == "all") {
+                                                        $this->saveDeleteTopics();
+                                                } else {
+                                                        $this->saveDeleteTopic();
+                                                }
                                         } else {
-                                                self::assert('question');
-                                                self::formRemoveQuestion();
+                                                $this->assert('question');
+                                                if ($this->param->question == "all") {
+                                                        $this->saveDeleteQuestions();
+                                                } else {
+                                                        $this->saveDeleteQuestion();
+                                                }
                                         }
-                                } elseif ($_REQUEST['action'] == "import") {
-                                        if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == "save") {
-                                                self::assert('type');
-                                                self::saveImportQuestions();
+                                } elseif ($this->param->action == "remove") {
+                                        if (isset($this->param->mode) && $this->param->mode == "save") {
+                                                $this->assert(array('question', 'comment'));
+                                                $this->saveRemoveQuestion();
                                         } else {
-                                                self::formImportQuestions();
+                                                $this->assert('question');
+                                                $this->formRemoveQuestion();
                                         }
-                                } elseif ($_REQUEST['action'] == "restore") {
-                                        self::assert('question');
-                                        self::saveRestoreQuestion();
-                                } elseif ($_REQUEST['action'] == "test") {
-                                        self::checkAccess("test");
-                                        self::testExam();
+                                } elseif ($this->param->action == "import") {
+                                        if (isset($this->param->mode) && $this->param->mode == "save") {
+                                                $this->assert('type');
+                                                $this->saveImportQuestions();
+                                        } else {
+                                                $this->formImportQuestions();
+                                        }
+                                } elseif ($this->param->action == "restore") {
+                                        $this->assert('question');
+                                        $this->saveRestoreQuestion();
+                                } elseif ($this->param->action == "test") {
+                                        $this->checkAccess("test");
+                                        $this->testExam();
                                 }
                         } else {
-                                if (isset($_REQUEST['question'])) {
-                                        self::showQuestions();
+                                if (isset($this->param->question)) {
+                                        $this->showQuestions();
                                 } else {
-                                        self::showQuestions();
+                                        $this->showQuestions();
                                 }
                         }
                 } else {
@@ -473,7 +473,7 @@ class ContributePage extends TeacherPage
                 printf("<h3>" . _("Add Question") . "</h3>\n");
                 printf("<p>" . _("This page let you add a new question in the examination '%s'") . "</p>\n", $data->getExamName());
 
-                self::formPostQuestion($qrec, "add", $data, $info);
+                $this->formPostQuestion($qrec, "add", $data, $info);
         }
 
         //
@@ -488,7 +488,7 @@ class ContributePage extends TeacherPage
                 printf("<h3>" . _("Edit Question") . "</h3>\n");
                 printf("<p>" . _("This page let you edit the existing question in the examination '%s'") . "</p>\n", $data->getExamName());
 
-                self::formPostQuestion($qrec, "edit", $data, $info);
+                $this->formPostQuestion($qrec, "edit", $data, $info);
         }
 
         //
@@ -665,7 +665,7 @@ class ContributePage extends TeacherPage
                 printf("<h3>" . _("Add Topic") . "</h3>\n");
                 printf("<p>" . _("This page let you add a new topic in the examination '%s'") . "</p>\n", $data->getExamName());
 
-                self::formPostTopic($trec, "add", $data, $info);
+                $this->formPostTopic($trec, "add", $data, $info);
         }
 
         //
@@ -680,7 +680,7 @@ class ContributePage extends TeacherPage
                 printf("<h3>" . _("Edit Topic") . "</h3>\n");
                 printf("<p>" . _("This page let you edit this existing topic in the examination '%s'") . "</p>\n", $data->getExamName());
 
-                self::formPostTopic($trec, "edit", $data, $info);
+                $this->formPostTopic($trec, "edit", $data, $info);
         }
 
         //
@@ -804,7 +804,7 @@ class ContributePage extends TeacherPage
         //
         // Show all exams where caller has been granted the contribute role.
         //
-        private function showAvailableExams()
+        private static function showAvailableExams()
         {
                 printf("<h3>" . _("Contribute Questions") . "</h3>\n");
                 printf("<p>" . _("Select the examination you wish to contribute questions for (applies only to contributable examinations).") . "</p>\n");
