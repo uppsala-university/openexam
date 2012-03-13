@@ -31,7 +31,7 @@ if (!defined('INFO_CGI_FIELD_NAME')) {
 class UppdokException extends Exception
 {
 
-        public function __construct($message, $code = 0, $previous = null)
+        public function __construct($message, $code = 0)
         {
                 parent::__construct($message, $code);
         }
@@ -83,6 +83,7 @@ class UppdokRecord
 
 class UppdokData
 {
+
         const url = "http://%s:%d/getreg?typ=kurs&kod=%s&termin=%d%d&from=%s&pass=%s";
 
         private $year;
@@ -92,9 +93,9 @@ class UppdokData
         public function __construct($year = 0, $termin = 0)
         {
                 if (!defined('INFO_CGI_SERVER') ||
-                        !defined('INFO_CGI_PASS') ||
-                        !defined('INFO_CGI_SERVER') ||
-                        !defined('INFO_CGI_PORT')) {
+                    !defined('INFO_CGI_PASS') ||
+                    !defined('INFO_CGI_SERVER') ||
+                    !defined('INFO_CGI_PORT')) {
                         error_log("One or more configure options for InfoCGI is missing. Please check INFO_CGI_XXX in conf/config.inc");
                         throw new UppdokException(_("The system configuration is not setup correct, it's not possible to fetch course information."));
                 }
