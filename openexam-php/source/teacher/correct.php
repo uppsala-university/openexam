@@ -334,8 +334,10 @@ class CorrectionPage extends TeacherPage
                 printf("<p>" . _("Only those questions where this student have given an answer for is shown below. Questions published by other people for this examination is hidden.") . "</p>\n");
 
                 if ($answers->count() == 0) {
-                        printf("<h5>" . _("No Answers Found") . "</h5>\n");
-                        printf("<p>" . _("It appears that this student have not answered any questions at all.") . "</p>\n");
+                        $mbox = new MessageBox();
+                        $mbox->setTitle(_("No Answers Found"));
+                        $mbox->setMessage(_("It appears that this student have not answered any questions at all."));
+                        $mbox->display();
                         return;
                 }
 
@@ -353,8 +355,10 @@ class CorrectionPage extends TeacherPage
                         }
                 }
                 if ($found->answers == 0) {
-                        printf("<h5>" . _("No Answers Found") . "</h5>\n");
-                        printf("<p>" . _("It appears that this student have not answered any of you questions.") . "</p>\n");
+                        $mbox = new MessageBox();
+                        $mbox->setTitle(_("No Answers Found"));
+                        $mbox->setMessage(_("It appears that this student have not answered any of your questions."));
+                        $mbox->display();
                         return;
                 }
                 if ($found->removed > 0) {
@@ -362,10 +366,12 @@ class CorrectionPage extends TeacherPage
                         printf("%s: <a href=\"?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=%d\">%s</a>", _("Show"), $this->param->exam, $this->param->student, $this->param->verbose == false, $this->param->verbose ? _("Answered") : _("All"));
                         printf("</span>\n");
                 }
-                if ($found->answers - $found->removed == 0 &&
-                        $this->param->verbose == false) {
-                        printf("<h5>" . _("No Answers Found") . "</h5>\n");
-                        printf("<p>" . _("Only answers to removed questions where found. Click <a href=\"%s\">here</a> to view answers for those questions.") . "</p>\n", sprintf("?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=1", $this->param->exam, $this->param->student));
+                if ($found->answers - $found->removed == 0 && $this->param->verbose == false) {
+                        $link = sprintf("?exam=%d&amp;action=correct&amp;student=%d&amp;verbose=1", $this->param->exam, $this->param->student);
+                        $mbox = new MessageBox();
+                        $mbox->setTitle(_("No Answers Found"));
+                        $mbox->setMessage(sprintf(_("Only answers to removed questions where found. Click <a href=\"%s\">here</a> to view answers for those questions."), $link));
+                        $mbox->display();
                         return;
                 }
 
@@ -413,8 +419,10 @@ class CorrectionPage extends TeacherPage
                 printf("<p><u>%s</u>: %.01f</p>", _("Max score"), $question->getQuestionScore());
 
                 if ($answers->count() == 0) {
-                        printf("<h5>" . _("No Answers Found") . "</h5>\n");
-                        printf("<p>" . _("It appears that no students have answered this question.") . "</p>\n");
+                        $mbox = new MessageBox();
+                        $mbox->setTitle(_("No Answers Found"));
+                        $mbox->setMessage(_("It appears that no students have answered this question."));
+                        $mbox->display();
                         return;
                 }
 
