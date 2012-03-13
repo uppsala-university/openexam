@@ -100,7 +100,7 @@ class AdminPage extends BasePage
         public function __construct($title, &$params = array())
         {
                 parent::__construct($title, $params);
-                $this->validate();
+                $this->authorize();
         }
 
         public function printMenu()
@@ -123,7 +123,7 @@ class AdminPage extends BasePage
         //
         // Validate access and request parameters:
         //
-        public function validate()
+        public function authorize()
         {
                 if (!Admin::userIsAdmin(phpCAS::getUser())) {
                         ErrorPage::show(_("Access denied!"), _("Only users granted administrative privileges (system managers) can access this page. The script processing has halted."));
