@@ -155,7 +155,6 @@ class Correct
                                 $sql = sprintf("INSERT INTO results(answer_id, score, comment)
                                                 VALUES(%d, %F, '%s')", $answer, $scores[$answer], $comments[$answer]);
                         }
-                        die($sql);
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {
                                 throw new DatabaseException($res->getMessage());
