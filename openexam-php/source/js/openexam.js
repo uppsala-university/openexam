@@ -71,11 +71,14 @@ function autosave_form(name, seconds, start)
 var boxdata;
 
 //
-// Check that the textbox value is within the given range.
+// Check that the textbox value is within the given range. Notice that the
+// textbox value might having locale dependent representation.
 //
 function check_range(textbox, min, max)
 {
-        if(textbox.value < min || textbox.value > max) {
+        value = textbox.value.replace(',', '.');
+    
+        if(value < min || value > max) {
                 alert('Value must be between ' + min + ' and ' + max);
                 textbox.value = boxdata;
         }
