@@ -28,6 +28,7 @@ include "conf/config.inc";
 // 
 include "include/cas.inc";
 include "include/ui.inc";
+include "include/html.inc";
 
 class AboutPage extends BasePage
 {
@@ -39,19 +40,25 @@ class AboutPage extends BasePage
 
         public function printBody()
         {
-                printf("<h3>" . _("Information about this system") . "</h3>\n");
+                $content = new Content();
+                $content->addHeader(_("Information about this system"));
 
-                printf("<h5>" . _("End user requirements") . "</h5>\n");
-                printf("<p>");
-                printf(_("You have to use a web browser with cookies activated to use this system. "));
-                printf(_("The web browser must have support for javascript enabled."));
-                printf("</p>\n");
+                $content->addHeader(_("End user requirements"), 5);
+                $content->addParagraph(
+                    array(
+                            _("You have to use a web browser with cookies activated to use this system."),
+                            _("The web browser must have support for javascript enabled.")
+                    )
+                );
 
-                printf("<h5>" . _("General") . "</h5>\n");
-                printf("<p>" .
-                    _("This system was developed by <a href=\"mailto:%s\">%s</a> (%s). ") .
-                    _("Please visit the <a href=\"%s\">project page</a> for further information.") .
-                    "</p>\n", "anders.lovgren@bmc.uu.se", "Anders Lövgren", _("Computing Department at BMC"), "http://it.bmc.uu.se/andlov/proj/openexam/");
+                $content->addHeader(_("General"), 5);
+                $content->addParagraph(
+                    array(
+                            sprintf(_("This system was developed by <a href=\"mailto:%s\">%s</a> (%s)."), "anders.lovgren@bmc.uu.se", "Anders Lövgren", _("Computing Department at BMC")),
+                            sprintf(_("Please visit the <a href=\"%s\">project page</a> for further information."), "http://it.bmc.uu.se/andlov/proj/openexam/")
+                    )
+                );
+                $content->output();
         }
 
 }
