@@ -667,26 +667,35 @@ class Link extends Container
 class Cdata
 {
 
+        const separator = ' ';
+
         private $text;
         private $link;
 
         /**
          * Constructor.
-         * @param string $text The text.
+         * @param string|array $text The text.
          */
         public function __construct($text)
         {
-                $this->text = $text;
+                self::addText($text);
         }
 
         /**
          * Append text.
-         * @param string $text The text to append.
+         * @param string|array $text The text to append.
          * @param string $space Add space between this text and previous.
          */
-        public function addText($text, $space = ' ')
+        public function addText($text, $space = self::separator)
         {
-                $this->text .= $space . $text;
+                if (isset($this->text)) {
+                        $this->text .= $space;
+                }
+                if (is_array($text)) {
+                        $this->text .= implode($space, $text);
+                } else {
+                        $this->text .= $text;
+                }
         }
 
         /**
@@ -861,7 +870,7 @@ class Container extends Element
          * This function replaces any previous character data. Returns the 
          * new cdata object.
          * 
-         * @param string $text The character data.
+         * @param string|array $text The character data.
          * @return Cdata 
          */
         public function setText($text)
@@ -2588,7 +2597,7 @@ class Content
 
         /**
          * Add a section of plain text.
-         * @param string $text The text.
+         * @param string|array $text The text.
          * @return Cdata
          */
         public function addText($text)
@@ -2597,11 +2606,12 @@ class Content
         }
 
         /**
-         * Add an paragraph object.
-         * @param string $text The paragraph content.
+         * Add an paragraph object. The text argument might contain an array
+         * of string that's going to be concatenated.
+         * @param string|array $text The paragraph content.
          * @return Paragraph
          */
-        public function addParagraph($text = null)
+        public function addParagraph($text)
         {
                 return $this->addContent(new Paragraph($text));
         }
