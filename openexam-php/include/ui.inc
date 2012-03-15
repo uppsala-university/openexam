@@ -184,7 +184,6 @@ class BasePage implements TemplatePage
                 } else {
                         $data = DataRecord::str2num($data);
                 }
-                print_r($data);
         }
 
         //
