@@ -1,4 +1,4 @@
-Version 1.5.6 (2011-mm-dd):
+Version 1.5.6 (2012-03-15):
 
         * It's now possible to exclude information about correcting person and
           extended statistics like score distribution from the generated PDF
@@ -19,6 +19,9 @@ Version 1.5.6 (2011-mm-dd):
 
         * Increased the possible storage size for answers to ~16MB. See
           docs/README-MYSQL for details.
+
+        * Correction is now supporting float point numbers in locale dependent
+          representation.
 
 Version 1.5.5 (2011-01-12):
 
