@@ -445,7 +445,7 @@ class ExaminationPage extends BasePage
                 }
                 printf("</div>\n");
                 if ($this->author) {
-                        MessageBox::show(MessageBox::information, _("This question is viewed in preview mode (for question author)."), _("notice"));
+                        MessageBox::show(MessageBox::information, _("This question is viewed in preview mode (for question author)."), _("Notice"));
                 }
                 if (isset($this->param->status) && $this->param->status == "ok") {
                         MessageBox::show(MessageBox::success, _("Your answer has been successful saved in the database."));
