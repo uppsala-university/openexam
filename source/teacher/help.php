@@ -48,6 +48,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -69,25 +70,31 @@ class HelpPage extends BasePage
 
         public function printBody()
         {
-                printf("<h3>" . _("Help and information") . "</h3>\n");
+                $content = new Content();
+                $content->addHeader(_("Help and information"));
 
-                printf("<h5>" . _("Logon") . "</h5>\n");
-                printf("<p>");
-                printf(_("You have to be logged on using your UU identity (CAS login) for doing administative tasks. "));
-                printf("</p>\n");
-                printf("<p>");
-                printf(_("You logon to the <a href=\"https://cas.user.uu.se\">CAS-server at Uppsala University</a> using your UU identity and password A. "));
-                printf(_("You will be automatically prompted to logon whenever it's required to continue. "));
-                printf("</p>\n");
+                $content->addHeader(_("Logon"), 5);
+                $content->addParagraph(_("You have to be logged on using your UU identity (CAS login) for doing administative tasks."));
+                $content->addParagraph(
+                    array(
+                            _("You logon to the <a href=\"https://cas.user.uu.se\">CAS-server at Uppsala University</a> using your UU identity and password A."),
+                            _("You will be automatically prompted to logon whenever it's required to continue.")
+                ));
 
-                printf("<h5>" . _("Manual") . "</h5>\n");
-                printf("<p>\n");
-                printf(_("The <a href=\"%s\" target=\"_blank\">system user manual</a> is available online with tips and examples."), "http://it.bmc.uu.se/andlov/proj/openexam/manual/");
-                printf("</p>\n");
+                $content->addHeader(_("Manual"), 5);
+                $content->addParagraph(
+                    sprintf(_("The <a href=\"%s\" target=\"_blank\">system user manual</a> is available online with tips and examples."), "http://it.bmc.uu.se/andlov/proj/openexam/manual/")
+                );
 
-                printf("<h5>" . _("Getting started") . "</h5>\n");
-                printf("<p>" . _("If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions.") . "</p>\n", CONTACT_STRING);
-                printf("<p>" . _("The <a href=\"%s\" target=\"_blank\">keynotes page</a> contains a short introduction to the most fundamental parts of the system.") . "</p>\n", "keynotes.php");
+                $content->addHeader(_("Getting started"), 5);
+                $content->addParagraph(
+                    sprintf(_("If you like to use this system for your own online examinations, please contact %s to get teacher access and further instructions."), CONTACT_STRING)
+                );
+                $content->addParagraph(
+                    sprintf(_("The <a href=\"%s\" target=\"_blank\">keynotes page</a> contains a short introduction to the most fundamental parts of the system."), "keynotes.php")
+                );
+
+                $content->output();
         }
 
 }

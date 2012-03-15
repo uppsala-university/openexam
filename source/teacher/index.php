@@ -51,6 +51,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -74,15 +75,19 @@ class TeacherIndexPage extends BasePage
         //
         public function printBody()
         {
-                printf("<h3>" . _("Information for teachers") . "</h3>\n");
-                printf("<p>" .
-                    _("The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. ") .
-                    _("It allows people manage examinations and result from online exams.") .
-                    "</p>\n");
-                printf("<p>" .
-                    _("If you wish to create your own online exam, contact %s to gain access to the system. ") .
-                    _("General and getting started information can be found on the <a href=\"%s\">Help</a> page.") .
-                    "</p>\n", CONTACT_STRING, "help.php");
+                $content = new Content();
+                $content->addHeader(_("Information for teachers"));
+                $content->addParagraph(
+                    array(
+                            _("The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role."),
+                            _("It allows people manage examinations and result from online exams.")
+                ));
+                $content->addParagraph(
+                    array(
+                            sprintf(_("If you wish to create your own online exam, contact %s to gain access to the system."), CONTACT_STRING),
+                            sprintf(_("General and getting started information can be found on the <a href=\"%s\">Help</a> page."), "help.php")
+                ));
+                $content->output();
         }
 
 }
