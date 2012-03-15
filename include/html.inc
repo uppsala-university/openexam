@@ -46,6 +46,44 @@
  *
  * Using defined contants instead of string helps to detect misspelled event
  * attributes that would be silently ignored by browers.
+ * 
+ * Event handlers:
+ * ----------------------
+ * 
+ * A few common case event handlers exist (named EVENT_HANDLER_XXX). One of 
+ * them serves a deeper discussion, namely the EVENT_HANDLER_CHECK_EMPTY. 
+ * 
+ * This event handler should be connected with a form like this to perform a 
+ * check of empty fields on form submit.
+ * 
+ * <code>
+ * <?php
+ * $form = new Form('script.php');
+ * $form->setEvent(EVENT_ON_SUBMIT, EVENT_HANDLER_CHECK_EMPTY);
+ * ?>
+ * </code>
+ * 
+ * It depends on a pre-defined javascript function. An simple implementation 
+ * to be added to an javascript file included in each script might look like 
+ * this:
+ * 
+ * <code>
+ * // 
+ * // Validate input elements (of type text) and textareas:
+ * // 
+ * function check_form(form, message) {
+ *     for(i = 0; i < form.children.length; i++) {
+ *         if(form.children[i].type == 'text' || form.children[i].tagName == 'TEXTAREA') {
+ *             if(form.children[i].value == "") {
+ *                 form.children[i].value = message;
+ *                 form.children[i].focus();
+ *                 return false;
+ *             }
+ *         }
+ *     }
+ *     return true;
+ * }
+ * </code>
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  * @package UserInterface
@@ -286,6 +324,12 @@ if (!defined('EVENT_HANDLER_CLEAR_CONTENT')) {
 }
 if (!defined('EVENT_HANDLER_CONFIRM_DELETE')) {
         define('EVENT_HANDLER_CONFIRM_DELETE', sprintf("javascript:return confirm('%s');", _("Are you really sure?")));
+}
+if (!defined('EVENT_HANDLER_CANCEL_BUBBLE')) {  // Stop event propagation
+        define('EVENT_HANDLER_CANCEL_BUBBLE', "javascript:this.cancelBubble = true; event.stopPropagation();");
+}
+if (!defined('EVENT_HANDLER_CHECK_EMPTY')) {
+        define('EVENT_HANDLER_CHECK_EMPTY', sprintf("return check_form(this, '%s');", _("This field must be filled in.")));
 }
 
 // 
@@ -636,6 +680,16 @@ class Cdata
         }
 
         /**
+         * Append text.
+         * @param string $text The text to append.
+         * @param string $space Add space between this text and previous.
+         */
+        public function addText($text, $space = ' ')
+        {
+                $this->text .= $space . $text;
+        }
+
+        /**
          * Set a link to this block of text. This makes the link a container
          * of this object.
          *
@@ -644,7 +698,7 @@ class Cdata
         public function setLink($link)
         {
                 $this->link = $link;
-                $this->link->addText(&$this->text);
+                $this->link->setText(&$this->text);
         }
 
         /**
@@ -762,9 +816,21 @@ class Component extends Element
 class Container extends Element
 {
 
-        private $cdata;               // The character data object.
-        private $label;               // Optional label.
-        private $childs = array();    // Contained elements.
+        /**
+         * The character data object.
+         * @var Cdata 
+         */
+        private $cdata;
+        /**
+         * Optional label.
+         * @var string 
+         */
+        private $label;
+        /**
+         * Contained elements.
+         * @var type 
+         */
+        private $childs = array();
 
         /**
          * Add a child element (component, container or character data (cdata))
@@ -774,7 +840,6 @@ class Container extends Element
          * @param Element|Cdata $child The child element.
          * @return Element|Cdata
          */
-
         public function addElement($child)
         {
                 $this->childs[] = $child;
@@ -782,13 +847,42 @@ class Container extends Element
         }
 
         /**
-         * Add block of text (as cdata).
-         *
+         * Get number of immediate child elements.
+         * @return int 
+         */
+        public function count()
+        {
+                return count($this->childs);
+        }
+
+        /**
+         * Set a block of text (as cdata).
+         * 
+         * This function replaces any previous character data. Returns the 
+         * new cdata object.
+         * 
          * @param string $text The character data.
+         * @return Cdata 
+         */
+        public function setText($text)
+        {
+                $this->cdata = new Cdata($text);
+                return $this->cdata;
+        }
+
+        /**
+         * Append a block of text (as cdata).
+         *
+         * This function should be called after setText() has been called. It
+         * is an error to call this function without a previous call to 
+         * setText().
+         * 
+         * @param string $text The character data.
+         * @return Cdata 
          */
         public function addText($text)
         {
-                $this->cdata = new Cdata($text);
+                $this->cdata->addText($text);
                 return $this->cdata;
         }
 
@@ -810,7 +904,7 @@ class Container extends Element
          * @param Link $link The link object.
          * @return Link
          */
-        protected function setLink($link)
+        public function setLink($link)
         {
                 $this->cdata->setLink($link);
                 return $link;
@@ -859,7 +953,7 @@ class Label extends Container
         {
                 parent::__construct("label");
                 parent::setAttr("for", $for);
-                parent::addText(isset($text) ? $text . ":" : "&nbsp;");
+                parent::setText(isset($text) ? $text . ":" : "&nbsp;");
         }
 
         /**
@@ -892,7 +986,7 @@ class Header extends Container
         public function __construct($size, $text)
         {
                 parent::__construct(sprintf("h%d", $size));
-                parent::addText($text);
+                parent::setText($text);
         }
 
 }
@@ -1047,7 +1141,7 @@ class Paragraph extends Container
         public function __construct($text = null)
         {
                 parent::__construct("p");
-                parent::addText($text);
+                parent::setText($text);
         }
 
 }
@@ -1198,7 +1292,7 @@ class Option extends Container
         {
                 parent::__construct("option");
                 parent::setAttr("value", $value);
-                parent::addText($text);
+                parent::setText($text);
         }
 
         /**
@@ -1371,6 +1465,12 @@ abstract class OptionInput extends Input
                 $this->text = $text;
         }
 
+        public function setLink($link, $type = LINK_TYPE_HREF)
+        {
+                $this->text = new Cdata($this->text);
+                $this->text->setLink(new Link($type, $link));
+        }
+
         /**
          * Sets the checked attribute.
          */
@@ -1385,7 +1485,11 @@ abstract class OptionInput extends Input
         public function output()
         {
                 parent::output();
-                echo $this->text;
+                if (is_string($this->text)) {
+                        echo $this->text;
+                } else {
+                        $this->text->output();
+                }
         }
 
 }
@@ -1660,7 +1764,7 @@ class TextArea extends Container
         {
                 parent::__construct("textarea");
                 parent::setAttr("name", $name);
-                parent::addText($text);
+                parent::setText($text);
         }
 
         /**
@@ -2274,7 +2378,7 @@ class TableHeader extends TableCell
         public function __construct($text)
         {
                 parent::__construct("th");
-                parent::addText($text);
+                parent::setText($text);
         }
 
 }
@@ -2297,7 +2401,7 @@ class TableData extends TableCell
         public function __construct($text)
         {
                 parent::__construct("td");
-                parent::addText($text);
+                parent::setText($text);
         }
 
         /**
@@ -2446,7 +2550,7 @@ class TBody extends TContainer
 }
 
 /**
- * Generic HTML container.
+ * Generic HTML container. This is a convenience class.
  *
  * @package UserInterface
  * @subpackage HTML
@@ -2497,7 +2601,7 @@ class Content
          * @param string $text The paragraph content.
          * @return Paragraph
          */
-        public function addParagraph($text)
+        public function addParagraph($text = null)
         {
                 return $this->addContent(new Paragraph($text));
         }
@@ -2551,17 +2655,26 @@ class Content
  * $text = "Hello world!";
  * $icon = "icons/custom/info.png";
  *
+ * // 
+ * // Using get/set methods:
+ * // 
  * $messagebox = new MessageBox();
  * $messagebox->setIcon($icon);
  * $messagebox->setTitle($title);
  * $messagebox->setMessage($text);
  * $messagebox->display();
  *
+ * // 
+ * // Pass properties to constructor:
+ * // 
  * $messagebox = new MessageBox(
  *     MessageBox::information,
  *     $text, $title, $icon);
  * $messagebox->display();
  *
+ * // 
+ * // Use static method:
+ * // 
  * MessageBox::show(MessageBox::information, $text, $title, $icon);
  * ?>
  * </code>
@@ -2711,6 +2824,42 @@ class MessageBox extends Container
         public function display()
         {
                 parent::output();
+        }
+
+}
+
+/**
+ * This class represents a div container (DIV) element.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class Div extends Container
+{
+
+        public function __construct()
+        {
+                parent::__construct("div");
+        }
+
+}
+
+/**
+ * This class represents a span container (SPAN) element.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class Span extends Container
+{
+
+        public function __construct()
+        {
+                parent::__construct("span");
         }
 
 }
