@@ -42,6 +42,7 @@ include "conf/database.conf";
 include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
+include "include/html.inc";
 
 // 
 // Include database support:
@@ -72,10 +73,18 @@ class IndexPage extends BasePage
         //
         public function printBody()
         {
-                printf("<h3>" . _("Welcome!") . "</h3>\n");
-                printf("<p>" . _("This system let you do examination online, see <a href=\"%s\">Help</a> for more information. Remember to <u>save your answer at regular interval</u> to prevent losing data caused by automatic logout!") . "</p>\n", "help.php");
-                printf("<h5>" . _("Are you ready to begin the examination?") . "</h5\n");
-                printf("<p>" . _("Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon).") . "</p>\n", "exam/");
+                $content = new Content();
+
+                $content->addHeader(_("Welcome!"));
+                $content->addParagraph(
+                    sprintf(_("This system let you do examination online, see <a href=\"%s\">Help</a> for more information. Remember to <u>save your answer at regular interval</u> to prevent losing data caused by automatic logout!"), "help.php")
+                );
+
+                $content->addHeader(_("Are you ready to begin the examination?"), 5);
+                $content->addParagraph(
+                    sprintf(_("Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."), "exam/")
+                );
+                $content->output();
         }
 
         //
