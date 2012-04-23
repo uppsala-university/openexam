@@ -224,4 +224,9 @@ define('RESULT_DETAILS_DEFAULT', RESULT_EXPOSE_EMPLOYEES | RESULT_OTHERS_STATIST
 define('MEDIA_UPLOAD_ENABLE', false);
 define('MEDIA_UPLOAD_DIR', realpath(sprintf("%s/../source/media/files", dirname(__FILE__))));
 define('MEDIA_UPLOAD_MAXSIZE', 4 * 1024 * 1024);
+
+//
+// The cache directory (for temporary files):
+//
+define('CACHE_DIR', '/var/cache/apache2/openexam');
 ?>
