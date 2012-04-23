@@ -14,7 +14,7 @@
 // The idea is that the web server parses the question text and replaces all
 // format strings with an HTML tag triggering a request for this script:
 //
-//   <%name str %>  ->  <img src="images/handler.php?type=name&data=enc">
+//   <%name str %>  ->  <img src="/openexam/images/handler.php?type=name&data=enc">
 //
 // The enc value for parameter data is str encoded using urlencode(). The name 
 // of parameter type is copied verbatime.
