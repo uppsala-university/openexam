@@ -137,7 +137,7 @@ class HandlerScanner
         private $text;  // question text
 
         const PATTERN = "/<%(\w+)[\s\n]*((\n|.)*?)[\s\n]%>/m";
-        const REPLACE = "<img src='images/handler.php?type=%s&data=%s'>";
+        const REPLACE = "<img src='/openexam/images/handler.php?type=%s&data=%s'>";
 
         public function __construct($text)
         {
