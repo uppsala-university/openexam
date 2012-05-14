@@ -284,7 +284,7 @@ class CorrectionPage extends TeacherPage
                         $answer->hasResultComment() ? $answer->getResultComment() : ""));
                 $textarea->setTitle(_("This optional field can be used to save an comment for this answer correction."));
                 $textarea->setRows(2);
-                $textarea->setColumns(90);
+                $textarea->setColumns(80);
         }
 
         //
