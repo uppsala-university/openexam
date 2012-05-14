@@ -69,6 +69,7 @@ class Database
         private $dsn;                      // DSN array or string.
         private $connection = null;        // MDB2 connection.
         private static $instance = null;   // This class object.
+        
         //
         // Private to prevent explicit instantiation:
         //
@@ -298,7 +299,11 @@ class DataRecord
                 } else {
                         $str = str_replace(',', '', $str);
                 }
-                return (float) $str;
+                if (strlen($str) != 0) {
+                        return (float) $str;
+                } else {
+                        return null;
+                }
         }
 
 }
