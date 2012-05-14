@@ -148,7 +148,7 @@ class Correct
                                 $sql = sprintf("UPDATE results SET answer_id = %d, score = %F, comment = '%s'
                                                 WHERE id = %d", $answer, $scores[$answer], $comments[$answer], $results[$answer]);
                         } else {
-                                if ($scores[$answer] == "") {
+                                if (!isset($scores[$answer])) {
                                         continue;   // Don't save uncorrected answers
                                 }
 

@@ -84,7 +84,7 @@ class CorrectionPage extends TeacherPage
                 "student"  => parent::pattern_index,
                 "verbose"  => parent::pattern_index,
                 "colorize" => parent::pattern_index,
-                "score"    => parent::pattern_float,
+                "score"    => parent::pattern_score,
                 "comment"  => parent::pattern_text,
                 "mode"     => "/^(mark|save)$/"
         );
@@ -246,7 +246,7 @@ class CorrectionPage extends TeacherPage
                 } elseif ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         $data = $row->addData(sprintf("<br/>%s: %.01f", _("Max score"), $question->getQuestionScore()));
                         $data->setValign(TABLE_VALIGN_TOP);
-                        $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()), 0.0);
+                        $textbox = $data->addTextBox(sprintf("score[%d]", $answer->getAnswerID()));
                         $textbox->setSize(8);
                         $textbox->setEvent(EVENT_ON_FOCUS, "javascript:start_check(this);");
                         $textbox->setEvent(EVENT_ON_BLUR, sprintf("javascript:check_range(this, 0, %F);", $question->getQuestionScore()));
@@ -343,6 +343,7 @@ class CorrectionPage extends TeacherPage
                 //
                 // Show removed questions, but only in verbose mode.
                 //
+                $found = (object) array();
                 $found->answers = 0;
                 $found->removed = 0;
                 foreach ($answers as $answer) {
