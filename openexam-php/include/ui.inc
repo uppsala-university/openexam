@@ -76,6 +76,7 @@ class BasePage implements TemplatePage
         const pattern_year = "/^[0-9]{4}$/";            // YYYY
         const pattern_termin = "/^[1-2]$/";             // semester
         const pattern_name = "/^(\p{L}|\p{N}|\p{Z}|\p{P})+$/u"; // person
+        const pattern_score = "/^(\d+([,.]\d+)*|)$/";   // float point or empty
 
         private $title;
         protected $param;     // Washed request parameters
@@ -167,7 +168,8 @@ class BasePage implements TemplatePage
                         $this->param->$param = $_POST[$param];
                 }
 
-                if ($pattern == self::pattern_float) {
+                if ($pattern == self::pattern_float ||
+                    $pattern == self::pattern_score) {
                         self::convert($this->param->$param);
                 }
         }
