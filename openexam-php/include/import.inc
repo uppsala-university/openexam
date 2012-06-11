@@ -117,7 +117,7 @@ abstract class ImportBase implements Import
 
                 $str = preg_replace("|<p>(.*?)</p>|", "$1\n\n", $str);
                 $str = str_replace($find, $repl, $str);
-                
+
                 return utf8_encode(strip_tags(html_entity_decode(trim($str))));
         }
 
@@ -164,14 +164,28 @@ class ImportInsertPingPong extends ImportInsert
 
         public function insert(&$data, $what = self::questions)
         {
+                $sql = sprintf("SELECT id FROM topics 
+                                WHERE exam_id = %d AND name = 'default'", $this->exam);
+                $res = $this->db->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+                $default = $row['id'];
+
+                $tid = $this->db->lastInsertID();
                 foreach ($data as $topic => $questions) {
-                        $sql = sprintf("INSERT INTO topics(exam_id, name)
+                        if (strlen($topic) != 0) {
+                                $sql = sprintf("INSERT INTO topics(exam_id, name)
                                         VALUES(%d, '%s')", $this->exam, $topic);
-                        $res = $this->db->query($sql);
-                        if (PEAR::isError($res)) {
-                                throw new DatabaseException($res->getMessage());
+                                $res = $this->db->query($sql);
+                                if (PEAR::isError($res)) {
+                                        throw new DatabaseException($res->getMessage());
+                                }
+                                $tid = $this->db->lastInsertID();
+                        } else {
+                                $tid = $default;
                         }
-                        $tid = $this->db->lastInsertID();
                         foreach ($questions as $question) {
                                 $question['select'] = 0;
                                 if (isset($question['choice'])) {
