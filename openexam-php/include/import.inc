@@ -112,6 +112,12 @@ abstract class ImportBase implements Import
         //
         public function cleanup($str)
         {
+                $find = array("<br/><br/>", " ?", "<br/>", "  ", "\n\n\n");
+                $repl = array("\n\n", "?", " ", " ", "\n\n");
+
+                $str = preg_replace("|<p>(.*?)</p>|", "$1\n\n", $str);
+                $str = str_replace($find, $repl, $str);
+                
                 return utf8_encode(strip_tags(html_entity_decode(trim($str))));
         }
 
@@ -168,15 +174,19 @@ class ImportInsertPingPong extends ImportInsert
                         $tid = $this->db->lastInsertID();
                         foreach ($questions as $question) {
                                 $question['select'] = 0;
-                                foreach ($question['choice'] as $boolean) {
-                                        if ($boolean == true) {
-                                                $question['select']++;
+                                if (isset($question['choice'])) {
+                                        foreach ($question['choice'] as $boolean) {
+                                                if ($boolean == true) {
+                                                        $question['select']++;
+                                                }
                                         }
                                 }
                                 if ($question['select'] > 1) {
                                         $question['type'] = 'multiple';
-                                } else {
+                                } elseif ($question['select'] == 1) {
                                         $question['type'] = 'single';
+                                } else {
+                                        $question['type'] = 'freetext';
                                 }
                                 if ($question['type'] == 'multiple' || $question['type'] == 'single') {
                                         $question['quest'] = sprintf("%s\n\n%s", $question['body'], json_encode($question['choice']));
@@ -297,22 +307,21 @@ class ImportInsertOpenExam extends ImportInsert
 class ImportPingPongExcel extends ImportBase
 {
 
+        private $accept = array("application/vnd.ms-excel", "application/vnd.ms-office");
+
         const format = "QI625";
         const expect = "Exported from the questionbank in PING PONG";
-        const accept = "application/vnd.ms-excel";
-        const encoding = "CP1251";
 
         private $data;
 
         public function __construct($name, $file, $mime, $size, $accept = null)
         {
-                parent::__construct($name, $file, $mime, $size, self::accept);
+                parent::__construct($name, $file, $mime, $size, $this->accept);
         }
 
         public function open()
         {
                 $this->data = new Spreadsheet_Excel_Reader();
-                $this->data->setOutputEncoding(self::encoding);
         }
 
         public function read($exam, &$db)
@@ -342,12 +351,25 @@ class ImportPingPongExcel extends ImportBase
                         }
                         if ($sheet->cell[$i][1] == "Question") {
                                 if (isset($question)) {
+                                        // 
+                                        // Map multiple choice with a single alternative to freetext.
+                                        // 
+                                        if (isset($question['choice']) && count($question['choice']) <= 1) {
+                                                $question['type'] = "freetext";
+                                                unset($question['choice']);
+                                        }
                                         $questions[$category][] = $question;
                                 }
-                                $question = array("comment" => "", "score"   => 1.0, "user"    => $this->user);
+                                $question = array(
+                                        "comment" => "",
+                                        "score"   => 1.0,
+                                        "user"    => $this->user,
+                                        "type"    => "freetext",
+                                        "line"    => $i         // debug
+                                );
                         }
                         if ($sheet->cell[$i][1] == "Category") {
-                                $category = $this->cleanup($sheet->cell[$i][2]);
+                                $category = isset($sheet->cell[$i][2]) ? $this->cleanup($sheet->cell[$i][2]) : "";
                         }
                         if ($sheet->cell[$i][1] == "Name") {
                                 $question['name'] = $this->cleanup($sheet->cell[$i][2]);
@@ -368,6 +390,8 @@ class ImportPingPongExcel extends ImportBase
                                 } elseif ($sheet->cell[$i][2] == "Single choice") {
                                         $question['type'] = "single";
                                         $question['choice'] = array();
+                                } elseif ($sheet->cell[$i][2] == "Free writing") {
+                                        $question['type'] = "freetext";
                                 }
                         }
                         if ($sheet->cell[$i][1] == "Correct") {
@@ -375,6 +399,9 @@ class ImportPingPongExcel extends ImportBase
                         }
                         if ($sheet->cell[$i][1] == "Incorrect") {
                                 $question['choice'][$this->cleanup($sheet->cell[$i][2])] = false;
+                        }
+                        if ($sheet->cell[$i][1] == "Marking guide") {   // TOOD: what to do with this?
+                                $question['guide'] = $sheet->cell[$i][2];
                         }
                 }
 
@@ -565,6 +592,31 @@ class ImportOpenExamQuestions extends ImportOpenExam
 class FileImport
 {
 
+        const octet_stream = "application/octet-stream";
+
+        // 
+        // Get MIME type of file using the PECL extension fileinfo. Throws
+        // an ImportException if extension is not loaded.
+        // 
+        public static function getMimeType($file)
+        {
+                if (!extension_loaded("fileinfo")) {
+                        throw new ImportException("The PECL extension fileinfo is not loaded.");
+                }
+
+                if (!($res = finfo_open(FILEINFO_MIME_TYPE))) {
+                        throw new ImportException("Failed open fileinfo database.");
+                }
+                if (!($mime = finfo_file($res, $file))) {
+                        throw new ImportException(sprintf("Failed get MIME type of %s.", $file));
+                }
+                if (!finfo_close($res)) {
+                        throw new ImportException("Failed close fileinfo database.");
+                }
+
+                return $mime;
+        }
+
         //
         // Factory function returning an importer. These are the parameters:
         //
@@ -586,6 +638,9 @@ class FileImport
 
                 if (!is_uploaded_file($file)) {
                         throw new ImportException(sprintf(_("Possible file upload attack: %s"), $file));
+                }
+                if ($mime == self::octet_stream) {
+                        $mime = self::getMimeType($file);
                 }
 
                 if ($type == "pp") {
