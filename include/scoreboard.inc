@@ -498,6 +498,7 @@ class ScoreBoardAdmin extends ScoreBoardOutput
                         // Print all answers for this student:
                         //
                         foreach ($questions as $question) {
+			    
                                 $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
 
                                 if (!isset($data)) {
@@ -518,6 +519,10 @@ class ScoreBoardAdmin extends ScoreBoardOutput
                                 } else {
                                         $obj = $row->addData("!");
                                         $obj->setClass("cc na");
+                                }
+
+                                if (!isset($data)) {
+				        continue;
                                 }
 
                                 if ($question->getQuestionStatus() != 'removed') {
