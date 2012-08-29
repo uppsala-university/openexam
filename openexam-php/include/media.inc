@@ -83,6 +83,7 @@ class MediaLibrary
         const image = "image";
         const video = "video";
         const media = "files";  // All media files at once
+        const resource = "resource";
 
         private $exam;
         private $root;          // Root directory
@@ -103,9 +104,10 @@ class MediaLibrary
                         case "audio":
                         case "image":
                         case "video":
+                        case "resource":
                                 return $this->files($name);
                         case "files":
-                                $sect = array(self::audio, self::image, self::video);
+                                $sect = array(self::audio, self::image, self::video, self::resource);
                                 $data = array();
                                 foreach ($sect as $name) {
                                         $data[$name] = $this->files($name);
@@ -168,6 +170,79 @@ class MediaLibrary
                         }
                 } else {
                         throw new MediaException(sprintf(_("The file %s can't be deleted because it don't exists."), $name));
+                }
+        }
+
+        // 
+        // Recursive delete all media and resource files in this media library,
+        // including its container directory.
+        // 
+        public function cleanup()
+        {
+                foreach ($this->files as $type => $files) {
+                        $path = sprintf("%s/%s/%d", $this->root, $type, $this->exam);
+
+                        if (is_link($path)) {
+                                unlink($path);
+                                continue;
+                        }
+
+                        foreach ($files as $file) {
+                                $this->delete($file->name, $type);
+                        }
+                        if (file_exists($path)) {
+                                if (!rmdir($path)) {
+                                        throw new MediaException(_("Failed delete the media directory."));
+                                }
+                        }
+                }
+        }
+
+        // 
+        // Create a symbolic link to media type in this library. The $exam
+        // parameter is the destination exam ID.
+        // 
+        public function link($exam, $type)
+        {
+                $path = sprintf("%s/%s/%d", $this->root, $type, $this->exam);
+                $dest = sprintf("%s/%s/%d", $this->root, $type, $exam);
+
+                if (!symlink($path, $dest)) {
+                        throw new MediaException(sprintf(_("Failed create symbolic link to existing %s media section"), $type));
+                }
+        }
+
+        // 
+        // Create a copy of given media type in this library. The $exam
+        // parameter is the destination exam ID.
+        public function copy($exam, $type)
+        {
+                $srcdir = sprintf("%s/%s/%d", $this->root, $type, $this->exam);
+                $dstdir = sprintf("%s/%s/%d", $this->root, $type, $exam);
+
+                if (!file_exists($dstdir)) {
+                        if (!mkdir($dstdir, 0777, true)) {
+                                throw new MediaException(_("Failed create the media directory."));
+                        }
+                }
+
+                if (($handle = opendir($srcdir))) {
+                        while (($file = readdir($handle)) !== false) {
+                                if ($file == "." || $file == "..") {
+                                        continue;
+                                }
+
+                                $from = sprintf("%s/%s", $srcdir, $file);
+                                $dest = sprintf("%s/%s", $dstdir, $file);
+
+                                if (!is_file($from)) {
+                                        continue;
+                                }
+                                if (!copy($from, $dest)) {
+                                        throw new MediaException(_("Failed copy file %s"), $file);
+                                }
+                        }
+                        closedir($handle);
                 }
         }
 

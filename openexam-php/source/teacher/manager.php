@@ -70,6 +70,7 @@ include "include/teacher/manager.inc";
 include "include/teacher/testcase.inc";
 include "include/export.inc";
 include "include/import.inc";
+include "include/media.inc";
 
 // 
 // Maximum length of question text before its trunkated in the list.
@@ -632,10 +633,27 @@ class ManagerPage extends TeacherPage
                         }
                 }
 
+                // 
+                // Build the resource node. This node contains links to common
+                // resources, like databases and equation papers.
+                // 
+                $media = new MediaLibrary($this->param->exam);
+                $child = $root->addChild(_("Resources"));
+                if(!$info->isFinished()) {
+                        $child->addLink(_("Add"), sprintf("../media/index.php?exam=%d&action=add&type=resource", $this->param->exam));
+                }
+                foreach($media->resource as $file) {
+                        $subobj = $child->addChild($file->name);
+                        if (!$info->isFinished()) {
+                                $subobj->addLink(_("Show"), $file->url, _("Show resource content"));
+                                $subobj->addLink(_("Delete"), sprintf("../media/index.php?exam=%d&action=delete&type=resource&file=%s", $this->param->exam, $file->name));
+                        }
+                }
+
                 printf("<p>" .
-                    _("This page let you add/delete contributors, examinators, decoders and questions from this exam. ") .
-                    _("Not all options might be available, i.e. its not possible to add questions to an already started examination.") .
-                    "</p>\n");
+                        _("This page let you add/delete contributors, examinators, decoders and questions from this exam. ") .
+                        _("Not all options might be available, i.e. its not possible to add questions to an already started examination.") .
+                        "</p>\n");
                 printf("<p>" .
                     _("For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination.") .
                     "</p>\n");

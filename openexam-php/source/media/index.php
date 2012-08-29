@@ -83,7 +83,7 @@ class MediaPage extends TeacherPage
                 "exam"   => parent::pattern_index,
                 "file"   => parent::pattern_text,
                 "action" => "/^(add|delete)$/",
-                "type"   => "/^(audio|image|video|auto)$/",
+                "type"   => "/^(audio|image|video|resource|auto)$/",
                 "show"   => "/^(tree|flat|album)$/"
         );
 
@@ -119,11 +119,58 @@ class MediaPage extends TeacherPage
                         self::showAvailableExams();
                 }
         }
-
+        
         private function showSubmitForm()
         {
+                if ($this->param->type == MediaLibrary::resource) {
+                        $this->showResourceSubmitForm();
+                } else {
+                        $this->showMediaSubmitForm();
+                }
+        }
+
+        private function showResourceSubmitForm()
+        {
+                printf("<h3>" . _("Resource Management") . "</h3>\n");
+                printf("<p>" .
+                    _("Browse your local harddisk for the file to submit. ") .
+                    _("Maximum size of uploaded file is %0.1f MB, uploading a larger file is silently discarded.") .
+                    "</p>\n", MEDIA_UPLOAD_MAXSIZE / (1024 * 1024));
+
+                $form = new Form("index.php", "POST", "file");
+                $form->setEncodingType("multipart/form-data");
+                $form->addHidden("MAX_FILE_SIZE", MEDIA_UPLOAD_MAXSIZE);
+                $form->addHidden("exam", $this->param->exam);
+                $form->addHidden("action", "add");
+
+                $input = $form->addFileInput("file");
+                $input->setLabel(_("File"));
+                $input->setClass("file");
+                $form->addSubmitButton("file");
+
+                $types = array(
+                        _("Resource") => MediaLibrary::resource
+                );
+                $combo = $form->addComboBox("type");
+                $combo->setLabel(_("Type"));
+                foreach ($types as $name => $type) {
+                        $option = $combo->addOption($type, $name);
+                        if (isset($this->param->type) && $type == $this->param->type) {
+                                $option->setSelected();
+                        }
+                }
+
+                $form->output();
+        }
+
+        private function showMediaSubmitForm()
+        {
                 printf("<h3>" . _("Media Library") . "</h3>\n");
-                printf("<p>" . _("Browse your local harddisk for the media file to submit. Supported types of files are audio, image or video. Maximum size of uploaded file is %0.1f MB, uploading a larger file is silently discarded.") . "</p>\n", MEDIA_UPLOAD_MAXSIZE / (1024 * 1024));
+                printf("<p>" .
+                    _("Browse your local harddisk for the file to submit. ") .
+                    _("Supported types of files are audio, image or video. ") .
+                    _("Maximum size of uploaded file is %0.1f MB, uploading a larger file is silently discarded.") .
+                    "</p>\n", MEDIA_UPLOAD_MAXSIZE / (1024 * 1024));
 
                 $form = new Form("index.php", "POST", "file");
                 $form->setEncodingType("multipart/form-data");
@@ -236,7 +283,8 @@ class MediaPage extends TeacherPage
                 $links = array(
                         _("Audio") => MediaLibrary::audio,
                         _("Image") => MediaLibrary::image,
-                        _("Video") => MediaLibrary::video
+                        _("Video") => MediaLibrary::video,
+                        _("Resource") => MediaLibrary::resource
                 );
                 $disp = array();
                 foreach ($links as $text => $name) {
@@ -298,7 +346,7 @@ class MediaPage extends TeacherPage
         private function showMediaFiles()
         {
                 printf("<h3>" . _("Media Library") . "</h3>\n");
-                printf("<p>" . _("This page shows all files currently uploaded on the server for this examination. The media file URL's can be used when composing questions.") . "</p>\n");
+                printf("<p>" . _("This page shows all files currently uploaded on the server for this examination. The media file URL's can be used when composing questions. Resource files are common resources (i.e. equations) always available for the students during the examination.") . "</p>\n");
 
                 $mode = array(
                         "tree"  => _("Tree"),
