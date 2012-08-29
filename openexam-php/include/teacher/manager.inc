@@ -161,6 +161,7 @@ class ExamDetails
         private $mask = 0;  // The details mask
         //
         // The mask value is either an numeric or an array.
+
         //
 
         public function __construct($mask)
@@ -1052,6 +1053,20 @@ class Manager
                         }
                 }
 
+                if ($testcase) {
+                        // 
+                        // Simply add a symbolic link to media files.
+                        // 
+                        $media = new MediaLibrary($this->getExamID());
+                        $media->link($copy->getExamID(), MediaLibrary::resource);
+                } else {
+                        // 
+                        // Perform a real copy.
+                        // 
+                        $media = new MediaLibrary($this->getExamID());
+                        $media->copy($copy->getExamID(), MediaLibrary::resource);
+                }
+
                 if ($db->in_transaction) {
                         $db->commit();
                 }
@@ -1153,6 +1168,12 @@ class Manager
                 if ($db->in_transaction) {
                         $db->commit();
                 }
+                
+                // 
+                // Delete all media and resource files:
+                // 
+                $media = new MediaLibrary($this->exam);
+                $media->cleanup();
         }
 
 }

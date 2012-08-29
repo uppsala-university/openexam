@@ -73,6 +73,7 @@ include "include/locale.inc";
 include "include/exam.inc";
 include "include/mplayer.inc";
 include "include/locker.inc";
+include "include/media.inc";
 
 // 
 // Needed to bypass access checks for contributors (in preview mode):
@@ -161,6 +162,16 @@ class ExaminationPage extends BasePage
                                 echo "<ul>\n";
                                 foreach ($exams as $exam) {
                                         printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $exam->getExamID(), $exam->getExamDescription(), $exam->getExamName());
+                                }
+                                echo "</ul>\n";
+                        }
+                        
+                        $media = new MediaLibrary($this->param->exam);
+                        if (count($media->resource) != 0) {
+                                echo "<span id=\"menuhead\">" . _("Resources:") . "</span>\n";
+                                echo "<ul>\n";
+                                foreach ($media->resource as $file) {
+                                        printf("<li><a href=\"%s\" title=\"%s\">%s</a></li>\n", $file->url, $file->name, $file->name);
                                 }
                                 echo "</ul>\n";
                         }
