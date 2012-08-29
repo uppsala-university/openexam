@@ -93,7 +93,7 @@ class ExaminationPage extends BasePage
         private static $params = array(
                 "exam"     => parent::pattern_index,
                 "answer"   => parent::pattern_text,
-                "question" => "/^(\d+|all)$/",
+                "question" => "/^(\d+|all|exam)$/",
                 "status"   => "/^(ok)$/",
                 "save"     => parent::pattern_text, // button
                 "next"     => parent::pattern_text  // button
@@ -121,7 +121,9 @@ class ExaminationPage extends BasePage
                 //
                 if (isset($this->param->exam)) {
                         $this->checkExaminationAccess();
-                        if (isset($this->param->question) && $this->param->question != "all") {
+                        if (isset($this->param->question) && (
+                            $this->param->question != "all" &&
+                            $this->param->question != "exam")) {
                                 $this->checkQuestionAccess();
                         }
                 }
@@ -136,6 +138,9 @@ class ExaminationPage extends BasePage
                                 $this->showInstructions();
                         } elseif ($this->param->question == "all") {
                                 $this->showQuestions();
+                        } elseif($this->param->question == "exam") {
+                                $exam = Exam::getExamData(phpCAS::getUser(), $this->param->exam);
+                                $this->showProperties($exam);
                         } elseif (isset($this->param->answer)) {
                                 $this->saveQuestion();
                         } else {
@@ -196,8 +201,9 @@ class ExaminationPage extends BasePage
 
                         echo "<span id=\"menuhead\">" . _("Show") . ":</span>\n";
                         echo "<ul>\n";
-                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show the start page for this examination"), _("Start page"));
                         printf("<li><a href=\"?exam=%d&amp;question=all\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show all questions at the same time"), _("All questions"));
+                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show the start page for this examination"), _("Start page"));
+                        printf("<li><a href=\"?exam=%d&question=exam\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show properties for this examination."), _("Properties"));
                         echo "</ul>\n";
                         
                         $exams = Exam::getActiveExams(phpCAS::getUser());
@@ -297,18 +303,28 @@ class ExaminationPage extends BasePage
 
                 printf("<p>" . _("These examinations have been assigned to you, click on the button next to the description to begin the examination.") . "</p>\n");
                 foreach ($exams as $exam) {
-                        printf("<div class=\"examination\">\n");
-                        printf("<div class=\"examhead\">%s</div>\n", $exam->getExamName());
-                        printf("<div class=\"exambody\">%s<p>%s: <b>%s</b></p>\n", str_replace("\n", "<br>", $exam->getExamDescription()), _("The examination ends"), strftime(DATETIME_ISO, strtotime($exam->getExamEndTime())));
+                        $this->showProperties($exam, true);
+                }
+        }
 
+        // 
+        // Show properties for given exam.
+        // 
+        private function showProperties($exam, $form = false)
+        {
+                printf("<div class=\"examination\">\n");
+                printf("<div class=\"examhead\">%s</div>\n", $exam->getExamName());
+                printf("<div class=\"exambody\">%s<p>%s: <b>%s</b></p>\n", str_replace("\n", "<br>", $exam->getExamDescription()), _("The examination ends"), strftime(DATETIME_ISO, strtotime($exam->getExamEndTime())));
+
+                if ($form) {
                         $form = new Form("index.php", "GET");
                         $form->addHidden("exam", $exam->getExamID());
                         $form->addSubmitButton("submit", _("Begin"));
                         $form->output();
-
-                        printf("</div>\n");
-                        printf("</div>\n");
                 }
+
+                printf("</div>\n");
+                printf("</div>\n");
         }
 
         //
