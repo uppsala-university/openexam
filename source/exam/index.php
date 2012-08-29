@@ -156,16 +156,6 @@ class ExaminationPage extends BasePage
         {
 
                 if (isset($this->param->exam) && !isset($this->param->preview)) {
-                        $exams = Exam::getActiveExams(phpCAS::getUser());
-                        if ($exams->count() > 1) {
-                                echo "<span id=\"menuhead\">" . _("Examinations") . ":</span>\n";
-                                echo "<ul>\n";
-                                foreach ($exams as $exam) {
-                                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $exam->getExamID(), $exam->getExamDescription(), $exam->getExamName());
-                                }
-                                echo "</ul>\n";
-                        }
-                        
                         $media = new MediaLibrary($this->param->exam);
                         if (count($media->resource) != 0) {
                                 echo "<span id=\"menuhead\">" . _("Resources:") . "</span>\n";
@@ -209,6 +199,16 @@ class ExaminationPage extends BasePage
                         printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show the start page for this examination"), _("Start page"));
                         printf("<li><a href=\"?exam=%d&amp;question=all\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show all questions at the same time"), _("All questions"));
                         echo "</ul>\n";
+                        
+                        $exams = Exam::getActiveExams(phpCAS::getUser());
+                        if ($exams->count() > 1) {
+                                echo "<span id=\"menuhead\">" . _("Examinations") . ":</span>\n";
+                                echo "<ul>\n";
+                                foreach ($exams as $exam) {
+                                        printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $exam->getExamID(), $exam->getExamDescription(), $exam->getExamName());
+                                }
+                                echo "</ul>\n";
+                        }
                 }
         }
 
