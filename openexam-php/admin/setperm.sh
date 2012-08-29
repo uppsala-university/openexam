@@ -14,7 +14,7 @@ setfacl -m u:apache:r $confdir/config.inc $confdir/database.conf
 if [ -d $mediadir/files ]; then
   # Must be writable when using automatic detection of file type.
   setfacl -m u:apache:rwx $mediadir/files
-  for d in audio image video; do
+  for d in audio image video resource; do
     if [ -d $mediadir/files/$d ]; then
       setfacl -m u:apache:rwx $mediadir/files/$d
     else
