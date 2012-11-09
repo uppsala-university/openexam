@@ -301,6 +301,18 @@ class LdapConnection
                         }
                 }
 
+                // 
+                // Set LDAP search referals. Define LDAP_REFERALS to 0 if ldap_search() fails 
+                // with error message 'Operations error' when searching the Active Directory 
+                // LDAP without giving an organization unit.
+                // 
+                if (defined("LDAP_REFERALS")) {
+                        if (!ldap_set_option($this->dc, LDAP_OPT_REFERRALS, LDAP_REFERALS)) {
+                                throw new LdapException(sprintf(
+                                        _("Failed set LDAP search referals to %d"), LDAP_REFERALS));
+                        }
+                }
+
                 //
                 // Try to bind to the directory service.
                 //
