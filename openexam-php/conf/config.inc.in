@@ -95,6 +95,7 @@ define('LDAP_BASEDN', 'ou=employees');
 // define ('LDAP_USER',   'username');
 // define ('LDAP_PASS',   'password');
 // define ('LDAP_PROTOCOL_VERSION', 3);
+// define ('LDAP_REFERALS', 0);             // Required for tree root-level search against Active Directory.
 define('LDAP_CACHE', true);                 // Turn on LDAP result cache.
 //
 // Custom LDAP search strings for overriding defaults defined inline
