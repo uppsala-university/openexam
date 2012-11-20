@@ -62,6 +62,194 @@ include "include/pdf.inc";
 include "include/ldap.inc";
 include "include/scoreboard.inc";
 
+class OutputFormatException extends Exception
+{
+        
+}
+
+// 
+// Data output formating interface.
+// 
+interface OutputFormat
+{
+
+        const TAB = "tab";
+        const XML = "xml";
+
+        function start();                       // output start
+
+        function output($data);                 // output data
+
+        function end();                         // output close
+
+        static function create($type, $caller); // factory
+}
+
+abstract class OutputBase implements OutputFormat
+{
+
+        protected $caller;
+
+        protected function __construct($caller)
+        {
+                $this->caller = $caller;
+        }
+
+        function start()
+        {
+                // no output by default
+        }
+
+        function end()
+        {
+                // no output by default
+        }
+
+}
+
+abstract class OutputStudent extends OutputBase
+{
+
+        static function create($type, $caller)
+        {
+                switch ($type) {
+                        case self::TAB:
+                                return new OutputStudentTab($caller);
+                        case self::XML:
+                                return new OutputStudentXml($caller);
+                        default:
+                                throw new OutputFormatException(sprintf("unknown output type %s", $type));
+                }
+        }
+
+}
+
+class OutputStudentTab extends OutputStudent
+{
+
+        function output($student)
+        {
+                printf("[%d]\t%s (%s)\n", $student->getStudentID(), $student->getStudentUser(), $student->getStudentCode());
+        }
+
+}
+
+class OutputStudentXml extends OutputStudent
+{
+
+        function start()
+        {
+                printf("<students>\n");
+        }
+
+        function output($student)
+        {
+                printf("  <student id=\"%d\">\n", $student->getStudentID());
+                printf("    <user>%s</user>\n", $student->getStudentUser());
+                printf("    <code>%s</code>\n", $student->getStudentCode());
+                printf("  </student>\n");
+        }
+
+        function end()
+        {
+                printf("</students>\n");
+        }
+
+}
+
+abstract class OutputExam extends OutputBase
+{
+
+        static function create($type, $caller)
+        {
+                switch ($type) {
+                        case self::TAB:
+                                return new OutputExamTab($caller);
+                        case self::XML:
+                                return new OutputExamXml($caller);
+                        default:
+                                throw new OutputFormatException(sprintf("unknown output type %s", $type));
+                }
+        }
+
+}
+
+class OutputExamTab extends OutputExam
+{
+
+        function output($exam)
+        {
+                printf("[%d]\t%s\n", $exam->getExamID(), $exam->getExamName());
+                if ($this->caller->verbose) {
+                        printf("\tStart:   %s\n", $exam->getExamStartTime());
+                        printf("\tEnd:     %s\n", $exam->getExamEndTime());
+                        printf("\tCreator: %s\n", $exam->getExamCreator());
+                        printf("\tDecoded: %s\n", $exam->getExamDecoded() == 'Y' ? "yes" : "no");
+                }
+                if ($this->caller->verbose > 1) {
+                        printf("\tCreated: %s\n", $exam->getExamCreated());
+                        printf("\tUpdated: %s\n", $exam->getExamUpdated());
+                }
+                if ($this->caller->verbose) {
+                        $grades = new ExamGrades($exam->getExamGrades());
+                        printf("\tGrades:\n");
+                        foreach ($grades->getGrades() as $name => $score) {
+                                printf("\t\t%d\t(%s)\n", $score, $name);
+                        }
+                }
+                if ($this->caller->verbose > 2) {
+                        printf("\tDescription:\n\t\t%s\n", str_replace("\n", "\n\t\t", $exam->getExamDescription()));
+                }
+                if ($this->caller->verbose) {
+                        printf("\n");
+                }
+        }
+
+}
+
+class OutputExamXml extends OutputExam
+{
+
+        function start()
+        {
+                printf("<exams>\n");
+        }
+
+        function end()
+        {
+                printf("</exams>\n");
+        }
+
+        function output($exam)
+        {
+                printf("  <exam id=\"%d\">\n", $exam->getExamID());
+                printf("    <name>%s</name>\n", $exam->getExamName());
+                if ($this->caller->verbose) {
+                        printf("    <start>%s</start>\n", $exam->getExamStartTime());
+                        printf("    <end>%s</end>\n", $exam->getExamEndTime());
+                        printf("    <creator>%s</creator>\n", $exam->getExamCreator());
+                        printf("    <decoded>%s</decoded>\n", $exam->getExamDecoded() == 'Y' ? "yes" : "no");
+                }
+                if ($this->caller->verbose > 1) {
+                        printf("    <created>%s</reated>\n", $exam->getExamCreated());
+                        printf("    <updated>%s</updated>\n", $exam->getExamUpdated());
+                }
+                if ($this->caller->verbose) {
+                        $grades = new ExamGrades($exam->getExamGrades());
+                        printf("    <grades>\n");
+                        foreach ($grades->getGrades() as $name => $score) {
+                                printf("      <%s>%d</%s>\n", $name, $score, $name);
+                        }
+                        printf("    </grades>\n");
+                }
+                if ($this->caller->verbose > 2) {
+                        printf("    <description>%s</description>\n", htmlspecialchars($exam->getExamDescription()));
+                }
+                printf("  </exam>\n");
+        }
+
+}
+
 class ResultApp
 {
 
@@ -69,12 +257,22 @@ class ResultApp
         private $debug = false;
         private $verbose = 0;
         private $output = "pdf";
+        private $format = "tab";
         private $prog;
         private $file;
         private $user;
         private $exam;
         private $student;
         private $destdir;
+        private $formatter;
+
+        public function __get($name)
+        {
+                switch ($name) {
+                        case "verbose":
+                                return $this->verbose;
+                }
+        }
 
         private function error($msg)
         {
@@ -127,6 +325,12 @@ class ResultApp
                                 case '-o':
                                         $this->file = $argv[++$i];
                                         break;
+                                case "--format":
+                                        $this->format = $arg;
+                                        break;
+                                case "-f":
+                                        $this->format = $argv[++$i];
+                                        break;
                                 case '--file':
                                         $this->file = $arg;
                                         break;
@@ -138,7 +342,7 @@ class ResultApp
                                         break;
                                 case '-h':
                                 case '--help':
-                                        self::showUsage();
+                                        $this->usage();
                                         exit(0);
                                 case '-d':
                                 case '--debug':
@@ -154,12 +358,18 @@ class ResultApp
                 }
 
                 if ($this->list) {
-                        if (isset($this->exam)) {
-                                $this->listStudents();
-                        } else {
-                                $this->listExams();
+                        try {
+                                if (isset($this->exam)) {
+                                        $this->formatter = OutputStudent::create($this->format, $this);
+                                        $this->listStudents();
+                                } else {
+                                        $this->formatter = OutputExam::create($this->format, $this);
+                                        $this->listExams();
+                                }
+                                return;
+                        } catch (OutputFormatException $exception) {
+                                $this->error($exception->getMessage());
                         }
-                        return;
                 }
 
                 if (!isset($this->exam)) {
@@ -200,6 +410,7 @@ class ResultApp
                 printf("  -p,--destdir=path: Write result PDF's to directory.\n");
                 printf("  -o,--file=name:    The output file (use stdout otherwise).\n");
                 printf("  -O,--output=name:  Set output format (i.e. pdf, ps or html) for result.\n");
+                printf("  -f,--format=type:  Output format for listing (xml or tab).\n");
                 printf("  -d,--debug:        Enable debug, can be used multiple times.\n");
                 printf("  -v,--verbose:      Be more verbose, can be used multiple times.\n");
                 printf("  -h,--help:         Show this help.\n");
@@ -235,33 +446,12 @@ class ResultApp
                 } else {
                         $exams = Exam::getExamList();
                 }
-                
+
+                $this->formatter->start();
                 foreach ($exams as $exam) {
-                        printf("[%d]\t%s\n", $exam->getExamID(), $exam->getExamName());
-                        if ($this->verbose) {
-                                printf("\tStart:   %s\n", $exam->getExamStartTime());
-                                printf("\tEnd:     %s\n", $exam->getExamEndTime());
-                                printf("\tCreator: %s\n", $exam->getExamCreator());
-                                printf("\tDecoded: %s\n", $exam->getExamDecoded() == 'Y' ? "yes" : "no");
-                        }
-                        if ($this->verbose > 1) {
-                                printf("\tCreated: %s\n", $exam->getExamCreated());
-                                printf("\tUpdated: %s\n", $exam->getExamUpdated());
-                        }
-                        if ($this->verbose) {
-                                $grades = new ExamGrades($exam->getExamGrades());
-                                printf("\tGrades:\n");
-                                foreach ($grades->getGrades() as $name => $score) {
-                                        printf("\t\t%d\t(%s)\n", $score, $name);
-                                }
-                        }
-                        if ($this->verbose > 2) {
-                                printf("\tDescription:\n\t\t%s\n", str_replace("\n", "\n\t\t", $exam->getExamDescription()));
-                        }
-                        if ($this->verbose) {
-                                printf("\n");
-                        }
+                        @$this->formatter->output($exam);
                 }
+                $this->formatter->end();
         }
 
         //
@@ -271,9 +461,12 @@ class ResultApp
         {
                 $manager = new Manager($this->exam);
                 $students = $manager->getStudents();
+
+                $this->formatter->start();
                 foreach ($students as $student) {
-                        printf("[%d]\t%s (%s)\n", $student->getStudentID(), $student->getStudentUser(), $student->getStudentCode());
+                        $this->formatter->output($student);
                 }
+                $this->formatter->end();
         }
 
 }
