@@ -68,6 +68,23 @@ class OutputFormatException extends Exception
 }
 
 // 
+// DOMDocument wrapper.
+// 
+class XmlOutputDocument extends DOMDocument
+{
+
+        public function __construct($pretty)
+        {
+                parent::__construct("1.0", "utf-8");
+                if ($pretty) {
+                        $this->preserveWhiteSpace = false;
+                        $this->formatOutput = true;
+                }
+        }
+
+}
+
+// 
 // Data output formating interface.
 // 
 interface OutputFormat
@@ -137,22 +154,33 @@ class OutputStudentTab extends OutputStudent
 class OutputStudentXml extends OutputStudent
 {
 
+        private $document;
+        private $root;
+
+        public function __construct($caller)
+        {
+                $this->document = new XmlOutputDocument($caller->pretty);
+                parent::__construct($caller);
+        }
+
         function start()
         {
-                printf("<students>\n");
+                $node = $this->document->createElement("students");
+                $this->root = $this->document->appendChild($node);
         }
 
         function output($student)
         {
-                printf("  <student id=\"%d\">\n", $student->getStudentID());
-                printf("    <user>%s</user>\n", $student->getStudentUser());
-                printf("    <code>%s</code>\n", $student->getStudentCode());
-                printf("  </student>\n");
+                $node = $this->document->createElement("student");
+                $node->setAttribute("id", $student->getStudentID());
+                $node->appendChild($this->document->createElement("user", $student->getStudentUser()));
+                $node->appendChild($this->document->createElement("code", $student->getStudentCode()));
+                $this->root->appendChild($node);
         }
 
         function end()
         {
-                printf("</students>\n");
+                echo $this->document->saveXML();
         }
 
 }
@@ -210,42 +238,54 @@ class OutputExamTab extends OutputExam
 class OutputExamXml extends OutputExam
 {
 
-        function start()
+        private $document;
+        private $root;
+
+        public function __construct($caller)
         {
-                printf("<exams>\n");
+                $this->document = new XmlOutputDocument($caller->pretty);
+                parent::__construct($caller);
         }
 
-        function end()
+        function start()
         {
-                printf("</exams>\n");
+                $node = $this->document->createElement("exams");
+                $this->root = $this->document->appendChild($node);
         }
 
         function output($exam)
         {
-                printf("  <exam id=\"%d\">\n", $exam->getExamID());
-                printf("    <name>%s</name>\n", $exam->getExamName());
+                $node = $this->document->createElement("exam");
+                $node->setAttribute("id", $exam->getExamID());
+                $node->appendChild($this->document->createElement("name", $exam->getExamName()));
                 if ($this->caller->verbose) {
-                        printf("    <start>%s</start>\n", $exam->getExamStartTime());
-                        printf("    <end>%s</end>\n", $exam->getExamEndTime());
-                        printf("    <creator>%s</creator>\n", $exam->getExamCreator());
-                        printf("    <decoded>%s</decoded>\n", $exam->getExamDecoded() == 'Y' ? "yes" : "no");
+                        $node->appendChild($this->document->createElement("start", $exam->getExamStartTime()));
+                        $node->appendChild($this->document->createElement("end", $exam->getExamEndTime()));
+                        $node->appendChild($this->document->createElement("creator", $exam->getExamCreator()));
+                        $node->appendChild($this->document->createElement("decoded", $exam->getExamDecoded() == 'Y' ? "yes" : "no"));
                 }
                 if ($this->caller->verbose > 1) {
-                        printf("    <created>%s</reated>\n", $exam->getExamCreated());
-                        printf("    <updated>%s</updated>\n", $exam->getExamUpdated());
+                        $node->appendChild($this->document->createElement("created", $exam->getExamCreated()));
+                        $node->appendChild($this->document->createElement("updated", $exam->getExamUpdated()));
                 }
                 if ($this->caller->verbose) {
                         $grades = new ExamGrades($exam->getExamGrades());
-                        printf("    <grades>\n");
+                        $child = $this->document->createElement("grades");
                         foreach ($grades->getGrades() as $name => $score) {
-                                printf("      <%s>%d</%s>\n", $name, $score, $name);
+                                $child->appendChild($this->document->createElement(strtolower($name), $score));
                         }
-                        printf("    </grades>\n");
+                        $node->appendChild($child);
                 }
                 if ($this->caller->verbose > 2) {
-                        printf("    <description>%s</description>\n", htmlspecialchars($exam->getExamDescription()));
+                        $node->appendChild($this->document->createElement("description", htmlentities($exam->getExamDescription())));
                 }
-                printf("  </exam>\n");
+
+                $this->root->appendChild($node);
+        }
+
+        function end()
+        {
+                echo $this->document->saveXML();
         }
 
 }
@@ -258,6 +298,7 @@ class ResultApp
         private $verbose = 0;
         private $output = "pdf";
         private $format = "tab";
+        private $pretty = false;
         private $prog;
         private $file;
         private $user;
@@ -271,6 +312,8 @@ class ResultApp
                 switch ($name) {
                         case "verbose":
                                 return $this->verbose;
+                        case "pretty":
+                                return $this->pretty;
                 }
         }
 
@@ -283,9 +326,6 @@ class ResultApp
         {
                 $this->prog = basename($argv[0]);
 
-                //
-                // Scan standard options first:
-                //
                 for ($i = 1; $i < $argc; ++$i) {
                         if (strchr($argv[$i], '=')) {
                                 list($opt, $arg) = split('=', $argv[$i]);
@@ -331,10 +371,14 @@ class ResultApp
                                 case "-f":
                                         $this->format = $argv[++$i];
                                         break;
+                                case "--pretty":
+                                case "-p":
+                                        $this->pretty = true;
+                                        break;
                                 case '--file':
                                         $this->file = $arg;
                                         break;
-                                case '-p':
+                                case '-D':
                                         $this->destdir = $argv[++$i];
                                         break;
                                 case '--destdir':
@@ -407,10 +451,11 @@ class ResultApp
                 printf("  -u,--user=name:    Work as this user.\n");
                 printf("  -e,--exam=num:     The examination ID (from database).\n");
                 printf("  -s,--student=num:  The student ID (from database).\n");
-                printf("  -p,--destdir=path: Write result PDF's to directory.\n");
+                printf("  -D,--destdir=path: Write result PDF's to directory.\n");
                 printf("  -o,--file=name:    The output file (use stdout otherwise).\n");
                 printf("  -O,--output=name:  Set output format (i.e. pdf, ps or html) for result.\n");
                 printf("  -f,--format=type:  Output format for listing (xml or tab).\n");
+                printf("  -p,--pretty:       Pretty print XML output.\n");
                 printf("  -d,--debug:        Enable debug, can be used multiple times.\n");
                 printf("  -v,--verbose:      Be more verbose, can be used multiple times.\n");
                 printf("  -h,--help:         Show this help.\n");
