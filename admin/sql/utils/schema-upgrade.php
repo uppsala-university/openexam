@@ -1,7 +1,7 @@
 <?php
 
 //
-// Copyright (C) 2010 Computing Department BMC,
+// Copyright (C) 2010-2012 Computing Department BMC,
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   source/exam/index.php
@@ -42,11 +42,137 @@ class SchemaUpgrade
 
         private $version = 0.0;         // Current schema version
         private $db;
+        private $user;
+        private $pass;
+        private $force = false;
+        private $debug = false;
+        private $interactive = false;
+        private $keepgoing = false;
+        private $dryrun = false;
 
-        public function __construct()
+        public function __construct($argc, $argv)
         {
+                $this->prog = basename($argv[0]);
+
+                for ($i = 1; $i < $argc; ++$i) {
+                        if (strchr($argv[$i], "=")) {
+                                list($opt, $arg) = @split('=', $argv[$i]);
+                        } else {
+                                list($opt, $arg) = array($argv[$i], null);
+                        }
+
+                        switch ($opt) {
+                                case "-a":
+                                case "--appdef":
+                                        $this->user = $GLOBALS['dsn']['username'];
+                                        $this->pass = $GLOBALS['dsn']['password'];
+                                        break;
+                                case "-u":
+                                        $this->user = $argv[++$i];
+                                        break;
+                                case "--user":
+                                        $this->user = $arg;
+                                        break;
+                                case "-p":
+                                        $this->pass = $argv[++$i];
+                                        break;
+                                case "--pass":
+                                        $this->pass = $arg;
+                                        break;
+                                case "-i":
+                                case "--interactive":
+                                        $this->interactive = true;
+                                        break;
+                                case "-F":
+                                case "--force":
+                                        $this->force = true;
+                                        break;
+                                case "-k":
+                                case "--keep-going":
+                                        $this->keepgoing = true;
+                                        break;
+                                case "-D":
+                                case "--dry-run":
+                                        $this->dryrun = true;
+                                        break;
+                                case "-d":
+                                case "--debug":
+                                        $this->debug = true;
+                                        break;
+                                case "-h":
+                                case "--help":
+                                        $this->usage();
+                                        exit(0);
+                                default:
+                                        $this->error(sprintf("unknown option '%s'", $opt));
+                        }
+                }
+
+                if ($this->interactive) {
+                        if (!isset($this->user)) {
+                                $this->user = readline("> Username: ");
+                        }
+                        if (!isset($this->pass)) {
+                                $this->pass = readline("> Password: ");
+                        }
+                }
+                if (!isset($this->user) || strlen($this->user) == 0) {
+                        $this->error("Missing database username, see --help");
+                }
+                if (!isset($this->pass) || strlen($this->pass) == 0) {
+                        $this->error("Missing database password, see --help");
+                }
+
+                $GLOBALS['dsn']['username'] = $this->user;
+                $GLOBALS['dsn']['password'] = $this->pass;
+
+                if ($this->debug) {
+                        $this->debug("Connecting to '%s@%s' as user '%s'.", $GLOBALS['dsn']['database'], $GLOBALS['dsn']['hostspec'], $GLOBALS['dsn']['username']);
+                }
+                if ($this->interactive) {
+                        readline("> Press <enter> to begin database scheme upgrade: ");
+                }
+
                 $this->db = Database::getConnection();
                 $this->getSchemaVersion();
+        }
+
+        private function usage()
+        {
+                printf("%s - upgrade database schema\n", $this->prog);
+                printf("\n");
+                printf("Usage: %s [options...]\n", $this->prog);
+                printf("Options:\n");
+                printf("  -a,--appdef:      Use the application database account for connection.\n");
+                printf("  -u,--user=str:    Connect using str as username.\n");
+                printf("  -p,--pass=str:    Connect using str as password.\n");
+                printf("  -i,--interactive: Enable interactive mode (prompt)\n");
+                printf("  -F,--force:       Force apply all updates.\n");
+                printf("  -k,--keep-going:  Continue even on database error.\n");
+                printf("  -D,--dry-run:     Don't modify, just print whats going to be executed.\n");
+                printf("  -d,--debug:       Enable debug.\n");
+                printf("  -h,--help:        Show this casual help.\n");
+                printf("\n");
+                printf("Copyright (c) 2010-2012 Anders Lövgren, Compdept at BMC, Uppsala university.\n");
+        }
+
+        private function error($msg)
+        {
+                die(sprintf("%s: %s\n", $this->prog, $msg));
+        }
+
+        private function debug()
+        {
+                $arr = func_get_args();
+                $fmt = sprintf("(d) %s\n", array_shift($arr));
+                vprintf($fmt, $arr);
+        }
+
+        private function info()
+        {
+                $arr = func_get_args();
+                $fmt = sprintf("(i) %s\n", array_shift($arr));
+                vprintf($fmt, $arr);
         }
 
         //
@@ -59,7 +185,7 @@ class SchemaUpgrade
 
                 if (!PEAR::isError($res)) {
                         if (($row = $res->fetchRow())) {
-                                $this->version = float(sprintf("%s.%s", $row['major'], $row['minor']));
+                                $this->version = floatval(sprintf("%s.%s", $row['major'], $row['minor']));
                         }
                 }
         }
@@ -79,12 +205,19 @@ class SchemaUpgrade
                 printf("\nUpgrading to database schema version %0.1f:\n", $version);
                 foreach ($sqlstmt as $sql) {
                         if (($sql = trim($sql)) != "") {
-                                $res = $this->db->query($sql);
-                                if (PEAR::isError($res)) {
-                                        throw new DatabaseException($res->getMessage());
+                                if ($this->debug) {
+                                        $this->debug("SQL: %s", $sql);
+                                }
+                                if ($this->dryrun) {
+                                        $this->info("Would have executed:\n%s", $sql);
+                                } else {
+                                        $res = $this->db->query($sql);
+                                        if (PEAR::isError($res) && !$this->keepgoing) {
+                                                throw new DatabaseException($res->getMessage());
+                                        }
+                                        print(".");
                                 }
                         }
-                        print(".");
                 }
                 print(" done!\n");
                 $this->db->commit();
@@ -95,10 +228,16 @@ class SchemaUpgrade
         // 
         public function upgrade()
         {
-                $files = array(1.0 => "schema-upgrade-1.0.sql");
+                $files = array(
+                        "1.0" => "schema-upgrade-1.0.sql",
+                        "1.1" => "schema-upgrade-1.1.sql",
+                        "1.2" => "schema-upgrade-1.2.sql"
+                );
                 foreach ($files as $version => $filename) {
-                        if ($this->version < $version) {
-                                $this->process($filename, $version);
+                        if ($this->force || $this->version < floatval($version)) {
+                                $this->process($filename, floatval($version));
+                        } elseif ($this->debug) {
+                                $this->debug("Version %0.1f already applied (skipped)", $version);
                         }
                 }
         }
@@ -112,14 +251,6 @@ if (isset($_SERVER['SERVER_ADDR'])) {
         die("This script should be runned in CLI mode.\n");
 }
 
-//
-// Set global connection parameters:
-//
-printf("user: ");
-$GLOBALS['dsn']['username'] = trim(fgets(STDIN));
-printf("pass: ");
-$GLOBALS['dsn']['password'] = trim(fgets(STDIN));
-
-$app = new SchemaUpgrade();
+$app = new SchemaUpgrade($_SERVER['argc'], $_SERVER['argv']);
 $app->upgrade();
 ?>
