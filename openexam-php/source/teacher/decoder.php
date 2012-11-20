@@ -560,7 +560,7 @@ class DecoderPage extends TeacherPage
                 $input->setLabel(_("Text"));
                 $input->setClass("message");
                 $input->setTitle(_("Append one or more optional section of text to the message."));
-                $input->setEvent(EVENT_ON_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
+                $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
 
                 //
                 // The attachment section:
