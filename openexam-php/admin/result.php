@@ -29,8 +29,6 @@ set_include_path(get_include_path() . PATH_SEPARATOR . "..");
 // Include external libraries:
 // 
 include "MDB2.php";
-include "CAS.php";
-
 // 
 // Locale and internationalization support:
 // 
@@ -45,7 +43,6 @@ include "conf/database.conf";
 // 
 // Include logon and user interface support:
 // 
-include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
 
@@ -71,8 +68,13 @@ class ResultApp
         private $list = false;
         private $debug = false;
         private $verbose = 0;
-        private $format = "pdf";
+        private $output = "pdf";
         private $prog;
+        private $file;
+        private $user;
+        private $exam;
+        private $student;
+        private $destdir;
 
         private function error($msg)
         {
@@ -87,9 +89,13 @@ class ResultApp
                 // Scan standard options first:
                 //
                 for ($i = 1; $i < $argc; ++$i) {
-                        list($opt, $arg) = split('=', $argv[$i]);
+                        if (strchr($argv[$i], '=')) {
+                                list($opt, $arg) = split('=', $argv[$i]);
+                        } else {
+                                list($opt, $arg) = array($argv[$i], null);
+                        }
 
-                        switch ($argv[$i]) {
+                        switch ($opt) {
                                 case '-l':
                                 case '--list':
                                         $this->list = true;
@@ -112,11 +118,11 @@ class ResultApp
                                 case '--student':
                                         $this->student = $arg;
                                         break;
-                                case '-f':
-                                        $this->format = $argv[++$i];
+                                case '-O':
+                                        $this->output = $argv[++$i];
                                         break;
-                                case '--format':
-                                        $this->format = $arg;
+                                case '--output':
+                                        $this->output = $arg;
                                         break;
                                 case '-o':
                                         $this->file = $argv[++$i];
@@ -143,14 +149,11 @@ class ResultApp
                                         $this->verbose++;
                                         break;
                                 default:
-                                        $this->error(sprintf("unknown option '%s'", $argv[$i]));
+                                        $this->error(sprintf("unknown option '%s'", $opt));
                         }
                 }
 
                 if ($this->list) {
-                        if (!isset($this->user)) {
-                                $this->error("the -l option requires the -u option, see --help\n");
-                        }
                         if (isset($this->exam)) {
                                 $this->listStudents();
                         } else {
@@ -160,18 +163,18 @@ class ResultApp
                 }
 
                 if (!isset($this->exam)) {
-                        $this->error("missing -e option, see --help\n");
+                        $this->error("missing -e option, see --help");
                 }
                 if (!isset($this->student) && !isset($this->destdir)) {
-                        $this->error("either -s or -p option must be used, see --help\n");
+                        $this->error("either -s or -p option must be used, see --help");
                 }
                 if (isset($this->student) && isset($this->destdir)) {
-                        $this->error("the -s option can't be used together with -p, see --help\n");
+                        $this->error("the -s option can't be used together with -p, see --help");
                 }
 
                 $result = new ResultPDF($this->exam);
                 $result->setDebug($this->debug);
-                $result->setFormat($this->format);
+                $result->setFormat($this->output);
 
                 if (isset($this->destdir)) {
                         $result->saveAll($this->destdir);
@@ -184,7 +187,7 @@ class ResultApp
                 }
         }
 
-        private function showUsage()
+        private function usage()
         {
                 printf("%s - Generate result PDF/PS/HTML file(s)\n", $this->prog);
                 printf("\n");
@@ -196,13 +199,10 @@ class ResultApp
                 printf("  -s,--student=num:  The student ID (from database).\n");
                 printf("  -p,--destdir=path: Write result PDF's to directory.\n");
                 printf("  -o,--file=name:    The output file (use stdout otherwise).\n");
-                printf("  -f,--format=name:  Set output format (i.e. pdf, ps or html).\n");
+                printf("  -O,--output=name:  Set output format (i.e. pdf, ps or html) for result.\n");
                 printf("  -d,--debug:        Enable debug, can be used multiple times.\n");
                 printf("  -v,--verbose:      Be more verbose, can be used multiple times.\n");
                 printf("  -h,--help:         Show this help.\n");
-                printf("\n");
-                printf("Note:\n");
-                printf("  *) The -l option requires the -u option.\n");
                 printf("\n");
                 printf("Examples:\n");
                 if ($this->verbose) {
@@ -230,7 +230,12 @@ class ResultApp
         //
         private function listExams()
         {
-                $exams = Manager::getExams($this->user);
+                if ($this->user) {
+                        $exams = Manager::getExams($this->user);
+                } else {
+                        $exams = Exam::getExamList();
+                }
+                
                 foreach ($exams as $exam) {
                         printf("[%d]\t%s\n", $exam->getExamID(), $exam->getExamName());
                         if ($this->verbose) {
