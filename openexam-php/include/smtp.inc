@@ -142,7 +142,16 @@ class MailSender
         //
         public function getComposer()
         {
-                return new Mail_mime();
+                // 
+                // Using UTF-8 encoding:
+                // 
+                return new Mail_mime(
+                        array(
+                                'text_charset' => 'utf-8',
+                                'html_charset' => 'utf-8',
+                                'head_charset' => 'utf-8'
+                        )
+                );
         }
 
         //

@@ -36,12 +36,11 @@ class MailRecepient
         }
 
         //
-        // Returns the complete name and address string properly MIME encoded
-        // for the UTF8 charset.
+        // Returns the complete name and address string. 
         //
         public function getAddress()
         {
-                return sprintf("%s <%s>", mb_encode_mimeheader($this->name, "UTF8", "Q"), $this->addr);
+                return sprintf("%s <%s>", $this->name, $this->addr);
         }
 
 }
@@ -149,7 +148,7 @@ class MailBody
                         foreach ($this->sections as $section) {
                                 $this->html .= sprintf("<p><b><u>%s</u></b><br/><br/>%s<br/><br/>", $section['head'], str_replace("\n", "<br>", $section['text']));
                         }
-                        $this->html .= sprintf("<hr/><i>%s</i><hr/>%s</td><td class=\"logo\"><img src=\"http://www.uu.se/Logo/uulogo_white.gif\"/></td></tr></table></body></html>}\n", $this->greeting, $this->getSystemInfo());
+                        $this->html .= sprintf("<hr/><i>%s</i><hr/>%s</td><td class=\"logo\"><img src=\"http://www.uu.se/Logo/uulogo_white.gif\"/></td></tr></table></body></html>\n", $this->greeting, $this->getSystemInfo());
                 }
                 return $this->html;
         }
@@ -257,7 +256,7 @@ class MailResult
                 }
 
                 $body = $mime->get();
-                $res = $smtp->send($this->recv->getAddress(), $mime->headers($headers), $body);
+                $res = $smtp->send($this->recv->getEmail(), $mime->headers($headers), $body);
                 if (PEAR::isError($res)) {
                         throw new MailException($res);
                 }
