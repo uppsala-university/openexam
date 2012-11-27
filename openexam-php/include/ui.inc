@@ -66,17 +66,17 @@ interface TemplatePage
 class BasePage implements TemplatePage
 {
 
-        const pattern_float = "/^\d+([,.]\d+)*$/";      // match float point
-        const pattern_index = "/^\d+$/";                // match database index
-        const pattern_text = "/.*/";                    // generic text or any
-        const pattern_user = "/^[0-9a-zA-Z]{1,10}$/";   // username
-        const pattern_url = "/^(.*:\/\/.*|)$/";         // i.e. http://server/file
-        const pattern_course = "/^[0-9a-zA-Z]{1,10}$/"; // course code
-        const pattern_code = "/^([0-9a-fA-F]{1,15}|)$/"; // registration code
-        const pattern_year = "/^[0-9]{4}$/";            // YYYY
-        const pattern_termin = "/^[1-2]$/";             // semester
+        const pattern_float = "/^\d+([,.]\d+)*$/";              // match float point
+        const pattern_index = "/^\d+$/";                        // match database index
+        const pattern_text = "/.*/";                            // generic text or any
+        const pattern_user = "/^[0-9a-zA-Z-_@]{1,30}$/";        // username
+        const pattern_url = "/^(.*:\/\/.*|)$/";                 // i.e. http://server/file
+        const pattern_course = "/^[0-9a-zA-Z]{1,10}$/";         // course code
+        const pattern_code = "/^([0-9a-fA-F]{1,15}|)$/";        // registration code
+        const pattern_year = "/^[0-9]{4}$/";                    // YYYY
+        const pattern_termin = "/^[1-2]$/";                     // semester
         const pattern_name = "/^(\p{L}|\p{N}|\p{Z}|\p{P})+$/u"; // person
-        const pattern_score = "/^(\d+([,.]\d+)*|)$/";   // float point or empty
+        const pattern_score = "/^(\d+([,.]\d+)*|)$/";           // float point or empty
 
         private $title;
         protected $param;     // Washed request parameters
