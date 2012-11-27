@@ -439,7 +439,7 @@ class ExaminationPage extends BasePage
                         $options = Exam::getQuestionChoice($qdata->getQuestionText());
                         $answers = Exam::getQuestionChoice($adata->getAnswerText());
                         foreach ($options[1] as $option) {
-                                $input = $form->addRadioButton("answer[]", $option, $option);
+                                $input = $form->addRadioButton("answer[]", htmlspecialchars($option), $option);
                                 if (in_array($option, $answers[1])) {
                                         $input->setChecked();
                                 }
@@ -449,7 +449,7 @@ class ExaminationPage extends BasePage
                         $options = Exam::getQuestionChoice($qdata->getQuestionText());
                         $answers = Exam::getQuestionChoice($adata->getAnswerText());
                         foreach ($options[1] as $option) {
-                                $input = $form->addCheckBox("answer[]", $option, $option);
+                                $input = $form->addCheckBox("answer[]", htmlspecialchars($option), $option);
                                 if (in_array($option, $answers[1])) {
                                         $input->setChecked();
                                 }
