@@ -358,7 +358,7 @@ class ContributePage extends TeacherPage
 
                         $input = $form->addTextArea("quest", $data->hasQuestionText() || $action == "edit" ?
                                 $data->getQuestionText() :
-                                _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n<hr/>\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n{\"Brian Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n<hr/>\n"));
+                                _("Single or multi choice questions is defined by question text and an JSON encoded string of options, where the correct answers are marked as true (see example below). Single choice questions differs from multi choice question in that only one of the options is tagged as true. Freetext questions is simply defined as some text.\n\nAn example of a multiple choice question:\n<hr/>\nWhich one of these where part of Thin Lizzy during the classical year 1976?\n{\"Brian \\\"Robbo\\\" Robertsson\":true,\"Lars Adaktusson\":false,\"Scott Gorham\":true}\n<hr/>\n"));
                         $input->setTitle(_("The actual question is defined here. Double click inside the textarea to clear its content."));
                         $input->setLabel(_("Question"));
                         $input->setClass("question");
@@ -467,7 +467,7 @@ class ContributePage extends TeacherPage
                 $qrec = new DataRecord(array(
                             "examid"       => $this->param->exam,
                             "topicid"      => $this->param->topic,
-                            "questiontype" => "freetext")
+                            "questiontype" => "multiple")
                 );
 
                 printf("<h3>" . _("Add Question") . "</h3>\n");
