@@ -594,12 +594,12 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 $this->writer->writeFooter();
 
                 if ($content) {
-                        header(sprintf("Content-Type: %s", $this->format->getMimeType()));
-                        header(sprintf("Content-Disposition: attachment;filename=\"%s.%s\"", $this->board->getExam()->getExamName(), $this->format->getExtension()));
-                        header("Cache-Control: no-cache");
+                        header(sprintf("Content-Type: %s;charset=utf-8", $this->format->getMimeType()));
+                        header(sprintf("Content-Disposition: inline;filename=\"%s.%s\"", $this->board->getExam()->getExamName(), $this->format->getExtension()));
+                        header("Cache-Control: private");
                         header("Pragma-directive: no-cache");
                         header("Cache-directive: no-cache");
-                        header("Pragma: no-cache");
+                        header("Pragma: public");
                         header("Expires: 0");
                 }
 

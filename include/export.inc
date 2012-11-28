@@ -84,11 +84,11 @@ class Export
                 $name = sprintf("%s - %s - %s", $data->getExamOrgUnit(), $data->getExamName(), $data->getExamStartTime());
 
                 header("Content-type: application/xml;charset=utf-8\n");
-                header("Content-Disposition: attachment;filename=\"$name.xml\"");
-                header("Cache-Control: no-cache");
+                header("Content-Disposition: inline;filename=\"$name.xml\"");
+                header("Cache-Control: private");
                 header("Pragma-directive: no-cache");
                 header("Cache-directive: no-cache");
-                header("Pragma: no-cache");
+                header("Pragma: public");
                 header("Expires: 0");
 
                 $this->output();
