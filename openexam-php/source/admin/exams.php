@@ -209,11 +209,11 @@ class ExamAdminPage extends AdminPage
                 $name = sprintf("%s %s", $this->param->data, strftime(DATE_FORMAT));
 
                 header("Content-type: text/tab-separated-values;charset=utf-8\n");
-                header("Content-Disposition: attachment;filename=\"$name.tsv\"");
-                header("Cache-Control: no-cache");
+                header("Content-Disposition: inline;filename=\"$name.tsv\"");
+                header("Cache-Control: private");
                 header("Pragma-directive: no-cache");
                 header("Cache-directive: no-cache");
-                header("Pragma: no-cache");
+                header("Pragma: public");
                 header("Expires: 0");
 
                 printf("%s\t", _("ID"));
