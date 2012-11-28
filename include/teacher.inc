@@ -139,7 +139,7 @@ class TeacherPage extends BasePage
         {
                 if (!isset($this->ldap)) {
                         $this->ldap = new LdapSearch(LdapConnection::create());
-                        $this->ldap->setAttributeFilter(array("cn", "mail", "o", "department"));
+                        $this->ldap->setAttributeFilter(array("displayname", "mail", "cn", "o", "department"));
                 }
         }
 
@@ -417,31 +417,31 @@ class TeacherPage extends BasePage
         //
         // Support function for doing LDAP lookup.
         //
-        protected function getCommonName($user, $lookup = LDAP_LOOKUP_BOTH)
+        protected function getDisplayName($user, $lookup = LDAP_LOOKUP_BOTH)
         {
                 $this->useDirectoryService();
 
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);
-                        if ($entry->first()->hasCN()) {
-                                return $entry->first()->getCN()->first();
+                        if ($entry->first()->hasDisplayName()) {
+                                return $entry->first()->getDisplayName()->first();
                         }
                 }
                 if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
                         $entry = $this->ldap->searchPrincipalName($user);
-                        if ($entry->first()->hasCN()) {
-                                return $entry->first()->getCN()->first();
+                        if ($entry->first()->hasDisplayName()) {
+                                return $entry->first()->getDisplayName()->first();
                         }
                 }
                 return $user;
         }
 
         //
-        // Similar to getCommonName(), but returns a formatted user name string.
+        // Similar to getDisplayName(), but returns a formatted 'name (user)' string.
         //
         protected function getFormatName($user, $lookup = LDAP_LOOKUP_BOTH)
         {
-                $name = $this->getCommonName($user, $lookup);
+                $name = $this->getDisplayName($user, $lookup);
                 if ($name != $user) {
                         return sprintf("%s (%s)", $name, $user);
                 } else {
@@ -491,14 +491,14 @@ class TeacherPage extends BasePage
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);
                         if ($entry->first()->hasMail()) {
-                                return new MailRecepient($entry->first()->getCN()->first(),
+                                return new MailRecepient($entry->first()->getDisplayName()->first(),
                                         $entry->first()->getMail()->first());
                         }
                 }
                 if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
                         $entry = $this->ldap->searchPrincipalName($user);
                         if ($entry->first()->hasMail()) {
-                                return new MailRecepient($entry->first()->getCN()->first(),
+                                return new MailRecepient($entry->first()->getDisplayName()->first(),
                                         $entry->first()->getMail()->first());
                         }
                 }
