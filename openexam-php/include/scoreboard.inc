@@ -423,24 +423,24 @@ abstract class ScoreBoardOutput
                 $this->board = new ScoreBoard($exam);
 
                 $this->ldap = new LdapSearch(LdapConnection::instance());
-                $this->ldap->setAttributeFilter(array("cn"));
+                $this->ldap->setAttributeFilter(array("displayname"));
         }
 
         //
         // Support function for doing LDAP lookup.
         //
-        protected function getCommonName($user, $lookup = LDAP_LOOKUP_BOTH)
+        protected function getDisplayName($user, $lookup = LDAP_LOOKUP_BOTH)
         {
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);
-                        if ($entry->first()->hasCN()) {
-                                return $entry->first()->getCN()->first();
+                        if ($entry->first()->hasDisplayName()) {
+                                return $entry->first()->getDisplayName()->first();
                         }
                 }
                 if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
                         $entry = $this->ldap->searchPrincipalName($user);
-                        if ($entry->first()->hasCN()) {
-                                return $entry->first()->getCN()->first();
+                        if ($entry->first()->hasDisplayName()) {
+                                return $entry->first()->getDisplayName()->first();
                         }
                 }
                 return $user;
@@ -489,7 +489,7 @@ class ScoreBoardAdmin extends ScoreBoardOutput
                 $students = $this->board->getStudents();
                 foreach ($students as $student) {
                         $row = $table->addRow();
-                        $obj = $row->addData($this->getCommonName($student->getStudentUser()));
+                        $obj = $row->addData($this->getDisplayName($student->getStudentUser()));
                         $obj->setNoWrap();
                         $row->addData($student->getStudentUser());
                         $row->addData($student->getStudentCode());
@@ -498,7 +498,7 @@ class ScoreBoardAdmin extends ScoreBoardOutput
                         // Print all answers for this student:
                         //
                         foreach ($questions as $question) {
-			    
+
                                 $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
 
                                 if (!isset($data)) {
@@ -522,7 +522,7 @@ class ScoreBoardAdmin extends ScoreBoardOutput
                                 }
 
                                 if (!isset($data)) {
-				        continue;
+                                        continue;
                                 }
 
                                 if ($question->getQuestionStatus() != 'removed') {
@@ -637,7 +637,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 $students = $this->board->getStudents();
                 foreach ($students as $student) {
                         $array = array();
-                        $student->setStudentName($this->getCommonName($student->getStudentUser()));
+                        $student->setStudentName($this->getDisplayName($student->getStudentUser()));
                         $array[] = $student->getStudentName();
                         $array[] = $student->getStudentUser();
                         $array[] = $student->getStudentCode();
@@ -757,7 +757,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 foreach ($students as $student) {
                         $row = $table->addRow();
                         if ($this->show->name) {
-                                $obj = $row->addData($this->getCommonName($student->getStudentUser()));
+                                $obj = $row->addData($this->getDisplayName($student->getStudentUser()));
                                 $obj->setNoWrap();
                                 if (!$this->show->user && !$this->show->code) {
                                         $obj->setTitle(sprintf("%s: %s\n%s: %s", _("User"), $student->getStudentUser(), _("Code"), $student->getStudentCode()));
@@ -920,7 +920,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 }
 
                 $header->name = sprintf("Q%d", ++$this->index);
-                $header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f\n%s: %s", _("Question"), $question->getQuestionName(), $question->getQuestionBody(), _("Max score"), $question->getQuestionScore(), _("Publisher"), $this->getCommonName($question->getQuestionPublisher()));
+                $header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f\n%s: %s", _("Question"), $question->getQuestionName(), $question->getQuestionBody(), _("Max score"), $question->getQuestionScore(), _("Publisher"), $this->getDisplayName($question->getQuestionPublisher()));
                 if ($question->getQuestionStatus() == 'removed') {
                         if ($question->getQuestionComment() != null) {
                                 $header->desc .= sprintf("\n\n%s: %s", _("This question has been removed"), $question->getQuestionComment());

@@ -149,8 +149,8 @@ class TeacherAdminPage extends AdminPage
                         $name = "";
                         $mail = null;
                         if ($data->first() != null) {
-                                if ($data->first()->hasCN()) {
-                                        $name = $data->first()->getCN()->first();
+                                if ($data->first()->hasDisplayName()) {
+                                        $name = $data->first()->getDisplayName()->first();
                                 }
                                 if ($data->first()->hasMail()) {
                                         $mail = $data->first()->getMail()->first();

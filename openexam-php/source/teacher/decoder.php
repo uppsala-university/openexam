@@ -324,7 +324,7 @@ class DecoderPage extends TeacherPage
                 $option = $combo->addOption(0, "---");
                 $option->setDisabled();
                 foreach ($students as $student) {
-                        $student->setStudentName($this->getCommonName($student->getStudentUser()));
+                        $student->setStudentName($this->getDisplayName($student->getStudentUser()));
                         $combo->addOption($student->getStudentID(), sprintf("%s (%s) [%s]", $student->getStudentName(), $student->getStudentUser(), $student->getStudentCode()));
                 }
                 $button = $form->addSubmitButton("submit", _("Download"));
@@ -548,7 +548,7 @@ class DecoderPage extends TeacherPage
                 $option = $combo->addOption(0, "---");
                 $option->setDisabled();
                 foreach ($students as $student) {
-                        $student->setStudentName($this->getCommonName($student->getStudentUser()));
+                        $student->setStudentName($this->getDisplayName($student->getStudentUser()));
                         $combo->addOption($student->getStudentID(), sprintf("%s (%s) [%s]", $student->getStudentName(), $student->getStudentUser(), $student->getStudentCode()));
                 }
 
