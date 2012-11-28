@@ -118,6 +118,12 @@ td.removed {
     background: white;
     border: 2px solid red;
 }
+li.ansc {       /* correct answer */
+        list-style-image: url('/openexam/icons/ok.png');
+}
+li.answ {       /* wrong answer */
+        list-style-image: url('/openexam/icons/error.png');
+}
 
 /*
  * Style different types of list items.

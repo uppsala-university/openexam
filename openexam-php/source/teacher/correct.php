@@ -198,6 +198,26 @@ class CorrectionPage extends TeacherPage
                 $this->saveAnswerResult();
         }
 
+        // 
+        // Format list of answer options for display. The $qlist array contains all
+        // correct answers and $alist contains all answers by the student (both correct 
+        // and wrong ones).
+        // 
+        private static function getAnswerOptions($qlist, $alist = null)
+        {
+                if (isset($alist)) {
+                        $result = "<ul>";
+                        foreach ($alist as $answer) {
+                                $class = (in_array($answer, $qlist)) ? "ansc" : "answ";
+                                $result .= sprintf("<li class=\"%s\">%s</li>", $class, $answer);
+                        }
+                        $result .= "</ul>";
+                        return $result;
+                } else {
+                        return sprintf("<ul><li>%s</li></ul>", implode("</li><li>", $qlist));
+                }
+        }
+
         //
         // Display the answer to a single question.
         //
@@ -215,7 +235,7 @@ class CorrectionPage extends TeacherPage
                         $qchoice = Exam::getQuestionChoice($question->getQuestionText(), true);
                         $row = $table->addRow();
                         $row->setClass("question");
-                        $row->addData(sprintf("<u>%s: %s</u><br />%s<br/><br/>%s: %s", _("Question"), $question->getQuestionName(), str_replace("\n", "<br/>", $qchoice[0]), _("Correct answer"), implode(", ", array_keys($qchoice[1], true))));
+                        $row->addData(sprintf("<u>%s: %s</u><br />%s<br/><br/>%s: %s", _("Question"), $question->getQuestionName(), str_replace("\n", "<br/>", $qchoice[0]), _("Correct answer"), self::getAnswerOptions(array_keys($qchoice[1], true))));
                 }
 
                 if ($question->getQuestionStatus() == 'removed') {
@@ -231,7 +251,7 @@ class CorrectionPage extends TeacherPage
                         $row->addData(sprintf("<u>%s</u>:<br />%s", _("Answer"), str_replace("\n", "<br/>", htmlspecialchars($answer->getAnswerText()))));
                 } else {
                         $achoice = Exam::getQuestionChoice($answer->getAnswerText());
-                        $row->addData(sprintf("<u>%s</u>:<br />%s", _("Answer"), str_replace("\n", "<br/>", implode(", ", $achoice[1]))));
+                        $row->addData(sprintf("<u>%s</u>:<br />%s", _("Answer"), str_replace("\n", "<br/>", self::getAnswerOptions(array_keys($qchoice[1], true), $achoice[1]))));
                 }
                 if ($answer->hasResultID()) {
                         $form->addHidden(sprintf("result[%d]", $answer->getAnswerID()), $answer->getResultID());
