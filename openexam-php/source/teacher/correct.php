@@ -625,12 +625,12 @@ class CorrectionPage extends TeacherPage
 
                 ob_end_clean();
 
-                header("Content-Type: text/tab-separated-values");
-                header(sprintf("Content-Disposition: attachment;filename=\"%s.tab\"", str_replace(" ", "_", $data->getExamName())));
-                header("Cache-Control: no-cache");
+                header("Content-Type: text/tab-separated-values;charset=utf-8");
+                header(sprintf("Content-Disposition: inline;filename=\"%s.tab\"", str_replace(" ", "_", $data->getExamName())));
+                header("Cache-Control: private");
                 header("Pragma-directive: no-cache");
                 header("Cache-directive: no-cache");
-                header("Pragma: no-cache");
+                header("Pragma: public");
                 header("Expires: 0");
 
                 $i = 1;

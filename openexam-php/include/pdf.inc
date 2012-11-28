@@ -928,11 +928,11 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 closedir($handle);
 
                 header("Content-Type: application/zip");
-                header(sprintf("Content-Disposition: attachment;filename=\"%s.zip\"", $name));
-                header("Cache-Control: no-cache");
+                header(sprintf("Content-Disposition: inline;filename=\"%s.zip\"", $name));
+                header("Cache-Control: private");
                 header("Pragma-directive: no-cache");
                 header("Cache-directive: no-cache");
-                header("Pragma: no-cache");
+                header("Pragma: public");
                 header("Expires: 0");
 
                 readfile($zipname);
