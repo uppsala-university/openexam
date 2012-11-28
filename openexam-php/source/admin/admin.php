@@ -144,8 +144,8 @@ class SupervisorAdminPage extends AdminPage
                         $data = $ldap->searchPrincipalName($user->getUserName());
                         $name = "";
                         if ($data->first() != null) {
-                                if ($data->first()->hasCN()) {
-                                        $name = $data->first()->getCN()->first();
+                                if ($data->first()->hasDisplayName()) {
+                                        $name = $data->first()->getDisplayName()->first();
                                 }
                         }
                         $row = $table->addRow();

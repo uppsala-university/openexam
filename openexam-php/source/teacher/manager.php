@@ -561,7 +561,7 @@ class ManagerPage extends TeacherPage
                 foreach ($contributors as $contributor) {
                         $subobj = $child->addChild($this->getFormatName($contributor->getContributorUser()));
                         if ($info->isContributable()) {
-                                $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=contributor&amp;user=%d", $contributor->getExamID(), $contributor->getContributorID()), sprintf(_("Remove %s as a question contributor for this examination."), $this->getCommonName($contributor->getContributorUser())));
+                                $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=contributor&amp;user=%d", $contributor->getExamID(), $contributor->getContributorID()), sprintf(_("Remove %s as a question contributor for this examination."), $this->getFormatName($contributor->getContributorUser())));
                         }
                 }
 
@@ -576,7 +576,7 @@ class ManagerPage extends TeacherPage
                 foreach ($examinators as $examinator) {
                         $subobj = $child->addChild($this->getFormatName($examinator->getExaminatorUser()));
                         if ($info->isExaminatable()) {
-                                $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=examinator&amp;user=%d", $examinator->getExamID(), $examinator->getExaminatorID()), sprintf(_("Remove %s as an examinator for this examination."), $this->getCommonName($examinator->getExaminatorUser())));
+                                $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=examinator&amp;user=%d", $examinator->getExamID(), $examinator->getExaminatorID()), sprintf(_("Remove %s as an examinator for this examination."), $this->getFormatName($examinator->getExaminatorUser())));
                         }
                 }
 
@@ -588,7 +588,7 @@ class ManagerPage extends TeacherPage
                 $decoders = $this->manager->getDecoders();
                 foreach ($decoders as $decoder) {
                         $subobj = $child->addChild($this->getFormatName($decoder->getDecoderUser()));
-                        $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=decoder&amp;user=%d", $decoder->getExamID(), $decoder->getDecoderID()), sprintf(_("Remove %s as a decoder for this examination."), $this->getCommonName($decoder->getDecoderUser())));
+                        $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;role=decoder&amp;user=%d", $decoder->getExamID(), $decoder->getDecoderID()), sprintf(_("Remove %s as a decoder for this examination."), $this->getFormatName($decoder->getDecoderUser())));
                 }
 
                 //
@@ -639,10 +639,10 @@ class ManagerPage extends TeacherPage
                 // 
                 $media = new MediaLibrary($this->param->exam);
                 $child = $root->addChild(_("Resources"));
-                if(!$info->isFinished()) {
+                if (!$info->isFinished()) {
                         $child->addLink(_("Add"), sprintf("../media/index.php?exam=%d&action=add&type=resource", $this->param->exam));
                 }
-                foreach($media->resource as $file) {
+                foreach ($media->resource as $file) {
                         $subobj = $child->addChild($file->name);
                         if (!$info->isFinished()) {
                                 $subobj->addLink(_("Show"), $file->url, _("Show resource content"));
@@ -651,9 +651,9 @@ class ManagerPage extends TeacherPage
                 }
 
                 printf("<p>" .
-                        _("This page let you add/delete contributors, examinators, decoders and questions from this exam. ") .
-                        _("Not all options might be available, i.e. its not possible to add questions to an already started examination.") .
-                        "</p>\n");
+                    _("This page let you add/delete contributors, examinators, decoders and questions from this exam. ") .
+                    _("Not all options might be available, i.e. its not possible to add questions to an already started examination.") .
+                    "</p>\n");
                 printf("<p>" .
                     _("For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination.") .
                     "</p>\n");

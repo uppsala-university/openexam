@@ -393,8 +393,11 @@ class LdapConnection
                 }
 
                 //
-                // Perform the search against using the supplied filter:
+                // Perform the search against LDAP using the supplied filter:
                 //
+                if (is_string($attr)) {
+                        $attr = array($attr);
+                }
                 if (isset($attr)) {
                         $rs = ldap_search($this->dc, $this->basedn, $filter, $attr);
                 } else {

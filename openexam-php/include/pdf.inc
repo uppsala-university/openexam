@@ -256,7 +256,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->exam = $this->manager->getData();
 
                 $this->ldap = new LdapSearch(LdapConnection::instance());
-                $this->ldap->setAttributeFilter(array("cn", "mail"));
+                $this->ldap->setAttributeFilter(array("displayname", "mail", "cn"));
 
                 $this->board = new ScoreBoard($this->exam->getExamID());
                 $this->grade = new ExamGrades($this->exam->getExamGrades());
@@ -523,7 +523,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 fprintf($stream, "<h5>%s:</h5>\n", _("Responsable for examination"));
                 fprintf($stream, "<p><blockquote>" .
                     _("Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>") .
-                    "</blockquote></p>\n", $user->first()->getMail()->first(), $user->first()->getCN()->first());
+                    "</blockquote></p>\n", $user->first()->getMail()->first(), $user->first()->getDisplayName()->first());
         }
 
         //
@@ -559,7 +559,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         fprintf($stream, "<ul>\n");
                         foreach ($qdata as $uuid => $qlist) {
                                 $user = $this->ldap->searchPrincipalName($uuid);
-                                fprintf($stream, "<li><a href=\"mailto:%s\">%s</a><br/><blockquote>%s: %s</blockquote></li>\n", $user->first()->getMail(), $user->first()->getCN()->first(), _("Corrected questions"), implode(", ", $qlist));
+                                fprintf($stream, "<li><a href=\"mailto:%s\">%s</a><br/><blockquote>%s: %s</blockquote></li>\n", $user->first()->getMail(), $user->first()->getDisplayName()->first(), _("Corrected questions"), implode(", ", $qlist));
                         }
                         fprintf($stream, "</ul>\n");
                 }
@@ -802,11 +802,11 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 //
                 $data = $this->manager->getStudentData($this->student);
                 $user = $this->ldap->searchUID($data->getStudentUser());
-                if (!$user->first()->hasCN()) {
+                if (!$user->first()->hasDisplayName()) {
                         $user = $this->ldap->searchPrincipalName($data->getStudentUser());
                 }
-                if ($user->first()->hasCN()) {
-                        $name = $user->first()->getCN()->first();
+                if ($user->first()->hasDisplayName()) {
+                        $name = $user->first()->getDisplayName()->first();
                 } else {
                         $name = "";
                 }
