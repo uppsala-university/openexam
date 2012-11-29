@@ -36,7 +36,7 @@ if (!isset($_SERVER['SERVER_NAME'])) {
 // 
 // Define the base URL for the web application. You might need to alter the path.
 // 
-define('BASE_URL', sprintf('%s://%s/openexam', isset($_SERVER['HTTPS']) ? "https" : "http"), $_SERVER['SERVER_NAME']);
+define('BASE_URL', sprintf('%s://%s/openexam', (isset($_SERVER['HTTPS']) ? "https" : "http"), $_SERVER['SERVER_NAME']));
 
 // 
 // Enable autosave and session length if non-zero. The value are in seconds.
