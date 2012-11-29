@@ -23,10 +23,20 @@ define('PAGE_TITLE', _('OpenExam PHP - Online examination over the web'));
 define("PAGE_VALIDATOR", false);
 
 // 
-// Define the base URL for the web application. We need to do this because
-// email reminders are generated from code not running under a web server.
+// Set the server name for CLI applications. Uncomment one of these. Use the 
+// static mapping (last) if the hostname differs from its DNS registration.
 // 
-define('BASE_URL', sprintf('%s://www.example.com/openexam', isset($_SERVER['HTTPS']) ? "https" : "http"));
+if (!isset($_SERVER['SERVER_NAME'])) {
+        // $_SERVER['SERVER_NAME'] = trim(`hostname -f`);
+        // $_SERVER['SERVER_NAME'] = php_uname('n');
+        // $_SERVER['SERVER_NAME'] = gethostname();
+        // $_SERVER['SERVER_NAME'] = "www.example.com";
+}
+
+// 
+// Define the base URL for the web application. You might need to alter the path.
+// 
+define('BASE_URL', sprintf('%s://%s/openexam', isset($_SERVER['HTTPS']) ? "https" : "http"), $_SERVER['SERVER_NAME']);
 
 // 
 // Enable autosave and session length if non-zero. The value are in seconds.
