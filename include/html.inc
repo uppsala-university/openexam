@@ -386,6 +386,25 @@ if (!defined('MESSAGEBOX_TITLE_ERROR')) {
         define('MESSAGEBOX_TITLE_ERROR', _('Error'));
 }
 
+// 
+// Constants for script tag:
+// 
+if (!defined('SCRIPT_TYPE_APPLICATION_JAVASCRIPT')) {
+        define('SCRIPT_TYPE_APPLICATION_JAVASCRIPT', 'application/javascript');
+}
+if (!defined('SCRIPT_TYPE_APPLICATION_ECMASCRIPT')) {
+        define('SCRIPT_TYPE_APPLICATION_ECMASCRIPT', 'application/ecmascript');
+}
+if (!defined('SCRIPT_TYPE_TEXT_VBSCRIPT')) {
+        define('SCRIPT_TYPE_TEXT_VBSCRIPT', 'text/vbscript');
+}
+if (!defined('SCRIPT_TYPE_TEXT_JAVASCRIPT')) {          // Obsolete
+        define('SCRIPT_TYPE_TEXT_JAVASCRIPT', 'text/javascript');
+}
+if (!defined('SCRIPT_TYPE_TEXT_ECMASCRIPT')) {          // Obsolete
+        define('SCRIPT_TYPE_TEXT_ECMASCRIPT', 'text/ecmascript');
+}
+
 /**
  * This class serves as the base class for component and container classes.
  *
@@ -1212,6 +1231,73 @@ class Image extends Component
         public function setUseMap($name)
         {
                 parent::setAttr("usemap", $name);
+        }
+
+}
+
+/**
+ * This class represents an script element.
+ *
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class Script extends Container
+{
+
+        /**
+         * Constructor.
+         * @param string|array $text The character data.
+         */
+        public function __construct($text = null)
+        {
+                parent::__construct("script");
+                parent::setText($text);
+        }
+
+        /**
+         * Specifies that the script is executed asynchronously (only for external scripts).
+         */
+        public function setAsync()
+        {
+                parent::setAttr("async", "async");
+        }
+
+        /**
+         * Set the charset attribute.
+         * @param string $encoding The character set encoding.
+         */
+        public function setCharSet($encoding)
+        {
+                parent::setAttr("charset", $encoding);
+        }
+
+        /**
+         * Specifies that the script is executed when the page has finished 
+         * parsing (only for external scripts).
+         */
+        public function setDefer()
+        {
+                parent::setAttr("defer", "defer");
+        }
+
+        /**
+         * Sets the src attribute.
+         * @param string $src The URI.
+         */
+        public function setSource($src)
+        {
+                parent::setAttr("src", $src);
+        }
+
+        /**
+         * Set the MIME type for the script element.
+         * @param type $type The MIME type. See constants SCRIPT_TYPE_XXX or IANA registrations.
+         */
+        public function setType($type = SCRIPT_TYPE_APPLICATION_JAVASCRIPT)
+        {
+                parent::setAttr("type", $type);
         }
 
 }
