@@ -2960,4 +2960,40 @@ class Span extends Container
 
 }
 
+/**
+ * This class represents a pre container (PRE) element.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class Pre extends Container
+{
+
+        public function __construct()
+        {
+                parent::__construct("pre");
+        }
+
+}
+
+/**
+ * This class represents a code container (CODE) element.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class Code extends Container
+{
+
+        public function __construct()
+        {
+                parent::__construct("code");
+        }
+
+}
+
 ?>
