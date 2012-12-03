@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2012-11-28 20:31+0100\n"
+"POT-Creation-Date: 2012-12-03 13:37+0100\n"
 "PO-Revision-Date: 2012-11-26 17:13+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
@@ -26,7 +26,7 @@ msgstr "Dataavdelningen vid BMC"
 msgid "Webmaster"
 msgstr "Webmaster"
 
-#: template/page.php:81 source/test/dirty.php:65
+#: template/page.php:81
 msgid "Template:"
 msgstr "Mall:"
 
@@ -69,11 +69,11 @@ msgstr "Sidansvarig:"
 msgid "OpenExam PHP - Online examination over the web"
 msgstr "OpenExam PHP - Online examination över webben"
 
-#: conf/config.inc:101 source/admin/setup.php:15
+#: conf/config.inc:115 source/admin/setup.php:15
 msgid "System Manager"
 msgstr "Systemförvaltare"
 
-#: conf/config.inc:111
+#: conf/config.inc:125
 msgid "OpenExam PHP"
 msgstr "OpenExam PHP"
 
@@ -2228,11 +2228,6 @@ msgstr "kontakta:"
 msgid "Send an email to <a href=\"%s\">all teachers</a> that have an email address in the LDAP directory."
 msgstr "Skicka ett e-postmeddelande till <a href=\"%s\">alla lärare</a> som har en e-postadress i LDAP-katalogen"
 
-#: source/html.php:33 source/html.php:40
-#, php-format
-msgid "HTML classes test driver"
-msgstr "HTML classes test driver"
-
 #: source/help.php:38
 msgid "Help and information to users"
 msgstr "Hjälp och information till användare"
@@ -2979,7 +2974,7 @@ msgid ""
 msgstr ""
 "Primär roll: %s\n"
 "\n"
-"Tillagd roller:\n"
+"Sekundära roller:\n"
 "- %s\n"
 
 #: include/teacher.inc:390
@@ -3027,6 +3022,9 @@ msgstr "Det var problem att prata med katalogtjänsten, kursinformation är inte
 #, php-format
 msgid " OpenExam project exported %s "
 msgstr "OpenExam projekt exporterat %s"
+
+#~ msgid "HTML classes test driver"
+#~ msgstr "HTML classes test driver"
 
 #~ msgid "Locking Page"
 #~ msgstr "Nerlåsning"
