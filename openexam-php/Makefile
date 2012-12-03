@@ -3,7 +3,7 @@ PACKAGE_VERSION = 1.0
 PACKAGE_ADDRESS = anders.lovgren@bmc.uu.se
 PACKAGE_COPYING = "Computing Department at BMC, Uppsala Biomedical Centre, Uppsala University"
 
-SOURCES  = $(shell find . -type f -name '*.inc' -o -name '*.php' -o -name '*.menu' -o -name '*.ui')
+SOURCES  = $(shell find . -type f -name '*.inc' -o -name '*.php' -o -name '*.menu' -o -name '*.ui' | grep -v source/test)
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
