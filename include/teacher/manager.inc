@@ -161,7 +161,6 @@ class ExamDetails
         private $mask = 0;  // The details mask
         //
         // The mask value is either an numeric or an array.
-
         //
 
         public function __construct($mask)
@@ -320,10 +319,10 @@ class ExamState
 class TreeNode
 {
 
-        private $label;                // Node text
-        private $links = array();      // Optional links
-        private $items = array();      // Optional text items
-        private $childs = array();     // Array of TreeNode objects.
+        private $label;                 // Node text
+        private $links = array();       // Optional links
+        private $items = array();       // Optional text items
+        private $childs = array();      // Array of TreeNode objects.
         private $link = null;
 
         public function __construct($label)
@@ -402,7 +401,11 @@ class TreeNode
                 //
                 // Output this node and any child nodes.
                 //
-                printf("<ul><li>");
+                if (count($this->links) != 0) {
+                        printf("<ul><li class=\"truncate\" style=\"width: %dpx;\">", 550 - count($this->links) * 50);
+                } else {
+                        printf("<ul><li>");
+                }
                 if (isset($this->link)) {
                         printf("<a %s>%s</a>", $this->attr($this->link), $this->label);
                 } else {
@@ -1168,7 +1171,7 @@ class Manager
                 if ($db->in_transaction) {
                         $db->commit();
                 }
-                
+
                 // 
                 // Delete all media and resource files:
                 // 

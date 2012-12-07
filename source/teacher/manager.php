@@ -73,16 +73,6 @@ include "include/import.inc";
 include "include/media.inc";
 
 // 
-// Maximum length of question text before its trunkated in the list.
-//
-if (!defined("MANAGER_QUESTION_MAXLEN")) {
-        define("MANAGER_QUESTION_MAXLEN", 60);
-}
-if (!defined("MANAGER_QUESTION_FORMAT")) {
-        define("MANAGER_QUESTION_FORMAT", "%s: <i>%s</i>");
-}
-
-// 
 // The index page:
 // 
 class ManagerPage extends TeacherPage
@@ -607,13 +597,8 @@ class ManagerPage extends TeacherPage
                 $child = $quest->addChild(_("Active"));
                 $questions = $this->manager->getQuestions('active');
                 foreach ($questions as $question) {
-                        if (strlen($question->getQuestionText()) > MANAGER_QUESTION_MAXLEN) {
-                                $format = sprintf("%s...", MANAGER_QUESTION_FORMAT);
-                                $subobj = $child->addChild(sprintf($format, $question->getQuestionName(), substr(strip_tags($question->getQuestionText()), 0, MANAGER_QUESTION_MAXLEN)));
-                        } else {
-                                $format = MANAGER_QUESTION_FORMAT;
-                                $subobj = $child->addChild(sprintf($format, $question->getQuestionName(), strip_tags($question->getQuestionText())));
-                        }
+                        $subobj = $child->addChild(sprintf("%s: <i>%s</i>", $question->getQuestionName(), strip_tags($question->getQuestionText())));
+
                         if ($this->manager->isContributor(phpCAS::getUser())) {
                                 if (!$info->isDecoded()) {
                                         $subobj->addLink(_("Edit"), sprintf("contribute.php?exam=%d&amp;action=edit&amp;question=%d", $question->getExamID(), $question->getQuestionID()), _("Edit properties for this question"));

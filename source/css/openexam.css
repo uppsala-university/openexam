@@ -368,6 +368,21 @@ h4.secthead {
 }
 
 /**
+ * Generic truncated text. Used in tree views together with links on right hand side.
+ */
+.truncate {
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: top;
+    padding-right: 15px;
+}
+.truncate i {
+    color: gray;
+}
+
+/**
  *  Message box style (#1: mostly square boxes with background).
 **/
 div.mbox {
