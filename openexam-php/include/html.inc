@@ -726,7 +726,7 @@ class Cdata
         public function setLink($link)
         {
                 $this->link = $link;
-                $this->link->setText(&$this->text);
+                $this->link->setText($this->text);
         }
 
         /**
