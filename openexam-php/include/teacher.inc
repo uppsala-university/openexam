@@ -139,7 +139,12 @@ class TeacherPage extends BasePage
         {
                 if (!isset($this->ldap)) {
                         $this->ldap = new LdapSearch(LdapConnection::create());
-                        $this->ldap->setAttributeFilter(array("displayname", "mail", "cn", "o", "department"));
+                        $this->ldap->setAttributeFilter(array(
+                                "displayname",
+                                "mail",
+                                "cn",
+                                "o",
+                                "department"));
                 }
         }
 
@@ -365,8 +370,10 @@ class TeacherPage extends BasePage
                         );
 
                         $roles->script = basename($_SERVER['SCRIPT_NAME']);
-                        $roles->value = array();
-                        $roles->suppl = array();
+                        $roles->value = array(
+);
+                        $roles->suppl = array(
+);
 
                         foreach ($scripts as $script => $role) {
                                 if ($roles->script == $script) {
@@ -491,15 +498,13 @@ class TeacherPage extends BasePage
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);
                         if ($entry->first()->hasMail()) {
-                                return new MailRecepient($entry->first()->getDisplayName()->first(),
-                                        $entry->first()->getMail()->first());
+                                return new MailRecepient($entry->first()->getDisplayName()->first(), $entry->first()->getMail()->first());
                         }
                 }
                 if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
                         $entry = $this->ldap->searchPrincipalName($user);
                         if ($entry->first()->hasMail()) {
-                                return new MailRecepient($entry->first()->getDisplayName()->first(),
-                                        $entry->first()->getMail()->first());
+                                return new MailRecepient($entry->first()->getDisplayName()->first(), $entry->first()->getMail()->first());
                         }
                 }
                 return null;
@@ -509,61 +514,139 @@ class TeacherPage extends BasePage
 
 class TeacherUtils
 {
+
         private $user;  // The calling user
         private $page;  // The calling page (teacher)
         private $roles;
-        
+
         public function __construct($page, $user)
         {
                 $this->page = $page;
                 $this->user = $user;
                 $this->roles = Teacher::getRoleCount($user);
         }
-        
-        public function listExams()
+
+        public function listExams($order = 'state')
         {
+                printf("<p>" .
+                    _("This page list all your examiniations. ") .
+                    _("Select an action to perform (i.e. add, edit, delete or export) using the links. ") .
+                    "</p>\n");
+
+                $mode = array(
+                        "state" => _("State"),
+                        "name"  => _("Name"),
+                        "date"  => _("Date")
+                );
+                $disp = array(
+                    );
+                printf("<span class=\"links viewmode\">\n");
+                foreach ($mode as $name => $text) {
+                        if ($order != $name) {
+                                $disp[] = sprintf("<a href=\"?order=%s\">%s</a>", $name, $text);
+                        } else {
+                                $disp[] = $text;
+                        }
+                }
+                printf("%s: %s\n", _("Order"), implode(", ", $disp));
+                printf("</span>\n");
+
                 $tree = new TreeBuilder(_("Examinations"));
                 $root = $tree->getRoot();
                 if ($this->roles->getManagerRoles() > 0) {
-                        $root->addLink(_("Import"), "?action=import", _("Creates a new examination by importing an OpenExam project."));
-                        $root->addLink(_("Add"), "?action=add", _("Creates a new examination."));
+                        $root->addLink(_("Import"), "manager.php?action=import", _("Creates a new examination by importing an OpenExam project."));
+                        $root->addLink(_("Add"), "manager.php?action=add", _("Creates a new examination."));
                 }
 
-                //
-                // Group the examinations by their state:
-                //
-                $exams = Manager::getExams(phpCAS::getUser());
-                $nodes = array(
-                        'u' => array(
-                                'name' => _("Upcoming"),
-                                'data' => array()
-                        ),
-                        'a' => array(
-                                'name' => _("Active"),
-                                'data' => array()
-                        ),
-                        'f' => array(
-                                'name' => _("Finished"),
-                                'data' => array()
-                        ),
-                        't' => array(
-                                'name' => _("Testing"),
-                                'data' => array()
-                        )
-                );
+                if ($order == "state") {
+                        //
+                        // Group the examinations by their state:
+                        //
+                        $exams = Manager::getExams(phpCAS::getUser());
+                        $nodes = array(
+                                'u' => array(
+                                        'name' => _("Upcoming"),
+                                        'data' => array(
+)
+                                ),
+                                'a' => array(
+                                        'name' => _("Active"),
+                                        'data' => array(
+)
+                                ),
+                                'f' => array(
+                                        'name' => _("Finished"),
+                                        'data' => array(
+)
+                                ),
+                                't' => array(
+                                        'name' => _("Testing"),
+                                        'data' => array(
+)
+                                )
+                        );
 
-                foreach ($exams as $exam) {
-                        $manager = new Manager($exam->getExamID());
-                        $state = $manager->getInfo();
-                        if ($state->isTestCase()) {
-                                $nodes['t']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isUpcoming()) {
-                                $nodes['u']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isRunning()) {
-                                $nodes['a']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isFinished()) {
-                                $nodes['f']['data'][] = array($exam->getExamName(), $state);
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                if ($state->isTestCase()) {
+                                        $nodes['t']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isUpcoming()) {
+                                        $nodes['u']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isRunning()) {
+                                        $nodes['a']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isFinished()) {
+                                        $nodes['f']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                }
                         }
+                }
+                if ($order == "name") {
+                        //
+                        // Group the examinations by their name:
+                        //
+                        $exams = Manager::getExams(phpCAS::getUser(), "name", "ASC");
+                        $nodes = array(
+                                'n' => array(
+                                        'name' => _("Ordered by name"),
+                                        'data' => array()
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                        $nodes['n']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                }
+                }
+                if ($order == "date") {
+                        //
+                        // Group the examinations by their start date:
+                        //
+                        $exams = Manager::getExams(phpCAS::getUser());
+                        $nodes = array(
+                                'd' => array(
+                                        'name' => _("Ordered by start date"),
+                                        'data' => array()
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                        $nodes['d']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                }
                 }
 
                 foreach ($nodes as $type => $group) {
@@ -573,22 +656,25 @@ class TeacherUtils
                                         $name = $data[0];
                                         $state = $data[1];
                                         $child = $node->addChild($name);
-                                        $child->setLink(sprintf("?exam=%d&amp;action=show", $state->getInfo()->getExamID()));
-                                        $child->addLink(_("Export"), sprintf("?exam=%d&amp;action=export", $state->getInfo()->getExamID()), _("Export this examination including its questions as XML data."));
+                                        $child->setLink(sprintf("manager.php?exam=%d&amp;action=show", $state->getInfo()->getExamID()));
+                                        $child->addLink(_("Export"), sprintf("export.php?exam=%d", $state->getInfo()->getExamID()), _("Open the page for selecting the export options."));
                                         if ($this->roles->getManagerRoles() > 0) {
-                                                $child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $state->getInfo()->getExamID()), _("Create a new examination by using this examination as a template."));
-                                                $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Edit common properties like name, description or grades for this examination."));
+                                                $child->addLink(_("Copy"), sprintf("manager.php?exam=%d&amp;action=copy", $state->getInfo()->getExamID()), _("Create a new examination by using this examination as a template."));
+                                                $child->addLink(_("Edit"), sprintf("manager.php?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Edit common properties like name, description or grades for this examination."));
                                         }
                                         if (!$state->hasAnswers()) {
-                                                $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete", $state->getInfo()->getExamID()), _("Deletes the examination along with any questions."), array(EVENT_ON_CLICK => EVENT_HANDLER_CONFIRM_DELETE));
+                                                $child->addLink(_("Delete"), sprintf("manager.php?exam=%d&amp;action=delete", $state->getInfo()->getExamID()), _("Deletes the examination along with any questions."), array(
+                                                        EVENT_ON_CLICK => EVENT_HANDLER_CONFIRM_DELETE));
                                         } elseif ($state->isTestCase()) {
-                                                $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=cancel", $state->getInfo()->getExamID()), _("Deletes the examination along with any questions."));
+                                                $child->addLink(_("Delete"), sprintf("manager.php?exam=%d&amp;action=cancel", $state->getInfo()->getExamID()), _("Deletes the examination along with any questions."));
                                         }
                                         if (!$state->isTestCase() && $state->isUpcoming()) {
-                                                $child->addLink(_("Test"), sprintf("?exam=%d&amp;action=test", $state->getInfo()->getExamID()), _("Test this examination by creating and opening a copy."), array("target" => "_blank"));
+                                                $child->addLink(_("Test"), sprintf("manager.php?exam=%d&amp;action=test", $state->getInfo()->getExamID()), _("Test this examination by creating and opening a copy."), array(
+                                                        "target" => "_blank"));
                                         }
                                         if ($state->isTestCase() && !$state->isFinished()) {
-                                                $child->addLink(_("Test"), sprintf("../exam/index.php?exam=%d", $state->getInfo()->getExamID()), _("Run this test case examination."), array("target" => "_blank"));
+                                                $child->addLink(_("Test"), sprintf("../exam/index.php?exam=%d", $state->getInfo()->getExamID()), _("Run this test case examination."), array(
+                                                        "target" => "_blank"));
                                         }
                                         $child->addChild(sprintf("%s: %s", _("Created"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamCreated()))));
                                         $sdate = strtotime($state->getInfo()->getExamStartTime());
@@ -604,7 +690,8 @@ class TeacherUtils
                 }
 
                 $tree->output();
-                
         }
+
 }
+
 ?>
