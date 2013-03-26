@@ -515,6 +515,10 @@ class TeacherPage extends BasePage
 class TeacherUtils
 {
 
+        const state = "state";
+        const name = "name";
+        const date = "date";
+
         private $user;  // The calling user
         private $page;  // The calling page (teacher)
         private $roles;
@@ -526,13 +530,8 @@ class TeacherUtils
                 $this->roles = Teacher::getRoleCount($user);
         }
 
-        public function listManageable($order = 'state')
+        private function printOrderSelect($order)
         {
-                printf("<p>" .
-                    _("This page list all your examiniations. ") .
-                    _("Select an action to perform (i.e. add, edit, delete or export) using the links. ") .
-                    "</p>\n");
-
                 $mode = array(
                         "state" => _("State"),
                         "name"  => _("Name"),
@@ -550,6 +549,16 @@ class TeacherUtils
                 }
                 printf("%s: %s\n", _("Order"), implode(", ", $disp));
                 printf("</span>\n");
+        }
+
+        public function listManageable($order = self::state)
+        {
+                printf("<p>" .
+                    _("This page list all your examiniations. ") .
+                    _("Select an action to perform (i.e. add, edit, delete or export) using the links. ") .
+                    "</p>\n");
+
+                $this->printOrderSelect($order);
 
                 $tree = new TreeBuilder(_("Examinations"));
                 $root = $tree->getRoot();
@@ -558,7 +567,7 @@ class TeacherUtils
                         $root->addLink(_("Add"), "manager.php?action=add", _("Creates a new examination."));
                 }
 
-                if ($order == "state") {
+                if ($order == self::state) {
                         //
                         // Group the examinations by their state:
                         //
@@ -607,8 +616,7 @@ class TeacherUtils
                                                 $state);
                                 }
                         }
-                }
-                if ($order == "name") {
+                } elseif ($order == self::name) {
                         //
                         // Group the examinations by their name:
                         //
@@ -617,7 +625,7 @@ class TeacherUtils
                                 'n' => array(
                                         'name' => _("Ordered by name"),
                                         'data' => array(
-)
+                                        )
                                 )
                         );
 
@@ -628,17 +636,16 @@ class TeacherUtils
                                         $exam->getExamName(),
                                         $state);
                         }
-                }
-                if ($order == "date") {
+                } elseif ($order == self::date) {
                         //
-                        // Group the examinations by their start date:
+                        // Group the examinations by their start time:
                         //
                         $exams = Manager::getExams(phpCAS::getUser());
                         $nodes = array(
                                 'd' => array(
-                                        'name' => _("Ordered by start date"),
+                                        'name' => _("Ordered by start time"),
                                         'data' => array(
-)
+                                        )
                                 )
                         );
 
@@ -687,6 +694,118 @@ class TeacherUtils
                                                 $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, $sdate)));
                                                 $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, $edate)));
                                         }
+                                }
+                        }
+                }
+
+                $tree->output();
+        }
+
+        public function listContributable($order = self::state)
+        {
+                printf("<h3>" . _("Contribute Questions") . "</h3>\n");
+                printf("<p>" . _("Select the examination you wish to contribute questions for (applies only to contributable examinations).") . "</p>\n");
+
+                $this->printOrderSelect($order);
+
+                $tree = new TreeBuilder(_("Examinations"));
+                $root = $tree->getRoot();
+
+                if ($order == self::state) {
+                        //
+                        // Group the examinations by their state:
+                        //
+                        $exams = Contribute::getExams(phpCAS::getUser());
+                        $nodes = array(
+                                'c' => array(
+                                        'name' => _("Contributable"),
+                                        'data' => array(
+                                        )
+                                ),
+                                'a' => array(
+                                        'name' => _("Active"),
+                                        'data' => array(
+                                        )
+                                ),
+                                'f' => array(
+                                        'name' => _("Finished"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                if ($state->isContributable()) {
+                                        $nodes['c']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isRunning()) {
+                                        $nodes['a']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isFinished()) {
+                                        $nodes['f']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                }
+                        }
+                } elseif ($order == self::name) {
+                        //
+                        // Group the examinations by their name:
+                        //
+                        $exams = Contribute::getExams(phpCAS::getUser(), "name", "ASC");
+                        $nodes = array(
+                                'n' => array(
+                                        'name' => _("Ordered by name"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                $nodes['n']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
+                } elseif ($order == self::date) {
+                        //
+                        // Group the examinations by their start time:
+                        //
+                        $exams = Contribute::getExams(phpCAS::getUser());
+                        $nodes = array(
+                                'd' => array(
+                                        'name' => _("Ordered by start time"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                $nodes['d']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
+                }
+
+                foreach ($nodes as $type => $group) {
+                        if (count($group['data']) > 0) {
+                                $node = $root->addChild($group['name']);
+                                foreach ($group['data'] as $data) {
+                                        $name = $data[0];
+                                        $state = $data[1];
+                                        $child = $node->addChild($name);
+                                        if ($state->isContributable()) {
+                                                $child->setLink(sprintf("contribute.php?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to see all questions in this examination."));
+                                                $child->addLink(_("Add"), sprintf("contribute.php?exam=%d&amp;action=add", $state->getInfo()->getExamID()), _("Click to add a question to this examination."));
+                                        }
+                                        $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
+                                        $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
                                 }
                         }
                 }

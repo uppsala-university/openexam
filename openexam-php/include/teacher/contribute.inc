@@ -24,7 +24,7 @@ class Contribute
         //
         // Get all exams where this user is a contributor.
         //
-        public static function getExams($user)
+        public static function getExams($user, $order = "starttime", $collate = "DESC")
         {
                 $sql = sprintf("SELECT  e.id AS ExamID,
                                         e.name AS ExamName,
@@ -36,7 +36,7 @@ class Contribute
                                         e.creator AS ExamCreator
                                 FROM exams e, contributors c
                                 WHERE e.id = c.exam_id AND c.user = '%s'
-                                ORDER BY e.starttime", $user);
+                                ORDER BY e.%s %s", $user, $order, $collate);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }

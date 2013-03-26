@@ -90,6 +90,7 @@ class ContributePage extends TeacherPage
                 "image"    => parent::pattern_url,
                 "what"     => "/^(question|topic)$/",
                 "topic"    => "/^(\d+|all)$/",
+                "order"    => "/^(state|name|date)$/",
                 "random"   => parent::pattern_index);
 
         public function __construct()
@@ -108,6 +109,13 @@ class ContributePage extends TeacherPage
                 if (isset($this->param->exam)) {
                         $this->checkAccess();
                 }
+                
+                // 
+                // Set defaults:
+                // 
+                if (!isset($this->param->order)) {
+                        $this->param->order = "state";
+                }
 
                 //
                 // Bussiness logic:
@@ -117,14 +125,21 @@ class ContributePage extends TeacherPage
                                 if ($this->param->action == "add") {
                                         if (isset($this->param->what) && $this->param->what == "topic") {
                                                 if (isset($this->param->mode) && $this->param->mode == "save") {
-                                                        $this->assert(array('name', 'random'));
+                                                        $this->assert(array(
+                                                                'name',
+                                                                'random'));
                                                         $this->saveAddTopic();
                                                 } else {
                                                         $this->formAddTopic();
                                                 }
                                         } else {
                                                 if (isset($this->param->mode) && $this->param->mode == "save") {
-                                                        $this->assert(array('score', 'name', 'quest', 'type', 'user'));
+                                                        $this->assert(array(
+                                                                'score',
+                                                                'name',
+                                                                'quest',
+                                                                'type',
+                                                                'user'));
                                                         $this->saveAddQuestion();
                                                 } else {
                                                         $this->formAddQuestion();
@@ -133,7 +148,10 @@ class ContributePage extends TeacherPage
                                 } elseif ($this->param->action == "edit") {
                                         if (isset($this->param->what) && $this->param->what == "topic") {
                                                 if (isset($this->param->mode) && $this->param->mode == "save") {
-                                                        $this->assert(array('name', 'random', 'topic'));
+                                                        $this->assert(array(
+                                                                'name',
+                                                                'random',
+                                                                'topic'));
                                                         $this->saveEditTopic();
                                                 } else {
                                                         $this->assert('topic');
@@ -141,7 +159,13 @@ class ContributePage extends TeacherPage
                                                 }
                                         } else {
                                                 if (isset($this->param->mode) && $this->param->mode == "save") {
-                                                        $this->assert(array('score', 'name', 'quest', 'type', 'question', 'user'));
+                                                        $this->assert(array(
+                                                                'score',
+                                                                'name',
+                                                                'quest',
+                                                                'type',
+                                                                'question',
+                                                                'user'));
                                                         $this->saveEditQuestion();
                                                 } else {
                                                         $this->assert('question');
@@ -166,7 +190,9 @@ class ContributePage extends TeacherPage
                                         }
                                 } elseif ($this->param->action == "remove") {
                                         if (isset($this->param->mode) && $this->param->mode == "save") {
-                                                $this->assert(array('question', 'comment'));
+                                                $this->assert(array(
+                                                        'question',
+                                                        'comment'));
                                                 $this->saveRemoveQuestion();
                                         } else {
                                                 $this->assert('question');
@@ -465,9 +491,9 @@ class ContributePage extends TeacherPage
                 $data = $this->manager->getData();
                 $info = $this->manager->getInfo();
                 $qrec = new DataRecord(array(
-                            "examid"       => $this->param->exam,
-                            "topicid"      => $this->param->topic,
-                            "questiontype" => "multiple")
+                        "examid"       => $this->param->exam,
+                        "topicid"      => $this->param->topic,
+                        "questiontype" => "multiple")
                 );
 
                 printf("<h3>" . _("Add Question") . "</h3>\n");
@@ -657,9 +683,9 @@ class ContributePage extends TeacherPage
                 $data = $this->manager->getData();
                 $info = $this->manager->getInfo();
                 $trec = new DataRecord(array(
-                            "examid"      => $this->param->exam,
-                            "topicname"   => "",
-                            "topicrandom" => 0)
+                        "examid"      => $this->param->exam,
+                        "topicname"   => "",
+                        "topicrandom" => 0)
                 );
 
                 printf("<h3>" . _("Add Topic") . "</h3>\n");
@@ -710,7 +736,8 @@ class ContributePage extends TeacherPage
                         "compact" => _("Compact"),
                         "own"     => _("Own")
                 );
-                $disp = array();
+                $disp = array(
+                    );
                 printf("<span class=\"links viewmode\">\n");
                 foreach ($mode as $name => $text) {
                         if ($show != $name) {
@@ -765,7 +792,8 @@ class ContributePage extends TeacherPage
                                         if ($info->isContributable()) {
                                                 $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete&amp;question=%d", $question->getExamID(), $question->getQuestionID()));
                                         }
-                                        $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d&amp;preview=1", $question->getExamID(), $question->getQuestionID()), _("Preview this question"), array("target" => "_blank"));
+                                        $child->addLink(_("View"), sprintf("../exam/index.php?exam=%d&amp;question=%d&amp;preview=1", $question->getExamID(), $question->getQuestionID()), _("Preview this question"), array(
+                                                "target" => "_blank"));
                                 }
                                 if ($show != "compact") {
                                         $child->addChild(sprintf("%s: %.01f", _("Score"), $question->getQuestionScore()));
@@ -804,63 +832,10 @@ class ContributePage extends TeacherPage
         //
         // Show all exams where caller has been granted the contribute role.
         //
-        private static function showAvailableExams()
+        private function showAvailableExams()
         {
-                printf("<h3>" . _("Contribute Questions") . "</h3>\n");
-                printf("<p>" . _("Select the examination you wish to contribute questions for (applies only to contributable examinations).") . "</p>\n");
-
-                $tree = new TreeBuilder(_("Examinations"));
-                $root = $tree->getRoot();
-
-                //
-                // Group the examinations by their state:
-                //
-                $exams = Contribute::getExams(phpCAS::getUser());
-                $nodes = array(
-                        'c' => array(
-                                'name' => _("Contributable"),
-                                'data' => array()
-                        ),
-                        'a' => array(
-                                'name' => _("Active"),
-                                'data' => array()
-                        ),
-                        'f' => array(
-                                'name' => _("Finished"),
-                                'data' => array()
-                        )
-                );
-
-                foreach ($exams as $exam) {
-                        $manager = new Manager($exam->getExamID());
-                        $state = $manager->getInfo();
-                        if ($state->isContributable()) {
-                                $nodes['c']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isRunning()) {
-                                $nodes['a']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isFinished()) {
-                                $nodes['f']['data'][] = array($exam->getExamName(), $state);
-                        }
-                }
-
-                foreach ($nodes as $type => $group) {
-                        if (count($group['data']) > 0) {
-                                $node = $root->addChild($group['name']);
-                                foreach ($group['data'] as $data) {
-                                        $name = $data[0];
-                                        $state = $data[1];
-                                        $child = $node->addChild($name);
-                                        if ($state->isContributable()) {
-                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to see all questions in this examination."));
-                                                $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()), _("Click to add a question to this examination."));
-                                        }
-                                        $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
-                                        $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
-                                }
-                        }
-                }
-
-                $tree->output();
+                $utils = new TeacherUtils($this, phpCAS::getUser());
+                $utils->listContributable($this->param->order);
         }
 
 }
