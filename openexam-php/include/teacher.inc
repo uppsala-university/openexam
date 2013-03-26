@@ -822,7 +822,7 @@ class TeacherUtils
                     "</p>\n");
 
                 $this->printOrderSelect($order);
-                
+
                 $tree = new TreeBuilder(_("Examinations"));
                 $root = $tree->getRoot();
 
@@ -835,22 +835,22 @@ class TeacherUtils
                                 'c' => array(
                                         'name' => _("Correctable"),
                                         'data' => array(
-)
+                                        )
                                 ),
                                 'd' => array(
                                         'name' => _("Decoded"),
                                         'data' => array(
-)
+                                        )
                                 ),
                                 'u' => array(
                                         'name' => _("Upcoming"),
                                         'data' => array(
-)
+                                        )
                                 ),
                                 'a' => array(
                                         'name' => _("Active"),
                                         'data' => array(
-)
+                                        )
                                 )
                         );
 
@@ -879,12 +879,12 @@ class TeacherUtils
                         //
                         // Group the examinations by their name:
                         //
-                $exams = Correct::getExams($this->user, "name", "ASC");
+                        $exams = Correct::getExams($this->user, "name", "ASC");
                         $nodes = array(
                                 'n' => array(
                                         'name' => _("Ordered by name"),
                                         'data' => array(
-)
+                                        )
                                 )
                         );
 
@@ -899,12 +899,12 @@ class TeacherUtils
                         //
                         // Group the examinations by their name:
                         //
-                $exams = Correct::getExams($this->user);
+                        $exams = Correct::getExams($this->user);
                         $nodes = array(
                                 'd' => array(
                                         'name' => _("Ordered by start time"),
                                         'data' => array(
-)
+                                        )
                                 )
                         );
 
@@ -931,6 +931,109 @@ class TeacherUtils
                                         }
                                         $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
                                         $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+                                }
+                        }
+                }
+
+                $tree->output();
+        }
+
+        public function listAssistable($order = self::state)
+        {
+                printf("<h3>" . _("Examinator Tasks") . "</h3>\n");
+                printf("<p>" . _("The tree of examinations shows all examination you can reschedule or add students to.") . "</p>\n");
+
+                $this->printOrderSelect($order);
+
+                $tree = new TreeBuilder(_("Examinations"));
+                $root = $tree->getRoot();
+
+                if ($order == self::state) {
+                        $exams = Examinator::getExams($this->user);
+                        $nodes = array(
+                                'u' => array(
+                                        'name' => _("Upcoming"),
+                                        'data' => array(
+                                        )
+                                ),
+                                'a' => array(
+                                        'name' => _("Active"),
+                                        'data' => array(
+                                        )
+                                ),
+                                'f' => array(
+                                        'name' => _("Finished"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                if ($state->isUpcoming()) {
+                                        $nodes['u']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isRunning()) {
+                                        $nodes['a']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isFinished()) {
+                                        $nodes['f']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                }
+                        }
+                } elseif ($order == self::name) {
+                        $exams = Examinator::getExams($this->user, "name", "ASC");
+                        $nodes = array(
+                                'n' => array(
+                                        'name' => _("Ordered by name"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                $nodes['n']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
+                } elseif ($order == self::date) {
+                        $exams = Examinator::getExams($this->user);
+                        $nodes = array(
+                                'd' => array(
+                                        'name' => _("Ordered by start time"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                $nodes['d']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
+                }
+
+                foreach ($nodes as $type => $group) {
+                        if (count($group['data']) > 0) {
+                                $node = $root->addChild($group['name']);
+                                foreach ($group['data'] as $data) {
+                                        $name = $data[0];
+                                        $state = $data[1];
+                                        $child = $node->addChild($name);
+                                        $child->setLink(sprintf("?exam=%d&action=show", $state->getInfo()->getExamID()), _("Click on this link to view and/or edit this examination"));
+                                        $stobj = $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
+                                        $etobj = $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+                                        if ($state->isExaminatable()) {
+                                                $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()), _("Click on this link to add students to this examination"));
+                                                $stobj->addLink(_("Change"), sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Click on this link to reschedule the examination"));
+                                                $etobj->addLink(_("Change"), sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Click on this link to reschedule the examination"));
+                                        }
                                 }
                         }
                 }
