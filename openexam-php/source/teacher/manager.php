@@ -97,6 +97,7 @@ class ManagerPage extends TeacherPage
 
         public function __construct()
         {
+                $this->param->order = "date";
                 parent::__construct(_("Examination Management"), self::$params);
         }
 
@@ -111,13 +112,6 @@ class ManagerPage extends TeacherPage
                 // Authorization first:
                 //
                 $this->checkAccess();
-
-                // 
-                // Set defaults:
-                // 
-                if (!isset($this->param->order)) {
-                        $this->param->order = "date";
-                }
 
                 //
                 // Bussiness logic:
