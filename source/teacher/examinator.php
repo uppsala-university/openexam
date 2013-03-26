@@ -93,6 +93,7 @@ class ExaminatorPage extends TeacherPage
                 "etime"  => parent::pattern_text,
                 "action" => "/^(add|edit|show|delete)$/",
                 "year"   => parent::pattern_year,
+                "order"  => "/^(state|name|date)$/",
                 "termin" => parent::pattern_termin
         );
 
@@ -113,6 +114,13 @@ class ExaminatorPage extends TeacherPage
                         $this->checkAccess();
                 }
 
+                // 
+                // Set defaults:
+                // 
+                if (!isset($this->param->order)) {
+                        $this->param->order = "state";
+                }
+
                 //
                 // Bussiness logic:
                 //
@@ -124,20 +132,28 @@ class ExaminatorPage extends TeacherPage
                                 if (isset($this->param->mode) && $this->param->mode == "save") {
                                         if (isset($this->param->what)) {
                                                 if ($this->param->what == "user") {
-                                                        $this->assert(array('user', 'code'));
+                                                        $this->assert(array(
+                                                                'user',
+                                                                'code'));
                                                         $this->saveAddStudent();
                                                 } elseif ($this->param->what == "users") {
                                                         $this->assert('users');
                                                         $this->saveAddStudents();
                                                 } elseif ($this->param->what == "course") {
-                                                        $this->assert(array('course', 'year', 'termin'));
+                                                        $this->assert(array(
+                                                                'course',
+                                                                'year',
+                                                                'termin'));
                                                         $this->saveAddCourse();
                                                 } else {
                                                         $this->formAddStudents($this->param->what);
                                                 }
                                         }
                                 } elseif (isset($this->param->mode) && $this->param->mode == "show") {
-                                        $this->assert(array('course', 'year', 'termin'));
+                                        $this->assert(array(
+                                                'course',
+                                                'year',
+                                                'termin'));
                                         $this->showAddCourse();
                                 } else {
                                         if (!isset($this->param->what)) {
@@ -147,7 +163,9 @@ class ExaminatorPage extends TeacherPage
                                 }
                         } elseif ($this->param->action == "edit") {
                                 if (isset($this->param->mode) && $this->param->mode == "save") {
-                                        $this->assert(array('stime', 'etime'));
+                                        $this->assert(array(
+                                                'stime',
+                                                'etime'));
                                         $this->saveEditSchedule();
                                 } else {
                                         $this->formEditSchedule();
@@ -228,7 +246,8 @@ class ExaminatorPage extends TeacherPage
                         "users"  => _("List"),
                         "course" => _("Import")
                 );
-                $disp = array();
+                $disp = array(
+);
                 printf("<span class=\"links viewmode\">\n");
                 foreach ($mode as $name => $text) {
                         if ($what != $name) {
@@ -483,62 +502,10 @@ class ExaminatorPage extends TeacherPage
         // Show a tree of all examinations where caller has been assigned the
         // examinator role.
         //
-        private static function showAvailableExams()
+        private function showAvailableExams()
         {
-                printf("<h3>" . _("Examinator Tasks") . "</h3>\n");
-                printf("<p>" . _("The tree of examinations shows all examination you can reschedule or add students to.") . "</p>\n");
-
-                $tree = new TreeBuilder(_("Examinations"));
-                $root = $tree->getRoot();
-
-                $exams = Examinator::getExams(phpCAS::getUser());
-                $nodes = array(
-                        'u' => array(
-                                'name' => _("Upcoming"),
-                                'data' => array()
-                        ),
-                        'a' => array(
-                                'name' => _("Active"),
-                                'data' => array()
-                        ),
-                        'f' => array(
-                                'name' => _("Finished"),
-                                'data' => array()
-                        )
-                );
-
-                foreach ($exams as $exam) {
-                        $manager = new Manager($exam->getExamID());
-                        $state = $manager->getInfo();
-                        if ($state->isUpcoming()) {
-                                $nodes['u']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isRunning()) {
-                                $nodes['a']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isFinished()) {
-                                $nodes['f']['data'][] = array($exam->getExamName(), $state);
-                        }
-                }
-
-                foreach ($nodes as $type => $group) {
-                        if (count($group['data']) > 0) {
-                                $node = $root->addChild($group['name']);
-                                foreach ($group['data'] as $data) {
-                                        $name = $data[0];
-                                        $state = $data[1];
-                                        $child = $node->addChild($name);
-                                        $child->setLink(sprintf("?exam=%d&action=show", $state->getInfo()->getExamID()), _("Click on this link to view and/or edit this examination"));
-                                        $stobj = $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
-                                        $etobj = $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
-                                        if ($state->isExaminatable()) {
-                                                $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add", $state->getInfo()->getExamID()), _("Click on this link to add students to this examination"));
-                                                $stobj->addLink(_("Change"), sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Click on this link to reschedule the examination"));
-                                                $etobj->addLink(_("Change"), sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Click on this link to reschedule the examination"));
-                                        }
-                                }
-                        }
-                }
-
-                $tree->output();
+                $utils = new TeacherUtils($this, phpCAS::getUser());
+                $utils->listAssistable($this->param->order);
         }
 
 }
