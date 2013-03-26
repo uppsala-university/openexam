@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2013 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/teacher/decoder.inc
@@ -24,7 +24,7 @@ class Decoder
         //
         // Get all exams where this user is a contributor.
         //
-        public static function getExams($user)
+        public static function getExams($user, $order = "starttime", $collate = "DESC")
         {
                 $sql = sprintf("SELECT  e.id AS ExamID,
                                         e.name AS ExamName,
@@ -37,7 +37,7 @@ class Decoder
                                         e.decoded AS ExamDecoded
 			FROM exams e, decoders d
 			WHERE e.id = d.exam_id AND d.user = '%s'
-			ORDER BY e.starttime", $user);
+			ORDER BY e.%s %s", $user, $order, $collate);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
