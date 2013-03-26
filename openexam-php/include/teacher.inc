@@ -371,9 +371,9 @@ class TeacherPage extends BasePage
 
                         $roles->script = basename($_SERVER['SCRIPT_NAME']);
                         $roles->value = array(
-);
+                            );
                         $roles->suppl = array(
-);
+                            );
 
                         foreach ($scripts as $script => $role) {
                                 if ($roles->script == $script) {
@@ -526,7 +526,7 @@ class TeacherUtils
                 $this->roles = Teacher::getRoleCount($user);
         }
 
-        public function listExams($order = 'state')
+        public function listManageable($order = 'state')
         {
                 printf("<p>" .
                     _("This page list all your examiniations. ") .
@@ -567,22 +567,22 @@ class TeacherUtils
                                 'u' => array(
                                         'name' => _("Upcoming"),
                                         'data' => array(
-)
+                                        )
                                 ),
                                 'a' => array(
                                         'name' => _("Active"),
                                         'data' => array(
-)
+                                        )
                                 ),
                                 'f' => array(
                                         'name' => _("Finished"),
                                         'data' => array(
-)
+                                        )
                                 ),
                                 't' => array(
                                         'name' => _("Testing"),
                                         'data' => array(
-)
+                                        )
                                 )
                         );
 
@@ -616,17 +616,18 @@ class TeacherUtils
                         $nodes = array(
                                 'n' => array(
                                         'name' => _("Ordered by name"),
-                                        'data' => array()
+                                        'data' => array(
+)
                                 )
                         );
 
                         foreach ($exams as $exam) {
                                 $manager = new Manager($exam->getExamID());
                                 $state = $manager->getInfo();
-                                        $nodes['n']['data'][] = array(
-                                                $exam->getExamName(),
-                                                $state);
-                                }
+                                $nodes['n']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
                 }
                 if ($order == "date") {
                         //
@@ -636,17 +637,18 @@ class TeacherUtils
                         $nodes = array(
                                 'd' => array(
                                         'name' => _("Ordered by start date"),
-                                        'data' => array()
+                                        'data' => array(
+)
                                 )
                         );
 
                         foreach ($exams as $exam) {
                                 $manager = new Manager($exam->getExamID());
                                 $state = $manager->getInfo();
-                                        $nodes['d']['data'][] = array(
-                                                $exam->getExamName(),
-                                                $state);
-                                }
+                                $nodes['d']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
                 }
 
                 foreach ($nodes as $type => $group) {

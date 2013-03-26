@@ -186,7 +186,7 @@ class ManagerPage extends TeacherPage
         private function showAvailableExams()
         {
                 $utils = new TeacherUtils($this, phpCAS::getUser());
-                $utils->listExams($this->param->order);
+                $utils->listManageable($this->param->order);
         }
 
         //
