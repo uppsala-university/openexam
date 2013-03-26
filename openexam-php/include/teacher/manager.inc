@@ -472,7 +472,7 @@ class Manager
         //
         // Get all exams where this user is the manager for.
         //
-        public static function getExams($user)
+        public static function getExams($user, $order = "starttime", $collate = "DESC")
         {
                 $sql = sprintf("SELECT  id AS ExamID,
                                         name AS ExamName,
@@ -487,7 +487,8 @@ class Manager
                                         testcase AS ExamTestCase,
                                         lockdown AS ExamLockDown
                                 FROM exams
-                                WHERE creator = '%s'", $user);
+                                WHERE creator = '%s'
+                                ORDER BY %s %s", $user, $order, $collate);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
