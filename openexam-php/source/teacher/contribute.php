@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2012 Computing Department BMC, 
+// Copyright (C) 2010-2013 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/contribute.php
@@ -95,6 +95,7 @@ class ContributePage extends TeacherPage
 
         public function __construct()
         {
+                $this->param->order = "state";
                 parent::__construct(_("Contribute Page"), self::$params);
         }
 
@@ -108,13 +109,6 @@ class ContributePage extends TeacherPage
                 //
                 if (isset($this->param->exam)) {
                         $this->checkAccess();
-                }
-                
-                // 
-                // Set defaults:
-                // 
-                if (!isset($this->param->order)) {
-                        $this->param->order = "state";
                 }
 
                 //

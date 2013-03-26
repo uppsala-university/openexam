@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2012 Computing Department BMC, 
+// Copyright (C) 2010-2013 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/correct.php
@@ -92,6 +92,7 @@ class CorrectionPage extends TeacherPage
 
         public function __construct()
         {
+                $this->param->order = "state";
                 $this->param->verbose = false;
                 $this->param->colorize = false;
 
@@ -110,13 +111,6 @@ class CorrectionPage extends TeacherPage
                         $this->checkAccess();
                 }
 
-                // 
-                // Set defaults:
-                // 
-                if (!isset($this->param->order)) {
-                        $this->param->order = "state";
-                }
-                
                 //
                 // Bussiness logic:
                 //
@@ -183,7 +177,7 @@ class CorrectionPage extends TeacherPage
         private function saveAnswerResult()
         {
                 $results = isset($this->param->result) ? $this->param->result : array(
-);
+                    );
                 $correct = new Correct($this->param->exam);
                 $correct->setAnswerResult($this->param->score, $this->param->comment, $results);
                 header(sprintf("location: correct.php?exam=%d", $this->param->exam));
@@ -378,7 +372,7 @@ class CorrectionPage extends TeacherPage
                 // Show removed questions, but only in verbose mode.
                 //
                 $found = (object) array(
-);
+                    );
                 $found->answers = 0;
                 $found->removed = 0;
                 foreach ($answers as $answer) {
