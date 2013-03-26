@@ -1041,6 +1041,118 @@ class TeacherUtils
                 $tree->output();
         }
 
+        public function listDecodable($order = self::state)
+        {
+                printf("<h3>" . _("Decode Examinations") . "</h3>\n");
+                printf("<p>" . _("These are the examinations that you have been granted the decoder role. Click on one of them to decode the examination.") . "</p>\n");
+                printf("<p>" . _("By decoding an examination it will no longer be possible to correct any answers for it. This is to ensure that the anonymity of each student examination.") . "</p>\n");
+
+                $this->printOrderSelect($order);
+
+                $tree = new TreeBuilder(_("Examinations"));
+                $root = $tree->getRoot();
+
+                if ($order == self::state) {
+                        //
+                        // Group the examinations by their state:
+                        //
+                        $exams = Decoder::getExams($this->user);
+                        $nodes = array(
+                                'u' => array(
+                                        'name' => _("Decodable"),
+                                        'data' => array(
+                                        )
+                                ),
+                                'd' => array(
+                                        'name' => _("Decoded"),
+                                        'data' => array(
+                                        )
+                                ),
+                                'o' => array(
+                                        'name' => _("Other"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                if ($state->isDecoded()) {
+                                        $nodes['d']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isDecodable()) {
+                                        $nodes['u']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } else {
+                                        $nodes['o']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                }
+                        }
+                } elseif ($order == self::name) {
+                        //
+                        // Group the examinations by their name:
+                        //
+                        $exams = Decoder::getExams($this->user, "name", "ASC");
+                        $nodes = array(
+                                'n' => array(
+                                        'name' => _("Ordered by name"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                $nodes['n']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
+                } elseif ($order == self::date) {
+                        //
+                        // Group the examinations by their date:
+                        //
+                        $exams = Decoder::getExams($this->user);
+                        $nodes = array(
+                                'd' => array(
+                                        'name' => _("Ordered by start time"),
+                                        'data' => array(
+                                        )
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                $nodes['d']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
+                }
+
+                foreach ($nodes as $type => $group) {
+                        if (count($group['data']) > 0) {
+                                $node = $root->addChild($group['name']);
+                                foreach ($group['data'] as $data) {
+                                        $name = $data[0];
+                                        $state = $data[1];
+                                        $child = $node->addChild($name);
+                                        if ($state->isDecodable()) {
+                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to decode this examination."));
+                                                $child->addLink(_("Decode"), sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to decode this examination."));
+                                        }
+                                        $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
+                                        $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+                                }
+                        }
+                }
+                $tree->output();
+        }
+
 }
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2012 Computing Department BMC, 
+// Copyright (C) 2010-2013 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/decoder.php
@@ -98,12 +98,14 @@ class DecoderPage extends TeacherPage
                 "student"  => "/^(\d+|all)$/",
                 "message"  => parent::pattern_text,
                 "colorize" => parent::pattern_index,
-                "verbose"  => parent::pattern_index
+                "verbose"  => parent::pattern_index,
+                "order"    => "/^(state|name|date)$/",
         );
         private $decoder;
 
         public function __construct()
         {
+                $this->param->order = "state";
                 $this->param->verbose = false;
                 $this->param->colorize = false;
 
@@ -141,7 +143,9 @@ class DecoderPage extends TeacherPage
                         } elseif ($this->param->action == "save") {
                                 $this->assert("mode");
                                 if ($this->param->mode == "result") {
-                                        $this->assert(array("format", "student"));
+                                        $this->assert(array(
+                                                "format",
+                                                "student"));
                                         $this->saveResult();
                                 } elseif ($this->param->mode == "scores") {
                                         $this->assert("format");
@@ -303,7 +307,10 @@ class DecoderPage extends TeacherPage
                     _("Notice that the language used in the generated file will be the same as your currently selected language (%s).") .
                     "</p>\n", _($locale));
 
-                $options = array("pdf"  => "Adobe PDF", "ps"   => "PostScript", "html" => "HTML");
+                $options = array(
+                        "pdf"  => "Adobe PDF",
+                        "ps"   => "PostScript",
+                        "html" => "HTML");
 
                 $form = new Form("decoder.php", "GET");
                 $form->addHidden("exam", $this->param->exam);
@@ -340,7 +347,11 @@ class DecoderPage extends TeacherPage
                     _("This section lets you download the score board showing a summary view of the examination in different formats. ") .
                     "</p>\n");
 
-                $options = array("csv"  => _("Comma Separated Text"), "tab"  => _("Tab Separated Text"), "xml"  => _("XML Format Data"), "html" => _("Single HTML Page"));
+                $options = array(
+                        "csv"  => _("Comma Separated Text"),
+                        "tab"  => _("Tab Separated Text"),
+                        "xml"  => _("XML Format Data"),
+                        "html" => _("Single HTML Page"));
 
                 $form = new Form("decoder.php", "GET");
                 $form->addHidden("exam", $this->param->exam);
@@ -398,11 +409,11 @@ class DecoderPage extends TeacherPage
                                 "s100" => sprintf(_("%d%% correct answer (full score)."), 100));
                 } else {
                         $codes = array(
-                                "ac"   => _("Answer has been corrected."),
-                                "no"   => _("This answer should be corrected by another person."),
-                                "na"   => _("No answer was given for this question."),
-                                "nc"   => _("The answer has not yet been corrected."),
-                                "qr"   => _("Question is flagged as removed (no scores for this question is counted).")
+                                "ac" => _("Answer has been corrected."),
+                                "no" => _("This answer should be corrected by another person."),
+                                "na" => _("No answer was given for this question."),
+                                "nc" => _("The answer has not yet been corrected."),
+                                "qr" => _("Question is flagged as removed (no scores for this question is counted).")
                         );
                 }
                 $table = new Table();
@@ -443,7 +454,8 @@ class DecoderPage extends TeacherPage
                 if (isset($this->param->message)) {
                         $lines = split("\n", $this->param->message);
                         if (count($lines) > 0) {
-                                $sect = array();
+                                $sect = array(
+);
                                 foreach ($lines as $line) {
                                         $line = trim($line);
                                         if (strlen($line) == 0) {
@@ -455,7 +467,8 @@ class DecoderPage extends TeacherPage
                                                         $text = "  " . implode(" ", $sect);
                                                         $mail->addMessage($head, $text);
                                                 }
-                                                $sect = array();
+                                                $sect = array(
+);
                                                 $sect[] = $curr;
                                         } else {
                                                 $sect[] = $line;
@@ -473,7 +486,8 @@ class DecoderPage extends TeacherPage
                 if ($this->param->student == "all") {
                         $students = $this->manager->getStudents();
                 } else {
-                        $students = array($this->manager->getStudentData($this->param->student));
+                        $students = array(
+                                $this->manager->getStudentData($this->param->student));
                 }
 
                 foreach ($students as $student) {
@@ -526,7 +540,10 @@ class DecoderPage extends TeacherPage
                 //
                 // The format and student select section:
                 //
-                $options = array("pdf"  => "Adobe PDF", "ps"   => "PostScript", "html" => "HTML");
+                $options = array(
+                        "pdf"  => "Adobe PDF",
+                        "ps"   => "PostScript",
+                        "html" => "HTML");
                 $form = new Form("decoder.php", "POST");
                 $form->setEncodingType("multipart/form-data");
                 $form->addHidden("MAX_FILE_SIZE", ATTACH_MAX_FILE_SIZE);
@@ -587,63 +604,10 @@ class DecoderPage extends TeacherPage
         //
         // Show all exams where caller has been granted the decoder role.
         //
-        private static function showAvailableExams()
+        private function showAvailableExams()
         {
-                printf("<h3>" . _("Decode Examinations") . "</h3>\n");
-                printf("<p>" . _("These are the examinations that you have been granted the decoder role. Click on one of them to decode the examination.") . "</p>\n");
-                printf("<p>" . _("By decoding an examination it will no longer be possible to correct any answers for it. This is to ensure that the anonymity of each student examination.") . "</p>\n");
-
-                $tree = new TreeBuilder(_("Examinations"));
-                $root = $tree->getRoot();
-
-                //
-                // Group the examinations by their state:
-                //
-                $exams = Decoder::getExams(phpCAS::getUser());
-                $nodes = array(
-                        'u' => array(
-                                'name' => _("Decodable"),
-                                'data' => array()
-                        ),
-                        'd' => array(
-                                'name' => _("Decoded"),
-                                'data' => array()
-                        ),
-                        'o' => array(
-                                'name' => _("Other"),
-                                'data' => array()
-                        )
-                );
-
-                foreach ($exams as $exam) {
-                        $manager = new Manager($exam->getExamID());
-                        $state = $manager->getInfo();
-                        if ($state->isDecoded()) {
-                                $nodes['d']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isDecodable()) {
-                                $nodes['u']['data'][] = array($exam->getExamName(), $state);
-                        } else {
-                                $nodes['o']['data'][] = array($exam->getExamName(), $state);
-                        }
-                }
-
-                foreach ($nodes as $type => $group) {
-                        if (count($group['data']) > 0) {
-                                $node = $root->addChild($group['name']);
-                                foreach ($group['data'] as $data) {
-                                        $name = $data[0];
-                                        $state = $data[1];
-                                        $child = $node->addChild($name);
-                                        if ($state->isDecodable()) {
-                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to decode this examination."));
-                                                $child->addLink(_("Decode"), sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to decode this examination."));
-                                        }
-                                        $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
-                                        $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
-                                }
-                        }
-                }
-                $tree->output();
+                $utils = new TeacherUtils($this, phpCAS::getUser());
+                $utils->listDecodable($this->param->order);
         }
 
 }
