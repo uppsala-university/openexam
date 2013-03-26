@@ -91,7 +91,8 @@ class ManagerPage extends TeacherPage
                 "grade"   => parent::pattern_text, // grades
                 "details" => parent::pattern_text,
                 "start"   => parent::pattern_text, // start date/time
-                "end"     => parent::pattern_text       // end date/time
+                "end"     => parent::pattern_text, // end date/time
+                "order"   => "/^(state|name|date)$/"
         );
 
         public function __construct()
@@ -110,6 +111,13 @@ class ManagerPage extends TeacherPage
                 // Authorization first:
                 //
                 $this->checkAccess();
+
+                // 
+                // Set defaults:
+                // 
+                if (!isset($this->param->order)) {
+                        $this->param->order = "date";
+                }
 
                 //
                 // Bussiness logic:
@@ -177,13 +185,8 @@ class ManagerPage extends TeacherPage
         //
         private function showAvailableExams()
         {
-                printf("<p>" .
-                    _("This page let you create new exams or manage your old ones. ") .
-                    _("These are the exams you are the manager of: ") .
-                    "</p>\n");
-                
-                $utils = new TeacherUtils(this, phpCAS::getUser());
-                $utils->listExams();
+                $utils = new TeacherUtils($this, phpCAS::getUser());
+                $utils->listExams($this->param->order);
         }
 
         //
@@ -285,17 +288,17 @@ class ManagerPage extends TeacherPage
                 if (!$store) {
                         printf("<p>" . _("Define the common properties of the exam. Click on the 'Submit' button to create this exam.") . "</p>\n");
                         $data = new DataRecord(array(
-                                    "examorgunit"     => $this->getOrganisationUnit(phpCAS::getUser()),
-                                    "examname"        => _("Name"),
-                                    "examdescription" => _("Description"),
-                                    "examgrades"      => json_encode(array(
-                                            "U"             => 0,
-                                            "G"             => 15,
-                                            "VG"            => 20)
-                                    ),
-                                    "examstarttime" => DATETIME_NONE,
-                                    "examendtime"   => DATETIME_NONE,
-                                    "examdetails"   => RESULT_DETAILS_DEFAULT)
+                                "examorgunit"     => $this->getOrganisationUnit(phpCAS::getUser()),
+                                "examname"        => _("Name"),
+                                "examdescription" => _("Description"),
+                                "examgrades"      => json_encode(array(
+                                        "U"  => 0,
+                                        "G"  => 15,
+                                        "VG" => 20)
+                                ),
+                                "examstarttime"   => DATETIME_NONE,
+                                "examendtime"     => DATETIME_NONE,
+                                "examdetails"     => RESULT_DETAILS_DEFAULT)
                         );
                         $this->manager = new Manager(0);
                         $this->showExamForm(0, $data, "add");
