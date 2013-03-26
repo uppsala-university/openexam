@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010-2013 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/teacher.inc
@@ -507,4 +507,104 @@ class TeacherPage extends BasePage
 
 }
 
+class TeacherUtils
+{
+        private $user;  // The calling user
+        private $page;  // The calling page (teacher)
+        private $roles;
+        
+        public function __construct($page, $user)
+        {
+                $this->page = $page;
+                $this->user = $user;
+                $this->roles = Teacher::getRoleCount($user);
+        }
+        
+        public function listExams()
+        {
+                $tree = new TreeBuilder(_("Examinations"));
+                $root = $tree->getRoot();
+                if ($this->roles->getManagerRoles() > 0) {
+                        $root->addLink(_("Import"), "?action=import", _("Creates a new examination by importing an OpenExam project."));
+                        $root->addLink(_("Add"), "?action=add", _("Creates a new examination."));
+                }
+
+                //
+                // Group the examinations by their state:
+                //
+                $exams = Manager::getExams(phpCAS::getUser());
+                $nodes = array(
+                        'u' => array(
+                                'name' => _("Upcoming"),
+                                'data' => array()
+                        ),
+                        'a' => array(
+                                'name' => _("Active"),
+                                'data' => array()
+                        ),
+                        'f' => array(
+                                'name' => _("Finished"),
+                                'data' => array()
+                        ),
+                        't' => array(
+                                'name' => _("Testing"),
+                                'data' => array()
+                        )
+                );
+
+                foreach ($exams as $exam) {
+                        $manager = new Manager($exam->getExamID());
+                        $state = $manager->getInfo();
+                        if ($state->isTestCase()) {
+                                $nodes['t']['data'][] = array($exam->getExamName(), $state);
+                        } elseif ($state->isUpcoming()) {
+                                $nodes['u']['data'][] = array($exam->getExamName(), $state);
+                        } elseif ($state->isRunning()) {
+                                $nodes['a']['data'][] = array($exam->getExamName(), $state);
+                        } elseif ($state->isFinished()) {
+                                $nodes['f']['data'][] = array($exam->getExamName(), $state);
+                        }
+                }
+
+                foreach ($nodes as $type => $group) {
+                        if (count($group['data']) > 0) {
+                                $node = $root->addChild($group['name']);
+                                foreach ($group['data'] as $data) {
+                                        $name = $data[0];
+                                        $state = $data[1];
+                                        $child = $node->addChild($name);
+                                        $child->setLink(sprintf("?exam=%d&amp;action=show", $state->getInfo()->getExamID()));
+                                        $child->addLink(_("Export"), sprintf("?exam=%d&amp;action=export", $state->getInfo()->getExamID()), _("Export this examination including its questions as XML data."));
+                                        if ($this->roles->getManagerRoles() > 0) {
+                                                $child->addLink(_("Copy"), sprintf("?exam=%d&amp;action=copy", $state->getInfo()->getExamID()), _("Create a new examination by using this examination as a template."));
+                                                $child->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit", $state->getInfo()->getExamID()), _("Edit common properties like name, description or grades for this examination."));
+                                        }
+                                        if (!$state->hasAnswers()) {
+                                                $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=delete", $state->getInfo()->getExamID()), _("Deletes the examination along with any questions."), array(EVENT_ON_CLICK => EVENT_HANDLER_CONFIRM_DELETE));
+                                        } elseif ($state->isTestCase()) {
+                                                $child->addLink(_("Delete"), sprintf("?exam=%d&amp;action=cancel", $state->getInfo()->getExamID()), _("Deletes the examination along with any questions."));
+                                        }
+                                        if (!$state->isTestCase() && $state->isUpcoming()) {
+                                                $child->addLink(_("Test"), sprintf("?exam=%d&amp;action=test", $state->getInfo()->getExamID()), _("Test this examination by creating and opening a copy."), array("target" => "_blank"));
+                                        }
+                                        if ($state->isTestCase() && !$state->isFinished()) {
+                                                $child->addLink(_("Test"), sprintf("../exam/index.php?exam=%d", $state->getInfo()->getExamID()), _("Run this test case examination."), array("target" => "_blank"));
+                                        }
+                                        $child->addChild(sprintf("%s: %s", _("Created"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamCreated()))));
+                                        $sdate = strtotime($state->getInfo()->getExamStartTime());
+                                        $edate = strtotime($state->getInfo()->getExamEndTime());
+                                        if (date('Ymd', $sdate) == date('Ymd', $edate)) {
+                                                $child->addChild(sprintf("%s: %s %s - %s", _("Occasion"), strftime(DATE_FORMAT, $sdate), strftime(TIME_FORMAT, $sdate), strftime(TIME_FORMAT, $edate)));
+                                        } else {
+                                                $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, $sdate)));
+                                                $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, $edate)));
+                                        }
+                                }
+                        }
+                }
+
+                $tree->output();
+                
+        }
+}
 ?>
