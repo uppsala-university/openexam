@@ -24,7 +24,7 @@ class Correct
         //
         // Get all exams where this user is a corrector for at least one question.
         //
-        public static function getExams($user)
+        public static function getExams($user, $order = "starttime", $collate = "DESC")
         {
                 $sql = sprintf("SELECT  e.id AS ExamID,
                                         e.name AS ExamName,
@@ -37,7 +37,7 @@ class Correct
                                 FROM exams e, questions q
                                 WHERE e.id = q.exam_id AND q.user = '%s'
                                 GROUP BY e.id
-                                ORDER BY e.starttime", $user);
+                                ORDER BY e.%s %s", $user, $order, $collate);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }
