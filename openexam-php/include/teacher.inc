@@ -571,7 +571,7 @@ class TeacherUtils
                         //
                         // Group the examinations by their state:
                         //
-                        $exams = Manager::getExams(phpCAS::getUser());
+                        $exams = Manager::getExams($this->user);
                         $nodes = array(
                                 'u' => array(
                                         'name' => _("Upcoming"),
@@ -620,7 +620,7 @@ class TeacherUtils
                         //
                         // Group the examinations by their name:
                         //
-                        $exams = Manager::getExams(phpCAS::getUser(), "name", "ASC");
+                        $exams = Manager::getExams($this->user, "name", "ASC");
                         $nodes = array(
                                 'n' => array(
                                         'name' => _("Ordered by name"),
@@ -640,7 +640,7 @@ class TeacherUtils
                         //
                         // Group the examinations by their start time:
                         //
-                        $exams = Manager::getExams(phpCAS::getUser());
+                        $exams = Manager::getExams($this->user);
                         $nodes = array(
                                 'd' => array(
                                         'name' => _("Ordered by start time"),
@@ -715,7 +715,7 @@ class TeacherUtils
                         //
                         // Group the examinations by their state:
                         //
-                        $exams = Contribute::getExams(phpCAS::getUser());
+                        $exams = Contribute::getExams($this->user);
                         $nodes = array(
                                 'c' => array(
                                         'name' => _("Contributable"),
@@ -755,7 +755,7 @@ class TeacherUtils
                         //
                         // Group the examinations by their name:
                         //
-                        $exams = Contribute::getExams(phpCAS::getUser(), "name", "ASC");
+                        $exams = Contribute::getExams($this->user, "name", "ASC");
                         $nodes = array(
                                 'n' => array(
                                         'name' => _("Ordered by name"),
@@ -775,7 +775,7 @@ class TeacherUtils
                         //
                         // Group the examinations by their start time:
                         //
-                        $exams = Contribute::getExams(phpCAS::getUser());
+                        $exams = Contribute::getExams($this->user);
                         $nodes = array(
                                 'd' => array(
                                         'name' => _("Ordered by start time"),
@@ -803,6 +803,131 @@ class TeacherUtils
                                         if ($state->isContributable()) {
                                                 $child->setLink(sprintf("contribute.php?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to see all questions in this examination."));
                                                 $child->addLink(_("Add"), sprintf("contribute.php?exam=%d&amp;action=add", $state->getInfo()->getExamID()), _("Click to add a question to this examination."));
+                                        }
+                                        $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
+                                        $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
+                                }
+                        }
+                }
+
+                $tree->output();
+        }
+
+        public function listCorrectable($order = self::state)
+        {
+                printf("<h3>" . _("Correct Answers") . "</h3>\n");
+                printf("<p>" .
+                    _("Select the examination you wish to correct answers to questions for (applies only to corractable examinations). ") .
+                    _("You can also follow the link to review an already decoded examination.") .
+                    "</p>\n");
+
+                $this->printOrderSelect($order);
+                
+                $tree = new TreeBuilder(_("Examinations"));
+                $root = $tree->getRoot();
+
+                if ($order == self::state) {
+                        //
+                        // Group the examinations by their state:
+                        //
+                $exams = Correct::getExams($this->user);
+                        $nodes = array(
+                                'c' => array(
+                                        'name' => _("Correctable"),
+                                        'data' => array(
+)
+                                ),
+                                'd' => array(
+                                        'name' => _("Decoded"),
+                                        'data' => array(
+)
+                                ),
+                                'u' => array(
+                                        'name' => _("Upcoming"),
+                                        'data' => array(
+)
+                                ),
+                                'a' => array(
+                                        'name' => _("Active"),
+                                        'data' => array(
+)
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                if ($state->isUpcoming()) {
+                                        $nodes['u']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isCorrectable()) {
+                                        $nodes['c']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isDecoded()) {
+                                        $nodes['d']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                } elseif ($state->isRunning()) {
+                                        $nodes['a']['data'][] = array(
+                                                $exam->getExamName(),
+                                                $state);
+                                }
+                        }
+                } elseif ($order == self::name) {
+                        //
+                        // Group the examinations by their name:
+                        //
+                $exams = Correct::getExams($this->user, "name", "ASC");
+                        $nodes = array(
+                                'n' => array(
+                                        'name' => _("Ordered by name"),
+                                        'data' => array(
+)
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                $nodes['n']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
+                } elseif ($order == self::date) {
+                        //
+                        // Group the examinations by their name:
+                        //
+                $exams = Correct::getExams($this->user);
+                        $nodes = array(
+                                'd' => array(
+                                        'name' => _("Ordered by start time"),
+                                        'data' => array(
+)
+                                )
+                        );
+
+                        foreach ($exams as $exam) {
+                                $manager = new Manager($exam->getExamID());
+                                $state = $manager->getInfo();
+                                $nodes['d']['data'][] = array(
+                                        $exam->getExamName(),
+                                        $state);
+                        }
+                }
+
+                foreach ($nodes as $type => $group) {
+                        if (count($group['data']) > 0) {
+                                $node = $root->addChild($group['name']);
+                                foreach ($group['data'] as $data) {
+                                        $name = $data[0];
+                                        $state = $data[1];
+                                        $child = $node->addChild($name);
+                                        if ($state->isCorrectable()) {
+                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to open this examination to correct answers."));
+                                        } elseif ($state->isDecoded()) {
+                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to review this examination."));
                                         }
                                         $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
                                         $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));

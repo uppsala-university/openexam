@@ -86,6 +86,7 @@ class CorrectionPage extends TeacherPage
                 "colorize" => parent::pattern_index,
                 "score"    => parent::pattern_score,
                 "comment"  => parent::pattern_text,
+                "order"    => "/^(state|name|date)$/",
                 "mode"     => "/^(mark|save)$/"
         );
 
@@ -109,27 +110,40 @@ class CorrectionPage extends TeacherPage
                         $this->checkAccess();
                 }
 
+                // 
+                // Set defaults:
+                // 
+                if (!isset($this->param->order)) {
+                        $this->param->order = "state";
+                }
+                
                 //
                 // Bussiness logic:
                 //
                 if (isset($this->param->exam)) {
                         if (isset($this->param->question)) {
                                 if (isset($this->param->mode) && $this->param->mode == "save") {
-                                        $this->assert(array('score', 'comment'));
+                                        $this->assert(array(
+                                                'score',
+                                                'comment'));
                                         $this->saveQuestionScore();
                                 } else {
                                         $this->markQuestionScore();
                                 }
                         } elseif (isset($this->param->student)) {
                                 if (isset($this->param->mode) && $this->param->mode == "save") {
-                                        $this->assert(array('score', 'comment'));
+                                        $this->assert(array(
+                                                'score',
+                                                'comment'));
                                         $this->saveStudentScore();
                                 } else {
                                         $this->markStudentScore();
                                 }
                         } elseif (isset($this->param->answer)) {
                                 if (isset($this->param->mode) && $this->param->mode == "save") {
-                                        $this->assert(array('score', 'comment'));
+                                        $this->assert(array(
+                                                'score',
+                                                'comment'));
                                         $this->saveAnswerScore();
                                 } else {
                                         $this->markAnswerScore();
@@ -168,7 +182,8 @@ class CorrectionPage extends TeacherPage
         //
         private function saveAnswerResult()
         {
-                $results = isset($this->param->result) ? $this->param->result : array();
+                $results = isset($this->param->result) ? $this->param->result : array(
+);
                 $correct = new Correct($this->param->exam);
                 $correct->setAnswerResult($this->param->score, $this->param->comment, $results);
                 header(sprintf("location: correct.php?exam=%d", $this->param->exam));
@@ -300,8 +315,7 @@ class CorrectionPage extends TeacherPage
                 $row->setClass("comment");
                 $data = $row->addData("(" . _("Comment") . ")");
                 $textarea = $data->addElement(
-                    new TextArea(sprintf("comment[%d]", $answer->getAnswerID()),
-                        $answer->hasResultComment() ? $answer->getResultComment() : ""));
+                    new TextArea(sprintf("comment[%d]", $answer->getAnswerID()), $answer->hasResultComment() ? $answer->getResultComment() : ""));
                 $textarea->setTitle(_("This optional field can be used to save an comment for this answer correction."));
                 $textarea->setRows(2);
                 $textarea->setColumns(80);
@@ -363,7 +377,8 @@ class CorrectionPage extends TeacherPage
                 //
                 // Show removed questions, but only in verbose mode.
                 //
-                $found = (object) array();
+                $found = (object) array(
+);
                 $found->answers = 0;
                 $found->removed = 0;
                 foreach ($answers as $answer) {
@@ -464,73 +479,10 @@ class CorrectionPage extends TeacherPage
                 $form->output();
         }
 
-        private static function showAvailableExams()
+        private function showAvailableExams()
         {
-                printf("<h3>" . _("Correct Answers") . "</h3>\n");
-                printf("<p>" .
-                    _("Select the examination you wish to correct answers to questions for (applies only to corractable examinations). ") .
-                    _("You can also follow the link to review an already decoded examination.") .
-                    "</p>\n");
-
-                $tree = new TreeBuilder(_("Examinations"));
-                $root = $tree->getRoot();
-
-                //
-                // Group the examinations by their state:
-                //
-                $exams = Correct::getExams(phpCAS::getUser());
-                $nodes = array(
-                        'c' => array(
-                                'name' => _("Correctable"),
-                                'data' => array()
-                        ),
-                        'd' => array(
-                                'name' => _("Decoded"),
-                                'data' => array()
-                        ),
-                        'u' => array(
-                                'name' => _("Upcoming"),
-                                'data' => array()
-                        ),
-                        'a' => array(
-                                'name' => _("Active"),
-                                'data' => array()
-                        )
-                );
-
-                foreach ($exams as $exam) {
-                        $manager = new Manager($exam->getExamID());
-                        $state = $manager->getInfo();
-                        if ($state->isUpcoming()) {
-                                $nodes['u']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isCorrectable()) {
-                                $nodes['c']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isDecoded()) {
-                                $nodes['d']['data'][] = array($exam->getExamName(), $state);
-                        } elseif ($state->isRunning()) {
-                                $nodes['a']['data'][] = array($exam->getExamName(), $state);
-                        }
-                }
-
-                foreach ($nodes as $type => $group) {
-                        if (count($group['data']) > 0) {
-                                $node = $root->addChild($group['name']);
-                                foreach ($group['data'] as $data) {
-                                        $name = $data[0];
-                                        $state = $data[1];
-                                        $child = $node->addChild($name);
-                                        if ($state->isCorrectable()) {
-                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to open this examination to correct answers."));
-                                        } elseif ($state->isDecoded()) {
-                                                $child->setLink(sprintf("?exam=%d", $state->getInfo()->getExamID()), _("Click on this link to review this examination."));
-                                        }
-                                        $child->addChild(sprintf("%s: %s", _("Starts"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamStartTime()))));
-                                        $child->addChild(sprintf("%s: %s", _("Ends"), strftime(DATETIME_FORMAT, strtotime($state->getInfo()->getExamEndTime()))));
-                                }
-                        }
-                }
-
-                $tree->output();
+                $utils = new TeacherUtils($this, phpCAS::getUser());
+                $utils->listCorrectable($this->param->order);
         }
 
         private function showScoreBoard()
@@ -590,12 +542,12 @@ class CorrectionPage extends TeacherPage
                                 "s100" => sprintf(_("%d%% correct answer (full score)."), 100));
                 } else {
                         $codes = array(
-                                "ac"   => _("Answer has been corrected."),
-                                "no"   => _("This answer should be corrected by another person."),
-                                "na"   => _("No answer was given for this question."),
-                                "nc"   => _("The answer has not yet been corrected."),
-                                "qr"   => _("Question is flagged as removed (no scores for this question is counted)."),
-                                "qu"   => _("This question was not assigned to this student.")
+                                "ac" => _("Answer has been corrected."),
+                                "no" => _("This answer should be corrected by another person."),
+                                "na" => _("No answer was given for this question."),
+                                "nc" => _("The answer has not yet been corrected."),
+                                "qr" => _("Question is flagged as removed (no scores for this question is counted)."),
+                                "qu" => _("This question was not assigned to this student.")
                         );
                 }
                 $table = new Table();
