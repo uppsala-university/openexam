@@ -44,6 +44,9 @@ if (!defined("OPENEXAM_EXPORT_INCLUDE_ROLES")) {
 if (!defined("OPENEXAM_EXPORT_INCLUDE_ANSWERS")) {
         define("OPENEXAM_EXPORT_INCLUDE_ANSWERS", 16);
 }
+if (!defined("OPENEXAM_EXPORT_INCLUDE_STUDENTS")) {
+        define("OPENEXAM_EXPORT_INCLUDE_STUDENTS", 32);
+}
 // 
 // Simplified include options:
 // 
@@ -53,7 +56,8 @@ if (!defined("OPENEXAM_EXPORT_INCLUDE_DEFAULT")) {
 }
 if (!defined("OPENEXAM_EXPORT_INCLUDE_ALL")) {
         define("OPENEXAM_EXPORT_INCLUDE_ALL", OPENEXAM_EXPORT_INCLUDE_DEFAULT | \
-            OPENEXAM_EXPORT_INCLUDE_ROLES | OPENEXAM_EXPORT_INCLUDE_ANSWERS);
+            OPENEXAM_EXPORT_INCLUDE_ROLES | OPENEXAM_EXPORT_INCLUDE_ANSWERS | \
+            OPENEXAM_EXPORT_INCLUDE_STUDENTS);
 }
 
 // 
@@ -197,6 +201,7 @@ class Export
  * @property-read ResultSet $questions Examination questions.
  * @property-read ResultSet $answers Answers grouped by question.
  * @property-read ResultSet $roles Roles assigned to persons on the examiniation.
+ * @property-read ResultSet $students List of students.
  * @property-read array $data The raw examination data.
  * @property-read int $exam The examination ID.
  */
@@ -214,6 +219,7 @@ class ExportData
         const qdata = "questions";
         const adata = "answers";
         const rdata = "roles";
+        const sdata = "students";
 
         private $exam;
         private $data;
@@ -247,7 +253,7 @@ class ExportData
 
         private function collect($options)
         {
-                $pdata = $tdata = $qdata = $rdata = $adata = null;
+                $pdata = $tdata = $qdata = $rdata = $adata = $sdata = null;
                 $manager = new Manager($this->exam);
 
                 //
@@ -264,13 +270,15 @@ class ExportData
                 }
                 if ($options & OPENEXAM_EXPORT_INCLUDE_ROLES) {
                         $rdata = array();
-                        $manager = new Manager($this->exam);
                         $rdata['contributor'] = $manager->getContributors();
                         $rdata['decoder'] = $manager->getDecoders();
                         $rdata['examiniator'] = $manager->getExaminators();
                 }
                 if ($options & OPENEXAM_EXPORT_INCLUDE_ANSWERS) {
                         $adata = array();
+                }
+                if ($options & OPENEXAM_EXPORT_INCLUDE_STUDENTS) {
+                        $sdata = $manager->getStudents();
                 }
 
                 //
@@ -300,7 +308,8 @@ class ExportData
                         self::tdata => $tdata,
                         self::qdata => $qdata,
                         self::adata => $adata,
-                        self::rdata => $rdata
+                        self::rdata => $rdata,
+                        self::sdata => $sdata
                 );
         }
 
@@ -473,6 +482,18 @@ class ExportFormatOpenExam extends ExportFormatter
                                                 }
                                         }
                                 }
+                        }
+                }
+
+                // 
+                // Create student nodes:
+                // 
+                if (isset($data->students)) {
+                        $snode = $root->addChild("students");
+                        foreach ($data->students as $student) {
+                                $child = $snode->addChild("student");
+                                $child->addChild("user", $student->getStudentUser());
+                                $child->addChild("code", $student->getStudentCode());
                         }
                 }
 
