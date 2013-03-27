@@ -198,6 +198,8 @@ class ExportPage extends TeacherPage
                 $check->setLabel();
                 $check = $form->addCheckBox("options[]", OPENEXAM_EXPORT_INCLUDE_ANSWERS, _("Answers"));
                 $check->setLabel();
+                $check = $form->addCheckBox("options[]", OPENEXAM_EXPORT_INCLUDE_STUDENTS, _("Students"));
+                $check->setLabel();
 
                 $button = $form->addSubmitButton("export", _("Export"));
                 $button->setLabel();
