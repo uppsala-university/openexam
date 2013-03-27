@@ -2996,4 +2996,46 @@ class Code extends Container
 
 }
 
+/**
+ * This class represents a fieldset container element.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class FieldSet extends Container
+{
+
+        public function __construct()
+        {
+                parent::__construct("fieldset");
+        }
+
+        public function setLabel($text)
+        {
+                parent::addElement(new Legend($text));
+        }
+
+}
+
+/**
+ * This class represent a legend tag.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class Legend extends Container
+{
+
+        public function __construct($text)
+        {
+                parent::__construct("legend");
+                parent::setText($text);
+        }
+
+}
+
 ?>
