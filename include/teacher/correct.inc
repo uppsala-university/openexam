@@ -146,14 +146,14 @@ class Correct
                 foreach (array_keys($scores) as $answer) {
                         if (isset($results[$answer])) {
                                 $sql = sprintf("UPDATE results SET answer_id = %d, score = %F, comment = '%s'
-                                                WHERE id = %d", $answer, $scores[$answer], $comments[$answer], $results[$answer]);
+                                                WHERE id = %d", $answer, $scores[$answer], $db->escape($comments[$answer]), $results[$answer]);
                         } else {
                                 if (!isset($scores[$answer])) {
                                         continue;   // Don't save uncorrected answers
                                 }
 
                                 $sql = sprintf("INSERT INTO results(answer_id, score, comment)
-                                                VALUES(%d, %F, '%s')", $answer, $scores[$answer], $comments[$answer]);
+                                                VALUES(%d, %F, '%s')", $answer, $scores[$answer], $db->escape($comments[$answer]));
                         }
                         $res = $db->query($sql);
                         if (PEAR::isError($res)) {
