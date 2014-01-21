@@ -1,3 +1,19 @@
+Version 1.5.7 (2014-01-21):
+
+        * Fixed UTF-8 encoding of emails sent by the system.
+
+        * Quoted alternatives in single- or multiple choice questions is now 
+          properly encoded as option values. The quoted text has to be escaped
+          when submitted (as in the example question).
+
+        * Multiple choice alternatives (question and answers) are now displayed 
+          as a list on correction page, with correct and wrong answers using
+          icons as bullets.
+
+        * Fixed problem with download of scoreboard on Windows (mostly related to
+          IE 8 trying to download the PHP script instead of the file content). There 
+          still exist a problem with opening CSV-files using Excel.
+
 Version 1.5.6 (2012-03-15):
 
         * It's now possible to exclude information about correcting person and
