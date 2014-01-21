@@ -1,6 +1,0 @@
-<!-- menu: -*- html -*- -->
-<span id="menuhead">Header:</span>
-<ul>
-  <li><a href="/page1.php" title="Page1">Page1</a><li>
-  <li><a href="/page2.php" title="Page2">Page2</a><li>
-</ul>
