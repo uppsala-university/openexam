@@ -158,7 +158,7 @@ class HtmlDocPDF
         //
         private function getCommand($target)
         {
-                $fmt = "htmldoc - --book --format %s --titlefile %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s' --toclevels 2";
+                $fmt = "htmldoc --book --format %s --titlefile %s --linkstyle %s --size %s --linkcolor '%s' --toctitle '%s' --toclevels 2 -";
                 $cmd = sprintf($fmt, $this->format, $this->frontpage, PDF_LINK_STYLE, PDF_MEDIA_SIZE, PDF_LINK_COLOR, utf8_decode(_("Table of Contents")));
                 if (isset($target)) {
                         $cmd .= sprintf(" -f %s", $target);
@@ -226,7 +226,7 @@ class HtmlDocPDF
                                 //
                                 // Check exit status of process.
                                 //
-                                if ($result != 0) {
+                                if ($result > 0 && $result != 2) {
                                         throw new Exception(sprintf("HTMLDOC finished with non-zero exit code %d", $result), $result);
                                 }
                         }
