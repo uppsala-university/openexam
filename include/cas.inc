@@ -31,7 +31,7 @@ if (defined("CAS_DEBUG") && CAS_DEBUG) {
 // 
 // Initialize phpCAS:
 // 
-phpCAS::client(CAS_VERSION_2_0, CAS_HOST, CAS_PORT, CAS_PATH);
+phpCAS::client(CAS_VERSION_2_0, CAS_HOST, CAS_PORT, CAS_PATH, false);
 
 // 
 // No SSL validation for the CAS server:
