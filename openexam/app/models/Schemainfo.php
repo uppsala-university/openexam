@@ -1,21 +1,17 @@
 <?php
 
-
-
-
 class Schemainfo extends \Phalcon\Mvc\Model
 {
 
-    /**
-     *
-     * @var integer
-     */
-    public $major;
-     
-    /**
-     *
-     * @var integer
-     */
-    public $minor;
-     
+        /**
+         *
+         * @var integer
+         */
+        public $major;
+        /**
+         *
+         * @var integer
+         */
+        public $minor;
+
 }
