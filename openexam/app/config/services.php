@@ -62,6 +62,15 @@ $di->set('modelsMetadata', function () {
 });
 
 /**
+ * Dispatcher use a default namespace
+ */
+$di->set('dispatcher', function () {
+        $dispatcher = new Dispatcher();
+        $dispatcher->setDefaultNamespace('OpenExam\Controllers');
+        return $dispatcher;
+});
+
+/**
  * Start the session the first time some component request the session service
  */
 $di->set('session', function () {
