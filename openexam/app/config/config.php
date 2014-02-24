@@ -1,14 +1,13 @@
 <?php
 
-$dbconf = new \Phalcon\Config\Adapter\Ini(__DIR__ . '/../../config/database.ini');
-
-return new \Phalcon\Config(array(
+$config1 = new \Phalcon\Config\Adapter\Ini(__DIR__ . '/../../config/database.ini');
+$config2 = new \Phalcon\Config(array(
         'database'    => array(
-                'adapter'  => $dbconf->dbwrite->adapter,
-                'host'     => $dbconf->dbwrite->host,
-                'username' => $dbconf->dbwrite->username,
-                'password' => $dbconf->dbwrite->password,
-                'dbname'   => $dbconf->dbwrite->dbname,
+                'adapter'  => $config1->dbwrite->adapter,
+                'host'     => $config1->dbwrite->host,
+                'username' => $config1->dbwrite->username,
+                'password' => $config1->dbwrite->password,
+                'dbname'   => $config1->dbwrite->dbname,
         ),
         'application' => array(
                 'controllersDir' => __DIR__ . '/../../app/controllers/',
@@ -20,3 +19,6 @@ return new \Phalcon\Config(array(
                 'baseUri'        => '/openexam/',
         )
     ));
+
+$config2->merge($config1);
+return $config2;
