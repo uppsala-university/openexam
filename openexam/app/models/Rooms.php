@@ -1,6 +1,8 @@
 <?php
 
-class Rooms extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+class Rooms extends ModelBase
 {
 
         /**
@@ -24,7 +26,13 @@ class Rooms extends \Phalcon\Mvc\Model
          */
         public function initialize()
         {
+                parent::initialize();
                 $this->hasMany("id", "Computers", "room_id", NULL);
+        }
+
+        public function getSource()
+        {
+                return 'rooms';
         }
 
 }

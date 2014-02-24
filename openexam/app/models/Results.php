@@ -1,6 +1,8 @@
 <?php
 
-class Results extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+class Results extends ModelBase
 {
 
         /**
@@ -29,7 +31,13 @@ class Results extends \Phalcon\Mvc\Model
          */
         public function initialize()
         {
+                parent::initialize();
                 $this->belongsTo("answer_id", "Answers", "id", array("foreignKey" => true));
+        }
+
+        public function getSource()
+        {
+                return 'results';
         }
 
 }

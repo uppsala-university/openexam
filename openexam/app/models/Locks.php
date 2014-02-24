@@ -1,6 +1,8 @@
 <?php
 
-class Locks extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+class Locks extends ModelBase
 {
 
         /**
@@ -29,8 +31,14 @@ class Locks extends \Phalcon\Mvc\Model
          */
         public function initialize()
         {
+                parent::initialize();
                 $this->belongsTo("computer_id", "Computers", "id", array("foreignKey" => true));
                 $this->belongsTo("exam_id", "Exams", "id", array("foreignKey" => true));
+        }
+
+        public function getSource()
+        {
+                return 'locks';
         }
 
 }

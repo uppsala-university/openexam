@@ -1,17 +1,28 @@
 <?php
 
-class Teachers extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+
+
+
+class Teachers extends ModelBase
 {
 
-        /**
-         *
-         * @var integer
-         */
-        public $id;
-        /**
-         *
-         * @var string
-         */
-        public $user;
+    /**
+     *
+     * @var integer
+     */
+    public $id;
+     
+    /**
+     *
+     * @var string
+     */
+    public $user;
+     
+    public function getSource()
+    {
+        return 'teachers';
+    }
 
 }

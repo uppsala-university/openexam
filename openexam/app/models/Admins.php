@@ -1,17 +1,28 @@
 <?php
 
-class Admins extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+
+
+
+class Admins extends ModelBase
 {
 
-        /**
-         *
-         * @var integer
-         */
-        public $id;
-        /**
-         *
-         * @var string
-         */
-        public $user;
+    /**
+     *
+     * @var integer
+     */
+    public $id;
+     
+    /**
+     *
+     * @var string
+     */
+    public $user;
+     
+    public function getSource()
+    {
+        return 'admins';
+    }
 
 }

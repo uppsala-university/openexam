@@ -1,6 +1,8 @@
 <?php
 
-class Questions extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+class Questions extends ModelBase
 {
 
         /**
@@ -74,9 +76,15 @@ class Questions extends \Phalcon\Mvc\Model
          */
         public function initialize()
         {
+                parent::initialize();
                 $this->hasMany("id", "Answers", "question_id", NULL);
                 $this->belongsTo("exam_id", "Exams", "id", array("foreignKey" => true));
                 $this->belongsTo("topic_id", "Topics", "id", array("foreignKey" => true));
+        }
+
+        public function getSource()
+        {
+                return 'questions';
         }
 
 }

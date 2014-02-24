@@ -1,6 +1,8 @@
 <?php
 
-class Topics extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+class Topics extends ModelBase
 {
 
         /**
@@ -29,7 +31,13 @@ class Topics extends \Phalcon\Mvc\Model
          */
         public function initialize()
         {
+                parent::initialize();
                 $this->hasMany("id", "Questions", "topic_id", NULL);
+        }
+
+        public function getSource()
+        {
+                return 'topics';
         }
 
 }

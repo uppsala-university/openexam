@@ -1,6 +1,8 @@
 <?php
 
-class Schemainfo extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+class Schemainfo extends ModelBase
 {
 
         /**
@@ -13,5 +15,10 @@ class Schemainfo extends \Phalcon\Mvc\Model
          * @var integer
          */
         public $minor;
+
+        public function getSource()
+        {
+                return 'schemainfo';
+        }
 
 }

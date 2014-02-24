@@ -1,6 +1,8 @@
 <?php
 
-class Decoders extends \Phalcon\Mvc\Model
+namespace OpenExam\Models;
+
+class Decoders extends ModelBase
 {
 
         /**
@@ -24,7 +26,13 @@ class Decoders extends \Phalcon\Mvc\Model
          */
         public function initialize()
         {
+                parent::initialize();
                 $this->belongsTo("exam_id", "Exams", "id", array("foreignKey" => true));
+        }
+
+        public function getSource()
+        {
+                return 'decoders';
         }
 
 }
