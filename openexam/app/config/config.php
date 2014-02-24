@@ -1,6 +1,6 @@
 <?php
 
-$dbconf = new \Phalcon\Config\Adapter\Ini(__DIR__ . '/../../../config/database.ini');
+$dbconf = new \Phalcon\Config\Adapter\Ini(__DIR__ . '/../../config/database.ini');
 
 return new \Phalcon\Config(array(
         'database'    => array(
