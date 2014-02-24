@@ -21,7 +21,7 @@ GETTEXT_MOFILES = $(GETTEXT_POFILES:.po=.mo)
 
 .PHONY : all clean all-clean distclean install gettext gettext-update gettext-merge gettext-compile
 
-all : gettext
+all : gettext models
 gettext : gettext-update gettext-merge gettext-compile
 
 gettext-update : $(GETTEXT_POTFILE)
@@ -31,6 +31,9 @@ gettext-merge : $(GETTEXT_POFILES)
 $(GETTEXT_POFILES) : $(GETTEXT_POTFILE)
 	$(MSGMERGE) $(MSGMERGE_OPTIONS) $@ $? && touch $@
 gettext-compile : gettext-merge $(GETTEXT_MOFILES)
+
+models :
+	(cd openexam && phalcon all-models --doc --relations --fk --validations)
 
 %.mo : %.po
 	$(MSGFMT) $(MSGFMT_OPTIONS) $+
