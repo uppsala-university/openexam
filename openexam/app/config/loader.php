@@ -10,4 +10,11 @@ $loader->registerDirs(
             $config->application->controllersDir,
             $config->application->modelsDir
     )
-)->register();
+);
+
+$loader->registerNamespaces(
+    array(
+            'OpenExam' => $config->application->libraryDir
+    )
+);
+$loader->register();
