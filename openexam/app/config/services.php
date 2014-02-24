@@ -6,6 +6,7 @@ use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
+use Phalcon\Mvc\Dispatcher;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -36,12 +37,20 @@ $di->set('view', function () use ($config) {
 /**
  * Database connection is created based in the parameters defined in the configuration file
  */
-$di->set('db', function () use ($config) {
+$di->set('dbread', function () use ($config) {
         return new DbAdapter(array(
-                'host'     => $config->database->host,
-                'username' => $config->database->username,
-                'password' => $config->database->password,
-                'dbname'   => $config->database->dbname
+                'host'     => $config->dbread->host,
+                'username' => $config->dbread->username,
+                'password' => $config->dbread->password,
+                'dbname'   => $config->dbread->dbname
+        ));
+});
+$di->set('dbwrite', function () use ($config) {
+        return new DbAdapter(array(
+                'host'     => $config->dbwrite->host,
+                'username' => $config->dbwrite->username,
+                'password' => $config->dbwrite->password,
+                'dbname'   => $config->dbwrite->dbname
         ));
 });
 
