@@ -1,5 +1,7 @@
 <?php
 
+namespace OpenExam\Controllers;
+
 class IndexController extends ControllerBase
 {
 

@@ -1,8 +1,8 @@
 <?php
 
-use Phalcon\Mvc\Controller;
+namespace OpenExam\Controllers;
 
-class ControllerBase extends Controller
+class ControllerBase extends \Phalcon\Mvc\Controller
 {
         
 }
