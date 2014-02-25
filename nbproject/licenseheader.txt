@@ -1,5 +1,9 @@
 <#setting locale = "sv_SE">
 
+<#assign licenseFirst  = "// ">
+<#assign licensePrefix = "// ">
+<#assign licenseLast   = "// ">
+
 <#if licenseFirst??>
 ${licenseFirst}
 </#if>
@@ -9,6 +13,7 @@ ${licensePrefix}unless otherwise explicit stated elsewhere.
 ${licensePrefix}
 ${licensePrefix}File:    ${nameAndExt}
 ${licensePrefix}Created: ${date?date?string("yyyy")}-${date?date?string("MM")}-${date?date?string("d")} ${time}
+${licensePrefix}
 ${licensePrefix}Author:  ${user}
 <#if licenseLast??>
 ${licenseLast}
