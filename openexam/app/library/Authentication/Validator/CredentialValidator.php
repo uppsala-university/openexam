@@ -1,6 +1,8 @@
 <?php
 
-namespace OpenExam\Authentication;
+namespace OpenExam\Authentication\Validator;
+
+use OpenExam\Authentication\Authenticator;
 
 /**
  * Credential validator callback class. This class is intended to be used 

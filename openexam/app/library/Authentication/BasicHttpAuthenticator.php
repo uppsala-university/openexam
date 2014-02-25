@@ -9,10 +9,9 @@ namespace OpenExam\Authentication;
  * @package OpenExam
  * @subpackage Authentication
  */
-class BasicHttpAuthenticator implements Authenticator
+class BasicHttpAuthenticator extends ValidatorAdapter
 {
 
-        private $validator;
         private $realm;
 
         /**
@@ -22,19 +21,9 @@ class BasicHttpAuthenticator implements Authenticator
          */
         public function __construct($validator, $realm)
         {
-                $this->validator = $validator;
+                parent::__construct($validator);
                 $this->realm = $realm;
                 $this->initialize();
-        }
-
-        public function authenticated()
-        {
-                return $this->validator->authenticated();
-        }
-
-        public function getUser()
-        {
-                return $this->validator->getUser();
         }
 
         public function login()
@@ -46,11 +35,6 @@ class BasicHttpAuthenticator implements Authenticator
                 } else {
                         $this->validator->login();
                 }
-        }
-
-        public function logout()
-        {
-                $this->validator->logout();
         }
 
         private function initialize()
