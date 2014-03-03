@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Album-O-Rama</title>
+		<link rel="stylesheet" href="/openexam-mvc/css/style.css" type="text/css" />
+	</head>
+	<body>
+		<div align="center">
+
+	<div id="top-menu">
+
+		<div id="logo">
+			<a alt="Go Home" href="/openexam-mvc/index"><h1>Album O´Rama</h1></a>		</div>
+
+		<div id="menu-divider"></div>
+
+		<div id="menu-links">
+			<ul id="menu-header-navigation" class="menu">
+				<li class="menu-item">
+					<a href="/openexam-mvc/index">Home</a>				</li>
+				<li class="menu-item">
+					<a href="/openexam-mvc/popular">Popular</a>				</li>
+				<li class="menu-item">
+					<a href="/openexam-mvc/charts">Charts</a>				</li>
+				<li class="menu-item">
+					<a href="/openexam-mvc/about">About</a>				</li>
+			</ul>
+		</div>
+
+		<div id="header-search">
+			<form method="post" action="/openexam-mvc/search">				<div>
+					<input id="s" type="text" name="s" value="">
+					<input id="searchsubmit" type="submit" value="Search">
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+	
+<div id="top-tags">
+
+	<div id="tags-links">
+		<ul id="tags-header-navigation" class="tags">
+			<li class="tags-item">
+				Random Tags:
+			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/ambient">ambient</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/best of 2010">best of 2010</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/blues">blues</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/blues rock">blues rock</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/british">british</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/britpop">britpop</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/chillout">chillout</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/classic rock">classic rock</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/country">country</a>			</li>
+						<li class="tags-item">
+				<a href="/openexam-mvc/tag/dance">dance</a>			</li>
+					</ul>
+	</div>
+
+</div>
+
+<div class="section-header">
+	<h2>Random Albums</h2>
+</div>
+
+
+<table class="albums-index">
+		<tr>
+			<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/20684/lana+del+rey"><img src="http://userserve-ak.last.fm/serve/126/74874262.png" alt="Born to Die"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/20684/lana+del+rey">Born to Die</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/516/lana+del+rey">Lana Del Rey</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/28354/frank+ocean"><img src="http://userserve-ak.last.fm/serve/126/80449219.png" alt="channel ORANGE"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/28354/frank+ocean">channel ORANGE</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/3372/frank+ocean">Frank Ocean</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/15373/foster+the+people"><img src="http://userserve-ak.last.fm/serve/126/62306479.png" alt="Torches"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/15373/foster+the+people">Torches</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1380/foster+the+people">Foster the People</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/32850/of+monsters+and+men"><img src="http://userserve-ak.last.fm/serve/126/84421449.png" alt="My Head Is An Animal"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/32850/of+monsters+and+men">My Head Is An Animal</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/2336/of+monsters+and+men">Of Monsters and Men</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/17391/gotye"><img src="http://userserve-ak.last.fm/serve/126/68234032.png" alt="Making Mirrors"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/17391/gotye">Making Mirrors</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/2220/gotye">Gotye</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/40593/grimes"><img src="http://userserve-ak.last.fm/serve/126/73293934.png" alt="Visions"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/40593/grimes">Visions</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1509/grimes">Grimes</a>			</div>
+		</td>
+					</tr><tr>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/34998/one+direction"><img src="http://userserve-ak.last.fm/serve/126/80065573.png" alt="Up All Night"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/34998/one+direction">Up All Night</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1769/one+direction">One Direction</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/14024/two+door+cinema+club"><img src="http://userserve-ak.last.fm/serve/126/53186891.png" alt="Tourist History"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/14024/two+door+cinema+club">Tourist History</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1332/two+door+cinema+club">Two Door Cinema Club</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/47104/purity+ring"><img src="http://userserve-ak.last.fm/serve/126/77267202.png" alt="Shrines"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/47104/purity+ring">Shrines</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1741/purity+ring">Purity Ring</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/33691/jack+white"><img src="http://userserve-ak.last.fm/serve/126/74641720.png" alt="Blunderbuss"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/33691/jack+white">Blunderbuss</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1410/jack+white">Jack White</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/14025/two+door+cinema+club"><img src="http://userserve-ak.last.fm/serve/126/83262529.png" alt="Beacon"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/14025/two+door+cinema+club">Beacon</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1332/two+door+cinema+club">Two Door Cinema Club</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/38250/tame+impala"><img src="http://userserve-ak.last.fm/serve/126/81756565.png" alt="Lonerism"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/38250/tame+impala">Lonerism</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1385/tame+impala">Tame Impala</a>			</div>
+		</td>
+					</tr><tr>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/42408/ben+howard"><img src="http://userserve-ak.last.fm/serve/126/71970488.png" alt="Every Kingdom"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/42408/ben+howard">Every Kingdom</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/2315/ben+howard">Ben Howard</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/15507/ellie+goulding"><img src="http://userserve-ak.last.fm/serve/126/80623087.png" alt="Halcyon"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/15507/ellie+goulding">Halcyon</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/518/ellie+goulding">Ellie Goulding</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/16993/justin+bieber"><img src="http://userserve-ak.last.fm/serve/126/78820327.png" alt="Believe"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/16993/justin+bieber">Believe</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1776/justin+bieber">Justin Bieber</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/24471/demi+lovato"><img src="http://userserve-ak.last.fm/serve/126/69672054.png" alt="Unbroken"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/24471/demi+lovato">Unbroken</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/365/demi+lovato">Demi Lovato</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/29994/the+naked+and+famous"><img src="http://userserve-ak.last.fm/serve/126/51383895.png" alt="Passive Me, Aggressive You"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/29994/the+naked+and+famous">Passive Me, Aggressive You</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/2899/the+naked+and+famous">The Naked and Famous</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/39542/alex+clare"><img src="http://userserve-ak.last.fm/serve/126/81863741.png" alt="The Lateness Of The Hour"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/39542/alex+clare">The Lateness Of The Hour</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/2308/alex+clare">Alex Clare</a>			</div>
+		</td>
+					</tr><tr>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/15506/ellie+goulding"><img src="http://userserve-ak.last.fm/serve/126/55469561.png" alt="Bright Lights"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/15506/ellie+goulding">Bright Lights</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/518/ellie+goulding">Ellie Goulding</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/14672/neutral+milk+hotel"><img src="http://userserve-ak.last.fm/serve/126/40221935.png" alt="In the Aeroplane Over the Sea"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/14672/neutral+milk+hotel">In the Aeroplane Over the Sea</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1915/neutral+milk+hotel">Neutral Milk Hotel</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/15505/ellie+goulding"><img src="http://userserve-ak.last.fm/serve/126/84149737.png" alt="Lights"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/15505/ellie+goulding">Lights</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/518/ellie+goulding">Ellie Goulding</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/19301/beach+house"><img src="http://userserve-ak.last.fm/serve/126/45432055.png" alt="Teen Dream"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/19301/beach+house">Teen Dream</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1490/beach+house">Beach House</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/44181/imagine+dragons"><img src="http://userserve-ak.last.fm/serve/126/81067941.png" alt="Continued Silence EP"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/44181/imagine+dragons">Continued Silence EP</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/2333/imagine+dragons">Imagine Dragons</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/32856/the+gaslight+anthem"><img src="http://userserve-ak.last.fm/serve/126/80483113.png" alt="Handwritten"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/32856/the+gaslight+anthem">Handwritten</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/902/the+gaslight+anthem">The Gaslight Anthem</a>			</div>
+		</td>
+					</tr><tr>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/38251/tame+impala"><img src="http://userserve-ak.last.fm/serve/126/55784069.png" alt="InnerSpeaker"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/38251/tame+impala">InnerSpeaker</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1385/tame+impala">Tame Impala</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/43100/wild+nothing"><img src="http://userserve-ak.last.fm/serve/126/80707023.png" alt="Nocturne"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/43100/wild+nothing">Nocturne</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/1500/wild+nothing">Wild Nothing</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/16494/a+day+to+remember"><img src="http://userserve-ak.last.fm/serve/126/75797260.png" alt="Homesick"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/16494/a+day+to+remember">Homesick</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/3344/a+day+to+remember">A Day to Remember</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/30589/carly+rae+jepsen"><img src="http://userserve-ak.last.fm/serve/126/75352964.png" alt="Call Me Maybe"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/30589/carly+rae+jepsen">Call Me Maybe</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/519/carly+rae+jepsen">Carly Rae Jepsen</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/12725/fiona+apple"><img src="http://userserve-ak.last.fm/serve/126/76230658.png" alt="The Idler Wheel Is Wiser Than the Driver of the Screw and Whipping Cords Will Serve You More Than Ropes Will Ever Do"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/12725/fiona+apple">The Idler Wheel Is Wiser Than the Driver of the Screw and Whipping Cords Will Serve You More Than Ropes Will Ever Do</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/914/fiona+apple">Fiona Apple</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/openexam-mvc/album/32843/kendrick+lamar"><img src="http://userserve-ak.last.fm/serve/126/81974483.png" alt="good kid, m.A.A.d city"/></a>			</div>
+			<div class="album-name">
+				<a href="/openexam-mvc/album/32843/kendrick+lamar">good kid, m.A.A.d city</a>			</div>
+			<div class="artist-name">
+				<a href="/openexam-mvc/artist/177/kendrick+lamar">Kendrick Lamar</a>			</div>
+		</td>
+					</tr><tr>
+					</table>
+	<div id="footer">
+		Powered by <a href="/openexam-mvc/about">Phalcon PHP Framework</a>	</div>
+
+</div>	</body>
+</html>

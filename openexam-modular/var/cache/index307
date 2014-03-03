@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Album-O-Rama</title>
+		<link rel="stylesheet" href="/album-o-rama/css/style.css" type="text/css" />
+	</head>
+	<body>
+		<div align="center">
+
+	<div id="top-menu">
+
+		<div id="logo">
+			<a alt="Go Home" href="/album-o-rama/index"><h1>Album O´Rama</h1></a>		</div>
+
+		<div id="menu-divider"></div>
+
+		<div id="menu-links">
+			<ul id="menu-header-navigation" class="menu">
+				<li class="menu-item">
+					<a href="/album-o-rama/index">Home</a>				</li>
+				<li class="menu-item">
+					<a href="/album-o-rama/popular">Popular</a>				</li>
+				<li class="menu-item">
+					<a href="/album-o-rama/charts">Charts</a>				</li>
+				<li class="menu-item">
+					<a href="/album-o-rama/about">About</a>				</li>
+			</ul>
+		</div>
+
+		<div id="header-search">
+			<form method="post" action="/album-o-rama/search">				<div>
+					<input id="s" type="text" name="s" value="">
+					<input id="searchsubmit" type="submit" value="Search">
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+	
+<div id="top-tags">
+
+	<div id="tags-links">
+		<ul id="tags-header-navigation" class="tags">
+			<li class="tags-item">
+				Random Tags:
+			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/2010">2010</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/2011">2011</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/2012">2012</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/60s">60s</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/70s">70s</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/80s">80s</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/90s">90s</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/acoustic">acoustic</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/albums i own">albums i own</a>			</li>
+						<li class="tags-item">
+				<a href="/album-o-rama/tag/alternative">alternative</a>			</li>
+					</ul>
+	</div>
+
+</div>
+
+<div class="section-header">
+	<h2>Random Albums</h2>
+</div>
+
+
+<table class="albums-index">
+		<tr>
+			<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/20684/lana+del+rey"><img src="http://userserve-ak.last.fm/serve/126/74874262.png" alt="Born to Die"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/20684/lana+del+rey">Born to Die</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/516/lana+del+rey">Lana Del Rey</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/28354/frank+ocean"><img src="http://userserve-ak.last.fm/serve/126/80449219.png" alt="channel ORANGE"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/28354/frank+ocean">channel ORANGE</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/3372/frank+ocean">Frank Ocean</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/15373/foster+the+people"><img src="http://userserve-ak.last.fm/serve/126/62306479.png" alt="Torches"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/15373/foster+the+people">Torches</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1380/foster+the+people">Foster the People</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/32850/of+monsters+and+men"><img src="http://userserve-ak.last.fm/serve/126/84421449.png" alt="My Head Is An Animal"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/32850/of+monsters+and+men">My Head Is An Animal</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/2336/of+monsters+and+men">Of Monsters and Men</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/9247/bon+iver"><img src="http://userserve-ak.last.fm/serve/126/83311479.png" alt="Bon Iver"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/9247/bon+iver">Bon Iver</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1476/bon+iver">Bon Iver</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/9246/bon+iver"><img src="http://userserve-ak.last.fm/serve/126/83311439.png" alt="For Emma, Forever Ago"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/9246/bon+iver">For Emma, Forever Ago</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1476/bon+iver">Bon Iver</a>			</div>
+		</td>
+					</tr><tr>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/17391/gotye"><img src="http://userserve-ak.last.fm/serve/126/68234032.png" alt="Making Mirrors"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/17391/gotye">Making Mirrors</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/2220/gotye">Gotye</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/40593/grimes"><img src="http://userserve-ak.last.fm/serve/126/73293934.png" alt="Visions"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/40593/grimes">Visions</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1509/grimes">Grimes</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/34998/one+direction"><img src="http://userserve-ak.last.fm/serve/126/80065573.png" alt="Up All Night"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/34998/one+direction">Up All Night</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1769/one+direction">One Direction</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/12066/passion+pit"><img src="http://userserve-ak.last.fm/serve/126/83262369.png" alt="Gossamer"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/12066/passion+pit">Gossamer</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1333/passion+pit">Passion Pit</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/14024/two+door+cinema+club"><img src="http://userserve-ak.last.fm/serve/126/53186891.png" alt="Tourist History"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/14024/two+door+cinema+club">Tourist History</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1332/two+door+cinema+club">Two Door Cinema Club</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/47104/purity+ring"><img src="http://userserve-ak.last.fm/serve/126/77267202.png" alt="Shrines"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/47104/purity+ring">Shrines</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1741/purity+ring">Purity Ring</a>			</div>
+		</td>
+					</tr><tr>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/33691/jack+white"><img src="http://userserve-ak.last.fm/serve/126/74641720.png" alt="Blunderbuss"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/33691/jack+white">Blunderbuss</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1410/jack+white">Jack White</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/14025/two+door+cinema+club"><img src="http://userserve-ak.last.fm/serve/126/83262529.png" alt="Beacon"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/14025/two+door+cinema+club">Beacon</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1332/two+door+cinema+club">Two Door Cinema Club</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/38250/tame+impala"><img src="http://userserve-ak.last.fm/serve/126/81756565.png" alt="Lonerism"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/38250/tame+impala">Lonerism</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1385/tame+impala">Tame Impala</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/11946/crystal+castles"><img src="http://userserve-ak.last.fm/serve/126/57061291.png" alt="Crystal Castles"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/11946/crystal+castles">Crystal Castles</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1724/crystal+castles">Crystal Castles</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/42408/ben+howard"><img src="http://userserve-ak.last.fm/serve/126/71970488.png" alt="Every Kingdom"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/42408/ben+howard">Every Kingdom</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/2315/ben+howard">Ben Howard</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/11341/metric"><img src="http://userserve-ak.last.fm/serve/126/79734965.png" alt="Synthetica"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/11341/metric">Synthetica</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1716/metric">Metric</a>			</div>
+		</td>
+					</tr><tr>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/15507/ellie+goulding"><img src="http://userserve-ak.last.fm/serve/126/80623087.png" alt="Halcyon"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/15507/ellie+goulding">Halcyon</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/518/ellie+goulding">Ellie Goulding</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/16993/justin+bieber"><img src="http://userserve-ak.last.fm/serve/126/78820327.png" alt="Believe"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/16993/justin+bieber">Believe</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1776/justin+bieber">Justin Bieber</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/11947/crystal+castles"><img src="http://userserve-ak.last.fm/serve/126/83705329.png" alt="(III)"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/11947/crystal+castles">(III)</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1724/crystal+castles">Crystal Castles</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/24471/demi+lovato"><img src="http://userserve-ak.last.fm/serve/126/69672054.png" alt="Unbroken"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/24471/demi+lovato">Unbroken</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/365/demi+lovato">Demi Lovato</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/29994/the+naked+and+famous"><img src="http://userserve-ak.last.fm/serve/126/51383895.png" alt="Passive Me, Aggressive You"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/29994/the+naked+and+famous">Passive Me, Aggressive You</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/2899/the+naked+and+famous">The Naked and Famous</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/39542/alex+clare"><img src="http://userserve-ak.last.fm/serve/126/81863741.png" alt="The Lateness Of The Hour"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/39542/alex+clare">The Lateness Of The Hour</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/2308/alex+clare">Alex Clare</a>			</div>
+		</td>
+					</tr><tr>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/15506/ellie+goulding"><img src="http://userserve-ak.last.fm/serve/126/55469561.png" alt="Bright Lights"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/15506/ellie+goulding">Bright Lights</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/518/ellie+goulding">Ellie Goulding</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/14672/neutral+milk+hotel"><img src="http://userserve-ak.last.fm/serve/126/40221935.png" alt="In the Aeroplane Over the Sea"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/14672/neutral+milk+hotel">In the Aeroplane Over the Sea</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1915/neutral+milk+hotel">Neutral Milk Hotel</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/11761/fleet+foxes"><img src="http://userserve-ak.last.fm/serve/126/62605535.png" alt="Helplessness Blues"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/11761/fleet+foxes">Helplessness Blues</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/2033/fleet+foxes">Fleet Foxes</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/15505/ellie+goulding"><img src="http://userserve-ak.last.fm/serve/126/84149737.png" alt="Lights"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/15505/ellie+goulding">Lights</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/518/ellie+goulding">Ellie Goulding</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/9868/p!nk"><img src="http://userserve-ak.last.fm/serve/126/80234543.png" alt="The Truth About Love"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/9868/p!nk">The Truth About Love</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/401/p!nk">P!nk</a>			</div>
+		</td>
+							<td valign="top">
+			<div class="album-name">
+				<a href="/album-o-rama/album/12065/passion+pit"><img src="http://userserve-ak.last.fm/serve/126/43796575.png" alt="Manners"/></a>			</div>
+			<div class="album-name">
+				<a href="/album-o-rama/album/12065/passion+pit">Manners</a>			</div>
+			<div class="artist-name">
+				<a href="/album-o-rama/artist/1333/passion+pit">Passion Pit</a>			</div>
+		</td>
+					</tr><tr>
+					</table>
+	<div id="footer">
+		Powered by <a href="/album-o-rama/about">Phalcon PHP Framework</a>	</div>
+
+</div>	</body>
+</html>
