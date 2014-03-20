@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	    <meta http-equiv="content-type" content="text/html" charset="ISO-8859-1" />	
+    	<?=Phalcon\Tag::getTitle();?>
+        <?=Phalcon\Tag::stylesheetLink("css/style.css");?>
+	</head>
+    
+	<body>
+    	<!-- wrapper -->
+        <div id="wrapper" align="center">
+        
+        	<!-- top menu area -->
+            <div id="top-menu">
+            	
+                <div id="logo"></div>
+        
+                <div id="menu-divider"></div>
+        
+                <!-- menu links area -->
+                <div id="menu-links">
+                    <ul id="menu-header-navigation" class="menu">
+                        <li class="menu-item">
+                            <?=Phalcon\Tag::linkTo('index', 'Home')?>
+                        </li>
+                        <li class="menu-item">
+                            <?=Phalcon\Tag::linkTo('help', 'Help')?>
+                        </li>
+                        <li class="menu-item">
+                            <?=Phalcon\Tag::linkTo('about', 'About')?>
+                        </li>
+                    </ul>
+            	</div>
+                <!-- menu links area ends -->
+        
+                <!-- top menu area -->
+                <div id="header-search">
+                    <form id="search">
+                        <div>
+                            <input id="s" type="text" name="s" value="">
+                            <input id="searchsubmit" type="submit" value="Search">
+                        </div>
+                    </form>
+                </div>
+                <!-- top menu area ends -->
+                
+        	</div>
+            <!-- top menu area ends -->
+            
+            
+            <!-- content area -->
+            <?=$this->getContent() ?>
+            <!-- content area ends -->
+        
+            
+            <!-- footer area -->
+            <div id="footer">
+                 <?=Phalcon\Tag::linkTo('http://uu.se', "Uppsala Universitet")?>
+            </div>
+        	<!-- footer area ends -->
+            
+        </div>		
+        <!-- wrapper ends -->
+        
+	</body>
+    
+</html>
