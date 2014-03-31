@@ -172,6 +172,8 @@ class TeacherPage extends BasePage
         public function printMenu()
         {
                 if (isset($this->param->exam)) {
+                        $links = new PageMenu();
+                        
                         //
                         // General sub menu:
                         //
@@ -327,6 +329,7 @@ class TeacherPage extends BasePage
         final public function printManagerStatus()
         {
                 if (isset($this->param->exam)) {
+                        $state = new stdClass();
                         $state->value = $this->manager->getInfo()->getState();
 
                         if ($state->value & EXAM_STATE_UPCOMING) {
@@ -369,11 +372,12 @@ class TeacherPage extends BasePage
                                 "decoder.php"    => "decoder"
                         );
 
+                        $roles = new stdClass();
                         $roles->script = basename($_SERVER['SCRIPT_NAME']);
                         $roles->value = array(
-                            );
+                        );
                         $roles->suppl = array(
-                            );
+                        );
 
                         foreach ($scripts as $script => $role) {
                                 if ($roles->script == $script) {
@@ -538,7 +542,7 @@ class TeacherUtils
                         "date"  => _("Date")
                 );
                 $disp = array(
-                    );
+                );
                 printf("<span class=\"links viewmode\">\n");
                 foreach ($mode as $name => $text) {
                         if ($order != $name) {

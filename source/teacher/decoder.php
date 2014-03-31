@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2013 Computing Department BMC, 
+// Copyright (C) 2010-2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/decoder.php
@@ -92,11 +92,11 @@ class DecoderPage extends TeacherPage
         private static $params = array(
                 "exam"     => parent::pattern_index,
                 "mode"     => "/^(result|scores)$/",
-                "mirror"   => parent::pattern_text, // button
+                "mirror"   => parent::pattern_textline, // button
                 "action"   => "/^(save|show|mail|download)$/",
                 "format"   => "/^(pdf|html|ps|csv|tab|xml)$/",
                 "student"  => "/^(\d+|all)$/",
-                "message"  => parent::pattern_text,
+                "message"  => parent::pattern_textarea,
                 "colorize" => parent::pattern_index,
                 "verbose"  => parent::pattern_index,
                 "order"    => "/^(state|name|date)$/",
@@ -105,11 +105,17 @@ class DecoderPage extends TeacherPage
 
         public function __construct()
         {
-                $this->param->order = "state";
-                $this->param->verbose = false;
-                $this->param->colorize = false;
-
                 parent::__construct(_("Decoder Page"), self::$params);
+
+                if (!isset($this->param->order)) {
+                        $this->param->order = "state";
+                }
+                if (!isset($this->param->verbose)) {
+                        $this->param->verbose = false;
+                }
+                if (!isset($this->param->colorize)) {
+                        $this->param->colorize = false;
+                }
 
                 if (isset($this->param->exam)) {
                         $this->decoder = new Decoder($this->param->exam);
@@ -455,7 +461,7 @@ class DecoderPage extends TeacherPage
                         $lines = split("\n", $this->param->message);
                         if (count($lines) > 0) {
                                 $sect = array(
-);
+                                );
                                 foreach ($lines as $line) {
                                         $line = trim($line);
                                         if (strlen($line) == 0) {
@@ -468,7 +474,7 @@ class DecoderPage extends TeacherPage
                                                         $mail->addMessage($head, $text);
                                                 }
                                                 $sect = array(
-);
+                                                );
                                                 $sect[] = $curr;
                                         } else {
                                                 $sect[] = $line;
@@ -614,4 +620,5 @@ class DecoderPage extends TeacherPage
 
 $page = new DecoderPage();
 $page->render();
+
 ?>

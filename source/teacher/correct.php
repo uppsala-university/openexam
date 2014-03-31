@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2013 Computing Department BMC, 
+// Copyright (C) 2010-2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/correct.php
@@ -85,18 +85,24 @@ class CorrectionPage extends TeacherPage
                 "verbose"  => parent::pattern_index,
                 "colorize" => parent::pattern_index,
                 "score"    => parent::pattern_score,
-                "comment"  => parent::pattern_text,
+                "comment"  => parent::pattern_textarea,
                 "order"    => "/^(state|name|date)$/",
                 "mode"     => "/^(mark|save)$/"
         );
 
         public function __construct()
         {
-                $this->param->order = "state";
-                $this->param->verbose = false;
-                $this->param->colorize = false;
-
                 parent::__construct(_("Answer Correction Page"), self::$params);
+
+                if (!isset($this->param->order)) {
+                        $this->param->order = "state";
+                }
+                if (!isset($this->param->verbose)) {
+                        $this->param->verbose = false;
+                }
+                if (!isset($this->param->colorize)) {
+                        $this->param->colorize = false;
+                }
         }
 
         //
@@ -177,7 +183,7 @@ class CorrectionPage extends TeacherPage
         private function saveAnswerResult()
         {
                 $results = isset($this->param->result) ? $this->param->result : array(
-                    );
+                );
                 $correct = new Correct($this->param->exam);
                 $correct->setAnswerResult($this->param->score, $this->param->comment, $results);
                 header(sprintf("location: correct.php?exam=%d", $this->param->exam));
@@ -372,7 +378,7 @@ class CorrectionPage extends TeacherPage
                 // Show removed questions, but only in verbose mode.
                 //
                 $found = (object) array(
-                    );
+                );
                 $found->answers = 0;
                 $found->removed = 0;
                 foreach ($answers as $answer) {
@@ -624,4 +630,5 @@ class CorrectionPage extends TeacherPage
 
 $page = new CorrectionPage();
 $page->render();
+
 ?>

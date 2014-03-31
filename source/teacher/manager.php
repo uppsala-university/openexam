@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2013 Computing Department BMC, 
+// Copyright (C) 2010-2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/manager.php
@@ -86,19 +86,21 @@ class ManagerPage extends TeacherPage
                 "user"    => parent::pattern_index,
                 "uuid"    => parent::pattern_user, // username
                 "name"    => parent::pattern_name, // person name
-                "unit"    => parent::pattern_text, // organization unit
-                "desc"    => parent::pattern_text, // exam description
-                "grade"   => parent::pattern_text, // grades
-                "details" => parent::pattern_text,
-                "start"   => parent::pattern_text, // start date/time
-                "end"     => parent::pattern_text, // end date/time
+                "unit"    => parent::pattern_textline, // organization unit
+                "desc"    => parent::pattern_textarea, // exam description
+                "grade"   => parent::pattern_textarea, // grades
+                "details" => parent::pattern_textline,
+                "start"   => parent::pattern_textline, // start date/time
+                "end"     => parent::pattern_textline, // end date/time
                 "order"   => "/^(state|name|date)$/"
         );
 
         public function __construct()
         {
-                $this->param->order = "date";
                 parent::__construct(_("Examination Management"), self::$params);
+                if (!isset($this->param->order)) {
+                        $this->param->order = "date";
+                }
         }
 
         //
@@ -413,7 +415,7 @@ class ManagerPage extends TeacherPage
                                         $this->param->type, $_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']
                                 );
                                 $importer->open();
-                                $this->param->exam = $importer->read(0, Database::getConnection());
+                                $this->param->exam = $importer->read(0, Database::getConnection(), OPENEXAM_IMPORT_INCLUDE_ALL);
                                 $importer->close();
                         } catch (ImportException $exception) {
                                 $this->fatal(_("Failed Import Questions"), $exception->getMessage());
@@ -653,4 +655,5 @@ class ManagerPage extends TeacherPage
 
 $page = new ManagerPage();
 $page->render();
+
 ?>

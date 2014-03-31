@@ -28,6 +28,7 @@ if (!file_exists("../../conf/config.inc")) {
 // 
 include "MDB2.php";
 include "CAS.php";
+include "PHPWord.php";
 
 // 
 // Locale and internationalization support:
@@ -47,6 +48,7 @@ include "include/cas.inc";
 include "include/ui.inc";
 include "include/error.inc";
 include "include/html.inc";
+include "include/handler/handler.inc";
 
 // 
 // Include database support:
@@ -61,6 +63,7 @@ include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/correct.inc";
 include "include/export.inc";
+include "include/exam.inc";
 
 // 
 // The export page:
@@ -79,11 +82,17 @@ class ExportPage extends TeacherPage
 
         public function __construct()
         {
-                $this->param->order = "date";
-                $this->param->show = "basic";
-                $this->param->action = "show";
-
                 parent::__construct(_("Export Page"), self::$params);
+
+                if (!isset($this->param->order)) {
+                        $this->param->order = "date";
+                }
+                if (!isset($this->param->show)) {
+                        $this->param->show = "basic";
+                }
+                if (!isset($this->param->action)) {
+                        $this->param->action = "show";
+                }
         }
 
         //
@@ -249,4 +258,5 @@ class ExportPage extends TeacherPage
 
 $page = new ExportPage();
 $page->render();
+
 ?>

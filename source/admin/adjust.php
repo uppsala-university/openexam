@@ -76,7 +76,7 @@ class AdjustScoreAdminPage extends AdminPage
                 "answer"  => parent::pattern_index,
                 "result"  => parent::pattern_index,
                 "score"   => parent::pattern_float,
-                "comment" => parent::pattern_text
+                "comment" => parent::pattern_textarea
         );
 
         public function __construct()

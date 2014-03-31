@@ -683,6 +683,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 $this->decoded = $this->board->getExam()->getExamDecoded() == 'Y';
                 $this->verbose = false;
                 $this->colorize = false;
+                $this->show = new stdClass();
         }
 
         public function setVerbose($bool)
@@ -907,16 +908,21 @@ class ScoreBoardPrinter extends ScoreBoardOutput
 
         private function getHeaderData($question)
         {
+                $header = new stdClass();
+
                 if ($question->getQuestionPublisher() == phpCAS::getUser()) {
                         $header->link = sprintf("?exam=%d&amp;action=correct&amp;question=%d", $question->getExamID(), $question->getQuestionID());
                 }
 
                 if ($question->getQuestionType() == QUESTION_TYPE_FREETEXT) {
                         $question->setQuestionBody(strip_tags($question->getQuestionText()));
-                } elseif ($question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE ||
+                } elseif (
+                    $question->getQuestionType() == QUESTION_TYPE_MULTI_CHOICE ||
                     $question->getQuestionType() == QUESTION_TYPE_SINGLE_CHOICE) {
                         $options = Exam::getQuestionChoice($question->getQuestionText());
                         $question->setQuestionBody(strip_tags($options[0]));
+                } elseif (!$question->hasQuestionBody()) {
+                        $question->setQuestionBody(""); // Fix undef warning
                 }
 
                 $header->name = sprintf("Q%d", ++$this->index);

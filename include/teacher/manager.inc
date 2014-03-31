@@ -161,8 +161,8 @@ class ExamDetails
         private $mask = 0;  // The details mask
         //
         // The mask value is either an numeric or an array.
-        //
 
+        //
         public function __construct($mask)
         {
                 $this->mask = is_array($mask) ? array_sum($mask) : $mask;
@@ -333,7 +333,7 @@ class TreeNode
         public function setLink($url, $title = null)  // This node links to...
         {
                 if (isset($title)) {
-                        $this->link = array("href"  => $url, "title" => $title);
+                        $this->link = array("href" => $url, "title" => $title);
                 } else {
                         $this->link = array("href" => $url);
                 }
@@ -342,7 +342,7 @@ class TreeNode
         public function addLink($name, $url, $title = null, $attr = null)
         {
                 if (isset($title)) {
-                        $this->links[$name] = array("href"  => $url, "title" => $title);
+                        $this->links[$name] = array("href" => $url, "title" => $title);
                 } else {
                         $this->links[$name] = array("href" => $url);
                 }
@@ -649,6 +649,9 @@ class Manager
                 }
                 $row = $res->fetchRow();
                 if ($cache) {
+                        if (!isset($this->$user)) {
+                                $this->$user = new stdClass();
+                        }
                         $this->$user->$role = intval($row[0]) >= 1;
                 }
 

@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2012 Computing Department BMC, 
+// Copyright (C) 2010-2012, 2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/admin/exams.php
@@ -73,14 +73,17 @@ class ExamAdminPage extends AdminPage
         private static $params = array(
                 "data"    => "/^(all|real|upcoming|today)$/",
                 "exam"    => parent::pattern_index,
-                "compact" => parent::pattern_text, // button name
-                "submit"  => parent::pattern_text, // button name
-                "export"  => parent::pattern_text       // button name
+                "compact" => parent::pattern_textline, // button name
+                "submit"  => parent::pattern_textline, // button name
+                "export"  => parent::pattern_textline  // button name
         );
 
         public function __construct()
         {
                 parent::__construct(_("Exam Admin"), self::$params);
+                if (!isset($this->param->data)) {
+                        $this->param->data = 'upcoming';
+                }
         }
 
         //
@@ -88,10 +91,6 @@ class ExamAdminPage extends AdminPage
         //
         public function printBody()
         {
-                if (!isset($this->param->data)) {
-                        $this->param->data = 'upcoming';
-                }
-
                 if (isset($this->param->export)) {
                         if (isset($this->param->exam)) {
                                 $this->exportExam();    // Stops execution here!

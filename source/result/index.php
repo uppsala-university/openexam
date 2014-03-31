@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2012 Computing Department BMC, 
+// Copyright (C) 2010-2012, 2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/result/index.php
@@ -79,6 +79,9 @@ class ResultPage extends BasePage
         public function __construct()
         {
                 parent::__construct(_("Result:"), self::$params);   // Internationalized with GNU gettext
+                if (!isset($this->param->format)) {
+                        $this->param->format = "pdf";
+                }
         }
 
         //
@@ -98,9 +101,6 @@ class ResultPage extends BasePage
                         $this->showAvailableExams();
                 } else {
                         if ($this->param->action == "download") {
-                                if (!isset($this->param->format)) {
-                                        $this->param->format = "pdf";
-                                }
                                 $this->sendExam();
                         } elseif ($this->param->action == "details") {
                                 $this->showExam();
@@ -229,4 +229,5 @@ class ResultPage extends BasePage
 // 
 $page = new ResultPage();
 $page->render();
+
 ?>

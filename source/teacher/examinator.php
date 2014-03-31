@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2013 Computing Department BMC, 
+// Copyright (C) 2010-2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/examinator.php
@@ -82,25 +82,32 @@ class ExaminatorPage extends TeacherPage
 {
 
         private static $params = array(
-                "exam"   => parent::pattern_index,
-                "what"   => "/^(user|users|course)$/",
-                "mode"   => "/^(save|show)$/",
-                "code"   => parent::pattern_code,
-                "user"   => parent::pattern_user,
-                "users"  => parent::pattern_text,
-                "course" => parent::pattern_course,
-                "stime"  => parent::pattern_text,
-                "etime"  => parent::pattern_text,
-                "action" => "/^(add|edit|show|delete)$/",
-                "year"   => parent::pattern_year,
-                "order"  => "/^(state|name|date)$/",
-                "termin" => parent::pattern_termin
+                "exam"    => parent::pattern_index,
+                "what"    => "/^(user|users|course|file)$/",
+                "mode"    => "/^(save|show)$/",
+                "code"    => parent::pattern_code,
+                "user"    => parent::pattern_user,
+                "users"   => parent::pattern_textarea,
+                "course"  => parent::pattern_course,
+                "stime"   => parent::pattern_textline,
+                "etime"   => parent::pattern_textline,
+                "action"  => "/^(add|edit|show|delete)$/",
+                "year"    => parent::pattern_year,
+                "order"   => "/^(state|name|date)$/",
+                "termin"  => parent::pattern_termin,
+                "file"    => parent::pattern_name,
+                "account" => parent::pattern_index,
+                "persnr"  => parent::pattern_index,
+                "show"    => "/^(course|file)$/"
         );
 
         public function __construct()
         {
-                $this->param->order = "state";
+                self::$params['tag'] = parent::pattern(array(parent::pattern_index, parent::pattern_name));
                 parent::__construct(_("Examinator Page"), self::$params);
+                if (!isset($this->param->order)) {
+                        $this->param->order = "state";
+                }
         }
 
         //
@@ -144,11 +151,21 @@ class ExaminatorPage extends TeacherPage
                                                 }
                                         }
                                 } elseif (isset($this->param->mode) && $this->param->mode == "show") {
-                                        $this->assert(array(
-                                                'course',
-                                                'year',
-                                                'termin'));
-                                        $this->showAddCourse();
+                                        if (isset($this->param->show)) {
+                                                if ($this->param->show == "course") {
+                                                        $this->assert(array(
+                                                                'course', 'year', 'termin'
+                                                            )
+                                                        );
+                                                        $this->showAddCourse();
+                                                } elseif ($this->param->show == "file") {
+                                                        $this->assert(array(
+                                                                'file', 'tag', 'account', 'persnr'
+                                                            )
+                                                        );
+                                                        $this->showAddFile();
+                                                }
+                                        }
                                 } else {
                                         if (!isset($this->param->what)) {
                                                 $this->param->what = "course";
@@ -238,10 +255,11 @@ class ExaminatorPage extends TeacherPage
                 $mode = array(
                         "user"   => _("Single"),
                         "users"  => _("List"),
+                        "file"   => _("File"),
                         "course" => _("Import")
                 );
                 $disp = array(
-);
+                );
                 printf("<span class=\"links viewmode\">\n");
                 foreach ($mode as $name => $text) {
                         if ($what != $name) {
@@ -304,6 +322,42 @@ class ExaminatorPage extends TeacherPage
                         $input = $form->addSubmitButton("submit", _("Show"));
                         $input->setLabel();
                         $form->output();
+                } elseif ($what == "file") {
+                        $form = new Form("examinator.php", "POST");
+                        $form->addSectionHeader(_("Import file"));
+                        $form->addHidden("exam", $this->param->exam);
+                        $form->addHidden("mode", "show");
+                        $form->addHidden("what", "file");
+                        $form->addHidden("action", "add");
+                        $input = $form->addFileInput("file");
+                        $input->setLabel(_("File"));
+                        $input->setAccept("application/vnd.ms-excel,text/tab-separated-values,text/csv");
+                        $input->setTitle(_("Select an Excel or plain text (TAB- or CSV-separated) file."));
+                        $input = $form->addTextBox("tag");
+                        $input->setLabel(_("Tag"));
+                        $input->setTitle(_("Tag each student in the uploaded list with this identifier. If numeric, then it denotes the column (starting from index 0) in the submitted list containing the tag."));
+                        $input = $form->addComboBox("account");
+                        $input->addOption(-1, _("Unused"));
+                        for ($i = 0; $i < 10; $i++) {
+                                $input->addOption($i, $i);
+                        }
+                        $input->setLabel(_("Account"));
+                        $input->setTitle(_("Index of the column containing the account names."));
+                        $input = $form->addComboBox("persnr");
+                        $input->addOption(-1, _("Detect"));
+                        for ($i = 0; $i < 10; $i++) {
+                                $input->addOption($i, $i);
+                        }
+                        $input->setLabel(_("Pers.Nr"));
+                        $input->setTitle(_("Index of the column containing the personal numbers (i.e. 751011-3723)."));
+                        $input = $form->addSubmitButton("submit", _("Submit"));
+                        $input->setLabel();
+                        $form->output();
+
+                        $msgbox = new MessageBox(MessageBox::information, _("This form accepts table data files containing student registrations. ") .
+                            _("Accepted file types are like Excel and plain text formats (TAB- or CSV-separated). ")
+                        );
+                        $msgbox->display();
                 } else {
                         $form = new Form("examinator.php", "POST");
                         $form->addSectionHeader(_("Add list of students:"));
@@ -355,8 +409,16 @@ class ExaminatorPage extends TeacherPage
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
         }
 
+        // 
+        // Show list of students that is going to be imported from file.
+        // 
+        private function showAddFile()
+        {
+                $this->showAddCommon("file");
+        }
+
         //
-        // Show list of students that is going to be added.
+        // Show list of students that is going to be imported from UPPDOK.
         //
         private function showAddCourse()
         {
@@ -506,4 +568,5 @@ class ExaminatorPage extends TeacherPage
 
 $page = new ExaminatorPage();
 $page->render();
+
 ?>

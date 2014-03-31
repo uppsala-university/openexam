@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2009-2010 Computing Department BMC, 
+// Copyright (C) 2009-2010, 2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/ui.inc
@@ -66,9 +66,11 @@ interface TemplatePage
 class BasePage implements TemplatePage
 {
 
+        const pattern_any = self::pattern_textarea;             // match anything
         const pattern_float = "/^\d+([,.]\d+)*$/";              // match float point
         const pattern_index = "/^\d+$/";                        // match database index
-        const pattern_text = "/.*/";                            // generic text or any
+        const pattern_textarea = "/^.*$/m";                     // generic text can be anything
+        const pattern_textline = "/^.*$/";                      // single line of text
         const pattern_user = "/^[0-9a-zA-Z-_@]{1,30}$/";        // username
         const pattern_url = "/^(.*:\/\/.*|)$/";                 // i.e. http://server/file
         const pattern_course = "/^[0-9a-zA-Z]{1,10}$/";         // course code
@@ -85,6 +87,8 @@ class BasePage implements TemplatePage
 
         protected function __construct($title, &$params = array(), $template = "standard")
         {
+                $this->param = new stdClass();
+
                 $this->title = $title;
                 $this->params = $params;
                 $this->template = $template;
@@ -97,6 +101,32 @@ class BasePage implements TemplatePage
                 // 
                 self::validate();
                 ob_start();
+        }
+
+        // 
+        // The $list argument is an array of regexp pattern (pattern_xxx) to
+        // combine into a single pattern string. Returns the combined pattern
+        // string.
+        // 
+        protected function pattern($list)
+        {
+                if (count($list) == 0) {
+                        return self::pattern_any;
+                } elseif (count($list) == 1) {
+                        return $list[0];
+                } else {
+                        $result = array();
+                        foreach ($list as $pattern) {
+                                $spos = strchr($pattern, '^');
+                                $epos = strrchr($pattern, '$');
+                                if (!$spos || !$epos) {
+                                        $result[] = $pattern;
+                                } else {
+                                        $result[] = substr($pattern, $spos + 1, $epos - 1);
+                                }
+                        }
+                        return sprintf("/^%s$/", implode("|", $result));
+                }
         }
 
         //

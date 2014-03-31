@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2012 Computing Department BMC, 
+// Copyright (C) 2010-2012, 2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/exam/index.php
@@ -92,11 +92,11 @@ class ExaminationPage extends BasePage
         //
         private static $params = array(
                 "exam"     => parent::pattern_index,
-                "answer"   => parent::pattern_text,
+                "answer"   => parent::pattern_textarea,
                 "question" => "/^(\d+|all|exam)$/",
                 "status"   => "/^(ok)$/",
-                "save"     => parent::pattern_text, // button
-                "next"     => parent::pattern_text  // button
+                "save"     => parent::pattern_textline, // button
+                "next"     => parent::pattern_textline  // button
         );
         private $author = false;    // Running in question author mode.
         private $lockdown = false;  // This examination has lockdown mode enabled.

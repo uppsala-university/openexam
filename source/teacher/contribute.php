@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010-2013 Computing Department BMC, 
+// Copyright (C) 2010-2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   source/teacher/contribute.php
@@ -77,11 +77,11 @@ class ContributePage extends TeacherPage
                 "exam"     => parent::pattern_index,
                 "action"   => "/^(add|edit|test|delete|remove|restore|import)$/",
                 "question" => "/^(\d+|all|active|removed|compact|own)$/",
-                "comment"  => parent::pattern_text,
+                "comment"  => parent::pattern_textarea,
                 "mode"     => "/^(save)$/",
                 "score"    => parent::pattern_float,
-                "name"     => parent::pattern_text,
-                "quest"    => parent::pattern_text,
+                "name"     => parent::pattern_textline,
+                "quest"    => parent::pattern_textarea,
                 "type"     => "/^(freetext|single|multiple|pp|oq)$/",
                 "user"     => parent::pattern_user,
                 "status"   => "/^(active|removed)$/",
@@ -95,8 +95,10 @@ class ContributePage extends TeacherPage
 
         public function __construct()
         {
-                $this->param->order = "state";
                 parent::__construct(_("Contribute Page"), self::$params);
+                if (!isset($this->param->order)) {
+                        $this->param->order = "state";
+                }
         }
 
         //
@@ -319,7 +321,7 @@ class ContributePage extends TeacherPage
                                 $this->param->type, $_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']
                         );
                         $importer->open();
-                        $importer->read($this->param->exam, Database::getConnection());
+                        $importer->read($this->param->exam, Database::getConnection(), OPENEXAM_IMPORT_INCLUDE_QUESTIONS);
                         $importer->close();
                 } catch (ImportException $exception) {
                         $this->fatal(_("Failed Import Questions"), $exception->getMessage());
@@ -731,7 +733,7 @@ class ContributePage extends TeacherPage
                         "own"     => _("Own")
                 );
                 $disp = array(
-                    );
+                );
                 printf("<span class=\"links viewmode\">\n");
                 foreach ($mode as $name => $text) {
                         if ($show != $name) {
@@ -836,4 +838,5 @@ class ContributePage extends TeacherPage
 
 $page = new ContributePage();
 $page->render();
+
 ?>
