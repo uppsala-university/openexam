@@ -105,6 +105,8 @@ class AdminPage extends BasePage
 
         public function printMenu()
         {
+                $links = new PageMenu();
+                
                 $links->admin->href = "admin.php";
                 $links->admin->name = _("Admins");
                 $links->users->href = "teacher.php";

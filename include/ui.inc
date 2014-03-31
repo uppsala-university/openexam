@@ -33,6 +33,30 @@
 // gets called using the instance of a class derived from this class.
 //
 // 
+// Simple page menu class for building hieracical/nested menus.
+// 
+class PageMenu
+{
+
+        public function __set($name, $value)
+        {
+                if (!isset($this->$name)) {
+                        $this->$name = new stdClass();
+                }
+                $this->$name = $value;
+        }
+
+        public function __get($name)
+        {
+                if (!isset($this->$name)) {
+                        $this->$name = new PageMenu();
+                }
+                return $this->$name;
+        }
+
+}
+
+// 
 // Common interface for the base (inherited in pages) and the render 
 // class (used from template pages, see template/ui/standard.ui).
 // 
