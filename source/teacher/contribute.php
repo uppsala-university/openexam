@@ -321,7 +321,7 @@ class ContributePage extends TeacherPage
                                 $this->param->type, $_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']
                         );
                         $importer->open();
-                        $importer->read($this->param->exam, Database::getConnection(), OPENEXAM_IMPORT_INCLUDE_QUESTIONS);
+                        $importer->read($this->param->exam, Database::getConnection(), OPENEXAM_IMPORT_INCLUDE_QUESTIONS | OPENEXAM_IMPORT_INCLUDE_TOPICS);
                         $importer->close();
                 } catch (ImportException $exception) {
                         $this->fatal(_("Failed Import Questions"), $exception->getMessage());

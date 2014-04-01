@@ -418,7 +418,7 @@ class ManagerPage extends TeacherPage
                                 $this->param->exam = $importer->read(0, Database::getConnection(), OPENEXAM_IMPORT_INCLUDE_ALL);
                                 $importer->close();
                         } catch (ImportException $exception) {
-                                $this->fatal(_("Failed Import Questions"), $exception->getMessage());
+                                $this->fatal(_("Failed Import Examination"), $exception->getMessage());
                         }
                         header(sprintf("location: manager.php?exam=%d", $this->param->exam));
                 } else {
