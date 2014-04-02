@@ -69,9 +69,9 @@ class Database
         private $dsn;                      // DSN array or string.
         private $connection = null;        // MDB2 connection.
         private static $instance = null;   // This class object.
-        
         //
         // Private to prevent explicit instantiation:
+
         //
 
         private function __construct()
@@ -178,12 +178,14 @@ class ResultSet implements Iterator
         //
         public function __construct($res)
         {
-                if (PEAR::isError($res)) {
-                        throw new DatabaseException($res->getMessage(),
-                            $res->getCode(),
-                            $res->getUserInfo());
+                if (is_array($res)) {
+                        $this->rows = $res;
+                } else {
+                        if (PEAR::isError($res)) {
+                                throw new DatabaseException($res->getMessage(), $res->getCode(), $res->getUserInfo());
+                        }
+                        $this->rows = $res->fetchAll();
                 }
-                $this->rows = $res->fetchAll();
         }
 
         public function rewind()
@@ -304,6 +306,11 @@ class DataRecord
                 } else {
                         return null;
                 }
+        }
+
+        public function data()
+        {
+                return $this->row;
         }
 
 }
