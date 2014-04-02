@@ -252,7 +252,6 @@ class ImportInsert
                 );
                 foreach ($roles as $name => $table) {
                         foreach ($data->roles->$name as $role) {
-                                print_r($role->user);
                                 foreach ($role->user as $user) {
                                         $sql = sprintf("INSERT INTO %s(exam_id, user)
                                                         VALUES(%d, '%s')", $table, $this->exam, $user);

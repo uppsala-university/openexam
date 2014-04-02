@@ -73,6 +73,9 @@ include "include/scoreboard.inc";
 if (!defined('CORRECT_SHOW_OTHERS')) {
         define('CORRECT_SHOW_OTHERS', false);
 }
+if (!defined('CORRECT_SHOW_UNATTENDED')) {
+        define('CORRECT_SHOW_UNATTENDED', false);
+}
 
 // 
 // The answer correction page:
@@ -93,11 +96,15 @@ class CorrectionPage extends TeacherPage
                 "order"    => "/^(state|name|date)$/",
                 "mode"     => "/^(mark|save)$/"
         );
+        private $filter;
 
         public function __construct()
         {
                 parent::__construct(_("Answer Correction Page"), self::$params);
 
+                if (isset($this->param->exam)) {
+                        $this->filter = new ScoreBoardFilter($this->param->exam, CORRECT_SHOW_OTHERS, CORRECT_SHOW_UNATTENDED);
+                }
                 if (!isset($this->param->order)) {
                         $this->param->order = "state";
                 }
@@ -526,10 +533,9 @@ class CorrectionPage extends TeacherPage
                 //
                 // Output the score board using selected options:
                 //
-                $board = new ScoreBoardPrinter($this->param->exam);
+                $board = new ScoreBoardPrinter($this->param->exam, $this->filter);
                 $board->setVerbose($this->param->verbose);
                 $board->setColorized($this->param->colorize);
-                $board->showOthers(CORRECT_SHOW_OTHERS);
                 $board->output();
 
                 //
@@ -577,7 +583,7 @@ class CorrectionPage extends TeacherPage
         {
                 $data = $this->manager->getData();
 
-                $board = new ScoreBoard($this->param->exam);
+                $board = new ScoreBoard($this->param->exam, $this->filter);
                 $questions = $board->getQuestions();
 
                 ob_end_clean();

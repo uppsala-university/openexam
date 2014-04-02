@@ -73,6 +73,70 @@ class Score
 }
 
 // 
+// Filters on what to return from a scoreboard.
+// 
+class ScoreBoardFilter
+{
+
+        private $exam;
+        private $others;        // Include questions assigned to others.
+        private $unattended;    // Include unattended students on exam.
+        private $questions;
+        private $students;
+
+        public function __construct($exam, $others, $unattended)
+        {
+                $this->exam = $exam;
+                $this->others = $others;
+                $this->unattended = $unattended;
+        }
+
+        public function questions($questions)
+        {
+                if ($this->others) {
+                        return $questions;
+                }
+                if (isset($this->questions)) {
+                        return $this->questions;
+                }
+
+                $result = array();
+                foreach ($questions as $question) {
+                        if ($question->getQuestionPublisher() == phpCAS::getUser()) {
+                                $result[] = $question->data();
+                        }
+                }
+
+                $this->questions = new ResultSet($result);     // Cache
+                return $this->questions;
+        }
+
+        public function students($students)
+        {
+                if ($this->unattended) {
+                        return $students;
+                }
+                if (isset($this->students)) {
+                        return $this->students;
+                }
+
+                $correct = new Correct($this->exam);
+
+                $result = array();
+                foreach ($students as $student) {
+                        $answers = $correct->getStudentAnswers($student->getStudentID());
+                        if ($answers->count() != 0) {
+                                $result[] = $student->data();
+                        }
+                }
+
+                $this->students = new ResultSet($result);      // Cache
+                return $this->students;
+        }
+
+}
+
+// 
 // This class is an abstraction of the score board for one exam.
 // 
 class ScoreBoard
@@ -84,21 +148,23 @@ class ScoreBoard
         private $exam;
         private $maxscore = array();  // The maximum score on this exam
         private $dugga = false;       // The exam is a dugga (randomized)
+        private $filter;              // Filter returned students and questions.
 
-        public function __construct($exam)
+        public function __construct($exam, $filter)
         {
                 $this->initilize($exam);
                 $this->exam = $exam;
+                $this->filter = $filter;
         }
 
         public function getQuestions()
         {
-                return $this->questions;
+                return $this->filter->questions($this->questions);
         }
 
         public function getStudents()
         {
-                return $this->students;
+                return $this->filter->students($this->students);
         }
 
         public function getData($student, $question)
@@ -418,9 +484,9 @@ abstract class ScoreBoardOutput
         protected $board;    // The score board
         private $ldap;       // For LDAP search
 
-        public function __construct($exam)
+        public function __construct($exam, $filter)
         {
-                $this->board = new ScoreBoard($exam);
+                $this->board = new ScoreBoard($exam, $filter);
 
                 $this->ldap = new LdapSearch(LdapConnection::instance());
                 $this->ldap->setAttributeFilter(array("displayname"));
@@ -456,9 +522,12 @@ abstract class ScoreBoardOutput
 class ScoreBoardAdmin extends ScoreBoardOutput
 {
 
+        private $filter;
+
         public function __construct($exam)
         {
-                parent::__construct($exam);
+                $this->filter = new ScoreBoardFilter($exam, true, true);
+                parent::__construct($exam, $this->filter);
         }
 
         public function output()
@@ -546,13 +615,15 @@ class ScoreBoardWriter extends ScoreBoardOutput
 
         private $writer;      // The stream writer
         private $format;      // The output formatter
+        private $filter;      // Score board filter
 
         public function __construct($exam, $writer, $format)
         {
-                parent::__construct($exam);
-
+                $this->filter = new ScoreBoardFilter($exam, true, DECODED_SHOW_UNATTENDED);
                 $this->writer = $writer;
                 $this->format = $format;
+
+                parent::__construct($exam);
         }
 
         //
@@ -677,14 +748,13 @@ class ScoreBoardPrinter extends ScoreBoardOutput
         private $colorize;    // Colorize scores.
         private $show;
 
-        public function __construct($exam)
+        public function __construct($exam, $filter)
         {
-                parent::__construct($exam);
+                parent::__construct($exam, $filter);
                 $this->decoded = $this->board->getExam()->getExamDecoded() == 'Y';
                 $this->verbose = false;
                 $this->colorize = false;
                 $this->show = new stdClass();
-                $this->show->others = false;
         }
 
         public function setVerbose($bool)
@@ -695,14 +765,6 @@ class ScoreBoardPrinter extends ScoreBoardOutput
         public function setColorized($bool)
         {
                 $this->colorize = $bool;
-        }
-
-        // 
-        // Show questions corrected by others.
-        // 
-        public function showOthers($bool)
-        {
-                $this->show->others = $bool;
         }
 
         public function output()
@@ -741,9 +803,6 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 if ($this->show->score) {
                         foreach ($questions as $question) {
                                 ++$this->index;
-                                if ($this->show->others == false && $question->getQuestionPublisher() != phpCAS::getUser()) {
-                                        continue;       // Not my question
-                                }
                                 $header = $this->getHeaderData($question);
                                 $obj = $row->addHeader($header->name);
                                 if ($this->show->links && isset($header->link) && $question->getQuestionStatus() != 'removed') {
@@ -791,9 +850,6 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                 // Print all answers for this student:
                                 //
                                 foreach ($questions as $question) {
-                                        if ($this->show->others == false && $question->getQuestionPublisher() != phpCAS::getUser()) {
-                                                continue;       // Not my question
-                                        }
                                         $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
                                         if ($this->colorize) {
                                                 if (!isset($data)) {

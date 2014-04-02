@@ -246,9 +246,12 @@ define('MEDIA_UPLOAD_DIR', realpath(sprintf("%s/../source/media/files", dirname(
 define('MEDIA_UPLOAD_MAXSIZE', 4 * 1024 * 1024);
 
 // 
-// Show questions assigned to other teachers during the correction phase.
+// Defines whether to show questions assigned to other teachers during the 
+// correction phase or including unattended students.
 // 
 define('CORRECT_SHOW_OTHERS', false);
+define('CORRECT_SHOW_UNATTENDED', false);
+define('DECODED_SHOW_UNATTENDED', false);
 
 //
 // The cache directory (for temporary files):

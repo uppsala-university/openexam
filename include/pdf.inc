@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010, 2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/pdf.inc
@@ -182,7 +182,7 @@ class HtmlDocPDF
                         );
 
                         $cmd = $this->getCommand($target);
-                        $env = array("SHELL" => "/bin/bash", "TZ"    => "UTC");
+                        $env = array("SHELL" => "/bin/bash", "TZ" => "UTC");
                         $pipes = array();
 
                         if (version_compare(phpversion(), "5.0.0") < 0) {
@@ -249,6 +249,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         private $ldap;      // For LDAP search
         private $board;     // Score board object
         private $grade;     // Examination grade object
+        private $filter;    // Score board filter.
 
         public function __construct($examid)
         {
@@ -258,7 +259,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->ldap = new LdapSearch(LdapConnection::instance());
                 $this->ldap->setAttributeFilter(array("displayname", "mail", "cn"));
 
-                $this->board = new ScoreBoard($this->exam->getExamID());
+                $this->filter = new ScoreBoardFilter($examid, true, DECODED_SHOW_UNATTENDED);
+                
+                $this->board = new ScoreBoard($this->exam->getExamID(), $this->filter);
                 $this->grade = new ExamGrades($this->exam->getExamGrades());
 
                 parent::__construct($this->exam->getExamName(), $this->exam->getExamOrgUnit());
@@ -585,19 +588,19 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                         if (!isset($grades['grade'][$class])) {
                                 $grades['grade'][$class] = 1;
                         } else {
-                                $grades['grade'][$class]++;   // One more with this grade
+                                $grades['grade'][$class] ++;   // One more with this grade
                         }
                         if (!isset($grades['score'][$value])) {
 
 
                                 $grades['score'][$value] = 1;
                         } else {
-                                $grades ['score'] [$value]++;
+                                $grades ['score'] [$value] ++;
                         }
                         if (!isset($grades['range'][$range])) {
                                 $grades['range'][$range] = 1;
                         } else {
-                                $grades['range'][$range]++;
+                                $grades['range'][$range] ++;
                         }
                 }
                 krsort($grades['score']);

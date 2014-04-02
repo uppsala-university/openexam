@@ -102,6 +102,7 @@ class DecoderPage extends TeacherPage
                 "order"    => "/^(state|name|date)$/",
         );
         private $decoder;
+        private $filter;
 
         public function __construct()
         {
@@ -118,6 +119,7 @@ class DecoderPage extends TeacherPage
                 }
 
                 if (isset($this->param->exam)) {
+                        $this->filter = new ScoreBoardFilter($this->param->exam, true, DECODED_SHOW_UNATTENDED);
                         $this->decoder = new Decoder($this->param->exam);
                 }
         }
@@ -331,7 +333,7 @@ class DecoderPage extends TeacherPage
 
                 $combo = $form->addComboBox("student");
                 $combo->setLabel(_("Select"));
-                $board = new ScoreBoard($this->param->exam);
+                $board = new ScoreBoard($this->param->exam, $this->filter);
                 $students = $board->getStudents();
                 $option = $combo->addOption("all", _("All Students"));
                 $option = $combo->addOption(0, "---");
@@ -398,10 +400,9 @@ class DecoderPage extends TeacherPage
                 }
                 printf("</span>\n");
 
-                $board = new ScoreBoardPrinter($this->param->exam);
+                $board = new ScoreBoardPrinter($this->param->exam, $this->filter);
                 $board->setVerbose($this->param->verbose);
                 $board->setColorized($this->param->colorize);
-                $board->showOthers(true);
                 $board->output();
 
                 printf("<h5>" . _("Color Codes") . "</h5>\n");
@@ -566,7 +567,7 @@ class DecoderPage extends TeacherPage
                 }
                 $combo = $form->addComboBox("student");
                 $combo->setLabel(_("Select"));
-                $board = new ScoreBoard($this->param->exam);
+                $board = new ScoreBoard($this->param->exam, $this->filter);
                 $students = $board->getStudents();
                 $option = $combo->addOption("all", _("All Students"));
                 $option = $combo->addOption(0, "---");
