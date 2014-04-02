@@ -34,7 +34,8 @@ if (!isset($_SERVER['SERVER_NAME'])) {
 }
 
 // 
-// Define the base URL for the web application. You might need to alter the path.
+// Define the web application base URL for CLI script. You might need to 
+// alter the path.
 // 
 define('BASE_URL', sprintf('%s://%s/openexam', (isset($_SERVER['HTTPS']) ? "https" : "http"), $_SERVER['SERVER_NAME']));
 
@@ -57,19 +58,6 @@ define('CAS_HOST', 'cas-server.example.com');
 define('CAS_PORT', 443);
 define('CAS_PATH', '/server-path');
 define('CAS_DEBUG', false);
-
-// 
-// Settings for PDF generation:
-// 
-define('PDF_ENGINE', 'htmldoc');            // Currently the only supported generator.
-define('PDF_GENERATOR', 'OpenExam PHP');
-define('PDF_LOGOTYPE', sprintf('%s/images/uu-logotype-4f-84.png', BASE_URL));
-define('PDF_LINK_COLOR', '#000099');
-define('PDF_LINK_STYLE', 'plain');
-define('PDF_MEDIA_SIZE', 'a4');
-define('PDF_MEDIA_TYPE', 'plain');
-define('PDF_MEDIA_LANDSCAPE', false);
-define('PDF_OUTPUT_FORMAT', 'pdf14');
 
 // 
 // Settings for SMTP server:
@@ -116,6 +104,27 @@ define('LDAP_CACHE', true);                 // Turn on LDAP result cache.
 // define("LDAP_SEARCH_CN", "(cn=%s %s)");
 // define("LDAP_SEARCH_PRINCIPAL", "(edupersonprincipalname=%s@example.com)");
 // define("LDAP_SEARCH_GIVEN_NAME", "(givenname=%s)");
+// 
+// Logotype for document generation:
+// 
+define('LOGOTYPE_LARGE_REMOTE', sprintf('%s/images/uu-logotype-4f-84.png', BASE_URL));
+define('LOGOTYPE_SMALL_REMOTE', sprintf('%s/images/uu-logotype-4f-84.png', BASE_URL));
+define('LOGOTYPE_LARGE_LOCAL', realpath(sprintf("%s/../source/images/uu-logotype-4f-84.png", dirname(__FILE__))));
+define('LOGOTYPE_SMALL_LOCAL', realpath(sprintf("%s/../source/images/uu-logotype-4f-84.png", dirname(__FILE__))));
+
+// 
+// Settings for PDF generation:
+// 
+define('PDF_ENGINE', 'htmldoc');            // Currently the only supported generator.
+define('PDF_GENERATOR', 'OpenExam PHP');
+define('PDF_LOGOTYPE', LOGOTYPE_LARGE_LOCAL);
+define('PDF_LINK_COLOR', '#000099');
+define('PDF_LINK_STYLE', 'plain');
+define('PDF_MEDIA_SIZE', 'a4');
+define('PDF_MEDIA_TYPE', 'plain');
+define('PDF_MEDIA_LANDSCAPE', false);
+define('PDF_OUTPUT_FORMAT', 'pdf14');
+
 // 
 // The contact address:
 // 
@@ -240,4 +249,5 @@ define('MEDIA_UPLOAD_MAXSIZE', 4 * 1024 * 1024);
 // The cache directory (for temporary files):
 //
 define('CACHE_DIR', '/var/cache/apache2/openexam');
+
 ?>
