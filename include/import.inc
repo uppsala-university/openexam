@@ -54,6 +54,13 @@ if (!defined("OPENEXAM_IMPORT_FORMAT_VERSION")) {
         define("OPENEXAM_IMPORT_FORMAT_VERSION", 6072);
 }
 
+//
+// Include PHP-ExcelReader files:
+//
+require_once('include/import/excel/reader.php');
+require_once('PHPExcel.php');
+require_once('PHPExcel/IOFactory.php');
+
 class ImportException extends Exception
 {
 
@@ -64,21 +71,11 @@ class ImportException extends Exception
 
 }
 
-//
-// Include PHP-ExcelReader files:
-//
-require_once('include/import/excel/reader.php');
-
 /**
  * The interface for concrete import classes. 
  */
 interface Import
 {
-
-        /**
-         * Prototype the constructor:
-         */
-        function __construct($name, $file, $mime, $size, $accept = "");
 
         /**
          * Prepare import.
@@ -91,16 +88,17 @@ interface Import
 
         /**
          * Parse current opened import file and save data to exam.
-         * 
-         * If exam is exam == 0, then a new exam is created, otherwise the
-         * selected exam is updated. This is not supported by all import
-         * targets (currently only openexam projects).
-         * 
-         * @param int $exam The exam ID.
-         * @param Database $db The database connection.
+         * @param int $what Bitmask defining sections to parse. 
+         */
+        function read();
+
+        /**
+         * Delegate insert to inserter object.
+         * @param ImportInsert $inserter The inserter object.
+         * @param int $what Bitmask defining sections to insert. 
          * @return int The exam ID.
          */
-        function read($exam, &$db, $what);
+        function insert($inserter);
 
         /**
          * Finish import.
@@ -177,31 +175,31 @@ class ImportInsert
         /**
          * Insert import data.
          * @param ImportData $data The data to import.
-         * @param int $what What sections to import.
+         * @param int $filter Which sections to import.
          */
-        public function insert($data, $what = OPENEXAM_IMPORT_INCLUDE_ALL)
+        public function insert($data, $filter = OPENEXAM_IMPORT_INCLUDE_ALL)
         {
                 $db = Database::getConnection();
                 if ($db->supports('transaction')) {
                         $db->beginTransaction();
                 }
 
-                if ($what & OPENEXAM_IMPORT_INCLUDE_PROJECT) {
+                if ($filter & OPENEXAM_IMPORT_INCLUDE_PROJECT) {
                         $this->insertProjectData($data);
                 }
-                if ($what & OPENEXAM_IMPORT_INCLUDE_ROLES) {
+                if ($filter & OPENEXAM_IMPORT_INCLUDE_ROLES) {
                         $this->insertRoles($data);
                 }
-                if ($what & OPENEXAM_IMPORT_INCLUDE_TOPICS) {
+                if ($filter & OPENEXAM_IMPORT_INCLUDE_TOPICS) {
                         $this->insertTopics($data);
                 }
-                if ($what & OPENEXAM_IMPORT_INCLUDE_QUESTIONS) {
+                if ($filter & OPENEXAM_IMPORT_INCLUDE_QUESTIONS) {
                         $this->insertQuestions($data);
                 }
-                if ($what & OPENEXAM_IMPORT_INCLUDE_STUDENTS) {
+                if ($filter & OPENEXAM_IMPORT_INCLUDE_STUDENTS) {
                         $this->insertStudents($data);
                 }
-                if ($what & OPENEXAM_IMPORT_INCLUDE_ANSWERS) {
+                if ($filter & OPENEXAM_IMPORT_INCLUDE_ANSWERS) {
                         $this->insertAnswers($data);
                 }
 
@@ -358,40 +356,63 @@ class ImportInsert
 abstract class ImportBase implements Import
 {
 
+        protected $filter;
+        protected $accept;
         protected $name;
         protected $file;
         protected $mime;
         protected $size;
         protected $user;
-        protected $data;      // Import data object.
+        protected $data;
 
         /**
          * Constructor.
-         * @param string $name Name of uploaded file-
+         * @param string|array $accept Accepted MIME-types.
+         * @param int $filter The sections to import.
+         */
+        public function __construct($accept, $filter = OPENEXAM_IMPORT_INCLUDE_ALL)
+        {
+                $this->accept = $accept;
+                $this->filter = $filter;
+        }
+
+        /**
+         * Set file to import.
+         * 
+         * This function performs sanity check on the submitted MIME type
+         * and throws an ImportException if the MIME-type don't match the 
+         * expected.
+         * 
+         * @param string $name Name of uploaded file.
          * @param string $file Path to uploaded file.
          * @param string $mime MIME-type of uploaded file.
          * @param int $size Size of uploaded file.
-         * @param string|array $accept Accepted MIME-types.
          * @throws ImportException
          */
-
-        public function __construct($name, $file, $mime, $size, $accept = "")
+        public function setFile($name, $file, $mime, $size)
         {
+                if (!is_uploaded_file($file)) {
+                        throw new ImportException(sprintf(_("Possible file upload attack: %s"), $file));
+                }
+                if ($mime == FileImport::octet_stream) {
+                        $mime = FileImport::getMimeType($file);
+                }
+
                 $accepted = false;
-                $expected = is_array($accept) ? implode("|", $accept) : $accept;
+                $expected = is_array($this->accept) ? implode("|", $this->accept) : $this->accept;
 
                 if (!isset($mime)) {
                         $accepted = true;       // Give it a try
                 } else {
-                        if (is_array($accept)) {
-                                foreach ($accept as $type) {
+                        if (is_array($this->accept)) {
+                                foreach ($this->accept as $type) {
                                         if ($type == $mime) {
                                                 $accepted = true;
                                                 break;
                                         }
                                 }
                         } else {
-                                if ($mime == $accept) {
+                                if ($mime == $this->accept) {
                                         $accepted = true;
                                 }
                         }
@@ -410,6 +431,16 @@ abstract class ImportBase implements Import
                 $this->size = $size;
 
                 $this->user = phpCAS::getUser();
+        }
+
+        public function setFilter($filter)
+        {
+                $this->filter = $filter;
+        }
+
+        public function getFilter()
+        {
+                return $this->filter;
         }
 
         /**
@@ -434,12 +465,23 @@ abstract class ImportBase implements Import
 
         public function open()
         {
-                // Dummy
+                // Ignore
+        }
+
+        public function read()
+        {
+                // Ignore
+        }
+
+        public function insert($inserter)
+        {
+                $inserter->insert($this->data, $this->filter);
+                return $inserter->getExamID();
         }
 
         public function close()
         {
-                // Dummy
+                // Ignore
         }
 
 }
@@ -448,9 +490,9 @@ class ImportOpenExam extends ImportBase
 {
 
         private static $supported = array(6071, 6072);
-        private static $accept = array("application/xml", "text/xml");
+        private static $mimedef = array("application/xml", "text/xml");
 
-        public function __construct($name, $file, $mime, $size, $accept = "")
+        public function __construct($accept = "")
         {
                 if (!extension_loaded("SimpleXML")) {
                         throw new ImportException("The SimpleXML extension is not loaded");
@@ -458,7 +500,7 @@ class ImportOpenExam extends ImportBase
                 if (!extension_loaded("dom")) {
                         throw new ImportException("The DOM Document extension (dom) is not loaded");
                 }
-                parent::__construct($name, $file, $mime, $size, self::$accept);
+                parent::__construct(self::$mimedef);
         }
 
         public function open()
@@ -482,13 +524,6 @@ class ImportOpenExam extends ImportBase
                 }
         }
 
-        function read($exam, &$db, $what)
-        {
-                $inserter = new ImportInsert($exam, $db);
-                $inserter->insert($this->data, $what);
-                return $inserter->getExamID();
-        }
-
 }
 
 /**
@@ -499,16 +534,15 @@ abstract class ImportPingPong extends ImportBase
 
         const format = "QI625";
         const expect = "Exported from the questionbank in PING PONG";
-        const xmldoc1 = '<?xml version="1.0" encoding="utf-8"?>\n<questions></questions>\n';
         const xmldoc = '<openexam/>';
 
         private $questions = array();
         private $question = null;
         private $category = null;
 
-        public function __construct($name, $file, $mime, $size, $accept = "")
+        public function __construct($accept = "")
         {
-                parent::__construct($name, $file, $mime, $size, $accept);
+                parent::__construct($accept);
                 $this->data = new ImportData(self::xmldoc);
         }
 
@@ -594,7 +628,7 @@ abstract class ImportPingPong extends ImportBase
                 }
         }
 
-        public function read($exam, &$db, $what)
+        public function read()
         {
                 $tnode = $this->data->addChild("topics");
                 $qnode = $this->data->addChild("questions");
@@ -620,11 +654,6 @@ abstract class ImportPingPong extends ImportBase
                                 $child->addChild("comment", $question['comment']);
                         }
                 }
-
-                $inserter = new ImportInsert($exam, $db);
-                $inserter->insert($this->data, $what);
-
-                return $inserter->getExamID();
         }
 
 }
@@ -632,27 +661,27 @@ abstract class ImportPingPong extends ImportBase
 class ImportPingPongExcel extends ImportPingPong
 {
 
-        private static $accept = array("application/vnd.ms-excel", "application/vnd.ms-office");
-        private $doc;
+        private static $mimedef = array("application/vnd.ms-excel", "application/vnd.ms-office");
+        private $reader;
 
-        public function __construct($name, $file, $mime, $size, $accept = "")
+        public function __construct($accept = "")
         {
-                parent::__construct($name, $file, $mime, $size, self::$accept);
+                parent::__construct(self::$mimedef);
         }
 
         public function open()
         {
-                $this->doc = new Spreadsheet_Excel_Reader();
+                $this->reader = new Spreadsheet_Excel_Reader();
         }
 
-        public function read($exam, &$db, $what)
+        public function read()
         {
-                $this->doc->read($this->file);
+                $this->reader->read($this->file);
 
                 $sheet = new stdClass();
-                $sheet->rows = $this->doc->sheets[0]['numRows'];
-                $sheet->cols = $this->doc->sheets[0]['numCols'];
-                $sheet->cell = $this->doc->sheets[0]['cells'];
+                $sheet->rows = $this->reader->sheets[0]['numRows'];
+                $sheet->cols = $this->reader->sheets[0]['numCols'];
+                $sheet->cell = $this->reader->sheets[0]['cells'];
 
                 if ($sheet->cell[1][1] != self::expect) {
                         $message = sprintf(_("Expected header '%s' at index (1,1)"), self::expect);
@@ -673,7 +702,7 @@ class ImportPingPongExcel extends ImportPingPong
                         }
                 }
 
-                return parent::read($exam, $db, $what);
+                parent::read();
         }
 
 }
@@ -686,9 +715,9 @@ class ImportPingPongText extends ImportPingPong
 
         private $stream;
 
-        public function __construct($name, $file, $mime, $size, $accept = "")
+        public function __construct($accept = "")
         {
-                parent::__construct($name, $file, $mime, $size, self::accept);
+                parent::__construct(self::accept);
         }
 
         public function open()
@@ -705,7 +734,7 @@ class ImportPingPongText extends ImportPingPong
                 }
         }
 
-        public function read($exam, &$db, $what)
+        public function read()
         {
                 if (($data = $this->next()) && $data[0] != self::expect) {
                         $message = sprintf(_("Expected header '%s' at index (1,1)"), self::expect);
@@ -725,12 +754,359 @@ class ImportPingPongText extends ImportPingPong
                         }
                 }
 
-                return parent::read($exam, $db, $what);
+                parent::read();
         }
 
         public function close()
         {
                 fclose($this->stream);
+        }
+
+}
+
+/**
+ * Base class for student import classes.
+ * 
+ * The $students member contains an associative array whose key are the
+ * user ID and the value are the optional assigned tag.
+ */
+class ImportStudents extends ImportBase
+{
+
+        const xmldoc = '<openexam/>';
+
+        private static $pnrhpatt = "/^personnummer|pers.?nr|p.?nr|pnum$/";
+        private static $pnrvpatt = "/^\d{6,8}-?\d{4}|^\d{6,8}-?\d{3}[a-zA-Z]$/";
+        protected $students = array();
+        protected $opts;
+        protected $reader;
+        private $excel;         // the excel object
+        private $sheet;         // active sheet
+        private $cols;          // columns in active sheet
+        private $rows;          // rows in active sheet
+        private $sdat;          // php array (0-based) of sheet data
+        private $first = 0;     // first row
+
+        public function __construct($accept)
+        {
+                parent::__construct($accept);
+                $this->data = new ImportData(self::xmldoc);
+                $this->opts = new stdClass();
+        }
+
+        /**
+         * Set tagging.
+         * 
+         * A numeric value defines the column containing some generic string
+         * to be associated with the added student. It the tag value is a
+         * string, then it applies to all imported accounts.
+         * 
+         * @param int|string $tag The column or tag string.
+         */
+        public function setTagging($tag)
+        {
+                if (is_numeric($tag)) {
+                        $this->opts->tagcol = $tag;
+                } elseif (is_string($tag) && strlen($tag) == 1) {
+                        $this->opts->tagcol = $tag - ord('A');
+                } else {
+                        $this->opts->tagstr = $tag;
+                }
+        }
+
+        /**
+         * Set column mapping.
+         * 
+         * Possible values for the $type aregument are:
+         * <ul>
+         * <li>'tag'     -> Define the tag column.</li>
+         * <li>'account' -> Define the account column.</li>
+         * <li>'persnr'  -> Define the person number column.</li>
+         * </ul>
+         * 
+         * @param string $type The type identifier.
+         * @param int $index The column index.
+         */
+        public function setMapping($type, $index)
+        {
+                switch ($type) {
+                        case "tag":
+                                $this->opts->coltag = $index;
+                                break;
+                        case "account":
+                                $this->opts->colacc = $index;
+                                break;
+                        case "persnr":
+                                $this->opts->persnr = $index;
+                                break;
+                }
+        }
+
+        public function read()
+        {                
+                $this->excel = $this->reader->load($this->file);
+                $this->sheet = $this->excel->setActiveSheetIndex(0);
+
+                $this->cols = ord($this->sheet->getHighestColumn()) - ord('A');
+                $this->rows = $this->sheet->getHighestRow() - 1;
+                $this->sdat = $this->sheet->toArray();
+
+                if (isset($this->opts->colacc)) {
+                        $this->readAccounts($this->opts->colacc);
+                } elseif (isset($this->opts->persnr)) {
+                        $this->readPersNr($this->opts->persnr);
+                        $this->lookupPersNr();
+                } else {
+                        $this->readDetect();    // try to detect pers.nr.
+                        $this->lookupPersNr();
+                }
+
+                if (count($this->students) == 0) {
+                        throw new ImportException(_("No account information in import file."));
+                }
+
+                if (isset($this->opts->tagcol)) {
+                        $this->readTag($this->opts->tagcol);
+                }
+                if (isset($this->opts->tagstr)) {
+                        $this->assignTag($this->opts->tagstr);
+                }
+                
+                $pnode = $this->data->addChild('students');
+                foreach ($this->students as $user => $tag) {
+                        $snode = $pnode->addChild('student');
+                        $snode->addChild('user', $user);
+                        $snode->addChild('tag', $tag);
+                }
+        }
+
+        // 
+        // Read accounts from named column.
+        // 
+        private function readAccounts($column)
+        {
+                for ($r = 0; $r < $this->rows; ++$r) {
+                        $value = $this->sdat[$r][$column];
+                        $this->students[$value] = "";
+                }
+        }
+
+        // 
+        // Read personal numbers from named column.
+        // 
+        private function readPersNr($column)
+        {
+                for ($r = $this->first; $r < $this->rows; ++$r) {
+                        $value = $this->sdat[$r][$column];
+                        if (preg_match(self::$pnrvpatt, $value)) {
+                                $this->students[$value] = "";
+                        } else {
+                                throw new ImportException(sprintf("Unmatched personal number in cell '%d,%d'", $r, $column));
+                        }
+                }
+        }
+
+        // 
+        // Try to detect the column containing the personal number. If it
+        // fails, scan each row trying to match a cell with a personal number.
+        // 
+        private function readDetect()
+        {
+                // 
+                // Try to detect an header matching one of the hpattern.
+                // 
+                for ($c = 0; $c < $this->cols; ++$c) {
+                        $value = $this->sdat[0][$c];
+                        if (preg_match(self::$pnrhpatt, strtolower($value))) {
+                                // 
+                                // Check if row below actually contains a 
+                                // personal number.
+                                // 
+                                $value = $this->sdat[1][$c];
+                                if (preg_match(self::$pnrvpatt, $value)) {
+                                        $this->first = 1;
+                                        $this->readPersNr($c);
+                                        return;
+                                }
+                        }
+                }
+
+                // 
+                // Try to detect an personal number in each cell.
+                // 
+                for ($r = 0; $r < $this->rows; ++$r) {
+                        for ($c = 0; $c < $this->cols; ++$c) {
+                                $value = $this->sdat[$r][$c];
+                                if (preg_match(self::$pnrvpatt, $value)) {
+                                        $this->students[$value] = "";
+                                }
+                        }
+                }
+        }
+
+        // 
+        // Read tag from column index.
+        // 
+        private function readTag($column)
+        {
+                for ($i = 0; $i < count($this->sdat); ++$i) {
+                        $this->students[$i] = $this->sdat[$i][$column];
+                }
+        }
+
+        // 
+        // Assign the same tag to all students.
+        // 
+        private function assignTag($tag)
+        {
+                for ($i = 0; $i < count($this->sdat); ++$i) {
+                        $this->students[$i] = $tag;
+                }
+        }
+
+        // 
+        // Resolve any personal numbers.
+        // 
+        private function lookupPersNr()
+        {
+                $ldap = new LdapSearch(LdapConnection::instance());
+                $ldap->setAttributeFilter('uid');
+                foreach (array_keys($this->students) as $key) {
+                        if (is_numeric($key[0])) {
+                                $user = (string) ($ldap->searchPersNr($key)->first()->getUid());
+                                unset($this->students[$key]);
+                                $this->students[$user] = "";
+                        }
+                }
+        }
+
+}
+
+class ImportStudentsExcel2007 extends ImportStudents
+{
+
+        private static $mimedef = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        public function __construct($accept = "")
+        {
+                parent::__construct(self::$mimedef);
+        }
+
+        public function open()
+        {
+                $this->reader = new PHPExcel_Reader_Excel2007();
+                $this->reader->setReadDataOnly(true);
+        }
+
+}
+
+class ImportStudentsExcel2003Xml extends ImportStudents
+{
+
+        private static $mimedef = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        public function __construct($accept = "")
+        {
+                parent::__construct(self::$mimedef);
+        }
+
+        public function open()
+        {
+                $this->reader = new PHPExcel_Reader_Excel2003XML();
+                $this->reader->setReadDataOnly(true);
+        }
+
+}
+
+class ImportStudentsExcel97 extends ImportStudents
+{
+
+        private static $mimedef = "application/vnd.ms-excel";
+
+        public function __construct($accept = "")
+        {
+                parent::__construct(self::$mimedef);
+        }
+
+        public function open()
+        {
+                $this->reader = new PHPExcel_Reader_Excel5();
+                $this->reader->setReadDataOnly(true);
+        }
+
+}
+
+class ImportStudentsOpenDocument extends ImportStudents
+{
+
+        private static $mimedef = array(
+                "application/vnd.oasis.opendocument.spreadsheet",
+                "application/vnd.oasis.opendocument.spreadsheet-template");
+
+        public function __construct($accept = "")
+        {
+                parent::__construct(self::$mimedef);
+        }
+
+        public function open()
+        {
+                $this->reader = new PHPExcel_Reader_OOCalc();
+                $this->reader->setReadDataOnly(true);
+        }
+
+}
+
+class ImportStudentsGnumeric extends ImportStudents
+{
+
+        private static $mimedef = "application/x-gnumeric";
+
+        public function __construct($accept = "")
+        {
+                parent::__construct(self::$mimedef);
+        }
+
+        public function open()
+        {
+                $this->reader = new PHPExcel_Reader_Gnumeric();
+                $this->reader->setReadDataOnly(true);
+        }
+
+}
+
+class ImportStudentsTextCsv extends ImportStudents
+{
+
+        private static $mimedef = "text/csv";
+
+        public function __construct($accept = "")
+        {
+                parent::__construct(self::$mimedef);
+        }
+
+        public function open()
+        {
+                $this->reader = new PHPExcel_Reader_CSV();
+                $this->reader->setReadDataOnly(true);
+        }
+
+}
+
+class ImportStudentsTextTab extends ImportStudents
+{
+
+        private static $mimedef = "text/tab-separated-values";
+
+        public function __construct($accept = "")
+        {
+                parent::__construct(self::$mimedef);
+        }
+
+        public function open()
+        {
+                $reader  =  PHPExcel_IOFactory::createReader('CSV');
+                $reader->setDelimiter("\t");
+                $this->reader->setReadDataOnly(true);
         }
 
 }
@@ -779,54 +1155,56 @@ class FileImport
         //   op - open exam complete project
         //   sr - student registrations
         //
-        public static function getReader($type, $name, $file, $mime, $size)
+        public static function create($from, $type = null)
         {
-                $extension = substr(strrchr($name, "."), 1);
+                $extension = substr(strrchr($_FILES['file']['name'], "."), 1);
 
-                if (!is_uploaded_file($file)) {
-                        throw new ImportException(sprintf(_("Possible file upload attack: %s"), $file));
-                }
-                if ($mime == self::octet_stream) {
-                        $mime = self::getMimeType($file);
-                }
-
-                if ($type == "pp") {
+                if ($from == "pp") {
                         switch ($extension) {
                                 case "xls":
-                                        return new ImportPingPongExcel($name, $file, $mime, $size);
-                                        break;
+                                        return new ImportPingPongExcel();
                                 case "tab":
                                 case "txt":
-                                        return new ImportPingPongText($name, $file, $mime, $size);
-                                        break;
+                                        return new ImportPingPongText();
                                 default:
                                         throw new ImportException(sprintf(_("Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."), $extension));
-                                        break;
                         }
-                } elseif ($type == "oq" || $type == "op") {
+                } elseif ($from == "oq" || $from == "op") {
                         switch ($extension) {
                                 default:
-                                        return new ImportOpenExam($name, $file, $mime, $size);
-                                        break;
+                                        return new ImportOpenExam();
                         }
-                } elseif ($type == "sr") {       // student registrations
-                        switch ($extension) {
+                } elseif ($from == "sr") {       // student registrations
+                        if ($type != -1) {
+                                $find = $type;
+                        } else {
+                                $find = $extension;
+                        }
+                        switch ($find) {
+                                case "excel2007":
                                 case "xlsx":
-                                        return new ImportStudentsExcel2007($name, $file, $mime, $size);
-                                        break;
+                                        return new ImportStudentsExcel2007();
+                                case "excel2003":
+                                case "xml":
+                                        return new ImportStudentsExcel2003Xml();
+                                case "excel5":
+                                case "excel97":
                                 case "xls":
-                                        return new ImportStudentsExcel2003($name, $file, $mime, $size);
-                                        break;
+                                        return new ImportStudentsExcel97();
+                                case "oocalc":
+                                case "ods":
+                                case "ots":
+                                        return new ImportStudentsOpenDocument();
+                                case "gnumeric":
+                                        return new ImportStudentsGnumeric();
                                 case "tab":
+                                case "tsv":
                                 case "txt":
-                                        return new ImportStudentsTextTab($name, $file, $mime, $size);
-                                        break;
+                                        return new ImportStudentsTextTab();
                                 case "csv":
-                                        return new ImportStudentsTextCsv($name, $file, $mime, $size);
-                                        break;
+                                        return new ImportStudentsTextCsv();
                                 default:
                                         throw new ImportException(sprintf(_("Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."), $extension));
-                                        break;
                         }
                 }
         }

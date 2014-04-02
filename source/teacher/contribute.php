@@ -82,7 +82,8 @@ class ContributePage extends TeacherPage
                 "score"    => parent::pattern_float,
                 "name"     => parent::pattern_textline,
                 "quest"    => parent::pattern_textarea,
-                "type"     => "/^(freetext|single|multiple|pp|oq)$/",
+                "type"     => "/^(freetext|single|multiple)$/",
+                "from"     => "/^(pp|oq)$/",
                 "user"     => parent::pattern_user,
                 "status"   => "/^(active|removed)$/",
                 "video"    => parent::pattern_url,
@@ -317,12 +318,17 @@ class ContributePage extends TeacherPage
         private function saveImportQuestions()
         {
                 try {
-                        $importer = FileImport::getReader(
-                                $this->param->type, $_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']
-                        );
+                        $inserter = new ImportInsert($this->param->exam, Database::getConnection());
+                        
+                        $importer = FileImport::create($this->param->from);
+                        $importer->setFile($_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']);
+                        $importer->setFilter(OPENEXAM_IMPORT_INCLUDE_QUESTIONS | OPENEXAM_IMPORT_INCLUDE_TOPICS);
+                        
                         $importer->open();
-                        $importer->read($this->param->exam, Database::getConnection(), OPENEXAM_IMPORT_INCLUDE_QUESTIONS | OPENEXAM_IMPORT_INCLUDE_TOPICS);
+                        $importer->read();
                         $importer->close();
+                        
+                        $importer->insert($inserter, $what);
                 } catch (ImportException $exception) {
                         $this->fatal(_("Failed Import Questions"), $exception->getMessage());
                 }
@@ -566,7 +572,7 @@ class ContributePage extends TeacherPage
                 $input = $form->addFileInput("file");
                 $input->setLabel(_("Filename"));
                 $input = $form->addSubmitButton(_("Import"));
-                $input = $form->addComboBox("type");
+                $input = $form->addComboBox("from");
                 $input->addOption("pp", _("Ping-Pong"));
                 $input->addOption("oq", _("OpenExam"));
                 $input->setLabel(_("Type"));

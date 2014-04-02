@@ -411,12 +411,17 @@ class ManagerPage extends TeacherPage
         {
                 if ($store) {
                         try {
-                                $importer = FileImport::getReader(
-                                        $this->param->type, $_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']
-                                );
+                                $inserter = new ImportInsert(0, Database::getConnection());
+                                
+                                $importer = FileImport::create($this->param->type);
+                                $importer->setFile($_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']);
+                                $importer->setFilter(OPENEXAM_IMPORT_INCLUDE_ALL);
+                                
                                 $importer->open();
-                                $this->param->exam = $importer->read(0, Database::getConnection(), OPENEXAM_IMPORT_INCLUDE_ALL);
+                                $importer->read();
                                 $importer->close();
+                                
+                                $this->param->exam = $importer->insert($inserter);
                         } catch (ImportException $exception) {
                                 $this->fatal(_("Failed Import Examination"), $exception->getMessage());
                         }
