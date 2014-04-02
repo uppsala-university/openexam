@@ -61,6 +61,7 @@ include "include/uppdok.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/examinator.inc";
+include "include/import.inc";
 
 if (!defined("EXAMINATOR_VISIBLE_IDENTITIES")) {
         define("EXAMINATOR_VISIBLE_IDENTITIES", true);
@@ -95,15 +96,17 @@ class ExaminatorPage extends TeacherPage
                 "year"    => parent::pattern_year,
                 "order"   => "/^(state|name|date)$/",
                 "termin"  => parent::pattern_termin,
-                "file"    => parent::pattern_name,
+                "file"    => parent::pattern_textline,
                 "account" => parent::pattern_index,
                 "persnr"  => parent::pattern_index,
+                "type"    => parent::pattern_index,
                 "show"    => "/^(course|file)$/"
         );
 
         public function __construct()
         {
-                self::$params['tag'] = parent::pattern(array(parent::pattern_index, parent::pattern_name));
+                self::$params['tag'] = parent::pattern(array(parent::pattern_empty, parent::pattern_index, parent::pattern_name));
+                self::$params['type'] = parent::pattern(array(parent::pattern_empty, parent::pattern_index, parent::pattern_name));
                 parent::__construct(_("Examinator Page"), self::$params);
                 if (!isset($this->param->order)) {
                         $this->param->order = "state";
@@ -146,6 +149,8 @@ class ExaminatorPage extends TeacherPage
                                                                 'year',
                                                                 'termin'));
                                                         $this->saveAddCourse();
+                                                } elseif ($this->param->what == "file") {
+                                                        $this->saveAddFile();
                                                 } else {
                                                         $this->formAddStudents($this->param->what);
                                                 }
@@ -324,18 +329,39 @@ class ExaminatorPage extends TeacherPage
                         $form->output();
                 } elseif ($what == "file") {
                         $form = new Form("examinator.php", "POST");
+                        $form->setEncodingType("multipart/form-data");
                         $form->addSectionHeader(_("Import file"));
                         $form->addHidden("exam", $this->param->exam);
-                        $form->addHidden("mode", "show");
+                        $form->addHidden("mode", "save");
                         $form->addHidden("what", "file");
                         $form->addHidden("action", "add");
                         $input = $form->addFileInput("file");
-                        $input->setLabel(_("File"));
+                        $input->setLabel(_("Filename"));
                         $input->setAccept("application/vnd.ms-excel,text/tab-separated-values,text/csv");
                         $input->setTitle(_("Select an Excel or plain text (TAB- or CSV-separated) file."));
+                        $form->addSpace();
+                        $input = $form->addComboBox('type');
+                        $input->addOption(-1, _("Autodetect"));
+                        $types = array(
+                                "excel5"    => "Microsoft Excel 4.x - 5.0/95 (*.xls)",
+                                "excel97"   => "Microsoft Excel 97/2000/XP/2003 (*.xls)",
+                                "excel2003" => "Microsoft Excel 2003 XML (*.xls)",
+                                "excel2007" => "Microsoft Excel 2007/2010 XML (*.xlsx)",
+                                "oocalc"    => "Open Document Format Spreadsheet (*.ods)",
+                                "gnumeric"  => "Gnome Gnumeric Spreadsheet (*.gnumeric)",
+                                "tab"       => "Tab Separated Values (*.tab|*.tsv|*.txt)",
+                                "csv"       => "Comma Separated Values (*.csv)"
+                        );
+                        foreach ($types as $type => $name) {
+                                $input->addOption($type, $name);
+                        }
+                        $input->setLabel(_("File type"));
+
+                        $form->addSpace();
                         $input = $form->addTextBox("tag");
                         $input->setLabel(_("Tag"));
                         $input->setTitle(_("Tag each student in the uploaded list with this identifier. If numeric, then it denotes the column (starting from index 0) in the submitted list containing the tag."));
+
                         $input = $form->addComboBox("account");
                         $input->addOption(-1, _("Unused"));
                         for ($i = 0; $i < 10; $i++) {
@@ -343,19 +369,31 @@ class ExaminatorPage extends TeacherPage
                         }
                         $input->setLabel(_("Account"));
                         $input->setTitle(_("Index of the column containing the account names."));
+
+                        $input = $form->addComboBox("code");
+                        $input->addOption(-1, _("Unused"));
+                        for ($i = 0; $i < 10; $i++) {
+                                $input->addOption($i, $i);
+                        }
+                        $input->setLabel(_("Code"));
+                        $input->setTitle(_("Index of the column containing anonymous code."));
+
                         $input = $form->addComboBox("persnr");
-                        $input->addOption(-1, _("Detect"));
+                        $input->addOption(-1, _("Autodetect"));
                         for ($i = 0; $i < 10; $i++) {
                                 $input->addOption($i, $i);
                         }
                         $input->setLabel(_("Pers.Nr"));
                         $input->setTitle(_("Index of the column containing the personal numbers (i.e. 751011-3723)."));
+                        $form->addSpace();
+
                         $input = $form->addSubmitButton("submit", _("Submit"));
                         $input->setLabel();
                         $form->output();
 
                         $msgbox = new MessageBox(MessageBox::information, _("This form accepts table data files containing student registrations. ") .
-                            _("Accepted file types are like Excel and plain text formats (TAB- or CSV-separated). ")
+                            _("Accepted file types are like Excel and plain text formats (TAB- or CSV-separated). ") .
+                            _("Notice that all column numbers are indexed from 0. ")
                         );
                         $msgbox->display();
                 } else {
@@ -487,6 +525,44 @@ class ExaminatorPage extends TeacherPage
                 }
 
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
+        }
+
+        // 
+        // Handle file upload with students to import.
+        // 
+        private function saveAddFile()
+        {
+                try {
+                        $this->param->form = "sr";      // constant
+
+                        $inserter = new ImportInsert($this->param->exam, Database::getConnection());
+
+                        $importer = FileImport::create($this->param->form, $this->param->type);
+                        $importer->setFile($_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']);
+                        $importer->setFilter(OPENEXAM_IMPORT_INCLUDE_STUDENTS);
+
+                        if (isset($this->param->tag) && strlen($this->param->tag) != 0) {
+                                $importer->setTagging($this->param->tag);
+                        }
+                        if ($this->param->account != -1) {
+                                $importer->setMapping(ImportStudents::user, $this->param->account);
+                        }
+                        if ($this->param->persnr != -1) {
+                                $importer->setMapping(ImportStudents::pnr, $this->param->persnr);
+                        }
+                        if ($this->param->code != -1) {
+                                $importer->setMapping(ImportStudents::code, $this->param->code);
+                        }
+
+                        $importer->open();
+                        $importer->read();
+                        $importer->close();
+
+                        $importer->insert($inserter);
+                } catch (ImportException $exception) {
+                        $this->fatal(_("Failed Import Questions"), $exception->getMessage());
+                }
+                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
         }
 
         //

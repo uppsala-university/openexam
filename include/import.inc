@@ -311,8 +311,8 @@ class ImportInsert
                 $data->map()->students = array();
 
                 foreach ($data->students->student as $student) {
-                        $sql = sprintf("INSERT INTO students(exam_id, user, code)
-                                        VALUES(%d,'%s','%s')", $this->exam, $student->user, $student->code);
+                        $sql = sprintf("INSERT INTO students(exam_id, user, code, tag)
+                                        VALUES(%d,'%s','%s','%s')", $this->exam, $student->user, $student->code, $student->tag);
                         $data->map()->students[(string) $student->user] = $this->insertData($sql, "students");
                 }
         }
@@ -338,7 +338,7 @@ class ImportInsert
 
         private function insertData($sql, $table = null)
         {
-                printf(__METHOD__ . " SQL: %s'\n", $sql);
+                // printf(__METHOD__ . " SQL: %s'\n", $sql);
                 $res = $this->db->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -774,6 +774,12 @@ class ImportStudents extends ImportBase
 {
 
         const xmldoc = '<openexam/>';
+        // Constant for setMapping():
+        const tag = 'tag';
+        const user = 'user';
+        const code = 'code';
+        const pnr = 'pnr';
+        const row = 'row';
 
         private static $pnrhpatt = "/^personnummer|pers.?nr|p.?nr|pnum$/";
         private static $pnrvpatt = "/^\d{6,8}-?\d{4}|^\d{6,8}-?\d{3}[a-zA-Z]$/";
@@ -806,9 +812,9 @@ class ImportStudents extends ImportBase
         public function setTagging($tag)
         {
                 if (is_numeric($tag)) {
-                        $this->opts->tagcol = $tag;
+                        $this->opts->coltag = $tag;
                 } elseif (is_string($tag) && strlen($tag) == 1) {
-                        $this->opts->tagcol = $tag - ord('A');
+                        $this->opts->coltag = $tag - ord('A');
                 } else {
                         $this->opts->tagstr = $tag;
                 }
@@ -819,9 +825,10 @@ class ImportStudents extends ImportBase
          * 
          * Possible values for the $type aregument are:
          * <ul>
-         * <li>'tag'     -> Define the tag column.</li>
-         * <li>'account' -> Define the account column.</li>
-         * <li>'persnr'  -> Define the person number column.</li>
+         * <li>'tag'    -> Define the tag column.</li>
+         * <li>'user'   -> Define the account column.</li>
+         * <li>'code'   -> Define the anonymous code column.</li>
+         * <li>'persnr' -> Define the person number column.</li>
          * </ul>
          * 
          * @param string $type The type identifier.
@@ -830,31 +837,42 @@ class ImportStudents extends ImportBase
         public function setMapping($type, $index)
         {
                 switch ($type) {
-                        case "tag":
+                        case self::tag:
                                 $this->opts->coltag = $index;
                                 break;
-                        case "account":
-                                $this->opts->colacc = $index;
+                        case self::user:
+                                $this->opts->coluser = $index;
                                 break;
-                        case "persnr":
-                                $this->opts->persnr = $index;
+                        case self::pnr:
+                                $this->opts->colpnr = $index;
                                 break;
+                        case self::code:
+                                $this->opts->colcode = $index;
                 }
         }
 
+        /**
+         * Set first row to import from.
+         * @param int $row The row number.
+         */
+        public function setStartRow($row)
+        {
+                $this->first = $row;
+        }
+
         public function read()
-        {                
+        {
                 $this->excel = $this->reader->load($this->file);
                 $this->sheet = $this->excel->setActiveSheetIndex(0);
 
                 $this->cols = ord($this->sheet->getHighestColumn()) - ord('A');
-                $this->rows = $this->sheet->getHighestRow() - 1;
+                $this->rows = $this->sheet->getHighestRow();
                 $this->sdat = $this->sheet->toArray();
 
-                if (isset($this->opts->colacc)) {
-                        $this->readAccounts($this->opts->colacc);
-                } elseif (isset($this->opts->persnr)) {
-                        $this->readPersNr($this->opts->persnr);
+                if (isset($this->opts->coluser)) {
+                        $this->readAccounts($this->opts->coluser);
+                } elseif (isset($this->opts->colpnr)) {
+                        $this->readPersNr($this->opts->colpnr);
                         $this->lookupPersNr();
                 } else {
                         $this->readDetect();    // try to detect pers.nr.
@@ -865,18 +883,22 @@ class ImportStudents extends ImportBase
                         throw new ImportException(_("No account information in import file."));
                 }
 
-                if (isset($this->opts->tagcol)) {
-                        $this->readTag($this->opts->tagcol);
+                if (isset($this->opts->coltag)) {
+                        $this->readTag($this->opts->coltag);
                 }
                 if (isset($this->opts->tagstr)) {
                         $this->assignTag($this->opts->tagstr);
                 }
-                
+                if (isset($this->opts->colcode)) {
+                        $this->readCode($this->opts->colcode);
+                }
+
                 $pnode = $this->data->addChild('students');
-                foreach ($this->students as $user => $tag) {
+                foreach ($this->students as $user => $val) {
                         $snode = $pnode->addChild('student');
                         $snode->addChild('user', $user);
-                        $snode->addChild('tag', $tag);
+                        $snode->addChild('code', $val[self::code]);
+                        $snode->addChild('tag', $val[self::tag]);
                 }
         }
 
@@ -885,9 +907,10 @@ class ImportStudents extends ImportBase
         // 
         private function readAccounts($column)
         {
-                for ($r = 0; $r < $this->rows; ++$r) {
+                for ($r = $this->first; $r < $this->rows; ++$r) {
                         $value = $this->sdat[$r][$column];
-                        $this->students[$value] = "";
+                        $this->setValue(null, self::user, $value);
+                        $this->setValue($value, self::row, $r);
                 }
         }
 
@@ -899,8 +922,9 @@ class ImportStudents extends ImportBase
                 for ($r = $this->first; $r < $this->rows; ++$r) {
                         $value = $this->sdat[$r][$column];
                         if (preg_match(self::$pnrvpatt, $value)) {
-                                $this->students[$value] = "";
-                        } else {
+                                $this->setValue(null, self::user, $value);
+                                $this->setValue($value, self::row, $r);
+                        } elseif ($r != $this->first) {
                                 throw new ImportException(sprintf("Unmatched personal number in cell '%d,%d'", $r, $column));
                         }
                 }
@@ -934,13 +958,25 @@ class ImportStudents extends ImportBase
                 // 
                 // Try to detect an personal number in each cell.
                 // 
-                for ($r = 0; $r < $this->rows; ++$r) {
+                for ($r = $this->first; $r < $this->rows; ++$r) {
                         for ($c = 0; $c < $this->cols; ++$c) {
                                 $value = $this->sdat[$r][$c];
                                 if (preg_match(self::$pnrvpatt, $value)) {
-                                        $this->students[$value] = "";
+                                        $this->setValue(null, self::user, $value);
+                                        $this->setValue($value, self::row, $r);
                                 }
                         }
+                }
+        }
+
+        // 
+        // Read code from column index.
+        // 
+        private function readCode($column)
+        {
+                foreach (array_keys($this->students) as $user) {
+                        $value = $this->sdat[$this->getValue($user, self::row)][$column];
+                        $this->setValue($user, self::code, $value);
                 }
         }
 
@@ -949,8 +985,9 @@ class ImportStudents extends ImportBase
         // 
         private function readTag($column)
         {
-                for ($i = 0; $i < count($this->sdat); ++$i) {
-                        $this->students[$i] = $this->sdat[$i][$column];
+                foreach (array_keys($this->students) as $user) {
+                        $value = $this->sdat[$this->getValue($user, self::row)][$column];
+                        $this->setValue($user, self::tag, $value);
                 }
         }
 
@@ -959,8 +996,8 @@ class ImportStudents extends ImportBase
         // 
         private function assignTag($tag)
         {
-                for ($i = 0; $i < count($this->sdat); ++$i) {
-                        $this->students[$i] = $tag;
+                foreach (array_keys($this->students) as $user) {
+                        $this->setValue($user, self::tag, $tag);
                 }
         }
 
@@ -970,14 +1007,34 @@ class ImportStudents extends ImportBase
         private function lookupPersNr()
         {
                 $ldap = new LdapSearch(LdapConnection::instance());
-                $ldap->setAttributeFilter('uid');
-                foreach (array_keys($this->students) as $key) {
+                $ldap->setAttributeFilter('uid');       // limit returned attr
+                foreach ($this->students as $key => $val) {
                         if (is_numeric($key[0])) {
                                 $user = (string) ($ldap->searchPersNr($key)->first()->getUid());
+                                $val = $this->students[$key];
                                 unset($this->students[$key]);
-                                $this->students[$user] = "";
+                                $this->students[$user] = $val;
+                                $this->setvalue($user, self::pnr, $key);
                         }
                 }
+        }
+
+        private function setValue($key, $name, $val)
+        {
+                if ($name == self::user) {
+                        if (!isset($this->students[$val])) {
+                                $this->students[$val] = array(
+                                        self::tag  => '', self::code => ''
+                                );
+                        }
+                } else {
+                        $this->students[$key][$name] = $val;
+                }
+        }
+
+        private function getValue($key, $name)
+        {
+                return $this->students[$key][$name];
         }
 
 }
