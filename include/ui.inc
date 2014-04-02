@@ -92,7 +92,7 @@ class BasePage implements TemplatePage
 
         const pattern_any = self::pattern_textarea;             // match anything
         const pattern_float = "/^\d+([,.]\d+)*$/";              // match float point
-        const pattern_index = "/^\d+$/";                        // match database index
+        const pattern_index = "/^-?\d+$/";                      // match database index
         const pattern_textarea = "/^.*$/m";                     // generic text can be anything
         const pattern_textline = "/^.*$/";                      // single line of text
         const pattern_user = "/^[0-9a-zA-Z-_@]{1,30}$/";        // username
@@ -103,6 +103,7 @@ class BasePage implements TemplatePage
         const pattern_termin = "/^[1-2]$/";                     // semester
         const pattern_name = "/^(\p{L}|\p{N}|\p{Z}|\p{P})+$/u"; // person
         const pattern_score = "/^(\d+([,.]\d+)*|)$/";           // float point or empty
+        const pattern_empty = "/^$/";
 
         private $title;
         protected $param;     // Washed request parameters
@@ -141,12 +142,12 @@ class BasePage implements TemplatePage
                 } else {
                         $result = array();
                         foreach ($list as $pattern) {
-                                $spos = strchr($pattern, '^');
-                                $epos = strrchr($pattern, '$');
+                                $spos = strpos($pattern, '^');
+                                $epos = strrpos($pattern, '$');
                                 if (!$spos || !$epos) {
                                         $result[] = $pattern;
                                 } else {
-                                        $result[] = substr($pattern, $spos + 1, $epos - 1);
+                                        $result[] = substr($pattern, $spos + 1, $epos - 2);
                                 }
                         }
                         return sprintf("/^%s$/", implode("|", $result));
