@@ -70,6 +70,10 @@ include "include/teacher/correct.inc";
 // 
 include "include/scoreboard.inc";
 
+if (!defined('CORRECT_SHOW_OTHERS')) {
+        define('CORRECT_SHOW_OTHERS', false);
+}
+
 // 
 // The answer correction page:
 // 
@@ -525,6 +529,7 @@ class CorrectionPage extends TeacherPage
                 $board = new ScoreBoardPrinter($this->param->exam);
                 $board->setVerbose($this->param->verbose);
                 $board->setColorized($this->param->colorize);
+                $board->showOthers(CORRECT_SHOW_OTHERS);
                 $board->output();
 
                 //

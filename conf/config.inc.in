@@ -245,6 +245,11 @@ define('MEDIA_UPLOAD_ENABLE', false);
 define('MEDIA_UPLOAD_DIR', realpath(sprintf("%s/../source/media/files", dirname(__FILE__))));
 define('MEDIA_UPLOAD_MAXSIZE', 4 * 1024 * 1024);
 
+// 
+// Show questions assigned to other teachers during the correction phase.
+// 
+define('CORRECT_SHOW_OTHERS', false);
+
 //
 // The cache directory (for temporary files):
 //

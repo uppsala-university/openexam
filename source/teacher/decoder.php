@@ -401,6 +401,7 @@ class DecoderPage extends TeacherPage
                 $board = new ScoreBoardPrinter($this->param->exam);
                 $board->setVerbose($this->param->verbose);
                 $board->setColorized($this->param->colorize);
+                $board->showOthers(true);
                 $board->output();
 
                 printf("<h5>" . _("Color Codes") . "</h5>\n");

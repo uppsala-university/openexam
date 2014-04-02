@@ -1,7 +1,7 @@
 <?php
 
 // 
-// Copyright (C) 2010 Computing Department BMC, 
+// Copyright (C) 2010, 2014 Computing Department BMC, 
 // Uppsala Biomedical Centre, Uppsala University.
 // 
 // File:   include/scoreboard.inc
@@ -684,6 +684,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 $this->verbose = false;
                 $this->colorize = false;
                 $this->show = new stdClass();
+                $this->show->others = false;
         }
 
         public function setVerbose($bool)
@@ -694,6 +695,14 @@ class ScoreBoardPrinter extends ScoreBoardOutput
         public function setColorized($bool)
         {
                 $this->colorize = $bool;
+        }
+
+        // 
+        // Show questions corrected by others.
+        // 
+        public function showOthers($bool)
+        {
+                $this->show->others = $bool;
         }
 
         public function output()
@@ -731,6 +740,10 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 }
                 if ($this->show->score) {
                         foreach ($questions as $question) {
+                                ++$this->index;
+                                if ($this->show->others == false && $question->getQuestionPublisher() != phpCAS::getUser()) {
+                                        continue;       // Not my question
+                                }
                                 $header = $this->getHeaderData($question);
                                 $obj = $row->addHeader($header->name);
                                 if ($this->show->links && isset($header->link) && $question->getQuestionStatus() != 'removed') {
@@ -778,6 +791,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                 // Print all answers for this student:
                                 //
                                 foreach ($questions as $question) {
+                                        if ($this->show->others == false && $question->getQuestionPublisher() != phpCAS::getUser()) {
+                                                continue;       // Not my question
+                                        }
                                         $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
                                         if ($this->colorize) {
                                                 if (!isset($data)) {
@@ -925,7 +941,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                         $question->setQuestionBody(""); // Fix undef warning
                 }
 
-                $header->name = sprintf("Q%d", ++$this->index);
+                $header->name = sprintf("Q%d", $this->index);
                 $header->desc = sprintf("%s %s\n\n%s\n\n%s: %.01f\n%s: %s", _("Question"), $question->getQuestionName(), $question->getQuestionBody(), _("Max score"), $question->getQuestionScore(), _("Publisher"), $this->getDisplayName($question->getQuestionPublisher()));
                 if ($question->getQuestionStatus() == 'removed') {
                         if ($question->getQuestionComment() != null) {
