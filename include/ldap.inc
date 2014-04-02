@@ -36,6 +36,9 @@ if (!defined("LDAP_SEARCH_CN")) {
 if (!defined("LDAP_SEARCH_GIVEN_NAME")) {
         define("LDAP_SEARCH_GIVEN_NAME", "(givenname=%s)");
 }
+if (!defined("LDAP_SEARCH_PERSNR")) {
+        define("LDAP_SEARCH_PERSNR", "(norEduPersonNIN=%s)");
+}
 
 // 
 // Our custom LDAP exception.
@@ -288,7 +291,7 @@ class LdapConnection
                 //
                 if (!($this->dc = ldap_connect($this->server, $this->port))) {
                         throw new LdapException(sprintf(
-                                _("Failed connect to LDAP server %s:%d"), $this->server, $this->port));
+                            _("Failed connect to LDAP server %s:%d"), $this->server, $this->port));
                 }
 
                 //
@@ -297,7 +300,7 @@ class LdapConnection
                 if (defined("LDAP_PROTOCOL_VERSION")) {
                         if (!ldap_set_option($this->dc, LDAP_OPT_PROTOCOL_VERSION, LDAP_PROTOCOL_VERSION)) {
                                 throw new LdapException(sprintf(
-                                        _("Failed set LDAP protocol version %d"), LDAP_PROTOCOL_VERSION));
+                                    _("Failed set LDAP protocol version %d"), LDAP_PROTOCOL_VERSION));
                         }
                 }
 
@@ -309,7 +312,7 @@ class LdapConnection
                 if (defined("LDAP_REFERALS")) {
                         if (!ldap_set_option($this->dc, LDAP_OPT_REFERRALS, LDAP_REFERALS)) {
                                 throw new LdapException(sprintf(
-                                        _("Failed set LDAP search referals to %d"), LDAP_REFERALS));
+                                    _("Failed set LDAP search referals to %d"), LDAP_REFERALS));
                         }
                 }
 
@@ -534,6 +537,28 @@ class LdapSearch
         public function searchPrincipalName($account_id)
         {
                 return $this->search(sprintf(LDAP_SEARCH_PRINCIPAL, $account_id), "principal");
+        }
+
+        // 
+        // Search for LDAP entries matching the personal number (norEduPersonNIN).
+        // 
+        public function searchPersNr($persnr)
+        {
+                if (strlen($persnr) != 12) {
+                        $pattern = '/^((\d{6,8})-?(\d{4}))|^((\d{6,8})-?(\d{3}[a-zA-Z]))$/';
+                        $replace = '${2}${3}';
+                        $persnr = preg_replace($pattern, $replace, $persnr);
+                        if (!isset($persnr)) {
+                                throw new LdapException("Failed transform personal number.");
+                        }
+                        if (strlen($persnr) == 10) {
+                                if (substr($persnr, 0, 2) > date('y')) {
+                                        $persnr = '19' . $persnr;
+                                }
+                        }
+                }
+
+                return $this->search(sprintf(LDAP_SEARCH_PERSNR, $persnr), "norEduPersonNIN");
         }
 
 }
