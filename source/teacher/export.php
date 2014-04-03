@@ -169,12 +169,12 @@ class ExportPage extends TeacherPage
 
                 $tree = new TreeBuilder(_("Choose export format:"));
                 $root = $tree->getRoot();
-                $node = $root->addChild(_("Microsoft Word 2007 document"));
-                $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=word&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
+//                $node = $root->addChild(_("Microsoft Word 2007 document"));
+//                $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=word&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
                 $node = $root->addChild(_("OpenExam project data"));
                 $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=native&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
-                $node = $root->addChild(_("Adobe PDF document"));
-                $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=native&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
+//                $node = $root->addChild(_("Adobe PDF document"));
+//                $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=native&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
                 $tree->output();
         }
 
@@ -188,11 +188,11 @@ class ExportPage extends TeacherPage
                 $form->addHidden("action", "export");
                 $combo = $form->addComboBox("format");
                 $combo->setLabel(_("Format"));
-                $combo->addOption("word", _("Microsoft Word 2007 document"));
-                $combo->addOption("excel", _("Microsoft Excel 2007 document"));
+                // $combo->addOption("word", _("Microsoft Word 2007 document"));
+                // $combo->addOption("excel", _("Microsoft Excel 2007 document"));
                 $combo->addOption("native", _("OpenExam project data"));
-                $combo->addOption("pdf", _("Adobe PDF document"));
-                $combo->addOption("plain", _("Plain text document"));
+                // $combo->addOption("pdf", _("Adobe PDF document"));
+                // $combo->addOption("plain", _("Plain text document"));
                 $form->addSpace();
                 $check = $form->addCheckBox("options[]", OPENEXAM_EXPORT_INCLUDE_PROJECT, _("Properties"));
                 $check->setLabel(_("Include"));
