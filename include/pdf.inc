@@ -860,7 +860,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
         //
         public function saveAll($destdir)
         {
-                $students = $this->manager->getStudents();
+                $students = $this->board->getStudents();
                 foreach ($students as $student) {
                         if (strstr($this->format, "pdf")) {
                                 $file = sprintf("%s/%s-%s.pdf", $destdir, $student->getStudentUser(), $student->getStudentCode());
