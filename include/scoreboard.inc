@@ -489,27 +489,37 @@ abstract class ScoreBoardOutput
                 $this->board = new ScoreBoard($exam, $filter);
 
                 $this->ldap = new LdapSearch(LdapConnection::instance());
-                $this->ldap->setAttributeFilter(array("displayname"));
+                $this->ldap->setAttributeFilter(array("displayname", "norEduPersonNIN"));
         }
 
-        //
-        // Support function for doing LDAP lookup.
-        //
-        protected function getDisplayName($user, $lookup = LDAP_LOOKUP_BOTH)
+        protected function getDirectoryEntry($user, $lookup = LDAP_LOOKUP_BOTH)
         {
                 if ($lookup & LDAP_LOOKUP_UID) {
                         $entry = $this->ldap->searchUID($user);
-                        if ($entry->first()->hasDisplayName()) {
-                                return $entry->first()->getDisplayName()->first();
+                        if ($entry->count() != 0) {
+                                return $entry->first();
                         }
                 }
                 if ($lookup & LDAP_LOOKUP_PRINCIPAL) {
                         $entry = $this->ldap->searchPrincipalName($user);
-                        if ($entry->first()->hasDisplayName()) {
-                                return $entry->first()->getDisplayName()->first();
+                        if ($entry->count() != 0) {
+                                return $entry->first();
                         }
                 }
-                return $user;
+        }
+
+        protected function getSocialNumber($user, $lookup = LDAP_LOOKUP_BOTH)
+        {
+                if (($entry = $this->getDirectoryEntry($user, $lookup))) {
+                        return $entry->getNorEduPersonNIN()->first();
+                }
+        }
+
+        protected function getDisplayName($user, $lookup = LDAP_LOOKUP_BOTH)
+        {
+                if (($entry = $this->getDirectoryEntry($user, $lookup))) {
+                        return $entry->getDisplayName()->first();
+                }
         }
 
 }
@@ -623,7 +633,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 $this->writer = $writer;
                 $this->format = $format;
 
-                parent::__construct($exam);
+                parent::__construct($exam, $this->filter);
         }
 
         //
@@ -684,6 +694,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
         private function write()
         {
                 $questions = $this->board->getQuestions();
+                $grades = new ExamGrades($this->board->getExam()->getExamGrades());
 
                 //
                 // Write header list:
@@ -693,6 +704,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 $array[] = _("Name");
                 $array[] = _("User");
                 $array[] = _("Code");
+                $array[] = _("Persnr");
                 foreach ($questions as $question) {
                         $array[] = sprintf("Q%d", $i++);
                 }
@@ -700,6 +712,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 $array[] = _("Possible");
                 $array[] = _("Max score");
                 $array[] = _("Percent");
+                $array[] = _("Grade");
                 $this->writer->writeLine($array);
 
                 //
@@ -709,9 +722,11 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 foreach ($students as $student) {
                         $array = array();
                         $student->setStudentName($this->getDisplayName($student->getStudentUser()));
+                        $student->setStudentPersNr($this->getSocialNumber($student->getStudentUser()));
                         $array[] = $student->getStudentName();
                         $array[] = $student->getStudentUser();
                         $array[] = $student->getStudentCode();
+                        $array[] = $student->getStudentPersNr();
                         foreach ($questions as $question) {
                                 $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
                                 if (!isset($data) || $data->getAnswerExist() == 'N') {
@@ -729,6 +744,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                         $array[] = $score->getMax();
                         $array[] = $this->board->getMaximumScore();
                         $array[] = 100 * $score->getSum() / $this->board->getMaximumScore();
+                        $array[] = $grades->getGrade($score->getSum());
                         $this->writer->writeLine($array);
                 }
         }
@@ -777,6 +793,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 //
                 $this->show->name = $this->decoded;
                 $this->show->user = $this->decoded && $this->verbose;
+                $this->show->pnr = $this->decoded && $this->verbose;
                 $this->show->code = $this->verbose || !$this->decoded;
                 $this->show->summary = $this->verbose;
                 $this->show->percent = true;
@@ -799,6 +816,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 }
                 if ($this->show->code) {
                         $row->addHeader(_("Code"));
+                }
+                if ($this->show->pnr) {
+                        $row->addHeader(_("Persnr"));
                 }
                 if ($this->show->score) {
                         foreach ($questions as $question) {
@@ -844,6 +864,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                 if ($this->show->links) {
                                         $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;student=%d", $student->getExamID(), $student->getStudentID()));
                                 }
+                        }
+                        if ($this->show->pnr) {
+                                $row->addData($this->getSocialNumber($student->getStudentUser()));
                         }
                         if ($this->show->score) {
                                 //
