@@ -260,7 +260,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 $this->ldap->setAttributeFilter(array("displayname", "mail", "cn"));
 
                 $this->filter = new ScoreBoardFilter($examid, true, DECODED_SHOW_UNATTENDED);
-                
+
                 $this->board = new ScoreBoard($this->exam->getExamID(), $this->filter);
                 $this->grade = new ExamGrades($this->exam->getExamGrades());
 
@@ -914,16 +914,15 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 // temporary files added to zip-file, otherwise we get an empty archive.
                 //
                 while (($file = readdir($handle)) !== false) {
-                        if ($file == "." || $file == "..") {
-                                continue;
+                        if ($file != "." && $file != "..") {
+                                $path = sprintf("%s/%s", $dirname, $file);
+                                $zip->addFile($path, $file);
                         }
-                        $path = sprintf("%s/%s", $dirname, $file);
-                        $zip->addFile($path, $file);
                 }
                 $zip->close();
                 rewinddir($handle);
                 while (($file = readdir($handle)) !== false) {
-                        if ($file != "." && $file == "..") {
+                        if ($file != "." && $file != "..") {
                                 $path = sprintf("%s/%s", $dirname, $file);
                                 unlink($path);
                         }
