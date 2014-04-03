@@ -832,7 +832,8 @@ class Manager
                 $sql = sprintf("SELECT  id AS StudentID,
                                         exam_id AS ExamID,
                                         user AS StudentUser,
-                                        code AS StudentCode
+                                        code AS StudentCode,
+                                        tag AS StudentTag
                                 FROM    students
                                 WHERE   exam_id = %d
                                 ORDER BY user", $this->exam);

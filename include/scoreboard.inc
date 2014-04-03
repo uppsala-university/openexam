@@ -701,6 +701,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 //
                 $i = 1;
                 $array = array();
+                $array[] = _("Tag");
                 $array[] = _("Name");
                 $array[] = _("User");
                 $array[] = _("Code");
@@ -723,6 +724,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                         $array = array();
                         $student->setStudentName($this->getDisplayName($student->getStudentUser()));
                         $student->setStudentPersNr($this->getSocialNumber($student->getStudentUser()));
+                        $array[] = $student->getStudentTag();
                         $array[] = $student->getStudentName();
                         $array[] = $student->getStudentUser();
                         $array[] = $student->getStudentCode();
@@ -791,6 +793,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 //
                 // Select which field to output:
                 //
+                $this->show->tag = $this->decoded;
                 $this->show->name = $this->decoded;
                 $this->show->user = $this->decoded && $this->verbose;
                 $this->show->pnr = $this->decoded && $this->verbose;
@@ -808,6 +811,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 // Print headers:
                 //
                 $row = $table->addRow();
+                if ($this->show->tag) {
+                        $row->addHeader(_("Tag"));
+                }
                 if ($this->show->name) {
                         $row->addHeader(_("Name"));
                 }
@@ -849,6 +855,9 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 $grades = new ExamGrades($this->board->getExam()->getExamGrades());
                 foreach ($students as $student) {
                         $row = $table->addRow();
+                        if ($this->show->tag) {
+                                $row->addData($student->getStudentTag());
+                        }
                         if ($this->show->name) {
                                 $obj = $row->addData($this->getDisplayName($student->getStudentUser()));
                                 $obj->setNoWrap();
