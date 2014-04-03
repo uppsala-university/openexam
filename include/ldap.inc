@@ -489,6 +489,9 @@ class LdapSearch
                         }
                 }
 
+                if (!in_array($attr, $this->attr)) {
+                        $this->attr[] = $attr;
+                }
                 $result = $this->connection->search($filter, $this->attr);
 
                 if (isset($this->cache)) {
