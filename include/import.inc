@@ -254,12 +254,17 @@ class ImportInsert
                         'examinator'  => 'examinators',
                         'decoder'     => 'decoders'
                 );
-                foreach ($roles as $name => $table) {
-                        foreach ($data->roles->$name as $role) {
-                                foreach ($role->user as $user) {
-                                        $sql = sprintf("INSERT INTO %s(exam_id, user)
+
+                if (isset($data->roles)) {
+                        foreach ($roles as $name => $table) {
+                                if (isset($data->roles->$name)) {
+                                        foreach ($data->roles->$name as $role) {
+                                                foreach ($role->user as $user) {
+                                                        $sql = sprintf("INSERT INTO %s(exam_id, user)
                                                         VALUES(%d, '%s')", $table, $this->exam, $user);
-                                        $this->insertData($sql);
+                                                        $this->insertData($sql);
+                                                }
+                                        }
                                 }
                         }
                 }
@@ -269,10 +274,12 @@ class ImportInsert
         {
                 $data->map()->topics = array();
 
-                foreach ($data->topics->topic as $topic) {
-                        $sql = sprintf("INSERT INTO topics(exam_id, name, randomize)
+                if (isset($data->topics)) {
+                        foreach ($data->topics->topic as $topic) {
+                                $sql = sprintf("INSERT INTO topics(exam_id, name, randomize)
                                         VALUES(%d,'%s','%s')", $this->exam, $topic->name, $topic->randomize);
-                        $data->map()->topics[(int) $topic['id']] = $this->insertData($sql, "topics");
+                                $data->map()->topics[(int) $topic['id']] = $this->insertData($sql, "topics");
+                        }
                 }
         }
 
@@ -301,11 +308,13 @@ class ImportInsert
                         $this->createTopics($data);
                 }
 
-                foreach ($data->questions->question as $question) {
-                        $question->quest = $this->db->escape($question->text);
-                        $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, user, video, image, audio, type, status, comment)
+                if (isset($data->questions)) {
+                        foreach ($data->questions->question as $question) {
+                                $question->quest = $this->db->escape($question->text);
+                                $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, user, video, image, audio, type, status, comment)
                                         VALUES(%d,%d,%F,'%s','%s','%s','%s','%s','%s','%s','%s','%s')", $this->exam, $data->map()->topics[(int) $question['topic']], $question->score, $question->name, $question->quest, $question->publisher, $question->video, $question->image, $question->audio, $question->type, $question->status, $question->comment);
-                        $data->map()->questions[(int) $question['id']] = $this->insertData($sql, "questions");
+                                $data->map()->questions[(int) $question['id']] = $this->insertData($sql, "questions");
+                        }
                 }
         }
 
@@ -313,10 +322,12 @@ class ImportInsert
         {
                 $data->map()->students = array();
 
-                foreach ($data->students->student as $student) {
-                        $sql = sprintf("INSERT INTO students(exam_id, user, code, tag)
+                if (isset($data->students)) {
+                        foreach ($data->students->student as $student) {
+                                $sql = sprintf("INSERT INTO students(exam_id, user, code, tag)
                                         VALUES(%d,'%s','%s','%s')", $this->exam, $student->user, $student->code, $student->tag);
-                        $data->map()->students[(string) $student->user] = $this->insertData($sql, "students");
+                                $data->map()->students[(string) $student->user] = $this->insertData($sql, "students");
+                        }
                 }
         }
 
@@ -331,11 +342,13 @@ class ImportInsert
                         throw new ImportException("Can't import answers without students.");
                 }
 
-                foreach ($data->answers->answer as $answer) {
-                        $answer->answer = $this->db->escape($answer->text);
-                        $sql = sprintf("INSERT INTO answers(question_id, student_id, answered, answer, comment)
+                if (isset($data->answers)) {
+                        foreach ($data->answers->answer as $answer) {
+                                $answer->answer = $this->db->escape($answer->text);
+                                $sql = sprintf("INSERT INTO answers(question_id, student_id, answered, answer, comment)
                                         VALUES(%d,%d,'Y','%s','%s')", $data->map()->questions[(int) $answer['question']], $data->map()->students[(string) $answer['user']], $answer->answer, $answer->acomment);
-                        $data->map()->answers[(int) $answer['id']] = $this->insertData($sql, "answers");
+                                $data->map()->answers[(int) $answer['id']] = $this->insertData($sql, "answers");
+                        }
                 }
         }
 
