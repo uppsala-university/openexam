@@ -184,6 +184,10 @@ class ImportInsert
                         $db->beginTransaction();
                 }
 
+                if (!isset($data->questions) || !isset($data->students)) {
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_ANSWERS;
+                }
+
                 if ($filter & OPENEXAM_IMPORT_INCLUDE_PROJECT) {
                         $this->insertProjectData($data);
                 }
