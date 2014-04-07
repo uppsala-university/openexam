@@ -614,7 +614,7 @@ class ExportFormatOpenExam extends ExportFormatter
                 $dom = new DOMDocument('1.0', 'utf-8');
                 $dom->formatOutput = true;
 
-                $comment = sprintf(_(" OpenExam project exported %s "), strftime('%c'));
+                $comment = sprintf(_(" OpenExam project exported %s "), utf8_encode(strftime('%c')));
                 $dom->appendChild($dom->createComment($comment));
 
                 $node = $dom->importNode($node, true);
