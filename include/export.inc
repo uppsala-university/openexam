@@ -405,7 +405,7 @@ class ExportDelegate
         {
                 $this->formatter = $formatter;
                 $this->data = $data;
-                $this->name = sprintf("%s - %s - %s", $data->project->getExamOrgUnit(), $data->project->getExamName(), $data->project->getExamStartTime());
+                $this->name = sprintf("OpenExam Project - Exported - %s", strftime(DataRecord::formatDateTime(time())));
         }
 
         /**
