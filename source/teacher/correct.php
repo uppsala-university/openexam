@@ -97,14 +97,12 @@ class CorrectionPage extends TeacherPage
                 "mode"     => "/^(mark|save)$/"
         );
         private $filter;
+        private $expose = CORRECT_SHOW_OTHERS;
 
         public function __construct()
         {
                 parent::__construct(_("Answer Correction Page"), self::$params);
 
-                if (isset($this->param->exam)) {
-                        $this->filter = new ScoreBoardFilter($this->param->exam, CORRECT_SHOW_OTHERS, CORRECT_SHOW_UNATTENDED);
-                }
                 if (!isset($this->param->order)) {
                         $this->param->order = "state";
                 }
@@ -126,6 +124,7 @@ class CorrectionPage extends TeacherPage
                 //
                 if (isset($this->param->exam)) {
                         $this->checkAccess();
+                        $this->filter = new ScoreBoardFilter($this->param->exam, $this->expose, CORRECT_SHOW_UNATTENDED);
                 }
 
                 //
@@ -176,15 +175,26 @@ class CorrectionPage extends TeacherPage
         //
         private function checkAccess()
         {
-                $role1 = "contributor";
-                $role2 = "corrector";
+                $role1 = "corrector";
+                $role2 = "decoder";
+                $role3 = "creator";
 
                 if (!$this->manager->hasRole(phpCAS::getUser(), $role1) &&
-                    !$this->manager->hasRole(phpCAS::getUser(), $role2)) {
-                        $this->fatal(_("Access denied!"), sprintf(_("Only users granted the %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2));
+                    !$this->manager->hasRole(phpCAS::getUser(), $role2) &&
+                    !$this->manager->hasRole(phpCAS::getUser(), $role3)) {
+                        $this->fatal(_("Access denied!"), sprintf(_("Only users granted the %s, %s or %s role on this exam can access this page. The script processing has halted."), $role1, $role2, $role3));
                 }
                 if (!$this->manager->getInfo()->isFinished()) {
                         $this->fatal(_("Access denied!"), _("This examination is not yet finished. You have to wait until its finished before you can correct the answers."));
+                }
+                // 
+                // Expose all questions to decoder and creator, but only if
+                // they are not corrector at the same time.
+                // 
+                if (($this->manager->hasRole(phpCAS::getUser(), $role2) ||
+                    $this->manager->hasRole(phpCAS::getUser(), $role3)) &&
+                    !$this->manager->hasRole(phpCAS::getUser(), $role1)) {
+                        $this->expose = true;
                 }
         }
 

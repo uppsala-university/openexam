@@ -173,7 +173,7 @@ class TeacherPage extends BasePage
         {
                 if (isset($this->param->exam)) {
                         $links = new PageMenu();
-                        
+
                         //
                         // General sub menu:
                         //
@@ -286,8 +286,10 @@ class TeacherPage extends BasePage
                                 $links->views->link->examinator->href = sprintf("examinator.php?exam=%d", $this->param->exam);
                                 $links->views->link->examinator->name = _("Examination");
                         }
-                        if ($this->manager->isCorrector(phpCAS::getUser()) &&
-                            $this->manager->getInfo()->isCorrectable()) {
+                        if ($this->manager->getInfo()->isCorrectable() && (
+                            $this->manager->isCorrector(phpCAS::getUser()) ||
+                            $this->manager->isCreator(phpCAS::getUser()) ||
+                            $this->manager->isDecoder(phpCAS::getUser()))) {
                                 $links->views->link->correction->href = sprintf("correct.php?exam=%d", $this->param->exam);
                                 $links->views->link->correction->name = _("Correction");
                         }
