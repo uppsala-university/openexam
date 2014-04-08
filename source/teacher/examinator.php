@@ -432,11 +432,12 @@ class ExaminatorPage extends TeacherPage
         private function saveAddStudents()
         {
                 $users = explode("\n", trim($this->param->users));
+                $match = array();
+                
                 foreach ($users as $row) {
                         if (($line = trim($row)) != "") {
-                                if (strstr($line, "\t")) {
-                                        list($user, $code) = explode("\t", trim($row));
-                                        $data[$user] = $code;
+                                if(preg_match("/^(\w+)\s+(\w+)\s*$/", $line, $match)) {
+                                        $data[$match[1]] = $match[2];
                                 } else {
                                         $data[$line] = null;
                                 }
