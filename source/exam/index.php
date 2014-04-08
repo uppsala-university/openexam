@@ -20,6 +20,9 @@ if (!defined("SESSION_AUTOSAVE")) {
 if (!defined("SESSION_LIFETIME")) {
         define("SESSION_LIFETIME", 2 * SESSION_AUTOSAVE);
 }
+if (!define("CLEAR_ANSWER_KEYWORD")) {
+        define("CLEAR_ANSWER_KEYWORD", "@_CLEAR_@");
+}
 
 // 
 // System check:
@@ -101,6 +104,7 @@ class ExaminationPage extends BasePage
         private $author = false;    // Running in question author mode.
         private $lockdown = false;  // This examination has lockdown mode enabled.
         private $testcase = false;  // This examination is a testcase.
+        private $user = null;       // Current authenticated user.
         //
         // Construct the exam page.
         //
@@ -108,6 +112,7 @@ class ExaminationPage extends BasePage
         public function __construct()
         {
                 parent::__construct(_("Examination:"), self::$params);   // Internationalized with GNU gettext
+                $this->user = phpCAS::getUser();
         }
 
         //
@@ -118,6 +123,13 @@ class ExaminationPage extends BasePage
                 //
                 // Authorization first:
                 //
+                if (!isset($this->user) || strlen($this->user) == 0) {
+                        $this->saveState();
+                        throw new RuntimeException(
+                        _("The user name is unknown and the script has been halted to prevent data loss. ") .
+                        _("Please try again when the logon service is back. ")
+                        );
+                }
                 if (isset($this->param->exam)) {
                         $this->checkExaminationAccess();
                         if (isset($this->param->question) && (
@@ -138,7 +150,7 @@ class ExaminationPage extends BasePage
                         } elseif ($this->param->question == "all") {
                                 $this->showQuestions();
                         } elseif ($this->param->question == "exam") {
-                                $exam = Exam::getExamData(phpCAS::getUser(), $this->param->exam);
+                                $exam = Exam::getExamData($this->user, $this->param->exam);
                                 $this->showProperties($exam);
                         } elseif (isset($this->param->answer)) {
                                 $this->saveQuestion();
@@ -204,7 +216,7 @@ class ExaminationPage extends BasePage
                         printf("<li><a href=\"?exam=%d&question=exam\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show properties for this examination."), _("Properties"));
                         echo "</ul>\n";
 
-                        $exams = Exam::getActiveExams(phpCAS::getUser());
+                        $exams = Exam::getActiveExams($this->user);
                         if ($exams->count() > 1) {
                                 echo "<span id=\"menuhead\">" . _("Examinations") . ":</span>\n";
                                 echo "<ul>\n";
@@ -225,13 +237,13 @@ class ExaminationPage extends BasePage
                 // Allow contributors to bypass normal user checks (for previewing questions).
                 //
                 $manager = new Manager($this->param->exam);
-                $this->author = $manager->isContributor(phpCAS::getUser());
+                $this->author = $manager->isContributor($this->user);
                 if ($this->author) {
                         $this->testcase = false;
                         return;
                 }
 
-                $data = Exam::getExamData(phpCAS::getUser(), $this->param->exam);
+                $data = Exam::getExamData($this->user, $this->param->exam);
                 if (!$data->hasExamID()) {
                         $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
@@ -288,7 +300,7 @@ class ExaminationPage extends BasePage
         //
         private function showAvailableExams()
         {
-                $exams = Exam::getActiveExams(phpCAS::getUser());
+                $exams = Exam::getActiveExams($this->user);
 
                 if ($exams->count() == 0) {
                         $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
@@ -331,7 +343,7 @@ class ExaminationPage extends BasePage
         //
         private function showInstructions()
         {
-                $exam = Exam::getExamData(phpCAS::getUser(), $this->param->exam);
+                $exam = Exam::getExamData($this->user, $this->param->exam);
                 if (!$exam->hasExamID()) {
                         $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
@@ -360,7 +372,7 @@ class ExaminationPage extends BasePage
         //
         private function showQuestions()
         {
-                $questions = Exam::getQuestions($this->param->exam, phpCAS::getUser());
+                $questions = Exam::getQuestions($this->param->exam, $this->user);
 
                 printf("<h3>" . _("Overview of all questions (no answers included)") . "</h3>\n");
                 foreach ($questions as $question) {
@@ -375,10 +387,17 @@ class ExaminationPage extends BasePage
         //
         // Show the selected question.
         //
-        private function showQuestion()
+        private function showQuestion($answer = null)
         {
                 $qdata = Exam::getQuestionData($this->param->question);
-                $adata = Exam::getAnswerData($this->param->question, phpCAS::getUser());
+                $adata = Exam::getAnswerData($this->param->question, $this->user);
+
+                // 
+                // Restore answer if requested:
+                // 
+                if (isset($answer) && ($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT)) {
+                        $adata->setAnswerText($answer);
+                }
 
                 //
                 // Use custom CSS depending on whether displaying media or not.
@@ -472,8 +491,14 @@ class ExaminationPage extends BasePage
                 if ($this->author) {
                         MessageBox::show(MessageBox::information, _("This question is viewed in preview mode (for question author)."), _("Notice"));
                 }
-                if (isset($this->param->status) && $this->param->status == "ok") {
-                        MessageBox::show(MessageBox::success, _("Your answer has been successful saved in the database."));
+                if (isset($this->param->status)) {
+                        if ($this->param->status == "ok") {
+                                MessageBox::show(MessageBox::success, _("Your answer has been successful saved in the database."));
+                        } elseif ($this->param->status == "failed") {
+                                MessageBox::show(MessageBox::warning, _("Failed write answer to database. Please try again."));
+                        } elseif ($this->param->status == "void") {
+                                MessageBox::show(MessageBox::information, sprintf(_("Received an empty answer. To <u>prevent data loss</u>, these answers are <u>ignored</u>. If you really want to empty the answer, please submit \"%s\" as the question answer."), CLEAR_ANSWER_KEYWORD));
+                        }
                 }
                 printf("</div>\n");
 
@@ -513,14 +538,28 @@ class ExaminationPage extends BasePage
         {
                 if (is_array($this->param->answer)) {
                         $this->param->answer = json_encode($this->param->answer);
+                } else {
+                        $this->param->answer = trim($this->param->answer);
                 }
                 if (strlen($this->param->answer) == 0) {
-                        header(sprintf("location: index.php?exam=%d&question=%d&status=void", $this->param->exam, $this->param->question));
+                        $this->param->status = "void";
+                        $this->showQuestion();
                         return;
                 }
+                if ($this->param->answer == CLEAR_ANSWER_KEYWORD) {
+                        $this->param->answer = "";
+                }
 
-                $this->param->answer = Database::getConnection()->escape($this->param->answer);
-                Exam::setAnswer($this->param->exam, $this->param->question, phpCAS::getUser(), $this->param->answer);
+                try {
+                        $answer = Database::getConnection()->escape($this->param->answer);
+                        Exam::setAnswer($this->param->exam, $this->param->question, $this->user, $answer);
+                } catch (Exception $exception) {
+                        $this->param->status = "failed";
+                        $this->saveState();
+                        error_log($exception);
+                        $this->showQuestion($this->param->answer);
+                        return;
+                }
 
                 if (isset($this->param->save)) {
                         header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $this->param->exam, $this->param->question));
@@ -543,7 +582,7 @@ class ExaminationPage extends BasePage
                 // Calling getQuestions() will implicit create the question set bindings
                 // in table answers if none exist for this user on this exam.
                 //
-                $questions = Exam::getQuestions($this->param->exam, phpCAS::getUser());
+                $questions = Exam::getQuestions($this->param->exam, $this->user);
 
                 //
                 // Build the associative array of questions and answers. We are going to need
@@ -560,6 +599,18 @@ class ExaminationPage extends BasePage
                         }
                 }
                 return $menuitem;
+        }
+
+        // 
+        // Save current state for debugging.
+        // 
+        private function saveState()
+        {
+                $this->server = $_SERVER;
+                $this->request = $_REQUEST;
+                $this->session = $_SESSION;
+                $filename = tempnam(sys_get_temp_dir(), "openexam");
+                file_put_contents($filename, print_r($this, true));
         }
 
 }
