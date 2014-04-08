@@ -344,9 +344,10 @@ class ExaminatorPage extends TeacherPage
                         $input = $form->addComboBox('type');
                         $input->addOption(-1, _("Autodetect"));
                         $types = array(
+                                "openexam"  => "OpenExam Project File (*.xml)",
                                 "excel5"    => "Microsoft Excel 4.x - 5.0/95 (*.xls)",
                                 "excel97"   => "Microsoft Excel 97/2000/XP/2003 (*.xls)",
-                                "excel2003" => "Microsoft Excel 2003 XML (*.xls)",
+                                "excel2003" => "Microsoft Excel 2003 XML (*.xls|*.xml)",
                                 "excel2007" => "Microsoft Excel 2007/2010 XML (*.xlsx)",
                                 "oocalc"    => "Open Document Format Spreadsheet (*.ods)",
                                 "gnumeric"  => "Gnome Gnumeric Spreadsheet (*.gnumeric)",
@@ -433,10 +434,10 @@ class ExaminatorPage extends TeacherPage
         {
                 $users = explode("\n", trim($this->param->users));
                 $match = array();
-                
+
                 foreach ($users as $row) {
                         if (($line = trim($row)) != "") {
-                                if(preg_match("/^(\w+)\s+(\w+)\s*$/", $line, $match)) {
+                                if (preg_match("/^(\w+)\s+(\w+)\s*$/", $line, $match)) {
                                         $data[$match[1]] = $match[2];
                                 } else {
                                         $data[$line] = null;
@@ -535,7 +536,11 @@ class ExaminatorPage extends TeacherPage
         private function saveAddFile()
         {
                 try {
-                        $this->param->form = "sr";      // constant
+                        if ($this->param->type == "openexam") {
+                                $this->param->form = "op";
+                        } else {
+                                $this->param->form = "sr";
+                        }
 
                         $inserter = new ImportInsert($this->param->exam, Database::getConnection());
 
@@ -562,9 +567,9 @@ class ExaminatorPage extends TeacherPage
 
                         $importer->insert($inserter);
                 } catch (ImportException $exception) {
-                        $this->fatal(_("Failed Import Questions"), $exception->getMessage());
+                        $this->fatal(_("Failed Import Students"), $exception->getMessage());
                 }
-                header(sprintf("location: contribute.php?exam=%d", $this->param->exam));
+                header(sprintf("location: ?exam=%d", $this->param->exam));
         }
 
         //
