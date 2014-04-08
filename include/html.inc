@@ -1973,6 +1973,16 @@ class Form extends Container
         }
 
         /**
+         * Set iframe target of form post.
+         * 
+         * @param string $iframe The iframe name.
+         */
+        public function setTarget($iframe)
+        {
+                parent::setAttr("target", $iframe);
+        }
+
+        /**
          * Adds an hidden field to this form. Returns the hidden field object.
          * @param string $name The hidden field name.
          * @param string $value The hidden field value.
