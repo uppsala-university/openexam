@@ -197,7 +197,7 @@ class ContributePage extends TeacherPage
                                         }
                                 } elseif ($this->param->action == "import") {
                                         if (isset($this->param->mode) && $this->param->mode == "save") {
-                                                $this->assert('type');
+                                                $this->assert('from');
                                                 $this->saveImportQuestions();
                                         } else {
                                                 $this->formImportQuestions();
