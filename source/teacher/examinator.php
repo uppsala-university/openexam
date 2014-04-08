@@ -306,6 +306,7 @@ class ExaminatorPage extends TeacherPage
                         $form->addSectionHeader(_("Import from UPPDOK"));
                         $form->addHidden("exam", $this->param->exam);
                         $form->addHidden("mode", "show");
+                        $form->addHidden("show", "course");
                         $form->addHidden("what", "course");
                         $form->addHidden("action", "add");
                         $input = $form->addTextBox("course");
