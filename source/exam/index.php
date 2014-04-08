@@ -94,7 +94,7 @@ class ExaminationPage extends BasePage
                 "exam"     => parent::pattern_index,
                 "answer"   => parent::pattern_textarea,
                 "question" => "/^(\d+|all|exam)$/",
-                "status"   => "/^(ok)$/",
+                "status"   => "/^(ok|void)$/",
                 "save"     => parent::pattern_textline, // button
                 "next"     => parent::pattern_textline  // button
         );
@@ -103,7 +103,6 @@ class ExaminationPage extends BasePage
         private $testcase = false;  // This examination is a testcase.
         //
         // Construct the exam page.
-
         //
 
         public function __construct()
@@ -138,7 +137,7 @@ class ExaminationPage extends BasePage
                                 $this->showInstructions();
                         } elseif ($this->param->question == "all") {
                                 $this->showQuestions();
-                        } elseif($this->param->question == "exam") {
+                        } elseif ($this->param->question == "exam") {
                                 $exam = Exam::getExamData(phpCAS::getUser(), $this->param->exam);
                                 $this->showProperties($exam);
                         } elseif (isset($this->param->answer)) {
@@ -159,7 +158,6 @@ class ExaminationPage extends BasePage
 
         public function printMenu()
         {
-
                 if (isset($this->param->exam) && !isset($this->param->preview)) {
                         $media = new MediaLibrary($this->param->exam);
                         if (count($media->resource) != 0) {
@@ -205,7 +203,7 @@ class ExaminationPage extends BasePage
                         printf("<li><a href=\"?exam=%d\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show the start page for this examination"), _("Start page"));
                         printf("<li><a href=\"?exam=%d&question=exam\" title=\"%s\">%s</a></li>\n", $this->param->exam, _("Show properties for this examination."), _("Properties"));
                         echo "</ul>\n";
-                        
+
                         $exams = Exam::getActiveExams(phpCAS::getUser());
                         if ($exams->count() > 1) {
                                 echo "<span id=\"menuhead\">" . _("Examinations") . ":</span>\n";
@@ -516,9 +514,14 @@ class ExaminationPage extends BasePage
                 if (is_array($this->param->answer)) {
                         $this->param->answer = json_encode($this->param->answer);
                 }
-                $this->param->answer = Database::getConnection()->escape($this->param->answer);
+                if (strlen($this->param->answer) == 0) {
+                        header(sprintf("location: index.php?exam=%d&question=%d&status=void", $this->param->exam, $this->param->question));
+                        return;
+                }
 
+                $this->param->answer = Database::getConnection()->escape($this->param->answer);
                 Exam::setAnswer($this->param->exam, $this->param->question, phpCAS::getUser(), $this->param->answer);
+
                 if (isset($this->param->save)) {
                         header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $this->param->exam, $this->param->question));
                 } elseif (isset($this->param->next)) {
@@ -566,4 +569,5 @@ class ExaminationPage extends BasePage
 // 
 $page = new ExaminationPage();
 $page->render();
+
 ?>
