@@ -460,3 +460,14 @@ div.error {
 }
 */
 
+/*
+ * User info (for exam page).
+ */
+div.userinfo {
+    position: absolute;
+    left: 650px;
+    top: 20px;
+    width: 330px;
+    background-color: #f6f6f6;
+    color: #999999;
+}

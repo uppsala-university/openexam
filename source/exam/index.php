@@ -20,7 +20,7 @@ if (!defined("SESSION_AUTOSAVE")) {
 if (!defined("SESSION_LIFETIME")) {
         define("SESSION_LIFETIME", 2 * SESSION_AUTOSAVE);
 }
-if (!define("CLEAR_ANSWER_KEYWORD")) {
+if (!defined("CLEAR_ANSWER_KEYWORD")) {
         define("CLEAR_ANSWER_KEYWORD", "@_CLEAR_@");
 }
 
@@ -77,6 +77,7 @@ include "include/exam.inc";
 include "include/mplayer.inc";
 include "include/locker.inc";
 include "include/media.inc";
+include "include/ldap.inc";
 
 // 
 // Needed to bypass access checks for contributors (in preview mode):
@@ -225,6 +226,27 @@ class ExaminationPage extends BasePage
                                 }
                                 echo "</ul>\n";
                         }
+                        $this->printUser();
+                }
+        }
+
+        // 
+        // Display the name and personal number from LDAP. I'm not even
+        // sure that this is legal.
+        // 
+        private function printUser()
+        {
+                try {
+                        $ldap = new LdapSearch(LdapConnection::instance());
+                        $ldap->setAttributeFilter(array('cn', 'norEduPersonNIN'));       // limit returned attr
+                        $user = $ldap->searchUid(phpCAS::getUser())->first();
+
+                        $name = (string) ($user->getCN());
+                        $upnr = (string) ($user->getNorEduPersonNIN());
+                        
+                        printf("<div class=\"userinfo\"><span class=\"name\">%s</span> - <span>%s</span></div>\n", $name, $upnr);
+                } catch (RuntimeException $e) {
+                        error_log($e);
                 }
         }
 
