@@ -114,6 +114,14 @@ class ExaminationPage extends BasePage
         {
                 parent::__construct(_("Examination:"), self::$params);   // Internationalized with GNU gettext
                 $this->user = phpCAS::getUser();
+                
+                if (!isset($this->user) || strlen($this->user) == 0) {
+                        $this->saveState();
+                        throw new RuntimeException(
+                        _("The user name is unknown and the script has been halted to prevent data loss. ") .
+                        _("Please try again when the logon service is back. ")
+                        );
+                }
         }
 
         //
@@ -124,13 +132,6 @@ class ExaminationPage extends BasePage
                 //
                 // Authorization first:
                 //
-                if (!isset($this->user) || strlen($this->user) == 0) {
-                        $this->saveState();
-                        throw new RuntimeException(
-                        _("The user name is unknown and the script has been halted to prevent data loss. ") .
-                        _("Please try again when the logon service is back. ")
-                        );
-                }
                 if (isset($this->param->exam)) {
                         $this->checkExaminationAccess();
                         if (isset($this->param->question) && (
