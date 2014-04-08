@@ -50,6 +50,9 @@ if (isset($_REQUEST['logon']) || isset($GLOBALS['logon'])) {
 // Logout if desired:
 // 
 if (isset($_REQUEST['logout'])) {
+        if(isset($_SESSION['caller'])) {
+                unset($_SESSION['caller']);
+        }
         phpCAS::logout();
 }
 ?>

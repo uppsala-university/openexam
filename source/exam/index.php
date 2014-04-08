@@ -113,15 +113,7 @@ class ExaminationPage extends BasePage
         public function __construct()
         {
                 parent::__construct(_("Examination:"), self::$params);   // Internationalized with GNU gettext
-                $this->user = phpCAS::getUser();
-                
-                if (!isset($this->user) || strlen($this->user) == 0) {
-                        $this->saveState();
-                        throw new RuntimeException(
-                        _("The user name is unknown and the script has been halted to prevent data loss. ") .
-                        _("Please try again when the logon service is back. ")
-                        );
-                }
+                $this->initialize();
         }
 
         //
@@ -635,6 +627,32 @@ class ExaminationPage extends BasePage
                 $this->session = $_SESSION;
                 $filename = tempnam(sys_get_temp_dir(), "openexam");
                 file_put_contents($filename, print_r($this, true));
+        }
+
+        // 
+        // Called to initialize this object.
+        // 
+        private function initialize()
+        {
+                if (isset($_SESSION['caller'])) {
+                        if ($_SESSION['caller']['remote'] != $_SERVER['REMOTE_ADDR']) {
+                                throw new RuntimeException(_("Remote caller don't match recorded value, possible session hijack"));
+                        } else {
+                                $this->user = $_SESSION['caller']['user'];
+                        }
+                } else {
+                        $this->user = phpCAS::getUser();
+                        $_SESSION['caller']['user'] = $this->user;
+                        $_SESSION['caller']['remote'] = $_SERVER['REMOTE_ADDR'];
+                }
+
+                if (!isset($this->user) || strlen($this->user) == 0) {
+                        $this->saveState();
+                        throw new RuntimeException(
+                        _("The user name is unknown and the script has been halted to prevent data loss. ") .
+                        _("Please try again when the logon service is back. ")
+                        );
+                }
         }
 
 }
