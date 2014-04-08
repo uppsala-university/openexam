@@ -243,7 +243,7 @@ class ExaminationPage extends BasePage
 
                         $name = (string) ($user->getCN());
                         $upnr = (string) ($user->getNorEduPersonNIN());
-                        
+
                         printf("<div class=\"userinfo\"><span class=\"name\">%s</span> - <span>%s</span></div>\n", $name, $upnr);
                 } catch (RuntimeException $e) {
                         error_log($e);
@@ -411,14 +411,15 @@ class ExaminationPage extends BasePage
         //
         private function showQuestion($answer = null)
         {
-                $qdata = Exam::getQuestionData($this->param->question);
-                $adata = Exam::getAnswerData($this->param->question, $this->user);
-
                 // 
                 // Restore answer if requested:
                 // 
-                if (isset($answer) && ($qdata->getQuestionType() == QUESTION_TYPE_FREETEXT)) {
-                        $adata->setAnswerText($answer);
+                if (!isset($answer)) {
+                        $qdata = Exam::getQuestionData($this->param->question);
+                        $adata = Exam::getAnswerData($this->param->question, $this->user);
+                } else {
+                        $qdata = Exam::getQuestionData($this->param->question);
+                        $adata = new DataRecord(array('answertext' => $answer));
                 }
 
                 //
