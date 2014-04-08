@@ -461,8 +461,8 @@ final class PageRender implements TemplatePage
                         $this->page->printBody();
                 } catch (Exception $exception) {
                         $message = sprintf(_("Please report this to %s."), CONTACT_STRING);
-                        $this->page->error(sprintf("<p>%s</p><p>%s</p>", $exception, $message));
-                        error_log(sprintf("%s: %s (in %s:%d)", ERROR_LOG_PREFIX, $exception->getMessage(), $exception->getFile(), $exception->getLine()));
+                        $this->page->error(sprintf("<p>%s</p><p>%s</p>", $exception->getMessage(), $message));
+                        error_log(sprintf("%s: %s (in %s:%d)", ERROR_LOG_PREFIX, $exception, $exception->getFile(), $exception->getLine()));
                         if ($exception instanceof DatabaseException) {
                                 error_log(sprintf("%s: %s", ERROR_LOG_PREFIX, $exception->getUserInfo()));
                         }
