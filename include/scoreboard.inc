@@ -489,7 +489,7 @@ abstract class ScoreBoardOutput
                 $this->board = new ScoreBoard($exam, $filter);
 
                 $this->ldap = new LdapSearch(LdapConnection::instance());
-                $this->ldap->setAttributeFilter(array("displayname", "norEduPersonNIN"));
+                $this->ldap->setAttributeFilter(array("displayname", "sn", "givenname", "norEduPersonNIN"));
         }
 
         protected function getDirectoryEntry($user, $lookup = LDAP_LOOKUP_BOTH)
@@ -519,6 +519,13 @@ abstract class ScoreBoardOutput
         {
                 if (($entry = $this->getDirectoryEntry($user, $lookup))) {
                         return $entry->getDisplayName()->first();
+                }
+        }
+
+        protected function getReportName($user, $lookup = LDAP_LOOKUP_BOTH)
+        {
+                if (($entry = $this->getDirectoryEntry($user, $lookup))) {
+                        return sprintf("%s, %s", $entry->getSN()->first(), $entry->getGivenName()->first());
                 }
         }
 
@@ -722,7 +729,7 @@ class ScoreBoardWriter extends ScoreBoardOutput
                 $students = $this->board->getStudents();
                 foreach ($students as $student) {
                         $array = array();
-                        $student->setStudentName($this->getDisplayName($student->getStudentUser()));
+                        $student->setStudentName($this->getReportName($student->getStudentUser()));
                         $student->setStudentPersNr($this->getSocialNumber($student->getStudentUser()));
                         $array[] = $student->getStudentTag();
                         $array[] = $student->getStudentName();
@@ -877,7 +884,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                         $score = $this->board->getStudentScore($student->getStudentID());
                         $grade = $grades->getGrade($score->getSum());
 
-                        $student->setStudentName($this->getDisplayName($student->getStudentUser()));
+                        $student->setStudentName($this->getReportName($student->getStudentUser()));
                         $student->setStudentSocialNumber($this->getSocialNumber($student->getStudentUser()));
 
                         $student->setStudentPersNr($student->getStudentSocialNumber());
