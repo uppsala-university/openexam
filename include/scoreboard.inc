@@ -1040,10 +1040,16 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 $row = $table->addRow();
                 $row->setClass("avarage");
                 if ($this->decoded) {
+                        if ($this->show->tag) {
+                                $row->addData();
+                        }
                         if ($this->show->user) {
                                 $row->addData();
                         }
                         if ($this->show->code) {
+                                $row->addData();
+                        }
+                        if ($this->show->pnr) {
                                 $row->addData();
                         }
                 }
