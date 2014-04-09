@@ -100,6 +100,8 @@ class DecoderPage extends TeacherPage
                 "colorize" => parent::pattern_index,
                 "verbose"  => parent::pattern_index,
                 "order"    => "/^(state|name|date)$/",
+                "sort"     => "/^(tag|name|user|code|persnr|pnr|summary|percent|grade)$/",
+                "desc"     => "/^[0-1]$/"
         );
         private $decoder;
         private $filter;
@@ -116,6 +118,12 @@ class DecoderPage extends TeacherPage
                 }
                 if (!isset($this->param->colorize)) {
                         $this->param->colorize = false;
+                }
+                if (!isset($this->param->sort)) {
+                        $this->param->sort = 'name';
+                }
+                if (!isset($this->param->desc)) {
+                        $this->param->desc = true;
                 }
 
                 if (isset($this->param->exam)) {
@@ -403,6 +411,7 @@ class DecoderPage extends TeacherPage
                 $board = new ScoreBoardPrinter($this->param->exam, $this->filter);
                 $board->setVerbose($this->param->verbose);
                 $board->setColorized($this->param->colorize);
+                $board->setOrder($this->param->sort, $this->param->desc != 0);
                 $board->output();
 
                 printf("<h5>" . _("Color Codes") . "</h5>\n");

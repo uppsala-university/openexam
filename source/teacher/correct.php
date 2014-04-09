@@ -94,7 +94,9 @@ class CorrectionPage extends TeacherPage
                 "score"    => parent::pattern_score,
                 "comment"  => parent::pattern_textarea,
                 "order"    => "/^(state|name|date)$/",
-                "mode"     => "/^(mark|save)$/"
+                "mode"     => "/^(mark|save)$/",
+                "sort"     => "/^(tag|name|user|code|persnr|pnr|summary|percent|grade)$/",
+                "desc"     => "/^[0-1]$/"
         );
         private $filter;
         private $expose = CORRECT_SHOW_OTHERS;
@@ -111,6 +113,12 @@ class CorrectionPage extends TeacherPage
                 }
                 if (!isset($this->param->colorize)) {
                         $this->param->colorize = false;
+                }
+                if (!isset($this->param->sort)) {
+                        $this->param->sort = 'code';
+                }
+                if (!isset($this->param->desc)) {
+                        $this->param->desc = true;
                 }
         }
 
@@ -546,6 +554,7 @@ class CorrectionPage extends TeacherPage
                 $board = new ScoreBoardPrinter($this->param->exam, $this->filter);
                 $board->setVerbose($this->param->verbose);
                 $board->setColorized($this->param->colorize);
+                $board->setOrder($this->param->sort, $this->param->desc);
                 $board->output();
 
                 //

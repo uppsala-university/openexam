@@ -765,6 +765,8 @@ class ScoreBoardPrinter extends ScoreBoardOutput
         private $verbose;     // Be more verbose in output.
         private $colorize;    // Colorize scores.
         private $show;
+        private $ordasc;      // Order ascending.
+        private $ordkey;      // Order key.
 
         public function __construct($exam, $filter)
         {
@@ -785,10 +787,18 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 $this->colorize = $bool;
         }
 
+        public function setOrder($key, $asc = true)
+        {
+                $this->ordkey = $key;
+                $this->ordasc = $asc;
+        }
+
         public function output()
         {
                 $this->index = 0;
                 $questions = $this->board->getQuestions();
+                $students = $this->board->getStudents();
+                $grades = new ExamGrades($this->board->getExam()->getExamGrades());
 
                 //
                 // Select which field to output:
@@ -805,61 +815,120 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 $this->show->score = true;
                 $this->show->links = !$this->decoded;
 
-                $table = new Table();
+                $head = array();
+                $data = array();
 
-                //
-                // Print headers:
-                //
-                $row = $table->addRow();
+                // 
+                // Aggregate headers:
+                // 
+
                 if ($this->show->tag) {
-                        $row->addHeader(_("Tag"));
+                        $head[] = array(
+                                'name' => _("Tag"), 'sort' => 'tag'
+                        );
                 }
                 if ($this->show->name) {
-                        $row->addHeader(_("Name"));
+                        $head[] = array(
+                                'name' => _("Name"), 'sort' => 'name'
+                        );
                 }
                 if ($this->show->user) {
-                        $row->addHeader(_("User"));
+                        $head[] = array(
+                                'name' => _("User"), 'sort' => 'user'
+                        );
                 }
                 if ($this->show->code) {
-                        $row->addHeader(_("Code"));
+                        $head[] = array(
+                                'name' => _("Code"), 'sort' => 'code'
+                        );
                 }
                 if ($this->show->pnr) {
-                        $row->addHeader(_("Persnr"));
+                        $head[] = array(
+                                'name' => _("Persnr"), 'sort' => 'persnr'
+                        );
                 }
                 if ($this->show->score) {
                         foreach ($questions as $question) {
                                 ++$this->index;
-                                $header = $this->getHeaderData($question);
+                                $head[] = $this->getHeaderData($question);
+                        }
+                }
+                if ($this->show->summary) {
+                        $head[] = array(
+                                'name' => _("Summary"), 'sort' => 'summary'
+                        );
+                }
+                if ($this->show->percent) {
+                        $head[] = array(
+                                'name' => _("Percent"), 'sort' => 'percent'
+                        );
+                }
+                if ($this->show->grade) {
+                        $head[] = array(
+                                'name' => _("Grade"), 'sort' => 'grade'
+                        );
+                }
+
+                // 
+                // Aggregate data:
+                // 
+
+                foreach ($students as $student) {
+                        $score = $this->board->getStudentScore($student->getStudentID());
+                        $grade = $grades->getGrade($score->getSum());
+
+                        $student->setStudentName($this->getDisplayName($student->getStudentUser()));
+                        $student->setStudentSocialNumber($this->getSocialNumber($student->getStudentUser()));
+
+                        $student->setStudentPersNr($student->getStudentSocialNumber());
+
+                        $student->setStudentSummary(sprintf("%.01f/%.01f/%.01f", $score->getSum(), $score->getMax(), $this->board->getMaximumScore()));
+                        $student->setStudentPercent(sprintf("%.01f%%", 100 * $score->getSum() / $this->board->getMaximumScore()));
+                        $student->setStudentGrade($grade);
+                        $student->setStudentScore($score);
+
+                        $data[] = $student;
+                }
+
+                // 
+                // Sort student data using functional object (if requested).
+                // 
+                if (isset($this->ordkey)) {
+                        $sorter = new StudentSort($data, $this->ordkey, $this->ordasc);
+                        $sorter->sort();
+                        $data = $sorter->result();
+                }
+
+                // 
+                // Output headers:
+                // 
+
+                $table = new Table();
+                $row = $table->addRow();
+                foreach ($head as $header) {
+                        if (is_array($header)) {
+                                $obj = $row->addHeader($header['name']);
+                                $obj->setLink(sprintf("?exam=%d&action=show&verbose=%d&colorize=%d&sort=%s&desc=%d", $this->board->getExam()->getExamID(), $this->verbose, $this->colorize, $header['sort'], !$this->ordasc));
+                        } else {
                                 $obj = $row->addHeader($header->name);
-                                if ($this->show->links && isset($header->link) && $question->getQuestionStatus() != 'removed') {
+                                if ($this->show->links && isset($header->link)) {
                                         $obj->setLink($header->link)->setTitle($header->desc);
                                 } else {
                                         $obj->setAnchor($header->name, $header->desc);
                                 }
                         }
                 }
-                if ($this->show->summary) {
-                        $row->addHeader(_("Summary"));
-                }
-                if ($this->show->percent) {
-                        $row->addHeader(_("Percent"));
-                }
-                if ($this->show->grade) {
-                        $row->addHeader(_("Grade"));
-                }
 
-                //
-                // Print all students:
-                //
-                $students = $this->board->getStudents();
-                $grades = new ExamGrades($this->board->getExam()->getExamGrades());
-                foreach ($students as $student) {
+                // 
+                // Output data:
+                // 
+                foreach ($data as $key => $student) {
                         $row = $table->addRow();
                         if ($this->show->tag) {
                                 $row->addData($student->getStudentTag());
                         }
                         if ($this->show->name) {
-                                $obj = $row->addData($this->getDisplayName($student->getStudentUser()));
+                                $obj = $row->addData($student->getStudentName());
                                 $obj->setNoWrap();
                                 if (!$this->show->user && !$this->show->code) {
                                         $obj->setTitle(sprintf("%s: %s\n%s: %s", _("User"), $student->getStudentUser(), _("Code"), $student->getStudentCode()));
@@ -875,29 +944,29 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                 }
                         }
                         if ($this->show->pnr) {
-                                $row->addData($this->getSocialNumber($student->getStudentUser()));
+                                $row->addData($student->getStudentSocialNumber());
                         }
                         if ($this->show->score) {
                                 //
                                 // Print all answers for this student:
                                 //
                                 foreach ($questions as $question) {
-                                        $data = $this->board->getData($student->getStudentID(), $question->getQuestionID());
+                                        $sqd = $this->board->getData($student->getStudentID(), $question->getQuestionID());
                                         if ($this->colorize) {
-                                                if (!isset($data)) {
+                                                if (!isset($sqd)) {
                                                         $obj = $row->addData("-");
                                                         $obj->setClass("cc qu");
-                                                } elseif ($data->getAnswerExist() == 'N') {
+                                                } elseif ($sqd->getAnswerExist() == 'N') {
                                                         $obj = $row->addData("?");
                                                         $obj->setClass("cc s0");
-                                                } elseif ($data->hasResultScore()) {
-                                                        $cls = $this->getColorClass($data->getResultScore(), $data->getQuestionScore());
-                                                        $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+                                                } elseif ($sqd->hasResultScore()) {
+                                                        $cls = $this->getColorClass($sqd->getResultScore(), $sqd->getQuestionScore());
+                                                        $obj = $row->addData(sprintf("%.01f", $sqd->getResultScore()));
                                                         $obj->setClass(sprintf("cc s%d", $cls));
-                                                } elseif ($data->getQuestionStatus() == 'removed') {
+                                                } elseif ($sqd->getQuestionStatus() == 'removed') {
                                                         $obj = $row->addData("-");
                                                         $obj->setClass("cc qr");
-                                                } elseif ($data->getAnswerExist() == 'Y') {
+                                                } elseif ($sqd->getAnswerExist() == 'Y') {
                                                         $obj = $row->addData("X");
                                                         $obj->setClass("cc nc");
                                                 } else {
@@ -905,19 +974,19 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                                         $obj->setClass("cc na");
                                                 }
                                         } else {
-                                                if (!isset($data)) {
+                                                if (!isset($sqd)) {
                                                         $obj = $row->addData("-");
                                                         $obj->setClass("cc qu");
-                                                } elseif ($data->getAnswerExist() == 'N') {
+                                                } elseif ($sqd->getAnswerExist() == 'N') {
                                                         $obj = $row->addData("?");
                                                         $obj->setClass("cc na");
-                                                } elseif ($data->getQuestionStatus() == 'removed') {
-                                                        $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+                                                } elseif ($sqd->getQuestionStatus() == 'removed') {
+                                                        $obj = $row->addData(sprintf("%.01f", $sqd->getResultScore()));
                                                         $obj->setClass("cc qr");
-                                                } elseif ($data->hasResultScore()) {
-                                                        $obj = $row->addData(sprintf("%.01f", $data->getResultScore()));
+                                                } elseif ($sqd->hasResultScore()) {
+                                                        $obj = $row->addData(sprintf("%.01f", $sqd->getResultScore()));
                                                         $obj->setClass("cc ac");
-                                                } elseif ($data->getAnswerExist() == 'Y') {
+                                                } elseif ($sqd->getAnswerExist() == 'Y') {
                                                         $obj = $row->addData("X");
                                                         $obj->setClass("cc nc");
                                                 } else {
@@ -929,14 +998,14 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                         //
                                         // Theres no reason to continue if data is missing or if exam is decoded.
                                         //
-                                        if (!isset($data) || $this->decoded) {
+                                        if (!isset($sqd) || $this->decoded) {
                                                 continue;
                                         }
 
                                         if ($question->getQuestionStatus() != 'removed') {
                                                 if ($question->getQuestionPublisher() == phpCAS::getUser()) {
-                                                        if ($data->getAnswerExist() == 'Y') {
-                                                                $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d", $data->getExamID(), $data->getAnswerID()));
+                                                        if ($sqd->getAnswerExist() == 'Y') {
+                                                                $obj->setLink(sprintf("?exam=%d&amp;action=correct&amp;answer=%d", $sqd->getExamID(), $sqd->getAnswerID()));
                                                         }
                                                 } else {
                                                         if (!$this->colorize) {
@@ -949,8 +1018,8 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                         if ($this->show->summary ||
                             $this->show->percent ||
                             $this->show->grade) {
-                                $score = $this->board->getStudentScore($student->getStudentID());
-                                $grade = $grades->getGrade($score->getSum());
+                                $score = $student->getStudentScore();
+                                $grade = $student->getStudentGrade();
                                 if ($this->show->summary) {
                                         $obj = $row->addData(sprintf("%.01f/%.01f/%.01f", $score->getSum(), $score->getMax(), $this->board->getMaximumScore()));
                                 }
@@ -963,6 +1032,7 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                                 }
                         }
                 }
+
                 //
                 // Output answer avarage values at bottom.
                 //
@@ -1039,6 +1109,54 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                         }
                 }
                 return $header;
+        }
+
+}
+
+// 
+// Sort student data in array.
+// 
+class StudentSort
+{
+
+        private $data;
+        private $ordkey;
+        private $ordasc;
+        private static $self;
+
+        public function __construct($data, $ordkey, $ordasc)
+        {
+                $this->data = $data;
+                $this->ordkey = $ordkey;
+                $this->ordasc = $ordasc;
+        }
+
+        public function sort()
+        {
+                self::$self = $this;
+                usort($this->data, 'StudentSort::dispatch');
+                self::$self = null;
+        }
+
+        public function result()
+        {
+                return $this->data;
+        }
+
+        public function dispatch($a, $b)
+        {
+                return self::$self->compare($a, $b);
+        }
+
+        private function compare($a, $b)
+        {
+                $func = sprintf("getStudent%s", ucfirst($this->ordkey));
+
+                if ($this->ordasc) {
+                        return strcmp($a->$func(), $b->$func());
+                } else {
+                        return strcmp($b->$func(), $a->$func());
+                }
         }
 
 }
