@@ -131,8 +131,9 @@
     <!-- Students: -->
     <xs:complexType name="student">
         <xs:sequence>
-            <xs:element name="user"  type="xs:string"/>
-            <xs:element name="code"  type="xs:string"/>
+            <xs:element name="user" type="xs:string"/>
+            <xs:element name="code" type="xs:string"/>
+            <xs:element name="tag"  type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
     

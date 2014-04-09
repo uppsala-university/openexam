@@ -63,6 +63,7 @@
         <student>
             <user></user>
             <code></code>
+            <tag></tag>
         </student>
     </students>
 
