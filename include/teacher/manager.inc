@@ -635,7 +635,7 @@ class Manager
                                 break;
                         case "corrector":
                                 $sql = sprintf("SELECT COUNT(*) FROM questions 
-                                                WHERE exam_id = %d AND user = '%s'", $this->exam, $user);
+                                                WHERE exam_id = %d AND user = '%s' AND status = 'active'", $this->exam, $user);
                                 break;
                         default:
                                 return false;
