@@ -40,14 +40,17 @@ if (!defined("OPENEXAM_EXPORT_INCLUDE_TOPICS")) {
 if (!defined("OPENEXAM_EXPORT_INCLUDE_QUESTIONS")) {
         define("OPENEXAM_EXPORT_INCLUDE_QUESTIONS", 4);
 }
-if (!defined("OPENEXAM_EXPORT_INCLUDE_ROLES")) {
-        define("OPENEXAM_EXPORT_INCLUDE_ROLES", 8);
-}
 if (!defined("OPENEXAM_EXPORT_INCLUDE_ANSWERS")) {
-        define("OPENEXAM_EXPORT_INCLUDE_ANSWERS", 16);
+        define("OPENEXAM_EXPORT_INCLUDE_ANSWERS", 8);
+}
+if (!defined("OPENEXAM_EXPORT_INCLUDE_RESULTS")) {
+        define("OPENEXAM_EXPORT_INCLUDE_RESULTS", 16);
 }
 if (!defined("OPENEXAM_EXPORT_INCLUDE_STUDENTS")) {
         define("OPENEXAM_EXPORT_INCLUDE_STUDENTS", 32);
+}
+if (!defined("OPENEXAM_EXPORT_INCLUDE_ROLES")) {
+        define("OPENEXAM_EXPORT_INCLUDE_ROLES", 64);
 }
 // 
 // Simplified include options:
@@ -56,17 +59,27 @@ if (!defined("OPENEXAM_EXPORT_INCLUDE_DEFAULT")) {
         define("OPENEXAM_EXPORT_INCLUDE_DEFAULT", OPENEXAM_EXPORT_INCLUDE_PROJECT | \
             OPENEXAM_EXPORT_INCLUDE_TOPICS | OPENEXAM_EXPORT_INCLUDE_QUESTIONS);
 }
+if (!defined("OPENEXAM_EXPORT_INCLUDE_CLONE")) {
+        define("OPENEXAM_EXPORT_INCLUDE_CLONE", OPENEXAM_EXPORT_INCLUDE_PROJECT | \
+            OPENEXAM_EXPORT_INCLUDE_TOPICS | OPENEXAM_EXPORT_INCLUDE_QUESTIONS | \
+            OPENEXAM_EXPORT_INCLUDE_ROLES);
+}
+if (!defined("OPENEXAM_EXPORT_INCLUDE_CORRECTION")) {
+        define("OPENEXAM_EXPORT_INCLUDE_CORRECTION", OPENEXAM_EXPORT_INCLUDE_DEFAULT | \
+            OPENEXAM_EXPORT_INCLUDE_ANSWERS | OPENEXAM_EXPORT_INCLUDE_RESULTS | \
+            OPENEXAM_EXPORT_INCLUDE_STUDENTS);
+}
 if (!defined("OPENEXAM_EXPORT_INCLUDE_ALL")) {
         define("OPENEXAM_EXPORT_INCLUDE_ALL", OPENEXAM_EXPORT_INCLUDE_DEFAULT | \
-            OPENEXAM_EXPORT_INCLUDE_ROLES | OPENEXAM_EXPORT_INCLUDE_ANSWERS | \
-            OPENEXAM_EXPORT_INCLUDE_STUDENTS);
+            OPENEXAM_EXPORT_INCLUDE_ANSWERS | OPENEXAM_EXPORT_INCLUDE_RESULTS | \
+            OPENEXAM_EXPORT_INCLUDE_STUDENTS | OPENEXAM_EXPORT_INCLUDE_ROLES);
 }
 
 // 
 // Version identifier for native export format:
 // 
 if (!defined("OPENEXAM_EXPORT_FORMAT_VERSION")) {
-        define("OPENEXAM_EXPORT_FORMAT_VERSION", 6072);
+        define("OPENEXAM_EXPORT_FORMAT_VERSION", 6073);
 }
 
 /**
@@ -132,6 +145,12 @@ abstract class ExportFormatter
          * @param ExportData $data The data to export.
          */
         abstract function addAnswers($data);
+
+        /**
+         * Add result for answers to the exported document.
+         * @param ExportData $data The data to export.
+         */
+        abstract function addResults($data);
 
         /**
          * Add topics to the exported document.
@@ -258,7 +277,8 @@ class Export
  * 
  * @property-read DataRecord $project Project properties.
  * @property-read ResultSet $questions Examination questions.
- * @property-read array $answers ResultSet of answers grouped by question ID.
+ * @property-read array $answers Array of answers grouped by question ID.
+ * @property-read array $results Array of results one-to-one mapped by answer ID.
  * @property-read array $topics Question topics.
  * @property-read ResultSet $roles Roles assigned to persons on the examiniation.
  * @property-read ResultSet $students List of students.
@@ -277,6 +297,7 @@ class ExportData
         const tdata = "topics";
         const qdata = "questions";
         const adata = "answers";
+        const udata = "results";
         const rdata = "roles";
         const sdata = "students";
 
@@ -333,6 +354,9 @@ class ExportData
                 if ($options & OPENEXAM_EXPORT_INCLUDE_ANSWERS) {
                         $adata = array();
                 }
+                if ($options & OPENEXAM_EXPORT_INCLUDE_RESULTS) {
+                        $udata = array();
+                }
                 if ($options & OPENEXAM_EXPORT_INCLUDE_STUDENTS) {
                         $sdata = $manager->getStudents();
                 }
@@ -363,6 +387,17 @@ class ExportData
                 }
 
                 // 
+                // Collect all results:
+                // 
+                if (isset($udata) && isset($adata)) {
+                        foreach ($adata as $qid => $answers) {
+                                foreach ($answers as $a) {
+                                        $udata[$a->getAnswerID()] = $a;
+                                }
+                        }
+                }
+
+                // 
                 // Collect all roles:
                 // 
                 if (isset($rdata)) {
@@ -379,6 +414,7 @@ class ExportData
                         self::tdata => $tdata,
                         self::qdata => $qdata,
                         self::adata => $adata,
+                        self::udata => $udata,
                         self::rdata => $rdata,
                         self::sdata => $sdata
                 );
@@ -449,6 +485,9 @@ class ExportDelegate
                 if (isset($this->data->answers)) {
                         $this->formatter->addAnswers($this->data);
                 }
+                if (isset($this->data->results)) {
+                        $this->formatter->addResults($this->data);
+                }
                 if (isset($this->data->students)) {
                         $this->formatter->addStudents($this->data);
                 }
@@ -492,13 +531,26 @@ class ExportFormatOpenExam extends ExportFormatter
                         $answers = $data->answers[$q->getQuestionID()];
                         foreach ($answers as $a) {
                                 $child = $anode->addChild("answer");
+                                $child->addAttribute("id", $a->getAnswerID());
                                 $child->addAttribute("question", $q->getQuestionID());
                                 $child->addAttribute("user", $a->getStudentUser());
                                 $child->addChild("text", $a->getAnswerText());
                                 $child->addChild("score", $a->getResultScore());
-                                $child->addChild("acomment", $a->getAnswerComment());
-                                $child->addChild("rcomment", $a->getResultComment());
+                                $child->addChild("comment", $a->getAnswerComment());
                         }
+                }
+        }
+
+        public function addResults($data)
+        {
+                $unode = $this->root->addChild("results");
+                foreach ($data->results as $r) {
+                        $child = $unode->addChild("result");
+                        $child->addAttribute("id", $r->getResultID());
+                        $child->addAttribute("answer", $r->getAnswerID());
+                        $child->addAttribute("user", $r->getStudentUser());
+                        $child->addChild("score", $r->getResultScore());
+                        $child->addChild("comment", $r->getResultComment());
                 }
         }
 

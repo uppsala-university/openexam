@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
-
-    Example OpenExam project file generated from the XML schema.
-
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
 -->
+
+
 <openexam
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns='http://it.bmc.uu.se/openexam/project'
-    xsi:schemaLocation='http://it.bmc.uu.se/openexam/project file:/var/www/localhost/apps/openexam-php/docs/schema/openexam.xsd'>
-    <project format="6072">
+    xsi:schemaLocation='http://it.bmc.uu.se/openexam/project file:/var/www/localhost/apps/openexam-php-legacy/docs/schema/openexam.xsd'>
+    <project format="6073">
         <name></name>
         <description></description>
         <orgunit></orgunit>
@@ -52,13 +53,18 @@
         </question>
     </questions>
     <answers>
-        <answer question="0" user="">
+        <answer id="0" question="0" user="">
             <text></text>
             <score>0.0</score>
-            <acomment></acomment>
-            <rcomment></rcomment>
+            <comment></comment>
         </answer>
     </answers>
+    <results>
+        <result id="0" answer="0" user="">
+            <score></score>
+            <comment></comment>
+        </result>
+    </results>
     <students>
         <student>
             <user></user>

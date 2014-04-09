@@ -25,14 +25,17 @@ if (!defined("OPENEXAM_IMPORT_INCLUDE_TOPICS")) {
 if (!defined("OPENEXAM_IMPORT_INCLUDE_QUESTIONS")) {
         define("OPENEXAM_IMPORT_INCLUDE_QUESTIONS", 4);
 }
-if (!defined("OPENEXAM_IMPORT_INCLUDE_ROLES")) {
-        define("OPENEXAM_IMPORT_INCLUDE_ROLES", 8);
-}
 if (!defined("OPENEXAM_IMPORT_INCLUDE_ANSWERS")) {
-        define("OPENEXAM_IMPORT_INCLUDE_ANSWERS", 16);
+        define("OPENEXAM_IMPORT_INCLUDE_ANSWERS", 8);
+}
+if (!defined("OPENEXAM_IMPORT_INCLUDE_RESULTS")) {
+        define("OPENEXAM_IMPORT_INCLUDE_RESULTS", 16);
+}
+if (!defined("OPENEXAM_IMPORT_INCLUDE_ROLES")) {
+        define("OPENEXAM_IMPORT_INCLUDE_ROLES", 32);
 }
 if (!defined("OPENEXAM_IMPORT_INCLUDE_STUDENTS")) {
-        define("OPENEXAM_IMPORT_INCLUDE_STUDENTS", 32);
+        define("OPENEXAM_IMPORT_INCLUDE_STUDENTS", 64);
 }
 // 
 // Simplified include options:
@@ -43,15 +46,15 @@ if (!defined("OPENEXAM_IMPORT_INCLUDE_DEFAULT")) {
 }
 if (!defined("OPENEXAM_IMPORT_INCLUDE_ALL")) {
         define("OPENEXAM_IMPORT_INCLUDE_ALL", OPENEXAM_IMPORT_INCLUDE_DEFAULT | \
-            OPENEXAM_IMPORT_INCLUDE_ROLES | OPENEXAM_IMPORT_INCLUDE_ANSWERS | \
-            OPENEXAM_IMPORT_INCLUDE_STUDENTS);
+            OPENEXAM_IMPORT_INCLUDE_ANSWERS | OPENEXAM_IMPORT_INCLUDE_RESULTS | \
+            OPENEXAM_IMPORT_INCLUDE_ROLES | OPENEXAM_IMPORT_INCLUDE_STUDENTS);
 }
 
 // 
 // Supported versions of native export formats:
 // 
 if (!defined("OPENEXAM_IMPORT_FORMAT_VERSION")) {
-        define("OPENEXAM_IMPORT_FORMAT_VERSION", 6072);
+        define("OPENEXAM_IMPORT_FORMAT_VERSION", 6073);
 }
 
 //
@@ -184,15 +187,55 @@ class ImportInsert
                         $db->beginTransaction();
                 }
 
-                if (!isset($data->questions) || !isset($data->students)) {
-                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_ANSWERS;
+                // 
+                // Detect present data:
+                // 
+                if (!isset($data->project)) {
+                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_PROJECT;
+                }
+                if (!isset($data->roles)) {
+                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_ROLES;
+                }
+                if (!isset($data->topics)) {
+                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_TOPICS;
+                }
+                if (!isset($data->questions)) {
+                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_QUESTIONS;
+                }
+                if (!isset($data->answers)) {
+                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_ANSWERS;
+                }
+                if (!isset($data->results)) {
+                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_RESULTS;
+                }
+                if (!isset($data->students)) {
+                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_STUDENTS;
                 }
 
+                // 
+                // Resolve dependencies:
+                // 
+                if (($filter & OPENEXAM_IMPORT_INCLUDE_TOPICS) == 0) {
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_QUESTIONS;
+                }
+                if (($filter & OPENEXAM_IMPORT_INCLUDE_QUESTIONS) == 0) {
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_ANSWERS;
+                }
+                if (($filter & OPENEXAM_IMPORT_INCLUDE_ANSWERS) == 0) {
+                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_RESULTS;
+                }
+
+                // 
+                // Start import:
+                // 
                 if ($filter & OPENEXAM_IMPORT_INCLUDE_PROJECT) {
                         $this->insertProjectData($data);
                 }
                 if ($filter & OPENEXAM_IMPORT_INCLUDE_ROLES) {
                         $this->insertRoles($data);
+                }
+                if ($filter & OPENEXAM_IMPORT_INCLUDE_STUDENTS) {
+                        $this->insertStudents($data);
                 }
                 if ($filter & OPENEXAM_IMPORT_INCLUDE_TOPICS) {
                         $this->insertTopics($data);
@@ -200,11 +243,11 @@ class ImportInsert
                 if ($filter & OPENEXAM_IMPORT_INCLUDE_QUESTIONS) {
                         $this->insertQuestions($data);
                 }
-                if ($filter & OPENEXAM_IMPORT_INCLUDE_STUDENTS) {
-                        $this->insertStudents($data);
-                }
                 if ($filter & OPENEXAM_IMPORT_INCLUDE_ANSWERS) {
                         $this->insertAnswers($data);
+                }
+                if ($filter & OPENEXAM_IMPORT_INCLUDE_RESULTS) {
+                        $this->insertResults($data);
                 }
 
                 if ($db->in_transaction) {
@@ -345,16 +388,42 @@ class ImportInsert
                 if (isset($data->answers)) {
                         foreach ($data->answers->answer as $answer) {
                                 $answer->answer = $this->db->escape($answer->text);
-                                $sql = sprintf("INSERT INTO answers(question_id, student_id, answered, answer, comment)
-                                        VALUES(%d,%d,'Y','%s','%s')", $data->map()->questions[(int) $answer['question']], $data->map()->students[(string) $answer['user']], $answer->answer, $answer->acomment);
-                                $data->map()->answers[(int) $answer['id']] = $this->insertData($sql, "answers");
+                                if ($data['format'] == 6071 || $data['format'] == 6072) {
+                                        $sql = sprintf("INSERT INTO answers(question_id, student_id, answered, answer, comment)
+                                                        VALUES(%d,%d,'Y','%s','%s')", $data->map()->questions[(int) $answer['question']], $data->map()->students[(string) $answer['user']], $answer->answer, $answer->acomment);
+                                        $data->map()->answers[(int) $answer['id']] = $this->insertData($sql, "answers");
+                                } elseif ($data['format'] == 6073) {
+                                        $sql = sprintf("INSERT INTO answers(question_id, student_id, answered, answer, comment)
+                                                        VALUES(%d,%d,'Y','%s','%s')", $data->map()->questions[(int) $answer['question']], $data->map()->students[(string) $answer['user']], $answer->answer, $answer->comment);
+                                        $data->map()->answers[(int) $answer['id']] = $this->insertData($sql, "answers");
+                                } else {
+                                        throw new RuntimeException(sprintf("FORMAT: %d\n", $data->format));
+                                }
+                        }
+                }
+        }
+
+        private function insertResults(&$data)
+        {
+                $data->map()->results = array();
+
+                if (!isset($data->answers)) {
+                        throw new ImportException("Can't import results without anwers.");
+                }
+
+                if (isset($data->results)) {
+                        foreach ($data->results->result as $result) {
+                                $result->comment = $this->db->escape($result->comment);
+                                $sql = sprintf("INSERT INTO results(answer_id, score, comment)
+                                                VALUES(%d,%f,'%s')", $data->map()->answers[(int) $result['answer']], $result->score, $result->comment);
+                                $data->map()->results[(int) $result['id']] = $this->insertData($sql, "results");
                         }
                 }
         }
 
         private function insertData($sql, $table = null)
         {
-                // printf(__METHOD__ . " SQL: %s'\n", $sql);
+                printf(__METHOD__ . " SQL: %s'\n", $sql);
                 $res = $this->db->query($sql);
                 if (PEAR::isError($res)) {
                         throw new DatabaseException($res->getMessage());
@@ -505,7 +574,7 @@ abstract class ImportBase implements Import
 class ImportOpenExam extends ImportBase
 {
 
-        private static $supported = array(6071, 6072);
+        private static $supported = array(6071, 6072, 6073);
         private static $mimedef = array("application/xml", "text/xml");
 
         public function __construct($accept = "")
