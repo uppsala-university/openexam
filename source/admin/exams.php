@@ -284,7 +284,7 @@ class ExamAdminPage extends AdminPage
         //
         private function exportExam()
         {
-                $exporter = new Export($this->param->exam);
+                $exporter = new Export($this->param->exam, OPENEXAM_EXPORT_FORMAT_NATIVE, OPENEXAM_EXPORT_INCLUDE_ALL);
                 $exporter->send();
                 exit(0);
         }
