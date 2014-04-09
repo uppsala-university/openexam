@@ -24,8 +24,8 @@
 // 
 // Output format options:
 // 
-if (!defined("OPENEXAM_EXPORT_OUTPUT_NATIVE")) {
-        define("OPENEXAM_EXPORT_OUTPUT_NATIVE", "native");
+if (!defined("OPENEXAM_EXPORT_FORMAT_NATIVE")) {
+        define("OPENEXAM_EXPORT_FORMAT_NATIVE", "native");
 }
 
 // 
@@ -171,14 +171,14 @@ abstract class ExportFormatter
         /**
          * Factory function for creating an output formatting object.
          * 
-         * @param string $format The output format (see OPENEXAM_EXPORT_OUTPUT_XXX definitions).
+         * @param string $format The output format (see OPENEXAM_EXPORT_FORMAT_XXX definitions).
          * @return \ExportFormatOpenExam|\ExportFormatWord2007|\ExportFormatExcel2007|\ExportFormatPDF
          * @throws ExportException
          */
         public static function create($format)
         {
                 switch ($format) {
-                        case OPENEXAM_EXPORT_OUTPUT_NATIVE:
+                        case OPENEXAM_EXPORT_FORMAT_NATIVE:
                                 return new ExportFormatOpenExam();
                         default:
                                 throw new ExportException(sprintf("Can't create export formatter for format '%s'", $format));
@@ -202,7 +202,7 @@ class Export
         /**
          * Constructor.
          * @param int $exam The examination ID.
-         * @param string $format The export output format.
+         * @param string $format The export output format (OPENEXAM_EXPORT_FORMAT_XXX).
          * @param int $options An bitmask of one or more OPENEXAM_EXPORT_INCLUDE_XXX defines.
          */
         public function __construct($exam, $format = OPENEXAM_EXPORT_FORMAT_NATIVE, $options = OPENEXAM_EXPORT_INCLUDE_DEFAULT)
