@@ -62,6 +62,7 @@ include "include/ldap.inc";
 include "include/admin.inc";
 include "include/exam.inc";
 include "include/teacher/manager.inc";
+include "include/teacher/correct.inc";
 include "include/export.inc";
 
 // 
