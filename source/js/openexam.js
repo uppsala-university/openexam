@@ -10,59 +10,96 @@
 // From: http://blog.movalog.com/a/javascript-toggle-visibility/
 // 
 function toggle_visibility(id) {
-        var e = document.getElementById(id);
-        if(e.style.display == 'block') {
-                e.style.display = 'none';
-        }
-        else {
-                e.style.display = 'block';
-        }
+    var e = document.getElementById(id);
+    if (e.style.display == 'block') {
+        e.style.display = 'none';
+    }
+    else {
+        e.style.display = 'block';
+    }
 }
 
 //
 // Move object to current mouse position.
 //
 function move_object(obj, event) {
-        var posx = 0;
-        var posy = 0;
-        var e = event || window.event;
+    var posx = 0;
+    var posy = 0;
+    var e = event || window.event;
 
-        if (e.pageX || e.pageY) {
-                posx = e.pageX;
-                posy = e.pageY;
-        } else if (e.clientX || e.clientY) {
-                posx = e.clientX + document.body.scrollLeft
+    if (e.pageX || e.pageY) {
+        posx = e.pageX;
+        posy = e.pageY;
+    } else if (e.clientX || e.clientY) {
+        posx = e.clientX + document.body.scrollLeft
                 + document.documentElement.scrollLeft;
-                posy = e.clientY + document.body.scrollTop
+        posy = e.clientY + document.body.scrollTop
                 + document.documentElement.scrollTop;
-        }
-        //
-        // posx and posy contains the mouse position relative to the document.
-        // 
-        obj.style.left = posx + 'px';
-        obj.style.top  = posy + 'px';
+    }
+    //
+    // posx and posy contains the mouse position relative to the document.
+    // 
+    obj.style.left = posx + 'px';
+    obj.style.top = posy + 'px';
+}
+
+function form_show_result(msgbox, message)
+{
+    $("#result-success").hide();
+    $("#result-info").hide();
+    $("#result-warn").hide();
+    $("#result-error").hide();
+    
+    $(".result").show();
+
+    msgbox.children('.mbox-text').html(message);
+    msgbox.show();
+}
+
+// 
+// Save form using jQuery.
+// 
+function form_ajax_send(id)
+{
+    $('#' + id).submit(function(event) {
+        event.preventDefault();
+        var $form = $(this), action = $form.attr('action'),
+                button = $(":input[type=submit]:focus").attr("name");
+
+        $.post(action, $form.serialize() + '&ajax=1&' + button + '=1', function() {
+        }).done(function(data) {
+            var resp = JSON.parse(data);
+
+            if (resp.status === 'ok') {
+                form_show_result($("#result-success"), resp.message);
+            } else if (resp.status === 'info') {
+                form_show_result($("#result-info"), resp.message);
+            } else if (resp.status === 'failed') {
+                form_show_result($("#result-warn"), resp.message);
+            }
+        }).fail(function() {
+            form_show_result($("#result-error"), 'Failed submit result. The web server is probably down, please contact the person responsible for the examination.');
+        })
+    });
 }
 
 // 
 // This function starts an autosave of the form.
 // 
-function autosave_form(name, seconds, start)
+function form_auto_save(id, seconds, start)
 {
-        var form = document.getElementById(name);
-	
-        //
-        // Don't post form on first call:
-        //
-        if(start == null) {
-                form.autosave.value = true;
-                form.submit();
-        }
-	
-        //
-        // Reschedule call:
-        //
-        var timeout = seconds * 1000;
-        var timer   = setTimeout("autosave_form('" + name + "', " + seconds + ")", timeout);
+    //
+    // Don't post form on first call:
+    //
+    if (start != null) {
+        form_ajax_send(id);
+    }
+
+    //
+    // Reschedule call:
+    //
+    var timeout = seconds * 1000;
+    var timer = setTimeout("form_auto_save('" + id + "', " + seconds + ")", timeout);
 }
 
 //
@@ -76,12 +113,12 @@ var boxdata;
 //
 function check_range(textbox, min, max)
 {
-        value = textbox.value.replace(',', '.');
-    
-        if(value < min || value > max) {
-                alert('Value must be between ' + min + ' and ' + max);
-                textbox.value = boxdata;
-        }
+    value = textbox.value.replace(',', '.');
+
+    if (value < min || value > max) {
+        alert('Value must be between ' + min + ' and ' + max);
+        textbox.value = boxdata;
+    }
 }
 
 //
@@ -90,5 +127,5 @@ function check_range(textbox, min, max)
 //
 function start_check(textbox)
 {
-        boxdata = textbox.value;
+    boxdata = textbox.value;
 }

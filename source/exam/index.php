@@ -11,20 +11,6 @@
 // This is the page where students do their exam.
 //
 // 
-// Enable autosave if non-zero. Try to set session length twice the value of
-// the autosave interval. This should affect the CAS logon session length.
-// 
-if (!defined("SESSION_AUTOSAVE")) {
-        define("SESSION_AUTOSAVE", 0);
-}
-if (!defined("SESSION_LIFETIME")) {
-        define("SESSION_LIFETIME", 2 * SESSION_AUTOSAVE);
-}
-if (!defined("CLEAR_ANSWER_KEYWORD")) {
-        define("CLEAR_ANSWER_KEYWORD", "@_CLEAR_@");
-}
-
-// 
 // System check:
 // 
 if (!file_exists("../../conf/database.conf")) {
@@ -85,11 +71,26 @@ include "include/ldap.inc";
 include "include/teacher/manager.inc";
 
 // 
+// Enable form auto save and AJAX POST. The values are number of seconds 
+// between form submit if auto save is non-zero.
+// 
+if (!defined("FORM_AUTO_SAVE")) {
+        define("FORM_AUTO_SAVE", 0);
+}
+if (!defined("FORM_AJAX_SEND")) {
+        define("FORM_AJAX_SEND", true);
+}
+
+// 
 // This class implements a standard page.
 // 
 class ExaminationPage extends BasePage
 {
 
+        private $author = false;    // Running in question author mode.
+        private $lockdown = false;  // This examination has lockdown mode enabled.
+        private $testcase = false;  // This examination is a testcase.
+        private $user = null;       // Current authenticated user.
         //
         // All possible request parameters should be added here along with
         // the regex pattern to validate its value against.
@@ -98,22 +99,25 @@ class ExaminationPage extends BasePage
                 "exam"     => parent::pattern_index,
                 "answer"   => parent::pattern_textarea,
                 "question" => "/^(\d+|all|exam)$/",
-                "status"   => "/^(ok|void)$/",
+                "status"   => "/^(ok)$/",
                 "save"     => parent::pattern_textline, // button
-                "next"     => parent::pattern_textline  // button
+                "next"     => parent::pattern_textline, // button
+                "ajax"     => parent::pattern_index
         );
-        private $author = false;    // Running in question author mode.
-        private $lockdown = false;  // This examination has lockdown mode enabled.
-        private $testcase = false;  // This examination is a testcase.
-        private $user = null;       // Current authenticated user.
+
         //
         // Construct the exam page.
         //
-
         public function __construct()
         {
                 parent::__construct(_("Examination:"), self::$params);   // Internationalized with GNU gettext
                 $this->initialize();
+        }
+
+        public function printHeader()
+        {
+                parent::printHeader();
+                printf("<script type=\"text/javascript\" language=\"javascript\" src=\"/openexam/js/jquery/jquery.js\"></script>\n");
         }
 
         //
@@ -147,7 +151,7 @@ class ExaminationPage extends BasePage
                                 $exam = Exam::getExamData($this->user, $this->param->exam);
                                 $this->showProperties($exam);
                         } elseif (isset($this->param->answer)) {
-                                $this->saveQuestion();
+                                $this->saveRouter((object) $this->saveQuestion());
                         } else {
                                 $this->showQuestion();
                         }
@@ -437,7 +441,7 @@ class ExaminationPage extends BasePage
                 $replace = "\n<br/><br/>\n";
 
                 // 
-                // Expands handler escape sequencess:
+                // Expands handler escape sequences:
                 // 
                 $scanner = new HandlerScanner($qdata->getQuestionText());
 
@@ -459,9 +463,6 @@ class ExaminationPage extends BasePage
                 //
                 $form = new Form("index.php", "POST");
                 $form->setId("answerform");
-                if (SESSION_AUTOSAVE != 0) {
-                        $form->addHidden("autosave", false);
-                }
                 $form->addHidden("exam", $this->param->exam);
                 $form->addHidden("question", $this->param->question);
 
@@ -492,30 +493,29 @@ class ExaminationPage extends BasePage
                 if (!$this->author) {
                         $form->addSpace();
                         $button = $form->addSubmitButton("save", _("Save"));
+                        $button->setId('save');
                         $button->setTitle(_("Save your answer in the database."));
                         $button = $form->addSubmitButton("next", _("OK"));
+                        $button->setId('next');
                         $button->setTitle(_("Save and move on to next unanswered question."));
                 }
                 $form->output();
 
-                if (SESSION_AUTOSAVE != 0) {
-                        printf("<script type=\"text/javascript\">\n");
-                        printf("autosave_form('answerform', %d, true);\n", SESSION_AUTOSAVE);
+                if (FORM_AUTO_SAVE != 0) {
+                        printf("<script>\n");
+                        printf("form_auto_save('answerform', %d, true);\n", FORM_AUTO_SAVE);
+                        printf("</script>\n");
+                }
+                if (FORM_AJAX_SEND) {
+                        printf("<script>\n");
+                        printf("form_ajax_send('answerform');\n");
                         printf("</script>\n");
                 }
                 printf("</div>\n");
                 if ($this->author) {
                         MessageBox::show(MessageBox::information, _("This question is viewed in preview mode (for question author)."), _("Notice"));
                 }
-                if (isset($this->param->status)) {
-                        if ($this->param->status == "ok") {
-                                MessageBox::show(MessageBox::success, _("Your answer has been successful saved in the database."));
-                        } elseif ($this->param->status == "failed") {
-                                MessageBox::show(MessageBox::warning, _("Failed write answer to database. Please try again."));
-                        } elseif ($this->param->status == "void") {
-                                MessageBox::show(MessageBox::information, sprintf(_("Received an empty answer. To <u>prevent data loss</u>, these answers are <u>ignored</u>. If you really want to empty the answer, please submit \"%s\" as the question answer."), CLEAR_ANSWER_KEYWORD));
-                        }
-                }
+                $this->showResult();
                 printf("</div>\n");
 
                 if ($qdata->hasQuestionMedia()) {
@@ -547,6 +547,58 @@ class ExaminationPage extends BasePage
                 printf("<br style=\"clear: both;\">\n");
         }
 
+        private function showResult()
+        {
+                if (isset($this->result)) {
+                        if ($this->result->status == "ok") {
+                                MessageBox::show(MessageBox::success, $this->result->message);
+                        } elseif ($this->result->status == "failed") {
+                                MessageBox::show(MessageBox::warning, $this->result->message);
+                        } elseif ($this->result->status == "info") {
+                                MessageBox::show(MessageBox::information, $this->result->message);
+                        }
+                } else {
+                        printf("<div class=\"result\" id=\"result\" style=\"display:none;\">\n");
+                        foreach (array(
+                            MessageBox::error,
+                            MessageBox::warning,
+                            MessageBox::information,
+                            MessageBox::success
+                        ) as $type) {
+                                printf("<div class=\"result-%s\" style=\"display:inline;\">\n", $type);
+                                $msgbox = new MessageBox($type);
+                                $msgbox->setId(sprintf("result-%s", $type));
+                                $msgbox->setTitle("");
+                                $msgbox->display();
+                                printf("</div>\n");
+                        }
+                        printf("</div>\n");
+                }
+        }
+
+        // 
+        // Post answer save handler.
+        //
+        private function saveRouter($result)
+        {
+                if ($result->status == "failed") {
+                        $this->result = $result;
+                        $this->showQuestion($this->param->answer);
+                } elseif ($result->status == "info") {
+                        $this->result = $result;
+                        $this->showQuestion();
+                } elseif (isset($this->param->save)) {
+                        header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $this->param->exam, $this->param->question));
+                } elseif (isset($this->param->next)) {
+                        $menuitem = self::getQuestions();
+                        if (count($menuitem['q']) != 0) {
+                                $next = $menuitem['q'][0];
+                                $this->param->question = $next->getQuestionID();
+                        }
+                        header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $this->param->exam, $this->param->question));
+                }
+        }
+
         //
         // Save the answer for an question.
         //
@@ -557,35 +609,28 @@ class ExaminationPage extends BasePage
                 } else {
                         $this->param->answer = trim($this->param->answer);
                 }
+
                 if (strlen($this->param->answer) == 0) {
-                        $this->param->status = "void";
-                        $this->showQuestion();
-                        return;
-                }
-                if ($this->param->answer == CLEAR_ANSWER_KEYWORD) {
-                        $this->param->answer = "";
+                        return array(
+                                "status"  => "info",
+                                "message" => _("Received an empty answer. These messages are ignored to <u>prevent data loss</u>.")
+                        );
                 }
 
                 try {
                         $answer = Database::getConnection()->escape($this->param->answer);
                         Exam::setAnswer($this->param->exam, $this->param->question, $this->user, $answer);
+                        return array(
+                                "status"  => "ok",
+                                "message" => _("Your answer has been successful saved in the database.")
+                        );
                 } catch (Exception $exception) {
-                        $this->param->status = "failed";
                         $this->saveState();
                         error_log($exception);
-                        $this->showQuestion($this->param->answer);
-                        return;
-                }
-
-                if (isset($this->param->save)) {
-                        header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $this->param->exam, $this->param->question));
-                } elseif (isset($this->param->next)) {
-                        $menuitem = self::getQuestions();
-                        if (count($menuitem['q']) != 0) {
-                                $next = $menuitem['q'][0];
-                                $this->param->question = $next->getQuestionID();
-                        }
-                        header(sprintf("location: index.php?exam=%d&question=%d&status=ok", $this->param->exam, $this->param->question));
+                        return array(
+                                "status"  => "failed",
+                                "message" => _("Failed write answer to database. Please try again.")
+                        );
                 }
         }
 
@@ -653,6 +698,25 @@ class ExaminationPage extends BasePage
                         _("Please try again when the logon service is back. ")
                         );
                 }
+
+                if (isset($this->param->status) && $this->param->status == "ok") {
+                        $this->result = (object) array(
+                                    "status"  => "ok",
+                                    "message" => _("Your answer has been successful saved in the database.")
+                        );
+                }
+        }
+
+        // 
+        // Process the request.
+        // 
+        public function process()
+        {
+                if (isset($this->param->ajax) && (isset($this->param->save) || isset($this->param->next))) {
+                        echo json_encode($this->saveQuestion());
+                } else {
+                        $this->render();
+                }
         }
 
 }
@@ -660,7 +724,9 @@ class ExaminationPage extends BasePage
 // 
 // Validate request parameters and (if validate succeeds) render the page.
 // 
+error_log(print_r($_REQUEST, true));
+
 $page = new ExaminationPage();
-$page->render();
+$page->process();
 
 ?>

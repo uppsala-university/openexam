@@ -40,15 +40,14 @@ if (!isset($_SERVER['SERVER_NAME'])) {
 define('BASE_URL', sprintf('%s://%s/openexam', (isset($_SERVER['HTTPS']) ? "https" : "http"), $_SERVER['SERVER_NAME']));
 
 // 
-// Enable autosave and session length if non-zero. The value are in seconds.
-// If autosave is set, then it defines the number of second from page load
-// until the answer form is automatic posted (for saving).
+// Enable form auto save and AJAX POST. The values are number of seconds 
+// between form submit if auto save is non-zero.
 // 
-if (!defined("SESSION_AUTOSAVE")) {
-        define("SESSION_AUTOSAVE", 0);
+if (!defined("FORM_AUTO_SAVE")) {
+        define("FORM_AUTO_SAVE", 0);
 }
-if (!defined("SESSION_LIFETIME")) {
-        define("SESSION_LIFETIME", 3600);
+if (!defined("FORM_AJAX_SEND")) {
+        define("FORM_AJAX_SEND", true);
 }
 
 // 
