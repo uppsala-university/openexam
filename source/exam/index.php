@@ -568,7 +568,7 @@ class ExaminationPage extends BasePage
                                 printf("<div class=\"result-%s\" style=\"display:inline;\">\n", $type);
                                 $msgbox = new MessageBox($type);
                                 $msgbox->setId(sprintf("result-%s", $type));
-                                $msgbox->setTitle("");
+                                $msgbox->setTitle(null);
                                 $msgbox->display();
                                 printf("</div>\n");
                         }
@@ -724,8 +724,6 @@ class ExaminationPage extends BasePage
 // 
 // Validate request parameters and (if validate succeeds) render the page.
 // 
-error_log(print_r($_REQUEST, true));
-
 $page = new ExaminationPage();
 $page->process();
 
