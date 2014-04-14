@@ -2910,15 +2910,16 @@ class MessageBox extends Container
                         $div->setClass("mbox-head");
                         $div->addElement($this->icon);
                         $div->addElement($this->head);
+                        $div->addElement(new HR());
                         $div = $content->addContent(new Container("div"));
                         $div->setClass("mbox-text");
                         $div->addElement($this->text);
                         $content->output();
                 } else {
                         $content = new Content();
+                        $content->addContent($this->icon);
                         $div = $content->addContent(new Container("div"));
                         $div->setClass("mbox-text");
-                        $div->addElement($this->icon);
                         $div->addElement($this->text);
                         $content->output();
                 }

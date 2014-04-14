@@ -8,6 +8,8 @@
 
 img {
     border: 0px;
+    float:left;
+    padding-right: 10px;
 }
 
 label
@@ -385,6 +387,7 @@ h4.secthead {
 /**
  *  Message box style (#1: mostly square boxes with background).
 **/
+/*
 div.mbox {
     padding: 12px;
     padding-right: 40px;
@@ -421,11 +424,11 @@ div.error {
     border: 1px dotted #990000;
     background: #ffddcc;
 }
+*/
 
 /**
  *  Message box style (#2: rounded boxes without background).
 **/
-/*
 div.mbox {
     padding: 12px;
     margin: 10px;
@@ -435,7 +438,7 @@ div.mbox {
 }
 div.mbox-head {
     font-weight: bold;
-    font-size: 1.5em;
+    font-size: 1.3em;
     padding-bottom: 10px;
 }
 div.mbox-text {
@@ -447,18 +450,18 @@ div.hint {
     background: #f3f3f3;
 }
 div.success {
-    border: 2px solid #00cc00;
+    border: 2px solid #00aa00;
 }
 div.info {
     border: 2px solid #000099;
 }
 div.warn {
-    border: 2px solid yellow;
+    border: 2px solid orange;
+    background-color: #ff6;
 }
 div.error {
     border: 2px solid #cc0000;
 }
-*/
 
 /*
  * User info (for exam page).

@@ -1,3 +1,30 @@
+Version 1.5.8 (yyyy-mm-dd):
+
+        * Major rework in import/export functionality. Added import of students
+          from spreadsheet (i.e. Excel, ODF or CSV). Selectable parts of the
+          examination can now be exported.
+
+        * Questions that's corrected by other teachers is now hidden during the
+          correction phase. Unattended students are excluded from the result. Can 
+          be enabled in system configuration.
+
+        * The score board are now exposed to creator or decoder during the correction
+          phase, but only if caller is not corrector at the same time.
+
+        * Grades and personal (social) number are now included in the score board
+          when examination is decoded.
+
+        * The personal (social) number of logged on student is now exposed on the
+          question answer page.
+
+        * Logon sessions (for examination) is now handled internal. Authentication
+          is done once to create the initial session.
+
+        * The form on the exam page is now submitted in the background using AJAX
+          request. Enabled by default, but can be disabled in conf/config.inc.
+
+        * Fixes in PDF-generation using HTML doc (error code handling).
+
 Version 1.5.7 (2014-01-21):
 
         * Fixed UTF-8 encoding of emails sent by the system.

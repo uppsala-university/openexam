@@ -24,9 +24,18 @@
    *) phpCAS     - CAS client for PHP     (required).
    *) MDB2       - Core database + driver (required).
 
-   External programs:
+   External programs and libraries:
    
    *) HTMLDOC    - Generate result PDF from HTML (recommended) [1.8.27].
+                   Homepage: http://www.easysw.com/htmldoc/
+   *) PHPWord    - Create Microsoft Word documents (2007 or later)  (recommended) [0.6.2].
+                   Homepage: http://phpword.codeplex.com
+   *) PHPExcel   - Create Microsoft Excel documents (2007 or later) (recommended) [1.7.8].
+                   Homepage: http://phpexcel.codeplex.com/
+
+   PHP ini settings:
+
+   *) allow_url_fopen   - Required by PHPWord for embedding question images.
 
 ** CONFIGURATION:
 

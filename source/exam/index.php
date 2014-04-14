@@ -551,11 +551,11 @@ class ExaminationPage extends BasePage
         {
                 if (isset($this->result)) {
                         if ($this->result->status == "ok") {
-                                MessageBox::show(MessageBox::success, $this->result->message);
+                                MessageBox::show(MessageBox::success, $this->result->message, null);
                         } elseif ($this->result->status == "failed") {
-                                MessageBox::show(MessageBox::warning, $this->result->message);
+                                MessageBox::show(MessageBox::warning, $this->result->message, null);
                         } elseif ($this->result->status == "info") {
-                                MessageBox::show(MessageBox::information, $this->result->message);
+                                MessageBox::show(MessageBox::information, $this->result->message, null);
                         }
                 } else {
                         printf("<div class=\"result\" id=\"result\" style=\"display:none;\">\n");
