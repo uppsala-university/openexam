@@ -56,7 +56,7 @@ function form_show_result(msgbox, message, fadeout)
     msgbox.show();
     
     if (fadeout) {
-        msgbox.delay(2000).fadeOut(400);
+        msgbox.delay(1000).fadeOut(400);
     }
 }
 
