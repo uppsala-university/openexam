@@ -43,7 +43,7 @@ function move_object(obj, event) {
     obj.style.top = posy + 'px';
 }
 
-function form_show_result(msgbox, message)
+function form_show_result(msgbox, message, fadeout)
 {
     $("#result-success").hide();
     $("#result-info").hide();
@@ -54,6 +54,10 @@ function form_show_result(msgbox, message)
 
     msgbox.children('.mbox-text').html(message);
     msgbox.show();
+    
+    if (fadeout) {
+        msgbox.delay(2000).fadeOut(400);
+    }
 }
 
 // 
@@ -71,18 +75,19 @@ function form_ajax_send(id, eid, qid)
             var resp = JSON.parse(data);
 
             if (resp.status === 'ok') {
-                form_show_result($("#result-success"), resp.message);
+                form_show_result($("#result-success"), resp.message, true);
                 if (button === 'next') {
-                    destination = action + '?exam=' + eid + '&question=' + qid + '&status=ok&next=route';
+                    var destination = action + '?exam=' + eid + '&question=' + qid + '&status=ok&next=route';
                     window.location.replace(destination);
                 }
             } else if (resp.status === 'info') {
-                form_show_result($("#result-info"), resp.message);
+                form_show_result($("#result-info"), resp.message, true);
             } else if (resp.status === 'failed') {
-                form_show_result($("#result-warn"), resp.message);
+                form_show_result($("#result-warn"), resp.message, false);
             }
         }).fail(function() {
-            form_show_result($("#result-error"), 'Failed submit result. The web server is probably down, please contact the person responsible for the examination.');
+            var message = 'Failed submit result. The web server is probably down, please contact the person responsible for the examination.';
+            form_show_result($("#result-error"), message, false);
         })
     });
 }
