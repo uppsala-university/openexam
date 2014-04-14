@@ -49,7 +49,7 @@ function form_show_result(msgbox, message)
     $("#result-info").hide();
     $("#result-warn").hide();
     $("#result-error").hide();
-    
+
     $(".result").show();
 
     msgbox.children('.mbox-text').html(message);
@@ -59,7 +59,7 @@ function form_show_result(msgbox, message)
 // 
 // Save form using jQuery.
 // 
-function form_ajax_send(id)
+function form_ajax_send(id, eid, qid)
 {
     $('#' + id).submit(function(event) {
         event.preventDefault();
@@ -72,6 +72,10 @@ function form_ajax_send(id)
 
             if (resp.status === 'ok') {
                 form_show_result($("#result-success"), resp.message);
+                if (button === 'next') {
+                    destination = action + '?exam=' + eid + '&question=' + qid + '&status=ok&next=route';
+                    window.location.replace(destination);
+                }
             } else if (resp.status === 'info') {
                 form_show_result($("#result-info"), resp.message);
             } else if (resp.status === 'failed') {

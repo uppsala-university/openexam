@@ -508,7 +508,7 @@ class ExaminationPage extends BasePage
                 }
                 if (FORM_AJAX_SEND) {
                         printf("<script>\n");
-                        printf("form_ajax_send('answerform');\n");
+                        printf("form_ajax_send('answerform', %d, %d);\n", $this->param->exam, $this->param->question);
                         printf("</script>\n");
                 }
                 printf("</div>\n");
@@ -708,12 +708,15 @@ class ExaminationPage extends BasePage
         }
 
         // 
-        // Process the request.
+        // Process the request. This function both handles AJAX requests 
+        // and plain old request/response submitted form.
         // 
         public function process()
         {
                 if (isset($this->param->ajax) && (isset($this->param->save) || isset($this->param->next))) {
                         echo json_encode($this->saveQuestion());
+                } elseif (isset($this->param->next) && $this->param->next == 'route') {
+                        $this->saveRouter($this->param);
                 } else {
                         $this->render();
                 }
