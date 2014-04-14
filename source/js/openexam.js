@@ -86,7 +86,7 @@ function form_ajax_send(id, eid, qid)
                 form_show_result($("#result-warn"), resp.message, false);
             }
         }).fail(function() {
-            var message = 'Failed submit result. The web server is probably down, please contact the person responsible for the examination.';
+            var message = '<b><u>Failed submit result.</u></b><br/><br/>The web server is probably down, please contact the person responsible for the examination.';
             form_show_result($("#result-error"), message, false);
         })
     });

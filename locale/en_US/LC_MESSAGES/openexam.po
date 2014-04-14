@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-04-14 22:46+0200\n"
-"PO-Revision-Date: 2014-04-14 22:49+0200\n"
+"POT-Creation-Date: 2014-04-14 23:22+0200\n"
+"PO-Revision-Date: 2014-04-14 23:23+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English\n"
 "Language: \n"
@@ -1345,8 +1345,8 @@ msgid "Your answer has been successful saved in the database."
 msgstr "Your answer has been successful saved in the database."
 
 #: source/exam/index.php:632
-msgid "Failed write answer to database.<br/><br/>Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost."
-msgstr "Failed write answer to database.<br/><br/>Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost."
+msgid "<b><u>Failed write answer to database.</u></b><br/><br/>Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost."
+msgstr "<b><u>Failed write answer to database.</u></b><br/><br/>Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost."
 
 #: source/exam/index.php:684
 msgid "Remote caller don't match recorded value, possible session hijack"

@@ -629,7 +629,7 @@ class ExaminationPage extends BasePage
                         error_log($exception);
                         return array(
                                 "status"  => "failed",
-                                "message" => _("Failed write answer to database.<br/><br/>Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost.")
+                                "message" => _("<b><u>Failed write answer to database.</u></b><br/><br/>Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost.")
                         );
                 }
         }
