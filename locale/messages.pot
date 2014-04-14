@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-04-14 21:35+0200\n"
+"POT-Creation-Date: 2014-04-14 22:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -514,8 +514,9 @@ msgstr ""
 msgid "Correct answers"
 msgstr ""
 
-#: include/teacher.inc:246 source/teacher/contribute.php:764
-#: source/teacher/export.php:203 source/teacher/manager.php:510
+#: include/teacher.inc:246 source/exam/index.php:185
+#: source/teacher/contribute.php:764 source/teacher/export.php:203
+#: source/teacher/manager.php:510
 msgid "Questions"
 msgstr ""
 
@@ -1137,12 +1138,8 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: source/exam/index.php:174
-msgid "Resources:"
-msgstr ""
-
-#: source/exam/index.php:185
-msgid "Questions:"
+#: source/exam/index.php:174 source/teacher/manager.php:549
+msgid "Resources"
 msgstr ""
 
 #: source/exam/index.php:198 source/teacher/correct.php:430
@@ -2959,10 +2956,6 @@ msgstr ""
 
 #: source/teacher/manager.php:540
 msgid "Flag this question as active again"
-msgstr ""
-
-#: source/teacher/manager.php:549
-msgid "Resources"
 msgstr ""
 
 #: source/teacher/manager.php:556

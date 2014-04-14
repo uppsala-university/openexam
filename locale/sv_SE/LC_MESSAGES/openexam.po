@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-04-14 20:51+0200\n"
-"PO-Revision-Date: 2014-04-14 20:53+0200\n"
+"POT-Creation-Date: 2014-04-14 22:29+0200\n"
+"PO-Revision-Date: 2014-04-14 22:29+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "Language: \n"
@@ -514,8 +514,9 @@ msgstr "Visa alla frågor"
 msgid "Correct answers"
 msgstr "Rätta svar"
 
-#: include/teacher.inc:246 source/teacher/contribute.php:764
-#: source/teacher/export.php:203 source/teacher/manager.php:510
+#: include/teacher.inc:246 source/exam/index.php:185
+#: source/teacher/contribute.php:764 source/teacher/export.php:203
+#: source/teacher/manager.php:510
 msgid "Questions"
 msgstr "Frågor"
 
@@ -1143,17 +1144,13 @@ msgstr "Ta bort denna examination och återvänd till projekthanteraren."
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: source/exam/index.php:174
-msgid "Resources:"
-msgstr "Resurser:"
-
-#: source/exam/index.php:185
-msgid "Questions:"
-msgstr "Frågor:"
+#: source/exam/index.php:174 source/teacher/manager.php:549
+msgid "Resources"
+msgstr "Resurser"
 
 #: source/exam/index.php:198 source/teacher/correct.php:430
 msgid "Answered"
-msgstr "Besvarade:"
+msgstr "Besvarade"
 
 #: source/exam/index.php:210 source/result/index.php:169
 #: source/admin/exams.php:313 source/teacher/contribute.php:751
@@ -2988,10 +2985,6 @@ msgstr "Återställ"
 msgid "Flag this question as active again"
 msgstr "Markera den här frågan som aktiv igen."
 
-#: source/teacher/manager.php:549
-msgid "Resources"
-msgstr "Resurser"
-
 #: source/teacher/manager.php:556
 msgid "Show resource content"
 msgstr "Visa resursens innehåll"
@@ -3191,6 +3184,12 @@ msgstr "Senast ändrad: %s"
 #, php-format
 msgid "Page responsible:"
 msgstr "Sidansvarig:"
+
+#~ msgid "Resources:"
+#~ msgstr "Resurser:"
+
+#~ msgid "Questions:"
+#~ msgstr "Frågor:"
 
 #~ msgid "Received an empty answer. To <u>prevent data loss</u>, these answers are <u>ignored</u>. If you really want to empty the answer, please submit \"%s\" as the question answer."
 #~ msgstr "Tog emot ett tomt svar. För att <u>förhindra att data förloras</u> så <u>ignoreras</u> dessa svar. Om du verkligen vill spara ett tomt svar, skicka \"%s\" som svar."

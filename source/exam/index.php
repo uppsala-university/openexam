@@ -171,7 +171,7 @@ class ExaminationPage extends BasePage
                 if (isset($this->param->exam) && !isset($this->param->preview)) {
                         $media = new MediaLibrary($this->param->exam);
                         if (count($media->resource) != 0) {
-                                echo "<span id=\"menuhead\">" . _("Resources:") . "</span>\n";
+                                echo "<span id=\"menuhead\">" . _("Resources") . ":</span>\n";
                                 echo "<ul>\n";
                                 foreach ($media->resource as $file) {
                                         printf("<li><a href=\"%s\" title=\"%s\">%s</a></li>\n", $file->url, $file->name, $file->name);
@@ -182,7 +182,7 @@ class ExaminationPage extends BasePage
                         $menuitem = self::getQuestions();
 
                         if (isset($menuitem['q'])) {
-                                echo "<span id=\"menuhead\">" . _("Questions:") . "</span>\n";
+                                echo "<span id=\"menuhead\">" . _("Questions") . ":</span>\n";
                                 echo "<ul>\n";
                                 foreach ($menuitem['q'] as $question) {
                                         if ($question->getQuestionType() != QUESTION_TYPE_FREETEXT) {

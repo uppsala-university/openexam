@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-04-14 20:51+0200\n"
+"POT-Creation-Date: 2014-04-14 22:29+0200\n"
 "PO-Revision-Date: 2014-04-14 20:53+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
@@ -513,8 +513,9 @@ msgstr "Show all questions"
 msgid "Correct answers"
 msgstr "Correct answers"
 
-#: include/teacher.inc:246 source/teacher/contribute.php:764
-#: source/teacher/export.php:203 source/teacher/manager.php:510
+#: include/teacher.inc:246 source/exam/index.php:185
+#: source/teacher/contribute.php:764 source/teacher/export.php:203
+#: source/teacher/manager.php:510
 msgid "Questions"
 msgstr "Questions"
 
@@ -1142,13 +1143,9 @@ msgstr "Delete this test case and return to the examination manager."
 msgid "Cancel"
 msgstr "Cancel"
 
-#: source/exam/index.php:174
-msgid "Resources:"
-msgstr "Resources:"
-
-#: source/exam/index.php:185
-msgid "Questions:"
-msgstr "Questions:"
+#: source/exam/index.php:174 source/teacher/manager.php:549
+msgid "Resources"
+msgstr "Resources"
 
 #: source/exam/index.php:198 source/teacher/correct.php:430
 msgid "Answered"
@@ -2987,10 +2984,6 @@ msgstr "Restore"
 msgid "Flag this question as active again"
 msgstr "Flag this question as active again"
 
-#: source/teacher/manager.php:549
-msgid "Resources"
-msgstr "Resources"
-
 #: source/teacher/manager.php:556
 msgid "Show resource content"
 msgstr "Show resource content"
@@ -3190,6 +3183,12 @@ msgstr "Last modified: %s"
 #, php-format
 msgid "Page responsible:"
 msgstr "Page responsible:"
+
+#~ msgid "Resources:"
+#~ msgstr "Resources:"
+
+#~ msgid "Questions:"
+#~ msgstr "Questions:"
 
 #~ msgid "Received an empty answer. To <u>prevent data loss</u>, these answers are <u>ignored</u>. If you really want to empty the answer, please submit \"%s\" as the question answer."
 #~ msgstr "Received an empty answer. To <u>prevent data loss</u>, these answers are <u>ignored</u>. If you really want to empty the answer, please submit \"%s\" as the question answer."
