@@ -54,7 +54,7 @@ function form_show_result(msgbox, message, fadeout)
 
     msgbox.children('.mbox-text').html(message);
     msgbox.show();
-    
+
     if (fadeout) {
         msgbox.delay(1000).fadeOut(400);
     }
@@ -63,12 +63,18 @@ function form_show_result(msgbox, message, fadeout)
 // 
 // Save form using jQuery.
 // 
-function form_ajax_send(id, eid, qid)
+function form_ajax_send(id)
 {
     $('#' + id).submit(function(event) {
         event.preventDefault();
         var $form = $(this), action = $form.attr('action'),
-                button = $(":input[type=submit]:focus").attr("name");
+                button = $(":input[type=submit]:focus").attr("name"),
+                eid = $("input[name=exam]").val(),
+                qid = $("input[name=question]").val();
+
+        if (typeof button === 'undefined') {
+            button = 'save';
+        }
 
         $.post(action, $form.serialize() + '&ajax=1&' + button + '=1', function() {
         }).done(function(data) {
@@ -100,15 +106,14 @@ function form_auto_save(id, seconds, start)
     //
     // Don't post form on first call:
     //
-    if (start != null) {
-        form_ajax_send(id);
+    if (typeof start === 'undefined') {
+        $('#' + id).submit();
     }
 
     //
     // Reschedule call:
     //
-    var timeout = seconds * 1000;
-    var timer = setTimeout("form_auto_save('" + id + "', " + seconds + ")", timeout);
+    setTimeout("form_auto_save('" + id + "', " + seconds + ")", seconds * 1000);
 }
 
 //

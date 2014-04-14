@@ -508,7 +508,7 @@ class ExaminationPage extends BasePage
                 }
                 if (FORM_AJAX_SEND) {
                         printf("<script>\n");
-                        printf("form_ajax_send('answerform', %d, %d);\n", $this->param->exam, $this->param->question);
+                        printf("form_ajax_send('answerform');\n");
                         printf("</script>\n");
                 }
                 printf("</div>\n");

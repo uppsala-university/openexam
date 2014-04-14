@@ -40,8 +40,10 @@ if (!isset($_SERVER['SERVER_NAME'])) {
 define('BASE_URL', sprintf('%s://%s/openexam', (isset($_SERVER['HTTPS']) ? "https" : "http"), $_SERVER['SERVER_NAME']));
 
 // 
-// Enable form auto save and AJAX POST. The values are number of seconds 
-// between form submit if auto save is non-zero.
+// Enable auto saving and background POST (using AJAX and jQuery) of the answer 
+// form on the examination page. The value are the number of seconds between 
+// each form submit. These settings prevents data loss and at least the AJAX 
+// send option should be enabled.
 // 
 if (!defined("FORM_AUTO_SAVE")) {
         define("FORM_AUTO_SAVE", 0);
