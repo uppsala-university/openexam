@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-04-14 22:29+0200\n"
+"POT-Creation-Date: 2014-04-14 22:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1340,7 +1340,7 @@ msgid "Your answer has been successful saved in the database."
 msgstr ""
 
 #: source/exam/index.php:632
-msgid "Failed write answer to database. Please try again."
+msgid "Failed write answer to database.<br/><br/>Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost."
 msgstr ""
 
 #: source/exam/index.php:684
