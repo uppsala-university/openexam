@@ -34,8 +34,15 @@ class ErrorPage extends BasePage
 
         public function printBody()
         {
-                printf("<h3>%s</h3>\n", $this->title);
-                printf("<p>%s</p><p>" . _("If you think this is a bug in the system, then please report it to %s") . "</p>\n", $this->message, CONTACT_STRING);
+                $contact = sprintf(_("If you think this is a bug in the system, then please report it to %s"), CONTACT_STRING);
+                $message = sprintf("<p>%s</p><p>%s</p>\n", $this->message, $contact);
+                
+                if (class_exists('MessageBox')) {
+                        MessageBox::show(MessageBox::error, $message, $this->title);
+                } else {
+                        printf("<h3>%s</h3>\n", $this->title);
+                        printf("<p>%s</p>\n", $message);
+                }
         }
 
         public static function show($title, $message)

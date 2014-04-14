@@ -728,6 +728,10 @@ class ExaminationPage extends BasePage
 // Validate request parameters and (if validate succeeds) render the page.
 // 
 $page = new ExaminationPage();
-$page->process();
+try {
+        $page->process();
+} catch (Exception $exception) {
+        $page->fatal(get_class($exception), $exception->getMessage());
+}
 
 ?>
