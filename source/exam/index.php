@@ -120,7 +120,7 @@ class ExaminationPage extends BasePage
         public function printHeader()
         {
                 parent::printHeader();
-                printf("<script type=\"text/javascript\" language=\"javascript\" src=\"/openexam/js/jquery/jquery.js\"></script>\n");
+                printf("<script type=\"text/javascript\" language=\"javascript\" src=\"/openexam/js/jquery/jquery.min.js\"></script>\n");
         }
 
         //
