@@ -80,6 +80,9 @@ if (!defined("FORM_AUTO_SAVE")) {
 if (!defined("FORM_AJAX_SEND")) {
         define("FORM_AJAX_SEND", true);
 }
+if (!defined("FORM_LINK_SAVE")) {
+        define("FORM_LINK_SAVE", false);
+}
 
 // 
 // This class implements a standard page.
@@ -511,6 +514,12 @@ class ExaminationPage extends BasePage
                         printf("form_ajax_send('answerform');\n");
                         printf("</script>\n");
                 }
+                if (FORM_LINK_SAVE) {
+                        printf("<script>\n");
+                        printf("form_link_save('answerform');\n");
+                        printf("</script>\n");
+                }
+
                 printf("</div>\n");
                 if ($this->author) {
                         MessageBox::show(MessageBox::information, _("This question is viewed in preview mode (for question author)."), _("Notice"));

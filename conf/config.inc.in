@@ -51,6 +51,12 @@ if (!defined("FORM_AUTO_SAVE")) {
 if (!defined("FORM_AJAX_SEND")) {
         define("FORM_AJAX_SEND", true);
 }
+// 
+// Submit form whenever a link is clicked on the examination page.
+// 
+if (!defined("FORM_LINK_SAVE")) {
+        define("FORM_LINK_SAVE", false);
+}
 
 // 
 // Settings for CAS (Centralized Authentication System):

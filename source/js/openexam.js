@@ -91,9 +91,11 @@ function form_ajax_send(id)
             } else if (resp.status === 'failed') {
                 form_show_result($("#result-warn"), resp.message, false);
             }
-        }).fail(function() {
-            var message = '<b><u>Failed submit result.</u></b><br/><br/>The web server is probably down, please contact the person responsible for the examination.';
-            form_show_result($("#result-error"), message, false);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            if (typeof $form.attr('bylink') === 'undefined') {
+                var message = '<b><u>Failed submit result.</u></b><br/><br/>The web server is probably down, please contact the person responsible for the examination.';
+                form_show_result($("#result-error"), message, false);
+            }
         })
     });
 }
@@ -114,6 +116,20 @@ function form_auto_save(id, seconds, start)
     // Reschedule call:
     //
     setTimeout("form_auto_save('" + id + "', " + seconds + ")", seconds * 1000);
+}
+
+// 
+// Attach form submit handler to all links on page.
+// 
+function form_link_save(id)
+{
+    $('a').each(function(index, link) {
+        $(this).on('click', function() {
+            var $form = $('#' + id);
+            $form.attr('bylink', link);
+            $form.submit();
+        });
+    });
 }
 
 //
