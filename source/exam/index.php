@@ -245,8 +245,8 @@ class ExaminationPage extends BasePage
                         $upnr = (string) ($user->getNorEduPersonNIN());
 
                         printf("<div class=\"userinfo\"><span class=\"name\">%s</span> - <span>%s</span></div>\n", $name, $upnr);
-                } catch (RuntimeException $e) {
-                        error_log($e);
+                } catch (LdapException $exception) {
+                        error_log($exception);
                 }
         }
 
