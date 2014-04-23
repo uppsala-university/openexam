@@ -129,18 +129,6 @@ class ExaminationPage extends BasePage
         public function printBody()
         {
                 //
-                // Authorization first:
-                //
-                if (isset($this->param->exam)) {
-                        $this->checkExaminationAccess();
-                        if (isset($this->param->question) && (
-                            $this->param->question != "all" &&
-                            $this->param->question != "exam")) {
-                                $this->checkQuestionAccess();
-                        }
-                }
-
-                //
                 // Bussiness logic:
                 //
                 if (!isset($this->param->exam)) {
@@ -717,11 +705,26 @@ class ExaminationPage extends BasePage
         }
 
         // 
-        // Process the request. This function both handles AJAX requests 
-        // and plain old request/response submitted form.
+        // Process the request.
         // 
         public function process()
         {
+                //
+                // Authorization first:
+                //
+                if (isset($this->param->exam)) {
+                        $this->checkExaminationAccess();
+                        if (isset($this->param->question) && (
+                            $this->param->question != "all" &&
+                            $this->param->question != "exam")) {
+                                $this->checkQuestionAccess();
+                        }
+                }
+
+                // 
+                // Handles both AJAX requests and request/response method for
+                // submitted form (using the render() callback).
+                // 
                 if (isset($this->param->ajax) && (isset($this->param->save) || isset($this->param->next))) {
                         echo json_encode($this->saveQuestion());
                 } elseif (isset($this->param->next) && $this->param->next == 'route') {
