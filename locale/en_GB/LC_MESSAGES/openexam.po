@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-04-23 12:21+0200\n"
-"PO-Revision-Date: 2014-04-23 12:23+0200\n"
+"POT-Creation-Date: 2014-04-23 17:01+0200\n"
+"PO-Revision-Date: 2014-04-23 17:06+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English (British)\n"
 "Language: en_GB\n"
@@ -17,45 +17,72 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: include/import.inc:480
-#, php-format
-msgid "Possible file upload attack: %s"
-msgstr "Possible file upload attack: %s"
+#: include/import.inc:482 include/media.inc:297
+msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini."
+msgstr "The uploaded file exceeds the upload_max_filesize directive in php.ini."
 
-#: include/import.inc:507
+#: include/import.inc:484 include/media.inc:299
+msgid "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."
+msgstr "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."
+
+#: include/import.inc:486 include/media.inc:301
+msgid "The uploaded file was only partially uploaded."
+msgstr "The uploaded file was only partially uploaded."
+
+#: include/import.inc:488 include/media.inc:303
+msgid "No file was uploaded."
+msgstr "No file was uploaded."
+
+#: include/import.inc:490 include/media.inc:305
+msgid "Missing a temporary folder."
+msgstr "Missing a temporary folder."
+
+#: include/import.inc:492 include/media.inc:307
+msgid "Failed to write file to disk."
+msgstr "Failed to write file to disk."
+
+#: include/import.inc:494 include/media.inc:309
+msgid "A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help."
+msgstr "A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help."
+
+#: include/import.inc:498 include/media.inc:313
+msgid "The file don't reference an uploaded file, possible file attack."
+msgstr "The file don't reference an uploaded file, possible file attack."
+
+#: include/import.inc:525
 #, php-format
 msgid "Wrong MIME type (%s) on uploaded file %s (expected %s)"
 msgstr "Wrong MIME type (%s) on uploaded file %s (expected %s)"
 
-#: include/import.inc:510
+#: include/import.inc:528
 #, php-format
 msgid "Empty file %s uploaded"
 msgstr "Empty file %s uploaded"
 
-#: include/import.inc:603
+#: include/import.inc:621
 msgid "Missing XML format attribute. This don't look like an OpenExam project data file."
 msgstr "Missing XML format attribute. This don't look like an OpenExam project data file."
 
-#: include/import.inc:607
+#: include/import.inc:625
 #, php-format
 msgid "Unsupported XML format version: %d. This file can not be imported."
 msgstr "Unsupported XML format version: %d. This file can not be imported."
 
-#: include/import.inc:772 include/import.inc:825
+#: include/import.inc:790 include/import.inc:843
 #, php-format
 msgid "Expected header '%s' at index (1,1)"
 msgstr "Expected header '%s' at index (1,1)"
 
-#: include/import.inc:776 include/import.inc:830
+#: include/import.inc:794 include/import.inc:848
 #, php-format
 msgid "Expected format '%s' at index (2,2)"
 msgstr "Expected format '%s' at index (2,2)"
 
-#: include/import.inc:968
+#: include/import.inc:986
 msgid "No account information in import file."
 msgstr "No account information in import file."
 
-#: include/import.inc:1312 include/import.inc:1349
+#: include/import.inc:1330 include/import.inc:1367
 #, php-format
 msgid "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
 msgstr "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
@@ -99,10 +126,6 @@ msgstr "Failed copy file %s"
 #: include/media.inc:292
 msgid "Uploading files is not permitted by the system configuration."
 msgstr "Uploading files is not permitted by the system configuration."
-
-#: include/media.inc:313
-msgid "The file don't reference an uploaded file, possible file attack."
-msgstr "The file don't reference an uploaded file, possible file attack."
 
 #: include/media.inc:333 include/media.inc:387
 msgid "Failed move uploaded file."
@@ -177,8 +200,8 @@ msgstr "System"
 #: source/teacher/decoder.php:211 source/teacher/export.php:251
 #: source/teacher/export.php:255 source/teacher/correct.php:193
 #: source/teacher/correct.php:196 source/teacher/correct.php:362
-#: source/teacher/examinator.php:206 source/teacher/manager.php:650
-#: source/teacher/manager.php:654 source/teacher/template.php:103
+#: source/teacher/examinator.php:206 source/teacher/manager.php:649
+#: source/teacher/manager.php:653 source/teacher/template.php:103
 #: source/media/index.php:454
 msgid "Access denied!"
 msgstr "Access denied!"
@@ -274,7 +297,7 @@ msgid "Notice"
 msgstr "Notice"
 
 #: include/pdf.inc:372 source/teacher/contribute.php:737
-#: source/teacher/manager.php:535
+#: source/teacher/manager.php:534
 msgid "Removed"
 msgstr "Removed"
 
@@ -471,7 +494,7 @@ msgstr "Properties"
 #: include/teacher.inc:188 include/teacher.inc:681 include/teacher.inc:684
 #: source/teacher/contribute.php:767 source/teacher/contribute.php:784
 #: source/teacher/contribute.php:795 source/teacher/examinator.php:632
-#: source/teacher/manager.php:530 source/teacher/manager.php:557
+#: source/teacher/manager.php:529 source/teacher/manager.php:556
 #: source/media/index.php:251 source/media/index.php:277
 msgid "Delete"
 msgstr "Delete"
@@ -515,7 +538,7 @@ msgstr "Correct answers"
 
 #: include/teacher.inc:246 source/exam/index.php:194
 #: source/teacher/contribute.php:764 source/teacher/export.php:203
-#: source/teacher/manager.php:510
+#: source/teacher/manager.php:509
 msgid "Questions"
 msgstr "Questions"
 
@@ -656,7 +679,7 @@ msgstr "Examinations"
 
 #: include/teacher.inc:572 source/teacher/contribute.php:574
 #: source/teacher/contribute.php:768 source/teacher/examinator.php:264
-#: source/teacher/manager.php:442 source/teacher/manager.php:514
+#: source/teacher/manager.php:441 source/teacher/manager.php:513
 msgid "Import"
 msgstr "Import"
 
@@ -667,9 +690,9 @@ msgstr "Creates a new examination by importing an OpenExam project."
 #: include/teacher.inc:573 include/teacher.inc:811 include/teacher.inc:1039
 #: source/teacher/contribute.php:769 source/teacher/contribute.php:785
 #: source/teacher/examinator.php:276 source/teacher/examinator.php:621
-#: source/teacher/manager.php:471 source/teacher/manager.php:486
-#: source/teacher/manager.php:500 source/teacher/manager.php:513
-#: source/teacher/manager.php:551 source/teacher/manager.php:585
+#: source/teacher/manager.php:470 source/teacher/manager.php:485
+#: source/teacher/manager.php:499 source/teacher/manager.php:512
+#: source/teacher/manager.php:550 source/teacher/manager.php:584
 #: source/media/index.php:241 source/media/index.php:245
 #: source/media/index.php:294 source/media/index.php:437
 msgid "Add"
@@ -686,7 +709,7 @@ msgstr "Upcoming"
 
 #: include/teacher.inc:588 include/teacher.inc:732 include/teacher.inc:857
 #: include/teacher.inc:966 source/teacher/contribute.php:736
-#: source/teacher/manager.php:520 source/media/index.php:407
+#: source/teacher/manager.php:519 source/media/index.php:407
 msgid "Active"
 msgstr "Active"
 
@@ -711,7 +734,7 @@ msgstr "Ordered by start time"
 
 #: include/teacher.inc:675 source/admin/exams.php:315
 #: source/admin/exams.php:360 source/teacher/export.php:216
-#: source/teacher/manager.php:461
+#: source/teacher/manager.php:460
 msgid "Export"
 msgstr "Export"
 
@@ -719,21 +742,21 @@ msgstr "Export"
 msgid "Open the page for selecting the export options."
 msgstr "Open the page for selecting the export options."
 
-#: include/teacher.inc:677 source/teacher/manager.php:462
+#: include/teacher.inc:677 source/teacher/manager.php:461
 msgid "Copy"
 msgstr "Copy"
 
-#: include/teacher.inc:677 source/teacher/manager.php:462
+#: include/teacher.inc:677 source/teacher/manager.php:461
 msgid "Create a new examination by using this examination as a template."
 msgstr "Create a new examination by using this examination as a template."
 
 #: include/teacher.inc:678 source/teacher/contribute.php:783
-#: source/teacher/contribute.php:792 source/teacher/manager.php:463
-#: source/teacher/manager.php:527
+#: source/teacher/contribute.php:792 source/teacher/manager.php:462
+#: source/teacher/manager.php:526
 msgid "Edit"
 msgstr "Edit"
 
-#: include/teacher.inc:678 source/teacher/manager.php:463
+#: include/teacher.inc:678 source/teacher/manager.php:462
 msgid "Edit common properties like name, description or grades for this examination."
 msgstr "Edit common properties like name, description or grades for this examination."
 
@@ -1143,7 +1166,7 @@ msgstr "Delete this test case and return to the examination manager."
 msgid "Cancel"
 msgstr "Cancel"
 
-#: source/exam/index.php:183 source/teacher/manager.php:549
+#: source/exam/index.php:183 source/teacher/manager.php:548
 msgid "Resources"
 msgstr "Resources"
 
@@ -1155,7 +1178,7 @@ msgstr "Answered"
 #: source/admin/exams.php:313 source/teacher/contribute.php:751
 #: source/teacher/decoder.php:197 source/teacher/export.php:148
 #: source/teacher/correct.php:430 source/teacher/examinator.php:328
-#: source/teacher/manager.php:517 source/teacher/manager.php:556
+#: source/teacher/manager.php:516 source/teacher/manager.php:555
 #: source/media/index.php:366
 msgid "Show"
 msgstr "Show"
@@ -1846,7 +1869,7 @@ msgstr "Contribute Page"
 
 #: source/teacher/contribute.php:231 source/teacher/decoder.php:211
 #: source/teacher/export.php:251 source/teacher/examinator.php:206
-#: source/teacher/manager.php:650 source/teacher/template.php:103
+#: source/teacher/manager.php:649 source/teacher/template.php:103
 #: source/media/index.php:454
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
@@ -2028,7 +2051,7 @@ msgid "Currently, this is the list of question banks can be imported: "
 msgstr "Currently, this is the list of question banks can be imported: "
 
 #: source/teacher/contribute.php:573 source/teacher/examinator.php:340
-#: source/teacher/manager.php:441
+#: source/teacher/manager.php:440
 msgid "Filename"
 msgstr "Filename"
 
@@ -2491,7 +2514,7 @@ msgstr "Topics"
 msgid "Results"
 msgstr "Results"
 
-#: source/teacher/export.php:255 source/teacher/manager.php:654
+#: source/teacher/export.php:255 source/teacher/manager.php:653
 msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 msgstr "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 
@@ -2681,7 +2704,7 @@ msgstr "Add student one by one:"
 msgid "The anonymous code associated with this student logon."
 msgstr "The anonymous code associated with this student logon."
 
-#: source/teacher/examinator.php:298 source/teacher/manager.php:584
+#: source/teacher/examinator.php:298 source/teacher/manager.php:583
 msgid "UU-ID"
 msgstr "UU-ID"
 
@@ -2908,120 +2931,120 @@ msgstr "This page let you create a new examination from an OpenExam project file
 msgid "Browse your local disk to select an file containing the OpenExam project to import. "
 msgstr "Browse your local disk to select an file containing the OpenExam project to import. "
 
-#: source/teacher/manager.php:461
+#: source/teacher/manager.php:460
 msgid "Export this examination including its questions as XML data."
 msgstr "Export this examination including its questions as XML data."
 
-#: source/teacher/manager.php:469
+#: source/teacher/manager.php:468
 msgid "Contributors"
 msgstr "Contributors"
 
-#: source/teacher/manager.php:471
+#: source/teacher/manager.php:470
 msgid "Add a question contributor to this examination."
 msgstr "Add a question contributor to this examination."
 
-#: source/teacher/manager.php:477 source/teacher/manager.php:492
-#: source/teacher/manager.php:504 source/teacher/manager.php:532
+#: source/teacher/manager.php:476 source/teacher/manager.php:491
+#: source/teacher/manager.php:503 source/teacher/manager.php:531
 msgid "Remove"
 msgstr "Remove"
 
-#: source/teacher/manager.php:477
+#: source/teacher/manager.php:476
 #, php-format
 msgid "Remove %s as a question contributor for this examination."
 msgstr "Remove %s as a question contributor for this examination."
 
-#: source/teacher/manager.php:484
+#: source/teacher/manager.php:483
 msgid "Examinators"
 msgstr "Examinators"
 
-#: source/teacher/manager.php:486 source/teacher/manager.php:500
+#: source/teacher/manager.php:485 source/teacher/manager.php:499
 msgid "Add a person with the examinator role."
 msgstr "Add a person with the examinator role."
 
-#: source/teacher/manager.php:492
+#: source/teacher/manager.php:491
 #, php-format
 msgid "Remove %s as an examinator for this examination."
 msgstr "Remove %s as an examinator for this examination."
 
-#: source/teacher/manager.php:499
+#: source/teacher/manager.php:498
 msgid "Decoders"
 msgstr "Decoders"
 
-#: source/teacher/manager.php:504
+#: source/teacher/manager.php:503
 #, php-format
 msgid "Remove %s as a decoder for this examination."
 msgstr "Remove %s as a decoder for this examination."
 
-#: source/teacher/manager.php:513
+#: source/teacher/manager.php:512
 msgid "Add a new question for this examination."
 msgstr "Add a new question for this examination."
 
-#: source/teacher/manager.php:514
+#: source/teacher/manager.php:513
 msgid "Import questions from file on disk."
 msgstr "Import questions from file on disk."
 
-#: source/teacher/manager.php:515
+#: source/teacher/manager.php:514
 msgid "Remove all"
 msgstr "Remove all"
 
-#: source/teacher/manager.php:515
+#: source/teacher/manager.php:514
 msgid "Remove all questions from this examination."
 msgstr "Remove all questions from this examination."
 
-#: source/teacher/manager.php:517
+#: source/teacher/manager.php:516
 msgid "Open the page showing all questions at once, where questions can be edited and previewed."
 msgstr "Open the page showing all questions at once, where questions can be edited and previewed."
 
-#: source/teacher/manager.php:527
+#: source/teacher/manager.php:526
 msgid "Edit properties for this question"
 msgstr "Edit properties for this question"
 
-#: source/teacher/manager.php:530
+#: source/teacher/manager.php:529
 msgid "Permanent delete this question"
 msgstr "Permanent delete this question"
 
-#: source/teacher/manager.php:532
+#: source/teacher/manager.php:531
 msgid "Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."
 msgstr "Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."
 
-#: source/teacher/manager.php:540
+#: source/teacher/manager.php:539
 msgid "Restore"
 msgstr "Restore"
 
-#: source/teacher/manager.php:540
+#: source/teacher/manager.php:539
 msgid "Flag this question as active again"
 msgstr "Flag this question as active again"
 
-#: source/teacher/manager.php:556
+#: source/teacher/manager.php:555
 msgid "Show resource content"
 msgstr "Show resource content"
 
-#: source/teacher/manager.php:562
+#: source/teacher/manager.php:561
 #, php-format
 msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
 msgstr "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
 
-#: source/teacher/manager.php:563
+#: source/teacher/manager.php:562
 #, php-format
 msgid "Not all options might be available, i.e. its not possible to add questions to an already started examination."
 msgstr "Not all options might be available, i.e. its not possible to add questions to an already started examination."
 
-#: source/teacher/manager.php:566
+#: source/teacher/manager.php:565
 #, php-format
 msgid "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
 msgstr "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
 
-#: source/teacher/manager.php:593
+#: source/teacher/manager.php:592
 #, php-format
 msgid "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
 msgstr "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
 
-#: source/teacher/manager.php:611
+#: source/teacher/manager.php:610
 #, php-format
 msgid "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
 msgstr "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
 
-#: source/teacher/manager.php:629
+#: source/teacher/manager.php:628
 #, php-format
 msgid "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
 msgstr "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
@@ -3191,6 +3214,9 @@ msgstr "Last modified: %s"
 #, php-format
 msgid "Page responsible:"
 msgstr "Page responsible:"
+
+#~ msgid "Possible file upload attack: %s"
+#~ msgstr "Possible file upload attack: %s"
 
 #~ msgid "Resources:"
 #~ msgstr "Resources:"
