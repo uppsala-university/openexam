@@ -592,10 +592,12 @@ class Manager
                 // Get number of answer without a corresponding result record:
                 //
                 $sql = sprintf("SELECT  COUNT(a.id)
-                                FROM    students s, answers a
+                                FROM    questions q, students s, answers a
                                         LEFT JOIN results r ON a.id = r.answer_id
                                 WHERE   s.exam_id = %d AND
                                         s.id = a.student_id AND
+                                        q.id = a.question_id AND 
+                                        q.status != 'removed' AND 
                                         a.answered = 'Y' AND
                                         r.id IS NULL", $this->exam);
                 $db = Database::getConnection();
