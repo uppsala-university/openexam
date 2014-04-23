@@ -261,7 +261,7 @@ class BasePage implements TemplatePage
         // 
         // Display error page and terminate script with the given error code.
         // 
-        final public function fatal($title, $message, $exitcode = 1)
+        public function fatal($title, $message, $exitcode = 1)
         {
                 ErrorPage::show($title, $message);
                 exit($exitcode);

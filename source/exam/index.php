@@ -84,6 +84,24 @@ if (!defined("FORM_LINK_SAVE")) {
         define("FORM_LINK_SAVE", false);
 }
 
+class FatalException extends RuntimeException
+{
+
+        private $header;
+
+        public function __construct($header, $message, $code = 0, $previous = null)
+        {
+                parent::__construct($message, $code, $previous);
+                $this->header = $header;
+        }
+
+        public function getHeader()
+        {
+                return $this->header;
+        }
+
+}
+
 // 
 // This class implements a standard page.
 // 
@@ -255,7 +273,7 @@ class ExaminationPage extends BasePage
 
                 $data = Exam::getExamData($this->user, $this->param->exam);
                 if (!$data->hasExamID()) {
-                        $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+                        throw new FatalException(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
 
                 $now = time();
@@ -263,7 +281,7 @@ class ExaminationPage extends BasePage
                 $etime = strtotime($data->getExamEndTime());
 
                 if (!($stime <= $now && $now <= $etime)) {
-                        $this->fatal(_("This examination is now closed!"), sprintf("<p>" . _("This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance.") . "</p>", strftime(DATETIME_FORMAT, $etime)));
+                        throw new FatalException(_("This examination is now closed!"), sprintf("<p>" . _("This examination ended %s and is now closed. If you think this is an error, please contact the examinator for further assistance.") . "</p>", strftime(DATETIME_FORMAT, $etime)));
                 }
 
                 $this->testcase = $data->getExamTestCase() == 'Y';
@@ -281,12 +299,12 @@ class ExaminationPage extends BasePage
                                 }
                         } catch (LockerException $exception) {
                                 error_log($exception->getError());      // Log private message.
-                                $this->fatal(_("Computer lockdown failed!"), sprintf("<p>" .
-                                        _("Securing your computer for this examination has failed: %s") .
-                                        "<p></p>" .
-                                        _("If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. ") .
-                                        _("The examiniation is inaccessable from this computer until the problem has been resolved.") .
-                                        "</p>", $exception));
+                                throw new FatalException(_("Computer lockdown failed!"), sprintf("<p>" .
+                                    _("Securing your computer for this examination has failed: %s") .
+                                    "<p></p>" .
+                                    _("If this is your own computer, make sure that the fwexamd service is started, otherwise contact the system administrator or examination assistant for further assistance. ") .
+                                    _("The examiniation is inaccessable from this computer until the problem has been resolved.") .
+                                    "</p>", $exception), 0, $exception);
                         }
                 }
         }
@@ -298,10 +316,10 @@ class ExaminationPage extends BasePage
         {
                 $data = Exam::getQuestionData($this->param->question);
                 if (!$data->hasQuestionID()) {
-                        $this->fatal(_("Request parameter error!"), sprintf("<p>" . _("No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
+                        throw new FatalException(_("Request parameter error!"), sprintf("<p>" . _("No question data was found for the requested question. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
                 }
                 if ($data->getExamID() != $this->param->exam) {
-                        $this->fatal(_("Request parameter error!"), sprintf("<p>" . _("The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
+                        throw new FatalException(_("Request parameter error!"), sprintf("<p>" . _("The requested question is not related to the requested examination. This should not occure unless the request parameters has been explicit temperered.") . "</p>"));
                 }
         }
 
@@ -313,7 +331,7 @@ class ExaminationPage extends BasePage
                 $exams = Exam::getActiveExams($this->user);
 
                 if ($exams->count() == 0) {
-                        $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+                        throw new FatalException(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
 
                 printf("<h3>" . _("Select the examination") . "</h3>\n");
@@ -355,7 +373,7 @@ class ExaminationPage extends BasePage
         {
                 $exam = Exam::getExamData($this->user, $this->param->exam);
                 if (!$exam->hasExamID()) {
-                        $this->fatal(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
+                        throw new FatalException(_("No examination found!"), sprintf("<p>" . _("The system could not found any active examiniations assigned to your logon ID. If you think this is an error, please contact the examinator for further assistance.") . "</p>"));
                 }
 
                 printf("<h3>%s</h3>\n", $exam->getExamName());
@@ -626,7 +644,8 @@ class ExaminationPage extends BasePage
                         error_log($exception);
                         return array(
                                 "status"  => "failed",
-                                "message" => _("<b><u>Failed write answer to database.</u></b><br/><br/>Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost.")
+                                "message" => sprintf("<b><u>%s</u></b><br/><br/>%s", _("Failed write answer to database."), _("Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost.")
+                                )
                         );
                 }
         }
@@ -709,28 +728,53 @@ class ExaminationPage extends BasePage
         // 
         public function process()
         {
-                //
-                // Authorization first:
-                //
-                if (isset($this->param->exam)) {
-                        $this->checkExaminationAccess();
-                        if (isset($this->param->question) && (
-                            $this->param->question != "all" &&
-                            $this->param->question != "exam")) {
-                                $this->checkQuestionAccess();
+                try {
+                        //
+                        // Authorization first:
+                        //
+                        if (isset($this->param->exam)) {
+                                $this->checkExaminationAccess();
+                                if (isset($this->param->question) && (
+                                    $this->param->question != "all" &&
+                                    $this->param->question != "exam")) {
+                                        $this->checkQuestionAccess();
+                                }
                         }
-                }
 
-                // 
-                // Handles both AJAX requests and request/response method for
-                // submitted form (using the render() callback).
-                // 
-                if (isset($this->param->ajax) && (isset($this->param->save) || isset($this->param->next))) {
-                        echo json_encode($this->saveQuestion());
-                } elseif (isset($this->param->next) && $this->param->next == 'route') {
-                        $this->saveRouter($this->param);
+                        // 
+                        // Handles both AJAX requests and request/response method for
+                        // submitted form (using the render() callback).
+                        // 
+                        if (isset($this->param->ajax) && (isset($this->param->save) || isset($this->param->next))) {
+                                echo json_encode($this->saveQuestion());
+                        } elseif (isset($this->param->next) && $this->param->next == 'route') {
+                                $this->saveRouter($this->param);
+                        } else {
+                                $this->render();
+                        }
+                } catch (FatalException $exception) {
+                        $this->fatal($exception->getHeader(), $exception->getMessage());
+                } catch (DatabaseException $exception) {
+                        error_log(sprintf("%s: %s", get_class($exception), $exception->getMessage()));
+                        $this->fatal(_('Database error'), _("Please wait a few seconds before retry saving. Do not switch to another question before your answer has been successful saved. If you do, then all your changes since the last save will be lost."));
+                } catch (Exception $exception) {
+                        $this->fatal(get_class($exception), $exception->getMessage());
+                }
+        }
+
+        // 
+        // Error report back to caller.
+        // 
+        public function fatal($title, $message, $exitcode = 1)
+        {
+                if (isset($this->param->ajax)) {
+                        echo json_encode(array(
+                                'status'  => 'failed',
+                                'header'  => $title,
+                                'message' => $message
+                        ));
                 } else {
-                        $this->render();
+                        parent::fatal($title, $message, $exitcode);
                 }
         }
 
@@ -740,10 +784,6 @@ class ExaminationPage extends BasePage
 // Validate request parameters and (if validate succeeds) render the page.
 // 
 $page = new ExaminationPage();
-try {
-        $page->process();
-} catch (Exception $exception) {
-        $page->fatal(get_class($exception), $exception->getMessage());
-}
+$page->process();
 
 ?>
