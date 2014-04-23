@@ -476,8 +476,26 @@ abstract class ImportBase implements Import
          */
         public function setFile($name, $file, $mime, $size)
         {
+                if (isset($_FILES['file']['error'])) {
+                        switch ($_FILES['file']['error']) {
+                                case UPLOAD_ERR_INI_SIZE:
+                                        throw new ImportException(_("The uploaded file exceeds the upload_max_filesize directive in php.ini."));
+                                case UPLOAD_ERR_FORM_SIZE:
+                                        throw new ImportException(_("The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."));
+                                case UPLOAD_ERR_PARTIAL:
+                                        throw new ImportException(_("The uploaded file was only partially uploaded."));
+                                case UPLOAD_ERR_NO_FILE:
+                                        throw new ImportException(_("No file was uploaded."));
+                                case UPLOAD_ERR_NO_TMP_DIR:
+                                        throw new ImportException(_("Missing a temporary folder."));
+                                case UPLOAD_ERR_CANT_WRITE:
+                                        throw new ImportException(_("Failed to write file to disk."));
+                                case UPLOAD_ERR_EXTENSION:
+                                        throw new ImportException(_("A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help."));
+                        }
+                }
                 if (!is_uploaded_file($file)) {
-                        throw new ImportException(sprintf(_("Possible file upload attack: %s"), $file));
+                        throw new ImportException(_("The file don't reference an uploaded file, possible file attack."));
                 }
                 if ($mime == FileImport::octet_stream) {
                         $mime = FileImport::getMimeType($file);

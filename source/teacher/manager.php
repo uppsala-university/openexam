@@ -412,15 +412,15 @@ class ManagerPage extends TeacherPage
                 if ($store) {
                         try {
                                 $inserter = new ImportInsert(0, Database::getConnection());
-                                
+
                                 $importer = FileImport::create($this->param->type);
                                 $importer->setFile($_FILES['file']['name'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size']);
                                 $importer->setFilter(OPENEXAM_IMPORT_INCLUDE_ALL);
-                                
+
                                 $importer->open();
                                 $importer->read();
                                 $importer->close();
-                                
+
                                 $this->param->exam = $importer->insert($inserter);
                         } catch (ImportException $exception) {
                                 $this->fatal(_("Failed Import Examination"), $exception->getMessage());
@@ -436,7 +436,6 @@ class ManagerPage extends TeacherPage
                         $form->setEncodingType("multipart/form-data");
                         $form->addHidden("action", "import");
                         $form->addHidden("type", "op");
-                        $form->addHidden("MAX_FILE_SIZE", 500000);
                         $input = $form->addFileInput("file");
                         $input->setLabel(_("Filename"));
                         $input = $form->addSubmitButton("import", _("Import"));

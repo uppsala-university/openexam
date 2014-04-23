@@ -294,19 +294,19 @@ class MediaUpload
                 if (isset($_FILES[$this->name]['error'])) {
                         switch ($_FILES[$this->name]['error']) {
                                 case UPLOAD_ERR_INI_SIZE:
-                                        throw new MediaException("The uploaded file exceeds the upload_max_filesize directive in php.ini.");
+                                        throw new MediaException(_("The uploaded file exceeds the upload_max_filesize directive in php.ini."));
                                 case UPLOAD_ERR_FORM_SIZE:
-                                        throw new MediaException("The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.");
+                                        throw new MediaException(_("The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."));
                                 case UPLOAD_ERR_PARTIAL:
-                                        throw new MediaException("The uploaded file was only partially uploaded.");
+                                        throw new MediaException(_("The uploaded file was only partially uploaded."));
                                 case UPLOAD_ERR_NO_FILE:
-                                        throw new MediaException("No file was uploaded.");
+                                        throw new MediaException(_("No file was uploaded."));
                                 case UPLOAD_ERR_NO_TMP_DIR:
-                                        throw new MediaException("Missing a temporary folder.");
+                                        throw new MediaException(_("Missing a temporary folder."));
                                 case UPLOAD_ERR_CANT_WRITE:
-                                        throw new MediaException("Failed to write file to disk.");
+                                        throw new MediaException(_("Failed to write file to disk."));
                                 case UPLOAD_ERR_EXTENSION:
-                                        throw new MediaException("A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help.");
+                                        throw new MediaException(_("A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help."));
                         }
                 }
                 if (!is_uploaded_file($_FILES[$this->name]['tmp_name'])) {
