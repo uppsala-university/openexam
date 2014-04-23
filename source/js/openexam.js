@@ -89,6 +89,7 @@ function form_ajax_send(id)
             } else if (resp.status === 'info') {
                 form_show_result($("#result-info"), resp.message, true);
             } else if (resp.status === 'failed') {
+                resp.message = '<b><u>' + resp.header + ':</u></b><br/><br/>' + resp.message;
                 form_show_result($("#result-warn"), resp.message, false);
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
