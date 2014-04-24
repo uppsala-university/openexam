@@ -758,8 +758,8 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                                 $grades['range'][$range] ++;
                         }
                 }
-                krsort($grades['score']);
-                krsort($grades['range']);
+                krsort($grades['score'], SORT_NUMERIC);
+                krsort($grades['range'], SORT_NUMERIC);
 
                 //
                 // Get mean value and standard deviation. We are going to present
