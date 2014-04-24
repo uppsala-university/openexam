@@ -275,6 +275,37 @@ if (!defined('LINK_TYPE_NAME')) {
 }
 
 // 
+// UnorderedList (UL) types:
+// 
+if (!defined('LIST_TYPE_DISC')) {
+        define('LIST_TYPE_DISC', 'disc');
+}
+if (!defined('LIST_TYPE_SQUARE')) {
+        define('LIST_TYPE_SQUARE', 'square');
+}
+if (!defined('LIST_TYPE_CIRCLE')) {
+        define('LIST_TYPE_CIRCLE', 'circle');
+}
+// 
+// OrderedList (OL) and ListItem (LI) types:
+// 
+if (!defined('LIST_TYPE_NUMERICAL')) {
+        define('LIST_TYPE_NUMERICAL', '1');
+}
+if (!defined('LIST_TYPE_ALPHA_LOWER')) {
+        define('LIST_TYPE_ALPHA_LOWER', 'a');
+}
+if (!defined('LIST_TYPE_ALPHA_UPPER')) {
+        define('LIST_TYPE_ALPHA_UPPER', 'A');
+}
+if (!defined('LIST_TYPE_ROMAN_LOWER')) {
+        define('LIST_TYPE_ROMAN_LOWER', 'i');
+}
+if (!defined('LIST_TYPE_ROMAN_UPPER')) {
+        define('LIST_TYPE_ROMAN_UPPER', 'I');
+}
+
+// 
 // Link attributes:
 // 
 if (!defined('LINK_SHAPE_DEFAULT')) {
@@ -3045,6 +3076,121 @@ class Legend extends Container
         {
                 parent::__construct("legend");
                 parent::setText($text);
+        }
+
+}
+
+/**
+ * Abstract base class for list elements.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+abstract class ListElement extends Container
+{
+
+        /**
+         * Set the type attribute.
+         * @param string $type The type attribute.
+         */
+        public function setType($type)
+        {
+                parent::setAttr("type", $type);
+        }
+
+}
+
+/**
+ * This class represent an list item.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class ListItem extends ListElement
+{
+
+        public function __construct()
+        {
+                parent::__construct("li");
+        }
+
+        /**
+         * Specifies the value of a list item (only for ordered lists).
+         * @param int $value The numeric value.
+         */
+        public function setValue($value)
+        {
+                parent::setAttr("value", $value);
+        }
+
+}
+
+abstract class ListBase extends ListElement
+{
+
+        /**
+         * Specifies that the list should render smaller than normal.
+         */
+        public function setCompact()
+        {
+                parent::setAttr("compact");
+        }
+
+}
+
+/**
+ * This class represents an unordered list.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class UnorderedList extends ListBase
+{
+
+        public function __construct()
+        {
+                parent::__construct("ul");
+        }
+
+}
+
+/**
+ * This class represents an ordered list.
+ * 
+ * @package UserInterface
+ * @subpackage HTML
+ *
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class OrderedList extends ListBase
+{
+
+        public function __construct()
+        {
+                parent::__construct("ol");
+        }
+
+        /**
+         * Specifies that the list order should be descending (9,8,7...).
+         */
+        public function setReversed()
+        {
+                parent::setAttr("reversed");
+        }
+
+        /**
+         * Specifies the start value of an ordered list.
+         * @param int $value The start number.
+         */
+        public function setStart($value)
+        {
+                parent::setAttr("start", $value);
         }
 
 }
