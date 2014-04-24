@@ -172,64 +172,73 @@ class HtmlDocPDF
         //
         protected function begin($class, $target = null)
         {
-                if ($this->debug) {
-                        $pipes = array(fopen("php://stdout", "w"));
-                } else {
-                        $fds = array(
-                                0 => array("pipe", "r"),
-                                1 => array("pipe", "w"),
-                                2 => array("pipe", "w")
-                        );
-
-                        $cmd = $this->getCommand($target);
-                        $env = array("SHELL" => "/bin/bash", "TZ" => "UTC");
-                        $pipes = array();
-
-                        if (version_compare(phpversion(), "5.0.0") < 0) {
-                                $timezone = getenv("TZ");
-                                putenv(sprintf("TZ=%s", $env['TZ']));
-                                $process = proc_open($cmd, $fds, $pipes);
-                                putenv(sprintf("TZ=%s", $timezone));
+                try {
+                        if ($this->debug) {
+                                $pipes = array(fopen("php://output", "w"));
                         } else {
-                                $process = proc_open($cmd, $fds, $pipes, null, $env);
+                                $fds = array(
+                                        0 => array("pipe", "r"),
+                                        1 => array("pipe", "w"),
+                                        2 => array("pipe", "w")
+                                );
+
+                                $cmd = $this->getCommand($target);
+                                $env = array("SHELL" => "/bin/bash", "TZ" => "UTC");
+                                $pipes = array();
+
+                                if (version_compare(phpversion(), "5.0.0") < 0) {
+                                        $timezone = getenv("TZ");
+                                        putenv(sprintf("TZ=%s", $env['TZ']));
+                                        $process = proc_open($cmd, $fds, $pipes);
+                                        putenv(sprintf("TZ=%s", $timezone));
+                                } else {
+                                        $process = proc_open($cmd, $fds, $pipes, null, $env);
+                                }
+
+                                if (!is_resource($process)) {
+                                        throw new Exception(sprintf("Failed start process %s", $cmd));
+                                }
                         }
-                }
 
-                if (is_resource($process) || $this->debug) {
-                        $filter = stream_filter_append($pipes[0], self::filter_name);
-                        $class->write($pipes[0]);
-                        stream_filter_remove($filter);
+                        if ((isset($process) && is_resource($process)) || $this->debug) {
+                                $filter = stream_filter_append($pipes[0], self::filter_name);
+                                $class->write($pipes[0]);
+                                stream_filter_remove($filter);
 
-                        if (!$this->debug) {
-                                fclose($pipes[0]);
+                                if (!$this->debug) {
+                                        fclose($pipes[0]);
 
-                                $stdout = stream_get_contents($pipes[1]);
-                                $stderr = stream_get_contents($pipes[2]);
+                                        $stdout = stream_get_contents($pipes[1]);
+                                        $stderr = stream_get_contents($pipes[2]);
 
-                                if (strlen($stderr) > 0) {
-                                        //
-                                        // HTMLDOC got the bad habit of writing status info to stderr.
-                                        //
+                                        if (strlen($stderr) > 0) {
+                                                //
+                                                // HTMLDOC got the bad habit of writing status info to stderr.
+                                                //
                                         if (!preg_match("/^(BYTES: \d+|PAGES: \d+)$/msU", $stderr)) {
-                                                throw new Exception(sprintf("Failed generate PDF: %s", $stderr));
+                                                        throw new Exception(sprintf("Failed generate PDF: %s", $stderr));
+                                                }
+                                        }
+                                        if (strlen($stdout) > 0) {
+                                                echo $stdout;
+                                        }
+
+                                        fclose($pipes[1]);
+                                        fclose($pipes[2]);
+
+                                        $result = proc_close($process);
+
+                                        //
+                                        // Check exit status of process.
+                                        //
+                                        if ($result > 0 && $result != 2) {
+                                                throw new Exception(sprintf("HTMLDOC finished with non-zero exit code %d", $result), $result);
                                         }
                                 }
-                                if (strlen($stdout) > 0) {
-                                        echo $stdout;
-                                }
-
-                                fclose($pipes[1]);
-                                fclose($pipes[2]);
-
-                                $result = proc_close($process);
-
-                                //
-                                // Check exit status of process.
-                                //
-                                if ($result > 0 && $result != 2) {
-                                        throw new Exception(sprintf("HTMLDOC finished with non-zero exit code %d", $result), $result);
-                                }
                         }
+                } catch (Exception $exception) {
+                        error_log($exception);
+                        throw $exception;
                 }
         }
 
@@ -591,11 +600,9 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                                 $grades['grade'][$class] ++;   // One more with this grade
                         }
                         if (!isset($grades['score'][$value])) {
-
-
                                 $grades['score'][$value] = 1;
                         } else {
-                                $grades ['score'] [$value] ++;
+                                $grades ['score'][$value] ++;
                         }
                         if (!isset($grades['range'][$range])) {
                                 $grades['range'][$range] = 1;
@@ -936,7 +943,6 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 header("Cache-directive: no-cache");
                 header("Pragma: public");
                 header("Expires: 0");
-
                 readfile($zipname);
 
                 if (file_exists($zipname)) {
