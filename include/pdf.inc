@@ -740,7 +740,7 @@ class ResultPDF extends HtmlDocPDF implements InputGenerator
                 foreach ($this->board->getStudents() as $student) {
                         $score = $this->board->getStudentScore($student->getStudentID());
                         $class = $this->grade->getGrade($score->getSum());
-                        $value = sprintf("%.01f", $score->getSum());
+                        $value = floatval(sprintf("%.01f", $score->getSum()));
                         $range = intval(floor(10 * $score->getSum() / $this->board->getMaximumScore()));
                         if (!isset($grades['grade'][$class])) {
                                 $grades['grade'][$class] = 1;
