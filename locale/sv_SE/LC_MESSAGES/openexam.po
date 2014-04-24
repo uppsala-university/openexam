@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-04-24 16:54+0200\n"
+"POT-Creation-Date: 2014-04-24 21:27+0200\n"
 "PO-Revision-Date: 2014-04-24 16:59+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
@@ -215,55 +215,55 @@ msgstr "Endast användare tilldelade administrative privilegier (system managers
 msgid "Table of Contents"
 msgstr "Innehållsförteckning"
 
-#: include/pdf.inc:295
+#: include/pdf.inc:306
 msgid "Examination Date"
 msgstr "Examinationsdag"
 
-#: include/pdf.inc:296
+#: include/pdf.inc:307
 msgid "Participant"
 msgstr "Deltagare"
 
-#: include/pdf.inc:313
+#: include/pdf.inc:324
 msgid "Page $PAGE of $PAGES"
 msgstr "Sida $PAGE av $PAGES"
 
-#: include/pdf.inc:331 source/admin/exams.php:227 source/admin/exams.php:365
+#: include/pdf.inc:342 source/admin/exams.php:227 source/admin/exams.php:365
 #: source/teacher/manager.php:217 source/teacher/manager.php:289
 msgid "Description"
 msgstr "Beskrivning"
 
-#: include/pdf.inc:340 include/sendmail.inc:189
+#: include/pdf.inc:351 include/sendmail.inc:189
 msgid "Examination Result"
 msgstr "Resultat från examination"
 
-#: include/pdf.inc:346 include/pdf.inc:378 include/pdf.inc:658
-#: include/pdf.inc:672 include/pdf.inc:711 include/scoreboard.inc:865
+#: include/pdf.inc:357 include/pdf.inc:389 include/pdf.inc:607
+#: include/pdf.inc:621 include/pdf.inc:660 include/scoreboard.inc:865
 msgid "Summary"
 msgstr "Summering"
 
-#: include/pdf.inc:347
+#: include/pdf.inc:358
 #, php-format
 msgid "You scored total %.01f of maximum %.01f points (%.01f%%) on this examination."
 msgstr "Du har fått totalt %.01f poäng av maximalt %.01f (%.01f%%) på den här examinationen."
 
-#: include/pdf.inc:352 source/teacher/manager.php:245
+#: include/pdf.inc:363 source/teacher/manager.php:245
 msgid "Graduation"
 msgstr "Betygssättning"
 
-#: include/pdf.inc:353
+#: include/pdf.inc:364
 #, php-format
 msgid "Your graduation on this examination is: <b>%s</b>."
 msgstr "Din betygssättning på den här examinationen är <b>%s</b>."
 
-#: include/pdf.inc:358
+#: include/pdf.inc:369
 msgid "Score Table"
 msgstr "Poängtabell"
 
-#: include/pdf.inc:359
+#: include/pdf.inc:370
 msgid "This table shows a summary of your score versus the maximum scores. Questions without answer are marked with an '-' in the table."
 msgstr "Den här tabellen visar en summering av din poängsumma jämfört med maximala antalet poäng. Frågor där svar saknas är markerade med '-' i tabellen."
 
-#: include/pdf.inc:360 include/pdf.inc:389 include/scoreboard.inc:1116
+#: include/pdf.inc:371 include/pdf.inc:400 include/scoreboard.inc:1116
 #: source/exam/index.php:411 source/exam/index.php:444
 #: source/admin/adjust.php:117 source/teacher/contribute.php:391
 #: source/teacher/contribute.php:789 source/teacher/correct.php:277
@@ -272,7 +272,7 @@ msgstr "Den här tabellen visar en summering av din poängsumma jämfört med ma
 msgid "Question"
 msgstr "Fråga"
 
-#: include/pdf.inc:360 include/pdf.inc:446 include/pdf.inc:664
+#: include/pdf.inc:371 include/pdf.inc:457 include/pdf.inc:613
 #: include/scoreboard.inc:719 source/admin/adjust.php:124
 #: source/teacher/contribute.php:406 source/teacher/contribute.php:801
 #: source/teacher/correct.php:377 source/teacher/correct.php:450
@@ -280,187 +280,187 @@ msgstr "Fråga"
 msgid "Score"
 msgstr "Poäng"
 
-#: include/pdf.inc:360 include/pdf.inc:417 include/scoreboard.inc:721
+#: include/pdf.inc:371 include/pdf.inc:428 include/scoreboard.inc:721
 #: include/scoreboard.inc:1116 source/teacher/correct.php:304
 #: source/teacher/correct.php:311 source/teacher/correct.php:336
 #: source/teacher/correct.php:483 source/teacher/correct.php:625
 msgid "Max score"
 msgstr "Maxpoäng"
 
-#: include/pdf.inc:360 include/pdf.inc:650 include/pdf.inc:664
+#: include/pdf.inc:371 include/pdf.inc:599 include/pdf.inc:613
 #: include/scoreboard.inc:722 include/scoreboard.inc:870
 #: include/scoreboard.inc:1079 source/teacher/correct.php:626
 msgid "Percent"
 msgstr "Procent"
 
-#: include/pdf.inc:360 source/exam/index.php:531
+#: include/pdf.inc:371 source/exam/index.php:531
 msgid "Notice"
 msgstr "Notera"
 
-#: include/pdf.inc:372 source/teacher/contribute.php:737
+#: include/pdf.inc:383 source/teacher/contribute.php:737
 #: source/teacher/manager.php:534
 msgid "Removed"
 msgstr "Borttagna"
 
-#: include/pdf.inc:415 source/teacher/correct.php:282
+#: include/pdf.inc:426 source/teacher/correct.php:282
 #: source/teacher/correct.php:481
 msgid "Correct answer"
 msgstr "Rätt svar"
 
-#: include/pdf.inc:421
+#: include/pdf.inc:432
 msgid "Teachers reason for removal"
 msgstr "Lärarens orsak för borttagning"
 
-#: include/pdf.inc:423
+#: include/pdf.inc:434
 msgid "This question was removed without an explanation from the teacher."
 msgstr "Den här frågan har tagits bort utan en förklaring från läraren."
 
-#: include/pdf.inc:431 source/exam/index.php:411
+#: include/pdf.inc:442 source/exam/index.php:411
 #: source/teacher/correct.php:295 source/teacher/correct.php:298
 #: source/teacher/correct.php:376 source/teacher/correct.php:449
 #: source/teacher/correct.php:500
 msgid "Answer"
 msgstr "Svar"
 
-#: include/pdf.inc:441
+#: include/pdf.inc:452
 msgid "Your comments"
 msgstr "Dina kommentarer"
 
-#: include/pdf.inc:444
+#: include/pdf.inc:455
 msgid "Teacher comments"
 msgstr "Kommentar från lärare"
 
-#: include/pdf.inc:492
+#: include/pdf.inc:503
 msgid "Questions and Answers"
 msgstr "Frågor och svar"
 
-#: include/pdf.inc:499
+#: include/pdf.inc:510
 msgid "Unanswered Questions"
 msgstr "Obesvarade frågor"
 
-#: include/pdf.inc:508
+#: include/pdf.inc:519
 msgid "Removed Questions"
 msgstr "Borttagna frågor"
 
-#: include/pdf.inc:510
+#: include/pdf.inc:521
 msgid "These questions has been removed from this examination. "
 msgstr "Dessa frågor har tagits bort från den här examinationen. "
 
-#: include/pdf.inc:511
+#: include/pdf.inc:522
 msgid "The questions, along with your answers (if any) and the teacher appraisal, is included here for reference, but do not affect your examination score or grade."
 msgstr "Alla frågor tillsammans med dina svar (om några) samt lärarens bedömning är inkluderad här för referens, men saknar betydelse för poängsättning och bedömning."
 
-#: include/pdf.inc:526
+#: include/pdf.inc:537
 msgid "Responsable for examination"
 msgstr "Ansvarig för examinationen"
 
-#: include/pdf.inc:528
+#: include/pdf.inc:539
 #, php-format
 msgid "Main responsible person for the examination is <a href=\"mailto:%s\">%s</a>"
 msgstr "Huvudansvarig person för examinationen är <a href=\"mailto:%s\">%s</a>"
 
-#: include/pdf.inc:558
+#: include/pdf.inc:569
 msgid "Correction of answers"
 msgstr "Rättning av svar"
 
-#: include/pdf.inc:560
+#: include/pdf.inc:571
 msgid "These people have contributed questions for the examination and corrected answers."
 msgstr "Dessa personer bar bidragit med frågor till examinationen och rättat svaren."
 
-#: include/pdf.inc:565
+#: include/pdf.inc:576
 msgid "Corrected questions"
 msgstr "Rättade frågor"
 
-#: include/pdf.inc:576
+#: include/pdf.inc:587
 msgid "Statistics"
 msgstr "Statistik"
 
-#: include/pdf.inc:577
+#: include/pdf.inc:588
 msgid "This section shows overall statistics for all participients on this examination."
 msgstr "Den här avdelningen visar översiktlig statistik över alla deltagare på den här examinationen."
 
-#: include/pdf.inc:646
+#: include/pdf.inc:595
 msgid "Distribution"
 msgstr "Fördelning"
 
-#: include/pdf.inc:648
+#: include/pdf.inc:597
 msgid "This table shows the distribution by grades. The number of student allotted for each grade are:"
 msgstr "Den här tabellen visar fördelningen mellan dom olika betygen. Antalet studenter för varje betyg är:"
 
-#: include/pdf.inc:650 include/scoreboard.inc:723 include/scoreboard.inc:875
+#: include/pdf.inc:599 include/scoreboard.inc:723 include/scoreboard.inc:875
 #: source/teacher/correct.php:627
 msgid "Grade"
 msgstr "Betyg"
 
-#: include/pdf.inc:650
+#: include/pdf.inc:599
 msgid "Threshold"
 msgstr "Gränsvärde"
 
-#: include/pdf.inc:650 include/pdf.inc:664 include/pdf.inc:693
+#: include/pdf.inc:599 include/pdf.inc:613 include/pdf.inc:642
 #: source/teacher/decoder.php:604 source/teacher/export.php:210
 #: source/teacher/examinator.php:409 source/teacher/examinator.php:612
 #: source/teacher/examinator.php:619
 msgid "Students"
 msgstr "Studenter"
 
-#: include/pdf.inc:662
+#: include/pdf.inc:611
 msgid "This table shows the distribution of scores by student on this examination."
 msgstr "Denna tabell visar fördelningen av poäng per student på den här examinationen."
 
-#: include/pdf.inc:673
+#: include/pdf.inc:622
 msgid "Mean Value"
 msgstr "Medelvärde"
 
-#: include/pdf.inc:674
+#: include/pdf.inc:623
 msgid "Standard Deviation"
 msgstr "Standardavvikelse"
 
-#: include/pdf.inc:681
+#: include/pdf.inc:630
 msgid "The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. "
 msgstr "Meddelvärdet, standardavvikelsen och den procentuell fördelning inom '()' är baserad på samtliga värden. "
 
-#: include/pdf.inc:682
+#: include/pdf.inc:631
 msgid "The other values are calculated by first removing the highest and lowest scores."
 msgstr "Övriga värden är beräknade genom att först ta bort den högsta och den lägsta poängen."
 
-#: include/pdf.inc:689
+#: include/pdf.inc:638
 msgid "Ranges"
 msgstr "Områden"
 
-#: include/pdf.inc:691
+#: include/pdf.inc:640
 msgid "This table shows the number of student in each range of percentage correct answers."
 msgstr "Denna tabell visar antalet studenter i varje procentuella område av rätta svar."
 
-#: include/pdf.inc:693
+#: include/pdf.inc:642
 msgid "Range"
 msgstr "Område"
 
-#: include/pdf.inc:723
+#: include/pdf.inc:672
 msgid "Reference"
 msgstr "Referens"
 
-#: include/pdf.inc:724
+#: include/pdf.inc:673
 msgid "Information about this examination."
 msgstr "Information om den här examinationen."
 
-#: include/pdf.inc:730
+#: include/pdf.inc:679
 msgid "Contact Information"
 msgstr "Kontaktinformation"
 
-#: include/pdf.inc:731
+#: include/pdf.inc:680
 msgid "This section lists those people thats been involved in this examination."
 msgstr "Den här avdelningen listar dom personer som har varit involverade i den här examinationen."
 
-#: include/pdf.inc:740
+#: include/pdf.inc:689
 msgid "Document Information"
 msgstr "Dokumentinformation"
 
-#: include/pdf.inc:742
+#: include/pdf.inc:691
 #, php-format
 msgid "This document was generated by <a href=\"%s\">OpenExam PHP</a> installed on <a href=\"%s/\">%s/</a> using the open source version of the <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> released under GPL license."
 msgstr "Det här dokumentet är genererat av <a href=\"%s\">OpenExam PHP</a> installerad på <a href=\"%s\">%s</a> användandes open source versionen av <a href=\"%s\">HTMLDOC PostScript&#0174;/PDF generator</a> släppt under GPL licens."
 
-#: include/pdf.inc:745
+#: include/pdf.inc:694
 msgid "OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala University."
 msgstr "OpenExam PHP är ett system för säkra examinationer utvecklad vid Uppsala Biomedical Centre, Uppsala universitet."
 
