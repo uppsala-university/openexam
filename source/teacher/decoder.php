@@ -95,7 +95,7 @@ class DecoderPage extends TeacherPage
                 "mirror"   => parent::pattern_textline, // button
                 "action"   => "/^(save|show|mail|download)$/",
                 "format"   => "/^(pdf|html|ps|csv|tab|xml)$/",
-                "student"  => "/^(\d+|all)$/",
+                "student"  => "/^(\d+|all|list|form|tree)$/",
                 "message"  => parent::pattern_textarea,
                 "colorize" => parent::pattern_index,
                 "verbose"  => parent::pattern_index,
@@ -120,10 +120,13 @@ class DecoderPage extends TeacherPage
                         $this->param->colorize = false;
                 }
                 if (!isset($this->param->sort)) {
-                        $this->param->sort = 'name';
+                        $this->param->sort = "name";
                 }
                 if (!isset($this->param->desc)) {
                         $this->param->desc = true;
+                }
+                if (!isset($this->param->student)) {
+                        $this->param->student = "tree";
                 }
 
                 if (isset($this->param->exam)) {
@@ -168,11 +171,13 @@ class DecoderPage extends TeacherPage
                                         $this->saveScores();
                                 }
                         } elseif ($this->param->action == "mail") {
-                                if (isset($this->param->student)) {
+                                if ($this->param->student == "list" ||
+                                    $this->param->student == "form" ||
+                                    $this->param->student == "tree") {
+                                        $this->mailResult($this->param->student);
+                                } else {
                                         $this->assert("format");
                                         $this->sendResult();
-                                } else {
-                                        $this->mailResult();
                                 }
                         }
                 } else {
@@ -509,7 +514,7 @@ class DecoderPage extends TeacherPage
 
                 foreach ($students as $student) {
                         $addr = $this->getMailRecepient($student->getStudentUser());
-                        if (!isset($mail)) {
+                        if (!isset($addr)) {
                                 $this->error(sprintf(_("Failed lookup email address for %s"), $student->getStudentUser()));
                                 continue;
                         }
@@ -536,10 +541,86 @@ class DecoderPage extends TeacherPage
                 }
         }
 
+        private function mailResult($show)
+        {
+                $mode = array(
+                        "form" => _("Form"),
+                        "tree" => _("Tree")
+                );
+                $disp = array(
+                );
+                printf("<span class=\"links viewmode\">\n");
+                foreach ($mode as $name => $text) {
+                        if ($show != $name) {
+                                $disp[] = sprintf("<a href=\"?exam=%d&amp;action=mail&amp;student=%s\">%s</a>", $this->param->exam, $name, $text);
+                        } else {
+                                $disp[] = $text;
+                        }
+                }
+                printf("%s: %s\n", _("Show"), implode(", ", $disp));
+                printf("</span>\n");
+
+                switch ($show) {
+                        case "form":
+                                $this->mailResultForm();
+                                break;
+                        case "tree":
+                                $this->mailResultTree();
+                                break;
+                }
+        }
+
+        // 
+        // List email addresses for all student in a tree structure.
+        // 
+        private function mailResultTree()
+        {
+                printf("<p>" .
+                    _("Compose and send email to all or individual students by clicking on one of the links below. ") .
+                    _("Your own email program should be opened with the recepients filled in. ") .
+                    _("The email body will contain the link from where the students can login and download their result. ")
+                );
+
+                $board = new ScoreBoard($this->param->exam, $this->filter);
+                $students = $board->getStudents();
+
+                $recepients = array();
+
+                foreach ($students as $student) {
+                        $addr = $this->getMailRecepient($student->getStudentUser());
+                        if (!isset($addr)) {
+                                $this->error(sprintf(_("Failed lookup email address for %s"), $student->getStudentUser()));
+                                continue;
+                        } else {
+                                $recepients[] = $addr->getAddress();
+                        }
+                }
+
+                $data = $this->manager->getData();
+                $date = strftime("%x", strtotime($data->getExamStartTime()));
+                $body = sprintf(_("Result from the examination '%s' on %s can now be downloaded from %s"), $data->getExamName(), $date, sprintf("%s/result/", BASE_URL));
+                $subj = sprintf(_("Result available for examination on %s (OpenExam)"), $date);
+
+                $tree = new TreeBuilder(_("Students"));
+                $link = sprintf("mailto:?bcc=%s&subject=%s&body=%s", implode(",", $recepients), $subj, $body);
+                $root = $tree->getRoot();
+                $root->setLink($link);
+                $root->addLink(_("Email"), $link, _("Send email to all students in this list."));
+
+                foreach ($recepients as $addr) {
+                        $link = sprintf("mailto:?to=%s&subject=%s&body=%s", $addr, $subj, $body);
+                        $child = $root->addChild($addr);
+                        $child->setLink($link);
+                        $child->addLink(_("Email"), $link, sprintf(_("Send email to %s."), $addr));
+                }
+
+                $tree->output();
+        }
+
         //
         // Show form for sending examination result to students.
         //
-        private function mailResult()
+        private function mailResultForm()
         {
                 global $locale;
 
@@ -602,9 +683,9 @@ class DecoderPage extends TeacherPage
                 $form->addSectionHeader(_("Attachements"));
                 for ($i = 0; $i < ATTACH_MAX_NUM_FILES; $i++) {
                         $input = $form->addFileInput("attach[]");
-                        $input->setLabel();
                         $input->setClass("file");
                         $input->setTitle(_("Attach this file to all outgoing messages."));
+                        $input->setLabel();
                 }
                 $form->addSpace();
                 $input = $form->addCheckBox("mirror", _("Enable mirror mode (dry-run)."));
