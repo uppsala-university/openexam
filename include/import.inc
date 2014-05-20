@@ -51,7 +51,7 @@ if (!defined("OPENEXAM_IMPORT_INCLUDE_ALL")) {
 }
 
 // 
-// Supported versions of native export formats:
+// Supported versions of native export/import formats:
 // 
 if (!defined("OPENEXAM_IMPORT_FORMAT_VERSION")) {
         define("OPENEXAM_IMPORT_FORMAT_VERSION", 6073);
@@ -191,25 +191,25 @@ class ImportInsert
                 // Detect present data:
                 // 
                 if (!isset($data->project)) {
-                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_PROJECT;
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_PROJECT;
                 }
                 if (!isset($data->roles)) {
-                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_ROLES;
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_ROLES;
                 }
                 if (!isset($data->topics)) {
-                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_TOPICS;
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_TOPICS;
                 }
                 if (!isset($data->questions)) {
-                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_QUESTIONS;
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_QUESTIONS;
                 }
                 if (!isset($data->answers)) {
-                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_ANSWERS;
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_ANSWERS;
                 }
                 if (!isset($data->results)) {
-                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_RESULTS;
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_RESULTS;
                 }
                 if (!isset($data->students)) {
-                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_STUDENTS;
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_STUDENTS;
                 }
 
                 // 
@@ -222,7 +222,7 @@ class ImportInsert
                         $filter &= ~OPENEXAM_IMPORT_INCLUDE_ANSWERS;
                 }
                 if (($filter & OPENEXAM_IMPORT_INCLUDE_ANSWERS) == 0) {
-                        $filter &= ~OPENEXAM_EXPORT_INCLUDE_RESULTS;
+                        $filter &= ~OPENEXAM_IMPORT_INCLUDE_RESULTS;
                 }
 
                 // 
