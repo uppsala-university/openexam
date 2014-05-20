@@ -437,7 +437,7 @@ class ExaminatorPage extends TeacherPage
 
                 foreach ($users as $row) {
                         if (($line = trim($row)) != "") {
-                                if (preg_match("/^(\w+)\s+(\w+)\s*$/", $line, $match)) {
+                                if (preg_match("/^(.*)\s+(.*)\s*/", $line, $match)) {
                                         $data[$match[1]] = $match[2];
                                 } else {
                                         $data[$line] = null;
