@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-04-24 21:27+0200\n"
+"POT-Creation-Date: 2014-05-20 16:04+0200\n"
 "PO-Revision-Date: 2014-04-24 17:00+0200\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English\n"
@@ -82,7 +82,7 @@ msgstr "Expected format '%s' at index (2,2)"
 msgid "No account information in import file."
 msgstr "No account information in import file."
 
-#: include/import.inc:1330 include/import.inc:1367
+#: include/import.inc:1332 include/import.inc:1369
 #, php-format
 msgid "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
 msgstr "Don't know how import *.%s files. Please select an file containing a Ping-Ping question bank."
