@@ -1023,12 +1023,14 @@ class ImportStudents extends ImportBase
         private function readPersNr($column)
         {
                 for ($r = $this->first; $r < $this->rows; ++$r) {
-                        $value = $this->sdat[$r][$column];
-                        if (preg_match(self::$pnrvpatt, $value)) {
+                        $value = trim($this->sdat[$r][$column]);
+                        if (empty($value)) {
+                                continue;
+                        } elseif (preg_match(self::$pnrvpatt, $value)) {
                                 $this->setValue(null, self::user, $value);
                                 $this->setValue($value, self::row, $r);
                         } elseif ($r != $this->first) {
-                                throw new ImportException(sprintf("Unmatched personal number in cell '%d,%d'", $r, $column));
+                                throw new ImportException(sprintf("Unmatched personal number in cell '%d,%d' (%s)", $r, $column, $value));
                         }
                 }
         }
