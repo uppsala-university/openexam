@@ -44,7 +44,7 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   # Enforce HTTPS connection:
   RewriteEngine On
   RewriteCond %{HTTPS} off
-  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
 </Directory>
 
 # This directory contains the pages used by teachers for managing the exams.
@@ -56,7 +56,7 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   # Enforce HTTPS connection:
   RewriteEngine On
   RewriteCond %{HTTPS} off
-  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
 </Directory>
 
 # This directory contains admin pages, test scripts and setup, so keep it private:
@@ -68,7 +68,7 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   # Enforce HTTPS connection:
   RewriteEngine On
   RewriteCond %{HTTPS} off
-  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
 </Directory>
 
 # This directory contains supporting media files. Don't enforce HTTPS as it 
@@ -88,5 +88,5 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   # Enforce HTTPS connection:
   RewriteEngine On
   RewriteCond %{HTTPS} off
-  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
 </Directory>
