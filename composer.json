@@ -1,0 +1,15 @@
+{
+    "name": "bmc/openexam-phalcon-mvc",
+    "description": "Description of project openexam-phalcon-mvc.",
+    "authors": [
+        {
+            "name": "Anders Lövgren",
+            "email": "anders.lovgren@bmc.uu.se"
+        },
+        {
+            "name": "Ahsan Shahzad",
+            "email": "ahsan.shahzad@medfarm.uu.se"
+        }
+    ],
+    "require": {}
+}
