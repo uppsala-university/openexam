@@ -1,6 +1,18 @@
 {
     "name": "bmc/openexam-phalcon-mvc",
     "description": "Description of project openexam-phalcon-mvc.",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "svn+ssh://83.253.229.180/uup-auth/",
+            "branches-path": false
+        },
+        {
+            "type": "vcs",
+            "url": "svn+ssh://83.253.229.180/uup-mail/",
+            "branches-path": false
+        }
+    ],
     "authors": [
         {
             "name": "Anders Lövgren",
@@ -11,5 +23,9 @@
             "email": "ahsan.shahzad@medfarm.uu.se"
         }
     ],
-    "require": {}
+    "require": {
+        "php": ">=5.4.0",
+        "bmc/uup-auth": ">=1.0.2",
+        "bmc/uup-mail": ">=1.0.4"
+    }
 }
