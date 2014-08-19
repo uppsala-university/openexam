@@ -1,0 +1,24 @@
+; The write-only/master database connection (for load balancing).
+[dbwrite]
+adapter = Mysql
+host = localhost
+username = openexam
+password = 
+dbname = openexam
+
+; The read-only/slave database connection (for load balancing).
+[dbread]
+adapter = Mysql
+host = localhost
+username = openexam
+password = 
+dbname = openexam
+
+[application]
+controllersDir = /../app/controllers/
+modelsDir      = /../app/models/
+viewsDir       = /../app/views/
+pluginsDir     = /../app/plugins/
+libraryDir     = /../app/library/
+baseUri        = /openexam/
+

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <?=Phalcon\Tag::getTitle();?>
+        <?=Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap.css');?>
+        <?=Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap-responsive.css');?>
+        <?=Phalcon\Tag::stylesheetLink('css/style.css');?>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <?=$this->getContent();?>
+        <?=Phalcon\Tag::javascriptInclude('js/jquery.min.js');?>
+        <?=Phalcon\Tag::javascriptInclude('bootstrap/js/bootstrap.js');?>
+        <?=Phalcon\Tag::javascriptInclude('js/utils.js');?>
+    </body>
+</html>
