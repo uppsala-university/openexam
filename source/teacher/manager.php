@@ -333,10 +333,10 @@ class ManagerPage extends TeacherPage
 
                         $dd = new ExamDetails($this->param->details);
 
-                        if (!isset($this->param->start)) {
+                        if (!isset($this->param->start) || strtotime($this->param->start) == false) {
                                 $this->param->start = $data->getExamStartTime();
                         }
-                        if (!isset($this->param->end)) {
+                        if (!isset($this->param->end) || strtotime($this->param->end) == false) {
                                 $this->param->end = $data->getExamEndTime();
                         }
 
