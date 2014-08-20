@@ -34,11 +34,11 @@ $config->merge(array(
                 'dbname'   => $config->dbread->dbname
         ),
         'application' => array(
-                'controllersDir' => APP_DIR . '/controllers',
-                'modelsDir'      => APP_DIR . '/models',
-                'viewsDir'       => APP_DIR . '/views',
-                'pluginsDir'     => APP_DIR . '/plugins',
-                'libraryDir'     => APP_DIR . '/library',
+                'controllersDir' => APP_DIR . '/controllers/',
+                'modelsDir'      => APP_DIR . '/models/',
+                'viewsDir'       => APP_DIR . '/views/',
+                'pluginsDir'     => APP_DIR . '/plugins/',
+                'libraryDir'     => APP_DIR . '/library/',
                 'baseUri'        => '/openexam/'
         )
 ));
