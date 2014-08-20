@@ -13,12 +13,3 @@ host = localhost
 username = openexam
 password = 
 dbname = openexam
-
-[application]
-controllersDir = /../app/controllers/
-modelsDir      = /../app/models/
-viewsDir       = /../app/views/
-pluginsDir     = /../app/plugins/
-libraryDir     = /../app/library/
-baseUri        = /openexam/
-
