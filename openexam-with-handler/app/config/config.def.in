@@ -28,7 +28,7 @@ $config = array(
         /**
          * The read-only/slave database connection (for load balancing).
          */
-        'dbread' => array(
+        'dbread'  => array(
                 'adapter'  => 'Mysql',
                 'host'     => 'localhost',
                 'username' => 'openexam',

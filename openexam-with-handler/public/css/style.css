@@ -28,7 +28,7 @@ input.span6, textarea.span6 {
 }
 
 .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-	width: 80%;
+    width: 80%;
 }
 
 .span4 {
@@ -95,7 +95,7 @@ input, textarea, select, .uneditable-input {
 }
 
 .block .block_head h2 {
-	padding: 5px;
+    padding: 5px;
 }
 
 .block .block_content {
@@ -109,20 +109,20 @@ input, textarea, select, .uneditable-input {
 }
 
 div.center {
-	text-align: center;
+    text-align: center;
 }
 
 div.left {
-	text-align: left;
+    text-align: left;
 }
 
 div.right {
-	text-align: right;
+    text-align: right;
 }
 
 div.login-or-signup {
-	padding-left: 50px;
-	padding-top: 20px;
+    padding-left: 50px;
+    padding-top: 20px;
 }
 
 .row {
@@ -130,10 +130,10 @@ div.login-or-signup {
 }
 
 select {
-	padding: 5px;
-	height: auto;
+    padding: 5px;
+    height: auto;
 }
 
 div.scaffold h2 {
-	margin: 10px;
+    margin: 10px;
 }
