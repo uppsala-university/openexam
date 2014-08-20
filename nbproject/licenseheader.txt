@@ -1,4 +1,4 @@
-<#setting locale = "sv_SE">
+<#setting locale="sv_SE">
 
 <#assign licenseFirst  = "// ">
 <#assign licensePrefix = "// ">
@@ -12,7 +12,7 @@ ${licensePrefix}authors (see the file AUTHORS) and the OpenExam project, Uppsala
 ${licensePrefix}unless otherwise explicit stated elsewhere.
 ${licensePrefix}
 ${licensePrefix}File:    ${nameAndExt}
-${licensePrefix}Created: ${date?date?string("yyyy")}-${date?date?string("MM")}-${date?date?string("d")} ${time}
+${licensePrefix}Created: ${.now?string("yyyy-MM-dd HH:mm:ss")}
 ${licensePrefix}
 ${licensePrefix}Author:  ${user}
 <#if licenseLast??>
