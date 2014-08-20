@@ -20,7 +20,11 @@ define('APP_DIR', BASE_DIR . '/app');
 /**
  * Read the config protected configuration file:
  */
-$config = new Phalcon\Config\Adapter\Ini(APP_DIR . '/config/config.ini');
+$config = new Phalcon\Config(include APP_DIR . '/config/config.def');
+
+/**
+ * Merge user defined settings with system settings:
+ */
 $config->merge(array(
         'database'    => array(
                 'adapter'  => $config->dbread->adapter,
