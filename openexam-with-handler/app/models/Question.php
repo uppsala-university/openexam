@@ -37,7 +37,7 @@ class Question extends ModelBase
         public $quest;
         /**
          *
-         * @var string
+         * @var array
          */
         public $user;
         /**
@@ -80,6 +80,16 @@ class Question extends ModelBase
                 $this->hasMany("id", "Answer", "question_id", NULL);
                 $this->belongsTo("exam_id", "Exam", "id", array("foreignKey" => true));
                 $this->belongsTo("topic_id", "Topic", "id", array("foreignKey" => true));
+        }
+
+        public function beforeSave()
+        {
+                $this->user = json_encode($this->user);
+        }
+
+        public function afterFetch()
+        {
+                $this->user = json_decode($this->user);
         }
 
         public function getSource()
