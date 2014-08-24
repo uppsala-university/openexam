@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Admins extends ModelBase
+class Admin extends ModelBase
 {
 
         /**

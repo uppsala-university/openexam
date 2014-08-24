@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Answers extends ModelBase
+class Computer extends ModelBase
 {
 
         /**
@@ -14,41 +14,50 @@ class Answers extends ModelBase
          *
          * @var integer
          */
-        public $question_id;
+        public $room_id;
+        /**
+         *
+         * @var string
+         */
+        public $hostname;
+        /**
+         *
+         * @var string
+         */
+        public $ipaddr;
         /**
          *
          * @var integer
          */
-        public $student_id;
+        public $port;
         /**
          *
          * @var string
          */
-        public $answered;
+        public $password;
         /**
          *
          * @var string
          */
-        public $answer;
+        public $created;
         /**
          *
          * @var string
          */
-        public $comment;
+        public $updated;
 
         /**
          * Initialize method for model.
          */
         public function initialize()
         {
-                $this->hasMany("id", "Results", "answer_id", NULL);
-                $this->belongsTo("question_id", "Questions", "id", array("foreignKey" => true));
-                $this->belongsTo("student_id", "Students", "id", array("foreignKey" => true));
+                $this->hasMany("id", "Locks", "computer_id", NULL);
+                $this->belongsTo("room_id", "Room", "id", array("foreignKey" => true));
         }
 
         public function getSource()
         {
-                return 'answers';
+                return 'computers';
         }
 
 }

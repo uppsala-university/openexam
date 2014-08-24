@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Exams extends ModelBase
+class Question extends ModelBase
 {
 
         /**
@@ -12,6 +12,21 @@ class Exams extends ModelBase
         public $id;
         /**
          *
+         * @var integer
+         */
+        public $exam_id;
+        /**
+         *
+         * @var integer
+         */
+        public $topic_id;
+        /**
+         *
+         * @var double
+         */
+        public $score;
+        /**
+         *
          * @var string
          */
         public $name;
@@ -19,62 +34,42 @@ class Exams extends ModelBase
          *
          * @var string
          */
-        public $descr;
+        public $quest;
         /**
          *
          * @var string
          */
-        public $starttime;
+        public $user;
         /**
          *
          * @var string
          */
-        public $endtime;
+        public $video;
         /**
          *
          * @var string
          */
-        public $created;
+        public $image;
         /**
          *
          * @var string
          */
-        public $updated;
+        public $audio;
         /**
          *
          * @var string
          */
-        public $creator;
-        /**
-         *
-         * @var integer
-         */
-        public $details;
+        public $type;
         /**
          *
          * @var string
          */
-        public $decoded;
+        public $status;
         /**
          *
          * @var string
          */
-        public $orgunit;
-        /**
-         *
-         * @var string
-         */
-        public $grades;
-        /**
-         *
-         * @var string
-         */
-        public $testcase;
-        /**
-         *
-         * @var string
-         */
-        public $lockdown;
+        public $comment;
 
         /**
          * Initialize method for model.
@@ -82,17 +77,14 @@ class Exams extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Contributors", "exam_id", NULL);
-                $this->hasMany("id", "Decoders", "exam_id", NULL);
-                $this->hasMany("id", "Examinators", "exam_id", NULL);
-                $this->hasMany("id", "Locks", "exam_id", NULL);
-                $this->hasMany("id", "Questions", "exam_id", NULL);
-                $this->hasMany("id", "Students", "exam_id", NULL);
+                $this->hasMany("id", "Answer", "question_id", NULL);
+                $this->belongsTo("exam_id", "Exam", "id", array("foreignKey" => true));
+                $this->belongsTo("topic_id", "Topic", "id", array("foreignKey" => true));
         }
 
         public function getSource()
         {
-                return 'exams';
+                return 'questions';
         }
 
 }

@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Topics extends ModelBase
+class Topic extends ModelBase
 {
 
         /**
@@ -32,7 +32,7 @@ class Topics extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Questions", "topic_id", NULL);
+                $this->hasMany("id", "Question", "topic_id", NULL);
         }
 
         public function getSource()

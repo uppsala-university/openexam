@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Locks extends ModelBase
+class Lock extends ModelBase
 {
 
         /**
@@ -32,8 +32,8 @@ class Locks extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->belongsTo("computer_id", "Computers", "id", array("foreignKey" => true));
-                $this->belongsTo("exam_id", "Exams", "id", array("foreignKey" => true));
+                $this->belongsTo("computer_id", "Computer", "id", array("foreignKey" => true));
+                $this->belongsTo("exam_id", "Exam", "id", array("foreignKey" => true));
         }
 
         public function getSource()

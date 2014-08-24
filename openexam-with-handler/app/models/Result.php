@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Contributors extends ModelBase
+class Result extends ModelBase
 {
 
         /**
@@ -14,12 +14,17 @@ class Contributors extends ModelBase
          *
          * @var integer
          */
-        public $exam_id;
+        public $answer_id;
+        /**
+         *
+         * @var double
+         */
+        public $score;
         /**
          *
          * @var string
          */
-        public $user;
+        public $comment;
 
         /**
          * Initialize method for model.
@@ -27,12 +32,12 @@ class Contributors extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->belongsTo("exam_id", "Exams", "id", array("foreignKey" => true));
+                $this->belongsTo("answer_id", "Answer", "id", array("foreignKey" => true));
         }
 
         public function getSource()
         {
-                return 'contributors';
+                return 'results';
         }
 
 }

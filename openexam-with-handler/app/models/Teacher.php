@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Teachers extends ModelBase
+class Teacher extends ModelBase
 {
 
         /**

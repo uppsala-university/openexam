@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Students extends ModelBase
+class Room extends ModelBase
 {
 
         /**
@@ -12,19 +12,14 @@ class Students extends ModelBase
         public $id;
         /**
          *
-         * @var integer
+         * @var string
          */
-        public $exam_id;
+        public $name;
         /**
          *
          * @var string
          */
-        public $user;
-        /**
-         *
-         * @var string
-         */
-        public $code;
+        public $description;
 
         /**
          * Initialize method for model.
@@ -32,13 +27,12 @@ class Students extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Answers", "student_id", NULL);
-                $this->belongsTo("exam_id", "Exams", "id", array("foreignKey" => true));
+                $this->hasMany("id", "Computer", "room_id", NULL);
         }
 
         public function getSource()
         {
-                return 'students';
+                return 'rooms';
         }
 
 }
