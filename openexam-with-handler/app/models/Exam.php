@@ -62,7 +62,7 @@ class Exam extends ModelBase
         public $orgunit;
         /**
          *
-         * @var string
+         * @var array
          */
         public $grades;
         /**
@@ -88,6 +88,16 @@ class Exam extends ModelBase
                 $this->hasMany("id", "Lock", "exam_id", NULL);
                 $this->hasMany("id", "Question", "exam_id", NULL);
                 $this->hasMany("id", "Student", "exam_id", NULL);
+        }
+
+        public function beforeSave()
+        {
+                $this->grades = json_encode($this->grades);
+        }
+
+        public function afterFetch()
+        {
+                $this->grades = json_decode($this->grades);
         }
 
         public function getSource()
