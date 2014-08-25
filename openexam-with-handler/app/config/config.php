@@ -39,7 +39,9 @@ $config->merge(array(
                 'viewsDir'       => APP_DIR . '/views/',
                 'pluginsDir'     => APP_DIR . '/plugins/',
                 'libraryDir'     => APP_DIR . '/library/',
-                'baseUri'        => '/openexam/'
+                'schemasDir'      => BASE_DIR . '/schemas/',
+                'cacheDir'       => BASE_DIR . '/cache/',
+                'baseUri'        => '/openexam-with-handler/'
         )
 ));
 
