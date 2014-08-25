@@ -1,15 +1,17 @@
 <?php
 
+namespace OpenExam\Controllers;
+
 /**
  * Base controller
  *
  */
-class ControllerBase extends Phalcon\Mvc\Controller
+class ControllerBase extends \Phalcon\Mvc\Controller
 {
 
         protected function initialize()
         {
-                Phalcon\Tag::prependTitle('Uppsala Unuiversitet | ');
+                \Phalcon\Tag::prependTitle('Uppsala Unuiversitet | ');
         }
 
         protected function forward($uri)
