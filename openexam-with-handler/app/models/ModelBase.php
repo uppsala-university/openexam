@@ -11,4 +11,13 @@ class ModelBase extends \Phalcon\Mvc\Model
                 $this->setWriteConnectionService('dbwrite');
         }
 
+        /**
+         * Get model resource name.
+         * @return string
+         */
+        public function getName()
+        {
+                return lcfirst(substr(strrchr(get_class($this), "\\"), 1));
+        }
+
 }
