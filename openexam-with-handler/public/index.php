@@ -21,9 +21,9 @@ try {
          */
         include APP_DIR . "/config/services.php";
 
-        $application = new \Phalcon\Mvc\Application();
-        $application->setDI($di);
+        $application = new \Phalcon\Mvc\Application($di);
         echo $application->handle()->getContent();
 } catch (\Exception $e) {
+        error_log($e);
         echo $e->getMessage();
 }
