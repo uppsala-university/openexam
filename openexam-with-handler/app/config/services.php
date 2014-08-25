@@ -16,24 +16,44 @@
  */
 $di = new \Phalcon\DI\FactoryDefault();
 
+//$di->set('dispatcher', function () {
+//
+//        $dispatcher = new Phalcon\Mvc\Dispatcher();
+//
+//        // $dispatcher->setDefaultNamespace('OpenExam\Controllers\Core');
+//
+//        return $dispatcher;
+//});
+
+$di->set('router', function() use($di) {
+        return require APP_DIR . '/config/routes.php';
+});
+
+$di->set('config', $config, true);
+
 /**
  * We register the events manager
  */
-$di->set('dispatcher', function() use ($di) {
+//$di->set('dispatcher', function() use ($di) {
+//
+//        $eventsManager = $di->getShared('eventsManager');
+//
+//        $security = new Security($di);
+//
+//        /**
+//         * We listen for events in the dispatcher using the Security plugin
+//         */
+//        $eventsManager->attach('dispatch', $security);
+//
+//        $dispatcher = new Phalcon\Mvc\Dispatcher();
+//        $dispatcher->setEventsManager($eventsManager);
+//
+//        return $dispatcher;
+//});
 
-        $eventsManager = $di->getShared('eventsManager');
-
+$di->set('security', function() use($di) {
         $security = new Security($di);
-
-        /**
-         * We listen for events in the dispatcher using the Security plugin
-         */
-        $eventsManager->attach('dispatch', $security);
-
-        $dispatcher = new Phalcon\Mvc\Dispatcher();
-        $dispatcher->setEventsManager($eventsManager);
-
-        return $dispatcher;
+        return $security;
 });
 
 /**
@@ -59,22 +79,10 @@ $di->set('view', function() use ($config) {
  * Database connection is created based in the parameters defined in the configuration file
  */
 $di->set('dbread', function () use ($config) {
-        return new DbAdapter(array(
-                'adapter'  => $config->dbread->adapter,
-                'host'     => $config->dbread->host,
-                'username' => $config->dbread->username,
-                'password' => $config->dbread->password,
-                'dbname'   => $config->dbread->dbname
-        ));
+        return \OpenExam\Library\Core\DatabaseAdapter::create($config->dbread);
 });
 $di->set('dbwrite', function () use ($config) {
-        return new DbAdapter(array(
-                'adapter'  => $config->dbwrite->adapter,
-                'host'     => $config->dbwrite->host,
-                'username' => $config->dbwrite->username,
-                'password' => $config->dbwrite->password,
-                'dbname'   => $config->dbwrite->dbname
-        ));
+        return \OpenExam\Library\Core\DatabaseAdapter::create($config->dbwrite);
 });
 
 /**
@@ -95,7 +103,7 @@ $di->set('dbwrite', function () use ($config) {
  * Start the session the first time some component request the session service
  */
 $di->set('session', function() {
-        $session = new Phalcon\Session\Adapter\Files();
+        $session = new \Phalcon\Session\Adapter\Files();
         $session->start();
         return $session;
 });
@@ -104,7 +112,7 @@ $di->set('session', function() {
  * Register the flash service with custom CSS classes
  */
 $di->set('flash', function() {
-        return new Phalcon\Flash\Direct(array(
+        return new \Phalcon\Flash\Direct(array(
                 'error'   => 'alert alert-error',
                 'success' => 'alert alert-success',
                 'notice'  => 'alert alert-info',
