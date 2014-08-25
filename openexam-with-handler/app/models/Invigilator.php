@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-class Examinator extends ModelBase
+class Invigilator extends ModelBase
 {
 
         /**

@@ -84,7 +84,7 @@ class Exam extends ModelBase
                 parent::initialize();
                 $this->hasMany("id", "Contributor", "exam_id", NULL);
                 $this->hasMany("id", "Decoder", "exam_id", NULL);
-                $this->hasMany("id", "Examinator", "exam_id", NULL);
+                $this->hasMany("id", "Invigilator", "exam_id", NULL);
                 $this->hasMany("id", "Lock", "exam_id", NULL);
                 $this->hasMany("id", "Question", "exam_id", NULL);
                 $this->hasMany("id", "Student", "exam_id", NULL);
