@@ -3,7 +3,8 @@
 use Phalcon\Events\Event,
     Phalcon\Mvc\User\Plugin,
     Phalcon\Mvc\Dispatcher,
-    Phalcon\Acl;
+    Phalcon\Acl,
+    Phalcon\Acl\Role;
 
 /**
  * Security
@@ -26,51 +27,106 @@ class Security extends Plugin
 
                         $acl->setDefaultAction(Phalcon\Acl::DENY);
 
-                        //Register roles
+                        // 
+                        // Define role map. 
+                        // 
                         $roles = array(
-                                'staff'   => new Phalcon\Acl\Role('Staff'),
-                                'student' => new Phalcon\Acl\Role('Student'),
-                                'admin'   => new Phalcon\Acl\Role('Admin'),
-                                'guest'   => new Phalcon\Acl\Role('Guest'),
+                                'admin'       => '*',
+                                'teacher'     => array(
+                                        'exam' => '*'
+                                ),
+                                'creator'     => array(
+                                        'exam'        => '*',
+                                        'contributor' => '*',
+                                        'decoder'     => '*',
+                                        'invigilator' => '*',
+                                        'question'    => 'read',
+                                        'topics'      => '*',
+                                        'student'     => 'read'
+                                ),
+                                'contributor' => array(
+                                        'exam'     => 'read',
+                                        'question' => '*',
+                                        'topics'   => 'read'
+                                ),
+                                'invigilator' => array(
+                                        'exam'        => 'change',
+                                        'invigilator' => 'read',
+                                        'student'     => '*',
+                                        'lock'        => '*',
+                                        'computer'    => 'read',
+                                        'room'        => 'read'
+                                ),
+                                'decoder'     => array(
+                                        'exam'     => 'change',
+                                        'student'  => 'read',
+                                        'answer'   => 'read',
+                                        'result'   => 'read',
+                                        'question' => 'read',
+                                        'topics'   => 'read'
+                                ),
+                                'corrector'   => array(
+                                        'exam'     => 'read',
+                                        'question' => 'read',
+                                        'topic'    => 'read',
+                                        'student'  => 'read',
+                                        'answer'   => 'read',
+                                        'result'   => '*'
+                                ),
+                                'student'     => array(
+                                        'exam'     => 'read',
+                                        'question' => 'read',
+                                        'topic'    => 'read',
+                                        'answer'   => '*'
+                                )
                         );
-                        foreach ($roles as $role) {
-                                $acl->addRole($role);
+
+                        // 
+                        // Permissions map:
+                        // 
+                        $permissions = array(
+                                '*'      => '*',
+                                'read'   => 'read',
+                                'change' => array('create', 'read', 'update'),
+                                'full'   => array('create', 'read', 'update', 'delete')
+                        );
+
+                        // 
+                        // Add roles:
+                        // 
+                        foreach (array_keys($roles) as $role) {
+                                $acl->addRole(new Role($role));
                         }
 
-                        //Private area resources
-                        $privateResources = array(
-                                'exam'     => array('index', 'search', 'new', 'edit', 'save', 'create', 'delete'),
-                                'question' => array('index', 'search', 'new', 'edit', 'save', 'create', 'delete')
-                        );
-                        foreach ($privateResources as $resource => $actions) {
-                                $acl->addResource(new Phalcon\Acl\Resource($resource), $actions);
-                        }
-
-                        //Public area resources
-                        $publicResources = array(
-                                'index'   => array('index'),
-                                'about'   => array('index'),
-                                'contact' => array('index', 'send')
-                        );
-                        foreach ($publicResources as $resource => $actions) {
-                                $acl->addResource(new Phalcon\Acl\Resource($resource), $actions);
-                        }
-
-                        //Grant access to public areas to both restricted users and guests
-                        foreach ($roles as $role) {
-                                foreach ($publicResources as $resource => $actions) {
-                                        $acl->allow($role->getName(), $resource, '*');
+                        // 
+                        // Add resources:
+                        // 
+                        $resources = array();
+                        foreach ($roles as $role => $rules) {
+                                if (is_array($rules)) {
+                                        foreach (array_keys($rules) as $resource) {
+                                                $resources[] = $resource;
+                                        }
                                 }
                         }
-
-                        //Grant acess to *all* private area to role Admin
-                        foreach ($privateResources as $resource => $actions) {
-                                foreach ($actions as $action) {
-                                        $acl->allow('Admin', $resource, $action);
-                                }
+                        $resources = array_unique($resources);
+                        foreach ($resources as $resource) {
+                                $acl->addResource($resource, $permissions['full']);
                         }
 
-                        //The acl is stored in session, APC can be useful here too
+                        // 
+                        // Add rules:
+                        // 
+                        foreach ($roles as $role => $resources) {
+                                if (is_string($resources)) {
+                                        $acl->allow($role, '*', $permissions[$resources]);
+                                        continue;
+                                }
+                                foreach ($resources as $resource => $permission) {
+                                        $acl->allow($role, $resource, $permissions[$permission]);
+                                }
+                        }
+                        
                         $this->persistent->acl = $acl;
                 }
 
@@ -105,6 +161,19 @@ class Security extends Plugin
                         );
                         return false;
                 }
+        }
+
+        /**
+         * Returns true if role is permitted to call action on resource.
+         * 
+         * @param string $role
+         * @param string $resource
+         * @param string $action
+         * @return bool
+         */
+        public function allowed($role, $resource, $action)
+        {
+                return $this->getAcl()->isAllowed($role, $resource, $action);
         }
 
 }
