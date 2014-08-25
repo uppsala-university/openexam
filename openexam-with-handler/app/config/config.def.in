@@ -13,6 +13,8 @@
 
 /**
  * User defined settings.
+ * 
+ * See docs/README-DATABASE also.
  */
 $config = array(
         /**

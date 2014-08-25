@@ -1,0 +1,43 @@
+
+
+** DATABASE ADAPTERS:
+
+   OpenExam v2 uses Phalcon's database adapters that is wrapping PDO. Currently 
+   the following list of RDMS are supported: 
+
+        * Mysql
+        * Postgresql
+        * Oracle
+        * Sqlite.
+
+** CONFIGURATION:
+
+   The database connection (dbread and dbwrite) is configured in app/config/config.def. 
+   Connection parameters are either defined using separate parameters or using an DSN:
+
+        //
+        // Using separate parameters:
+        // 
+        'dbwrite' => array(
+                'adapter'  => 'Mysql',
+                'host'     => 'localhost',
+                'username' => 'openexam',
+                'password' => 'secret',
+                'dbname'   => 'openexam'
+        ),
+
+        //
+        // Using DSN:
+        // 
+        'dbwrite' => array(
+                'dns'      => 'mysql:unix_socket=/var/run/mysqld/mysqld.sock;dbname=openexam;charset=utf8;',
+                'username' => 'openexam',
+                'password' => 'secret',
+        ),
+
+** MORE INFORMATION:
+
+   See http://php.net/manual/en/pdo.drivers.php for DSN examples.
+
+
+// Anders Lövgren, 2014-08-25
