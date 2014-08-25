@@ -1,0 +1,58 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    auth.def
+// Created: 2014-08-25 15:09:23
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+use UUP\Authentication\CasAuthenticator,
+    UUP\Authentication\FormAuthenticator,
+    UUP\Authentication\Validator\LdapBindValidator;
+
+// 
+// The chain of authenticator plugins for various services:
+// 
+$auth = array(
+        // 
+        // SOAP service authentication:
+        // 
+        'soap' => array(
+        ),
+        // 
+        // REST service authrntication:
+        // 
+        'rest' => array(
+        ),
+        // 
+        // Web/AJAX service authentication:
+        // 
+        'web'  => array(
+                'cas'  => (new CasAuthenticator(
+                    'cas.example.com', 443, '/cas'
+                    ))
+                    ->visible(true)
+                    ->description('CAS Login')
+                    ->name('cas'),
+                'msad' => (new FormAuthenticator(
+                    new LdapBindValidator('https://ldap.example.com', 636), array(
+                        'login' => '/login/msad',
+                        'name'  => 'auth')
+                    ))
+                    ->visible(true)
+                    ->description('Active Directory')
+                    ->name('msad')
+        ),
+        // 
+        // Common authentication plugins or restrictions:
+        // 
+        '*'    => array(
+        )
+);
+
+return $auth;

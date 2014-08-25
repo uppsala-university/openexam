@@ -25,6 +25,12 @@ $di = new \Phalcon\DI\FactoryDefault();
 //        return $dispatcher;
 //});
 
+$di->set('auth', function() use($di) {
+        return new \OpenExam\Library\Core\Authentication(
+        require APP_DIR . '/config/auth.def'
+        );
+});
+
 $di->set('router', function() use($di) {
         return require APP_DIR . '/config/routes.php';
 });
