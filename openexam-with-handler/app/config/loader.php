@@ -13,21 +13,28 @@
 
 $loader = new \Phalcon\Loader();
 
+$loader->registerNamespaces(
+    array(
+            'OpenExam\Controllers' => $config->application->controllersDir,
+            'OpenExam\Models'      => $config->application->modelsDir,
+            'OpenExam\Library'     => $config->application->libraryDir,
+            'OpenExam\Plugins'     => $config->application->pluginsDir,
+    )
+);
+
 /**
  * We're a registering a set of directories taken from the configuration file
  */
 $loader->registerDirs(
     array(
             $config->application->controllersDir,
-            $config->application->controllersDir . "/core",
-            $config->application->controllersDir . "/ws",
-            $config->application->controllersDir . "/gui",
-            $config->application->controllersDir . "/utility",
             $config->application->pluginsDir,
             $config->application->libraryDir,
             $config->application->modelsDir,
     )
-)->register();
+);
+
+$loader->register();
 
 /**
  * Include Composer auto-loader.
