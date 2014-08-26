@@ -33,13 +33,13 @@ $router->add(
 )->setName('core-soap');
 
 /**
- * Route AJAX requests (e.g. "/core/ajax/student/exam/read")
+ * Route AJAX requests (e.g. "/core/ajax/student/exam/read").
  */
 $router->add(
     "/core/ajax", array(
         "controller" => "ajax",
         "action"     => "api",
-        "namespace"  => "OpenExam\Controllers\Core",
+        "namespace"  => "OpenExam\Controllers\Core"
     )
 );
 $router->add(
@@ -48,6 +48,32 @@ $router->add(
         "namespace"  => "OpenExam\Controllers\Core"
     )
 )->setHttpMethods("POST");
+
+/**
+ * Route REST requests.
+ */
+$router->add(
+    "/core/rest", array(
+        "controller" => "rest",
+        "action"     => "api",
+        "namespace"  => "OpenExam\Controllers\Core"
+    )
+);
+$router->add(
+    "/core/rest/{role}/{target}/:params", array(
+        "controller" => "rest",
+        "action"     => "index",
+        "namespace"  => "OpenExam\Controllers\Core",
+        "params"     => 3            
+    )
+);
+$router->add(
+    "/core/rest/{role}/exam/search/{target}", array(
+        "controller" => "rest",
+        "action"     => "search",
+        "namespace"  => "OpenExam\Controllers\Core"
+    )
+)->setHttpMethods('POST');
 
 $router->handle();
 
