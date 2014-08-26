@@ -28,7 +28,12 @@ class AjaxController extends \OpenExam\Controllers\ServiceController
 
         public function apiAction()
         {
-                $this->response->setJsonContent(array("usage" => "/core/ajax/{role}/{model}/{action} (e.g. /core/ajax/student/exam/read)"));
+                $content = array(
+                        "usage"   => array("/core/ajax/{role}/{model}/{action}" => "POST"),
+                        "example" => array("/core/ajax/student/exam/read")
+                );
+
+                $this->response->setJsonContent($content);
                 $this->response->send();
         }
 
