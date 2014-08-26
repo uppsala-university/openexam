@@ -68,7 +68,7 @@ $router->add(
     )
 );
 $router->add(
-    "/core/rest/{role}/exam/search/{target}", array(
+    "/core/rest/{role}/search/{target}", array(
         "controller" => "rest",
         "action"     => "search",
         "namespace"  => "OpenExam\Controllers\Core"

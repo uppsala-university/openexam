@@ -13,6 +13,8 @@
 
 namespace OpenExam\Controllers\Core;
 
+use \OpenExam\Library\Core\Handler\HandlerBase;
+
 /**
  * REST request helper class.
  */
@@ -107,16 +109,17 @@ class RestController extends \OpenExam\Controllers\ServiceController
         {
                 $content = array(
                         "usage"   => array(
-                                "/core/rest/{role}/{target}"      => array("GET", "POST"),
-                                "/core/rest/{role}/{target}/{id}" => array("PUT", "DELETE"),
-                                "/core/rest/{role}/exam/search"   => "POST"
+                                "/core/rest/{role}/{target}"        => array("GET", "POST"),
+                                "/core/rest/{role}/{target}/{id}"   => array("PUT", "DELETE"),
+                                "/core/rest/{role}/search/{target}" => "POST"
                         ),
                         "example" => array(
                                 "/core/rest/student/exams/44/questions/22/answers",
                                 "/core/rest/student/exams/44/questions/22/answers/123",
                                 "/core/rest/student/admins",
                                 "/core/rest/student/teachers",
-                                "/core/rest/student/rooms"
+                                "/core/rest/student/rooms",
+                                "/core/rest/student/search/exams"
                         )
                 );
 
@@ -127,17 +130,14 @@ class RestController extends \OpenExam\Controllers\ServiceController
         public function indexAction()
         {
                 $request = $this->getRestRequest();
-
-                $hobj = self::createHandler($request->role, $request->model);
-                $mobj = self::createModel($request->model, $request->data);
-
-                $this->response->setJsonContent($hobj->$action($mobj));
-                $this->response->send();
+                $this->handle($request);
         }
 
         public function searchAction()
         {
-                
+                $request = $this->getRestRequest();
+                $request->action = HandlerBase::read;
+                $this->handle($request);
         }
 
         private function getRestRequest()
@@ -145,6 +145,17 @@ class RestController extends \OpenExam\Controllers\ServiceController
                 return new RestRequest(
                     $this->request->getMethod(), $this->dispatcher->getParams()
                 );
+        }
+
+        private function handle($request)
+        {
+                $action = $request->action;
+
+                $hobj = self::createHandler($request->role, $request->model);
+                $mobj = self::createModel($request->model, $request->data);
+
+                $this->response->setJsonContent($hobj->$action($mobj));
+                $this->response->send();
         }
 
 }
