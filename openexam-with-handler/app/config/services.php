@@ -26,7 +26,7 @@ $di = new \Phalcon\DI\FactoryDefault();
 //});
 
 $di->set('auth', function() use($di) {
-        return new \OpenExam\Library\Core\Authentication(
+        return new \OpenExam\Library\Core\Security\Authentication(
             require APP_DIR . '/config/auth.def'
         );
 });
