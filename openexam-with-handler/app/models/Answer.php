@@ -41,6 +41,7 @@ class Answer extends ModelBase
          */
         public function initialize()
         {
+                parent::initialize();
                 $this->hasMany("id", "Results", "answer_id", NULL);
                 $this->belongsTo("question_id", "Question", "id", array("foreignKey" => true));
                 $this->belongsTo("student_id", "Student", "id", array("foreignKey" => true));
