@@ -1,10 +1,13 @@
 <?php
 
+namespace OpenExam\Plugins;
+
 use Phalcon\Events\Event,
     Phalcon\Mvc\User\Plugin,
     Phalcon\Mvc\Dispatcher,
     Phalcon\Acl,
-    Phalcon\Acl\Role;
+    Phalcon\Acl\Role,
+    Phalcon\Acl\Adapter\Memory as AclAdapter;
 
 /**
  * Security
@@ -14,18 +17,12 @@ use Phalcon\Events\Event,
 class Security extends Plugin
 {
 
-        public function __construct($dependencyInjector)
-        {
-                $this->_dependencyInjector = $dependencyInjector;
-        }
-
         public function getAcl()
         {
                 if (!isset($this->persistent->acl)) {
 
-                        $acl = new Phalcon\Acl\Adapter\Memory();
-
-                        $acl->setDefaultAction(Phalcon\Acl::DENY);
+                        $acl = new AclAdapter();
+                        $acl->setDefaultAction(Acl::DENY);
 
                         // 
                         // Define role map. 
@@ -126,7 +123,7 @@ class Security extends Plugin
                                         $acl->allow($role, $resource, $permissions[$permission]);
                                 }
                         }
-                        
+
                         $this->persistent->acl = $acl;
                 }
 
