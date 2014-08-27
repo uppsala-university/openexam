@@ -13,6 +13,7 @@
 
 $router = new Phalcon\Mvc\Router();
 $router->setDI($di);
+$router->setDefaultNamespace("OpenExam\Controllers");
 
 /**
  * Route SOAP and WSDL requests:
