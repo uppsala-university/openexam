@@ -27,9 +27,19 @@ $di = new \Phalcon\DI\FactoryDefault();
 
 $di->set('auth', function() use($di) {
         return new \OpenExam\Library\Core\Authentication(
-        require APP_DIR . '/config/auth.def'
+            require APP_DIR . '/config/auth.def'
         );
 });
+
+/**
+ * The roles collector and aquiring service.
+ */
+$di->set('roles', function() {
+        $roles = new \OpenExam\Library\Core\Security\Roles();
+        $roles->aquire(\OpenExam\Library\Core\Security\Roles::admin);
+        $roles->aquire(\OpenExam\Library\Core\Security\Roles::teacher);
+        return $roles;
+}, true);
 
 $di->set('router', function() use($di) {
         return require APP_DIR . '/config/routes.php';
