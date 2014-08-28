@@ -60,15 +60,42 @@ use OpenExam\Models\Admin,
 class Roles extends Component
 {
 
+        /**
+         * The admin role (system wide).
+         */
         const admin = 'admin';
+        /**
+         * The teacher role (system wide).
+         */
         const teacher = 'teacher';
+        /**
+         * The creator role (bound to specific exam).
+         */
         const creator = 'creator';
+        /**
+         * The contributor role (bound to specific exam).
+         */
         const contributor = 'contributor';
+        /**
+         * The invigilator role (bound to specific exam).
+         */
         const invigilator = 'invigilator';
+        /**
+         * The decoder role (bound to specific exam).
+         */
         const decoder = 'decoder';
+        /**
+         * The corrector role (bound to specific question).
+         */
         const corrector = 'corrector';
+        /**
+         * The student role (bound to specific exam).
+         */
         const student = 'student';
 
+        /**
+         * @var array 
+         */
         private $roles;
 
         /**
@@ -135,7 +162,7 @@ class Roles extends Component
                         return array();
                 }
         }
-        
+
         /**
          * Get all roles.
          * @return array
@@ -299,6 +326,66 @@ class Roles extends Component
                 // Role was not aquired.
                 // 
                 return false;
+        }
+
+        /**
+         * Check if role is admin.
+         * @param string $role The role to check.
+         * @return bool
+         */
+        public static function isAdmin($role)
+        {
+                return $role == self::admin;
+        }
+
+        /**
+         * Check if role is student.
+         * @param string $role The role to check.
+         * @return bool
+         */
+        public static function isStudent($role)
+        {
+                return $role == self::student;
+        }
+
+        /**
+         * Check if role belongs to staff.
+         * @param string $role The role to check.
+         * @return bool
+         */
+        public static function isStaff($role)
+        {
+                return
+                    $role == self::contributor ||
+                    $role == self::corrector ||
+                    $role == self::creator ||
+                    $role == self::decoder ||
+                    $role == self::invigilator;
+        }
+
+        /**
+         * Check if role is builtin. That is, one of the predefined in the
+         * system (any one of the constant defined in this class).
+         * @param string $role The role to check.
+         * @return bool
+         */
+        public static function isBuiltin($role)
+        {
+                return
+                    self::isAdmin($role) ||
+                    self::isStaff($role) ||
+                    self::isStudent($role);
+        }
+
+        /**
+         * Check if role is custom. That is, not one of the predefined in the
+         * system.
+         * @param string $role The role to check.
+         * @return bool
+         */
+        public static function isCustom($role)
+        {
+                return self::isBuiltin($role) == false;
         }
 
 }
