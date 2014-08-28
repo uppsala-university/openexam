@@ -16,6 +16,50 @@ $router->setDI($di);
 $router->setDefaultNamespace("OpenExam\Controllers");
 
 /**
+ * URL prefix to namespace mapper.
+ */
+class PrefixRoute extends Phalcon\Mvc\Router\Group
+{
+
+        public function __construct($config = array())
+        {
+                $this->setPrefix($config['prefix']);
+                $this->add("/:controller", array(
+                        "controller" => 1,
+                        "action"     => "index",
+                        "namespace"  => $config['namespace']
+                    )
+                );
+                $this->add("/:controller/:action", array(
+                        "controller" => 1,
+                        "action"     => 2,
+                        "namespace"  => $config['namespace']
+                    )
+                );
+        }
+
+}
+
+$router->mount(
+    new PrefixRoute(array(
+        "prefix"    => "/test",
+        "namespace" => "OpenExam\Controllers\Test"
+    ))
+);
+$router->mount(
+    new PrefixRoute(array(
+        "prefix"    => "/gui",
+        "namespace" => "OpenExam\Controllers\Gui"
+    ))
+);
+$router->mount(
+    new PrefixRoute(array(
+        "prefix"    => "/utility",
+        "namespace" => "OpenExam\Controllers\Utility"
+    ))
+);
+
+/**
  * Route SOAP and WSDL requests:
  */
 $router->add(
@@ -65,7 +109,7 @@ $router->add(
         "controller" => "rest",
         "action"     => "index",
         "namespace"  => "OpenExam\Controllers\Core",
-        "params"     => 3            
+        "params"     => 3
     )
 );
 $router->add(
