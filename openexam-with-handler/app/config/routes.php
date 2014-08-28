@@ -42,14 +42,14 @@ class PrefixRoute extends Phalcon\Mvc\Router\Group
 
 $router->mount(
     new PrefixRoute(array(
-        "prefix"    => "/test",
-        "namespace" => "OpenExam\Controllers\Test"
+        "prefix"    => "/",
+        "namespace" => "OpenExam\Controllers\Gui"
     ))
 );
 $router->mount(
     new PrefixRoute(array(
-        "prefix"    => "/gui",
-        "namespace" => "OpenExam\Controllers\Gui"
+        "prefix"    => "/test",
+        "namespace" => "OpenExam\Controllers\Test"
     ))
 );
 $router->mount(
