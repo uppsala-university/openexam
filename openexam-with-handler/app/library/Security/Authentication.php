@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Core\Security;
+namespace OpenExam\Library\Security;
 
 use UUP\Authentication\Authenticator,
     UUP\Authentication\Library\Authenticator\AuthenticatorBase;
