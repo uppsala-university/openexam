@@ -25,7 +25,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "bmc/uup-auth": ">=1.0.2",
+        "bmc/uup-auth": ">=1.0.3",
         "bmc/uup-mail": ">=1.0.4"
     }
 }
