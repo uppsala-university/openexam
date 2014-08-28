@@ -1,0 +1,83 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    access.def
+// Created: 2014-08-28 14:34:23
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+// 
+// The map between role, resource and permission. This map is used
+// for defining the ACL in the system.
+// 
+$access = array(
+        // 
+        // Permissions map:
+        // 
+        'permissions' => array(
+                '*'      => '*',
+                'read'   => 'read',
+                'change' => array('create', 'read', 'update'),
+                'full'   => array('create', 'read', 'update', 'delete')
+        ),
+        // 
+        // Define role map:
+        // 
+        'roles'       => array(
+                'admin'       => '*',
+                'teacher'     => array(
+                        'exam' => '*'
+                ),
+                'creator'     => array(
+                        'exam'        => '*',
+                        'contributor' => '*',
+                        'decoder'     => '*',
+                        'invigilator' => '*',
+                        'question'    => 'read',
+                        'topics'      => '*',
+                        'student'     => 'read'
+                ),
+                'contributor' => array(
+                        'exam'     => 'read',
+                        'question' => '*',
+                        'topics'   => 'read'
+                ),
+                'invigilator' => array(
+                        'exam'        => 'change',
+                        'invigilator' => 'read',
+                        'student'     => '*',
+                        'lock'        => '*',
+                        'computer'    => 'read',
+                        'room'        => 'read'
+                ),
+                'decoder'     => array(
+                        'exam'     => 'change',
+                        'student'  => 'read',
+                        'answer'   => 'read',
+                        'result'   => 'read',
+                        'question' => 'read',
+                        'topics'   => 'read'
+                ),
+                'corrector'   => array(
+                        'exam'     => 'read',
+                        'question' => 'read',
+                        'topic'    => 'read',
+                        'student'  => 'read',
+                        'answer'   => 'read',
+                        'result'   => '*'
+                ),
+                'student'     => array(
+                        'exam'     => 'read',
+                        'question' => 'read',
+                        'topic'    => 'read',
+                        'answer'   => '*'
+                )
+        )
+);
+
+return $access;

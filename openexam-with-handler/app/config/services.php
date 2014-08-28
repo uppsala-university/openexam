@@ -121,7 +121,9 @@ $di->set('session', function() {
 });
 
 $di->set('acl', function() {
-        return new \OpenExam\Plugins\Security\Acl();
+        return new \OpenExam\Plugins\Security\Acl(
+            require APP_DIR . '/config/access.def'
+        );
 });
 
 $di->set('auth', function() {

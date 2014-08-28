@@ -16,6 +16,13 @@ use Phalcon\Events\Event,
 class Acl extends Plugin
 {
 
+        private $access;
+
+        public function __construct($access = array())
+        {
+                $this->access = $access;
+        }
+
         public function getAcl()
         {
                 if (!isset($this->persistent->acl)) {
@@ -73,68 +80,14 @@ class Acl extends Plugin
                 $acl->setDefaultAction(\Phalcon\Acl::DENY);
 
                 // 
-                // Define role map. 
+                // Use roles map:
                 // 
-                $roles = array(
-                        'admin'       => '*',
-                        'teacher'     => array(
-                                'exam' => '*'
-                        ),
-                        'creator'     => array(
-                                'exam'        => '*',
-                                'contributor' => '*',
-                                'decoder'     => '*',
-                                'invigilator' => '*',
-                                'question'    => 'read',
-                                'topics'      => '*',
-                                'student'     => 'read'
-                        ),
-                        'contributor' => array(
-                                'exam'     => 'read',
-                                'question' => '*',
-                                'topics'   => 'read'
-                        ),
-                        'invigilator' => array(
-                                'exam'        => 'change',
-                                'invigilator' => 'read',
-                                'student'     => '*',
-                                'lock'        => '*',
-                                'computer'    => 'read',
-                                'room'        => 'read'
-                        ),
-                        'decoder'     => array(
-                                'exam'     => 'change',
-                                'student'  => 'read',
-                                'answer'   => 'read',
-                                'result'   => 'read',
-                                'question' => 'read',
-                                'topics'   => 'read'
-                        ),
-                        'corrector'   => array(
-                                'exam'     => 'read',
-                                'question' => 'read',
-                                'topic'    => 'read',
-                                'student'  => 'read',
-                                'answer'   => 'read',
-                                'result'   => '*'
-                        ),
-                        'student'     => array(
-                                'exam'     => 'read',
-                                'question' => 'read',
-                                'topic'    => 'read',
-                                'answer'   => '*'
-                        )
-                );
-
+                $roles = $this->access['roles'];
+                
                 // 
-                // Permissions map:
+                // Use permissions map:
                 // 
-                $permissions = array(
-                        '*'      => '*',
-                        'read'   => 'read',
-                        'change' => array('create', 'read', 'update'),
-                        'full'   => array('create', 'read', 'update', 'delete')
-                );
+                $permissions = $this->access['permissions'];
 
                 // 
                 // Add roles:
