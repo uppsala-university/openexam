@@ -16,6 +16,12 @@
  */
 $di = new \Phalcon\DI\FactoryDefault();
 
+$di->set('config', $config, true);
+
+$di->set('router', function() use($di) {
+        return require APP_DIR . '/config/routes.php';
+});
+
 //$di->set('dispatcher', function () {
 //
 //        $dispatcher = new Phalcon\Mvc\Dispatcher();
@@ -24,28 +30,6 @@ $di = new \Phalcon\DI\FactoryDefault();
 //
 //        return $dispatcher;
 //});
-
-$di->set('auth', function() use($di) {
-        return new \OpenExam\Library\Core\Security\Authentication(
-            require APP_DIR . '/config/auth.def'
-        );
-});
-
-/**
- * The roles collector and aquiring service.
- */
-$di->set('roles', function() {
-        $roles = new \OpenExam\Library\Core\Security\Roles();
-        $roles->aquire(\OpenExam\Library\Core\Security\Roles::admin);
-        $roles->aquire(\OpenExam\Library\Core\Security\Roles::teacher);
-        return $roles;
-}, true);
-
-$di->set('router', function() use($di) {
-        return require APP_DIR . '/config/routes.php';
-});
-
-$di->set('config', $config, true);
 
 /**
  * We register the events manager
@@ -67,11 +51,6 @@ $di->set('config', $config, true);
 //        return $dispatcher;
 //});
 
-$di->set('security', function() use($di) {
-        $security = new Security($di);
-        return $security;
-});
-
 /**
  * The URL component is used to generate all kind of urls in the application
  */
@@ -81,7 +60,6 @@ $di->set('url', function() use ($config) {
         return $url;
 });
 
-
 $di->set('view', function() use ($config) {
 
         $view = new \Phalcon\Mvc\View();
@@ -89,6 +67,24 @@ $di->set('view', function() use ($config) {
         $view->setViewsDir($config->application->viewsDir);
 
         return $view;
+});
+
+/**
+ * Register the flash service with custom CSS classes
+ */
+$di->set('flash', function() {
+        return new \Phalcon\Flash\Direct(array(
+                'error'   => 'alert alert-error',
+                'success' => 'alert alert-success',
+                'notice'  => 'alert alert-info',
+        ));
+});
+
+/**
+ * Register a user component
+ */
+$di->set('elements', function() {
+        return new Elements();
 });
 
 /**
@@ -124,21 +120,22 @@ $di->set('session', function() {
         return $session;
 });
 
-/**
- * Register the flash service with custom CSS classes
- */
-$di->set('flash', function() {
-        return new \Phalcon\Flash\Direct(array(
-                'error'   => 'alert alert-error',
-                'success' => 'alert alert-success',
-                'notice'  => 'alert alert-info',
-        ));
+$di->set('acl', function() {
+        return new \OpenExam\Plugins\Security\Acl();
+});
+
+$di->set('auth', function() {
+        return new \OpenExam\Library\Security\Authentication(
+            require APP_DIR . '/config/auth.def'
+        );
 });
 
 /**
- * Register a user component
+ * The roles collector and aquiring service.
  */
-$di->set('elements', function() {
-        return new Elements();
+$di->set('roles', function() {
+        $roles = new \OpenExam\Library\Security\Roles();
+        $roles->aquire(\OpenExam\Library\Security\Roles::admin);
+        $roles->aquire(\OpenExam\Library\Security\Roles::teacher);
+        return $roles;
 });
-
