@@ -41,7 +41,7 @@ $config->merge(array(
                 'libraryDir'     => APP_DIR . '/library/',
                 'schemasDir'      => BASE_DIR . '/schemas/',
                 'cacheDir'       => BASE_DIR . '/cache/',
-                'baseUri'        => '/openexam-with-handler/'
+                'baseUri'        => $config->baseuri
         )
 ));
 

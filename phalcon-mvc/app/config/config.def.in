@@ -36,7 +36,11 @@ $config = array(
                 'username' => 'openexam',
                 'password' => '',
                 'dbname'   => 'openexam'
-        )
+        ),
+        /**
+         * The base URI of this application. 
+         */
+        'baseuri' => '/phalcon-mvc/'
 );
 
 return $config;
