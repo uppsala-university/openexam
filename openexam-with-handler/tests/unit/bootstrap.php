@@ -7,10 +7,9 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-define('BASE_DIR', realpath(__DIR__ . '/../..'));
-define('APP_DIR', BASE_DIR . '/app');
+define('CONFIG_DIR', realpath(__DIR__ . '/../../app/config'));
 
-$config = include(APP_DIR . '/config/config.php');
+$config = include(CONFIG_DIR . '/config.php');
 
-include APP_DIR . "/config/loader.php";
-include APP_DIR . "/config/services.php";
+include CONFIG_DIR . "/loader.php";
+include CONFIG_DIR . "/services.php";
