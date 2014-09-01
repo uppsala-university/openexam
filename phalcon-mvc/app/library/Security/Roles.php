@@ -152,6 +152,8 @@ class Roles extends Component
         {
                 if (isset($this->roles[$id])) {
                         return array_key_exists($role, $this->roles[$id]);
+                } else {
+                        return false;
                 }
         }
 
