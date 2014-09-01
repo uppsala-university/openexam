@@ -117,8 +117,9 @@ $di->set('dbwrite', function () use ($config) {
 $di->set('session', function() {
         $session = new \Phalcon\Session\Adapter\Files();
         $session->start();
+        $session->test = 'value';
         return $session;
-});
+}, true);
 
 $di->set('acl', function() {
         return new \OpenExam\Plugins\Security\Acl(
@@ -130,7 +131,7 @@ $di->set('auth', function() {
         return new \OpenExam\Library\Security\Authentication(
             require APP_DIR . '/config/auth.def'
         );
-});
+}, true);
 
 /**
  * The roles collector and aquiring service.
@@ -140,4 +141,4 @@ $di->set('roles', function() {
         $roles->aquire(\OpenExam\Library\Security\Roles::admin);
         $roles->aquire(\OpenExam\Library\Security\Roles::teacher);
         return $roles;
-});
+}, true);

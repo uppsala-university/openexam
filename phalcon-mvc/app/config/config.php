@@ -39,7 +39,7 @@ $config->merge(array(
                 'viewsDir'       => APP_DIR . '/views/',
                 'pluginsDir'     => APP_DIR . '/plugins/',
                 'libraryDir'     => APP_DIR . '/library/',
-                'schemasDir'      => BASE_DIR . '/schemas/',
+                'schemasDir'     => BASE_DIR . '/schemas/',
                 'cacheDir'       => BASE_DIR . '/cache/',
                 'baseUri'        => $config->baseuri
         )
