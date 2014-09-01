@@ -29,8 +29,10 @@ use OpenExam\Models\Admin,
  * by the object ID in the model). Internal the aquired roles are stored 
  * as:
  * 
+ * <code>
  * $roles[0][role]              // System wide role.
  * $roles[id][role]             // Object specific role.
+ * </code>
  * 
  * <code>
  * $roles->getRoles();          // Get system wide roles.
@@ -54,6 +56,10 @@ use OpenExam\Models\Admin,
  * - decoder            : object specific (bound to exam) 
  * - student            : object specific (bound to exam) 
  * - corrector          : object specific (bound to question)
+ * 
+ * This class defines all builtin roles. These are further classified as
+ * admin, staff and student. The staff roles includes any builtin role except
+ * student or admin. Custom roles are any role not defined by this class.
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -356,25 +362,12 @@ class Roles extends Component
         public static function isStaff($role)
         {
                 return
+                    $role == self::teacher ||
                     $role == self::contributor ||
                     $role == self::corrector ||
                     $role == self::creator ||
                     $role == self::decoder ||
                     $role == self::invigilator;
-        }
-
-        /**
-         * Check if role is builtin. That is, one of the predefined in the
-         * system (any one of the constant defined in this class).
-         * @param string $role The role to check.
-         * @return bool
-         */
-        public static function isBuiltin($role)
-        {
-                return
-                    self::isAdmin($role) ||
-                    self::isStaff($role) ||
-                    self::isStudent($role);
         }
 
         /**
@@ -385,7 +378,8 @@ class Roles extends Component
          */
         public static function isCustom($role)
         {
-                return self::isBuiltin($role) == false;
+                $class = new \ReflectionClass(__CLASS__);
+                return $class->getConstant($role) === false;
         }
 
 }
