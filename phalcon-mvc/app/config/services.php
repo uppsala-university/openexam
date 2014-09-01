@@ -117,7 +117,6 @@ $di->set('dbwrite', function () use ($config) {
 $di->set('session', function() {
         $session = new \Phalcon\Session\Adapter\Files();
         $session->start();
-        $session->test = 'value';
         return $session;
 }, true);
 
@@ -138,7 +137,5 @@ $di->set('auth', function() {
  */
 $di->set('roles', function() {
         $roles = new \OpenExam\Library\Security\Roles();
-        $roles->aquire(\OpenExam\Library\Security\Roles::admin);
-        $roles->aquire(\OpenExam\Library\Security\Roles::teacher);
         return $roles;
 }, true);
