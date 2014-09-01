@@ -3,14 +3,12 @@
     "description": "Description of project openexam-phalcon-mvc.",
     "repositories": [
         {
-            "type": "vcs",
-            "url": "svn+ssh://83.253.229.180/uup-auth/",
-            "branches-path": false
+            "type": "composer",
+            "url": "http://it.bmc.uu.se/andlov/php/proj/bmc/uup-auth/"
         },
         {
-            "type": "vcs",
-            "url": "svn+ssh://83.253.229.180/uup-mail/",
-            "branches-path": false
+            "type": "composer",
+            "url": "http://it.bmc.uu.se/andlov/php/proj/bmc/uup-mail/"
         }
     ],
     "authors": [
@@ -25,7 +23,10 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "bmc/uup-auth": ">=1.0.3",
+        "bmc/uup-auth": ">=2.0.0",
         "bmc/uup-mail": ">=1.0.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
     }
 }
