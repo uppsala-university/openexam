@@ -1,0 +1,5 @@
+This application uses phpunit for running unit tests. Install phpunit thru Composer:
+
+bash$> composer update --dev
+
+// Anders Lövgren, 2014-09-01
