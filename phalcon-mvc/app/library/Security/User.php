@@ -21,6 +21,8 @@ use Phalcon\Mvc\User\Component;
  * This class supports user principal names. The default domain for
  * unqualified usernames must be set.
  * 
+ * @property Roles $roles The roles associated with this user.
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class User extends Component
@@ -64,6 +66,18 @@ class User extends Component
                         if (!isset($this->domain)) {
                                 throw new Exception(_("Missing domain part in username"));
                         }
+                }
+        }
+
+        public function __get($name)
+        {
+                if ($name == 'roles') {
+                        if (!isset($this->roles)) {
+                                $this->roles = new Roles();
+                        }
+                        return $this->roles;
+                } else {
+                        parent::__get($name);
                 }
         }
 

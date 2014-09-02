@@ -43,7 +43,6 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 // 
                 $user = self::$user;
                 $domain = self::$domain;
-                printf("Test: new User(%s, %s)\n", $user, $domain);
                 $this->object = new User($user, $domain);
                 $expect = sprintf("%s@%s", $user, $domain);
                 $actual = $this->object->getPrincipalName();
@@ -53,7 +52,6 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 // test User(principal):
                 // 
                 $user = sprintf("%s@%s", self::$user, self::$domain);
-                printf("Test: new User(%s)\n", $user);
                 $this->object = new User($user);
                 $expect = $user;
                 $actual = $this->object->getPrincipalName();
@@ -64,7 +62,6 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 // 
                 $user = self::$user;
                 $domain = self::$domain;
-                printf("Test: new User(%s)\n", $user);
                 User::setDefaultDomain($domain);
                 $this->object = new User($user);
                 $expect = sprintf("%s@%s", self::$user, self::$domain);
@@ -75,7 +72,6 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 // test User(user): -> without default domain (throws)
                 // 
                 $user = self::$user;
-                printf("Test: new User(%s)\n", $user);
                 try {
                         $this->object = new User($user);
                         self::fail();
@@ -87,12 +83,21 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 // test User(null): -> empty user
                 // 
                 $user = self::$user;
-                printf("Test: new User()\n");
                 try {
                         $this->object = new User();
                 } catch (\Exception $exception) {
                         self::fail();
                 }
+        }
+
+        /**
+         * @covers OpenExam\Library\Security\User::__get
+         */
+        public function testMagicGet()
+        {
+                $roles = $this->object->roles;
+                self::assertNotNull($roles);
+                self::assertInstanceOf('\OpenExam\Library\Security\Roles', $roles);
         }
 
         /**
@@ -143,7 +148,6 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 $domain = 'example.com';
                 User::setDefaultDomain($domain);
                 $this->object = new User(self::$user);
-                printf("User: %s\n", $this->object->getPrincipalName());
                 self::assertTrue($this->object->getDomain() == $domain);
         }
 
