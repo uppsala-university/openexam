@@ -133,14 +133,6 @@ $di->set('auth', function() {
 }, true);
 
 /**
- * The roles collector and aquiring service.
- */
-$di->set('roles', function() {
-        $roles = new \OpenExam\Library\Security\Roles();
-        return $roles;
-}, true);
-
-/**
  * The logged on user. Should be replaced by authentication.
  */
 $di->set('user', function() {
