@@ -17,6 +17,8 @@ use Phalcon\DI\InjectionAwareInterface,
     Phalcon\DI as PhalconDI;
 
 /**
+ * Provides dependency injection and service access for unit tests.
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInterface
