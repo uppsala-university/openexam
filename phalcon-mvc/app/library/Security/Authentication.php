@@ -13,7 +13,8 @@
 
 namespace OpenExam\Library\Security;
 
-use UUP\Authentication\Authenticator,
+use UUP\Authentication\Authenticator\Authenticator,
+    UUP\Authentication\Restrictor\Restrictor,
     UUP\Authentication\Library\Authenticator\AuthenticatorBase;
 
 /**
@@ -21,7 +22,7 @@ use UUP\Authentication\Authenticator,
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Authentication implements Authenticator
+class Authentication implements Authenticator, Restrictor
 {
 
         private $chains;
@@ -67,18 +68,18 @@ class Authentication implements Authenticator
                 $this->service = $service;
         }
 
-        public function authenticated()
+        public function accepted()
         {
-                if (!$this->authenticator->authenticated()) {
+                if (!$this->authenticator->accepted()) {
                         $this->authenticate('*');
                         $this->authenticate($this->service);
                 }
-                return $this->authenticator->authenticated();
+                return $this->authenticator->accepted();
         }
 
-        public function getUser()
+        public function getSubject()
         {
-                $this->authenticator->getUser();
+                $this->authenticator->getSubject();
         }
 
         public function login()
@@ -95,14 +96,14 @@ class Authentication implements Authenticator
         {
                 foreach ($this->chains[$service] as $authenticator) {
                         if ($authenticator->control === Authenticator::required) {
-                                if (!$authenticator->authenticated()) {
+                                if (!$authenticator->accepted()) {
                                         throw new AuthenticatorRequiredException($authenticator->authenticator);
                                 }
                         }
                 }
                 foreach ($this->chains[$service] as $authenticator) {
                         if ($authenticator->control === Authenticator::sufficient &&
-                            $authenticator->authenticated()) {
+                            $authenticator->accepted()) {
                                 $this->authenticator = $authenticator;
                                 break;
                         }
