@@ -7,9 +7,9 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-define('CONFIG_DIR', realpath(__DIR__ . '/../../phalcon-mvc/app/config/'));
+define('CONFIG_PHP', __DIR__ . '/../../phalcon-mvc/app/config/system/config.php');
 
-$config = include(CONFIG_DIR . '/config.php');
+$config = include(CONFIG_PHP);
 
-include CONFIG_DIR . "/loader.php";
-include CONFIG_DIR . "/services.php";
+include CONFIG_SYS . "/loader.php";
+include CONFIG_SYS . "/services.php";

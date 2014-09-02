@@ -19,7 +19,7 @@ $di = new \Phalcon\DI\FactoryDefault();
 $di->set('config', $config, true);
 
 $di->set('router', function() use($di) {
-        return require APP_DIR . '/config/routes.php';
+        return require CONFIG_SYS . '/routes.php';
 });
 
 //$di->set('dispatcher', function () {
@@ -122,13 +122,13 @@ $di->set('session', function() {
 
 $di->set('acl', function() {
         return new \OpenExam\Plugins\Security\Acl(
-            require APP_DIR . '/config/access.def'
+            require CONFIG_DIR . '/access.def'
         );
 });
 
 $di->set('auth', function() {
         return new \OpenExam\Library\Security\Authentication(
-            require APP_DIR . '/config/auth.def'
+            require CONFIG_DIR. '/auth.def'
         );
 }, true);
 

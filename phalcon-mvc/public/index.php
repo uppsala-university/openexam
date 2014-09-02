@@ -5,21 +5,12 @@
 error_reporting(E_ALL);
 
 try {
+        define('CONFIG_PHP', __DIR__ . '/../app/config/system/config.php');
 
-        /**
-         * Read the configuration
-         */
-        $config = include dirname(__DIR__) . '/app/config/config.php';
+        $config = include(CONFIG_PHP);
 
-        /**
-         * Read auto-loader
-         */
-        include APP_DIR . "/config/loader.php";
-
-        /**
-         * Read services
-         */
-        include APP_DIR . "/config/services.php";
+        include CONFIG_SYS . "/loader.php";
+        include CONFIG_SYS . "/services.php";
 
         $application = new \Phalcon\Mvc\Application($di);
         echo $application->handle()->getContent();

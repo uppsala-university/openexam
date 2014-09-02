@@ -39,4 +39,4 @@ $loader->register();
 /**
  * Include Composer auto-loader.
  */
-require_once BASE_DIR . '/../vendor/autoload.php';
+require_once PROJ_DIR . '/vendor/autoload.php';

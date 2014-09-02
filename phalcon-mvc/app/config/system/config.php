@@ -12,15 +12,30 @@
 // 
 
 /**
- * Define some useful constants:
+ * System configuration directory.
  */
-define('BASE_DIR', realpath(__DIR__ . '/../..'));
-define('APP_DIR', BASE_DIR . '/app');
+define('CONFIG_SYS', __DIR__);
+/**
+ * User settings directory.
+ */
+define('CONFIG_DIR', dirname(CONFIG_SYS));
+/**
+ * Application directory.
+ */
+define('APP_DIR', dirname(CONFIG_DIR));
+/**
+ * Base directory.
+ */
+define('BASE_DIR', dirname(APP_DIR));
+/**
+ * Project root directory.
+ */
+define('PROJ_DIR', dirname(BASE_DIR));
 
 /**
  * Read the config protected configuration file:
  */
-$config = new Phalcon\Config(include APP_DIR . '/config/config.def');
+$config = new Phalcon\Config(include CONFIG_DIR . '/config.def');
 
 /**
  * Merge user defined settings with system settings:
