@@ -128,7 +128,7 @@ $di->set('acl', function() {
 
 $di->set('auth', function() {
         return new \OpenExam\Library\Security\Authentication(
-            require CONFIG_DIR. '/auth.def'
+            require CONFIG_DIR . '/auth.def'
         );
 }, true);
 
@@ -138,4 +138,12 @@ $di->set('auth', function() {
 $di->set('roles', function() {
         $roles = new \OpenExam\Library\Security\Roles();
         return $roles;
+}, true);
+
+/**
+ * The logged on user. Should be replaced by authentication.
+ */
+$di->set('user', function() {
+        $user = new OpenExam\Library\Security\User();
+        return $user;
 }, true);
