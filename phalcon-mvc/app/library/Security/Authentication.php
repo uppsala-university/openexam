@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Security;
 
 use UUP\Authentication\Authenticator\Authenticator,
+    UUP\Authentication\Authenticator\NullAuthenticator,
     UUP\Authentication\Restrictor\Restrictor,
     UUP\Authentication\Library\Authenticator\AuthenticatorBase;
 

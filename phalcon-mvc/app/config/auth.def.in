@@ -11,8 +11,8 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-use UUP\Authentication\CasAuthenticator,
-    UUP\Authentication\FormAuthenticator,
+use UUP\Authentication\Authenticator\CasAuthenticator,
+    UUP\Authentication\Authenticator\FormAuthenticator,
     UUP\Authentication\Validator\LdapBindValidator;
 
 // 
