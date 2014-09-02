@@ -29,6 +29,9 @@
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
     },
+    "suggest": {
+        "jpgraph/jpgraph": "For statistical pages or dynamic generated GUI components, e.g. buttons."
+    },
     "autoload-dev": {
         "psr-4": {
             "OpenExam\\Tests\\": "tests/support"
