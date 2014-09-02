@@ -80,6 +80,18 @@ class UserTest extends \PHPUnit_Framework_TestCase
                         $this->object = new User($user);
                         self::fail();
                 } catch (\Exception $exception) {
+                        
+                }
+
+                // 
+                // test User(null): -> empty user
+                // 
+                $user = self::$user;
+                printf("Test: new User()\n");
+                try {
+                        $this->object = new User();
+                } catch (\Exception $exception) {
+                        self::fail();
                 }
         }
 
@@ -92,6 +104,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 self::assertNotNull($this->object->getPrincipalName());
                 self::assertNotEmpty($this->object->getPrincipalName());
                 self::assertTrue($this->object->getPrincipalName() == $principal);
+
+                $this->object = new User();
+                self::assertNull($this->object->getPrincipalName());
         }
 
         /**
@@ -102,6 +117,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 self::assertNotNull($this->object->getDomain());
                 self::assertNotEmpty($this->object->getDomain());
                 self::assertTrue($this->object->getDomain() == self::$domain);
+
+                $this->object = new User();
+                self::assertNull($this->object->getDomain());
         }
 
         /**
@@ -112,6 +130,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 self::assertNotNull($this->object->getUser());
                 self::assertNotEmpty($this->object->getUser());
                 self::assertTrue($this->object->getUser() == self::$user);
+
+                $this->object = new User();
+                self::assertNull($this->object->getUser());
         }
 
         /**

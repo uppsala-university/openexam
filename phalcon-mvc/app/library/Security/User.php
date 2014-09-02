@@ -47,21 +47,23 @@ class User extends Component
          * @param string $user The username (simple or principal).
          * @param string $domain The user domain.
          */
-        public function __construct($user, $domain = null)
+        public function __construct($user = null, $domain = null)
         {
-                if (isset($domain)) {
-                        $this->user = $user;
-                        $this->domain = $domain;
-                } else {
-                        $this->user = $user;
-                        $this->domain = self::$defaultDomain;
-                }
-                if (($pos = strpos($this->user, '@'))) {
-                        $this->domain = substr($this->user, $pos + 1);
-                        $this->user = substr($this->user, 0, $pos);
-                }
-                if (!isset($this->domain)) {
-                        throw new Exception(_("Missing domain part in username"));
+                if (isset($user)) {
+                        if (isset($domain)) {
+                                $this->user = $user;
+                                $this->domain = $domain;
+                        } else {
+                                $this->user = $user;
+                                $this->domain = self::$defaultDomain;
+                        }
+                        if (($pos = strpos($this->user, '@'))) {
+                                $this->domain = substr($this->user, $pos + 1);
+                                $this->user = substr($this->user, 0, $pos);
+                        }
+                        if (!isset($this->domain)) {
+                                throw new Exception(_("Missing domain part in username"));
+                        }
                 }
         }
 
@@ -71,7 +73,9 @@ class User extends Component
          */
         public function getPrincipalName()
         {
-                return sprintf("%s@%s", $this->user, $this->domain);
+                if (isset($this->user)) {
+                        return sprintf("%s@%s", $this->user, $this->domain);
+                }
         }
 
         /**
