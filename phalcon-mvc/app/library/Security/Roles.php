@@ -102,15 +102,30 @@ class Roles extends Component
         /**
          * @var array 
          */
-        private $roles;
+        private $roles = array();
 
         /**
          * Constructor.
+         * 
+         * <code>
+         * $roles = new Roles(array(2 => array(Roles::contributor, Roles::decoder));
+         * $roles = new Roles(array(2 => array(Roles::contributor => true, Roles::decoder => true));
+         * </code>
          * @param array $roles
          */
         public function __construct($roles = array())
         {
-                $this->roles = (array) $roles;
+                if (count($roles) != 0) {
+                        foreach ($roles as $id => $arr) {
+                                foreach ($arr as $key => $val) {
+                                        if (is_numeric($key)) {
+                                                $this->addRole($val, $id);
+                                        } else {
+                                                $this->addRole($key, $id);
+                                        }
+                                }
+                        }
+                }
         }
 
         public function __toString()
