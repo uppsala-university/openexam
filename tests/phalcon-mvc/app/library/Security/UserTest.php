@@ -92,9 +92,9 @@ class UserTest extends TestCase
         }
 
         /**
-         * @covers OpenExam\Library\Security\User::__get
+         * @covers OpenExam\Library\Security\User::roles
          */
-        public function testMagicGet()
+        public function testRolesProperty()
         {
                 $roles = $this->object->roles;
                 self::assertNotNull($roles);
