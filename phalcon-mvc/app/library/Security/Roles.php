@@ -196,14 +196,10 @@ class Roles extends Component
                         return true;
                 }
 
-                // TODO: Correct access to logged on user ???
-                $auth = $this->session->get('auth');
-                if (empty($auth)) {
-                        return false;
-                }
-
-                $user = $auth['user'];
-                if (empty($user)) {
+                // 
+                // Get principal name from user service:
+                // 
+                if (($user = $this->user->getPrincipalName()) == null) {
                         return false;
                 }
 
