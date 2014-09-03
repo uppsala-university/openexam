@@ -63,7 +63,7 @@ class UserTest extends TestCase
                 // test User(user): -> using default domain
                 // 
                 $user = self::$user;
-                $domain = $this->config['user']['domain'];
+                $domain = $this->config->user->domain;
                 $this->object = new User($user);
                 $expect = sprintf("%s@%s", self::$user, $domain);
                 $actual = $this->object->getPrincipalName();

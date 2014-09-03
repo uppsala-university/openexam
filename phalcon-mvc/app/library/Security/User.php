@@ -50,9 +50,9 @@ class User extends Component
                         if (isset($domain)) {
                                 $this->user = $user;
                                 $this->domain = $domain;
-                        } elseif (isset($this->config['user']['domain'])) {
+                        } elseif (isset($this->config->user->domain)) {
                                 $this->user = $user;
-                                $this->domain = $this->config['user']['domain'];
+                                $this->domain = $this->config->user->domain;
                         } else {
                                 $this->user = $user;
                         }
@@ -66,8 +66,8 @@ class User extends Component
                                 throw new Exception(_("Missing domain part in username"));
                         }
 
-                        if (isset($this->config['user']['roles'])) {
-                                $this->roles = new Roles($this->config['user']['roles']);
+                        if (isset($this->config->user->roles)) {
+                                $this->roles = new Roles($this->config->user->roles);
                         } else {
                                 $this->roles = new Roles();
                         }
