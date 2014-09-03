@@ -38,6 +38,19 @@ $config = array(
                 'dbname'   => 'openexam'
         ),
         /**
+         * User service configuration.
+         */
+        'user'    => array(
+                /**
+                 * The default user domain.
+                 */
+                'domain' => 'example.com',
+                /**
+                 * Default set of rules for all users.
+                 */
+                'roles'  => array()
+        ),
+        /**
          * The base URI of this application. 
          */
         'baseuri' => '/phalcon-mvc/'

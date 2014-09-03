@@ -29,11 +29,6 @@ class User extends Component
 {
 
         /**
-         * Default domain.
-         * @var string 
-         */
-        private static $defaultDomain;
-        /**
          * The user domain.
          * @var string 
          */
@@ -55,29 +50,27 @@ class User extends Component
                         if (isset($domain)) {
                                 $this->user = $user;
                                 $this->domain = $domain;
+                        } elseif (isset($this->config['user']['domain'])) {
+                                $this->user = $user;
+                                $this->domain = $this->config['user']['domain'];
                         } else {
                                 $this->user = $user;
-                                $this->domain = self::$defaultDomain;
                         }
+
                         if (($pos = strpos($this->user, '@'))) {
                                 $this->domain = substr($this->user, $pos + 1);
                                 $this->user = substr($this->user, 0, $pos);
                         }
+
                         if (!isset($this->domain)) {
                                 throw new Exception(_("Missing domain part in username"));
                         }
-                }
-        }
 
-        public function __get($name)
-        {
-                if ($name == 'roles') {
-                        if (!isset($this->roles)) {
+                        if (isset($this->config['user']['roles'])) {
+                                $this->roles = new Roles($this->config['user']['roles']);
+                        } else {
                                 $this->roles = new Roles();
                         }
-                        return $this->roles;
-                } else {
-                        parent::__get($name);
                 }
         }
 
@@ -108,15 +101,6 @@ class User extends Component
         public function getUser()
         {
                 return $this->user;
-        }
-
-        /**
-         * Set default user domain.
-         * @param string $domain
-         */
-        public static function setDefaultDomain($domain)
-        {
-                self::$defaultDomain = $domain;
         }
 
 }

@@ -135,7 +135,7 @@ $di->set('auth', function() {
 /**
  * The logged on user. Should be replaced by authentication.
  */
-$di->set('user', function() {
-        $user = new OpenExam\Library\Security\User();
+$di->set('user', function() use($config) {
+        $user = new \OpenExam\Library\Security\User();
         return $user;
 }, true);
