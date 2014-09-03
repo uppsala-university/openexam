@@ -21,6 +21,10 @@ use Phalcon\Mvc\User\Component;
  * This class supports user principal names. The default domain for
  * unqualified usernames must be set.
  * 
+ * The "act-as" pattern is supported by passing an array of roles to
+ * the constructor or by setting the roles property. Use this feature 
+ * with caution as it is effectivelly user impersonation.
+ * 
  * @property Roles $roles The roles associated with this user.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -44,7 +48,7 @@ class User extends Component
          * @param string $user The username (simple or principal).
          * @param string $domain The user domain.
          */
-        public function __construct($user = null, $domain = null)
+        public function __construct($user = null, $domain = null, $roles = array())
         {
                 if (isset($user)) {
                         if (isset($domain)) {
@@ -66,7 +70,9 @@ class User extends Component
                                 throw new Exception(_("Missing domain part in username"));
                         }
 
-                        if (isset($this->config->user->roles)) {
+                        if (count($roles) != 0) {
+                                $this->roles = new Roles($roles);
+                        } elseif (isset($this->config->user->roles)) {
                                 $this->roles = new Roles($this->config->user->roles);
                         } else {
                                 $this->roles = new Roles();
