@@ -110,7 +110,7 @@ class Roles extends Component
          */
         public function __construct($roles = array())
         {
-                $this->roles = $roles;
+                $this->roles = (array) $roles;
         }
 
         /**
