@@ -25,10 +25,14 @@ class UniqueUser
 
         public $user;
 
-        public function __construct()
+        public function __construct($domain = null)
         {
                 while (true) {
-                        $this->user = sprintf("tuser%s%03d", substr(md5(time()), 0, 7), \rand(0, 999));
+                        if (isset($domain)) {
+                                $this->user = sprintf("%s@%s", self::generate(), $domain);
+                        } else {
+                                $this->user = self::generate();
+                        }
                         if (\OpenExam\Models\Admin::findFirstByUser($this->user)) {
                                 continue;
                         }
@@ -55,6 +59,11 @@ class UniqueUser
                         }
                         break;
                 }
+        }
+
+        private static function generate()
+        {
+                return sprintf("tuser%s%03d", substr(md5(time()), 0, 7), \rand(0, 999));
         }
 
         public function __toString()
