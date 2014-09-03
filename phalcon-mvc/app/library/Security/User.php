@@ -74,6 +74,11 @@ class User extends Component
                 }
         }
 
+        public function __toString()
+        {
+                return $this->getPrincipalName();
+        }
+
         /**
          * Get user principal name.
          * @return string

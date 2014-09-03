@@ -113,6 +113,11 @@ class Roles extends Component
                 $this->roles = (array) $roles;
         }
 
+        public function __toString()
+        {
+                return var_export($this->roles, true);
+        }
+
         /**
          * Add role to collection.
          * @param string $role The role to add.
