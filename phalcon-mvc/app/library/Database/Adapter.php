@@ -11,14 +11,14 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Core;
+namespace OpenExam\Library\Database;
 
 /**
  * Database adapter factory.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class DatabaseAdapter
+class Adapter
 {
 
         /**

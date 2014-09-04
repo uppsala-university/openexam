@@ -91,10 +91,10 @@ $di->set('elements', function() {
  * Database connection is created based in the parameters defined in the configuration file
  */
 $di->set('dbread', function () use ($config) {
-        return \OpenExam\Library\Core\DatabaseAdapter::create($config->dbread);
+        return \OpenExam\Library\Database\Adapter::create($config->dbread);
 });
 $di->set('dbwrite', function () use ($config) {
-        return \OpenExam\Library\Core\DatabaseAdapter::create($config->dbwrite);
+        return \OpenExam\Library\Database\Adapter::create($config->dbwrite);
 });
 
 /**
