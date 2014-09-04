@@ -57,6 +57,11 @@ class Authentication implements Authenticator, Restrictor
                 $this->chains[$service][$name] = $auth;
                 return $auth;
         }
+        
+        public function getAuthChain($service)
+        {
+                return $this->chains[$service];
+        }
 
         /**
          * Activate this authentication plugin for next call to login().
@@ -67,25 +72,34 @@ class Authentication implements Authenticator, Restrictor
         {
                 $this->authenticator = $this->chains[$service][$name];
                 $this->service = $service;
+                return $this->authenticator;
+        }
+        
+        public function getAuthenticator() 
+        {
+                return $this->authenticator;
         }
 
         public function accepted()
         {
-                if (!$this->authenticator->accepted()) {
-                        $this->authenticate('*');
-                        $this->authenticate($this->service);
+                if($this->authenticator instanceof NullAuthenticator) {
+                        if (!$this->authenticator->accepted()) {
+                                $this->authenticate('*');
+                                $this->authenticate($this->service);
+                        }
                 }
+                
                 return $this->authenticator->accepted();
         }
 
         public function getSubject()
         {
-                $this->authenticator->getSubject();
+                return $this->authenticator->getSubject();
         }
 
         public function login()
         {
-                $this->authenticator->login();
+                return $this->authenticator->login();
         }
 
         public function logout()

@@ -1,21 +1,85 @@
-<div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-                <div class="container">
-                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                        </a>
-                        <a class="brand" href="#">UU Open Exam</a>
-                        <?php echo $this->elements->getMenu(); ?>
-                </div>
-        </div>
-</div>
 
-<div class="container">
-        <?= $this->getContent(); ?>
-        <hr>
-        <footer>
-                <p>&copy; Company 2014</p>
-        </footer>
-</div>
+    <!-- page wrapper -->
+    <div id="wrapper" class="wrapper">
+
+        <!-- Header area -->
+        <div id="header">
+
+            <!-- Top navigation -->
+            <div class="headerComponent componentContainer">
+
+                <!-- Logo -->
+                <div class="toppImg">
+                    <h1 class="logo">
+                        <a href="http://www.uu.se/">
+                        <?=Phalcon\Tag::image("img/uu_logo.svg");?>	
+                        </a> 
+                        <span class="alt-logo">Uppsala universitet</span>
+                    </h1>
+                </div>
+
+                <!-- Logo Text -->   
+                <div class="toppNav"> 
+                    <br><br>
+                    <h1 class="siteName">
+                        <a href="http://www.bmc.uu.se/">OpenExam</a>
+                        - online examination system
+                    </h1>
+                </div>
+
+            </div>
+
+            <!-- Top menu -->
+            <div id="topMenu">
+
+                <!-- Top left menu -->
+                <ul id="menucontainer">
+                    <li class="first selected"><?=Phalcon\Tag::linkTo('index', 'Home')?></li>
+                    <li id="start" ><?=Phalcon\Tag::linkTo('help', 'Help')?></li>
+                    <li id="start" ><?=Phalcon\Tag::linkTo('about', 'About')?></li>
+                </ul>
+
+                <!-- Top right menu -->
+                <ul id="menucontainer" style="float:right">
+                    <li id="start">
+                        <?php
+                        if(!$this->session->has("phpCAS")) {
+                                print Phalcon\Tag::linkTo( array(
+                                        "auth/login", 
+                                        "Login", 
+                                        "class"=>"fancybox fancybox.ajax"
+                                )); 
+
+                        } else {
+                                print Phalcon\Tag::linkTo( array(
+                                        "auth/logout", 
+                                        "Logout"
+                                )); 
+                        }        
+                        ?>
+                    </li>
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!-- Content area -->
+        <div id="containerflarp">
+            <?=$this->getContent() ?>
+        </div>
+
+
+        <!-- Footer area -->
+        <div id="footer">
+            <div class="uuFooter">
+                <div class="footerText">
+                  <div class="sidfot vcard" style="width: auto;"> &copy; 2014 <a class="url fn org" href="http://www.uu.se/">Uppsala University</a> <a class="url fn org" href="http://www.bmc.uu.se/">BMC</a>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+    </div>		
+    <!-- wrapper ends -->

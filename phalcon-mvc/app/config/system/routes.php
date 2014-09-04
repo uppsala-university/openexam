@@ -40,6 +40,29 @@ class PrefixRoute extends Phalcon\Mvc\Router\Group
 
 }
 
+/**
+ * Route Gui - Public pages (e.g. "/index")
+ */
+$router->add(
+    "/", array(
+        "controller" => "public",
+        "action"     => "index",
+        "namespace"  => "OpenExam\Controllers\Gui",
+    )
+);
+
+
+$router->add(
+    "/:action", array(
+        "controller" => "public",
+        "action"     => 1,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+/**
+ * Route Gui - private pages
+ */
 $router->mount(
     new PrefixRoute(array(
         "prefix"    => "/",
@@ -58,6 +81,19 @@ $router->mount(
         "namespace" => "OpenExam\Controllers\Utility"
     ))
 );
+
+/**
+ * Route Authentication pages (e.g. "/auth/*")
+ */
+$router->add(
+    "/auth/:action/?(.*)?", array(
+        "controller"    => "auth",
+        "action"        => 1,
+        "authMethod"    => 2,
+        "namespace"     => "OpenExam\Controllers\Gui"
+    )
+);
+ 
 
 /**
  * Route SOAP and WSDL requests:

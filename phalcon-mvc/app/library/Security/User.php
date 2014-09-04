@@ -50,34 +50,7 @@ class User extends Component
          */
         public function __construct($user = null, $domain = null, $roles = array())
         {
-                if (isset($user)) {
-                        if (isset($domain)) {
-                                $this->user = $user;
-                                $this->domain = $domain;
-                        } elseif (isset($this->config->user->domain)) {
-                                $this->user = $user;
-                                $this->domain = $this->config->user->domain;
-                        } else {
-                                $this->user = $user;
-                        }
-
-                        if (($pos = strpos($this->user, '@'))) {
-                                $this->domain = substr($this->user, $pos + 1);
-                                $this->user = substr($this->user, 0, $pos);
-                        }
-
-                        if (!isset($this->domain)) {
-                                throw new Exception(_("Missing domain part in username"));
-                        }
-
-                        if (count($roles) != 0) {
-                                $this->roles = new Roles($roles);
-                        } elseif (isset($this->config->user->roles)) {
-                                $this->roles = new Roles($this->config->user->roles);
-                        } else {
-                                $this->roles = new Roles();
-                        }
-                }
+                $this->setUser($user, $domain);
         }
 
         public function __toString()
@@ -114,4 +87,40 @@ class User extends Component
                 return $this->user;
         }
 
+        /**
+         * Set user part of principal name.
+         * @return string
+         */
+        public function setUser($user = null, $domain = null)
+        {
+                if (isset($user)) {
+                        if (isset($domain)) {
+                                $this->user = $user;
+                                $this->domain = $domain;
+                        } elseif (isset($this->config->user->domain)) {
+                                $this->user = $user;
+                                $this->domain = $this->config->user->domain;
+                        } else {
+                                $this->user = $user;
+                        }
+
+                        if (($pos = strpos($this->user, '@'))) {
+                                $this->domain = substr($this->user, $pos + 1);
+                                $this->user = substr($this->user, 0, $pos);
+                        }
+
+                        if (!isset($this->domain)) {
+                                throw new Exception(_("Missing domain part in username"));
+                        }
+
+                        if (isset($this->config->user->roles)) {
+                                $this->roles = new Roles($this->config->user->roles);
+                        } else {
+                                $this->roles = new Roles();
+                        }
+                }
+                
+                return $this->user;
+        }
+        
 }

@@ -1,0 +1,39 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    index.phtml
+// 
+// Author:  Ahsan Shahzad (MedfarmDoIT)
+// 
+?>
+
+<div class="hero-unit" style="padding-top:18px; margin-top:30px;">
+    <h1>Welcome!</h1>
+    <br />
+    <p>This system let you do examination online, see <a href="help.php">Help</a> for more information. </p>
+    <h3>Are you ready to begin the examination?</h3>
+    <div>Follow the link to the <a href="exam/">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon).</div>
+</div>
+
+<div class="row">
+    <div class="span4">
+        <h2>Create an exam </h2>
+        <p>This role is held by the person who created the exam. Unlike other roles can not be assigned to this role, it is implicit and there can be only one creator per exam.</p>
+    </div>
+    <div class="span4">
+        <h2>Contribute in an exam </h2>
+        <p>Anyone who has the role of contributor can add questions. By default, it becomes the right spirit teachers for a query is the same as that issued the. A person who puts a question then get the role corrector assigned automatically for the same.</p>
+    </div>
+    <div class="span4">
+        <h2>Decode an exam</h2>
+        <p>The holding role decoder can go into the system and decode an exam. When the exam will be decoded as the students' true identities visible. To decode an exam so must all the answers first squashed.</p>
+    </div>
+    <div class="span4">
+        <h2>Correct an exam </h2>
+        <p>Role corrector ('correcting teachers') are per issue and assigned either implicitly by the system when a person puts himself into an issue (by his contributor role) or explicitly by the person holding the role of creator of an exam.</p>
+    </div>
+</div>
