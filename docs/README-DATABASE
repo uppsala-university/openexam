@@ -35,6 +35,33 @@
                 'password' => 'secret',
         ),
 
+** INSTALLATION:
+
+   Installation is either done using the SQL-script (MySQL only) or using the Phalcon Developer 
+   Tools (phalcon/devtools)
+
+   o) Using SQL-script:
+
+        mysql> USE openexam
+        mysql> SOURCE ${appdir}/openexam-php/phalcon-mvc/schemas/database/openexam.sql;
+
+   o) Using Phalcon Developer Tools:
+
+      The phalcon/devtools is a suggested package that is not installed by default. Use Composer
+      to install it if missing:
+
+        bash$> cd ${appdir}/openexam-php
+        bash$> composer install phalcon/devtools
+
+      Use phalcon/devtools for database migration:
+
+        bash$> cd ${appdir}/openexam-php/phalcon-mvc
+        bash$> ../vendor/bin/phalcon.php migration run --migrations=schemas/migrations
+
+** UPGRADE:
+
+   The procedure is the same when installing the database using phalcon/devtools.
+
 ** MORE INFORMATION:
 
    See http://php.net/manual/en/pdo.drivers.php for DSN examples.

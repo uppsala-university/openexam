@@ -1,0 +1,21 @@
+Database migration is handled using phalcon/devtools. This is a suggested package that can be
+installed if the system has no phalcon command already:
+
+    bash$> cd ${appdir}/openexam-php
+    bash$> composer install phalcon/devtools
+
+The database can be migrated by running phalcon.php:
+
+    bash$> cd ${appdir}/openexam-php/phalcon-mvc
+    bash$> ../vendor/bin/phalcon.php migration run --migrations=schemas/migrations
+
+When altering the database schema, dump a new migration to ${appdir}/openexam-php/phalcon-mvc/schemas/migrations:
+
+    bash$> ../vendor/bin/phalcon.php migration generate \
+                --migrations=schemas/migrations \
+                --version=x.y.z
+
+The version should be 'major.minor.revision'. Phalcon MVC migrations begin at major >= 2
+
+
+// Anders Lövgren, 2014-09-04
