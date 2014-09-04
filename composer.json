@@ -31,8 +31,8 @@
         "phpunit/phpunit": "3.7.*"
     },
     "suggest": {
-        "phalcon/devtools": "Phalcon Developer Tools (for database migration)",
-        "jpgraph/jpgraph": "For statistical pages or dynamic generated GUI components, e.g. buttons."
+        "jpgraph/jpgraph": "For statistical pages or dynamic generated GUI components, e.g. buttons.",
+        "piotrooo/wsdl-creator": "Create WSDL document based on PHP classes using annotations and reflection mechanism."
     },
     "autoload-dev": {
         "psr-4": {
