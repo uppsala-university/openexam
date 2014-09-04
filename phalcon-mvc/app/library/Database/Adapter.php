@@ -71,7 +71,7 @@ class Adapter
                                 return new \Phalcon\Db\Adapter\Pdo\Sqlite($config);
                         }
                 } else {
-                        throw new \Phalcon\Db\Exception("Unsupported database type.");
+                        throw new Exception("Unsupported database type.");
                 }
         }
 

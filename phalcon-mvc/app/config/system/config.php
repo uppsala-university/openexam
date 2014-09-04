@@ -24,7 +24,7 @@ define('CONFIG_DIR', dirname(CONFIG_SYS));
  */
 define('APP_DIR', dirname(CONFIG_DIR));
 /**
- * Base directory.
+ * Base directory (the Phalcon MVC app).
  */
 define('BASE_DIR', dirname(APP_DIR));
 /**
@@ -55,7 +55,9 @@ $config->merge(array(
                 'pluginsDir'     => APP_DIR . '/plugins/',
                 'libraryDir'     => APP_DIR . '/library/',
                 'schemasDir'     => BASE_DIR . '/schemas/',
+                'migrationsDir'  => BASE_DIR . '/schemas/migrations/',
                 'cacheDir'       => BASE_DIR . '/cache/',
+                'baseDir'        => BASE_DIR . '/',
                 'baseUri'        => $config->baseuri
         )
 ));
