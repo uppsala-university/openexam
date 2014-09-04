@@ -41,31 +41,34 @@ class Adapter
         /**
          * Create Phalcon PDO database adapter object.
          * 
-         * @param array $config
+         * @param \Phalcon\Config|array $config
          * @return \Phalcon\Db\Adapter\Pdo
          */
         public static function create($config)
         {
+                $config = (array) $config;
+
                 if (isset($config['adapter'])) {
                         switch ($config['adapter']) {
                                 case self::MySQL:
-                                        return new \Phalcon\Db\Adapter\Pdo\Mysql((array) $config);
+                                        return new \Phalcon\Db\Adapter\Pdo\Mysql($config);
                                 case self::PostgreSQL:
-                                        return new \Phalcon\Db\Adapter\Pdo\Postgresql((array) $config);
+                                        unset($config['adapter']);
+                                        return new \Phalcon\Db\Adapter\Pdo\Postgresql($config);
                                 case self::Oracle:
-                                        return new \Phalcon\Db\Adapter\Pdo\Oracle((array) $config);
+                                        return new \Phalcon\Db\Adapter\Pdo\Oracle($config);
                                 case self::SQLite:
-                                        return new \Phalcon\Db\Adapter\Pdo\Sqlite((array) $config);
+                                        return new \Phalcon\Db\Adapter\Pdo\Sqlite($config);
                         }
                 } elseif (isset($config['dsn'])) {
                         if (strstr($config['dsn'], 'mysql:')) {
-                                return new \Phalcon\Db\Adapter\Pdo\Mysql((array) $config);
+                                return new \Phalcon\Db\Adapter\Pdo\Mysql($config);
                         } elseif (strstr($config['dsn'], 'pgsql:')) {
-                                return new \Phalcon\Db\Adapter\Pdo\Postgresql((array) $config);
+                                return new \Phalcon\Db\Adapter\Pdo\Postgresql($config);
                         } elseif (strstr($config['dsn'], 'oci:')) {
-                                return new \Phalcon\Db\Adapter\Pdo\Oracle((array) $config);
+                                return new \Phalcon\Db\Adapter\Pdo\Oracle($config);
                         } elseif (strstr($config['dsn'], 'sqlite:')) {
-                                return new \Phalcon\Db\Adapter\Pdo\Sqlite((array) $config);
+                                return new \Phalcon\Db\Adapter\Pdo\Sqlite($config);
                         }
                 } else {
                         throw new \Phalcon\Db\Exception("Unsupported database type.");
