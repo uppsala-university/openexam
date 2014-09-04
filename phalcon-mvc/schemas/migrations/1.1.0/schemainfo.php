@@ -8,6 +8,11 @@ use Phalcon\Mvc\Model\Migration;
 class SchemainfoMigration_110 extends Migration
 {
 
+        private static $data = array(
+                'major' => 1,
+                'minor' => 1
+        );
+
         public function up()
         {
                 $this->morphTable(
@@ -38,9 +43,19 @@ class SchemainfoMigration_110 extends Migration
                         )
                     )
                 );
-                self::$_connection->update(
-                    "schemainfo", array(1, 1), array("major", "minor")
-                );
+        }
+
+        public function afterUp()
+        {
+                if (self::$_connection->update(
+                        "schemainfo", array_keys(self::$data), array_values(self::$data)
+                    )) {
+                        
+                } else {
+                        self::$_connection->insert(
+                            "schemainfo", array_values(self::$data), array_keys(self::$data)
+                        );
+                }
         }
 
 }
