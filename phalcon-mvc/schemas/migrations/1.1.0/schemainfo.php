@@ -47,15 +47,10 @@ class SchemainfoMigration_110 extends Migration
 
         public function afterUp()
         {
-                if (self::$_connection->update(
-                        "schemainfo", array_keys(self::$data), array_values(self::$data)
-                    )) {
-                        
-                } else {
-                        self::$_connection->insert(
-                            "schemainfo", array_values(self::$data), array_keys(self::$data)
-                        );
-                }
+                self::$_connection->delete("schemainfo");
+                self::$_connection->insert(
+                    "schemainfo", array_values(self::$data), array_keys(self::$data)
+                );
         }
 
 }
