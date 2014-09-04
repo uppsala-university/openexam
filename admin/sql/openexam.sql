@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.56, for pc-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.39, for Linux (x86_64)
 --
 -- Host: localhost    Database: openexam
 -- ------------------------------------------------------
--- Server version	5.1.56-log
+-- Server version	5.5.39-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `admins`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `admins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` varchar(10) NOT NULL,
+  `user` varchar(30) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -83,7 +83,7 @@ DROP TABLE IF EXISTS `contributors`;
 CREATE TABLE `contributors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `exam_id` int(11) NOT NULL,
-  `user` char(8) NOT NULL,
+  `user` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `contributors_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS `decoders`;
 CREATE TABLE `decoders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `exam_id` int(11) NOT NULL,
-  `user` char(8) NOT NULL,
+  `user` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `decoders_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
@@ -117,7 +117,7 @@ DROP TABLE IF EXISTS `examinators`;
 CREATE TABLE `examinators` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `exam_id` int(11) NOT NULL,
-  `user` char(8) NOT NULL,
+  `user` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `examinators_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
@@ -139,7 +139,7 @@ CREATE TABLE `exams` (
   `endtime` datetime NOT NULL,
   `created` datetime NOT NULL,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creator` char(8) NOT NULL,
+  `creator` varchar(30) NOT NULL,
   `details` int(11) NOT NULL DEFAULT '3',
   `decoded` enum('Y','N') NOT NULL DEFAULT 'N',
   `orgunit` varchar(150) NOT NULL,
@@ -184,7 +184,7 @@ CREATE TABLE `questions` (
   `score` float NOT NULL,
   `name` varchar(30) NOT NULL,
   `quest` text NOT NULL,
-  `user` char(8) NOT NULL,
+  `user` varchar(30) NOT NULL,
   `video` varchar(512) DEFAULT NULL,
   `image` varchar(512) DEFAULT NULL,
   `audio` varchar(512) DEFAULT NULL,
@@ -214,7 +214,7 @@ CREATE TABLE `results` (
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
   CONSTRAINT `results_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,8 +255,9 @@ DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `exam_id` int(11) NOT NULL,
-  `user` char(8) NOT NULL,
+  `user` varchar(30) NOT NULL,
   `code` varchar(15) NOT NULL,
+  `tag` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `students_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
@@ -272,7 +273,7 @@ DROP TABLE IF EXISTS `teachers`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `teachers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` varchar(10) NOT NULL,
+  `user` varchar(30) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -302,4 +303,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-03-13 18:35:47
+-- Dump completed on 2014-09-04  4:01:56
