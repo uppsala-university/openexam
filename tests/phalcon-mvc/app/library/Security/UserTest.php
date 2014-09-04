@@ -37,6 +37,7 @@ class UserTest extends TestCase
 
         /**
          * @covers OpenExam\Library\Security\User::__construct
+         * @group security
          */
         public function testConstructor()
         {
@@ -121,6 +122,7 @@ class UserTest extends TestCase
 
         /**
          * @covers OpenExam\Library\Security\User::roles
+         * @group security
          */
         public function testRolesProperty()
         {
@@ -131,6 +133,7 @@ class UserTest extends TestCase
 
         /**
          * @covers OpenExam\Library\Security\User::getPrincipalName
+         * @group security
          */
         public function testGetPrincipalName()
         {
@@ -145,6 +148,7 @@ class UserTest extends TestCase
 
         /**
          * @covers OpenExam\Library\Security\User::getDomain
+         * @group security
          */
         public function testGetDomain()
         {
@@ -158,6 +162,7 @@ class UserTest extends TestCase
 
         /**
          * @covers OpenExam\Library\Security\User::getUser
+         * @group security
          */
         public function testGetUser()
         {

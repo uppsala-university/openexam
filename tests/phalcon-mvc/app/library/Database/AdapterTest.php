@@ -30,6 +30,7 @@ class AdapterTest extends \OpenExam\Tests\Phalcon\TestCase
 
         /**
          * @covers OpenExam\Library\Database\Adapter::create
+         * @group database
          */
         public function testCreate()
         {
@@ -70,7 +71,7 @@ class AdapterTest extends \OpenExam\Tests\Phalcon\TestCase
                 } catch (\Exception $exception) {
                         self::fail($exception);
                 }
-                
+
                 try {
                         $config->adapter = Adapter::SQLite;
                         $adapter = Adapter::create($config);

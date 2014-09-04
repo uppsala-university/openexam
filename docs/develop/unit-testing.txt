@@ -12,6 +12,14 @@ Run the unit tests either from within Netbeans or from the command line:
     bash$> phpunit --bootstrap tests/phalcon-mvc/bootstrap.php \
                    --configuration tests/phalcon-mvc/configuration.xml tests
 
+The unit test can be limited to specific groups of unit tests (defined by @group 
+attributes in the unit test file):
+
+    bash$> cd ${appdir}/openexam-phalcon-mvc
+    bash$> phpunit --bootstrap tests/phalcon-mvc/bootstrap.php \
+                   --configuration tests/phalcon-mvc/configuration.xml \
+                   --group security tests
+
 For test cases of classes that uses dependency injection, derive the test case from 
 OpenExam\Tests\Phalcon\TestCase instead of PHPUnit_Framework_TestCase. The support
 class is tests/support/Phalcon/TestCase.php
