@@ -22,6 +22,23 @@ class Adapter
 {
 
         /**
+         * MySQL adapter identifier.
+         */
+        const MySQL = 'MySQL';
+        /**
+         * PostgreSQL adapter identifier.
+         */
+        const PostgreSQL = 'PostgreSQL';
+        /**
+         * Oracle adapter identifier.
+         */
+        const Oracle = 'Oracle';
+        /**
+         * SQLite adapter identifier.
+         */
+        const SQLite = 'SQLite';
+
+        /**
          * Create Phalcon PDO database adapter object.
          * 
          * @param array $config
@@ -31,13 +48,13 @@ class Adapter
         {
                 if (isset($config['adapter'])) {
                         switch ($config['adapter']) {
-                                case 'Mysql':
+                                case self::MySQL:
                                         return new \Phalcon\Db\Adapter\Pdo\Mysql((array) $config);
-                                case 'Psotgresql':
+                                case self::PostgreSQL:
                                         return new \Phalcon\Db\Adapter\Pdo\Postgresql((array) $config);
-                                case 'Oracle':
+                                case self::Oracle:
                                         return new \Phalcon\Db\Adapter\Pdo\Oracle((array) $config);
-                                case 'Sqlite':
+                                case self::SQLite:
                                         return new \Phalcon\Db\Adapter\Pdo\Sqlite((array) $config);
                         }
                 } elseif (isset($config['dsn'])) {
