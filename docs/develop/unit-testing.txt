@@ -1,0 +1,19 @@
+This application uses PHPUnit (phpunit/phpunit) for running unit tests. Install PHPUnit 
+thru Composer:
+
+    bash$> cd ${appdir}/openexam-phalcon-mvc
+    bash$> composer update --dev
+        # -- or --
+    bash$> composer install phpunit/phpunit
+
+Run the unit tests either from within Netbeans or from the command line:
+
+    bash$> cd ${appdir}/openexam-phalcon-mvc
+    bash$> phpunit --bootstrap tests/phalcon-mvc/bootstrap.php \
+                   --configuration tests/phalcon-mvc/configuration.xml tests
+
+For test cases of classes that uses dependency injection, derive the test case from 
+OpenExam\Tests\Phalcon\TestCase instead of PHPUnit_Framework_TestCase. The support
+class is tests/support/Phalcon/TestCase.php
+
+// Anders Lövgren, 2014-09-01
