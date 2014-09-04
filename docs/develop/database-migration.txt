@@ -15,7 +15,8 @@ When altering the database schema, dump a new migration to ${appdir}/openexam-ph
                 --migrations=schemas/migrations \
                 --version=x.y.z
 
-The version should be 'major.minor.revision'. Phalcon MVC migrations begin at major >= 2
+The version should be 'major.minor.revision'. Phalcon MVC migrations begin at major >= 2. Insert
+SQL-update statement in schemas/migrations/x.y.z/schemainfo.php updating the version.
 
 
 // Anders Lövgren, 2014-09-04
