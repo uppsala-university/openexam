@@ -1,0 +1,19 @@
+table.sortable tbody {
+    counter-reset: sortabletablescope;
+}
+table.sortable thead tr::before {
+    content: "";
+    display: table-cell;
+}
+table.sortable tbody tr::before {
+    content: counter(sortabletablescope);
+    counter-increment: sortabletablescope;
+    display: table-cell;
+}
+
+table.sortable tbody tr:nth-child(2n) td {
+  background: #ffffff;
+}
+table.sortable tbody tr:nth-child(2n+1) td {
+  background: #f5f5f5;
+}
