@@ -1,0 +1,43 @@
+
+   ****************************************************
+    Development guidelines for OpenExam
+   ****************************************************
+
+
+** Netbeans IDE:
+
+   Use Netbeans PHP as IDE. Format the source code using "Alt + Shift + F". Using 
+   common formatting makes the source code easier to read and helps to keep diffs
+   and commits small.
+
+** Composer:
+
+   Never make changes or fix code in the vendor directory. Any changes are lost 
+   on update. Make changes in affected packages (when possible), composer.json or 
+   inside Composer hooks. 
+   
+** Security:
+
+   a) Security is a number one priority.
+
+   b) All access to models should be authenticated. Authorization should be done to
+      unsure the caller are allowed to access any result-set or object coming from
+      the model.
+
+   c) Security scans should be performed regular.
+
+** Optimization:
+
+   a) Don't attempt to optimize code "by making assumption" on code execution. 
+      Use a profiler first. Usually, any bottleneck is in other areas than the 
+      expected. 
+
+   b) Use builtin classes and functions whenever possible.
+
+** Patches:
+
+   Place patches (unified diff -Naur) in admin/patch/. Apply patches against vendor
+   using a Composer hook.
+
+
+// Anders Lövgren, 2014-09-08
