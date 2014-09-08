@@ -1,17 +1,16 @@
 
 var Profile = {
-    check: function(id) {
+    check: function (id) {
         if ($.trim($("#" + id)[0].value) == '') {
             $("#" + id)[0].focus();
             $("#" + id + "_alert").show();
 
             return false;
-        }
-        ;
+        };
 
         return true;
     },
-    validate: function() {
+    validate: function () {
         if (SignUp.check("name") == false) {
             return false;
         }
@@ -23,18 +22,17 @@ var Profile = {
 };
 
 var SignUp = {
-    check: function(id) {
+    check: function (id) {
         if ($.trim($("#" + id)[0].value) == '') {
             $("#" + id)[0].focus();
             $("#" + id + "_alert").show();
 
             return false;
-        }
-        ;
+        };
 
         return true;
     },
-    validate: function() {
+    validate: function () {
         if (SignUp.check("name") == false) {
             return false;
         }
@@ -57,7 +55,13 @@ var SignUp = {
     }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     $("#registerForm .alert").hide();
     $("div.profile .alert").hide();
+	$('.fancybox').fancybox({
+		autoHeight : true, 
+		autoWidth: true,helpers : { 
+  overlay : {closeClick: false}
+}
+	});
 });
