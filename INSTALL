@@ -14,6 +14,7 @@
 	 
    PECL Extensions (including those builtin in PHP):
 	    
+        *) cphalcon.so - Core MVC functionality (required).
         *) gettext.so  - GNU gettext  (i.e. ngettext(), _(), ...) (recommended).
         *) http.so     - HTTP extension (used to get content type of media URL's).
         *) zip.so      - For bundling results for download (recommended).
@@ -46,7 +47,29 @@
             bash$> curl -sS https://getcomposer.org/installer | \
                         php -- --install-dir=${bindir} --filename=composer
 
-   2. Install OpenExam:
+   2. Install Phalcon MVC:
+
+      This is a required extension PHP extension. Without it the MVC layer of OpenExam
+      wont work.
+
+            bash$> wget https://github.com/phalcon/cphalcon/archive/master.zip
+            bash$> unzip master.zip
+            bash$> cd cphalcon-master
+
+      Read thru the README.md and install any dependencies. Continue by configure,
+      build and install cp
+
+            bash$> phpize && aclocal && libtoolize --force && autoheader && autoconf
+            bash$> ./configure --enable-phalcon
+            bash$> make
+            bash$> make install
+
+      Add phalcon.so to PHP extensions (system dependent). Verify that the Phalcon
+      extension is enabled:
+
+            bash$> php -m | grep phalcon
+      
+   3. Install OpenExam:
 
       o) From source code:
 
@@ -65,7 +88,7 @@
             bash$> cd ${appdir}/openexam-php
             bash$> composer install --no-dev
 
-   3. Configure OpenExam:
+   4. Configure OpenExam:
 
       Make config protected versions from the template configuration files (*.def.in):
 	       
@@ -74,7 +97,7 @@
 
       Edit the configuration files (*.def) using your favorite editor.
 
-   4. Create database:
+   5. Create database:
 
       Create the database openexam. The database connection must be granted SELECT, INSERT,
       UPDATE and DELETE privileges. If using phalcon.php (phalcon/devtools), then the connection
@@ -107,7 +130,7 @@
             bash$> cd ${appdir}/openexam-php/phalcon-mvc
             bash$> ../vendor/bin/phalcon.php migration run --migrations=schemas/migrations
 
-   5. Language support:
+   6. Language support:
 
       To get laguage support (translation) working, you have to compile the *.po files for your 
       platform. This is done by running make in the package root directory:
@@ -118,7 +141,7 @@
       This should compile all *.po to *.mo that can be read by PHP's GNU gettext extension. If 
       the gettext extension is missing, then application defaults to english text.
 	    
-   6. Finishing:
+   7. Finishing:
 
       The user defined setting files (*.def) should not be readable by world, only by trusted 
       users and the account the web server is running under (see admin/setperm.sh):
