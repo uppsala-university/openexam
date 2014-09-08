@@ -40,7 +40,7 @@ $auth = array(
                     ->description('CAS Login')
                     ->name('cas'),
                 'msad' => (new FormAuthenticator(
-                    new LdapBindValidator('https://ldap.example.com', 636), array(
+                    new LdapBindValidator('ldaps://ldap.example.com', 636), array(
                         'login' => '/login/msad',
                         'name'  => 'auth')
                     ))
