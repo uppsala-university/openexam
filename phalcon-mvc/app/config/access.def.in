@@ -15,7 +15,7 @@
 // The map between role, resource and permission. This map is used
 // for defining the ACL in the system.
 // 
-$access = array(
+return array(
         // 
         // Permissions map:
         // 
@@ -79,5 +79,3 @@ $access = array(
                 )
         )
 );
-
-return $access;

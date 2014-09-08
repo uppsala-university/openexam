@@ -16,11 +16,11 @@
  * 
  * See docs/README-DATABASE also.
  */
-$config = array(
+return array(
         /**
          * The write-only/master database connection (for load balancing).
          */
-        'dbwrite' => array(
+        'dbwrite'     => array(
                 'adapter'  => 'Mysql',
                 'host'     => 'localhost',
                 'username' => 'openexam',
@@ -30,7 +30,7 @@ $config = array(
         /**
          * The read-only/slave database connection (for load balancing).
          */
-        'dbread'  => array(
+        'dbread'      => array(
                 'adapter'  => 'Mysql',
                 'host'     => 'localhost',
                 'username' => 'openexam',
@@ -40,7 +40,7 @@ $config = array(
         /**
          * User service configuration.
          */
-        'user'    => array(
+        'user'        => array(
                 /**
                  * The default user domain.
                  */
@@ -51,9 +51,20 @@ $config = array(
                 'roles'  => array()
         ),
         /**
-         * The base URI of this application. 
+         * Default application settings.
          */
-        'baseuri' => '/phalcon-mvc/'
+        'application' => array(
+                /**
+                 * Cache directory.
+                 */
+                'cacheDir' => BASE_DIR . '/cache/',
+                /**
+                 * Logs directory.
+                 */
+                'logsDir'  => BASE_DIR . '/logs',
+                /**
+                 * The base URI of this application. 
+                 */
+                'baseUri'  => '/phalcon-mvc/'
+        )
 );
-
-return $config;

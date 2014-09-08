@@ -32,22 +32,8 @@ define('BASE_DIR', dirname(APP_DIR));
  */
 define('PROJ_DIR', dirname(BASE_DIR));
 
-/**
- * Read the config protected configuration file:
- */
-$config = new Phalcon\Config(include CONFIG_DIR . '/config.def');
-
-/**
- * Merge user defined settings with system settings:
- */
-$config->merge(array(
-        'database'    => array(
-                'adapter'  => $config->dbread->adapter,
-                'host'     => $config->dbread->host,
-                'username' => $config->dbread->username,
-                'password' => $config->dbread->password,
-                'dbname'   => $config->dbread->dbname
-        ),
+$config = new \Phalcon\Config(
+    array(
         'application' => array(
                 'controllersDir' => APP_DIR . '/controllers/',
                 'modelsDir'      => APP_DIR . '/models/',
@@ -58,9 +44,31 @@ $config->merge(array(
                 'schemasDir'     => BASE_DIR . '/schemas/',
                 'migrationsDir'  => BASE_DIR . '/schemas/migrations/',
                 'cacheDir'       => BASE_DIR . '/cache/',
+                'logsDir'        => BASE_DIR . '/logs',
                 'baseDir'        => BASE_DIR . '/',
-                'baseUri'        => $config->baseuri
+                'baseUri'        => '/phalcon-mvc/'
         )
+    )
+);
+
+/**
+ * Read the config protected configuration file:
+ */
+$config->merge(
+    include(CONFIG_DIR . '/config.def')
+);
+
+/**
+ * Merge user defined settings with system settings:
+ */
+$config->merge(array(
+        'database' => array(
+                'adapter'  => $config->dbread->adapter,
+                'host'     => $config->dbread->host,
+                'username' => $config->dbread->username,
+                'password' => $config->dbread->password,
+                'dbname'   => $config->dbread->dbname
+        ),
 ));
 
 return $config;
