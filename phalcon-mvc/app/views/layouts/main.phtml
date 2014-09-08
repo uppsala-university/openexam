@@ -43,7 +43,7 @@
                 <ul id="menucontainer" style="float:right">
                     <li id="start">
                         <?php
-                        if(!$this->session->has("phpCAS")) {
+                        if(!$this->session->has("authenticated")) {
                                 print Phalcon\Tag::linkTo( array(
                                         "auth/login", 
                                         "Login", 

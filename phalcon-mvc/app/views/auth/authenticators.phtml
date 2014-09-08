@@ -22,7 +22,7 @@
                     <option value="">-- Please select one --</option>
                     <?php foreach($authMethods as $authMethod) :?>
                         <option value="<?=$authMethod['code']?>" auth_type="<?=$authMethod['type']?>"><?=$authMethod['name']?></option>
-                    <?php endforeach;?>
+                    <?php endforeach; ?>
                 </select>
             </p>
         </div>    
@@ -74,7 +74,7 @@
                         resetForm: true,
                         success: function (json) {
                                 var jsonObj = jQuery.parseJSON(json);
-                                if(jsonObj.validated == 'false') {
+                                if(jsonObj.status == 'failed') {
                                         $('.formbased-error-msg').html('Invalid username or password.')
                                 }
                         }
