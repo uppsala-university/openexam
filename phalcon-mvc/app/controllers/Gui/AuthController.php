@@ -35,13 +35,20 @@ class AuthController extends \OpenExam\Controllers\GuiController
                 
                 parent::initialize();
         }
-
+        
         /**
-         * Action that is called after authentication process gets completed. 
+         * Index action
+         */
+        public function indexAction()
+        {
+        }
+        
+        /**
+         * Login Action 
          */
         public function loginAction()
         {
-                
+               
                 // redirect if already logged in
                 if($this->session->has('authenticated'))
                         return $this->response->redirect($loginSuccessUrl);
@@ -56,31 +63,25 @@ class AuthController extends \OpenExam\Controllers\GuiController
                                $this->_registerUserSession($authMethod);
                         } else {
                                 
-                                // return response of login() in json format if we get any.
-                                // helpful for ajax based authentication.
-                                $loginResponse = $this->auth->login();
-                                if(!is_null($loginResponse)) {
-                                        
-                                        if($loginResponse === true) {
-                                                
-                                                $this->_registerUserSession($authMethod);
-                                        } else {
-                                                
-                                                // Authentication failed. 
-                                                // Disable view and send json response.
-                                                $this->view->disable();
-                                                $response = new \Phalcon\Http\Response();
-                                                $response->setContent(json_encode(
-                                                        array (
-                                                                "validated" => "false"
-                                                        )));
-                                                return $response;
-                                        }        
-                                }
+                                $this->auth->login();
                                 
+                                // If it is formbased (ajax) authenticator and control 
+                                // reaches to this point, it means authentication
+                                // has been failed because of wrong username or
+                                // password.
+                                // In case of urlbased auth, control will never 
+                                // reach here as in that case, it redirects to 
+                                // login page .
+                                
+                                // Disable view and send json response.
+                                $this->view->disable();
+                                return $this->response->setJsonContent(array (
+                                                "status" => "failed"
+                                        ));
                         }
-                        
+
                 } else {
+                        
                         // fetch the list of authentication methods from auth.php
                         $authMethods = $this->auth->getAuthChain("web");
                         
@@ -100,7 +101,7 @@ class AuthController extends \OpenExam\Controllers\GuiController
                         $this->view->setVar("authMethods", $authMethodsData);
                         $this->view->pick("auth/authenticators");
                 }
-                
+               
         }
 
 
@@ -148,7 +149,7 @@ class AuthController extends \OpenExam\Controllers\GuiController
                         'user'          => serialize($userObj),
                         'authenticator' => $authMethod
                 ));
-
+                
                 // redirect to LOGIN_SUCCESS_URL
                 return $this->response->redirect(self::LOGIN_SUCCESS_URL);
         }
