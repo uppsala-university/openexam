@@ -40,3 +40,5 @@ $loader->register();
  * Include Composer auto-loader.
  */
 require_once PROJ_DIR . '/vendor/autoload.php';
+
+return $loader;

@@ -1,0 +1,47 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    tasks.php
+// Created: 2014-09-08 17:17:49
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+/**
+ * Configuration file for command line tasks.
+ */
+define('CONFIG_PHP', __DIR__ . '/config.php');
+
+// 
+// Use system configuration.
+// 
+$config = include(CONFIG_PHP);
+$loader = include(CONFIG_SYS . "/loader.php");
+
+// 
+// Add namespace for tasks:
+// 
+$loader->registerNamespaces(
+    array(
+        'OpenExam\Console\Tasks' => APP_DIR . '/tasks'
+    ), true
+);
+$loader->registerDirs(
+    array(
+        $config->application->tasksDir
+    ), true
+);
+$loader->register();
+
+// 
+// Inject a limited set of system services:
+// 
+$ds = include(CONFIG_SYS . "/services.php");
+$di = new \Phalcon\DI\FactoryDefault\CLI();
+foreach (array('config', 'dbread', 'dbwrite') as $service) {
+        $di->set($service, $ds->get($service));
+}

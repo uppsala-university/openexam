@@ -54,6 +54,7 @@ $config->merge(array(
                 'viewsDir'       => APP_DIR . '/views/',
                 'pluginsDir'     => APP_DIR . '/plugins/',
                 'libraryDir'     => APP_DIR . '/library/',
+                'tasksDir'       => APP_DIR . '/tasks',
                 'schemasDir'     => BASE_DIR . '/schemas/',
                 'migrationsDir'  => BASE_DIR . '/schemas/migrations/',
                 'cacheDir'       => BASE_DIR . '/cache/',

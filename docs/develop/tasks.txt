@@ -1,0 +1,72 @@
+Running command line tasks (e.g. CLI applications).
+
+** Introduction:
+
+    Tasks works as controllers with respect to routing. Instead of using 'controller' as
+    the target key, it uses 'task':
+
+    Array
+    (
+        [task] => database
+        [action] => migrate
+        [params] => Array
+            (
+                [params] => Array
+                    (
+                        [0] => users
+                    )
+
+            )
+
+    )
+
+    Routing is handled by passing route information to the handler() method on an 
+    Phalcon\CLI\Console object. 
+
+** Creating tasks:
+
+    For creating tasks, use the Application class declared in app/library/Console/Application.php.
+    This class will handle command line processing (supporting long/short options), but more
+    important, it will fix namespace mapping.
+
+    New tasks should be added inside the app/tasks directory. 
+
+** Creating scripts:
+
+    Scripts that uses tasks can be put in phalcon-mvc/script. Heres an example script
+    using the Application class:
+
+        define('TASKS_PHP', __DIR__ . '/../app/config/system/tasks.php');
+        include(TASKS_PHP);
+
+        try {
+                $application = new OpenExam\Library\Console\Application($di);
+                $application->process();
+        } catch (\Phalcon\Exception $exception) {
+                echo $exception->getMessage();
+                exit(255);
+        }
+
+** Dispatch:
+
+    As for controllers, tasks can be dispatched:
+
+        define('TASKS_PHP', __DIR__ . '/../app/config/system/tasks.php');
+        include(TASKS_PHP);
+
+        $dispatcher = new Phalcon\CLI\Dispatcher();
+        $dispatcher->setDI($di);
+        $dispatcher->setTaskName('database');
+        $dispatcher->setActionName('migrate');
+        $dispatcher->setParams(array());
+        $dispatcher->setNamespaceName('OpenExam\Console\Tasks');
+
+        try {
+                $handle = $dispatcher->dispatch();
+        } catch (\Phalcon\Exception $exception) {
+                echo $exception->getMessage();
+                exit(255);
+        }
+
+
+// Anders L, 2014-09-08

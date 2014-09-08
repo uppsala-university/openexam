@@ -139,3 +139,5 @@ $di->set('user', function() use($config) {
         $user = new \OpenExam\Library\Security\User();
         return $user;
 }, true);
+
+return $di;
