@@ -45,3 +45,15 @@ $di = new \Phalcon\DI\FactoryDefault\CLI();
 foreach (array('config', 'dbread', 'dbwrite') as $service) {
         $di->set($service, $ds->get($service));
 }
+
+// 
+// Use custom dispatcher:
+// 
+$di->set('dispatcher', function() use($di) {
+        $dispatcher = new Phalcon\CLI\Dispatcher();
+        $dispatcher->setDI($di);
+        $dispatcher->setDefaultNamespace('OpenExam\Console\Tasks');
+        $dispatcher->setDefaultTask('main');
+        $dispatcher->setDefaultAction('index');
+        return $dispatcher;
+});

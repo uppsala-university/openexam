@@ -50,8 +50,6 @@ class CommandOption
 class Application extends \Phalcon\CLI\Console
 {
 
-        protected $_namespace = 'OpenExam\Console\Tasks';
-
         /**
          * Process command line arguments.
          * 
@@ -138,37 +136,7 @@ class Application extends \Phalcon\CLI\Console
                         }
                 }
 
-                $this->handle($arguments);
-        }
-
-        public function handle($arguments = null)
-        {
-                $router = new \Phalcon\CLI\Router();
-                $router->setDefaultTask('main');
-                $router->setDefaultAction('index');
-                $router->handle($arguments);
-
-                $this->_dependencyInjector->set('router', $router);
-
-                $route = array(
-                        'task'   => $router->getTaskName(),
-                        'action' => $router->getActionName(),
-                        'params' => $router->getParams()
-                );
-
-                if (!isset($route['task'])) {
-                        $route['task'] = 'main';
-                }
-                if (!isset($route['action'])) {
-                        $route['action'] = 'index';
-                }
-
-                // 
-                // Fix namespace issued with CLI router:
-                // 
-                $route['task'] = sprintf("%s\%s", $this->_namespace, \Phalcon\Text::camelize($route['task']));
-
-                parent::handle($route);         // Route CLI application.
+                parent::handle($arguments);
         }
 
 }
