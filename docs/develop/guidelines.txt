@@ -6,9 +6,9 @@
 
 ** Netbeans IDE:
 
-   Use Netbeans PHP as IDE. Format the source code using "Alt + Shift + F" before
-   commit. Using common formatting makes the source code easier to read and helps 
-   to keep diffs and commits small.
+   Use Netbeans PHP as IDE. Format the source code using "Alt + Shift + F" on file
+   or directory before commit. Using common formatting rules makes the source code 
+   easier to read and helps to keep diffs and commits small.
 
 ** Composer:
 
@@ -30,10 +30,11 @@
 
     o) Keep all code in objects. Don't pollute the global namespace.
 
-    o) All classes should belong in a namespace, mapped against the application structure.
+    o) All classes should belong in a namespace, mapped against the directory structure.
 
     o) Always use autoloading. Only use include() or require() when bringing in 
-       config files or in special cases. Don't use $loader->registerDirs
+       config files or in special cases. Don't use $loader->registerDirs(), its
+       for non-namespace aware applications only.
 
    o) Always surround statements in code blocks:
 
@@ -45,7 +46,7 @@
 
     o) Use traits to add behaviors to class or for overcoming lack of multiple inheritance.
 
-    o) Run unit tests after changing any class that maintain state.
+    o) Run unit tests after changing any class that maintain state (data classes).
 
 ** Locations:
 
@@ -60,15 +61,14 @@
 ** Optimization:
 
    a) Don't attempt to optimize code "by making assumption" on code execution. 
-      Use a profiler first. Usually, any bottleneck is in other areas than the 
-      expected. 
+      Use a profiler first. Most bottleneck are usually found in different areas 
+      than those expected. 
 
    b) Use builtin classes and functions whenever possible.
 
 ** Patches:
 
-   Place patches (unified diff -Naur) in admin/patch/. Apply patches against vendor
-   using a Composer hook.
-
+   Place any patches (unified diff -Naur) in admin/patch/. Add notice about the
+   problem they are fixing, author and date at top.
 
 // Anders Lövgren, 2014-09-08
