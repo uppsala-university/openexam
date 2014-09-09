@@ -19,11 +19,14 @@ use Phalcon\Mvc\User\Component;
  * Represents a logged on user.
  * 
  * This class supports user principal names. The default domain for
- * unqualified usernames must be set.
+ * unqualified usernames must be set in system config. 
+ * 
+ * This class is intentional immutable to prevent priviledge escalation 
+ * by changing the user associated with the roles by misstake.
  * 
  * The "act-as" pattern is supported by passing an array of roles to
  * the constructor or by setting the roles property. Use this feature 
- * with caution as it is effectivelly user impersonation.
+ * with *caution* as it is effectivelly user impersonation.
  * 
  * @property Roles $roles The roles associated with this user.
  * 
@@ -50,7 +53,34 @@ class User extends Component
          */
         public function __construct($user = null, $domain = null, $roles = array())
         {
-                $this->setUser($user, $domain);
+                if (isset($user)) {
+                        if (isset($domain)) {
+                                $this->user = $user;
+                                $this->domain = $domain;
+                        } elseif (isset($this->config->user->domain)) {
+                                $this->user = $user;
+                                $this->domain = $this->config->user->domain;
+                        } else {
+                                $this->user = $user;
+                        }
+
+                        if (($pos = strpos($this->user, '@'))) {
+                                $this->domain = substr($this->user, $pos + 1);
+                                $this->user = substr($this->user, 0, $pos);
+                        }
+
+                        if (!isset($this->domain)) {
+                                throw new Exception(_("Missing domain part in username"));
+                        }
+
+                        if (count($roles) != 0) {
+                                $this->roles = new Roles($roles);
+                        } elseif (isset($this->config->user->roles)) {
+                                $this->roles = new Roles($this->config->user->roles);
+                        } else {
+                                $this->roles = new Roles();
+                        }
+                }
         }
 
         public function __toString()
@@ -87,40 +117,4 @@ class User extends Component
                 return $this->user;
         }
 
-        /**
-         * Set user part of principal name.
-         * @return string
-         */
-        public function setUser($user = null, $domain = null)
-        {
-                if (isset($user)) {
-                        if (isset($domain)) {
-                                $this->user = $user;
-                                $this->domain = $domain;
-                        } elseif (isset($this->config->user->domain)) {
-                                $this->user = $user;
-                                $this->domain = $this->config->user->domain;
-                        } else {
-                                $this->user = $user;
-                        }
-
-                        if (($pos = strpos($this->user, '@'))) {
-                                $this->domain = substr($this->user, $pos + 1);
-                                $this->user = substr($this->user, 0, $pos);
-                        }
-
-                        if (!isset($this->domain)) {
-                                throw new Exception(_("Missing domain part in username"));
-                        }
-
-                        if (isset($this->config->user->roles)) {
-                                $this->roles = new Roles($this->config->user->roles);
-                        } else {
-                                $this->roles = new Roles();
-                        }
-                }
-                
-                return $this->user;
-        }
-        
 }

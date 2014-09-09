@@ -108,13 +108,13 @@ class UserTest extends TestCase
                 self::assertTrue(count($this->object->roles->getRoles(4)) == 0);
                 self::assertTrue(count($this->object->roles->getAllRoles()) == 4);
                 self::assertTrue(count($this->object->roles->getAllRoles()[1]) == 1);
-                
+
                 self::assertTrue($this->object->roles->hasRole(Roles::admin));
                 self::assertTrue($this->object->roles->hasRole(Roles::teacher));
                 self::assertTrue($this->object->roles->hasRole(Roles::contributor));
                 self::assertTrue($this->object->roles->hasRole(Roles::decoder));
                 self::assertTrue($this->object->roles->hasRole(Roles::invigilator));
-                
+
                 self::assertTrue($this->object->roles->hasRole(Roles::decoder, 2));
                 self::assertTrue($this->object->roles->hasRole(Roles::invigilator, 2));
                 self::assertFalse($this->object->roles->hasRole(Roles::decoder, 3));
