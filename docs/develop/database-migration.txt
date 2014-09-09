@@ -1,22 +1,24 @@
-Database migration is handled using phalcon/devtools. This is a suggested package that can be
-installed if the system has no phalcon command already:
+Database migration is handled using phalcon/devtools. This is a required package 
+that should be installed automatic by Composer.
 
-    bash$> cd ${appdir}/openexam-php
-    bash$> composer install phalcon/devtools
+The database can be migrated by running a task script:
 
-The database can be migrated by running phalcon.php:
+    bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+    bash$> php database.php --migrate
+        -- or --
+    bash$> php database.php --migrate --version=x.y.z
 
-    bash$> cd ${appdir}/openexam-php/phalcon-mvc
-    bash$> ../vendor/bin/phalcon.php migration run --migrations=schemas/migrations
+When altering the database schema, dump a new migration. The migrations tasks will 
+end up in ${appdir}/openexam-php/phalcon-mvc/schemas/migrations:
 
-When altering the database schema, dump a new migration to ${appdir}/openexam-php/phalcon-mvc/schemas/migrations:
+    bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+    bash$> php database.php --generate
 
-    bash$> ../vendor/bin/phalcon.php migration generate \
-                --migrations=schemas/migrations \
-                --version=x.y.z
+The version should be 'major.minor.revision'. Phalcon MVC database migrations should 
+start at major >= 2. 
 
-The version should be 'major.minor.revision'. Phalcon MVC migrations begin at major >= 2. Insert
-SQL-update statement in schemas/migrations/x.y.z/schemainfo.php updating the version.
+Insert SQL-update statement in schemas/migrations/x.y.z/schemainfo.php after generating 
+a new migration.
 
 
 // Anders Lövgren, 2014-09-04
