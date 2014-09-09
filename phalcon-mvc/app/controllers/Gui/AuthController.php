@@ -12,6 +12,7 @@
 // 
 
 namespace OpenExam\Controllers\Gui;
+
 use OpenExam\Library\Security;
 
 /**
@@ -21,50 +22,51 @@ use OpenExam\Library\Security;
  */
 class AuthController extends \OpenExam\Controllers\GuiController
 {
+
         /**
          * Redirection URLs after Authentication
          */
         CONST LOGIN_SUCCESS_URL = "index";
         CONST LOGIN_FAILURE_URL = "";
-        
-        
+
         public function initialize()
         {
                 // disable layout for the views
                 $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
-                
+
                 parent::initialize();
         }
-        
+
         /**
          * Index action
          */
         public function indexAction()
         {
+                
         }
-        
+
         /**
          * Login Action 
          */
         public function loginAction()
         {
-               
+
                 // redirect if already logged in
-                if($this->session->has('authenticated'))
+                if ($this->session->has('authenticated'))
                         return $this->response->redirect($loginSuccessUrl);
-                
+
                 // if authentication method is set, activate it and authenticate
                 $authMethod = $this->dispatcher->getParam("authMethod");
-                if(!empty($authMethod)) {
+                if (!empty($authMethod)) {
 
                         $this->auth->activate($authMethod, 'web');
-                        if($this->auth->accepted()) {
-                               
-                               $this->_registerUserSession($authMethod);
+                        if ($this->auth->accepted()) {
+
+                                $this->_registerUserSession($authMethod);
                         } else {
-                                
+
                                 $this->auth->login();
-                                
+
                                 // If it is formbased (ajax) authenticator and control 
                                 // reaches to this point, it means authentication
                                 // has been failed because of wrong username or
@@ -72,38 +74,34 @@ class AuthController extends \OpenExam\Controllers\GuiController
                                 // In case of urlbased auth, control will never 
                                 // reach here as in that case, it redirects to 
                                 // login page .
-                                
                                 // Disable view and send json response.
                                 $this->view->disable();
-                                return $this->response->setJsonContent(array (
-                                                "status" => "failed"
-                                        ));
+                                return $this->response->setJsonContent(array(
+                                            "status" => "failed"
+                                ));
                         }
-
                 } else {
-                        
+
                         // fetch the list of authentication methods from auth.php
                         $authMethods = $this->auth->getAuthChain("web");
-                        
+
                         // format data to be sent to view
                         $authMethodsData = array();
-                        foreach($authMethods as $authMethodCode => $authMethodObj) {
-                                if($authMethodObj->visible) {
+                        foreach ($authMethods as $authMethodCode => $authMethodObj) {
+                                if ($authMethodObj->visible) {
                                         $authMethodsData[] = array(
-                                                "code"  => $authMethodCode,
-                                                "name"  => $authMethodObj->description,
-                                                "type"  => $authMethodObj->type
-                                            );    
+                                                "code" => $authMethodCode,
+                                                "name" => $authMethodObj->description,
+                                                "type" => $authMethodObj->type
+                                        );
                                 }
                         }
-                        
+
                         // pick view and send data
                         $this->view->setVar("authMethods", $authMethodsData);
                         $this->view->pick("auth/authenticators");
                 }
-               
         }
-
 
         /**
          * Logs out the active session redirecting to the index
@@ -114,22 +112,22 @@ class AuthController extends \OpenExam\Controllers\GuiController
         {
                 // get the method used to check authentication while user logged in
                 $authData = $this->session->get('authenticated');
-            
+
                 // unset session data
                 $this->session->destroy();
-                
+
                 // logout
                 $this->auth->activate($authData['authenticator'], 'web')
-                        ->logout();
-                
+                    ->logout();
+
                 // send back message
                 $this->flash->success('You have been successfully logged out.');
                 return $this->response->redirect('/index');
-                
-                /*return $this->dispatcher->forward( array(
-                                'controller' => 'index',
-                                'action' => 'index'
-                        ));*/
+
+                /* return $this->dispatcher->forward( array(
+                  'controller' => 'index',
+                  'action' => 'index'
+                  )); */
         }
 
         /**
@@ -142,16 +140,16 @@ class AuthController extends \OpenExam\Controllers\GuiController
         private function _registerUserSession($authMethod)
         {
                 // prepare user object
-                $userObj = $this->user->setUser($this->auth->getSubject());
+                $userObj = $this->user->set(new User($this->auth->getSubject()));
 
                 // store user data in session
                 $this->session->set('authenticated', array(
                         'user'          => serialize($userObj),
                         'authenticator' => $authMethod
                 ));
-                
+
                 // redirect to LOGIN_SUCCESS_URL
                 return $this->response->redirect(self::LOGIN_SUCCESS_URL);
         }
-        
+
 }
