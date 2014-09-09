@@ -19,7 +19,7 @@ use OpenExam\Library\Console\Application;
 try {
         $console = new Application($di);
         $console->process();
-} catch (\Phalcon\Exception $exception) {
-        echo $exception->getMessage();
+} catch (\Exception $exception) {
+        echo $exception->getMessage() . PHP_EOL;
         exit(255);
 }
