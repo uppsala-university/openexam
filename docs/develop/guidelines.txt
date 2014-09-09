@@ -6,9 +6,9 @@
 
 ** Netbeans IDE:
 
-   Use Netbeans PHP as IDE. Format the source code using "Alt + Shift + F". Using 
-   common formatting makes the source code easier to read and helps to keep diffs
-   and commits small.
+   Use Netbeans PHP as IDE. Format the source code using "Alt + Shift + F" before
+   commit. Using common formatting makes the source code easier to read and helps 
+   to keep diffs and commits small.
 
 ** Composer:
 
@@ -24,7 +24,28 @@
       unsure the caller are allowed to access any result-set or object coming from
       the model.
 
-   c) Security scans should be performed regular.
+   c) Perform regular security scans.
+
+** Coding:
+
+    o) Keep all code in objects. Don't pollute the global namespace.
+
+    o) All classes should belong in a namespace, mapped against the application structure.
+
+    o) Always use autoloading. Only use include() or require() when bringing in 
+       config files or in special cases. Don't use $loader->registerDirs
+
+   o) Always surround statements in code blocks:
+
+        if ($condition) {
+                // statements...
+        }
+
+    o) Use the "coding against interface" pattern when appropriate.
+
+    o) Use traits to add behaviors to class or for overcoming lack of multiple inheritance.
+
+    o) Run unit tests after changing any class that maintain state.
 
 ** Locations:
 
