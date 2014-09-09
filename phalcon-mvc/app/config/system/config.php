@@ -63,11 +63,11 @@ $config->merge(
  */
 $config->merge(array(
         'database' => array(
-                'adapter'  => $config->dbread->adapter,
-                'host'     => $config->dbread->host,
-                'username' => $config->dbread->username,
-                'password' => $config->dbread->password,
-                'dbname'   => $config->dbread->dbname
+                'adapter'  => $config->dbwrite->adapter,
+                'host'     => $config->dbwrite->host,
+                'username' => $config->dbwrite->username,
+                'password' => $config->dbwrite->password,
+                'dbname'   => $config->dbwrite->dbname
         ),
 ));
 
