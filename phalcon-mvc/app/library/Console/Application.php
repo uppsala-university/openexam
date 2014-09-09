@@ -112,11 +112,7 @@ class Application extends \Phalcon\CLI\Console
         public function process($arguments = null)
         {
                 global $argv;
-
                 $options = array();
-
-                print_r($arguments);
-                print_r($argv);
 
                 foreach ($argv as $args) {
                         $option = new CommandOption($args);
@@ -131,8 +127,8 @@ class Application extends \Phalcon\CLI\Console
                 if (strstr($options[0], '.php')) {
                         array_shift($options);
                 }
-                
-                if(!isset($arguments)) {
+
+                if (!isset($arguments)) {
                         $arguments = array();
                 }
 
@@ -147,7 +143,7 @@ class Application extends \Phalcon\CLI\Console
                                 $arguments['params'][] = $args;
                         }
                 }
-                
+
                 parent::handle($arguments);
         }
 
