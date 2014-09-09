@@ -1,55 +1,72 @@
-Running command line tasks (e.g. CLI applications).
+
+   Tasks (e.g. CLI applications).
+
 
 ** Introduction:
 
-    Tasks works as controllers with respect to routing. Instead of using 'controller' as
-    the target key, it uses 'task':
+   Tasks works as controllers with respect to routing. Instead of using 'controller' 
+   as the target key, it uses 'task':
 
-    Array
-    (
-        [task] => database
-        [action] => migrate
-        [params] => Array
-            (
-                [params] => Array
-                    (
-                        [0] => users
-                    )
+        Array
+        (
+            [task] => database
+            [action] => migrate
+            [params] => Array
+                (
+                    [params] => Array
+                        (
+                            [0] => exams
+                            [1] => students
+                        )
 
-            )
+                )
 
-    )
+        )
 
-    Routing is handled by passing route information to the handler() method on an 
-    Phalcon\CLI\Console object. 
+   A task is run using a Console or Application object:
+
+        $console = new Phalcon\CLI\Console($di);
+        $console->handle($arguments);
+
+            // -- or --
+
+        $console = new OpenExam\Library\Console\Application($di);
+        $console->process($arguments);
+
+   The difference is that OpenExam\Library\Console\Application also parses command line
+   arguments, e.g. php script/database.php --migrate exams students:
+
+        Array
+        (
+            [task] => database
+            [action] => migrate
+            [params] => Array
+                (
+                    [0] => exams
+                    [1] => students
+                )
+
+        )
 
 ** Creating tasks:
 
-    For creating tasks, use the Application class declared in app/library/Console/Application.php.
-    This class will handle command line processing (supporting long/short options), but more
-    important, it will fix namespace mapping.
-
-    New tasks should be added inside the app/tasks directory. 
+   New tasks should be added inside the phalcon-mvc/app/tasks directory. The should
+   inherit from Phalcon\CLI\Task.
 
 ** Creating scripts:
 
-    Scripts that uses tasks can be put in phalcon-mvc/script. Heres an example script
-    using the Application class:
+   Task scripts should be put in phalcon-mvc/script. This is an example script that
+   uses the Application class:
 
         define('TASKS_PHP', __DIR__ . '/../app/config/system/tasks.php');
         include(TASKS_PHP);
 
-        try {
-                $application = new OpenExam\Library\Console\Application($di);
-                $application->process();
-        } catch (\Phalcon\Exception $exception) {
-                echo $exception->getMessage();
-                exit(255);
-        }
+        $console = new OpenExam\Library\Console\Application($di);
+        $console->process(array('task' => 'database'));
 
 ** Dispatch:
 
-    As for controllers, tasks can be dispatched:
+   Similar to controllers, a task can be called thru a CLI dispatcher
 
         define('TASKS_PHP', __DIR__ . '/../app/config/system/tasks.php');
         include(TASKS_PHP);
@@ -68,5 +85,24 @@ Running command line tasks (e.g. CLI applications).
                 exit(255);
         }
 
+        // 
+        // Analogous, but using the provided CLI dispatcher service:
+        // 
+
+        define('TASKS_PHP', __DIR__ . '/../app/config/system/tasks.php');
+        include(TASKS_PHP);
+
+        $dispatcher = $di->get('dispatcher');
+        $dispatcher->setTaskName('database');
+        $dispatcher->setActionName('migrate');
+        $dispatcher->setParams(array());
+
+        try {
+                $handle = $dispatcher->dispatch();
+        } catch (\Phalcon\Exception $exception) {
+                echo $exception->getMessage();
+                exit(255);
+        }
+        
 
 // Anders L, 2014-09-08
