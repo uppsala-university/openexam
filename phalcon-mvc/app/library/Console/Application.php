@@ -53,89 +53,101 @@ class Application extends \Phalcon\CLI\Console
         /**
          * Process command line arguments.
          * 
-         * Tasks works similar to controllers: Given the task, action and 
-         * params argument, the target task/action is called using params 
-         * as parameters. This function processes the argument list and calls 
-         * parent handle() function. 
+         * Tasks works similar to controllers: Given the task, action and params
+         * argument, the target task/action is called using params as parameters. 
          * 
-         * If arguments are passed, then they are feed to the handle()
-         * method direct. The arguments array should have the by handle() 
-         * method expected format.
+         * This function process $argument parameter and command line arguments 
+         * (from PHP builtin $argv). The merged array is used when calling the
+         * parent handle() method.
          * 
-         * If arguments are null, then the argv array is scanned. Both long
-         * (--key[=val]) and short (-k) options and [task [action [params...]]] 
-         * list is supported.
+         * Both long (--key[=val]) and short (-k) command line options are 
+         * supported. Command line options can also be [task [action [params...]]] 
          * 
+         * Example 1:
          * <code>
-         * // Using long options:
-         * php app/cli.php --database=migrate --table1 --table2
-         *      -- or --
-         * php app/cli.php --database --migrate --table1 --table2
+         * // Script database.php:
+         * $console = new Application($di);
+         * $console->process(array('task' => 'database'));
          * 
-         * Array
-         * (
-         *      [task] => task
-         *      [action] => migrate
-         *      [params] => Array
-         *          (
-         *              [0] => table1
-         *              [1] => table2
-         *          )
-         * )
-         * <code>
+         * // Run from command line:
+         * php script/database.php --migrate exams students
          * 
-         * <code>
-         * // Using handler options:
-         * php app/cli.php database migrate table
+         * // The task definition after process():
          * Array
          * (
          *      [task] => database
          *      [action] => migrate
          *      [params] => Array
          *          (
-         *              [0] => table
+         *              [0] => exams
+         *              [1] => students
          *          )
          * )
          * <code>
          * 
-         * @param array $arguments The command line arguments.
+         * Example 2 (same task called):
+         * <code>
+         * // Script cli.php:
+         * $console = new Application($di);
+         * $console->process();
+         * 
+         * // Run from command line:
+         * php script/cli.php --database --migrate exams students
+         * 
+         * // The task definition after process():
+         * Array
+         * (
+         *      [task] => database
+         *      [action] => migrate
+         *      [params] => Array
+         *          (
+         *              [0] => exams
+         *              [1] => students
+         *          )
+         * )
+         * <code>
+         * 
+         * @param array $arguments The task specification.
          */
         public function process($arguments = null)
         {
-                if (!isset($arguments)) {
-                        global $argv;
-                        $arguments = array();
+                global $argv;
 
-                        foreach ($argv as $args) {
-                                $option = new CommandOption($args);
-                                if (isset($option->val)) {
-                                        $arguments[] = $option->key;
-                                        $arguments[] = $option->val;
-                                } else {
-                                        $arguments[] = $option->key;
-                                }
-                        }
+                $options = array();
 
-                        if (strstr($arguments[0], '.php')) {
-                                array_shift($arguments);
-                        }
+                print_r($arguments);
+                print_r($argv);
 
-                        $argv = $arguments;
-                        $arguments = array();
-
-                        foreach ($argv as $args) {
-                                if (!isset($arguments['task'])) {
-                                        $arguments['task'] = $args;
-                                } elseif (!isset($arguments['action'])) {
-                                        $arguments['action'] = $args;
-                                } elseif (!isset($arguments['params'])) {
-                                        $arguments['params'] = array($args);
-                                } else {
-                                        $arguments['params'][] = $args;
-                                }
+                foreach ($argv as $args) {
+                        $option = new CommandOption($args);
+                        if (isset($option->val)) {
+                                $options[] = $option->key;
+                                $options[] = $option->val;
+                        } else {
+                                $options[] = $option->key;
                         }
                 }
 
+                if (strstr($options[0], '.php')) {
+                        array_shift($options);
+                }
+                
+                if(!isset($arguments)) {
+                        $arguments = array();
+                }
+
+                foreach ($options as $args) {
+                        if (!isset($arguments['task'])) {
+                                $arguments['task'] = $args;
+                        } elseif (!isset($arguments['action'])) {
+                                $arguments['action'] = $args;
+                        } elseif (!isset($arguments['params'])) {
+                                $arguments['params'] = array($args);
+                        } else {
+                                $arguments['params'][] = $args;
+                        }
+                }
+                
                 parent::handle($arguments);
         }
 
