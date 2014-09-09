@@ -32,6 +32,7 @@ class DatabaseTask extends MainTask
                 printf("       --status\n");
                 printf("\n");
                 printf("Options:\n");
+                printf("  --install:       Install the database (same as --migrate without --version).\n");
                 printf("  --migrate:       Perform database migration (use latest version by default).\n");
                 printf("  --generate:      Generate database migration (automatic version if not given).\n");
                 printf("  --version=x.y.z: Version of migration or generation task.\n");
@@ -45,6 +46,24 @@ class DatabaseTask extends MainTask
                 printf("\n");
                 printf("  # Migrate database to latest:\n");
                 printf("  --migrate --verbose\n");
+        }
+
+        /**
+         * Install database action.
+         * @param array $params Optional parameters ('force', 'verbose').
+         */
+        public function installAction($params = array())
+        {
+                if (in_array('version', $params)) {
+                        throw new Exception("Unexpected param 'version'");
+                }
+                $this->dispatcher->forward(
+                    array(
+                            'task'   => 'database',
+                            'action' => 'migrate',
+                            'params' => array($params)
+                    )
+                );
         }
 
         /**
