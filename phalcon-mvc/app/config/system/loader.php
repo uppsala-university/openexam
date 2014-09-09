@@ -13,24 +13,15 @@
 
 $loader = new \Phalcon\Loader();
 
+/**
+ * Register namespace mapping taken from the configuration files:
+ */
 $loader->registerNamespaces(
     array(
             'OpenExam\Controllers' => $config->application->controllersDir,
             'OpenExam\Models'      => $config->application->modelsDir,
             'OpenExam\Library'     => $config->application->libraryDir,
             'OpenExam\Plugins'     => $config->application->pluginsDir,
-    )
-);
-
-/**
- * We're a registering a set of directories taken from the configuration file
- */
-$loader->registerDirs(
-    array(
-            $config->application->controllersDir,
-            $config->application->pluginsDir,
-            $config->application->libraryDir,
-            $config->application->modelsDir,
     )
 );
 

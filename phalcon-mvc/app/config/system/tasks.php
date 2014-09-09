@@ -17,7 +17,7 @@
 define('CONFIG_PHP', __DIR__ . '/config.php');
 
 // 
-// Use system configuration.
+// Use system configuration:
 // 
 $config = include(CONFIG_PHP);
 $loader = include(CONFIG_SYS . "/loader.php");
@@ -28,11 +28,6 @@ $loader = include(CONFIG_SYS . "/loader.php");
 $loader->registerNamespaces(
     array(
         'OpenExam\Console\Tasks' => APP_DIR . '/tasks'
-    ), true
-);
-$loader->registerDirs(
-    array(
-        $config->application->tasksDir
     ), true
 );
 $loader->register();
