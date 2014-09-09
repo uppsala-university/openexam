@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    cli.php
+// File:    openexam.php
 // Created: 2014-09-08 16:30:53
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
