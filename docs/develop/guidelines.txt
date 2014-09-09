@@ -26,6 +26,16 @@
 
    c) Security scans should be performed regular.
 
+** Locations:
+
+   o) Everything under phalcon-mcv/app is application code. 
+
+   o) Static content (e.g. HTML, CSS and Javascript) goes under phalcon-mcv/public. 
+
+   o) Data files (e.g. cache, schemas and log-files) belongs in sub-directories 
+      under phalcon-mcv, e.g. phalcon-mcv/cache. Some of these locations can be 
+      overridden by the system administrator.
+
 ** Optimization:
 
    a) Don't attempt to optimize code "by making assumption" on code execution. 
