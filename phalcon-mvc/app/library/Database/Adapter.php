@@ -24,11 +24,11 @@ class Adapter
         /**
          * MySQL adapter identifier.
          */
-        const MySQL = 'MySQL';
+        const MySQL = 'Mysql';
         /**
          * PostgreSQL adapter identifier.
          */
-        const PostgreSQL = 'PostgreSQL';
+        const PostgreSQL = 'Postgresql';
         /**
          * Oracle adapter identifier.
          */
@@ -36,7 +36,7 @@ class Adapter
         /**
          * SQLite adapter identifier.
          */
-        const SQLite = 'SQLite';
+        const SQLite = 'Sqlite';
 
         /**
          * Create Phalcon PDO database adapter object.
