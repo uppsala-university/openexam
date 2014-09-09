@@ -21,9 +21,12 @@ namespace OpenExam\Console\Tasks;
 class MainTask extends \Phalcon\CLI\Task
 {
 
+        /**
+         * Default action.
+         */
         public function indexAction()
         {
-                printf(__METHOD__ . PHP_EOL);
+                printf("No default action defined, see --help.\n");
         }
 
 }

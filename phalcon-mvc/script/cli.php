@@ -17,8 +17,8 @@ include(TASKS_PHP);
 use OpenExam\Library\Console\Application;
 
 try {
-        $application = new Application($di);
-        $application->process();
+        $console = new Application($di);
+        $console->process();
 } catch (\Phalcon\Exception $exception) {
         echo $exception->getMessage();
         exit(255);
