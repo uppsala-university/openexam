@@ -14,23 +14,33 @@
 /**
  * System configuration directory.
  */
-define('CONFIG_SYS', __DIR__);
+if (!defined('CONFIG_SYS')) {
+        define('CONFIG_SYS', __DIR__);
+}
 /**
  * User settings directory.
  */
-define('CONFIG_DIR', dirname(CONFIG_SYS));
+if (!defined('CONFIG_DIR')) {
+        define('CONFIG_DIR', dirname(CONFIG_SYS));
+}
 /**
  * Application directory.
  */
-define('APP_DIR', dirname(CONFIG_DIR));
+if (!defined('APP_DIR')) {
+        define('APP_DIR', dirname(CONFIG_DIR));
+}
 /**
  * Base directory (the Phalcon MVC app).
  */
-define('BASE_DIR', dirname(APP_DIR));
+if (!defined('BASE_DIR')) {
+        define('BASE_DIR', dirname(APP_DIR));
+}
 /**
  * Project root directory.
  */
-define('PROJ_DIR', dirname(BASE_DIR));
+if (!defined('PROJ_DIR')) {
+        define('PROJ_DIR', dirname(BASE_DIR));
+}
 
 $config = new \Phalcon\Config(
     array(
