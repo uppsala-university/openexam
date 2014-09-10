@@ -70,7 +70,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function activate($name, $service = '*')
         {
-                $this->authenticator = $this->chains[$service][$name];
+                $this->authenticator = $this->chains[$service][$name]->loginAuthenticator;
                 $this->service = $service;
                 return $this->authenticator;
         }
