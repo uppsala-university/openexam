@@ -1,3 +1,7 @@
+--
+-- OpenExam database schema, version 1.2.0
+--
+
 -- MySQL dump 10.13  Distrib 5.5.39, for Linux (x86_64)
 --
 -- Host: localhost    Database: openexam
