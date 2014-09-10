@@ -20,5 +20,10 @@ start at major >= 2.
 Insert SQL-update statement in schemas/migrations/x.y.z/schemainfo.php after generating 
 a new migration.
 
+A fresh install of the database can be done by running:
+
+    bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+    bash$> php database.php --install
+
 
 // Anders Lövgren, 2014-09-04
