@@ -11,9 +11,9 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-use UUP\Authentication\Authenticator\CasAuthenticator,
-    UUP\Authentication\Authenticator\FormAuthenticator,
-    UUP\Authentication\Validator\LdapBindValidator;
+use UUP\Authentication\Validator\LdapBindValidator,
+    OpenExam\Library\Security\Authenticator\RemoteLogins\CasLogin,
+    OpenExam\Library\Security\Authenticator\Formlogins\MsadLogin;
 
 // 
 // The chain of authenticator plugins for various services:
@@ -33,15 +33,15 @@ return array(
         // Web/AJAX service authentication:
         // 
         'web'  => array(
-                'cas'  => (new CasAuthenticator(
-                    'cas.example.com', 443, '/cas'
-                    ))
-                    ->visible(true)
-                    ->description('CAS Login')
-                    ->name('cas'),
-                'msad' => (new FormAuthenticator(
-                    new LdapBindValidator('ldaps://ldap.example.com', 636), array(
-                        'login' => '/login/msad',
+                'cas'  => (new CasLogin(
+                        'cas.weblogin.uu.se', 443, '/cas'
+                        ))
+                        ->visible(true)
+                        ->description('CAS Login')
+                        ->name('cas'),
+                'msad' => (new MsadLogin(
+                    new LdapBindValidator('ldaps://akka-ldap.uu.se', 636), array(
+                        'login' => '/msad',
                         'name'  => 'auth')
                     ))
                     ->visible(true)
