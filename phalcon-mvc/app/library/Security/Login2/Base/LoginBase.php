@@ -55,17 +55,6 @@ abstract class LoginBase
         }
 
         /**
-         * Sets authenticator type.
-         * @param type $value
-         * @return \OpenExam\Library\Security\Login\Login
-         */
-        public function type($value)
-        {
-                $this->type = (string) $value;
-                return $this;
-        }
-
-        /**
          * Sets the short name for wrapped authenticator.
          * @param string $text
          * @return Authenticator
@@ -84,17 +73,6 @@ abstract class LoginBase
         public function description($text)
         {
                 $this->authenticator->description($text);
-                return $this;
-        }
-
-        /**
-         * Set this authenticator can be selected by remote user as an authentication method.
-         * @param bool $bool
-         * @return Authenticator
-         */
-        public function visible($value)
-        {
-                $this->authenticator->visible($value);
                 return $this;
         }
 

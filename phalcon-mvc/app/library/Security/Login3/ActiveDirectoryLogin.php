@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Security\Login;
 
 use OpenExam\Library\Security\Login\Base\FormLogin;
+use UUP\Authentication\Authenticator\Authenticator;
 use UUP\Authentication\Authenticator\RequestAuthenticator;
 use UUP\Authentication\Validator\LdapBindValidator;
 

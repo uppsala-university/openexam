@@ -48,8 +48,6 @@ class LoginTrait implements LoginHandler
         private function initialize($type, $desc, $name)
         {
                 $this->type = $type;
-                $this->control(Authenticator::sufficient);
-                $this->visible(true);
                 $this->description($desc);
                 $this->name($name);
         }
