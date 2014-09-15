@@ -2,33 +2,36 @@
 
 namespace OpenExam\Models;
 
+/**
+ * The result model.
+ * 
+ * @property Answer $Answer The related answer.
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
 class Result extends ModelBase
 {
 
         /**
-         *
+         * The object ID.
          * @var integer
          */
         public $id;
         /**
-         *
+         * The answer ID.
          * @var integer
          */
         public $answer_id;
         /**
-         *
+         * The answer score.
          * @var double
          */
         public $score;
         /**
-         *
+         * Comment for answer.
          * @var string
          */
         public $comment;
 
-        /**
-         * Initialize method for model.
-         */
         public function initialize()
         {
                 parent::initialize();

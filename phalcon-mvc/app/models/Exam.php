@@ -2,6 +2,29 @@
 
 namespace OpenExam\Models;
 
+/**
+ * The exam model.
+ * 
+ * Represents an exam. This class is the central model to which most other
+ * models are related.
+ * 
+ * An exam is in one of these states: preparing, upcoming, active, finished 
+ * or decoded.
+ * 
+ * The grades property (array) is defined as JSON in the database. It is
+ * either an array containing grades or an array defining the function body
+ * for a function that evaluates the final score for a single student on 
+ * the exam.
+ * 
+ * @property Contributor[] $Contributors The contributors for this exam.
+ * @property Decoder[] $Decoders The decoders for this exam.
+ * @property Invigilator[] $Invigilators The invigilators for this exam.
+ * @property Lock[] $Locks The computer locks aquired for this exam.
+ * @property Question[] $Questions The questions that belongs to this exam.
+ * @property Student[] $Students The students assigned to this exam.
+ * @property Topic[] $Topics The topics associated with this exam.
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
 class Exam extends ModelBase
 {
 
@@ -15,79 +38,76 @@ class Exam extends ModelBase
         const RESULT_OTHERS_STATISTIC = 2;
 
         /**
-         *
+         * This object ID.
          * @var integer
          */
         public $id;
         /**
-         *
+         * The name of the exam.
          * @var string
          */
         public $name;
         /**
-         *
+         * The exam description.
          * @var string
          */
         public $descr;
         /**
-         *
+         * The exam start date/time (might be null).
          * @var string
          */
         public $starttime;
         /**
-         *
+         * The exam end date/time (might be null).
          * @var string
          */
         public $endtime;
         /**
-         *
+         * The exam create date/time.
          * @var string
          */
         public $created;
         /**
-         *
+         * The exam update date/time.
          * @var string
          */
         public $updated;
         /**
-         *
+         * The creator of the exam.
          * @var string
          */
         public $creator;
         /**
-         *
+         * Bitmask of exposed details in result (see RESULT_XXX constants).
          * @var integer
          */
         public $details;
         /**
-         *
+         * Is this exam decoded?
          * @var bool
          */
         public $decoded;
         /**
-         *
+         * The organization unit.
          * @var string
          */
         public $orgunit;
         /**
-         *
+         * The exam grades.
          * @var array
          */
         public $grades;
         /**
-         *
+         * Is this exam a testcase?
          * @var bool
          */
         public $testcase;
         /**
-         *
+         * Does this exam require client lockdown?
          * @var bool
          */
         public $lockdown;
 
-        /**
-         * Initialize method for model.
-         */
         public function initialize()
         {
                 parent::initialize();
@@ -97,19 +117,29 @@ class Exam extends ModelBase
                 $this->hasMany('id', 'OpenExam\Models\Lock', 'exam_id', array('alias' => 'Locks'));
                 $this->hasMany('id', 'OpenExam\Models\Question', 'exam_id', array('alias' => 'Questions'));
                 $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'Students'));
+                $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array('alias' => 'Topics'));
         }
 
+        /**
+         * Called before model is created.
+         */
         public function beforeCreate()
         {
                 $this->created = date('Y-m-d H:i:s');
                 $this->details = $this->getDI()->get('config')->result->details;
         }
 
+        /**
+         * Called before the model is updated.
+         */
         public function beforeUpdate()
         {
                 $this->updated = date('Y-m-d H:i:s');
         }
 
+        /**
+         * Called before model is saved.
+         */
         public function beforeSave()
         {
                 $this->grades = json_encode($this->grades);
@@ -118,6 +148,9 @@ class Exam extends ModelBase
                 $this->lockdown = $this->lockdown ? 'Y' : 'N';
         }
 
+        /**
+         * Called after the model was read.
+         */
         public function afterFetch()
         {
                 $this->grades = json_decode($this->grades);

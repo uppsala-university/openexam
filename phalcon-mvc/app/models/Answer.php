@@ -2,26 +2,34 @@
 
 namespace OpenExam\Models;
 
+/**
+ * The answer model.
+ * 
+ * @property Result $Result The related result.
+ * @property Question $Question The related question.
+ * @property Student $Student The related student.
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
 class Answer extends ModelBase
 {
 
         /**
-         *
+         * This object ID.
          * @var integer
          */
         public $id;
         /**
-         *
+         * The question ID.
          * @var integer
          */
         public $question_id;
         /**
-         *
+         * The student ID.
          * @var integer
          */
         public $student_id;
         /**
-         *
+         * Is already answered?
          * @var bool
          */
         public $answered;
@@ -36,9 +44,6 @@ class Answer extends ModelBase
          */
         public $comment;
 
-        /**
-         * Initialize method for model.
-         */
         public function initialize()
         {
                 parent::initialize();
@@ -47,16 +52,25 @@ class Answer extends ModelBase
                 $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array('foreignKey' => true, 'alias' => 'Student'));
         }
 
+        /**
+         * Called before model is created.
+         */
         public function beforeCreate()
         {
                 $this->answered = false;
         }
 
+        /**
+         * Called before model is saved.
+         */
         public function beforeSave()
         {
                 $this->answered = $this->answered ? 'Y' : 'N';
         }
 
+        /**
+         * Called after the model was read.
+         */
         public function afterFetch()
         {
                 $this->answered = $this->answered == 'Y';

@@ -2,6 +2,10 @@
 
 namespace OpenExam\Models;
 
+/**
+ * Base class for all models.
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
 class ModelBase extends \Phalcon\Mvc\Model
 {
 
