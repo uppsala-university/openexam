@@ -70,6 +70,17 @@ class Question extends ModelBase
                 $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array('foreignKey' => true, 'alias' => 'Topic'));
         }
 
+        public function validation()
+        {
+                $this->validate(new InclusionInValidator(array(
+                        'field'  => 'status',
+                        'domain' => array('active', 'removed')
+                )));
+                if ($this->validationHasFailed() == true) {
+                        return false;
+                }
+        }
+
         public function beforeCreate()
         {
                 $this->status = 'active';
