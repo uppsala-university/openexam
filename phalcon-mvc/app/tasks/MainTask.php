@@ -29,4 +29,47 @@ class MainTask extends \Phalcon\CLI\Task
                 printf("No default action defined, see --help.\n");
         }
 
+        /**
+         * Show usage on stdout.
+         * @param array $usage
+         */
+        protected static function showUsage(array $usage)
+        {
+                if (isset($usage['header'])) {
+                        printf("%s\n\n", $usage['header']);
+                }
+                if (isset($usage['usage'])) {
+                        printf("Usage:\n");
+                        foreach ($usage['usage'] as $val) {
+                                printf("  %s\n", $val);
+                        }
+                        printf("\n");
+                }
+                if (isset($usage['options'])) {
+                        printf("Options:\n");
+                        foreach ($usage['options'] as $key => $val) {
+                                printf("  %-20s: %s\n", $key, $val);
+                        }
+                        printf("\n");
+                }
+                if (isset($usage['examples'])) {
+                        printf("Examples:\n");
+                        foreach ($usage['examples'] as $data) {
+                                printf("  # %s:\n", $data['descr']);
+                                printf("  %s\n", $data['command']);
+                                printf("\n");
+                        }
+                        printf("\n");
+                }
+        }
+
+        /**
+         * Get task usage information.
+         * @return array
+         */
+        public static function getUsage()
+        {
+                return array('action' => '--main');
+        }
+
 }

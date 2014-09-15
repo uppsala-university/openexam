@@ -26,7 +26,33 @@ class HelpTask extends MainTask
          */
         public function indexAction()
         {
-                printf("Usage: --database [options...]\n");
+                parent::showUsage(self::getUsage());
+        }
+
+        public static function getUsage()
+        {
+                $usage = array(
+                        'header'   => 'OpenExam management utility.',
+                        'action'   => '--help',
+                        'examples' => array(
+                                array(
+                                        'descr'   => 'Show help specific for the database task',
+                                        'command' => '--database --help'
+                                )
+                        )
+                );
+
+                foreach (array(
+                    DatabaseTask::getUsage(),
+                    ModelTask::getUsage()
+                ) as $task) {
+                        foreach ($task['usage'] as $val) {
+                                $usage['usage'][] = sprintf("%s %s", $task['action'], $val);
+                        }
+                        $usage['usage'][] = "";
+                }
+
+                return $usage;
         }
 
 }

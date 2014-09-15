@@ -23,29 +23,45 @@ use OpenExam\Library\Database\Migration;
 class DatabaseTask extends MainTask
 {
 
+        public static function getUsage()
+        {
+                return array(
+                        'header'   => 'Database install or migration (upgrade/downgrade) task.',
+                        'action'   => '--database',
+                        'usage'    => array(
+                                '--install',
+                                '--generate',
+                                '--migrate [--version=x.y.z]',
+                                '--status'
+                        ),
+                        'options'  => array(
+                                '--install'       => 'Install the database (same as --migrate without --version).',
+                                '--generate'      => 'Generate database migration (automatic version if not given).',
+                                '--migrate'       => 'Perform database migration (to latest version by default).',
+                                '--version=x.y.z' => 'Version of migration or generation task.',
+                                '--force'         => 'Force action even if already applied.',
+                                '--status'        => 'Display current migration status and exit.',
+                                '--verbose'       => 'Be more verbose.'
+                        ),
+                        'examples' => array(
+                                array(
+                                        'descr'   => 'Generate migration, overwrite if existing',
+                                        'command' => '--generate --verbose --version=2.0.0 --force'
+                                ),
+                                array(
+                                        'descr'   => 'Migrate database to latest',
+                                        'command' => '--migrate --verbose'
+                                )
+                        )
+                );
+        }
+
         /**
          * Display usage information.
          */
         public function helpAction()
         {
-                printf("Usage: --migrate [--version=x.y.z] [--force]\n");
-                printf("       --status\n");
-                printf("\n");
-                printf("Options:\n");
-                printf("  --install:       Install the database (same as --migrate without --version).\n");
-                printf("  --migrate:       Perform database migration (use latest version by default).\n");
-                printf("  --generate:      Generate database migration (automatic version if not given).\n");
-                printf("  --version=x.y.z: Version of migration or generation task.\n");
-                printf("  --force:         Force migration even if already applied.\n");
-                printf("  --status:        Display current migration status and exit.\n");
-                printf("  --verbose:       Be more verbose.\n");
-                printf("\n");
-                printf("Examples:\n");
-                printf("  # Generate migration, overwrite if existing:\n");
-                printf("  --generate --verbose --version=2.0.0 --force\n");
-                printf("\n");
-                printf("  # Migrate database to latest:\n");
-                printf("  --migrate --verbose\n");
+                parent::showUsage(self::getUsage());
         }
 
         /**
@@ -91,17 +107,18 @@ class DatabaseTask extends MainTask
                 }
 
                 if ($options['verbose']) {
-                        printf("Starting database migration to version '%s':\n", isset($options['version']) ? $options['version'] : 'latest');
-                        printf("-------------------------------------------------\n");
-                        printf("    Type: %s\n", $this->config->database->adapter);
-                        printf("    Name: %s\n", $this->config->database->dbname);
-                        printf("    User: %s\n", $this->config->database->username);
-                        printf("    Host: %s\n", $this->config->database->host);
-                        printf("  Source: %s\n", $this->config->application->migrationsDir);
-                        printf("\n");
+                        $this->flash->notice(sprintf("Starting database migration to version '%s':", isset($options['version']) ? $options['version'] : 'latest'));
+                        $this->flash->notice(sprintf("-------------------------------------------------"));
+                        $this->flash->notice(sprintf("    Type: %s", $this->config->database->adapter));
+                        $this->flash->notice(sprintf("    Name: %s", $this->config->database->dbname));
+                        $this->flash->notice(sprintf("    User: %s", $this->config->database->username));
+                        $this->flash->notice(sprintf("    Host: %s", $this->config->database->host));
+                        $this->flash->notice(sprintf("  Source: %s", $this->config->application->migrationsDir));
+                        $this->flash->write();
                 }
 
                 Migration::run($this->config, $options['version'], $options['force']);
+                $this->flash->success("Database migration action completed successful.");
         }
 
         /**
@@ -134,16 +151,17 @@ class DatabaseTask extends MainTask
                 }
 
                 if ($options['verbose']) {
-                        printf("Generate database migration as version '%s':\n", isset($options['version']) ? $options['version'] : '<automatic>');
-                        printf("-------------------------------------------------\n");
-                        printf("    Type: %s\n", $this->config->database->adapter);
-                        printf("    Name: %s\n", $this->config->database->dbname);
-                        printf("    User: %s\n", $this->config->database->username);
-                        printf("    Host: %s\n", $this->config->database->host);
-                        printf("\n");
+                        $this->flash->notice(sprintf("Generate database migration as version '%s':", isset($options['version']) ? $options['version'] : '<automatic>'));
+                        $this->flash->notice(sprintf("-------------------------------------------------"));
+                        $this->flash->notice(sprintf("    Type: %s", $this->config->database->adapter));
+                        $this->flash->notice(sprintf("    Name: %s", $this->config->database->dbname));
+                        $this->flash->notice(sprintf("    User: %s", $this->config->database->username));
+                        $this->flash->notice(sprintf("    Host: %s", $this->config->database->host));
+                        $this->flash->write();
                 }
 
                 \Phalcon\Migrations::generate($options);
+                $this->flash->success("Database migration generated successful.");
         }
 
         /**
@@ -155,12 +173,12 @@ class DatabaseTask extends MainTask
                 $file = sprintf("%s/.phalcon/migration-version", $this->config->application->baseDir);
 
                 if (in_array('verbose', $params)) {
-                        printf("Checking for status info in %s\n", $file);
+                        $this->flash->notice(sprintf("Checking for status info in %s\n", $file));
                 }
                 if (file_exists($file)) {
-                        printf("Current database migration version: %s\n", file_get_contents($file));
+                        $this->flash->success(sprintf("Current database migration version: %s", file_get_contents($file)));
                 } else {
-                        printf("No database migration status found.\n");
+                        $this->flash->notice(sprintf("No database migration status found."));
                 }
         }
 
