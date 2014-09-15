@@ -52,3 +52,10 @@ $di->set('dispatcher', function() use($di) {
         $dispatcher->setDefaultAction('index');
         return $dispatcher;
 });
+
+// 
+// Use flash service specialized for console.
+// 
+$di->set('flash', function() {
+        return new OpenExam\Library\Console\Flash();
+});
