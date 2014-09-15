@@ -20,6 +20,6 @@ try {
         $console = new Application($di);
         $console->process();
 } catch (\Exception $exception) {
-        echo $exception->getMessage() . PHP_EOL;
+        $di->get('flash')->error($exception->getMessage());
         exit(255);
 }
