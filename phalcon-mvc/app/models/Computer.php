@@ -56,6 +56,16 @@ class Computer extends ModelBase
                 $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array('foreignKey' => true, 'alias' => 'Room'));
         }
 
+        public function beforeCreate()
+        {
+                $this->created = date('Y-m-d H:i:s');
+        }
+
+        public function beforeUpdate()
+        {
+                $this->updated = date('Y-m-d H:i:s');
+        }
+
         public function getSource()
         {
                 return 'computers';

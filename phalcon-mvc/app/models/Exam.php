@@ -6,6 +6,15 @@ class Exam extends ModelBase
 {
 
         /**
+         * Show responsible people for examination.
+         */
+        const RESULT_EXPOSE_EMPLOYEES = 1;
+        /**
+         * Include statistics of all students.
+         */
+        const RESULT_OTHERS_STATISTIC = 2;
+
+        /**
          *
          * @var integer
          */
@@ -52,7 +61,7 @@ class Exam extends ModelBase
         public $details;
         /**
          *
-         * @var string
+         * @var bool
          */
         public $decoded;
         /**
@@ -67,12 +76,12 @@ class Exam extends ModelBase
         public $grades;
         /**
          *
-         * @var string
+         * @var bool
          */
         public $testcase;
         /**
          *
-         * @var string
+         * @var bool
          */
         public $lockdown;
 
@@ -90,14 +99,31 @@ class Exam extends ModelBase
                 $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'Students'));
         }
 
+        public function beforeCreate()
+        {
+                $this->created = date('Y-m-d H:i:s');
+                $this->details = $this->getDI()->get('config')->result->details;
+        }
+
+        public function beforeUpdate()
+        {
+                $this->updated = date('Y-m-d H:i:s');
+        }
+
         public function beforeSave()
         {
                 $this->grades = json_encode($this->grades);
+                $this->decoded = $this->decoded ? 'Y' : 'N';
+                $this->testcase = $this->testcase ? 'Y' : 'N';
+                $this->lockdown = $this->lockdown ? 'Y' : 'N';
         }
 
         public function afterFetch()
         {
                 $this->grades = json_decode($this->grades);
+                $this->decoded = $this->decoded == 'Y';
+                $this->testcase = $this->testcase == 'Y';
+                $this->lockdown = $this->lockdown == 'Y';
         }
 
         public function getSource()

@@ -66,5 +66,14 @@ return array(
                  * The base URI of this application. 
                  */
                 'baseUri'  => '/phalcon-mvc/'
+        ),
+        /**
+         * Student result settings.
+         */
+        'result'      => array(
+                /**
+                 * The details to expose to students by default:
+                 */
+                'details' => OpenExam\Models\Exam::RESULT_EXPOSE_EMPLOYEES | OpenExam\Models\Exam::RESULT_OTHERS_STATISTIC
         )
 );

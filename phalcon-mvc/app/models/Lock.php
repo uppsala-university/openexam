@@ -36,6 +36,11 @@ class Lock extends ModelBase
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
         }
 
+        public function beforeCreate()
+        {
+                $this->aquired = date('Y-m-d H:i:s');
+        }
+
         public function getSource()
         {
                 return 'locks';

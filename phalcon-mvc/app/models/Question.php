@@ -2,6 +2,9 @@
 
 namespace OpenExam\Models;
 
+/**
+ * @property array $users The question correctors.
+ */
 class Question extends ModelBase
 {
 
@@ -37,7 +40,7 @@ class Question extends ModelBase
         public $quest;
         /**
          *
-         * @var string
+         * @var array
          */
         public $user;
         /**
@@ -67,14 +70,19 @@ class Question extends ModelBase
                 $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array('foreignKey' => true, 'alias' => 'Topic'));
         }
 
+        public function beforeCreate()
+        {
+                $this->status = 'active';
+        }
+
         public function beforeSave()
         {
-                $this->user = json_encode($this->user);
+                $this->user = json_encode($this->users);
         }
 
         public function afterFetch()
         {
-                $this->user = json_decode($this->user);
+                $this->users = json_decode($this->user);
         }
 
         public function getSource()

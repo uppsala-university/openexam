@@ -22,7 +22,7 @@ class Answer extends ModelBase
         public $student_id;
         /**
          *
-         * @var string
+         * @var bool
          */
         public $answered;
         /**
@@ -45,6 +45,21 @@ class Answer extends ModelBase
                 $this->hasMany('id', 'OpenExam\Models\Result', 'answer_id', array('alias' => 'Result'));
                 $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array('foreignKey' => true, 'alias' => 'Question'));
                 $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array('foreignKey' => true, 'alias' => 'Student'));
+        }
+
+        public function beforeCreate()
+        {
+                $this->answered = false;
+        }
+
+        public function beforeSave()
+        {
+                $this->answered = $this->answered ? 'Y' : 'N';
+        }
+
+        public function afterFetch()
+        {
+                $this->answered = $this->answered == 'Y';
         }
 
         public function getSource()
