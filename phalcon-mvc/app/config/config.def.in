@@ -72,8 +72,39 @@ return array(
          */
         'result'      => array(
                 /**
-                 * The details to expose to students by default:
+                 * The amount of details to expose to students by default.
+                 * This is a bitmask of zero of more:
+                 * 
+                 * 1 = RESULT_EXPOSE_EMPLOYEES (expose correcting teacher)
+                 * 2 = RESULT_OTHERS_STATISTIC (expose statistics for other students)
                  */
-                'details' => OpenExam\Models\Exam::RESULT_EXPOSE_EMPLOYEES | OpenExam\Models\Exam::RESULT_OTHERS_STATISTIC
+                'details' => 3
+        ),
+        /**
+         * SMTP settings.
+         */
+        'smtp'        => array(
+                /**
+                 * The sender host.
+                 */
+                'sender' => 'localhost',
+                /**
+                 * SMTP server and port.
+                 */
+                'host'   => 'smtp.example.com',
+                'port'   => 25,
+                /**
+                 * SMTP login.
+                 */
+                'auth'   => false,
+                'user'   => null,
+                'pass'   => null
+        ),
+        /**
+         * Contact information.
+         */
+        'contact'     => array(
+                'name' => _('System Manager'),
+                'addr' => 'openexam@example.com'
         )
 );
