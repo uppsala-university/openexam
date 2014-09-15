@@ -1,13 +1,29 @@
-Use the Phalcon devtools for creating all models. Running the all-models script
-will take care of adding relations between models:
+Models can be managed either using tasks (see phalcon-mvc/script) or direct using
+Phalcon devtools.
 
-    bash$> cd ${appdir}/openexam-php/phalcon-mvc/
-    bash$> phalcon all-models --relations --fk --validations --force \
-                              --namespace='OpenExam\Models' \
-                              --extends='ModelBase' \
-                              --config=app/config/devtools
+** Using tasks:
+  
+   Backup and clean current model, then create new:
 
-Unfortunate, the devtools can only create new models, not updating existing. All
-changes has to be applied manual.
+        bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+        bash$> php openexam --model --create --clean --backup 
+
+   See help for more information:
+
+        bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+        bash$> php openexam --model --help 
+
+** Using Phalcon devtools:
+
+   Running the all-models script will take care of adding relations between models:
+
+        bash$> cd ${appdir}/openexam-php/phalcon-mvc
+        bash$> phalcon all-models --relations --fk --validations --force \
+                                  --namespace='OpenExam\Models' \
+                                  --extends='ModelBase' \
+                                  --config=app/config/devtools
+
+   Unfortunate, the devtools can only create new models, not updating existing. All
+   changes has to be applied manual.
 
 // Anders Lövgren, 2014-09-10
