@@ -38,5 +38,18 @@
         "psr-4": {
             "OpenExam\\Tests\\": "tests/support"
         }
+    },
+    "autoload": {
+        "psr-4": {
+            "OpenExam\\Composer\\": "admin/composer"
+        }
+    },
+    "scripts": {
+        "post-package-install": [
+            "OpenExam\\Composer\\Installer::postPackageInstall"
+        ],
+        "post-package-update": [
+            "OpenExam\\Composer\\Installer::postPackageUpdate"
+        ]
     }
 }
