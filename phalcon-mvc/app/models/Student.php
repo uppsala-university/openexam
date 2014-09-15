@@ -25,6 +25,11 @@ class Student extends ModelBase
          * @var string
          */
         public $code;
+        /**
+         *
+         * @var string
+         */
+        public $tag;
 
         /**
          * Initialize method for model.
@@ -32,8 +37,8 @@ class Student extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Answer", "student_id", NULL);
-                $this->belongsTo("exam_id", "Exam", "id", array("foreignKey" => true));
+                $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array('alias' => 'Answers'));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
         }
 
         public function getSource()

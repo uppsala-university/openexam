@@ -42,9 +42,9 @@ class Answer extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Results", "answer_id", NULL);
-                $this->belongsTo("question_id", "Question", "id", array("foreignKey" => true));
-                $this->belongsTo("student_id", "Student", "id", array("foreignKey" => true));
+                $this->hasMany('id', 'OpenExam\Models\Result', 'answer_id', array('alias' => 'Result'));
+                $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array('foreignKey' => true, 'alias' => 'Question'));
+                $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array('foreignKey' => true, 'alias' => 'Student'));
         }
 
         public function getSource()

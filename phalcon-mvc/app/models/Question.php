@@ -37,29 +37,9 @@ class Question extends ModelBase
         public $quest;
         /**
          *
-         * @var array
+         * @var string
          */
         public $user;
-        /**
-         *
-         * @var string
-         */
-        public $video;
-        /**
-         *
-         * @var string
-         */
-        public $image;
-        /**
-         *
-         * @var string
-         */
-        public $audio;
-        /**
-         *
-         * @var string
-         */
-        public $type;
         /**
          *
          * @var string
@@ -70,6 +50,11 @@ class Question extends ModelBase
          * @var string
          */
         public $comment;
+        /**
+         *
+         * @var string
+         */
+        public $grades;
 
         /**
          * Initialize method for model.
@@ -77,9 +62,9 @@ class Question extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Answer", "question_id", NULL);
-                $this->belongsTo("exam_id", "Exam", "id", array("foreignKey" => true));
-                $this->belongsTo("topic_id", "Topic", "id", array("foreignKey" => true));
+                $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array('alias' => 'Answers'));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
+                $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array('foreignKey' => true, 'alias' => 'Topic'));
         }
 
         public function beforeSave()

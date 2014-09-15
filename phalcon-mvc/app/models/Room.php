@@ -27,7 +27,7 @@ class Room extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Computer", "room_id", NULL);
+                $this->hasMany('id', 'OpenExam\Models\Computer', 'room_id', array('alias' => 'Computers'));
         }
 
         public function getSource()

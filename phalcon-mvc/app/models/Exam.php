@@ -82,12 +82,12 @@ class Exam extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Contributor", "exam_id", NULL);
-                $this->hasMany("id", "Decoder", "exam_id", NULL);
-                $this->hasMany("id", "Invigilator", "exam_id", NULL);
-                $this->hasMany("id", "Lock", "exam_id", NULL);
-                $this->hasMany("id", "Question", "exam_id", NULL);
-                $this->hasMany("id", "Student", "exam_id", NULL);
+                $this->hasMany('id', 'OpenExam\Models\Contributor', 'exam_id', array('alias' => 'Contributors'));
+                $this->hasMany('id', 'OpenExam\Models\Decoder', 'exam_id', array('alias' => 'Decoders'));
+                $this->hasMany('id', 'OpenExam\Models\Invigilator', 'exam_id', array('alias' => 'Invigilators'));
+                $this->hasMany('id', 'OpenExam\Models\Lock', 'exam_id', array('alias' => 'Locks'));
+                $this->hasMany('id', 'OpenExam\Models\Question', 'exam_id', array('alias' => 'Questions'));
+                $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'Students'));
         }
 
         public function beforeSave()

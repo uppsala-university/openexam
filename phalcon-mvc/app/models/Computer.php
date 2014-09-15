@@ -52,8 +52,8 @@ class Computer extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Locks", "computer_id", NULL);
-                $this->belongsTo("room_id", "Room", "id", array("foreignKey" => true));
+                $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array('alias' => 'Locks'));
+                $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array('foreignKey' => true, 'alias' => 'Room'));
         }
 
         public function getSource()

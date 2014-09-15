@@ -32,7 +32,7 @@ class Result extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->belongsTo("answer_id", "Answer", "id", array("foreignKey" => true));
+                $this->belongsTo('answer_id', 'OpenExam\Models\Answer', 'id', array('foreignKey' => true, 'alias' => 'Answer'));
         }
 
         public function getSource()

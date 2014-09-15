@@ -2,6 +2,10 @@
 
 namespace OpenExam\Models;
 
+/**
+ * The invigilator model.
+ * @preserve 
+ */
 class Invigilator extends ModelBase
 {
 
@@ -27,12 +31,12 @@ class Invigilator extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->belongsTo("exam_id", "Exam", "id", array("foreignKey" => true));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
         }
 
         public function getSource()
         {
-                return 'examinators';
+                return 'invigilators';
         }
 
 }

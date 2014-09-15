@@ -25,6 +25,16 @@ class Topic extends ModelBase
          * @var integer
          */
         public $randomize;
+        /**
+         *
+         * @var string
+         */
+        public $grades;
+        /**
+         *
+         * @var string
+         */
+        public $depend;
 
         /**
          * Initialize method for model.
@@ -32,7 +42,7 @@ class Topic extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "Question", "topic_id", NULL);
+                $this->hasMany('id', 'OpenExam\Models\Questions', 'topic_id', array('alias' => 'Questions'));
         }
 
         public function getSource()

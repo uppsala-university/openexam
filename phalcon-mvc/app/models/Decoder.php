@@ -27,7 +27,7 @@ class Decoder extends ModelBase
         public function initialize()
         {
                 parent::initialize();
-                $this->belongsTo("exam_id", "Exam", "id", array("foreignKey" => true));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
         }
 
         public function getSource()
