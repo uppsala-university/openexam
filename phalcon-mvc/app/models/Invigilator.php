@@ -29,7 +29,7 @@ class Invigilator extends ModelBase
          */
         public $user;
 
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));

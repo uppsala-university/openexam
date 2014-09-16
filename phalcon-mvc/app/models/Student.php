@@ -42,7 +42,7 @@ class Student extends ModelBase
          */
         public $tag;
 
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array('alias' => 'Answers'));

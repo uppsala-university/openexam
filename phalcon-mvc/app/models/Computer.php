@@ -55,7 +55,7 @@ class Computer extends ModelBase
          */
         public $updated;
 
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array('alias' => 'Locks'));
@@ -65,17 +65,24 @@ class Computer extends ModelBase
         /**
          * Called before model is created.
          */
-        public function beforeCreate()
+        protected function beforeValidationOnCreate()
         {
-                $this->created = date('Y-m-d H:i:s');
+                if (!isset($this->created)) {
+                        $this->created = date('Y-m-d H:i:s');
+                }
+                if (!isset($this->updated)) {
+                        $this->updated = date('Y-m-d H:i:s');
+                }
         }
 
         /**
          * Called before the model is updated.
          */
-        public function beforeUpdate()
+        protected function beforeValidationOnUpdate()
         {
-                $this->updated = date('Y-m-d H:i:s');
+                if (!isset($this->updated)) {
+                        $this->updated = date('Y-m-d H:i:s');
+                }
         }
 
         public function getSource()

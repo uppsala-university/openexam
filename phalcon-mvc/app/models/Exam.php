@@ -94,7 +94,7 @@ class Exam extends ModelBase
         public $orgunit;
         /**
          * The exam grades.
-         * @var array
+         * @var object
          */
         public $grades;
         /**
@@ -108,7 +108,7 @@ class Exam extends ModelBase
          */
         public $lockdown;
 
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->hasMany('id', 'OpenExam\Models\Contributor', 'exam_id', array('alias' => 'Contributors'));
@@ -123,24 +123,42 @@ class Exam extends ModelBase
         /**
          * Called before model is created.
          */
-        public function beforeCreate()
+        protected function beforeValidationOnCreate()
         {
-                $this->created = date('Y-m-d H:i:s');
-                $this->details = $this->getDI()->get('config')->result->details;
+                if (!isset($this->created)) {
+                        $this->created = date('Y-m-d H:i:s');
+                }
+                if (!isset($this->updated)) {
+                        $this->updated = date('Y-m-d H:i:s');
+                }
+                if (!isset($this->details)) {
+                        $this->details = $this->getDI()->get('config')->result->details;
+                }
+                if (!isset($this->decoded)) {
+                        $this->decoded = false;
+                }
+                if (!isset($this->testcase)) {
+                        $this->testcase = false;
+                }
+                if (!isset($this->lockdown)) {
+                        $this->lockdown = false;
+                }
         }
 
         /**
          * Called before the model is updated.
          */
-        public function beforeUpdate()
+        protected function beforeValidationOnUpdate()
         {
-                $this->updated = date('Y-m-d H:i:s');
+                if (!isset($this->updated)) {
+                        $this->updated = date('Y-m-d H:i:s');
+                }
         }
 
         /**
          * Called before model is saved.
          */
-        public function beforeSave()
+        protected function beforeSave()
         {
                 $this->grades = json_encode($this->grades);
                 $this->decoded = $this->decoded ? 'Y' : 'N';
@@ -149,9 +167,20 @@ class Exam extends ModelBase
         }
 
         /**
+         * Called after model is saved.
+         */
+        protected function afterSave()
+        {
+                $this->grades = json_decode($this->grades);
+                $this->decoded = $this->decoded == 'Y';
+                $this->testcase = $this->testcase == 'Y';
+                $this->lockdown = $this->lockdown == 'Y';
+        }
+
+        /**
          * Called after the model was read.
          */
-        public function afterFetch()
+        protected function afterFetch()
         {
                 $this->grades = json_decode($this->grades);
                 $this->decoded = $this->decoded == 'Y';

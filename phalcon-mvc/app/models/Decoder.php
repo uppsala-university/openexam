@@ -32,7 +32,7 @@ class Decoder extends ModelBase
         /**
          * Initialize method for model.
          */
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));

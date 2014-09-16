@@ -2,22 +2,23 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Validator\Inclusionin;
+
 /**
  * The question model.
  * 
  * Represent a single question. The question is by default active, but can
  * be flagged as removed. The correcting user (being in possesion of the
- * corrector role) is defined by the user property (exposed for convenience
- * as an array by the users property).
+ * corrector role) is defined by the user property.
  * 
  * @property Answer $Answers The answers for this question.
  * @property Exam $Exam The related exam.
  * @property Topic $Topic The related topic.
- * @property array $users The array of question correctors.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Question extends ModelBase
 {
+
         /**
          * This question is active.
          */
@@ -58,15 +59,15 @@ class Question extends ModelBase
          */
         public $quest;
         /**
-         * The user string.
+         * The question correctors.
          * @var array
          */
-        protected $user;
+        public $user;
         /**
          * The question status (see STATUS_XXX).
          * @var string
          */
-        public $status;
+        public $status = 'active';
         /**
          * Comment for this question.
          * @var string
@@ -81,7 +82,7 @@ class Question extends ModelBase
         /**
          * Initialize method for model.
          */
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array('alias' => 'Answers'));
@@ -93,9 +94,9 @@ class Question extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        public function validation()
+        protected function validation()
         {
-                $this->validate(new InclusionInValidator(array(
+                $this->validate(new Inclusionin(array(
                         'field'  => 'status',
                         'domain' => array('active', 'removed')
                 )));
@@ -105,27 +106,35 @@ class Question extends ModelBase
         }
 
         /**
-         * Called before the model is created.
+         * Called before model is created.
          */
-        public function beforeCreate()
+        protected function beforeValidationOnCreate()
         {
                 $this->status = 'active';
         }
 
         /**
-         * Called before the model is saved.
+         * Called before model is saved.
          */
-        public function beforeSave()
+        protected function beforeSave()
         {
-                $this->user = json_encode($this->users);
+                $this->user = json_encode($this->user);
+        }
+
+        /**
+         * Called after model is saved.
+         */
+        protected function afterSave()
+        {
+                $this->user = json_decode($this->user);
         }
 
         /**
          * Called after the model was read.
          */
-        public function afterFetch()
+        protected function afterFetch()
         {
-                $this->users = json_decode($this->user);
+                $this->user = json_decode($this->user);
         }
 
         public function getSource()

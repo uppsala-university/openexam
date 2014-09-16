@@ -32,7 +32,7 @@ class Answer extends ModelBase
          * Is already answered?
          * @var bool
          */
-        public $answered;
+        public $answered = false;
         /**
          *
          * @var string
@@ -44,7 +44,7 @@ class Answer extends ModelBase
          */
         public $comment;
 
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->hasMany('id', 'OpenExam\Models\Result', 'answer_id', array('alias' => 'Result'));
@@ -53,25 +53,25 @@ class Answer extends ModelBase
         }
 
         /**
-         * Called before model is created.
-         */
-        public function beforeCreate()
-        {
-                $this->answered = false;
-        }
-
-        /**
          * Called before model is saved.
          */
-        public function beforeSave()
+        protected function beforeSave()
         {
                 $this->answered = $this->answered ? 'Y' : 'N';
         }
 
         /**
+         * Called after model is saved.
+         */
+        protected function afterSave()
+        {
+                $this->answered = $this->answered == 'Y';
+        }
+
+        /**
          * Called after the model was read.
          */
-        public function afterFetch()
+        protected function afterFetch()
         {
                 $this->answered = $this->answered == 'Y';
         }

@@ -35,7 +35,7 @@ class Lock extends ModelBase
          */
         public $aquired;
 
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->belongsTo('computer_id', 'OpenExam\Models\Computer', 'id', array('foreignKey' => true, 'alias' => 'Computer'));
@@ -45,9 +45,11 @@ class Lock extends ModelBase
         /**
          * Called before the model is created.
          */
-        public function beforeCreate()
+        protected function beforeValidationOnCreate()
         {
-                $this->aquired = date('Y-m-d H:i:s');
+                if (!isset($this->aquired)) {
+                        $this->aquired = date('Y-m-d H:i:s');
+                }
         }
 
         public function getSource()
