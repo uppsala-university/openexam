@@ -13,14 +13,16 @@
 
 namespace OpenExam\Library\Security;
 
+use OpenExam\Models\Admin;
+use OpenExam\Models\Contributor;
+use OpenExam\Models\Decoder;
+use OpenExam\Models\Exam;
+use OpenExam\Models\Invigilator;
+use OpenExam\Models\Question;
+use OpenExam\Models\Student;
+use OpenExam\Models\Teacher;
 use Phalcon\Mvc\User\Component;
-use OpenExam\Models\Admin,
-    OpenExam\Models\Contributor,
-    OpenExam\Models\Decoder,
-    OpenExam\Models\Invigilator,
-    OpenExam\Models\Student,
-    OpenExam\Models\Teacher,
-    OpenExam\Models\Question;
+use ReflectionClass;
 
 /**
  * Manage roles for user session.
@@ -201,6 +203,14 @@ class Roles extends Component
         }
 
         /**
+         * Clear all aquired roles.
+         */
+        public function clear()
+        {
+                $this->roles = array();
+        }
+
+        /**
          * Try to aquire role. Returns true if successful. The object ID is
          * is optional. 
          * 
@@ -353,39 +363,48 @@ class Roles extends Component
         }
 
         /**
-         * Check if role is admin.
-         * @param string $role The role to check.
+         * Check if the admin role has been aquired.
+         * @param int $id The object ID.
          * @return bool
          */
-        public static function isAdmin($role)
+        public function isAdmin($id = 0)
         {
-                return $role == self::admin;
+                return isset($this->roles[$id][self::admin]);
         }
 
         /**
-         * Check if role is student.
-         * @param string $role The role to check.
+         * Check if the student role has been aquired.
+         * @param int $id The object ID.
          * @return bool
          */
-        public static function isStudent($role)
+        public function isStudent($id = 0)
         {
-                return $role == self::student;
+                return isset($this->roles[$id][self::student]);
         }
 
         /**
-         * Check if role belongs to staff.
-         * @param string $role The role to check.
+         * Check if the staff role has been aquired.
+         * @param int $id The object ID.
          * @return bool
          */
-        public static function isStaff($role)
+        public function isStaff($id = 0)
         {
-                return
-                    $role == self::teacher ||
-                    $role == self::contributor ||
-                    $role == self::corrector ||
-                    $role == self::creator ||
-                    $role == self::decoder ||
-                    $role == self::invigilator;
+                if (!isset($this->roles[$id])) {
+                        return false;
+                }
+                if (count($this->roles[$id]) == 0) {
+                        return false;
+                }
+                $roles = array_keys($this->roles[$id]);
+                $staff = array(
+                        self::teacher,
+                        self::contributor,
+                        self::corrector,
+                        self::creator,
+                        self::decoder,
+                        self::invigilator
+                );
+                return count(array_intersect($staff, $roles)) > 0;
         }
 
         /**
@@ -396,7 +415,7 @@ class Roles extends Component
          */
         public static function isCustom($role)
         {
-                $class = new \ReflectionClass(__CLASS__);
+                $class = new ReflectionClass(__CLASS__);
                 return $class->getConstant($role) === false;
         }
 
