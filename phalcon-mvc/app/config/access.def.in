@@ -10,7 +10,6 @@
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
-
 // 
 // The map between role, resource and permission. This map is used
 // for defining the ACL in the system.

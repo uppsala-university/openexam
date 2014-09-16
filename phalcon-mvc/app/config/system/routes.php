@@ -87,13 +87,13 @@ $router->mount(
  */
 $router->add(
     "/auth/:action/?(.*)?", array(
-        "controller"    => "auth",
-        "action"        => 1,
-        "authMethod"    => 2,
-        "namespace"     => "OpenExam\Controllers\Gui"
+        "controller" => "auth",
+        "action"     => 1,
+        "authMethod" => 2,
+        "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
- 
+
 
 /**
  * Route SOAP and WSDL requests:
