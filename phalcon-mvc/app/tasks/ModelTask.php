@@ -55,7 +55,7 @@ class ModelTask extends MainTask
         private $options;
 
         /**
-         * Callback to initialize this task.
+         * Initializer hook.
          */
         public function initialize()
         {
