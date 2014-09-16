@@ -34,7 +34,6 @@ class QuestionTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Question::properties
          * @group model
          */
         public function testProperties()

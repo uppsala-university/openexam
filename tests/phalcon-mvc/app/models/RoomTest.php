@@ -30,7 +30,6 @@ class RoomTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Room::properties
          * @group model
          */
         public function testProperties()

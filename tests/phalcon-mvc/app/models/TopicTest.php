@@ -32,7 +32,6 @@ class TopicTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Topic::properties
          * @group model
          */
         public function testProperties()
@@ -85,7 +84,7 @@ class TopicTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Author::getSource
+         * @covers OpenExam\Models\Topic::getSource
          * @group model
          */
         public function testGetSource()

@@ -28,7 +28,6 @@ class InvigilatorTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Invigilator::properties
          * @group model
          */
         public function testProperties()
@@ -67,7 +66,7 @@ class InvigilatorTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Invilgilator::getSource
+         * @covers OpenExam\Models\Invigilator::getSource
          * @group model
          */
         public function testGetSource()

@@ -28,7 +28,6 @@ class DecoderTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Decoders::properties
          * @group model
          */
         public function testProperties()

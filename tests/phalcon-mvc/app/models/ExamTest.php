@@ -42,7 +42,6 @@ class ExamTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Exam::properties
          * @group model
          */
         public function testProperties()

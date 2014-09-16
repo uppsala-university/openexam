@@ -31,7 +31,6 @@ class LockTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Lock::properties
          * @group model
          */
         public function testProperties()

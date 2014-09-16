@@ -32,7 +32,6 @@ class StudentTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Students::properties
          * @group model
          */
         public function testProperties()

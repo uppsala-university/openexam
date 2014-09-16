@@ -20,7 +20,6 @@ class TeacherTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Teacher::properties
          * @group model
          */
         public function testProperties()

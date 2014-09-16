@@ -28,7 +28,6 @@ class ContributorTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Contributor::properties
          * @group model
          */
         public function testProperties()

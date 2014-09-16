@@ -20,7 +20,6 @@ class AdminTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Admin::properties
          * @group model
          */
         public function testProperties()

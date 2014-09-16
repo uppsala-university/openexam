@@ -33,7 +33,6 @@ class ComputerTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Computer::properties
          * @group model
          */
         public function testProperties()

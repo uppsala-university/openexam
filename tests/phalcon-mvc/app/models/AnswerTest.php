@@ -34,7 +34,6 @@ class AnswerTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Answer::properties
          * @group model
          */
         public function testProperties()

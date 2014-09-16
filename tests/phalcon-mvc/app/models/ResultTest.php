@@ -29,7 +29,6 @@ class ResultTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Result::properties
          * @group model
          */
         public function testProperties()
