@@ -58,11 +58,21 @@ class Topic extends ModelBase
          */
         public $depend;
 
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->hasMany('id', 'OpenExam\Models\Question', 'topic_id', array('alias' => 'Questions'));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
+        }
+
+        /**
+         * Called before model is created.
+         */
+        protected function beforeValidationOnCreate()
+        {
+                if (!isset($this->randomize)) {
+                        $this->randomize = 0;
+                }
         }
 
         public function getSource()
