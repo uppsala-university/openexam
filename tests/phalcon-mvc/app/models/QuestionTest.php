@@ -29,7 +29,7 @@ class QuestionTest extends TestModel
                 self::assertNotEquals($question->topic->count(), 0);
 
                 self::assertTrue(count($question->exam) == 1);
-                self::assertTrue(count($question->answers) > 1);
+                self::assertTrue(count($question->answers) > 0);
                 self::assertTrue(count($question->topic) == 1);
         }
 
@@ -75,7 +75,7 @@ class QuestionTest extends TestModel
                         'quest'    => 'Question text 1',
                         'user'     => array('user1'),
                         'comment'  => 'Comment1',
-                        'grades'   => 'Source code'
+                        'grades'   => '// Ooh, really missing C++ ;-)'
                 );
                 try {
                         $helper = new TestModel(new Question());
@@ -93,7 +93,7 @@ class QuestionTest extends TestModel
                         'quest'        => 'Question text 1',
                         'user'         => array('user1'),
                         'comment'      => 'Comment1',
-                        'grades'       => 'Source code',
+                        'grades'       => '// Ooh, really missing C++ ;-)',
                         'non_existing' => 666
                 );
                 try {

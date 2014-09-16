@@ -49,7 +49,7 @@ class ExamTest extends TestModel
                 $values = array(
                         'creator' => 'user1',
                         'orgunit' => 'orgunit1',
-                        'grades'  => new stdClass(array('key1' => 'val1')),
+                        'grades'  => json_encode(array('data' => array('key1' => 'val1'))),
                         'name'    => 'name1'
                 );
 
@@ -81,7 +81,7 @@ class ExamTest extends TestModel
                         'details' => 3,
                         'creator' => 'user1',
                         'orgunit' => 'orgunit1',
-                        'grades'  => new stdClass(array('key1' => 'val1')),
+                        'grades'  => json_encode(array('data' => (array('key1' => 'val1')))),
                         'name'    => 'name1'
                 );
                 try {
@@ -102,7 +102,7 @@ class ExamTest extends TestModel
                         'creator'   => 'user1',
                         'decoded'   => true,
                         'orgunit'   => 'Orgunit1',
-                        'grades'    => new stdClass(),
+                        'grades'    => json_encode(array('data' => array())),
                         'testcase'  => true,
                         'lockdown'  => true
                 );

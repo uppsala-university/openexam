@@ -148,7 +148,7 @@ class UnittestTask extends MainTask
                                 'name'    => 'Exam 1',
                                 'creator' => 'user1',
                                 'orgunit' => 'orgunit1',
-                                'grades'  => array('U' => 0, 'G' => 20, 'VG' => 30)
+                                'grades'  => json_encode(array('data' => array('U' => 0, 'G' => 20, 'VG' => 30)))
                         ),
                         'contributor' => array(
                                 'exam_id' => 0,

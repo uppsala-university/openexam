@@ -59,7 +59,7 @@ class TopicTest extends TestModel
                 $values = array(
                         'exam_id' => Exam::findFirst()->id,
                         'name'    => 'Name1',
-                        'grades'  => 'Grades1',
+                        'grades'  => '// Ooh, really missing C++ ;-)',
                         'depend'  => 'Depend1'
                 );
 

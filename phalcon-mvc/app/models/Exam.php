@@ -14,9 +14,14 @@ use Phalcon\Mvc\Model\Behavior\Timestampable;
  * or decoded.
  * 
  * The grades property (array) is defined as JSON in the database. It is
- * either an array containing grades or an array defining the function body
+ * either an object defining grades or an array defining the function body
  * for a function that evaluates the final score for a single student on 
- * the exam.
+ * the exam:
+ * 
+ * <code>
+ * { data: { "U":"0", "G":"55", "VG":"80" } }
+ * { func: { // source code } }
+ * </code>
  * 
  * @property Contributor[] $contributors The contributors for this exam.
  * @property Decoder[] $decoders The decoders for this exam.
@@ -96,7 +101,7 @@ class Exam extends ModelBase
         public $orgunit;
         /**
          * The exam grades.
-         * @var object
+         * @var string
          */
         public $grades;
         /**
@@ -165,7 +170,6 @@ class Exam extends ModelBase
          */
         protected function beforeSave()
         {
-                $this->grades = json_encode($this->grades);
                 $this->decoded = $this->decoded ? 'Y' : 'N';
                 $this->testcase = $this->testcase ? 'Y' : 'N';
                 $this->lockdown = $this->lockdown ? 'Y' : 'N';
@@ -176,7 +180,6 @@ class Exam extends ModelBase
          */
         protected function afterSave()
         {
-                $this->grades = json_decode($this->grades);
                 $this->decoded = $this->decoded == 'Y';
                 $this->testcase = $this->testcase == 'Y';
                 $this->lockdown = $this->lockdown == 'Y';
@@ -187,7 +190,6 @@ class Exam extends ModelBase
          */
         protected function afterFetch()
         {
-                $this->grades = json_decode($this->grades);
                 $this->decoded = $this->decoded == 'Y';
                 $this->testcase = $this->testcase == 'Y';
                 $this->lockdown = $this->lockdown == 'Y';
