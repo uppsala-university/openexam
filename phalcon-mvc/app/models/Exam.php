@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Behavior\Timestampable;
+
 /**
  * The exam model.
  * 
@@ -111,6 +113,7 @@ class Exam extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
+
                 $this->hasMany('id', 'OpenExam\Models\Contributor', 'exam_id', array('alias' => 'Contributors'));
                 $this->hasMany('id', 'OpenExam\Models\Decoder', 'exam_id', array('alias' => 'Decoders'));
                 $this->hasMany('id', 'OpenExam\Models\Invigilator', 'exam_id', array('alias' => 'Invigilators'));
@@ -118,6 +121,24 @@ class Exam extends ModelBase
                 $this->hasMany('id', 'OpenExam\Models\Question', 'exam_id', array('alias' => 'Questions'));
                 $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'Students'));
                 $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array('alias' => 'Topics'));
+
+                $this->addBehavior(new Timestampable(array(
+                        'beforeValidationOnCreate' => array(
+                                'field'  => 'updated',
+                                'format' => 'Y-m-d H:i:s'
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field'  => 'updated',
+                                'format' => 'Y-m-d H:i:s'
+                        )
+                )));
+
+                $this->addBehavior(new Timestampable(array(
+                        'beforeValidationOnCreate' => array(
+                                'field'  => 'created',
+                                'format' => 'Y-m-d H:i:s'
+                        )
+                )));
         }
 
         /**
@@ -125,12 +146,6 @@ class Exam extends ModelBase
          */
         protected function beforeValidationOnCreate()
         {
-                if (!isset($this->created)) {
-                        $this->created = date('Y-m-d H:i:s');
-                }
-                if (!isset($this->updated)) {
-                        $this->updated = date('Y-m-d H:i:s');
-                }
                 if (!isset($this->details)) {
                         $this->details = $this->getDI()->get('config')->result->details;
                 }
@@ -142,16 +157,6 @@ class Exam extends ModelBase
                 }
                 if (!isset($this->lockdown)) {
                         $this->lockdown = false;
-                }
-        }
-
-        /**
-         * Called before the model is updated.
-         */
-        protected function beforeValidationOnUpdate()
-        {
-                if (!isset($this->updated)) {
-                        $this->updated = date('Y-m-d H:i:s');
                 }
         }
 

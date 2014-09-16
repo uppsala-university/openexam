@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Behavior\Timestampable;
+
 /**
  * The lock model.
  * 
@@ -38,18 +40,16 @@ class Lock extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
+
                 $this->belongsTo('computer_id', 'OpenExam\Models\Computer', 'id', array('foreignKey' => true, 'alias' => 'Computer'));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
-        }
 
-        /**
-         * Called before the model is created.
-         */
-        protected function beforeValidationOnCreate()
-        {
-                if (!isset($this->aquired)) {
-                        $this->aquired = date('Y-m-d H:i:s');
-                }
+                $this->addBehavior(new Timestampable(array(
+                        'beforeValidationOnCreate' => array(
+                                'field'  => 'aquired',
+                                'format' => 'Y-m-d H:i:s'
+                        )
+                )));
         }
 
         public function getSource()

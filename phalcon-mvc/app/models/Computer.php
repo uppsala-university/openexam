@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Behavior\Timestampable;
+
 /**
  * The computer model.
  * 
@@ -58,31 +60,27 @@ class Computer extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
+                
                 $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array('alias' => 'Locks'));
                 $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array('foreignKey' => true, 'alias' => 'Room'));
-        }
-
-        /**
-         * Called before model is created.
-         */
-        protected function beforeValidationOnCreate()
-        {
-                if (!isset($this->created)) {
-                        $this->created = date('Y-m-d H:i:s');
-                }
-                if (!isset($this->updated)) {
-                        $this->updated = date('Y-m-d H:i:s');
-                }
-        }
-
-        /**
-         * Called before the model is updated.
-         */
-        protected function beforeValidationOnUpdate()
-        {
-                if (!isset($this->updated)) {
-                        $this->updated = date('Y-m-d H:i:s');
-                }
+                
+                $this->addBehavior(new Timestampable(array(
+                        'beforeValidationOnCreate' => array(
+                                'field'  => 'updated',
+                                'format' => 'Y-m-d H:i:s'
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field'  => 'updated',
+                                'format' => 'Y-m-d H:i:s'
+                        )
+                )));
+                
+                $this->addBehavior(new Timestampable(array(
+                        'beforeValidationOnCreate' => array(
+                                'field'  => 'created',
+                                'format' => 'Y-m-d H:i:s'
+                        )
+                )));
         }
 
         public function getSource()
