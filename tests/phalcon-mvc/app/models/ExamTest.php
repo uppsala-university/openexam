@@ -20,6 +20,28 @@ class ExamTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $exam = Exam::findFirst();
+
+                self::assertNotEquals($exam->contributors->count(), 0);
+                self::assertNotEquals($exam->decoders->count(), 0);
+                self::assertNotEquals($exam->invigilators->count(), 0);
+                self::assertNotEquals($exam->questions->count(), 0);
+                self::assertNotEquals($exam->students->count(), 0);
+                self::assertNotEquals($exam->topics->count(), 0);
+
+                self::assertTrue(count($exam->contributors) > 0);
+                self::assertTrue(count($exam->decoders) > 0);
+                self::assertTrue(count($exam->invigilators) > 0);
+                self::assertTrue(count($exam->questions) > 0);
+                self::assertTrue(count($exam->students) > 0);
+                self::assertTrue(count($exam->topics) > 0);
+        }
+
+        /**
          * @covers OpenExam\Models\Exam::properties
          * @group model
          */

@@ -17,6 +17,17 @@ class ContributorTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $contributor = Contributor::findFirst();
+
+                self::assertNotEquals($contributor->exam->count(), 0);
+                self::assertTrue(count($contributor->exam) == 1);
+        }
+
+        /**
          * @covers OpenExam\Models\Contributor::properties
          * @group model
          */

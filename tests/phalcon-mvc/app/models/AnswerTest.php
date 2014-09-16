@@ -18,6 +18,22 @@ class AnswerTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $answer = Answer::findFirst();
+
+                self::assertNotEquals($answer->question->count(), 0);
+                self::assertNotEquals($answer->result->count(), 0);
+                self::assertNotEquals($answer->student->count(), 0);
+
+                self::assertTrue(count($answer->question) == 1);
+                self::assertTrue(count($answer->result) == 1);
+                self::assertTrue(count($answer->student) == 1);
+        }
+
+        /**
          * @covers OpenExam\Models\Answer::properties
          * @group model
          */

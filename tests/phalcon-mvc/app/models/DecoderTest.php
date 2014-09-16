@@ -17,6 +17,17 @@ class DecoderTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $decoder = Decoder::findFirst();
+
+                self::assertNotEquals($decoder->exam->count(), 0);
+                self::assertTrue(count($decoder->exam) == 1);
+        }
+
+        /**
          * @covers OpenExam\Models\Decoders::properties
          * @group model
          */

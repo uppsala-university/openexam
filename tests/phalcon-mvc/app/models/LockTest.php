@@ -17,6 +17,20 @@ class LockTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $lock = Lock::findFirst();
+
+                self::assertNotEquals($lock->exam->count(), 0);
+                self::assertNotEquals($lock->computer->count(), 0);
+
+                self::assertTrue(count($lock->exam) == 1);
+                self::assertTrue(count($lock->computer) == 1);
+        }
+
+        /**
          * @covers OpenExam\Models\Lock::properties
          * @group model
          */
@@ -42,11 +56,11 @@ class LockTest extends TestModel
                 } catch (Exception $exception) {
                         self::fail($exception);
                 }
-                
+
                 $values = array(
-                        'computer_id'  => Computer::findFirst()->id,
-                        'exam_id'      => Exam::findFirst()->id,
-                        'aquired' => date('Y-m-d H:i:s')
+                        'computer_id' => Computer::findFirst()->id,
+                        'exam_id'     => Exam::findFirst()->id,
+                        'aquired'     => date('Y-m-d H:i:s')
                 );
                 try {
                         $helper = new TestModel(new Lock());

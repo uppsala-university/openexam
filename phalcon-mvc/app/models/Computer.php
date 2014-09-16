@@ -7,8 +7,8 @@ namespace OpenExam\Models;
  * 
  * Represent an computer that is accessing an exam (only for student).
  * 
- * @property Lock $Lock The related lock (if any).
- * @property Room $Room The related room (if any).
+ * @property Lock $locks The related lock (if any).
+ * @property Room $room The related room (if any).
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Computer extends ModelBase

@@ -18,6 +18,17 @@ class ResultTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $result = Result::findFirst();
+
+                self::assertNotEquals($result->answer->count(), 0);
+                self::assertTrue(count($result->answer) == 1);
+        }
+
+        /**
          * @covers OpenExam\Models\Result::properties
          * @group model
          */

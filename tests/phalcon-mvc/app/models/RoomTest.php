@@ -19,6 +19,17 @@ class RoomTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $room = Room::findFirst();
+
+                self::assertNotEquals($room->computers->count(), 0);
+                self::assertTrue(count($room->computers) > 0);
+        }
+
+        /**
          * @covers OpenExam\Models\Room::properties
          * @group model
          */

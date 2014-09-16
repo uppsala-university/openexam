@@ -5,7 +5,7 @@ namespace OpenExam\Models;
 /**
  * The room model.
  * 
- * @property Computer $Computers Computers that belongs to this room.
+ * @property Computer $computers Computers that belongs to this room.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Room extends ModelBase

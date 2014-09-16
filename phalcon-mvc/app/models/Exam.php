@@ -16,13 +16,13 @@ namespace OpenExam\Models;
  * for a function that evaluates the final score for a single student on 
  * the exam.
  * 
- * @property Contributor[] $Contributors The contributors for this exam.
- * @property Decoder[] $Decoders The decoders for this exam.
- * @property Invigilator[] $Invigilators The invigilators for this exam.
- * @property Lock[] $Locks The computer locks aquired for this exam.
- * @property Question[] $Questions The questions that belongs to this exam.
- * @property Student[] $Students The students assigned to this exam.
- * @property Topic[] $Topics The topics associated with this exam.
+ * @property Contributor[] $contributors The contributors for this exam.
+ * @property Decoder[] $decoders The decoders for this exam.
+ * @property Invigilator[] $invigilators The invigilators for this exam.
+ * @property Lock[] $locks The computer locks aquired for this exam.
+ * @property Question[] $questions The questions that belongs to this exam.
+ * @property Student[] $students The students assigned to this exam.
+ * @property Topic[] $topics The topics associated with this exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Exam extends ModelBase

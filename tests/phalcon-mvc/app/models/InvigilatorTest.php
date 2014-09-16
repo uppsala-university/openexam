@@ -17,6 +17,17 @@ class InvigilatorTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $invigilator = Invigilator::findFirst();
+
+                self::assertNotEquals($invigilator->exam->count(), 0);
+                self::assertTrue(count($invigilator->exam) == 1);
+        }
+
+        /**
          * @covers OpenExam\Models\Invigilator::properties
          * @group model
          */

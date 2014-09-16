@@ -18,6 +18,20 @@ class StudentTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $student = Student::findFirst();
+
+                self::assertNotEquals($student->exam->count(), 0);
+                self::assertNotEquals($student->answers->count(), 0);
+
+                self::assertTrue(count($student->exam) == 1);
+                self::assertTrue(count($student->answers) >= 0);
+        }
+
+        /**
          * @covers OpenExam\Models\Students::properties
          * @group model
          */

@@ -11,9 +11,9 @@ use Phalcon\Mvc\Model\Validator\Inclusionin;
  * be flagged as removed. The correcting user (being in possesion of the
  * corrector role) is defined by the user property.
  * 
- * @property Answer $Answers The answers for this question.
- * @property Exam $Exam The related exam.
- * @property Topic $Topic The related topic.
+ * @property Answer $answers The answers for this question.
+ * @property Exam $exam The related exam.
+ * @property Topic $topic The related topic.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Question extends ModelBase

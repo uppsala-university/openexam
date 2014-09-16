@@ -5,9 +5,9 @@ namespace OpenExam\Models;
 /**
  * The answer model.
  * 
- * @property Result $Result The related result.
- * @property Question $Question The related question.
- * @property Student $Student The related student.
+ * @property Result $result The related result.
+ * @property Question $question The related question.
+ * @property Student $student The related student.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Answer extends ModelBase

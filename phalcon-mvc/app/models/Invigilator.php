@@ -7,7 +7,7 @@ namespace OpenExam\Models;
  * 
  * Represents a user having the invigilator role.
  * 
- * @property Exam $Exam The related exam.
+ * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Invigilator extends ModelBase

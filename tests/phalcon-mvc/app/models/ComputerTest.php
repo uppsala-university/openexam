@@ -19,16 +19,30 @@ class ComputerTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $computer = Computer::findFirst();
+
+                self::assertNotEquals($computer->locks->count(), 0);
+                self::assertNotEquals($computer->room->count(), 0);
+
+                self::assertTrue(count($computer->locks) > 0);
+                self::assertTrue(count($computer->room) == 1);
+        }
+
+        /**
          * @covers OpenExam\Models\Computer::properties
          * @group model
          */
         public function testProperties()
         {
                 $values = array(
-                        'room_id' => Room::findFirst()->id,
+                        'room_id'  => Room::findFirst()->id,
                         'ipaddr'   => '127.0.0.1',
                         'port'     => 4092,
-                        'password' => 'secret'                        
+                        'password' => 'secret'
                 );
 
                 try {

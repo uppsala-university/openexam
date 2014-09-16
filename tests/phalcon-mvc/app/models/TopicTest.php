@@ -18,6 +18,20 @@ class TopicTest extends TestModel
         }
 
         /**
+         * @group model
+         */
+        public function testRelations()
+        {
+                $topic = Topic::findFirst();
+
+                self::assertNotEquals($topic->exam->count(), 0);
+                self::assertNotEquals($topic->questions->count(), 0);
+
+                self::assertTrue(count($topic->exam) == 1);
+                self::assertTrue(count($topic->questions) >= 0);
+        }
+
+        /**
          * @covers OpenExam\Models\Topic::properties
          * @group model
          */
@@ -25,7 +39,7 @@ class TopicTest extends TestModel
         {
                 $values = array(
                         'exam_id' => Exam::findFirst()->id,
-                        'name'    => 'Name1'                        
+                        'name'    => 'Name1'
                 );
 
                 try {

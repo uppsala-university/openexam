@@ -20,8 +20,8 @@ namespace OpenExam\Models;
  * code. Its intended to be used for implementing dependecies between 
  * section in exam.
  * 
- * @property Question $Questions Questions related to this topic.
- * @property Exam $Exam The related exam.
+ * @property Question $questions Questions related to this topic.
+ * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Topic extends ModelBase

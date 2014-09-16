@@ -7,7 +7,7 @@ namespace OpenExam\Models;
  * 
  * Represents a user having the decoder role.
  * 
- * @property Exam $Exam The related exam.
+ * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Decoder extends ModelBase

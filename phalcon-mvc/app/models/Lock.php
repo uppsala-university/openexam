@@ -7,8 +7,8 @@ namespace OpenExam\Models;
  * 
  * Represent the lock aquired for a single computer on an exam.
  * 
- * @property Computer $Computer The computer that aquired the lock.
- * @property Exam $Exam The related exam.
+ * @property Computer $computer The computer that aquired the lock.
+ * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Lock extends ModelBase
