@@ -19,7 +19,6 @@ use OpenExam\Models\Corrector;
 use OpenExam\Models\Decoder;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Invigilator;
-use OpenExam\Models\Question;
 use OpenExam\Models\Student;
 use OpenExam\Models\Teacher;
 use Phalcon\Mvc\User\Component;
