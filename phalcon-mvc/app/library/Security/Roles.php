@@ -383,12 +383,11 @@ class Roles extends Component
 
         /**
          * Check if the admin role has been aquired.
-         * @param int $id The object ID.
          * @return bool
          */
-        public function isAdmin($id = 0)
+        public function isAdmin()
         {
-                return isset($this->roles[$id][self::admin]);
+                return isset($this->roles[0][self::admin]);
         }
 
         /**
