@@ -292,8 +292,8 @@ class RolesTest extends TestCase
                 // 
                 // Test aquire system wide roles:
                 // 
-                $this->checkAquireSystemRole($user, Roles::admin, '\OpenExam\Models\Admin');
-                $this->checkAquireSystemRole($user, Roles::teacher, '\OpenExam\Models\Teacher');
+                $this->checkAquireSystemRole($principal, Roles::admin, '\OpenExam\Models\Admin');
+                $this->checkAquireSystemRole($principal, Roles::teacher, '\OpenExam\Models\Teacher');
 
                 // 
                 // Test aquire object specific roles:
@@ -301,17 +301,17 @@ class RolesTest extends TestCase
                 $exam = new Exam();
                 $exam->name = "Name";
                 $exam->orgunit = "Orgunit";
-                $exam->creator = (string) $this->user;   // from user service
+                $exam->creator = $principal;
                 $exam->grades = json_encode(array('data' => array('U' => 0, 'G' => 20, 'VG' => 30)));
 
                 if ($exam->create() === false) {
                         self::fail(print_r($exam->getMessages(), true));
                 }
 
-                $this->checkAquireExamRole($user, $exam, Roles::contributor, '\OpenExam\Models\Contributor');
-//                $this->checkAquireExamRole($user, $exam, Roles::decoder, '\OpenExam\Models\Decoder');
-//                $this->checkAquireExamRole($user, $exam, Roles::invigilator, '\OpenExam\Models\Invigilator');
-//                $this->checkAquireExamRole($user, $exam, Roles::student, '\OpenExam\Models\Student');
+                $this->checkAquireExamRole($principal, $exam, Roles::contributor, '\OpenExam\Models\Contributor');
+                $this->checkAquireExamRole($principal, $exam, Roles::decoder, '\OpenExam\Models\Decoder');
+                $this->checkAquireExamRole($principal, $exam, Roles::invigilator, '\OpenExam\Models\Invigilator');
+                $this->checkAquireExamRole($principal, $exam, Roles::student, '\OpenExam\Models\Student');
 
                 $exam->delete();
         }
@@ -326,7 +326,7 @@ class RolesTest extends TestCase
                 printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
 
                 $model = new $class();
-                $model->user = $user->getPrincipalName();
+                $model->user = $user;
                 $model->create();
                 print_r($model->dump());
 
@@ -348,8 +348,13 @@ class RolesTest extends TestCase
 
                 $model = new $class();
                 $model->exam_id = $exam->id;
-                $model->user = $user->getPrincipalName();
-                $model->create();
+                $model->user = $user;
+                if ($role == Roles::student) {
+                        $model->code = '1234ABCD';
+                }
+                if ($model->create() == false) {
+                        self::fail(implode("\n", $model->getMessages()));
+                }
                 print_r($model->dump());
 
                 self::assertTrue($this->object->aquire($role));
