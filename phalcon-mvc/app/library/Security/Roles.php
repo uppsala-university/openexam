@@ -57,11 +57,24 @@ use ReflectionClass;
  * - invigilator        : object specific (bound to exam)
  * - decoder            : object specific (bound to exam) 
  * - student            : object specific (bound to exam) 
- * - corrector          : object specific (bound to question)
+ * - corrector          : object specific (bound to exam and question)
  * 
  * This class defines all builtin roles. These are further classified as
  * admin, staff and student. The staff roles includes any builtin role except
  * student or admin. Custom roles are any role not defined by this class.
+ * 
+ * The corrector role is automatic injected for the exam containing the
+ * question for whom the question belongs:
+ * 
+ * <code>
+ * $exam  = ...         // (id = 123, ...)
+ * $quest = ...         // (id = 456, exam_id = 123, ...)
+ * 
+ * $roles->hasRole(Roles::corrector, 123);      // false (on exam)
+ * $roles->aquire(Roles::corrector, 456);       // aquire role on question object
+ * $roles->hasRole(Roles::corrector, 123);      // true (on exam)
+ * $roles->hasRole(Roles::corrector, 456);      // true (on question)
+ * </code>
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -350,7 +363,13 @@ class Roles extends Component
                                         "bind" => array("user" => $user)
                                 );
                         }
-                        if (Corrector::count($parameters) > 0) {
+                        if (($corrector = Corrector::find($parameters)->getFirst())) {
+                                if ($id != 0) {
+                                        // 
+                                        // Add corrector role on related exam:
+                                        // 
+                                        $this->addRole($role, $corrector->question->exam->id);
+                                }
                                 $this->addRole($role, $id);
                                 return true;
                         }

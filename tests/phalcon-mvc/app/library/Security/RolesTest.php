@@ -411,7 +411,7 @@ class RolesTest extends TestCase
         private function checkAquireCorrectorRoles($user, $exam)
         {
                 $role = Roles::corrector;
-                
+
                 printf("%s: [exam: '%s', role: '%s']\n", __METHOD__, $exam->id, $role);
                 printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
 
@@ -454,7 +454,9 @@ class RolesTest extends TestCase
                 self::assertTrue($this->object->aquire($role));
                 self::assertTrue($this->object->aquire($role, 0));
                 self::assertTrue($this->object->aquire($role, $qmodel->id));
+                self::assertTrue($this->object->aquire($role, $exam->id));
                 self::assertFalse($this->object->aquire($role, $qmodel->id + 1));
+                self::assertFalse($this->object->aquire($role, $exam->id + 1));
                 printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
 
                 $cmodel->delete();
