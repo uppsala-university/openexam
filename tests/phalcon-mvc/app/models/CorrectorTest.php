@@ -22,6 +22,7 @@ class CorrectorTest extends TestModel
         public function testRelations()
         {
                 $corrector = Corrector::findFirst();
+                self::assertNotNull($corrector);
 
                 self::assertNotEquals($corrector->question->count(), 0);
                 self::assertTrue(count($corrector->question) == 1);

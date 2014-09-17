@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use Exception;
 use OpenExam\Tests\Phalcon\TestModel;
 
 /**
@@ -22,7 +23,8 @@ class AnswerTest extends TestModel
          */
         public function testRelations()
         {
-                $answer = Answer::findFirst();
+                $answer = Result::findFirst()->answer;
+                self::assertNotNull($answer);
 
                 self::assertNotEquals($answer->question->count(), 0);
                 self::assertNotEquals($answer->result->count(), 0);
@@ -47,14 +49,14 @@ class AnswerTest extends TestModel
                         $helper = new TestModel(new Answer());
                         $helper->tryPersist();
                         self::fail("Excepted constraint violation exception");
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         // Expected exception
                 }
 
                 try {
                         $helper = new TestModel(new Answer());
                         $helper->tryPersist($values);
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         self::fail($exception);
                 }
 
@@ -72,7 +74,7 @@ class AnswerTest extends TestModel
                 try {
                         $helper = new TestModel(new Answer());
                         $helper->tryPersist($values);
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         self::fail($exception);
                 }
 
@@ -85,7 +87,7 @@ class AnswerTest extends TestModel
                         $helper = new TestModel(new Answer());
                         $helper->tryPersist();
                         self::fail("Excepted constraint violation exception");
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         // Expected exception
                 }
         }

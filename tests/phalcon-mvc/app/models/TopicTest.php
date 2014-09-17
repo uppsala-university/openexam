@@ -23,11 +23,15 @@ class TopicTest extends TestModel
         public function testRelations()
         {
                 $topic = Topic::findFirst();
+                self::assertNotNull($topic);
 
                 self::assertNotEquals($topic->exam->count(), 0);
-                self::assertNotEquals($topic->questions->count(), 0);
-
                 self::assertTrue(count($topic->exam) == 1);
+                
+                $topic = Question::findFirst()->topic;
+                self::assertNotNull($topic);
+                
+                self::assertNotEquals($topic->questions->count(), 0);
                 self::assertTrue(count($topic->questions) >= 0);
         }
 

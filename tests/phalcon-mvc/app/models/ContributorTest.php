@@ -22,6 +22,7 @@ class ContributorTest extends TestModel
         public function testRelations()
         {
                 $contributor = Contributor::findFirst();
+                self::assertNotNull($contributor);
 
                 self::assertNotEquals($contributor->exam->count(), 0);
                 self::assertTrue(count($contributor->exam) == 1);

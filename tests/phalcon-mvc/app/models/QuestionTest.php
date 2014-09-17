@@ -23,15 +23,23 @@ class QuestionTest extends TestModel
         public function testRelations()
         {
                 $question = Question::findFirst();
-
+                self::assertNotNull($question);
+                
                 self::assertNotEquals($question->exam->count(), 0);
-                self::assertNotEquals($question->answers->count(), 0);
                 self::assertNotEquals($question->topic->count(), 0);
-                self::assertNotEquals($question->correctors->count(), 0);
-
                 self::assertTrue(count($question->exam) == 1);
-                self::assertTrue(count($question->answers) > 0);
                 self::assertTrue(count($question->topic) == 1);
+
+                $question = Answer::findFirst()->question;
+                self::assertNotNull($question);
+                
+                self::assertNotEquals($question->answers->count(), 0);
+                self::assertTrue(count($question->answers) > 0);
+                
+                $question = Corrector::findFirst()->question;
+                self::assertNotNull($question);
+                
+                self::assertNotEquals($question->correctors->count(), 0);
                 self::assertTrue(count($question->correctors) > 0);
         }
 

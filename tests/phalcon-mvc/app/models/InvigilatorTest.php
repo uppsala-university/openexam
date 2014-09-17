@@ -22,6 +22,7 @@ class InvigilatorTest extends TestModel
         public function testRelations()
         {
                 $invigilator = Invigilator::findFirst();
+                self::assertNotNull($invigilator);
 
                 self::assertNotEquals($invigilator->exam->count(), 0);
                 self::assertTrue(count($invigilator->exam) == 1);

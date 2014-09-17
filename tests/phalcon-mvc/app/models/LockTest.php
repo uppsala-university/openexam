@@ -22,6 +22,7 @@ class LockTest extends TestModel
         public function testRelations()
         {
                 $lock = Lock::findFirst();
+                self::assertNotNull($lock);
 
                 self::assertNotEquals($lock->exam->count(), 0);
                 self::assertNotEquals($lock->computer->count(), 0);

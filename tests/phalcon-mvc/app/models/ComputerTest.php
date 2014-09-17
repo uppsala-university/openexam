@@ -24,6 +24,7 @@ class ComputerTest extends TestModel
         public function testRelations()
         {
                 $computer = Computer::findFirst();
+                self::assertNotNull($computer);
 
                 self::assertNotEquals($computer->locks->count(), 0);
                 self::assertNotEquals($computer->room->count(), 0);

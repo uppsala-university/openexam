@@ -23,11 +23,15 @@ class StudentTest extends TestModel
         public function testRelations()
         {
                 $student = Student::findFirst();
+                self::assertNotNull($student);
 
                 self::assertNotEquals($student->exam->count(), 0);
-                self::assertNotEquals($student->answers->count(), 0);
-
                 self::assertTrue(count($student->exam) == 1);
+                
+                $student = Answer::findFirst()->student;
+                self::assertNotNull($student);
+                
+                self::assertNotEquals($student->answers->count(), 0);
                 self::assertTrue(count($student->answers) >= 0);
         }
 

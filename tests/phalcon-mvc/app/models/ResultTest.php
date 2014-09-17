@@ -23,7 +23,8 @@ class ResultTest extends TestModel
         public function testRelations()
         {
                 $result = Result::findFirst();
-
+                self::assertNotNull($result);
+                
                 self::assertNotEquals($result->answer->count(), 0);
                 self::assertTrue(count($result->answer) == 1);
         }

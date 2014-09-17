@@ -23,7 +23,8 @@ class RoomTest extends TestModel
          */
         public function testRelations()
         {
-                $room = Room::findFirst();
+                $room = Computer::findFirst()->room;
+                self::assertNotNull($room);
 
                 self::assertNotEquals($room->computers->count(), 0);
                 self::assertTrue(count($room->computers) > 0);
