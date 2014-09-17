@@ -276,6 +276,31 @@ class RolesTest extends TestCase
                 }
 
                 // 
+                // Fake current unauthenticated user:
+                // 
+                $user = new User();
+                $this->di->set('user', $user);
+                
+                // 
+                // Test corner case:
+                // 
+                self::assertNull($this->user->getPrincipalName());
+                foreach (array(
+                    Roles::contributor,
+                    Roles::corrector,
+                    Roles::creator,
+                    Roles::decoder,
+                    Roles::invigilator,
+                    Roles::teacher,
+                    Roles::admin,
+                    Roles::student
+                ) as $role) {
+                        self::assertFalse($this->object->aquire($role));
+                        self::assertFalse($this->object->aquire($role, 1));
+                }
+                $this->object->clear();
+
+                // 
                 // User principal guarantied to not exists in any model.
                 // 
                 $principal = (new UniqueUser($domain))->user;
