@@ -29,6 +29,7 @@ class CorrectorTest extends TestModel
         }
 
         /**
+         * @covers OpenExam\Models\Corrector::initialize
          * @group model
          */
         public function testProperties()
@@ -67,7 +68,7 @@ class CorrectorTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Contributor::getSource
+         * @covers OpenExam\Models\Corrector::getSource
          * @group model
          */
         public function testGetSource()

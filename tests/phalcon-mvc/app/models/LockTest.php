@@ -83,7 +83,7 @@ class LockTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Room::getSource
+         * @covers OpenExam\Models\Lock::getSource
          * @group model
          */
         public function testGetSource()
