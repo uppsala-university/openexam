@@ -51,7 +51,7 @@ class UniqueUser
                         if (\OpenExam\Models\Decoder::findFirstByUser($this->user)) {
                                 continue;
                         }
-                        if (\OpenExam\Models\Question::findFirstByUser($this->user)) {
+                        if (\OpenExam\Models\Corrector::findFirstByUser($this->user)) {
                                 continue;
                         }
                         if (\OpenExam\Models\Exam::findFirstByCreator($this->user)) {
