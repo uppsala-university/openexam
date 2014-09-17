@@ -57,6 +57,10 @@ $config = new \Phalcon\Config(
                 'logsDir'        => BASE_DIR . '/logs',
                 'baseDir'        => BASE_DIR . '/',
                 'baseUri'        => '/phalcon-mvc/'
+        ),
+        'phpunit'     => array(
+                'logging' => true,
+                'logfile' => sys_get_temp_dir() . DIRECTORY_SEPARATOR . "phpunit-output.log"
         )
     )
 );

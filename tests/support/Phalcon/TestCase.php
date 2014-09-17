@@ -33,6 +33,10 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
         {
                 parent::__construct($name, $data, $dataName);
                 $this->di = PhalconDI::getDefault();
+
+                if ($this->config->phpunit->logging) {
+                        parent::setOutputCallback(new LoggingCallback($this->config->phpunit->logfile));
+                }
         }
 
         public function getDI()
