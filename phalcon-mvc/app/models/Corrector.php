@@ -28,7 +28,7 @@ class Corrector extends ModelBase
          */
         public $user;
 
-        public function initialize()
+        protected function initialize()
         {
                 parent::initialize();
                 $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array('foreignKey' => true, 'alias' => 'Question'));
