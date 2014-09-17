@@ -15,6 +15,7 @@ namespace OpenExam\Library\Security;
 
 use OpenExam\Models\Admin;
 use OpenExam\Models\Contributor;
+use OpenExam\Models\Corrector;
 use OpenExam\Models\Decoder;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Invigilator;
@@ -341,16 +342,16 @@ class Roles extends Component
                 if ($role == self::corrector) {
                         if ($id != 0) {
                                 $parameters = array(
-                                        "user = :user: AND id = :id:",
+                                        "user = :user: AND question_id = :id:",
                                         "bind" => array("user" => $user, "id" => $id)
                                 );
                         } else {
                                 $parameters = array(
-                                        "creator = :user:",
+                                        "user = :user:",
                                         "bind" => array("user" => $user)
                                 );
                         }
-                        if (Question::count($parameters) > 0) {
+                        if (Corrector::count($parameters) > 0) {
                                 $this->addRole($role, $id);
                                 return true;
                         }

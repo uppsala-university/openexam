@@ -27,10 +27,12 @@ class QuestionTest extends TestModel
                 self::assertNotEquals($question->exam->count(), 0);
                 self::assertNotEquals($question->answers->count(), 0);
                 self::assertNotEquals($question->topic->count(), 0);
+                self::assertNotEquals($question->correctors->count(), 0);
 
                 self::assertTrue(count($question->exam) == 1);
                 self::assertTrue(count($question->answers) > 0);
                 self::assertTrue(count($question->topic) == 1);
+                self::assertTrue(count($question->correctors) > 0);
         }
 
         /**
@@ -73,7 +75,6 @@ class QuestionTest extends TestModel
                         'score'    => 4.5,
                         'name'     => 'Name1',
                         'quest'    => 'Question text 1',
-                        'user'     => array('user1'),
                         'comment'  => 'Comment1',
                         'grades'   => '// Ooh, really missing C++ ;-)'
                 );
@@ -91,7 +92,6 @@ class QuestionTest extends TestModel
                         'score'        => 4.5,
                         'name'         => 'Name1',
                         'quest'        => 'Question text 1',
-                        'user'         => array('user1'),
                         'comment'      => 'Comment1',
                         'grades'       => '// Ooh, really missing C++ ;-)',
                         'non_existing' => 666

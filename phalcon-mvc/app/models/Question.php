@@ -12,6 +12,7 @@ use Phalcon\Mvc\Model\Validator\Inclusionin;
  * corrector role) is defined by the user property.
  * 
  * @property Answer $answers The answers for this question.
+ * @property Corrector $correctors The correctors for this question.
  * @property Exam $exam The related exam.
  * @property Topic $topic The related topic.
  * @author Anders Lövgren (QNET/BMC CompDept)
@@ -59,11 +60,6 @@ class Question extends ModelBase
          */
         public $quest;
         /**
-         * The question correctors.
-         * @var array
-         */
-        public $user;
-        /**
          * The question status (see STATUS_XXX).
          * @var string
          */
@@ -79,13 +75,11 @@ class Question extends ModelBase
          */
         public $grades;
 
-        /**
-         * Initialize method for model.
-         */
         protected function initialize()
         {
                 parent::initialize();
                 $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array('alias' => 'Answers'));
+                $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array('alias' => 'Correctors'));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
                 $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array('foreignKey' => true, 'alias' => 'Topic'));
         }
@@ -111,30 +105,6 @@ class Question extends ModelBase
         protected function beforeValidationOnCreate()
         {
                 $this->status = 'active';
-        }
-
-        /**
-         * Called before model is saved.
-         */
-        protected function beforeSave()
-        {
-                $this->user = json_encode($this->user);
-        }
-
-        /**
-         * Called after model is saved.
-         */
-        protected function afterSave()
-        {
-                $this->user = json_decode($this->user);
-        }
-
-        /**
-         * Called after the model was read.
-         */
-        protected function afterFetch()
-        {
-                $this->user = json_decode($this->user);
         }
 
         public function getSource()

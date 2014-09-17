@@ -193,6 +193,10 @@ class UnittestTask extends MainTask
                                 'quest'    => 'Question text',
                                 'user'     => array('user1', 'user2'),
                         ),
+                        'corrector'   => array(
+                                'question_id' => 0,
+                                'user'        => 'user1'
+                        ),
                         'answer'      => array(
                                 'question_id' => 0,
                                 'student_id'  => 0

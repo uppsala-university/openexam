@@ -60,10 +60,10 @@ class Computer extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                
+
                 $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array('alias' => 'Locks'));
                 $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array('foreignKey' => true, 'alias' => 'Room'));
-                
+
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(
                                 'field'  => 'updated',
@@ -74,7 +74,7 @@ class Computer extends ModelBase
                                 'format' => 'Y-m-d H:i:s'
                         )
                 )));
-                
+
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(
                                 'field'  => 'created',
