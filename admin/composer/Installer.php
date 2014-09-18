@@ -28,7 +28,7 @@ class Installer
          * @var array 
          */
         private static $packages = array(
-                'phalcon/devtools' => 'PhalconInstaller'
+                'phalcon/devtools' => 'OpenExam\Composer\PhalconInstaller'
         );
 
         /**
