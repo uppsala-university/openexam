@@ -21,7 +21,7 @@ class ModelBase extends \Phalcon\Mvc\Model
          */
         public function getName()
         {
-                return lcfirst(substr(strrchr(get_class($this), "\\"), 1));
+                return strtolower(substr(strrchr(get_class($this), "\\"), 1));
         }
 
 }
