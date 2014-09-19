@@ -92,6 +92,9 @@ class TestModel extends TestCase
                 if ($this->object->create() == false) {
                         throw new Exception(print_r($this->object->getMessages(), true));
                 }
+                if (isset($this->object->created) && isset($values['created'])) {
+                        $values['created'] = $this->object->created;
+                }
                 foreach ($values as $name => $value) {
                         self::assertEquals($value, $this->object->$name);
                 }
@@ -99,9 +102,13 @@ class TestModel extends TestCase
                 if ($this->object->update() == false) {
                         throw new Exception(print_r($this->object->getMessages(), true));
                 }
+                if (isset($this->object->updated) && isset($values['updated'])) {
+                        $values['updated'] = $this->object->updated;
+                }
                 foreach ($values as $name => $value) {
                         self::assertEquals($value, $this->object->$name);
                 }
+
                 if ($this->object->delete() == false) {
                         throw new Exception(print_r($this->object->getMessages(), true));
                 }
