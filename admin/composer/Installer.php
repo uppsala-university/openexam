@@ -52,7 +52,7 @@ class Installer
          */
         public static function postPackageUpdate(Event $event)
         {
-                $package = $event->getOperation()->getPackage();
+                $package = $event->getOperation()->getInitialPackage();
 
                 if (array_key_exists($package->getName(), self::$packages)) {
                         $handler = self::$packages[$package->getName()];
