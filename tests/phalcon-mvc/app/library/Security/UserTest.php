@@ -94,6 +94,26 @@ class UserTest extends TestCase
                 }
 
                 // 
+                // Test default domain unset in config:
+                // 
+                $domain = $this->config->user->domain;
+                $this->config->user->domain = null;
+                $user = sprintf("%s@%s", self::$user, self::$domain);
+                try {
+                        $this->object = new User($user);
+                } catch (\Exception $exception) {
+                        self::fail($exception);
+                }
+                $user = self::$user;
+                try {
+                        $this->object = new User($user);
+                        self::fail();
+                } catch (\Exception $exception) {
+                        // OK, should throw
+                }
+                $this->config->user->domain = $domain;
+
+                // 
                 // test User(user, null, roles): -> "act-as" (impersonation).
                 // 
                 $roles = array(
