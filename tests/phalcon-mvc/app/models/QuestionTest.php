@@ -123,6 +123,23 @@ class QuestionTest extends TestModel
                 } catch (Exception $exception) {
                         self::fail("Unexcepted constraint violation exception");
                 }
+
+                $values = array(
+                        'exam_id'  => Exam::findFirst()->id,
+                        'topic_id' => Topic::findFirst()->id,
+                        'score'    => 3.5,
+                        'name'     => 'name1',
+                        'quest'    => 'quest1',
+                        'user'     => 'user1',
+                        'status'   => 'unknown' // should fail at validation
+                );
+                try {
+                        $helper = new TestModel(new Question());
+                        $helper->tryPersist();
+                        self::fail("Excepted constraint violation exception");
+                } catch (Exception $exception) {
+                        // Expected exception
+                }
         }
 
         /**
