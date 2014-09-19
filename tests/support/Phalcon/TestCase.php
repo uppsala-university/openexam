@@ -32,10 +32,12 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
         public function __construct($name = NULL, array $data = array(), $dataName = '')
         {
                 parent::__construct($name, $data, $dataName);
-                $this->di = PhalconDI::getDefault();
+                $this->setDI(PhalconDI::getDefault());
 
                 if ($this->config->phpunit->logging) {
-                        parent::setOutputCallback(new LoggingCallback($this->config->phpunit->logfile));
+                        parent::setOutputCallback(new LoggingCallback(
+                            $this->config->phpunit->logfile, $this->config->phpunit)
+                        );
                 }
         }
 

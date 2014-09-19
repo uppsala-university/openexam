@@ -42,6 +42,10 @@ if (!defined('PROJ_DIR')) {
         define('PROJ_DIR', dirname(BASE_DIR));
 }
 
+/**
+ * These are the system default settings. Site local configuration can 
+ * be done in app/config/config.def.
+ */
 $config = new \Phalcon\Config(
     array(
         'application' => array(
@@ -59,8 +63,13 @@ $config = new \Phalcon\Config(
                 'baseUri'        => '/phalcon-mvc/'
         ),
         'phpunit'     => array(
-                'logging' => true,
-                'logfile' => sys_get_temp_dir() . DIRECTORY_SEPARATOR . "phpunit-output.log"
+                'logging'  => true, // enable output logging
+                'logfile'  => sys_get_temp_dir() . DIRECTORY_SEPARATOR . "phpunit-output.log",
+                'truncate' => false, // truncate instead of rotating
+                'rotate'   => true, // rotate logs
+                'compress' => true, // compress rotated logs
+                'maxsize'  => 10 * 1024 * 1024, // size limit in bytes (0 == no limit)
+                'maxage'   => 3600 * 24  // max age in seconds (0 == no max age)
         )
     )
 );

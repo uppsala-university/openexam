@@ -26,4 +26,8 @@ For testing classes that requires dependency injection, derive the test case fro
 OpenExam\Tests\Phalcon\TestCase instead of PHPUnit_Framework_TestCase. The supporting
 class TestCase is located in tests/support/Phalcon.
 
+Logging of unit test diagnostics (to stdout) can be redirected to a log file by 
+configuration in phalcon-mvc/app/config/system/config.php
+
+
 // Anders Lövgren, 2014-09-01
