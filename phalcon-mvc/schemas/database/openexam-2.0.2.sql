@@ -26,7 +26,7 @@ CREATE TABLE `admins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `answers` (
   KEY `student_id` (`student_id`),
   CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`),
   CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `computers` (
   PRIMARY KEY (`id`),
   KEY `computers_ibfk_1` (`room_id`),
   CONSTRAINT `computers_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -87,7 +87,7 @@ CREATE TABLE `contributors` (
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `contributors_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +104,7 @@ CREATE TABLE `correctors` (
   PRIMARY KEY (`id`),
   KEY `question_id` (`question_id`),
   CONSTRAINT `correctors_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +121,7 @@ CREATE TABLE `decoders` (
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `decoders_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +147,7 @@ CREATE TABLE `exams` (
   `testcase` enum('Y','N') NOT NULL DEFAULT 'N',
   `lockdown` enum('Y','N') NOT NULL DEFAULT 'N',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +164,7 @@ CREATE TABLE `invigilators` (
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `invigilators_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,7 +184,7 @@ CREATE TABLE `locks` (
   KEY `locks_ibfk_2` (`exam_id`),
   CONSTRAINT `locks_ibfk_1` FOREIGN KEY (`computer_id`) REFERENCES `computers` (`id`),
   CONSTRAINT `locks_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -232,7 +232,7 @@ CREATE TABLE `questions` (
   KEY `questions_ibfk_2` (`topic_id`),
   CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`),
   CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,7 +250,7 @@ CREATE TABLE `results` (
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
   CONSTRAINT `results_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -265,7 +265,23 @@ CREATE TABLE `rooms` (
   `name` varchar(25) NOT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sessions` (
+  `session_id` varchar(35) NOT NULL,
+  `data` text NOT NULL,
+  `created` int(15) unsigned NOT NULL,
+  `updated` int(15) unsigned DEFAULT NULL,
+  PRIMARY KEY (`session_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -284,7 +300,7 @@ CREATE TABLE `students` (
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `students_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,7 +314,7 @@ CREATE TABLE `teachers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -316,7 +332,7 @@ CREATE TABLE `topics` (
   `grades` varchar(500) DEFAULT NULL,
   `depend` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -328,4 +344,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-09-19 18:06:13
+-- Dump completed on 2014-09-20 11:39:13
