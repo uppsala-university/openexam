@@ -84,6 +84,11 @@ abstract class PackageInstaller
                         fprintf(STDERR, "%s: Failed change working directory to %s\n", __METHOD__, $rootdir);
                         return false;
                 }
+                if (!file_exists($source)) {
+                        fprintf(STDERR, "%s: The link source don't exist (%s)\n", __METHOD__, $source);
+                        chdir($cwd);
+                        return false;
+                }
                 if (!symlink($source, $target)) {
                         fprintf(STDERR, "%s: Failed create symlink (%s -> %s)\n", __METHOD__, $source, $target);
                         chdir($cwd);
@@ -91,6 +96,8 @@ abstract class PackageInstaller
                 }
 
                 chdir($cwd);
+                
+                printf("    Created symbolic link %s -> %s\n", $target, $source);
                 return true;
         }
 
@@ -121,6 +128,8 @@ abstract class PackageInstaller
                 }
 
                 chdir($cwd);
+                
+                printf("    Applied patch %s\n", $file);
                 return true;
         }
 

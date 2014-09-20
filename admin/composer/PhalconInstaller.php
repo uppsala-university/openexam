@@ -33,7 +33,7 @@ class PhalconInstaller extends PackageInstaller
 
         private function apply()
         {
-                $this->symlink("ide/1.3.2", "api");
+                $this->symlink("ide/1.3.0", "api");
                 $this->patch("admin/patch/phalcon_devtools_fix_script_exception.diff");
         }
 
