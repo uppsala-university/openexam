@@ -70,14 +70,16 @@ class ModelTask extends MainTask
                         'action'   => '--model',
                         'usage'    => array(
                                 '--sync [--backup=dir]',
-                                '[--update] [--clean] [--create] [--backup=dir]'
+                                '[--update] [--clean] [--create] [--backup=dir]',
+                                '--query=str'
                         ),
                         'options'  => array(
                                 '--update'        => 'Update all models.',
                                 '--create'        => 'Create new models.',
                                 '--clean'         => 'Cleanup in models.',
-                                '--backup[=path]' => 'Backup model to directory path or cache directory',
+                                '--backup[=path]' => 'Backup model to directory path or cache directory.',
                                 '--sync'          => 'Alias for --update --clean --create',
+                                '--query=str'     => 'Run PHQL query against models.',
                                 '--force'         => 'Force model update.',
                                 '--verbose'       => 'Be more verbose.'
                         ),
@@ -101,6 +103,10 @@ class ModelTask extends MainTask
                                 array(
                                         'descr'   => 'Same as previous, but without backup first',
                                         'command' => '--sync'
+                                ),
+                                array(
+                                        'descr'   => 'Run SELECT query against the model using PHQL',
+                                        'command' => '--query="SELECT * FROM Exam WHERE created >= \'2014-09-20\'"'
                                 )
                         )
                 );
@@ -179,6 +185,42 @@ class ModelTask extends MainTask
         }
 
         /**
+         * Run query in models.
+         * @param array $params Task action parameters.
+         * @return boolean
+         */
+        public function queryAction($params = array())
+        {
+                if (php_sapi_name() != 'cli') {
+                        throw new Exception("This action should only be runned from CLI.");
+                }
+
+                $query = $params[0];
+                $this->setOptions($params, 'query');
+
+                if ($this->options['verbose']) {
+                        $this->flash->notice($query);
+                }
+
+                $statement = $this->modelsManager->createQuery($query);
+                if ($this->options['verbose']) {
+                        $parsed = $statement->parse();
+                        $this->flash->notice(print_r($parsed, true));
+                }
+
+                $result = $statement->execute();
+                if ($result == false) {
+                        foreach ($result as $message) {
+                                $this->flash->error($message->getMessage());
+                        }
+                } else {
+                        foreach ($result as $r) {
+                                $this->flash->success(print_r($r->toArray(), true));
+                        }
+                }
+        }
+
+        /**
          * Perform all actions.
          */
         private function perform()
@@ -226,7 +268,7 @@ class ModelTask extends MainTask
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'backup', 'clean', 'create', 'update', 'sync');
+                $options = array('verbose', 'force', 'backup', 'clean', 'create', 'update', 'sync', 'query');
                 $current = $action;
 
                 // 
