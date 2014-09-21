@@ -39,4 +39,15 @@ limitations under the License.
     <testsuite name="Phalcon MVC - Testsuite">
         <directory>./</directory>
     </testsuite>
+    <filter>
+        <blacklist>
+              <directory>./../../vendor</directory>
+              <directory>./../../phalcon-mvc/app/config</directory>
+        </blacklist>
+<!--        <whitelist>
+              <directory>../../phalcon-mvc/app/library</directory>
+              <directory>../../phalcon-mvc/app/models</directory>
+              <directory>../../phalcon-mvc/app/plugins</directory>
+        </whitelist>-->
+    </filter>
 </phpunit>
