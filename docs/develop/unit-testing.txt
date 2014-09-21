@@ -26,6 +26,12 @@ For testing classes that requires dependency injection, derive the test case fro
 OpenExam\Tests\Phalcon\TestCase instead of PHPUnit_Framework_TestCase. The supporting
 class TestCase is located in tests/support/Phalcon.
 
+Successful running unit test on models depends on test data. Run this task to insert
+table data into the database to satisfy e.g. the relational tests:
+
+    bash$> cd ${appdir}/openexam-phalcon-mvc
+    bash$> php phalcon-mvc/script/unittest.php --setup
+
 Logging of unit test diagnostics (to stdout) can be redirected to a log file by 
 configuration in phalcon-mvc/app/config/system/config.php
 

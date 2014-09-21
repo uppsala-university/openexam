@@ -167,6 +167,14 @@ class UnittestTask extends MainTask
                                 'user'    => 'user1',
                                 'code'    => '1234ABCD'
                         ),
+                        'resource'    => array(
+                                'exam_id' => 0,
+                                'name'    => 'Name1',
+                                'path'    => '/tmp/path',
+                                'type'    => 'video',
+                                'subtype' => 'mp4',
+                                'user'    => 'user1'
+                        ),
                         'room'        => array(
                                 'name' => 'Room 1'
                         ),
@@ -205,11 +213,23 @@ class UnittestTask extends MainTask
                                 'answer_id' => 0,
                                 'score'     => 1.5
                         ),
+                        'file'        => array(
+                                'answer_id' => 0,
+                                'name'      => 'Name1',
+                                'path'      => '/tmp/path',
+                                'type'      => 'video',
+                                'subtype'   => 'mp4'
+                        ),
                         'admin'       => array(
                                 'user' => 'user1'
                         ),
                         'teacher'     => array(
                                 'user' => 'user1'
+                        ),
+                        'session'     => array(
+                                'session_id' => md5(time()),
+                                'data'       => serialize(array('auth' => array('user' => 'user1', 'type' => 'cas'))),
+                                'created'    => time()
                         )
                 );
 
