@@ -31,7 +31,7 @@ use Phalcon\Logger\Adapter\File as FileAdapter;
  * 
  * </code>
  * 
- * @author Anders Lövgren (QNET/BMC CompDept)
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class LoggingCallback extends FileAdapter
 {

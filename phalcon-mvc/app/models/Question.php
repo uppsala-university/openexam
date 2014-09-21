@@ -63,7 +63,7 @@ class Question extends ModelBase
          * The question status (see STATUS_XXX).
          * @var string
          */
-        public $status = 'active';
+        public $status;
         /**
          * Comment for this question.
          * @var string
@@ -92,7 +92,7 @@ class Question extends ModelBase
         {
                 $this->validate(new Inclusionin(array(
                         'field'  => 'status',
-                        'domain' => array('active', 'removed')
+                        'domain' => array(self::STATUS_ACTIVE, self::STATUS_REMOVED)
                 )));
                 if ($this->validationHasFailed() == true) {
                         return false;
@@ -104,7 +104,9 @@ class Question extends ModelBase
          */
         protected function beforeValidationOnCreate()
         {
-                $this->status = 'active';
+                if (!isset($this->status)) {
+                        $this->status = self::STATUS_ACTIVE;
+                }
         }
 
         public function getSource()

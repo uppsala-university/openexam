@@ -5,13 +5,13 @@ use Phalcon\Db\Index;
 use Phalcon\Db\Reference;
 use Phalcon\Mvc\Model\Migration;
 
-class InvigilatorsMigration_202 extends Migration
+class FilesMigration_202 extends Migration
 {
 
     public function up()
     {
         $this->morphTable(
-            'invigilators',
+            'files',
             array(
             'columns' => array(
                 new Column(
@@ -25,7 +25,7 @@ class InvigilatorsMigration_202 extends Migration
                     )
                 ),
                 new Column(
-                    'exam_id',
+                    'answer_id',
                     array(
                         'type' => Column::TYPE_INTEGER,
                         'notNull' => true,
@@ -34,30 +34,57 @@ class InvigilatorsMigration_202 extends Migration
                     )
                 ),
                 new Column(
-                    'user',
+                    'name',
                     array(
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 60,
-                        'after' => 'exam_id'
+                        'size' => 50,
+                        'after' => 'answer_id'
+                    )
+                ),
+                new Column(
+                    'path',
+                    array(
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 120,
+                        'after' => 'name'
+                    )
+                ),
+                new Column(
+                    'type',
+                    array(
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 25,
+                        'after' => 'path'
+                    )
+                ),
+                new Column(
+                    'subtype',
+                    array(
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 25,
+                        'after' => 'type'
                     )
                 )
             ),
             'indexes' => array(
                 new Index('PRIMARY', array('id')),
-                new Index('exam_id', array('exam_id'))
+                new Index('answer_id', array('answer_id'))
             ),
             'references' => array(
-                new Reference('invigilators_ibfk_1', array(
+                new Reference('files_ibfk_1', array(
                     'referencedSchema' => 'openexam',
-                    'referencedTable' => 'exams',
-                    'columns' => array('exam_id'),
+                    'referencedTable' => 'answers',
+                    'columns' => array('answer_id'),
                     'referencedColumns' => array('id')
                 ))
             ),
             'options' => array(
                 'TABLE_TYPE' => 'BASE TABLE',
-                'AUTO_INCREMENT' => '28',
+                'AUTO_INCREMENT' => '8',
                 'ENGINE' => 'InnoDB',
                 'TABLE_COLLATION' => 'utf8_general_ci'
             )

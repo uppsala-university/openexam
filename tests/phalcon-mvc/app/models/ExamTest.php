@@ -6,7 +6,7 @@ use Exception;
 use OpenExam\Tests\Phalcon\TestModel;
 
 /**
- * @author Anders Lövgren (QNET/BMC CompDept)
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class ExamModel extends Exam
 {
@@ -71,6 +71,18 @@ class ExamTest extends TestModel
 
                 self::assertNotEquals($exam->topics->count(), 0);
                 self::assertTrue(count($exam->topics) > 0);
+                
+                $exam = Lock::findFirst()->exam;
+                self::assertNotNull($exam);
+
+                self::assertNotEquals($exam->locks->count(), 0);
+                self::assertTrue(count($exam->locks) > 0);
+                
+                $exam = Resource::findFirst()->exam;
+                self::assertNotNull($exam);
+
+                self::assertNotEquals($exam->resources->count(), 0);
+                self::assertTrue(count($exam->resources) > 0);
         }
 
         /**

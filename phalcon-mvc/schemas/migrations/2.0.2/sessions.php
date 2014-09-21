@@ -58,7 +58,7 @@ class SessionsMigration_202 extends Migration
             'options' => array(
                 'TABLE_TYPE' => 'BASE TABLE',
                 'AUTO_INCREMENT' => '',
-                'ENGINE' => 'InnoDB',
+                'ENGINE' => 'MyISAM',
                 'TABLE_COLLATION' => 'utf8_general_ci'
             )
         )

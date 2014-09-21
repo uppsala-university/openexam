@@ -6,7 +6,7 @@ use Exception;
 use OpenExam\Tests\Phalcon\TestModel;
 
 /**
- * @author Anders Lövgren (QNET/BMC CompDept)
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class AnswerModel extends Answer
 {
@@ -46,6 +46,10 @@ class AnswerTest extends TestModel
                 self::assertTrue(count($answer->question) == 1);
                 self::assertTrue(count($answer->result) == 1);
                 self::assertTrue(count($answer->student) == 1);
+                
+                $answer = File::findFirst()->answer;
+                self::assertNotEquals($answer->files->count(), 0);
+                self::assertTrue(count($answer->files) > 0);
         }
 
         /**

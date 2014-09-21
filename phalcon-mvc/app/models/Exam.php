@@ -27,10 +27,11 @@ use Phalcon\Mvc\Model\Behavior\Timestampable;
  * @property Decoder[] $decoders The decoders for this exam.
  * @property Invigilator[] $invigilators The invigilators for this exam.
  * @property Lock[] $locks The computer locks aquired for this exam.
- * @property Media[] $files The media files associated with this exam.
+ * @property Resource[] $resources The multimedia or resource files associated with this exam.
  * @property Question[] $questions The questions that belongs to this exam.
  * @property Student[] $students The students assigned to this exam.
  * @property Topic[] $topics The topics associated with this exam.
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Exam extends ModelBase
@@ -43,7 +44,7 @@ class Exam extends ModelBase
         /**
          * Include statistics of all students.
          */
-        const RESULT_OTHERS_STATISTIC = 2;
+        const RESULT_OTHERS_STATISTICS = 2;
 
         /**
          * This object ID.
@@ -124,8 +125,8 @@ class Exam extends ModelBase
                 $this->hasMany('id', 'OpenExam\Models\Decoder', 'exam_id', array('alias' => 'Decoders'));
                 $this->hasMany('id', 'OpenExam\Models\Invigilator', 'exam_id', array('alias' => 'Invigilators'));
                 $this->hasMany('id', 'OpenExam\Models\Lock', 'exam_id', array('alias' => 'Locks'));
-                $this->hasMany("id", "OpenExam\Models\Media", "exam_id", array("alias" => 'Files'));
                 $this->hasMany('id', 'OpenExam\Models\Question', 'exam_id', array('alias' => 'Questions'));
+                $this->hasMany("id", "OpenExam\Models\Resource", "exam_id", array("alias" => 'Resources'));
                 $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'Students'));
                 $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array('alias' => 'Topics'));
 

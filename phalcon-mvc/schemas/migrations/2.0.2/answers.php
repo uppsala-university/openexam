@@ -88,7 +88,7 @@ class AnswersMigration_202 extends Migration
             ),
             'options' => array(
                 'TABLE_TYPE' => 'BASE TABLE',
-                'AUTO_INCREMENT' => '1',
+                'AUTO_INCREMENT' => '29',
                 'ENGINE' => 'InnoDB',
                 'TABLE_COLLATION' => 'utf8_general_ci'
             )

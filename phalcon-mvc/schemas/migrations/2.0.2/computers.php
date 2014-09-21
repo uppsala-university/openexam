@@ -100,7 +100,7 @@ class ComputersMigration_202 extends Migration
             ),
             'options' => array(
                 'TABLE_TYPE' => 'BASE TABLE',
-                'AUTO_INCREMENT' => '1',
+                'AUTO_INCREMENT' => '27',
                 'ENGINE' => 'InnoDB',
                 'TABLE_COLLATION' => 'utf8_general_ci'
             )

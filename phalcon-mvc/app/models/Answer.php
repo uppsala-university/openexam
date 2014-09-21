@@ -5,9 +5,11 @@ namespace OpenExam\Models;
 /**
  * The answer model.
  * 
+ * @property File[] $files The files associated with this answer.
  * @property Result $result The related result.
  * @property Question $question The related question.
  * @property Student $student The related student.
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Answer extends ModelBase
@@ -32,7 +34,7 @@ class Answer extends ModelBase
          * Is already answered?
          * @var bool
          */
-        public $answered = false;
+        public $answered;
         /**
          *
          * @var string
@@ -47,9 +49,20 @@ class Answer extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
+                $this->hasMany("id", "OpenExam\Models\File", "answer_id", array("alias" => 'Files'));
                 $this->hasMany('id', 'OpenExam\Models\Result', 'answer_id', array('alias' => 'Result'));
                 $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array('foreignKey' => true, 'alias' => 'Question'));
                 $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array('foreignKey' => true, 'alias' => 'Student'));
+        }
+
+        /**
+         * Called before model is created.
+         */
+        protected function beforeValidationOnCreate()
+        {
+                if (!isset($this->answered)) {
+                        $this->answered = false;
+                }
         }
 
         /**

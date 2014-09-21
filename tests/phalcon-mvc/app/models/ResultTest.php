@@ -6,7 +6,7 @@ use Exception;
 use OpenExam\Tests\Phalcon\TestModel;
 
 /**
- * @author Anders Lövgren (QNET/BMC CompDept)
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class ResultModel extends Result
 {
