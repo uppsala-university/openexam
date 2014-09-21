@@ -135,7 +135,7 @@ class QuestionTest extends TestModel
                 );
                 try {
                         $helper = new TestModel(new Question());
-                        $helper->tryPersist();
+                        $helper->tryPersist($values);
                         self::fail("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception

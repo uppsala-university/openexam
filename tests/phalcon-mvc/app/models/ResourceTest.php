@@ -90,6 +90,23 @@ class ResourceTest extends TestModel
                 } catch (Exception $exception) {
                         self::fail("Unexcepted constraint violation exception");
                 }
+
+                $values = array(
+                        'exam_id' => Exam::findFirst()->id,
+                        'name'    => 'Name1',
+                        'path'    => '/tmp/path',
+                        'type'    => 'video',
+                        'subtype' => 'mp4',
+                        'user'    => 'user1',
+                        'shared'  => 'unknown' // should fail at validation
+                );
+                try {
+                        $helper = new TestModel(new Resource());
+                        $helper->tryPersist($values);
+                        self::fail("Excepted constraint violation exception");
+                } catch (Exception $exception) {
+                        // Expected exception
+                }
         }
 
         /**
