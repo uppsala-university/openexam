@@ -61,11 +61,8 @@ $di->set('url', function() use ($config) {
 });
 
 $di->set('view', function() use ($config) {
-
         $view = new \Phalcon\Mvc\View();
-
         $view->setViewsDir($config->application->viewsDir);
-
         return $view;
 });
 
@@ -118,6 +115,21 @@ $di->set('session', function() {
         $session = new \Phalcon\Session\Adapter\Files();
         $session->start();
         return $session;
+}, true);
+
+/**
+ * The locale service. Detect prefered locale on first use.
+ */
+$di->set('locale', function() use($config) {
+        $locale = new \OpenExam\Library\Globalization\Locale\Locale();
+        $locale->setLocales(array(
+                'sv_SE' => _('Swedish'),
+                'en_US' => _('English (US)'),
+                'en_GB' => _('English (GB)'),
+                'C'     => _('Browser Default')
+        ));
+        $locale->detect($config->locale->request, $config->locale->default);
+        return $locale;
 }, true);
 
 $di->set('acl', function() {

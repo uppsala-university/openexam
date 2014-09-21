@@ -57,6 +57,7 @@ $config = new \Phalcon\Config(
                 'tasksDir'       => APP_DIR . '/tasks',
                 'schemasDir'     => BASE_DIR . '/schemas/',
                 'migrationsDir'  => BASE_DIR . '/schemas/migrations/',
+                'localeDir'      => BASE_DIR . '/locale/',
                 'cacheDir'       => BASE_DIR . '/cache/',
                 'logsDir'        => BASE_DIR . '/logs',
                 'baseDir'        => BASE_DIR . '/',
@@ -70,6 +71,10 @@ $config = new \Phalcon\Config(
                 'compress' => true, // compress rotated logs
                 'maxsize'  => 10 * 1024 * 1024, // size limit in bytes (0 == no limit)
                 'maxage'   => 3600 * 24  // max age in seconds (0 == no max age)
+        ),
+        'locale'      => array(
+                'request' => 'lang', // Detect from request parameter 'lang'
+                'default' => 'sv_SE' // Default locale if not detected.
         )
     )
 );
