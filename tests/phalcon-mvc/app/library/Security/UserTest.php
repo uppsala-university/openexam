@@ -117,10 +117,10 @@ class UserTest extends TestCase
                 // test User(user, null, roles): -> "act-as" (impersonation).
                 // 
                 $roles = array(
-                        0 => array(Roles::admin, Roles::teacher),
-                        1 => array(Roles::contributor),
-                        2 => array(Roles::decoder, Roles::invigilator),
-                        3 => array(Roles::invigilator)
+                        0 => array(Roles::ADMIN, Roles::TEACHER),
+                        1 => array(Roles::CONTRIBUTOR),
+                        2 => array(Roles::DECODER, Roles::INVIGILATOR),
+                        3 => array(Roles::INVIGILATOR)
                 );
                 $this->object = new User($user, null, $roles);
                 self::assertTrue(count($this->object->roles->getRoles(0)) == 5);
@@ -131,15 +131,15 @@ class UserTest extends TestCase
                 self::assertTrue(count($this->object->roles->getAllRoles()) == 4);
                 self::assertTrue(count($this->object->roles->getAllRoles()[1]) == 1);
 
-                self::assertTrue($this->object->roles->hasRole(Roles::admin));
-                self::assertTrue($this->object->roles->hasRole(Roles::teacher));
-                self::assertTrue($this->object->roles->hasRole(Roles::contributor));
-                self::assertTrue($this->object->roles->hasRole(Roles::decoder));
-                self::assertTrue($this->object->roles->hasRole(Roles::invigilator));
+                self::assertTrue($this->object->roles->hasRole(Roles::ADMIN));
+                self::assertTrue($this->object->roles->hasRole(Roles::TEACHER));
+                self::assertTrue($this->object->roles->hasRole(Roles::CONTRIBUTOR));
+                self::assertTrue($this->object->roles->hasRole(Roles::DECODER));
+                self::assertTrue($this->object->roles->hasRole(Roles::INVIGILATOR));
 
-                self::assertTrue($this->object->roles->hasRole(Roles::decoder, 2));
-                self::assertTrue($this->object->roles->hasRole(Roles::invigilator, 2));
-                self::assertFalse($this->object->roles->hasRole(Roles::decoder, 3));
+                self::assertTrue($this->object->roles->hasRole(Roles::DECODER, 2));
+                self::assertTrue($this->object->roles->hasRole(Roles::INVIGILATOR, 2));
+                self::assertFalse($this->object->roles->hasRole(Roles::DECODER, 3));
         }
 
         /**
@@ -195,6 +195,18 @@ class UserTest extends TestCase
 
                 $this->object = new User();
                 self::assertNull($this->object->getUser());
+        }
+
+        /**
+         * @covers OpenExam\Library\Security\User::__toString
+         * @group security
+         */
+        public function testToString()
+        {
+                $expect = sprintf("%s@%s", self::$user, self::$domain);
+                $actual = (string) $this->object;
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
         }
 
 }

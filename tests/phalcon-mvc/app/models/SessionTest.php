@@ -59,7 +59,7 @@ class SessionTest extends TestModel
         }
 
         /**
-         * @covers OpenExam\Models\Corrector::getSource
+         * @covers OpenExam\Models\Session::getSource
          * @group model
          */
         public function testGetSource()

@@ -39,12 +39,12 @@ class User extends Component
          * The user domain.
          * @var string 
          */
-        private $domain;
+        private $_domain;
         /**
          * The user name.
          * @var string 
          */
-        private $user;
+        private $_user;
 
         /**
          * Constructor.
@@ -55,27 +55,27 @@ class User extends Component
         {
                 if (isset($user)) {
                         if (isset($domain)) {
-                                $this->user = $user;
-                                $this->domain = $domain;
-                        } elseif (isset($this->config->user->domain)) {
-                                $this->user = $user;
-                                $this->domain = $this->config->user->domain;
+                                $this->_user = $user;
+                                $this->_domain = $domain;
+                        } elseif ($this->config->user->domain != null) {
+                                $this->_user = $user;
+                                $this->_domain = $this->config->user->domain;
                         } else {
-                                $this->user = $user;
+                                $this->_user = $user;
                         }
 
-                        if (($pos = strpos($this->user, '@'))) {
-                                $this->domain = substr($this->user, $pos + 1);
-                                $this->user = substr($this->user, 0, $pos);
+                        if (($pos = strpos($this->_user, '@'))) {
+                                $this->_domain = substr($this->_user, $pos + 1);
+                                $this->_user = substr($this->_user, 0, $pos);
                         }
 
-                        if (!isset($this->domain)) {
+                        if (!isset($this->_domain)) {
                                 throw new Exception(_("Missing domain part in username"));
                         }
 
                         if (count($roles) != 0) {
                                 $this->roles = new Roles($roles);
-                        } elseif (isset($this->config->user->roles)) {
+                        } elseif ($this->config->user->roles->count() != 0) {
                                 $this->roles = new Roles($this->config->user->roles);
                         } else {
                                 $this->roles = new Roles();
@@ -85,17 +85,17 @@ class User extends Component
 
         public function __toString()
         {
-                return $this->getPrincipalName();
+                return isset($this->_user) ? $this->getPrincipalName() : "";
         }
-
+        
         /**
          * Get user principal name.
          * @return string
          */
         public function getPrincipalName()
         {
-                if (isset($this->user)) {
-                        return sprintf("%s@%s", $this->user, $this->domain);
+                if (isset($this->_user)) {
+                        return sprintf("%s@%s", $this->_user, $this->_domain);
                 }
         }
 
@@ -105,7 +105,7 @@ class User extends Component
          */
         public function getDomain()
         {
-                return $this->domain;
+                return $this->_domain;
         }
 
         /**
@@ -114,7 +114,7 @@ class User extends Component
          */
         public function getUser()
         {
-                return $this->user;
+                return $this->_user;
         }
 
 }

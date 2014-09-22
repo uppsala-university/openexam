@@ -28,7 +28,8 @@ class RolesTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new Roles;
+                $this->object = new Roles();
+                print_r($this->object->user, true);
         }
 
         /**
@@ -52,8 +53,8 @@ class RolesTest extends TestCase
 
                 // Test alternative roles array format:
                 $roles = array(
-                        0 => array(Roles::admin, Roles::teacher),
-                        1 => array(Roles::contributor)
+                        0 => array(Roles::ADMIN, Roles::TEACHER),
+                        1 => array(Roles::CONTRIBUTOR)
                 );
                 $this->object = new Roles($roles);
                 self::assertTrue(count($this->object->getRoles(0)) == 3);
@@ -62,8 +63,8 @@ class RolesTest extends TestCase
 
                 // Test native roles array format:
                 $roles = array(
-                        0 => array(Roles::admin => true, Roles::teacher => true),
-                        1 => array(Roles::contributor => true)
+                        0 => array(Roles::ADMIN => true, Roles::TEACHER => true),
+                        1 => array(Roles::CONTRIBUTOR => true)
                 );
                 $this->object = new Roles($roles);
                 self::assertTrue(count($this->object->getRoles(0)) == 3);
@@ -72,10 +73,10 @@ class RolesTest extends TestCase
 
                 // Test idempotence:
                 $roles = array(
-                        0 => array(Roles::admin => true, Roles::teacher => true),
-                        1 => array(Roles::contributor => true),
-                        1 => array(Roles::contributor => true),
-                        2 => array(Roles::contributor => true)
+                        0 => array(Roles::ADMIN => true, Roles::TEACHER => true),
+                        1 => array(Roles::CONTRIBUTOR => true),
+                        1 => array(Roles::CONTRIBUTOR => true),
+                        2 => array(Roles::CONTRIBUTOR => true)
                 );
                 $this->object = new Roles($roles);
                 self::assertTrue(count($this->object->getRoles(0)) == 3);
@@ -84,10 +85,10 @@ class RolesTest extends TestCase
 
                 // An more complex test:
                 $roles = array(
-                        0 => array(Roles::admin, Roles::teacher),
-                        1 => array(Roles::contributor),
-                        2 => array(Roles::decoder, Roles::invigilator),
-                        3 => array(Roles::contributor)
+                        0 => array(Roles::ADMIN, Roles::TEACHER),
+                        1 => array(Roles::CONTRIBUTOR),
+                        2 => array(Roles::DECODER, Roles::INVIGILATOR),
+                        3 => array(Roles::CONTRIBUTOR)
                 );
                 $this->object = new Roles($roles);
                 self::assertTrue(count($this->object->getRoles(0)) == 5);
@@ -219,8 +220,8 @@ class RolesTest extends TestCase
                 self::assertTrue(is_array($this->object->getAllRoles()));
                 self::assertTrue(count($this->object->getAllRoles()) == 0);
 
-                $this->object->addRole(Roles::admin);
-                $this->object->addRole(Roles::teacher);
+                $this->object->addRole(Roles::ADMIN);
+                $this->object->addRole(Roles::TEACHER);
 
                 self::assertTrue(is_array($this->object->getAllRoles()));
                 self::assertTrue(count($this->object->getAllRoles()) == 1);
@@ -228,9 +229,9 @@ class RolesTest extends TestCase
 
                 $this->object = new Roles;
 
-                $this->object->addRole(Roles::contributor, 1);
-                $this->object->addRole(Roles::decoder, 1);
-                $this->object->addRole(Roles::invigilator, 2);
+                $this->object->addRole(Roles::CONTRIBUTOR, 1);
+                $this->object->addRole(Roles::DECODER, 1);
+                $this->object->addRole(Roles::INVIGILATOR, 2);
 
                 self::assertTrue(is_array($this->object->getAllRoles()));
                 self::assertTrue(count($this->object->getAllRoles()) == 3);
@@ -239,7 +240,7 @@ class RolesTest extends TestCase
                 self::assertTrue(count($this->object->getAllRoles()[2]) == 1);
 
                 // Test idempotence:
-                $this->object->addRole(Roles::contributor, 1);
+                $this->object->addRole(Roles::CONTRIBUTOR, 1);
                 self::assertTrue(count($this->object->getAllRoles()[0]) == 3);
                 self::assertTrue(count($this->object->getAllRoles()[1]) == 2);
 
@@ -280,20 +281,20 @@ class RolesTest extends TestCase
                 // 
                 $user = new User();
                 $this->di->set('user', $user);
-                
+
                 // 
                 // Test corner case:
                 // 
                 self::assertNull($this->user->getPrincipalName());
                 foreach (array(
-                    Roles::contributor,
-                    Roles::corrector,
-                    Roles::creator,
-                    Roles::decoder,
-                    Roles::invigilator,
-                    Roles::teacher,
-                    Roles::admin,
-                    Roles::student
+                    Roles::CONTRIBUTOR,
+                    Roles::CORRECTOR,
+                    Roles::CREATOR,
+                    Roles::DECODER,
+                    Roles::INVIGILATOR,
+                    Roles::TEACHER,
+                    Roles::ADMIN,
+                    Roles::STUDENT
                 ) as $role) {
                         self::assertFalse($this->object->aquire($role));
                         self::assertFalse($this->object->aquire($role, 1));
@@ -311,16 +312,22 @@ class RolesTest extends TestCase
                 $user = new User($principal);
                 $this->di->set('user', $user);
 
-                printf("%s: [principal name: '%s']\n", __METHOD__, $user);
-                printf("%s: [principal name: '%s']\n", __METHOD__, $this->user);
+                printf("%s: [principal name: '%s'] (local)\n", __METHOD__, $user);
+                printf("%s: [principal name: '%s'] (magic)\n", __METHOD__, $this->user);
+                self::assertNotNull($this->user);
+                self::assertNotNull($this->di->get('user'));
+                self::assertSame($user, $this->user);
+                self::assertSame($user, $this->di->get('user'));
+                self::assertSame($user, $this->object->getDI()->get('user'));
                 self::assertEquals($user, $principal);
                 self::assertEquals($user, $this->user);
+                self::assertEquals($user, $this->di->get('user'));
 
                 // 
                 // Test aquire system wide roles:
                 // 
-                $this->checkAquireSystemRole($principal, Roles::admin, '\OpenExam\Models\Admin');
-                $this->checkAquireSystemRole($principal, Roles::teacher, '\OpenExam\Models\Teacher');
+                $this->checkAquireSystemRole($principal, Roles::ADMIN, '\OpenExam\Models\Admin');
+                $this->checkAquireSystemRole($principal, Roles::TEACHER, '\OpenExam\Models\Teacher');
 
                 // 
                 // Test aquire object specific roles:
@@ -335,11 +342,11 @@ class RolesTest extends TestCase
                         self::fail(print_r($exam->getMessages(), true));
                 }
 
-                $this->checkAquireExamRole($principal, $exam, Roles::creator, null);
-                $this->checkAquireExamRole($principal, $exam, Roles::contributor, '\OpenExam\Models\Contributor');
-                $this->checkAquireExamRole($principal, $exam, Roles::decoder, '\OpenExam\Models\Decoder');
-                $this->checkAquireExamRole($principal, $exam, Roles::invigilator, '\OpenExam\Models\Invigilator');
-                $this->checkAquireExamRole($principal, $exam, Roles::student, '\OpenExam\Models\Student');
+                $this->checkAquireExamRole($principal, $exam, Roles::CREATOR, null);
+                $this->checkAquireExamRole($principal, $exam, Roles::CONTRIBUTOR, '\OpenExam\Models\Contributor');
+                $this->checkAquireExamRole($principal, $exam, Roles::DECODER, '\OpenExam\Models\Decoder');
+                $this->checkAquireExamRole($principal, $exam, Roles::INVIGILATOR, '\OpenExam\Models\Invigilator');
+                $this->checkAquireExamRole($principal, $exam, Roles::STUDENT, '\OpenExam\Models\Student');
 
                 $this->checkAquireCorrectorRoles($principal, $exam);
 
@@ -369,7 +376,7 @@ class RolesTest extends TestCase
                 $model = new $class();
                 $model->user = $user;
                 $model->create();
-                print_r($model->dump());
+                self::dump($model);
 
                 self::assertTrue($this->object->aquire($role));
                 self::assertTrue($this->object->aquire($role, 0));
@@ -394,7 +401,7 @@ class RolesTest extends TestCase
                 printf("%s: [class: '%s', role: '%s']\n", __METHOD__, $class, $role);
                 printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
 
-                if ($role != Roles::creator) {
+                if ($role != Roles::CREATOR) {
                         self::assertFalse($this->object->aquire($role));
                         self::assertFalse($this->object->aquire($role, 0));
                         self::assertFalse($this->object->aquire($role, $exam->id));
@@ -403,13 +410,13 @@ class RolesTest extends TestCase
                         $model = new $class();
                         $model->exam_id = $exam->id;
                         $model->user = $user;
-                        if ($role == Roles::student) {
+                        if ($role == Roles::STUDENT) {
                                 $model->code = '1234ABCD';
                         }
                         if ($model->create() == false) {
                                 self::fail(implode("\n", $model->getMessages()));
                         }
-                        print_r($model->dump());
+                        self::dump($model);
                 }
 
                 self::assertTrue($this->object->aquire($role));
@@ -418,7 +425,7 @@ class RolesTest extends TestCase
                 self::assertFalse($this->object->aquire($role, $exam->id + 1));
                 printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
 
-                if ($role != Roles::creator) {
+                if ($role != Roles::CREATOR) {
                         $model->delete();       // cleanup                
                 }
         }
@@ -435,7 +442,7 @@ class RolesTest extends TestCase
          */
         private function checkAquireCorrectorRoles($user, $exam)
         {
-                $role = Roles::corrector;
+                $role = Roles::CORRECTOR;
 
                 printf("%s: [exam: '%s', role: '%s']\n", __METHOD__, $exam->id, $role);
                 printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
@@ -450,7 +457,7 @@ class RolesTest extends TestCase
                 if ($tmodel->create() == false) {
                         self::fail(implode("\n", $tmodel->getMessages()));
                 }
-                print_r($tmodel->dump());
+                self::dump($tmodel);
 
                 $qmodel = new Question();
                 $qmodel->exam_id = $exam->id;
@@ -461,7 +468,7 @@ class RolesTest extends TestCase
                 if ($qmodel->create() == false) {
                         self::fail(implode("\n", $qmodel->getMessages()));
                 }
-                print_r($qmodel->dump());
+                self::dump($qmodel);
 
                 self::assertFalse($this->object->aquire($role));
                 self::assertFalse($this->object->aquire($role, 0));
@@ -474,7 +481,7 @@ class RolesTest extends TestCase
                 if ($cmodel->create() == false) {
                         self::fail(implode("\n", $cmodel->getMessages()));
                 }
-                print_r($cmodel->dump());
+                self::dump($cmodel);
 
                 self::assertTrue($this->object->aquire($role));
                 self::assertTrue($this->object->aquire($role, 0));
@@ -496,7 +503,7 @@ class RolesTest extends TestCase
         public function testIsAdmin()
         {
                 self::assertFalse($this->object->isAdmin());
-                $this->object->addRole(Roles::admin);
+                $this->object->addRole(Roles::ADMIN);
                 self::assertTrue($this->object->isAdmin());
                 $this->object->clear();
                 $this->object->addRole('custom');
@@ -514,7 +521,7 @@ class RolesTest extends TestCase
                 // 
                 for ($id = 0; $id < 2; $id++) {
                         self::assertFalse($this->object->isStudent($id));
-                        $this->object->addRole(Roles::student, $id);
+                        $this->object->addRole(Roles::STUDENT, $id);
                         self::assertTrue($this->object->isStudent($id));
                         $this->object->clear();
                         $this->object->addRole('custom', $id);
@@ -532,12 +539,12 @@ class RolesTest extends TestCase
                 // Should succeed:
                 // 
                 foreach (array(
-                    Roles::contributor,
-                    Roles::corrector,
-                    Roles::creator,
-                    Roles::decoder,
-                    Roles::invigilator,
-                    Roles::teacher
+                    Roles::CONTRIBUTOR,
+                    Roles::CORRECTOR,
+                    Roles::CREATOR,
+                    Roles::DECODER,
+                    Roles::INVIGILATOR,
+                    Roles::TEACHER
                 ) as $role) {
                         for ($id = 0; $id < 2; $id++) {
                                 $this->object->clear();
@@ -551,8 +558,8 @@ class RolesTest extends TestCase
                 // Should fail:
                 // 
                 foreach (array(
-                    Roles::admin,
-                    Roles::student,
+                    Roles::ADMIN,
+                    Roles::STUDENT,
                     'service'
                 ) as $role) {
                         for ($id = 0; $id < 2; $id++) {
@@ -571,7 +578,13 @@ class RolesTest extends TestCase
         public function testIsCustom()
         {
                 self::assertTrue(Roles::isCustom('service'));
-                self::assertFalse(Roles::isCustom(Roles::admin));
+                self::assertFalse(Roles::isCustom(Roles::ADMIN));
+        }
+
+        private static function dump($model)
+        {
+                printf("%s: ", get_class($model));
+                print_r($model->dump());
         }
 
 }

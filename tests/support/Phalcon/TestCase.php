@@ -56,8 +56,6 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
         {
                 if ($this->di->has($name)) {
                         return $this->di->get($name);
-                } else {
-                        return parent::$name;
                 }
         }
 

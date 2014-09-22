@@ -84,40 +84,40 @@ class Roles extends Component
         /**
          * The admin role (system wide).
          */
-        const admin = 'admin';
+        const ADMIN = 'admin';
         /**
          * The teacher role (system wide).
          */
-        const teacher = 'teacher';
+        const TEACHER = 'teacher';
         /**
          * The creator role (bound to specific exam).
          */
-        const creator = 'creator';
+        const CREATOR = 'creator';
         /**
          * The contributor role (bound to specific exam).
          */
-        const contributor = 'contributor';
+        const CONTRIBUTOR = 'contributor';
         /**
          * The invigilator role (bound to specific exam).
          */
-        const invigilator = 'invigilator';
+        const INVIGILATOR = 'invigilator';
         /**
          * The decoder role (bound to specific exam).
          */
-        const decoder = 'decoder';
+        const DECODER = 'decoder';
         /**
          * The corrector role (bound to specific question).
          */
-        const corrector = 'corrector';
+        const CORRECTOR = 'corrector';
         /**
          * The student role (bound to specific exam).
          */
-        const student = 'student';
+        const STUDENT = 'student';
 
         /**
          * @var array 
          */
-        private $roles = array();
+        private $_roles = array();
 
         /**
          * Constructor.
@@ -145,7 +145,7 @@ class Roles extends Component
 
         public function __toString()
         {
-                return var_export($this->roles, true);
+                return var_export($this->_roles, true);
         }
 
         /**
@@ -156,10 +156,10 @@ class Roles extends Component
         public function addRole($role, $id = 0)
         {
                 if ($id == 0) {
-                        $this->roles[0][$role] = true;
+                        $this->_roles[0][$role] = true;
                 } else {
-                        $this->roles[0][$role] = true;
-                        $this->roles[$id][$role] = true;
+                        $this->_roles[0][$role] = true;
+                        $this->_roles[$id][$role] = true;
                 }
         }
 
@@ -170,9 +170,9 @@ class Roles extends Component
          */
         public function removeRole($role, $id = 0)
         {
-                if (isset($this->roles[$id])) {
-                        if (array_key_exists($role, $this->roles[$id])) {
-                                unset($this->roles[$id][$role]);
+                if (isset($this->_roles[$id])) {
+                        if (array_key_exists($role, $this->_roles[$id])) {
+                                unset($this->_roles[$id][$role]);
                         }
                 }
         }
@@ -185,8 +185,8 @@ class Roles extends Component
          */
         public function hasRole($role, $id = 0)
         {
-                if (isset($this->roles[$id])) {
-                        return array_key_exists($role, $this->roles[$id]);
+                if (isset($this->_roles[$id])) {
+                        return array_key_exists($role, $this->_roles[$id]);
                 } else {
                         return false;
                 }
@@ -199,8 +199,8 @@ class Roles extends Component
          */
         public function getRoles($id = 0)
         {
-                if (isset($this->roles[$id])) {
-                        return array_keys($this->roles[$id]);
+                if (isset($this->_roles[$id])) {
+                        return array_keys($this->_roles[$id]);
                 } else {
                         return array();
                 }
@@ -212,7 +212,7 @@ class Roles extends Component
          */
         public function getAllRoles()
         {
-                return $this->roles;
+                return $this->_roles;
         }
 
         /**
@@ -220,7 +220,7 @@ class Roles extends Component
          */
         public function clear()
         {
-                $this->roles = array();
+                $this->_roles = array();
         }
 
         /**
@@ -242,11 +242,14 @@ class Roles extends Component
                 // 
                 // Get principal name from user service:
                 // 
-                if (($user = $this->user->getPrincipalName()) == null) {
-                        return false;
+                if ($this->getDI()->has('user')) {
+                        $user = $this->getDI()->get('user');
+                        if ($user->getPrincipalName() == null) {
+                                return false;
+                        }
                 }
 
-                if ($role == self::admin) {
+                if ($role == self::ADMIN) {
                         $parameters = array(
                                 "user = :user:",
                                 "bind" => array("user" => $user)
@@ -255,8 +258,7 @@ class Roles extends Component
                                 $this->addRole($role);
                                 return true;
                         }
-                }
-                if ($role == self::teacher) {
+                } elseif ($role == self::TEACHER) {
                         $parameters = array(
                                 "user = :user:",
                                 "bind" => array("user" => $user)
@@ -265,8 +267,7 @@ class Roles extends Component
                                 $this->addRole($role);
                                 return true;
                         }
-                }
-                if ($role == self::contributor) {
+                } elseif ($role == self::CONTRIBUTOR) {
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND exam_id = :id:",
@@ -282,8 +283,7 @@ class Roles extends Component
                                 $this->addRole($role, $id);
                                 return true;
                         }
-                }
-                if ($role == self::decoder) {
+                } elseif ($role == self::DECODER) {
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND exam_id = :id:",
@@ -299,8 +299,7 @@ class Roles extends Component
                                 $this->addRole($role, $id);
                                 return true;
                         }
-                }
-                if ($role == self::invigilator) {
+                } elseif ($role == self::INVIGILATOR) {
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND exam_id = :id:",
@@ -316,8 +315,7 @@ class Roles extends Component
                                 $this->addRole($role, $id);
                                 return true;
                         }
-                }
-                if ($role == self::student) {
+                } elseif ($role == self::STUDENT) {
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND exam_id = :id:",
@@ -333,8 +331,7 @@ class Roles extends Component
                                 $this->addRole($role, $id);
                                 return true;
                         }
-                }
-                if ($role == self::creator) {
+                } elseif ($role == self::CREATOR) {
                         if ($id != 0) {
                                 $parameters = array(
                                         "creator = :user: AND id = :id:",
@@ -350,8 +347,7 @@ class Roles extends Component
                                 $this->addRole($role, $id);
                                 return true;
                         }
-                }
-                if ($role == self::corrector) {
+                } elseif ($role == self::CORRECTOR) {
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND question_id = :id:",
@@ -376,6 +372,13 @@ class Roles extends Component
                 }
 
                 // 
+                // Check for custom roles. These are global by nature.
+                // 
+                if (self::isCustom($role)) {
+                        $this->addRole($role);
+                }
+
+                // 
                 // Role was not aquired.
                 // 
                 return false;
@@ -387,7 +390,7 @@ class Roles extends Component
          */
         public function isAdmin()
         {
-                return isset($this->roles[0][self::admin]);
+                return isset($this->_roles[0][self::ADMIN]);
         }
 
         /**
@@ -397,7 +400,7 @@ class Roles extends Component
          */
         public function isStudent($id = 0)
         {
-                return isset($this->roles[$id][self::student]);
+                return isset($this->_roles[$id][self::STUDENT]);
         }
 
         /**
@@ -407,20 +410,20 @@ class Roles extends Component
          */
         public function isStaff($id = 0)
         {
-                if (!isset($this->roles[$id])) {
+                if (!isset($this->_roles[$id])) {
                         return false;
                 }
-                if (count($this->roles[$id]) == 0) {
+                if (count($this->_roles[$id]) == 0) {
                         return false;
                 }
-                $roles = array_keys($this->roles[$id]);
+                $roles = array_keys($this->_roles[$id]);
                 $staff = array(
-                        self::teacher,
-                        self::contributor,
-                        self::corrector,
-                        self::creator,
-                        self::decoder,
-                        self::invigilator
+                        self::TEACHER,
+                        self::CONTRIBUTOR,
+                        self::CORRECTOR,
+                        self::CREATOR,
+                        self::DECODER,
+                        self::INVIGILATOR
                 );
                 return count(array_intersect($staff, $roles)) > 0;
         }
@@ -434,7 +437,7 @@ class Roles extends Component
         public static function isCustom($role)
         {
                 $class = new ReflectionClass(__CLASS__);
-                return $class->getConstant($role) === false;
+                return in_array($role, $class->getConstants()) == false;
         }
 
 }

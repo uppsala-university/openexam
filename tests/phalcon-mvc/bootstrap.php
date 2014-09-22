@@ -13,3 +13,5 @@ $config = include(CONFIG_PHP);
 
 include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
+
+Phalcon\DI::setDefault($di);

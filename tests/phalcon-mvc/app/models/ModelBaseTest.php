@@ -31,7 +31,7 @@ class ModelBaseTest extends TestModel
          */
         public function testInitialize()
         {
-                parent::testInitialize();
+                $this->object->initialize();
         }
 
         /**
