@@ -44,7 +44,8 @@ class HelpTask extends MainTask
 
                 foreach (array(
                     DatabaseTask::getUsage(),
-                    ModelTask::getUsage()
+                    ModelTask::getUsage(),
+                    GettextTask::getUsage()
                 ) as $task) {
                         foreach ($task['usage'] as $val) {
                                 $usage['usage'][] = sprintf("%s %s", $task['action'], $val);

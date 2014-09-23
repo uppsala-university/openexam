@@ -48,7 +48,7 @@ return array(
                  */
                 'domain' => 'example.com',
                 /**
-                 * Default set of rules for all users.
+                 * Default set of roles for all users.
                  */
                 'roles'  => array()
         ),
@@ -116,6 +116,19 @@ return array(
          * Locale settings.
          */
         'locale'      => array(
-                'default' => 'sv_SE'
+                'default' => 'sv_SE.UTF-8'
+        ),
+        /**
+         * Options for GNU gettext (I18N).
+         */
+        'gettext'     => array(
+                'programs' => array(
+                        'xgettext' => '/usr/bin/xgettext',
+                        'msgmerge' => '/usr/bin/msgmerge',
+                        'msgfmt'   => '/usr/bin/msgfmt',
+                        'msgcat'   => '/usr/bin/msgcat',
+                        'msgconv'  => '/usr/bin/msgconv',
+                        'msginit'  => '/usr/bin/msginit'
+                )
         )
 );

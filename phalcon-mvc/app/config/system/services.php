@@ -132,6 +132,14 @@ $di->set('locale', function() use($config) {
         return $locale;
 }, true);
 
+/**
+ * Translation service for application core. Views should typical use their
+ * own translator object (with its own message catalogs).
+ */
+$di->set('tr', function() use($config) {
+        return new \OpenExam\Library\Globalization\Translate\Gettext\Translate('core');
+});
+
 $di->set('acl', function() {
         return new \OpenExam\Plugins\Security\Acl(
             require CONFIG_DIR . '/access.def'

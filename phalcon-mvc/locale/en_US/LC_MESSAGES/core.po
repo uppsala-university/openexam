@@ -1,0 +1,66 @@
+# English translations for openexam-php package.
+# Copyright (C) 2014 The authors, the Computing Department at BMC and the OpenExam project (Uppsala University)
+# This file is distributed under the same license as the openexam-php package.
+# Automatically generated, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: openexam-php 2.0\n"
+"Report-Msgid-Bugs-To: support@bmc.uu.se\n"
+"POT-Creation-Date: 2014-09-23 02:04+0200\n"
+"PO-Revision-Date: 2014-09-23 02:04+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: phalcon-mvc/app/library/Core/Handler/HandlerBase.php:62
+#: phalcon-mvc/app/models/Access/Traits/SystemWideTrait.php:30
+#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:123
+msgid "You are not authorized to make this call."
+msgstr "You are not authorized to make this call."
+
+#: phalcon-mvc/app/library/Security/User.php:73
+msgid "Missing domain part in username"
+msgstr "Missing domain part in username"
+
+#: phalcon-mvc/app/models/Access/Answer.php:32
+#: phalcon-mvc/app/models/Access/Result.php:31
+#: phalcon-mvc/app/models/Access/Exam.php:31
+#: phalcon-mvc/app/models/Access/Traits/SystemWideTrait.php:27
+#: phalcon-mvc/app/models/Access/Traits/ExamRelationTrait.php:27
+msgid "Roles service ('roles') is missing."
+msgstr "Roles service ('roles') is missing."
+
+#: phalcon-mvc/app/models/Access/Answer.php:35
+#: phalcon-mvc/app/models/Access/Result.php:34
+msgid "You are not authorized to access this answer."
+msgstr "You are not authorized to access this answer."
+
+#: phalcon-mvc/app/models/Access/Answer.php:45
+msgid "You are not the owner of this answer."
+msgstr "You are not the owner of this answer."
+
+#: phalcon-mvc/app/models/Access/Exam.php:34
+#: phalcon-mvc/app/models/Access/Traits/ExamRelationTrait.php:30
+msgid "You are not authorized to access this exam."
+msgstr "You are not authorized to access this exam."
+
+#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:85
+msgid "Session service ('session') is missing."
+msgstr "Session service ('session') is missing."
+
+#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:88
+msgid "User session data ('auth') is missing."
+msgstr "User session data ('auth') is missing."
+
+#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:91
+msgid "The calling user is missing in session data."
+msgstr "The calling user is missing in session data."
+
+#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:120
+msgid "ACL service ('acl') is missing."
+msgstr "ACL service ('acl') is missing."
