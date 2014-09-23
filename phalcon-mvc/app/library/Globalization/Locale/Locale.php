@@ -207,6 +207,13 @@ class Locale extends Component
                         }
                 }
 
+                if (strlen($locale) == 2) {
+                        if ($this->findLocale($locale) == false &&
+                            $this->findVariant($locale) == false) {
+                                $locale = null;
+                        }
+                }
+
                 if (isset($locale)) {
                         $this->locale->setDefault($locale);
                         $this->session->set($name, $locale);
@@ -236,6 +243,50 @@ class Locale extends Component
                         $locales[$locale] = $lang;
                 }
                 return $locales;
+        }
+
+        /**
+         * Find locale by language string.
+         * 
+         * This function matches the language code against the language 
+         * part (the first two characters) in all set locales. The $locale 
+         * argument is set to matching locale if found.
+         * 
+         * @param string $locale The language string (e.g. en).
+         * @return boolean
+         */
+        private function findLocale(&$locale)
+        {
+                foreach (array_keys($this->locales) as $key) {
+                        $match = substr($key, 0, 2);
+                        if ($locale == $match) {
+                                $locale = $key;
+                                return true;
+                        }
+                }
+                return false;
+        }
+
+        /**
+         * Find locale by language string.
+         * 
+         * This function matches the language code against the variant in
+         * all set locales. The $locale argument is set to matching locale 
+         * if found.
+         * 
+         * @param type $locale
+         * @return boolean
+         */
+        private function findVariant(&$locale)
+        {
+                foreach (array_keys($this->locales) as $key) {
+                        $match = strtolower(substr($key, 3, 2));
+                        if ($locale == $match) {
+                                $locale = $key;
+                                return true;
+                        }
+                }
+                return false;
         }
 
 }
