@@ -13,36 +13,9 @@
 
 namespace OpenExam\Library\Globalization\Locale;
 
+use DirectoryIterator;
+use Locale as LocaleSystem;
 use Phalcon\Mvc\User\Component;
-
-if (!extension_loaded('intl')) {
-
-        /**
-         * Drop-in class for missing Locale (from PHP builtin intl extension).
-         * 
-         * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
-         */
-        class LocaleFallback
-        {
-
-                public static function setDefault($locale)
-                {
-                        setlocale(LC_ALL, $locale);
-                }
-
-                public static function getDefault()
-                {
-                        return setlocale(LC_ALL, "0");
-                }
-
-                public static function getDisplayLanguage($locale)
-                {
-                        return _($locale);      // translate
-                }
-
-        }
-
-}
 
 /**
  * Localization handling class (L10N).
@@ -75,11 +48,6 @@ class Locale extends Component
 {
 
         /**
-         * The detected locale.
-         * @var \Locale 
-         */
-        private $locale;
-        /**
          * Array of supported locales.
          * @var array 
          */
@@ -96,16 +64,8 @@ class Locale extends Component
          */
         public function __construct($locale = null)
         {
-                if (extension_loaded('intl')) {
-                        $this->locale = new \Locale();
-                        $this->locale->setDefault($locale);
-                } else {
-                        // TODO: log warning about missing extension.
-                        $this->locale = new LocaleFallback();
-                        $this->locale->setDefault($locale);
-                }
-
                 $this->sapi = php_sapi_name();
+                $this->setLocale($locale);
         }
 
         /**
@@ -146,13 +106,45 @@ class Locale extends Component
 
         /**
          * Set requested locale.
+         * 
          * @param string $locale The requested locale (e.g. sv_SE).
          * @param string $name Store locale in named session variable.
+         * @return bool 
          */
         public function setLocale($locale, $name = 'lang')
         {
-                $this->locale->setDefault($locale);
-                $this->session->set($name, $locale);
+                if (!isset($locale)) {
+                        return false;
+                } else {
+                        $default = $this->getDefault();
+                }
+
+                if (!$this->setDefault($locale)) {
+                        return false;
+                } elseif (!setlocale(LC_ALL, $locale)) {
+                        $this->setDefault($default);    // restore
+                        return false;
+                } elseif ($this->session->isStarted()) {
+                        $this->session->set($name, $locale);
+                }
+
+                return true;
+        }
+
+        private function getDefault()
+        {
+                if (extension_loaded('intl')) {
+                        return LocaleSystem::getDefault();
+                }
+        }
+
+        private function setDefault($locale)
+        {
+                if (extension_loaded('intl')) {
+                        return LocaleSystem::setDefault($locale);
+                } else {
+                        return true;
+                }
         }
 
         /**
@@ -161,7 +153,7 @@ class Locale extends Component
          */
         public function getLocale()
         {
-                return $this->locale->getDefault();
+                return setlocale(LC_ALL, "0");
         }
 
         /**
@@ -184,7 +176,13 @@ class Locale extends Component
          */
         public function getDisplayLanguage($locale)
         {
-                return $this->locale->getDisplayLanguage($locale);
+                if (extension_loaded('intl')) {
+                        return LocaleSystem::getDisplayLanguage($locale);
+                } elseif (extension_loaded('gettext')) {
+                        return _($locale);
+                } else {
+                        return $locale;
+                }
         }
 
         /**
@@ -250,10 +248,10 @@ class Locale extends Component
         public function findLocales($langdir)
         {
                 $locales = array();
-                $iterator = new \DirectoryIterator($langdir);
+                $iterator = new DirectoryIterator($langdir);
                 foreach ($iterator as $dir) {
                         $locale = $dir->getBasename();
-                        $lang = $this->locale->getDisplayLanguage($locale);
+                        $lang = LocaleSystem::getDisplayLanguage($locale);
                         $locales[$locale] = $lang;
                 }
                 return $locales;

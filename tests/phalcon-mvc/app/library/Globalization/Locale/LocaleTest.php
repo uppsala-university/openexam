@@ -101,22 +101,31 @@ class LocaleTest extends TestCase
                 // Locales are system dependent. We can only guess.
                 // 
                 $locale = setlocale(LC_ALL, "0");
+
+                $expect = null;                 // should always fail.
+                $result = $this->object->setLocale($expect);
+                self::assertTrue($result == false);
+                $actual = setlocale(LC_ALL, "0");
+                self::assertEquals($actual, $locale);
                 
                 $expect = null;
-                $this->object->setLocale('no_LOCALE');
+                $result = $this->object->setLocale('no_LOCALE');
+                self::assertTrue($result == false);
                 $actual = setlocale(LC_ALL, "0");
-                self::assertEquals($actual, $locale);                
-                
+                self::assertEquals($actual, $locale);
+
                 $expect = "C";                  // should always work.
-                $this->object->setLocale($expect);
+                $result = $this->object->setLocale($expect);
+                self::assertTrue($result == true);
                 $actual = setlocale(LC_ALL, "0");
                 self::assertEquals($actual, $expect);
-                
+
                 $expect = "en_US";              // a wild guess
-                $this->object->setLocale($expect);
+                $result = $this->object->setLocale($expect);
+                self::assertTrue($result == true);
                 $actual = setlocale(LC_ALL, "0");
                 self::assertEquals($actual, $expect);
-                
+
                 setlocale(LC_ALL, $locale);     // restore
         }
 
