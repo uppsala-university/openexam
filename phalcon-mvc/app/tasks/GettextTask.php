@@ -64,7 +64,7 @@ class GettextTask extends MainTask
                                 '--initialize'  => 'Initialize new locale directory.',
                                 '--list'        => 'Show modules defined in configuration.',
                                 '--locale=name' => 'The locale name (e.g. sv_SE).',
-                                '--module=name' => 'Set translation unit (message domain).',
+                                '--module=name' => 'Set module for current task.',
                                 '--force'       => 'Force action even if already applied.',
                                 '--verbose'     => 'Be more verbose.',
                                 '--dry-run'     => 'Just print whats going to be done.'
@@ -79,7 +79,7 @@ class GettextTask extends MainTask
                                         'command' => '--update --merge --compile --force'
                                 ),
                                 array(
-                                        'descr'   => 'Initialize france locale on student module:',
+                                        'descr'   => 'Initialize swedish locale for the student module:',
                                         'command' => '--initialize --module=student --locale=sv_SE.UTF-8'
                                 )
                         )
