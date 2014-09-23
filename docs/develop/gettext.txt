@@ -51,6 +51,17 @@ A translation object could be made available as a service:
         return new Translate('core');
     });
 
+Once an translation object has been instantiated, its actually no longer required 
+for translation (using gettext) to work. Just calling one of the gettext functions 
+will translate the string:
+
+    // view.php
+    echo(_("Welcome %s", $this->request->get('name'));          // Välkommen xxx
+
+Two things to notice then is that formatting using array argument wont work and
+only a single module (text domain/*.mo-file) is supported. Using the translation
+object we can have one object per text domain (e.g. public and core).
+
 ----------------------
 
 A OpenExam\Console\Tasks\GettextTask exist to make it easy to initialize new 

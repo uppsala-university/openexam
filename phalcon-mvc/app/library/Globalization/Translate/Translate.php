@@ -40,16 +40,16 @@ interface Translate extends AdapterInterface
          * @param array $params Substitution parameters.
          * @return string
          */
-        function text($msgid, $params = null);
+        function gettext($msgid, $params = null);
 
         /**
          * Pluralis.
          * 
          * @param string $msgid1 Singularis form.
-         * @param string $msgid2 pluralis form.
-         * @param int $count Form selector.
+         * @param string $msgid2 Pluralis form.
+         * @param int $count The form selector.
          * @param array $params Substitution parameters.
          * @return string
          */
-        function textn($msgid1, $msgid2, $count, $params = null);
+        function ngettext($msgid1, $msgid2, $count, $params = null);
 }

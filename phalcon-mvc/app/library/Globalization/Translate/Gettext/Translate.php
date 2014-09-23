@@ -14,7 +14,7 @@
 namespace OpenExam\Library\Globalization\Translate\Gettext;
 
 use OpenExam\Library\Globalization\Exception;
-use OpenExam\Library\Globalization\Translate\Translate;
+use OpenExam\Library\Globalization\Translate\Translate as TranslateInterface;
 use Phalcon\Mvc\User\Component;
 use Phalcon\Translate\Adapter\Gettext;
 
@@ -65,9 +65,18 @@ use Phalcon\Translate\Adapter\Gettext;
  * Message catalog modules are defined in app/config/system/config.php (the 
  * translate sub-tree). See docs/develop/gettext.txt for more information.
  * 
+ * Notice:
+ * --------
+ * 
+ * Use _(), gettext() or ngettext() for marking up strings for translation
+ * in sources. If using query() (the Phalcon proposed standard), then the
+ * source code scanning of translation strings (using xgettext) will not find
+ * them or if adding query to --keywords, we will probably get SQL in the
+ * translation templates (*.pot-file).
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Translate extends Component implements Translate
+class Translate extends Component implements TranslateInterface
 {
 
         /**
@@ -84,16 +93,16 @@ class Translate extends Component implements Translate
                 if (!extension_loaded('gettext')) {
                         throw new Exception('The gettext extension is not loaded.');
                 }
-                
+
                 if (is_string($domain)) {
                         $this->gettext = new Gettext(array(
-                                'locale'    => $this->config->locale->getLocale(),
+                                'locale'    => $this->locale->getLocale(),
                                 'file'      => $domain,
                                 'directory' => $this->config->application->localeDir
                         ));
                 } else {
                         $this->gettext = new Gettext(array(
-                                'locale'  => $this->config->locale->getLocale(),
+                                'locale'  => $this->locale->getLocale(),
                                 'domains' => $domain
                         ));
                 }
@@ -114,12 +123,12 @@ class Translate extends Component implements Translate
                 return $this->gettext->_($msgid, $params);
         }
 
-        public function text($msgid, $params = null)
+        public function gettext($msgid, $params = null)
         {
                 return $this->gettext->_($msgid, $params);
         }
 
-        public function textn($msgid1, $msgid2, $count, $params = null)
+        public function ngettext($msgid1, $msgid2, $count, $params = null)
         {
                 return $this->gettext->nquery($msgid1, $msgid2, $count, $params);
         }

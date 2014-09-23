@@ -14,7 +14,7 @@
 namespace OpenExam\Library\Globalization\Translate\Gettext;
 
 use OpenExam\Library\Globalization\Exception;
-use OpenExam\Library\Globalization\Translate;
+use OpenExam\Library\Globalization\Translate\Setup as SetupInterface;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -22,7 +22,7 @@ use Phalcon\Mvc\User\Component;
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Setup extends Component implements Translate\Setup
+class Setup extends Component implements SetupInterface
 {
 
         /**
