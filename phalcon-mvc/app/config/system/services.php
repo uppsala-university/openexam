@@ -128,7 +128,7 @@ $di->set('locale', function() use($config) {
                 'en_GB'       => _('English (GB)'),
                 'C'           => _('Browser Default')
         ));
-        $locale->detect($config->locale->request, $config->locale->default);
+        $locale->detect($config->locale->request, $config->locale->default, true);
         return $locale;
 }, true);
 

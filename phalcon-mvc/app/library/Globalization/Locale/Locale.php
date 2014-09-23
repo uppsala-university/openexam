@@ -147,10 +147,12 @@ class Locale extends Component
         /**
          * Set requested locale.
          * @param string $locale The requested locale (e.g. sv_SE).
+         * @param string $name Store locale in named session variable.
          */
-        public function setLocale($locale)
+        public function setLocale($locale, $name = 'lang')
         {
                 $this->locale->setDefault($locale);
+                $this->session->set($name, $locale);
         }
 
         /**
@@ -189,9 +191,10 @@ class Locale extends Component
          * Detect prefered locale.
          * @param string $name The request parameter name.
          * @param string $default The default locale.
+         * @param bool $apply Set locale to detected or default.
          * @return string The detected locale or $default.
          */
-        public function detect($name, $default)
+        public function detect($name = 'lang', $default = 'C', $apply = false)
         {
                 $locale = null;
 
@@ -224,15 +227,14 @@ class Locale extends Component
                         }
                 }
 
-                if (isset($locale)) {
-                        $this->locale->setDefault($locale);
-                        $this->session->set($name, $locale);
-                        return $locale;
-                } else {
-                        $this->locale->setDefault($default);
-                        $this->session->set($name, $default);
-                        return $default;
+                if ($locale == null) {
+                        $locale = $default;
                 }
+                if ($apply) {
+                        $this->setLocale($locale);
+                }
+
+                return $locale;
         }
 
         /**
