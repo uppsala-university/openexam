@@ -35,11 +35,6 @@
         "jpgraph/jpgraph": "For statistical pages or dynamic generated GUI components, e.g. buttons.",
         "piotrooo/wsdl-creator": "Create WSDL document based on PHP classes using annotations and reflection mechanism."
     },
-    "autoload-dev": {
-        "psr-4": {
-            "OpenExam\\Tests\\": "tests/support"
-        }
-    },
     "autoload": {
         "psr-4": {
             "OpenExam\\Composer\\": "admin/composer"

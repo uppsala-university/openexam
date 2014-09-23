@@ -14,4 +14,7 @@ $config = include(CONFIG_PHP);
 include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
 
+$loader = require(__DIR__ . '/../../vendor/autoload.php');
+$loader->addPsr4('OpenExam\\Tests\\', __DIR__ . '/support');
+
 Phalcon\DI::setDefault($di);
