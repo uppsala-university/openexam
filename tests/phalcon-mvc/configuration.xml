@@ -27,7 +27,7 @@ limitations under the License.
 
 <phpunit bootstrap="./bootstrap.php"
          backupGlobals="false"
-         backupStaticAttributes="false"
+         backupStaticAttributes="true"
          verbose="true"
          colors="false"
          convertErrorsToExceptions="true"
@@ -35,16 +35,17 @@ limitations under the License.
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="true">
+         syntaxCheck="true"
+         strict="true">
     <testsuite name="Phalcon MVC - Testsuite">
         <directory>./</directory>
     </testsuite>
     <filter>
         <blacklist>
-              <directory>./../../vendor</directory>
-              <directory>./../../phalcon-mvc/app/config</directory>
+            <directory>./../../vendor</directory>
+            <directory>./../../phalcon-mvc/app/config</directory>
         </blacklist>
-<!--        <whitelist>
+        <!--        <whitelist>
               <directory>../../phalcon-mvc/app/library</directory>
               <directory>../../phalcon-mvc/app/models</directory>
               <directory>../../phalcon-mvc/app/plugins</directory>
