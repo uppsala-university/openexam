@@ -84,6 +84,11 @@ class Locale extends Component
          * @var array 
          */
         private $locales = array();
+        /**
+         * Interface between web server and PHP.
+         * @var type 
+         */
+        protected $sapi;
 
         /**
          * Constructor.
@@ -99,6 +104,8 @@ class Locale extends Component
                         $this->locale = new LocaleFallback();
                         $this->locale->setDefault($locale);
                 }
+
+                $this->sapi = php_sapi_name();
         }
 
         /**
@@ -182,12 +189,13 @@ class Locale extends Component
          * Detect prefered locale.
          * @param string $name The request parameter name.
          * @param string $default The default locale.
+         * @return string The detected locale or $default.
          */
         public function detect($name, $default)
         {
                 $locale = null;
 
-                if (php_sapi_name() != "cli") {
+                if ($this->sapi != "cli") {
                         if ($this->request->has($name)) {
                                 $locale = $this->request->get($name, "string");
                         } elseif ($this->session->has($name)) {
@@ -196,13 +204,15 @@ class Locale extends Component
                                 $locale = $this->persistent->get($name);
                         } elseif ($this->request->getBestLanguage()) {
                                 $locale = $this->request->getBestLanguage();
-                        } else {
-                                $locale = 'C';
                         }
                 } else {
                         foreach (array('LC_CTYPE', 'LANG') as $name) {
                                 if (filter_input(INPUT_ENV, $name, FILTER_SANITIZE_STRING)) {
                                         $locale = filter_input(INPUT_ENV, $name, FILTER_SANITIZE_STRING);
+                                } elseif (strlen(getenv($name)) > 0) {
+                                        $locale = getenv($name);
+                                } elseif (isset($_ENV[$name])) {
+                                        $locale = $_ENV[$name];
                                 }
                         }
                 }
@@ -217,9 +227,11 @@ class Locale extends Component
                 if (isset($locale)) {
                         $this->locale->setDefault($locale);
                         $this->session->set($name, $locale);
+                        return $locale;
                 } else {
                         $this->locale->setDefault($default);
                         $this->session->set($name, $default);
+                        return $default;
                 }
         }
 
@@ -236,7 +248,7 @@ class Locale extends Component
         public function findLocales($langdir)
         {
                 $locales = array();
-                $iterator = new \DirectoryIterator($dir);
+                $iterator = new \DirectoryIterator($langdir);
                 foreach ($iterator as $dir) {
                         $locale = $dir->getBasename();
                         $lang = $this->locale->getDisplayLanguage($locale);
