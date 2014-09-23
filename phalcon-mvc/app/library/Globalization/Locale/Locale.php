@@ -27,12 +27,12 @@ if (!extension_loaded('intl')) {
 
                 public static function setDefault($locale)
                 {
-                        setlocale('LC_ALL', $locale);
+                        setlocale(LC_ALL, $locale);
                 }
 
                 public static function getDefault()
                 {
-                        return setlocale('LC_ALL', "0");
+                        return setlocale(LC_ALL, "0");
                 }
 
                 public static function getDisplayLanguage($locale)
