@@ -123,10 +123,10 @@ $di->set('session', function() {
 $di->set('locale', function() use($config) {
         $locale = new \OpenExam\Library\Globalization\Locale\Locale();
         $locale->setLocales(array(
-                'sv_SE' => _('Swedish'),
-                'en_US' => _('English (US)'),
-                'en_GB' => _('English (GB)'),
-                'C'     => _('Browser Default')
+                'sv_SE.UTF-8' => _('Swedish'),
+                'en_US'       => _('English (US)'),
+                'en_GB'       => _('English (GB)'),
+                'C'           => _('Browser Default')
         ));
         $locale->detect($config->locale->request, $config->locale->default);
         return $locale;
