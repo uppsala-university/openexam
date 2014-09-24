@@ -16,19 +16,41 @@ use Phalcon\Events\Event,
 class Acl extends Plugin
 {
 
+        /**
+         * Access list configuration.
+         * @var array 
+         */
         private $access;
+        /**
+         * The ACL object.
+         * @var AclAdapter 
+         */
+        private $acl;
 
+        /**
+         * Constructor.
+         * @param array $access Access list configuration.
+         */
         public function __construct($access = array())
         {
                 $this->access = $access;
         }
 
+        /**
+         * Get ACL object.
+         * @return AclAdapter
+         */
         public function getAcl()
         {
-                if (!isset($this->persistent->acl)) {
-                        $this->persistent->acl = $this->rebuild();
+                if (!isset($this->acl)) {
+                        if ($this->persistent->has('acl')) {
+                                $this->acl = $this->persistent->get('acl');
+                        } else {
+                                $this->acl = $this->rebuild();
+                                $this->persistent->set('acl', $this->acl);
+                        }
                 }
-                return $this->persistent->acl;
+                return $this->acl;
         }
 
         /**
@@ -83,7 +105,7 @@ class Acl extends Plugin
                 // Use roles map:
                 // 
                 $roles = $this->access['roles'];
-                
+
                 // 
                 // Use permissions map:
                 // 
