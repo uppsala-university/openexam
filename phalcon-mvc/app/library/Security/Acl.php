@@ -2,7 +2,7 @@
 
 namespace OpenExam\Library\Security;
 
-use Phalcon\Acl;
+use Phalcon\Acl as PhalconAcl;
 use Phalcon\Acl\Adapter\Memory as AclAdapter;
 use Phalcon\Acl\Role;
 use Phalcon\Mvc\User\Component;
@@ -68,7 +68,7 @@ class Acl extends Component
         private function rebuild()
         {
                 $acl = new AclAdapter();
-                $acl->setDefaultAction(Acl::DENY);
+                $acl->setDefaultAction(PhalconAcl::DENY);
 
                 // 
                 // Use roles map:
