@@ -251,7 +251,11 @@ class Locale extends Component
                 $iterator = new DirectoryIterator($langdir);
                 foreach ($iterator as $dir) {
                         $locale = $dir->getBasename();
-                        $lang = LocaleSystem::getDisplayLanguage($locale);
+                        if (extension_loaded('intl')) {
+                                $lang = LocaleSystem::getDisplayLanguage($locale);
+                        } else {
+                                $lang = $locale;
+                        }
                         $locales[$locale] = $lang;
                 }
                 return $locales;
