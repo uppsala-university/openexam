@@ -23,10 +23,7 @@ trait SystemWideTrait
 
         private function checkRole()
         {
-                if (($roles = self::getService('roles')) == false) {
-                        throw new Exception(_("Roles service ('roles') is missing."));
-                }
-                if ($roles->aquire($this->rrole) == false) {
+                if ($this->_roles->aquire($this->_role) == false) {
                         throw new Exception(_("You are not authorized to make this call."));
                 }
         }

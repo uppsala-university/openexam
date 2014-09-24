@@ -13,38 +13,52 @@
 
 namespace OpenExam\Models\Access\Traits;
 
+use OpenExam\Library\Security\Roles;
+
 /**
- * Extends behavour of model class.
- *
+ * Model authorization trait.
+ * 
+ * This trait adds behavour to the model class using this trait. It adds
+ * authorization on create, read, update and delete. Authori
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 trait AuthorizationTrait
 {
 
-        private $rrole;
+        /**
+         * The requested role.
+         * @var string 
+         */
+        private $_role;
+        /**
+         * The roles aquisition object.
+         * @var Roles 
+         */
+        private $_roles;
 
         protected function afterFetch()
         {
                 printf("%s: %s\n", __METHOD__, print_r($this->dump(), true));
-                $this->authorize(self::read);
+                $this->authorize(self::READ);
         }
 
         protected function beforeCreate()
         {
                 printf("%s: %s\n", __METHOD__, print_r($this->dump(), true));
-                $this->authorize(self::create);
+                $this->authorize(self::CREATE);
         }
 
         protected function beforeUpdate()
         {
                 printf("%s: %s\n", __METHOD__, print_r($this->dump(), true));
-                $this->authorize(self::update);
+                $this->authorize(self::UPDATE);
         }
 
         protected function beforeDelete()
         {
                 printf("%s: %s\n", __METHOD__, print_r($this->dump(), true));
-                $this->authorize(self::delete);
+                $this->authorize(self::DELETE);
         }
 
         /**
@@ -58,7 +72,7 @@ trait AuthorizationTrait
          */
         public function setRole($role)
         {
-                $this->rrole = $role;
+                $this->_role = $role;
         }
 
         /**
@@ -67,7 +81,7 @@ trait AuthorizationTrait
          */
         public function hasRole()
         {
-                return isset($this->rrole);
+                return isset($this->_role);
         }
 
         /**
@@ -76,27 +90,18 @@ trait AuthorizationTrait
          */
         public function getRole()
         {
-                return $this->rrole;
-        }
-
-        private static function getUser()
-        {
-                if (($session = self::getService('session')) == false) {
-                        throw new Exception(_("Session service ('session') is missing."));
-                }
-                if (($auth = $session->get('auth')) == false) {
-                        throw new Exception(_("User session data ('auth') is missing."));
-                }
-                if (!isset($auth['user'])) {
-                        throw new Exception(_("The calling user is missing in session data."));
-                }
-
-                return $auth['user'];
+                return $this->_role;
         }
 
         private function authorize($action)
         {
-                if (isset($this->rrole)) {
+                if (isset($this->_role)) {
+                        if (($user = $this->getDI()->get('user')) == false) {
+                                throw new Exception(_("The user service ('user') is missing."));
+                        } else {
+                                $this->_roles = $user->roles;
+                        }
+
                         if (method_exists($this, 'checkAccess')) {
                                 $this->checkAccess($action);
                         }
@@ -109,17 +114,12 @@ trait AuthorizationTrait
                 }
         }
 
-        private static function getService($name)
-        {
-                return \Phalcon\DI::getDefault()->get($name);
-        }
-
         private function checkAccess($action)
         {
-                if (($acl = self::getService('acl')) == false) {
-                        throw new Exception(_("ACL service ('acl') is missing."));
+                if (($acl = $this->getDI()->get('acl')) == false) {
+                        throw new Exception(_("The ACL service ('acl') is missing."));
                 }
-                if ($acl->isAllowed($this->rrole, $this->getName(), $action) == false) {
+                if ($acl->isAllowed($this->_role, $this->getName(), $action) == false) {
                         throw new Exception(_("You are not authorized to make this call."));
                 }
         }
