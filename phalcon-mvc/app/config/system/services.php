@@ -141,7 +141,7 @@ $di->set('tr', function() use($config) {
 });
 
 $di->set('acl', function() {
-        return new \OpenExam\Plugins\Security\Acl(
+        return new \OpenExam\Library\Security\Acl(
             require CONFIG_DIR . '/access.def'
         );
 });
