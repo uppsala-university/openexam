@@ -13,6 +13,11 @@ class Session extends ModelBase
 {
 
         /**
+         * The object ID.
+         * @var integer
+         */
+        public $id;
+        /**
          * The session ID.
          * @var string
          */
