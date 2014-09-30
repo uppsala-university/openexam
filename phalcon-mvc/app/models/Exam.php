@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Core\Exam\State;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 
 /**
@@ -201,6 +202,15 @@ class Exam extends ModelBase
         public function getSource()
         {
                 return 'exams';
+        }
+
+        /**
+         * Get examination state.
+         * @return State
+         */
+        public function getState()
+        {
+                return new State($this);
         }
 
 }
