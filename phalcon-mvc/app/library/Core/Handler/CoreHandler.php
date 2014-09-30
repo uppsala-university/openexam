@@ -48,6 +48,9 @@ class CoreHandler extends Component
         public function build($name, $data)
         {
                 $class = sprintf("\OpenExam\Models\%s", ucfirst($name));
+                if (!class_exists($class)) {
+                        throw new Exception("Failed map request target.");
+                }
                 $model = new $class();
                 $model->assign($data);
                 return $model;
