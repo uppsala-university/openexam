@@ -48,12 +48,20 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         private function checkAccessList($event, $model, $action)
         {
+                // 
+                // Check system services:
+                // 
                 if (($acl = $this->getDI()->get('acl')) == false) {
                         throw new Exception('acl');
                 }
                 if (($user = $this->getDI()->get('user')) == false) {
                         throw new Exception('user');
                 }
+                
+                // 
+                // No primary role means unrestricted access. Make sure that
+                // peer is authenticated if primary role is set.
+                // 
                 if ($user->hasPrimaryRole() == false) {
                         return true;    // unrestricted access
                 } elseif ($user->getUser() == null) {
@@ -61,9 +69,18 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 } else {
                         $role = $user->getPrimaryRole();
                 }
+
+                // 
+                // Check that ACL permits access for this role:
+                // 
                 if ($acl->isAllowed($role, $model->getName(), $action) == false) {
                         throw new Exception('access');
                 }
+                
+                // 
+                // Verify that caller has requested role (global), if so,
+                // trigger object specific role verification.
+                // 
                 if ($user->roles->aquire($role) == false) {
                         throw new Exception('role');
                 } else {
