@@ -30,32 +30,4 @@ class ServiceController extends \Phalcon\Mvc\Controller
                 $this->view->disable();
         }
 
-        /**
-         * Create and return model handler object for model.
-         * @param string $role
-         * @param string $model
-         * @return \OpenExam\Library\Core\Handler\HandlerBase
-         */
-        protected static function createHandler($role, $model)
-        {
-                $name = sprintf("\OpenExam\Library\Core\Handler\%sHandler", ucfirst($model));
-                $hobj = new $name($role);
-                return $hobj;
-        }
-
-        /**
-         * Create and return model object. The model data is assigned from
-         * the data parameter.
-         * @param string $model
-         * @param array $data
-         * @return \OpenExam\Models\ModelBase
-         */
-        protected static function createModel($model, $data)
-        {
-                $name = sprintf("\OpenExam\Models\%s", ucfirst($model));
-                $mobj = new $name();
-                $mobj->assign($data);
-                return $mobj;
-        }
-        
 }

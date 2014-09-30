@@ -13,7 +13,12 @@
 
 namespace OpenExam\Controllers\Core;
 
-use \OpenExam\Library\Core\Handler\HandlerBase;
+use Exception;
+use OpenExam\Controllers\Core\RestRequest;
+use OpenExam\Controllers\ServiceController;
+use OpenExam\Library\Core\Handler\CoreHandler;
+use OpenExam\Library\Security\Exception as SecurityException;
+use OpenExam\Plugins\Security\Model\ObjectAccess;
 
 /**
  * REST request helper class.
@@ -97,7 +102,7 @@ class RestRequest
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class RestController extends \OpenExam\Controllers\ServiceController
+class RestController extends ServiceController
 {
 
         public function initialize()
@@ -136,7 +141,7 @@ class RestController extends \OpenExam\Controllers\ServiceController
         public function searchAction()
         {
                 $request = $this->getRestRequest();
-                $request->action = HandlerBase::read;
+                $request->action = ObjectAccess::READ;
                 $this->handle($request);
         }
 
@@ -149,13 +154,38 @@ class RestController extends \OpenExam\Controllers\ServiceController
 
         private function handle($request)
         {
-                $action = $request->action;
-
-                $hobj = self::createHandler($request->role, $request->model);
-                $mobj = self::createModel($request->model, $request->data);
-
-                $this->response->setJsonContent($hobj->$action($mobj));
-                $this->response->send();
+                try {
+                        $action = $request->action;
+                        $handler = new CoreHandler($request->role);
+                        $model = $handler->build($request->model, $request->data);
+                        $result = $handler->action($model, $action);
+                        $this->response->setJsonContent($result);
+                        $this->response->send();
+                } catch (Exception $exception) {
+                        if ($exception instanceof SecurityException) {
+                                switch ($exception->getMessage()) {
+                                        case 'auth':
+                                                $this->response->setStatusCode(401, 'Unauthorized');
+                                                $this->response->send();
+                                                break;
+                                        case 'access':
+                                                $this->response->setStatusCode(405, 'Method Not Allowed');
+                                                $this->response->send();
+                                                break;
+                                        case 'role':
+                                                $this->response->setStatusCode(403, 'Forbidden');
+                                                $this->response->send();
+                                                break;
+                                        default :
+                                                $this->response->setStatusCode(412, 'Precondition Failed');
+                                                $this->response->send();
+                                                break;
+                                }
+                        } else {
+                                $this->response->setStatusCode(500, 'Internal Server Error');
+                                $this->response->send();
+                        }
+                }
         }
 
 }
