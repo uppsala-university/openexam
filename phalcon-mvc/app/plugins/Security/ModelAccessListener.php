@@ -57,7 +57,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 if (($user = $this->getDI()->get('user')) == false) {
                         throw new Exception('user');
                 }
-                
+
                 // 
                 // No primary role means unrestricted access. Make sure that
                 // peer is authenticated if primary role is set.
@@ -76,15 +76,17 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 if ($acl->isAllowed($role, $model->getName(), $action) == false) {
                         throw new Exception('access');
                 }
-                
+
                 // 
                 // Verify that caller has requested role (global), if so,
                 // trigger object specific role verification.
                 // 
                 if ($user->roles->aquire($role) == false) {
                         throw new Exception('role');
+                } elseif (Roles::isCustom($role)) {
+                        return true;    // Custom roles are global
                 } else {
-                        $this->_eventsManager->fire($model->getName() . ':' . $event->getType(), $model);
+                        $this->_eventsManager->fire($model->getName() . ':' . $event->getType(), $model, $user);
                 }
         }
 
