@@ -38,13 +38,13 @@ return array(
                         'decoder'     => '*',
                         'invigilator' => '*',
                         'question'    => 'read',
-                        'topics'      => '*',
+                        'topic'       => '*',
                         'student'     => 'read'
                 ),
                 'contributor' => array(
                         'exam'     => 'read',
                         'question' => '*',
-                        'topics'   => 'read'
+                        'topic'    => 'read'
                 ),
                 'invigilator' => array(
                         'exam'        => 'change',
@@ -60,7 +60,7 @@ return array(
                         'answer'   => 'read',
                         'result'   => 'read',
                         'question' => 'read',
-                        'topics'   => 'read'
+                        'topic'    => 'read'
                 ),
                 'corrector'   => array(
                         'exam'     => 'read',
