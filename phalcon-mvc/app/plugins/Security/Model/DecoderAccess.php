@@ -14,11 +14,9 @@
 namespace OpenExam\Plugins\Security\Model;
 
 use OpenExam\Models\Decoder;
-use Phalcon\Events\Event;
 
 /**
  * Access control for the Decoder model.
- *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class DecoderAccess extends ObjectAccess
@@ -28,10 +26,11 @@ class DecoderAccess extends ObjectAccess
          * Behavour hook.
          * @param string $event
          * @param Decoder $model
+         * @param User $user The peer object.
          */
-        public function notify($event, $model)
+        public function notify($event, $model, $user)
         {
-                printf("%s: event=%s, model=%s\n", __METHOD__, $event, $model->getName());
+                printf("%s: event=%s, model=%s, user=%s\n", __METHOD__, $event, $model->getName(),$user->getPrincipalName());
         }
 
 }

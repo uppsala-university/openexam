@@ -5,28 +5,27 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    Admin.php
-// Created: 2014-09-29 14:09:58
+// File:    FileAccess.php
+// Created: 2014-09-30 14:50:58
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
 namespace OpenExam\Plugins\Security\Model;
 
-use OpenExam\Library\Security\User;
-use OpenExam\Models\Admin;
+use Phalcon\Logger\Adapter\File;
 
 /**
- * Access control for the Admin model.
+ * Access control for the File model.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AdminAccess extends ObjectAccess
+class FileAccess extends ObjectAccess
 {
 
         /**
          * Behavour hook.
          * @param string $event
-         * @param Admin $model
+         * @param File $model
          * @param User $user The peer object.
          */
         public function notify($event, $model, $user)
