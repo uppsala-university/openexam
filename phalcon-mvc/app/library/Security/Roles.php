@@ -376,6 +376,7 @@ class Roles extends Component
                 // 
                 if (self::isCustom($role)) {
                         $this->addRole($role);
+                        return true;
                 }
 
                 // 
