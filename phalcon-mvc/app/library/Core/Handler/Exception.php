@@ -5,20 +5,18 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    TeacherHandler.php
-// Created: 2014-08-25 02:29:58
+// File:    Exception.php
+// Created: 2014-09-30 11:23:05
 // 
-// Author:  Anders Lövgren (QNET/BMC CompDept)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
 namespace OpenExam\Library\Core\Handler;
 
 /**
- * Handler for Teacher model.
- *
- * @author Anders Lövgren (QNET/BMC CompDept)
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class TeacherHandler extends HandlerBase
+class Exception extends \Exception
 {
-
+        
 }

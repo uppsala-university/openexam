@@ -13,13 +13,25 @@
 
 namespace OpenExam\Controllers\Core;
 
+use OpenExam\Controllers\ServiceController;
+use OpenExam\Library\Core\Handler\CoreHandler;
+
 /**
  * AJAX controller for core service.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class AjaxController extends \OpenExam\Controllers\ServiceController
+class AjaxController extends ServiceController
 {
+
+        /**
+         * Success response tag.
+         */
+        const SUCCESS = 'success';
+        /**
+         * failure response tag.
+         */
+        const FAILURE = 'failed';
 
         public function initialize()
         {
@@ -39,10 +51,17 @@ class AjaxController extends \OpenExam\Controllers\ServiceController
 
         public function indexAction($role, $model, $action)
         {
-                $hobj = self::createHandler($role, $model);
-                $mobj = self::createModel($model, $_POST);
+                $result = array();
+                
+                try {
+                        $handler = new CoreHandler($role);
+                        $model = $handler->build($model, $_POST);
+                        $result[self::SUCCESS] = $handler->action($model, $action);
+                } catch (\Exception $exception) {
+                        $result[self::FAILURE] = $exception->getMessage();
+                }
 
-                $this->response->setJsonContent($hobj->$action($mobj));
+                $this->response->setJsonContent($result);
                 $this->response->send();
         }
 
