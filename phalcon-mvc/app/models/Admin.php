@@ -23,6 +23,11 @@ class Admin extends ModelBase
          */
         public $user;
 
+        protected function initialize()
+        {
+                parent::initialize();
+        }
+
         /**
          * Return source table name.
          * @return string

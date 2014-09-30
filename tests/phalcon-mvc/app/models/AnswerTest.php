@@ -3,7 +3,8 @@
 namespace OpenExam\Models;
 
 use Exception;
-use OpenExam\Tests\Phalcon\TestModel;
+use OpenExam\Tests\Phalcon\TestModelAccess;
+use OpenExam\Tests\Phalcon\TestModelBasic;
 
 /**
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -23,12 +24,17 @@ class AnswerModel extends Answer
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AnswerTest extends TestModel
+class AnswerTest extends TestModelBasic
 {
 
         public function __construct()
         {
                 parent::__construct(new AnswerModel());
+        }
+
+        protected function setUp()
+        {
+                $this->getDI()->get('user')->setPrimaryRole(null);
         }
 
         /**
@@ -46,7 +52,7 @@ class AnswerTest extends TestModel
                 self::assertTrue(count($answer->question) == 1);
                 self::assertTrue(count($answer->result) == 1);
                 self::assertTrue(count($answer->student) == 1);
-                
+
                 $answer = File::findFirst()->answer;
                 self::assertNotEquals($answer->files->count(), 0);
                 self::assertTrue(count($answer->files) > 0);
@@ -63,7 +69,7 @@ class AnswerTest extends TestModel
                 );
 
                 try {
-                        $helper = new TestModel(new Answer());
+                        $helper = new TestModelBasic(new Answer());
                         $helper->tryPersist();
                         self::fail("Excepted constraint violation exception");
                 } catch (Exception $exception) {
@@ -71,7 +77,7 @@ class AnswerTest extends TestModel
                 }
 
                 try {
-                        $helper = new TestModel(new Answer());
+                        $helper = new TestModelBasic(new Answer());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
                         self::fail($exception);
@@ -89,7 +95,7 @@ class AnswerTest extends TestModel
                         'comment'     => 'Comment text'
                 );
                 try {
-                        $helper = new TestModel(new Answer());
+                        $helper = new TestModelBasic(new Answer());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
                         self::fail($exception);
@@ -101,12 +107,27 @@ class AnswerTest extends TestModel
                         'non_existing' => 666
                 );
                 try {
-                        $helper = new TestModel(new Answer());
+                        $helper = new TestModelBasic(new Answer());
                         $helper->tryPersist();
                         self::fail("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }
+        }
+
+        /**
+         * @group model
+         * @group security
+         */
+        public function testAccess()
+        {
+                $values = array(
+                        'student_id'  => Student::findFirst()->id,
+                        'question_id' => Question::findFirst()->id
+                );
+
+                $helper = new TestModelAccess(new Answer(), $values);
+                $helper->testModelAccess();
         }
 
         /**

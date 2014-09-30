@@ -22,6 +22,18 @@ $di->set('router', function() use($di) {
         return require CONFIG_SYS . '/routes.php';
 });
 
+$di->set('modelsManager', function() {
+        $eventsManager = new \Phalcon\Events\Manager();
+        $accessListener = new OpenExam\Plugins\Security\ModelAccessListener();
+        $accessListener->setEventsManager($eventsManager);
+        $eventsManager->attach('model', $accessListener);
+        $eventsManager->attach('admin', new OpenExam\Plugins\Security\Model\AdminAccess());
+        $eventsManager->attach('decoder', new OpenExam\Plugins\Security\Model\DecoderAccess());
+        $modelsManager = new \Phalcon\Mvc\Model\Manager();
+        $modelsManager->setEventsManager($eventsManager);
+        return $modelsManager;
+}, true);
+
 //$di->set('dispatcher', function () {
 //
 //        $dispatcher = new Phalcon\Mvc\Dispatcher();
@@ -158,6 +170,15 @@ $di->set('auth', function() {
 $di->set('user', function() use($config) {
         $user = new \OpenExam\Library\Security\User();
         return $user;
+}, true);
+
+/**
+ * The system log.
+ */
+$di->set('logger', function() use($config) {
+        $logfile = $config->application->logsDir . DIRECTORY_SEPARATOR . 'openexam.log';
+        $logger = new Phalcon\Logger\Adapter\File($logfile);
+        return $logger;
 }, true);
 
 return $di;

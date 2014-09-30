@@ -3,7 +3,8 @@
 namespace OpenExam\Models;
 
 use Exception;
-use OpenExam\Tests\Phalcon\TestModel;
+use OpenExam\Tests\Phalcon\TestModelAccess;
+use OpenExam\Tests\Phalcon\TestModelBasic;
 
 /**
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -23,12 +24,17 @@ class ComputerModel extends Computer
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ComputerTest extends TestModel
+class ComputerTest extends TestModelBasic
 {
 
         public function __construct()
         {
                 parent::__construct(new ComputerModel());
+        }
+
+        protected function setUp()
+        {
+                $this->getDI()->get('user')->setPrimaryRole(null);
         }
 
         /**
@@ -59,7 +65,7 @@ class ComputerTest extends TestModel
                 );
 
                 try {
-                        $helper = new TestModel(new Computer());
+                        $helper = new TestModelBasic(new Computer());
                         $helper->tryPersist();
                         self::fail("Excepted constraint violation exception");
                 } catch (Exception $exception) {
@@ -67,7 +73,7 @@ class ComputerTest extends TestModel
                 }
 
                 try {
-                        $helper = new TestModel(new Computer());
+                        $helper = new TestModelBasic(new Computer());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
                         self::fail($exception);
@@ -83,7 +89,7 @@ class ComputerTest extends TestModel
                         'password' => 'secret'
                 );
                 try {
-                        $helper = new TestModel(new Computer());
+                        $helper = new TestModelBasic(new Computer());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
                         self::fail($exception);
@@ -96,12 +102,29 @@ class ComputerTest extends TestModel
                         'non_existing' => 666
                 );
                 try {
-                        $helper = new TestModel(new Computer());
+                        $helper = new TestModelBasic(new Computer());
                         $helper->tryPersist();
                         self::fail("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected excetion (user required)
                 }
+        }
+
+        /**
+         * @group model
+         * @group security
+         */
+        public function testAccess()
+        {
+                $values = array(
+                        'room_id'  => Room::findFirst()->id,
+                        'ipaddr'   => '127.0.0.1',
+                        'port'     => 4092,
+                        'password' => 'secret'
+                );
+
+                $helper = new TestModelAccess(new Computer(), $values);
+                $helper->testModelAccess();
         }
 
         /**

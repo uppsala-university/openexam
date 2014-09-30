@@ -2,8 +2,10 @@
 
 namespace OpenExam\Models;
 
+use Exception;
 use OpenExam\Models\Room;
-use OpenExam\Tests\Phalcon\TestModel;
+use OpenExam\Tests\Phalcon\TestModelAccess;
+use OpenExam\Tests\Phalcon\TestModelBasic;
 
 class RoomModel extends Room
 {
@@ -20,12 +22,17 @@ class RoomModel extends Room
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class RoomTest extends TestModel
+class RoomTest extends TestModelBasic
 {
 
         public function __construct()
         {
                 parent::__construct(new RoomModel());
+        }
+
+        protected function setUp()
+        {
+                $this->getDI()->get('user')->setPrimaryRole(null);
         }
 
         /**
@@ -51,19 +58,34 @@ class RoomTest extends TestModel
                 );
 
                 try {
-                        $helper = new TestModel(new Room());
+                        $helper = new TestModelBasic(new Room());
                         $helper->tryPersist();
                         self::fail("Excepted constraint violation exception");
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         // Expected exception
                 }
 
                 try {
-                        $helper = new TestModel(new Room());
+                        $helper = new TestModelBasic(new Room());
                         $helper->tryPersist($values);
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         self::fail($exception);
                 }
+        }
+
+        /**
+         * @group model
+         * @group security
+         */
+        public function testAccess()
+        {
+                $values = array(
+                        'name'        => 'Name1',
+                        'description' => 'Description1'
+                );
+
+                $helper = new TestModelAccess(new Room(), $values);
+                $helper->testModelAccess();
         }
 
         /**

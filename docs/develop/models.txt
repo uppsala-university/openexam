@@ -26,4 +26,17 @@ Phalcon devtools.
    Unfortunate, the devtools can only create new models, not updating existing. All
    changes has to be applied manual.
 
+** Checked access:
+
+   Access restricted access to the model is enabled by setting a primary role on 
+   the user before accessing the model. Doing this enables resource (ACL) and object 
+   access in the model:
+
+        $user = $this->getDI()->get('user');
+        $user->setPrimaryRole($role);
+
+   Contrary, the access control gets disabled by setting the primary role to null:
+
+        $user->setPrimaryRole(null);
+
 // Anders Lövgren, 2014-09-10

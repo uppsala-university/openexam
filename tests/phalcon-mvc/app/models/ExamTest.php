@@ -3,7 +3,8 @@
 namespace OpenExam\Models;
 
 use Exception;
-use OpenExam\Tests\Phalcon\TestModel;
+use OpenExam\Tests\Phalcon\TestModelAccess;
+use OpenExam\Tests\Phalcon\TestModelBasic;
 
 /**
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -23,12 +24,17 @@ class ExamModel extends Exam
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ExamTest extends TestModel
+class ExamTest extends TestModelBasic
 {
 
         public function __construct()
         {
                 parent::__construct(new ExamModel());
+        }
+
+        protected function setUp()
+        {
+                $this->getDI()->get('user')->setPrimaryRole(null);
         }
 
         /**
@@ -71,13 +77,13 @@ class ExamTest extends TestModel
 
                 self::assertNotEquals($exam->topics->count(), 0);
                 self::assertTrue(count($exam->topics) > 0);
-                
+
                 $exam = Lock::findFirst()->exam;
                 self::assertNotNull($exam);
 
                 self::assertNotEquals($exam->locks->count(), 0);
                 self::assertTrue(count($exam->locks) > 0);
-                
+
                 $exam = Resource::findFirst()->exam;
                 self::assertNotNull($exam);
 
@@ -98,7 +104,7 @@ class ExamTest extends TestModel
                 );
 
                 try {
-                        $helper = new TestModel(new Exam());
+                        $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist();
                         self::fail("Excepted constraint violation exception");
                 } catch (Exception $exception) {
@@ -106,7 +112,7 @@ class ExamTest extends TestModel
                 }
 
                 try {
-                        $helper = new TestModel(new Exam());
+                        $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
                         self::fail($exception);
@@ -129,7 +135,7 @@ class ExamTest extends TestModel
                         'name'    => 'name1'
                 );
                 try {
-                        $helper = new TestModel(new Exam());
+                        $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
                         self::fail($exception);
@@ -151,11 +157,28 @@ class ExamTest extends TestModel
                         'lockdown'  => true
                 );
                 try {
-                        $helper = new TestModel(new Exam());
+                        $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
                         self::fail($exception);
                 }
+        }
+
+        /**
+         * @group model
+         * @group security
+         */
+        public function testAccess()
+        {
+                $values = array(
+                        'creator' => 'user1',
+                        'orgunit' => 'orgunit1',
+                        'grades'  => json_encode(array('data' => array('key1' => 'val1'))),
+                        'name'    => 'name1'
+                );
+
+                $helper = new TestModelAccess(new Exam(), $values);
+                $helper->testModelAccess();
         }
 
         /**

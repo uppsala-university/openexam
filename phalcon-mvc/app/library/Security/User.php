@@ -45,14 +45,23 @@ class User extends Component
          * @var string 
          */
         private $_user;
+        /**
+         * The primary role.
+         * @var string 
+         */
+        private $_role;
 
         /**
          * Constructor.
+         * @param string $role The primary role (for authorization).
          * @param string $user The username (simple or principal).
          * @param string $domain The user domain.
+         * @param array $roles Array of "act-as" roles.
          */
-        public function __construct($user = null, $domain = null, $roles = array())
+        public function __construct($user = null, $domain = null, $role = null, $roles = array())
         {
+                $this->_role = $role;
+
                 if (isset($user)) {
                         if (isset($domain)) {
                                 $this->_user = $user;
@@ -87,7 +96,7 @@ class User extends Component
         {
                 return isset($this->_user) ? $this->getPrincipalName() : "";
         }
-        
+
         /**
          * Get user principal name.
          * @return string
@@ -115,6 +124,34 @@ class User extends Component
         public function getUser()
         {
                 return $this->_user;
+        }
+
+        /**
+         * Get primary role.
+         * @return string
+         */
+        public function getPrimaryRole()
+        {
+                return $this->_role;
+        }
+
+        /**
+         * Set primary role.
+         * @param string $role The primary role.
+         * @return bool True if primary role was successful aquired.
+         */
+        public function setPrimaryRole($role)
+        {
+                $this->_role = $role;
+        }
+
+        /**
+         * Check if user has primary role.
+         * @return bool
+         */
+        public function hasPrimaryRole()
+        {
+                return isset($this->_role);
         }
 
 }

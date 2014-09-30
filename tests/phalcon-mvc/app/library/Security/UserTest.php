@@ -18,6 +18,7 @@ class UserTest extends TestCase
         protected $object;
         private static $user = 'user1';
         private static $domain = 'domain1';
+        private static $role = 'role1';
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -25,7 +26,7 @@ class UserTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new User(self::$user, self::$domain);
+                $this->object = new User(self::$user, self::$domain, self::$role);
         }
 
         /**
@@ -122,7 +123,7 @@ class UserTest extends TestCase
                         2 => array(Roles::DECODER, Roles::INVIGILATOR),
                         3 => array(Roles::INVIGILATOR)
                 );
-                $this->object = new User($user, null, $roles);
+                $this->object = new User($user, null, null, $roles);
                 self::assertTrue(count($this->object->roles->getRoles(0)) == 5);
                 self::assertTrue(count($this->object->roles->getRoles(1)) == 1);
                 self::assertTrue(count($this->object->roles->getRoles(2)) == 2);
@@ -195,6 +196,48 @@ class UserTest extends TestCase
 
                 $this->object = new User();
                 self::assertNull($this->object->getUser());
+        }
+
+        /**
+         * @covers OpenExam\Library\Security\User::getPrimaryRole
+         * @group security
+         */
+        public function testGetPrimaryRole()
+        {
+                self::assertNotNull($this->object->getPrimaryRole());
+                self::assertNotEmpty($this->object->getPrimaryRole());
+                self::assertTrue($this->object->getPrimaryRole() == self::$role);
+
+                $this->object = new User();
+                self::assertNull($this->object->getPrimaryRole());
+        }
+
+        /**
+         * @covers OpenExam\Library\Security\User::setPrimaryRole
+         * @group security
+         */
+        public function testSetPrimaryRole()
+        {
+                self::assertNotNull($this->object->getPrimaryRole());
+
+                $this->object->setPrimaryRole(null);
+                self::assertNull($this->object->getPrimaryRole());
+
+                $expect = 'somerole';
+                $this->object->setPrimaryRole($expect);
+                $actual = $this->object->getPrimaryRole();
+                self::assertEquals($expect, $actual);
+        }
+
+        /**
+         * @covers OpenExam\Library\Security\User::hasPrimaryRole
+         * @group security
+         */
+        public function testHasPrimaryRole()
+        {
+                self::assertTrue($this->object->hasPrimaryRole());
+                $this->object->setPrimaryRole(null);
+                self::assertFalse($this->object->hasPrimaryRole());
         }
 
         /**

@@ -40,7 +40,7 @@ use Phalcon\Mvc\Model;
  * </code>
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class TestModel extends TestCase
+class TestModelBasic extends TestCase
 {
 
         /**
@@ -117,6 +117,11 @@ class TestModel extends TestCase
                 }
         }
 
+        /**
+         * Check that default values match the expected.
+         * @group model
+         * @param array $default Default values.
+         */
         public function checkDefaults($default = array())
         {
                 foreach ($default as $name => $value) {
