@@ -15,6 +15,7 @@ namespace OpenExam\Controllers\Core;
 
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\Core\Handler\CoreHandler;
+use OpenExam\Library\Core\Handler\Exception;
 
 /**
  * AJAX controller for core service.
@@ -57,20 +58,23 @@ class AjaxController extends ServiceController
                         // 
                         // Payload is either on stdin or in POST-data:
                         // 
-                        if ($this->request->isAjax() || count($_POST) == 0) {
-                                $data = file_get_contents("php://input");
-                        } else {
+                        if (count($_POST) > 0) {
                                 $data = $_POST;
+                        } else {
+                                $data = file_get_contents("php://input");
                         }
 
                         // 
                         // Convert data if needed/requested:
                         // 
-                        if ($this->request->getBestAccept() == 'application/json') {
-                                $data = json_decode($data);
-                        } elseif (!is_array($data)) {
-                                $data = json_decode($data);
+                        if (is_string($data)) {
+                                if ($this->request->getBestAccept() == 'application/json') {
+                                        $data = json_decode($data);
+                                } else {
+                                        throw new Exception("Unhandled content type");
+                                }
                         }
+
                         if (!isset($data)) {
                                 throw new Exception("Input data is missing");
                         }
