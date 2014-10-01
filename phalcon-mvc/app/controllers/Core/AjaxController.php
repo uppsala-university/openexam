@@ -52,10 +52,41 @@ class AjaxController extends ServiceController
         public function indexAction($role, $model, $action)
         {
                 $result = array();
-                
+
                 try {
+                        // 
+                        // Payload is either on stdin or in POST-data:
+                        // 
+                        if ($this->request->isAjax() || count($_POST) == 0) {
+                                $data = file_get_contents("php://input");
+                        } else {
+                                $data = $_POST;
+                        }
+
+                        // 
+                        // Convert data if needed/requested:
+                        // 
+                        if ($this->request->getBestAccept() == 'application/json') {
+                                $data = json_decode($data);
+                        } elseif (!is_array($data)) {
+                                $data = json_decode($data);
+                        }
+                        if (!isset($data)) {
+                                throw new Exception("Input data is missing");
+                        }
+
+                        // 
+                        // Currently, we are only handling array data;
+                        // 
+                        if (!is_array($data)) {
+                                $data = (array) $data;
+                        }
+
+                        // 
+                        // Handler request thru core handler:
+                        // 
                         $handler = new CoreHandler($role);
-                        $model = $handler->build($model, $_POST);
+                        $model = $handler->build($model, $data);
                         $result[self::SUCCESS] = $handler->action($model, $action);
                 } catch (\Exception $exception) {
                         $result[self::FAILURE] = $exception->getMessage();
