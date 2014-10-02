@@ -581,6 +581,18 @@ class RolesTest extends TestCase
                 self::assertFalse(Roles::isCustom(Roles::ADMIN));
         }
 
+        /**
+         * @covers OpenExam\Library\Security\Roles::isGlobal($role)
+         * @group security
+         */
+        public function testIsGlobal()
+        {
+                self::assertTrue(Roles::isGlobal('service'));
+                self::assertTrue(Roles::isGlobal(Roles::ADMIN));
+                self::assertTrue(Roles::isGlobal(Roles::TEACHER));
+                self::assertFalse(Roles::isCustom(Roles::CONTRIBUTOR));
+        }
+
         private static function dump($model)
         {
                 printf("%s: ", get_class($model));

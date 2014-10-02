@@ -441,4 +441,14 @@ class Roles extends Component
                 return in_array($role, $class->getConstants()) == false;
         }
 
+        /**
+         * Check if role is global. That is, either custom, admin or teacher.
+         * @param string $role
+         * @return bool
+         */
+        public static function isGlobal($role)
+        {
+                return self::isCustom($role) || $role == self::TEACHER || $role == self::ADMIN;
+        }
+
 }
