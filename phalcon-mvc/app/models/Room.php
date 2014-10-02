@@ -30,7 +30,7 @@ class Room extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->hasMany('id', 'OpenExam\Models\Computer', 'room_id', array('alias' => 'Computers'));
+                $this->hasMany('id', 'OpenExam\Models\Computer', 'room_id', array('alias' => 'computers'));
         }
 
         public function getSource()

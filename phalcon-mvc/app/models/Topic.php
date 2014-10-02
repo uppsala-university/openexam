@@ -61,8 +61,8 @@ class Topic extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->hasMany('id', 'OpenExam\Models\Question', 'topic_id', array('alias' => 'Questions'));
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
+                $this->hasMany('id', 'OpenExam\Models\Question', 'topic_id', array('alias' => 'questions'));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
         }
 
         /**

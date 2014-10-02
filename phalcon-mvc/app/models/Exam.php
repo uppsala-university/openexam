@@ -122,14 +122,14 @@ class Exam extends ModelBase
         {
                 parent::initialize();
 
-                $this->hasMany('id', 'OpenExam\Models\Contributor', 'exam_id', array('alias' => 'Contributors'));
-                $this->hasMany('id', 'OpenExam\Models\Decoder', 'exam_id', array('alias' => 'Decoders'));
-                $this->hasMany('id', 'OpenExam\Models\Invigilator', 'exam_id', array('alias' => 'Invigilators'));
-                $this->hasMany('id', 'OpenExam\Models\Lock', 'exam_id', array('alias' => 'Locks'));
-                $this->hasMany('id', 'OpenExam\Models\Question', 'exam_id', array('alias' => 'Questions'));
-                $this->hasMany("id", "OpenExam\Models\Resource", "exam_id", array("alias" => 'Resources'));
-                $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'Students'));
-                $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array('alias' => 'Topics'));
+                $this->hasMany('id', 'OpenExam\Models\Contributor', 'exam_id', array('alias' => 'contributors'));
+                $this->hasMany('id', 'OpenExam\Models\Decoder', 'exam_id', array('alias' => 'decoders'));
+                $this->hasMany('id', 'OpenExam\Models\Invigilator', 'exam_id', array('alias' => 'invigilators'));
+                $this->hasMany('id', 'OpenExam\Models\Lock', 'exam_id', array('alias' => 'locks'));
+                $this->hasMany('id', 'OpenExam\Models\Question', 'exam_id', array('alias' => 'questions'));
+                $this->hasMany("id", "OpenExam\Models\Resource", "exam_id", array("alias" => 'resources'));
+                $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'students'));
+                $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array('alias' => 'topics'));
 
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(

@@ -45,8 +45,8 @@ class Student extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array('alias' => 'Answers'));
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
+                $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array('alias' => 'answers'));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
         }
 
         public function getSource()

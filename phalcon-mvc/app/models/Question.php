@@ -78,10 +78,10 @@ class Question extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array('alias' => 'Answers'));
-                $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array('alias' => 'Correctors'));
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'Exam'));
-                $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array('foreignKey' => true, 'alias' => 'Topic'));
+                $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array('alias' => 'answers'));
+                $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array('alias' => 'correctors'));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
+                $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array('foreignKey' => true, 'alias' => 'topic'));
         }
 
         /**

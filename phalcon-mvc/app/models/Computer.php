@@ -61,8 +61,8 @@ class Computer extends ModelBase
         {
                 parent::initialize();
 
-                $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array('alias' => 'Locks'));
-                $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array('foreignKey' => true, 'alias' => 'Room'));
+                $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array('alias' => 'locks'));
+                $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array('foreignKey' => true, 'alias' => 'room'));
 
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(
