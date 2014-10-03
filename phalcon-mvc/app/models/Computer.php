@@ -9,7 +9,7 @@ use Phalcon\Mvc\Model\Behavior\Timestampable;
  * 
  * Represent an computer that is accessing an exam (only for student).
  * 
- * @property Lock $locks The related lock (if any).
+ * @property Lock[] $locks The related lock (if any).
  * @property Room $room The related room (if any).
  * @author Anders Lövgren (QNET/BMC CompDept)
  */

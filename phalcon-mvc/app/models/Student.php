@@ -9,7 +9,7 @@ namespace OpenExam\Models;
  * associated tag. It's usually used for storing miscellanous data that can 
  * be used in the result report process.
  * 
- * @property Answer $answers Answers related to this student.
+ * @property Answer[] $answers Answers related to this student.
  * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
