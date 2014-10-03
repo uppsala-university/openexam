@@ -3,6 +3,7 @@
 namespace OpenExam\Models;
 
 use Exception;
+use OpenExam\Tests\Phalcon\TestCase;
 use OpenExam\Tests\Phalcon\TestModelAccess;
 use OpenExam\Tests\Phalcon\TestModelBasic;
 
@@ -24,13 +25,8 @@ class AnswerModel extends Answer
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AnswerTest extends TestModelBasic
+class AnswerTest extends TestCase
 {
-
-        public function __construct()
-        {
-                parent::__construct(new AnswerModel());
-        }
 
         protected function setUp()
         {
@@ -121,12 +117,7 @@ class AnswerTest extends TestModelBasic
          */
         public function testAccess()
         {
-                $values = array(
-                        'student_id'  => Student::findFirst()->id,
-                        'question_id' => Question::findFirst()->id
-                );
-
-                $helper = new TestModelAccess(new Answer(), $values);
+                $helper = new TestModelAccess(new Answer());
                 $helper->testModelAccess();
         }
 
@@ -136,8 +127,9 @@ class AnswerTest extends TestModelBasic
          */
         public function testGetSource()
         {
+                $object = new AnswerModel();
                 $expect = "answers";
-                $actual = $this->object->getSource();
+                $actual = $object->getSource();
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }

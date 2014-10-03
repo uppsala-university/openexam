@@ -3,6 +3,7 @@
 namespace OpenExam\Models;
 
 use Exception;
+use OpenExam\Tests\Phalcon\TestCase;
 use OpenExam\Tests\Phalcon\TestModelAccess;
 use OpenExam\Tests\Phalcon\TestModelBasic;
 
@@ -24,13 +25,8 @@ class ComputerModel extends Computer
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ComputerTest extends TestModelBasic
+class ComputerTest extends TestCase
 {
-
-        public function __construct()
-        {
-                parent::__construct(new ComputerModel());
-        }
 
         protected function setUp()
         {
@@ -116,14 +112,7 @@ class ComputerTest extends TestModelBasic
          */
         public function testAccess()
         {
-                $values = array(
-                        'room_id'  => Room::findFirst()->id,
-                        'ipaddr'   => '127.0.0.1',
-                        'port'     => 4092,
-                        'password' => 'secret'
-                );
-
-                $helper = new TestModelAccess(new Computer(), $values);
+                $helper = new TestModelAccess(new Computer());
                 $helper->testModelAccess();
         }
 
@@ -133,8 +122,9 @@ class ComputerTest extends TestModelBasic
          */
         public function testGetSource()
         {
+                $object = new ComputerModel();
                 $expect = "computers";
-                $actual = $this->object->getSource();
+                $actual = $object->getSource();
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }

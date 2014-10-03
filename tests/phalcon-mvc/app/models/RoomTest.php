@@ -4,6 +4,7 @@ namespace OpenExam\Models;
 
 use Exception;
 use OpenExam\Models\Room;
+use OpenExam\Tests\Phalcon\TestCase;
 use OpenExam\Tests\Phalcon\TestModelAccess;
 use OpenExam\Tests\Phalcon\TestModelBasic;
 
@@ -22,13 +23,8 @@ class RoomModel extends Room
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class RoomTest extends TestModelBasic
+class RoomTest extends TestCase
 {
-
-        public function __construct()
-        {
-                parent::__construct(new RoomModel());
-        }
 
         protected function setUp()
         {
@@ -79,12 +75,7 @@ class RoomTest extends TestModelBasic
          */
         public function testAccess()
         {
-                $values = array(
-                        'name'        => 'Name1',
-                        'description' => 'Description1'
-                );
-
-                $helper = new TestModelAccess(new Room(), $values);
+                $helper = new TestModelAccess(new Room());
                 $helper->testModelAccess();
         }
 
@@ -94,8 +85,9 @@ class RoomTest extends TestModelBasic
          */
         public function testGetSource()
         {
+                $object = new RoomModel();
                 $expect = "rooms";
-                $actual = $this->object->getSource();
+                $actual = $object->getSource();
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }

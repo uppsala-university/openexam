@@ -3,6 +3,7 @@
 namespace OpenExam\Models;
 
 use Exception;
+use OpenExam\Tests\Phalcon\TestCase;
 use OpenExam\Tests\Phalcon\TestModelAccess;
 use OpenExam\Tests\Phalcon\TestModelBasic;
 
@@ -24,13 +25,8 @@ class ExamModel extends Exam
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ExamTest extends TestModelBasic
+class ExamTest extends TestCase
 {
-
-        public function __construct()
-        {
-                parent::__construct(new ExamModel());
-        }
 
         protected function setUp()
         {
@@ -170,14 +166,7 @@ class ExamTest extends TestModelBasic
          */
         public function testAccess()
         {
-                $values = array(
-                        'creator' => 'user1',
-                        'orgunit' => 'orgunit1',
-                        'grades'  => json_encode(array('data' => array('key1' => 'val1'))),
-                        'name'    => 'name1'
-                );
-
-                $helper = new TestModelAccess(new Exam(), $values);
+                $helper = new TestModelAccess(new Exam());
                 $helper->testModelAccess();
         }
 
@@ -187,8 +176,9 @@ class ExamTest extends TestModelBasic
          */
         public function testGetSource()
         {
+                $object = new ExamModel();
                 $expect = "exams";
-                $actual = $this->object->getSource();
+                $actual = $object->getSource();
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }

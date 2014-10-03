@@ -12,13 +12,8 @@ use OpenExam\Tests\Phalcon\TestModelBasic;
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AdminTest extends TestModelBasic
+class AdminTest extends TestCase
 {
-
-        public function __construct()
-        {
-                parent::__construct(new Admin());
-        }
 
         protected function setUp()
         {
@@ -67,11 +62,7 @@ class AdminTest extends TestModelBasic
          */
         public function testAccess()
         {
-                $values = array(
-                        'user' => 'user1'
-                );
-
-                $helper = new TestModelAccess(new Admin(), $values);
+                $helper = new TestModelAccess(new Admin());
                 $helper->testModelAccess();
         }
 
@@ -83,7 +74,7 @@ class AdminTest extends TestModelBasic
         {
                 $object = new Admin();
                 $expect = "admins";
-                $actual = $this->object->getSource();
+                $actual = $object->getSource();
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }
