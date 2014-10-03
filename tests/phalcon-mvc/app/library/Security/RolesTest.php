@@ -244,7 +244,7 @@ class RolesTest extends TestCase
                 self::assertTrue(count($this->object->getAllRoles()[0]) == 3);
                 self::assertTrue(count($this->object->getAllRoles()[1]) == 2);
 
-                printf("%s: [roles: '%s']\n", __METHOD__, print_r($this->object->getAllRoles(), true));
+                self::info("[roles: '%s']\n", print_r($this->object->getAllRoles(), true));
         }
 
         /**
@@ -312,8 +312,8 @@ class RolesTest extends TestCase
                 $user = new User($principal);
                 $this->di->set('user', $user);
 
-                printf("%s: [principal name: '%s'] (local)\n", __METHOD__, $user);
-                printf("%s: [principal name: '%s'] (magic)\n", __METHOD__, $this->user);
+                self::info("[principal name: '%s'] (local)\n", $user);
+                self::info("[principal name: '%s'] (magic)\n", $this->user);
                 self::assertNotNull($this->user);
                 self::assertNotNull($this->di->get('user'));
                 self::assertSame($user, $this->user);
@@ -339,7 +339,7 @@ class RolesTest extends TestCase
                 $exam->grades = json_encode(array('data' => array('U' => 0, 'G' => 20, 'VG' => 30)));
 
                 if ($exam->create() === false) {
-                        self::fail(print_r($exam->getMessages(), true));
+                        self::error(print_r($exam->getMessages(), true));
                 }
 
                 $this->checkAquireExamRole($principal, $exam, Roles::CREATOR, null);
@@ -365,13 +365,13 @@ class RolesTest extends TestCase
          */
         private function checkAquireSystemRole($user, $role, $class)
         {
-                printf("%s: [class: '%s', role: '%s']\n", __METHOD__, $class, $role);
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[class: '%s', role: '%s']", $class, $role);
+                self::info("[roles: '%s']", $this->object);
 
                 self::assertFalse($this->object->aquire($role));
                 self::assertFalse($this->object->aquire($role, 0));
                 self::assertFalse($this->object->aquire($role, 1));
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[roles: '%s']", $this->object);
 
                 $model = new $class();
                 $model->user = $user;
@@ -381,7 +381,7 @@ class RolesTest extends TestCase
                 self::assertTrue($this->object->aquire($role));
                 self::assertTrue($this->object->aquire($role, 0));
                 self::assertTrue($this->object->aquire($role, 1));
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[roles: '%s']", $this->object);
                 $model->delete();       // cleanup                
         }
 
@@ -398,14 +398,14 @@ class RolesTest extends TestCase
          */
         private function checkAquireExamRole($user, $exam, $role, $class)
         {
-                printf("%s: [class: '%s', role: '%s']\n", __METHOD__, $class, $role);
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[class: '%s', role: '%s']\n", $class, $role);
+                self::info("[roles: '%s']\n", $this->object);
 
                 if ($role != Roles::CREATOR) {
                         self::assertFalse($this->object->aquire($role));
                         self::assertFalse($this->object->aquire($role, 0));
                         self::assertFalse($this->object->aquire($role, $exam->id));
-                        printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                        self::info("[roles: '%s']\n", $this->object);
 
                         $model = new $class();
                         $model->exam_id = $exam->id;
@@ -414,7 +414,7 @@ class RolesTest extends TestCase
                                 $model->code = '1234ABCD';
                         }
                         if ($model->create() == false) {
-                                self::fail(implode("\n", $model->getMessages()));
+                                self::error(implode("\n", $model->getMessages()));
                         }
                         self::dump($model);
                 }
@@ -423,7 +423,7 @@ class RolesTest extends TestCase
                 self::assertTrue($this->object->aquire($role, 0));
                 self::assertTrue($this->object->aquire($role, $exam->id));
                 self::assertFalse($this->object->aquire($role, $exam->id + 1));
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[roles: '%s']\n", $this->object);
 
                 if ($role != Roles::CREATOR) {
                         $model->delete();       // cleanup                
@@ -444,18 +444,18 @@ class RolesTest extends TestCase
         {
                 $role = Roles::CORRECTOR;
 
-                printf("%s: [exam: '%s', role: '%s']\n", __METHOD__, $exam->id, $role);
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[exam: '%s', role: '%s']\n", $exam->id, $role);
+                self::info("[roles: '%s']\n", $this->object);
 
                 self::assertFalse($this->object->aquire($role));
                 self::assertFalse($this->object->aquire($role, 0));
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[roles: '%s']\n", $this->object);
 
                 $tmodel = new Topic();
                 $tmodel->exam_id = $exam->id;
                 $tmodel->name = "Topic 1";
                 if ($tmodel->create() == false) {
-                        self::fail(implode("\n", $tmodel->getMessages()));
+                        self::error(implode("\n", $tmodel->getMessages()));
                 }
                 self::dump($tmodel);
 
@@ -466,20 +466,20 @@ class RolesTest extends TestCase
                 $qmodel->name = "Question 1";
                 $qmodel->quest = "Body";
                 if ($qmodel->create() == false) {
-                        self::fail(implode("\n", $qmodel->getMessages()));
+                        self::error(implode("\n", $qmodel->getMessages()));
                 }
                 self::dump($qmodel);
 
                 self::assertFalse($this->object->aquire($role));
                 self::assertFalse($this->object->aquire($role, 0));
                 self::assertFalse($this->object->aquire($role, $qmodel->id));
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[roles: '%s']\n", $this->object);
 
                 $cmodel = new Corrector();
                 $cmodel->question_id = $qmodel->id;
                 $cmodel->user = $user;
                 if ($cmodel->create() == false) {
-                        self::fail(implode("\n", $cmodel->getMessages()));
+                        self::error(implode("\n", $cmodel->getMessages()));
                 }
                 self::dump($cmodel);
 
@@ -489,7 +489,7 @@ class RolesTest extends TestCase
                 self::assertTrue($this->object->aquire($role, $exam->id));
                 self::assertFalse($this->object->aquire($role, $qmodel->id + 1));
                 self::assertFalse($this->object->aquire($role, $exam->id + 1));
-                printf("%s: [roles: '%s']\n", __METHOD__, $this->object);
+                self::info("[roles: '%s']\n", $this->object);
 
                 $cmodel->delete();
                 $qmodel->delete();
@@ -595,8 +595,8 @@ class RolesTest extends TestCase
 
         private static function dump($model)
         {
-                printf("%s: ", get_class($model));
-                print_r($model->dump());
+                self::info("%s: ", get_class($model));
+                self::info(print_r($model->dump(), true));
         }
 
 }

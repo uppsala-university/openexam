@@ -34,7 +34,7 @@ class SessionTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Session());
                         $helper->tryPersist();
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }
@@ -43,7 +43,7 @@ class SessionTest extends TestCase
                         $helper = new TestModelBasic(new Session());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $values = array(
@@ -56,7 +56,7 @@ class SessionTest extends TestCase
                         $helper = new TestModelBasic(new Session());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail("Unexcepted constraint violation exception");
+                        self::error("Unexcepted constraint violation exception");
                 }
         }
 

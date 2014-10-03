@@ -79,7 +79,7 @@ class UserTest extends TestCase
                 $user = self::$user;
                 try {
                         $this->object = new User($user);
-                        self::fail();
+                        self::error();
                 } catch (\Exception $exception) {
                         
                 }
@@ -91,7 +91,7 @@ class UserTest extends TestCase
                 try {
                         $this->object = new User();
                 } catch (\Exception $exception) {
-                        self::fail();
+                        self::error();
                 }
 
                 // 
@@ -103,12 +103,12 @@ class UserTest extends TestCase
                 try {
                         $this->object = new User($user);
                 } catch (\Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
                 $user = self::$user;
                 try {
                         $this->object = new User($user);
-                        self::fail();
+                        self::error();
                 } catch (\Exception $exception) {
                         // OK, should throw
                 }

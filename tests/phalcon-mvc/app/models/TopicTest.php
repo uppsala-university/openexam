@@ -62,7 +62,7 @@ class TopicTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Topic());
                         $helper->tryPersist();
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }
@@ -71,7 +71,7 @@ class TopicTest extends TestCase
                         $helper = new TestModelBasic(new Topic());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $values = array(
@@ -85,7 +85,7 @@ class TopicTest extends TestCase
                         $helper = new TestModelBasic(new Topic());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $values = array(
@@ -97,7 +97,7 @@ class TopicTest extends TestCase
                         $helper = new TestModelBasic(new Topic());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail("Unexcepted constraint violation exception");
+                        self::error("Unexcepted constraint violation exception");
                 }
         }
 

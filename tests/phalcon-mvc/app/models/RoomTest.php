@@ -56,7 +56,7 @@ class RoomTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Room());
                         $helper->tryPersist();
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }
@@ -65,7 +65,7 @@ class RoomTest extends TestCase
                         $helper = new TestModelBasic(new Room());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
         }
 

@@ -46,9 +46,9 @@ class AdapterTest extends TestCase
                         self::assertInstanceOf('\Phalcon\Db\Adapter\Pdo\Mysql', $adapter);
                 } catch (PDOException $exception) {
                         // ignore expected exception
-                        printf("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
+                        self::info("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 try {
@@ -58,9 +58,9 @@ class AdapterTest extends TestCase
                         self::assertInstanceOf('\Phalcon\Db\Adapter\Pdo\Postgresql', $adapter);
                 } catch (PDOException $exception) {
                         // ignore expected exception
-                        printf("Adapter %s: %s\n", Adapter::PostgreSQL, $exception->getMessage());
+                        self::info("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 try {
@@ -70,9 +70,9 @@ class AdapterTest extends TestCase
                         self::assertInstanceOf('\Phalcon\Db\Adapter\Pdo\Oracle', $adapter);
                 } catch (PDOException $exception) {
                         // ignore expected exception
-                        printf("Adapter %s: %s\n", Adapter::Oracle, $exception->getMessage());
+                        self::info("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 try {
@@ -82,9 +82,9 @@ class AdapterTest extends TestCase
                         self::assertInstanceOf('\Phalcon\Db\Adapter\Pdo\Sqlite', $adapter);
                 } catch (PDOException $exception) {
                         // ignore expected exception
-                        printf("Adapter %s: %s\n", Adapter::SQLite, $exception->getMessage());
+                        self::info("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
         }
 

@@ -90,10 +90,10 @@ class TestModelAccess extends TestModelBasic
                 //                
                 $this->sample = sprintf("%s/unittest/sample.dat", $this->config->application->cacheDir);
                 if (!file_exists($this->sample)) {
-                        self::fail("Sample data is missing, please run 'php phalcon-mvc/script/unittest.php --setup'");
+                        self::error("Sample data is missing, please run 'php phalcon-mvc/script/unittest.php --setup'");
                 }
                 $this->sample = unserialize(file_get_contents($this->sample));
-                printf("%s: sample=%s\n", __METHOD__, print_r($this->sample, true));
+                self::info("sample=%s", print_r($this->sample, true));
 
                 // 
                 // Set test values from sample data:
@@ -183,7 +183,7 @@ class TestModelAccess extends TestModelBasic
          */
         public function testModelAccess()
         {
-                printf("%s: name=%s\n", __METHOD__, $this->object->getName());
+                self::info("name=%s", $this->object->getName());
 
                 // 
                 // Use sample exam:
@@ -220,8 +220,7 @@ class TestModelAccess extends TestModelBasic
                         try {
                                 $this->checkModelAccess($role);
                         } catch (\Exception $exception) {
-                                printf("%s: (%s) %s\n", __METHOD__, get_class($object), print_r($object->dump(), true));
-                                self::fail(sprintf("(-) Unexpected exception: %s (%s)", $exception->getMessage(), get_class($object)));
+                                self::error($exception, "Unexpected exception (%s)", get_class($object));
                         }
                 }
 
@@ -241,8 +240,7 @@ class TestModelAccess extends TestModelBasic
                         try {
                                 $this->checkModelAccess($role);
                         } catch (\Exception $exception) {
-                                printf("%s: (%s) %s\n", __METHOD__, get_class($object), print_r($object->dump(), true));
-                                self::fail(sprintf("(-) Unexpected exception: %s (%s)", $exception->getMessage(), get_class($object)));
+                                self::error($exception, "Unexpected exception (%s)", get_class($object));
                         }
                 }
 
@@ -272,8 +270,7 @@ class TestModelAccess extends TestModelBasic
                         try {
                                 $this->checkModelAccess($role);
                         } catch (\Exception $exception) {
-                                printf("%s: (%s) %s\n", __METHOD__, get_class($object), print_r($object->dump(), true));
-                                self::fail(sprintf("(-) Unexpected exception: %s (%s)", $exception->getMessage(), get_class($object)));
+                                self::error($exception, "Unexpected exception (%s)", get_class($object));
                         }
                 }
                 // 
@@ -284,7 +281,7 @@ class TestModelAccess extends TestModelBasic
 
         private function checkModelAccess($role)
         {
-                printf("%s: (i) role=%s, user=%s\n", __METHOD__, $role, $this->user->getPrincipalName());
+                self::info("role=%s, user=%s", $role, $this->user->getPrincipalName());
 
                 foreach ($this->access[$role] as $resource => $actions) {
                         if ($resource == $this->object->getName()) {
@@ -309,7 +306,7 @@ class TestModelAccess extends TestModelBasic
          */
         private function checkModelAction($role, $resource, $action, $permit)
         {
-                printf("%s: (i) role=%s, resource=%s, action=%s, permit=%s\n", __METHOD__, $role, $resource, $action, $permit ? "yes" : "no");
+                self::info("role=%s, resource=%s, action=%s, permit=%s", $role, $resource, $action, $permit ? "yes" : "no");
 
                 try {
                         switch ($action) {
@@ -326,18 +323,17 @@ class TestModelAccess extends TestModelBasic
                                         $this->checkModelDelete($role, $resource, $permit);
                                         break;
                                 default:
-                                        self::fail("Unknown action $action");
+                                        self::error("Unknown action $action");
                         }
                 } catch (\Exception $exception) {
                         if ($exception->getMessage() == 'auth') {
-                                printf("%s: (+) User not authenticated\n", __METHOD__);
+                                self::success("User not authenticated");
                         } elseif ($exception->getMessage() == 'user' || $exception->getMessage() == 'acl') {
-                                die("Service not configured: " . $exception->getMessage() . "\n");
+                                self::error($exception, "Service not configured (%s)", $exception->getMessage());
                         } elseif ($permit) {
-                                printf("%s: (-) Permitted action failed: role=$role, resource=$resource, action=$action\n", __METHOD__);
-                                self::fail($exception->getMessage());
+                                self::error("Permitted action failed: role=%s, resource=%s, action=%s", $role, $resource, $action);
                         } else {
-                                printf("%s: (+) Disallowed action failed: role=$role, resource=$resource, action=$action\n", __METHOD__);
+                                self::success("Disallowed action failed: role=%s, resource=%s, action=%s", $role, $resource, $action);
                         }
                 }
         }
@@ -360,7 +356,7 @@ class TestModelAccess extends TestModelBasic
                         throw new Exception(print_r($this->object->getMessages(), true));
                 }
                 if (!$permit) {
-                        self::fail("(-) Expected exception not thrown (not permitted).");
+                        self::error("Expected exception not thrown (not permitted).");
                 }
         }
 
@@ -381,7 +377,7 @@ class TestModelAccess extends TestModelBasic
                         throw new Exception(print_r($this->object->getMessages(), true));
                 }
                 if (!$permit) {
-                        self::fail("(-) Expected exception not thrown (not permitted).");
+                        self::error("Expected exception not thrown (not permitted).");
                 }
         }
 
@@ -397,14 +393,14 @@ class TestModelAccess extends TestModelBasic
         private function checkModelUpdate($role, $resource, $permit)
         {
                 if ($this->object->id == 0) {
-                        printf("%s: (!) Object id == 0 (skipped)\n", __METHOD__);
+                        self::warn("Object id == 0 (skipped)");
                         return;
                 }
                 if ($this->object->update() == false) {
                         throw new Exception(print_r($this->object->getMessages(), true));
                 }
                 if (!$permit) {
-                        self::fail("(-) Expected exception not thrown (not permitted).");
+                        self::error("Expected exception not thrown (not permitted).");
                 }
         }
 
@@ -420,14 +416,14 @@ class TestModelAccess extends TestModelBasic
         private function checkModelDelete($role, $resource, $permit)
         {
                 if ($this->object->id == 0) {
-                        printf("%s: (!) Object id == 0 (skipped)\n", __METHOD__);
+                        self::warn("Object id == 0 (skipped)");
                         return;
                 }
                 if ($this->object->delete() == false) {
                         throw new Exception(print_r($this->object->getMessages(), true));
                 }
                 if (!$permit) {
-                        self::fail("(-) Expected exception not thrown (not permitted).");
+                        self::error("Expected exception not thrown (not permitted).");
                 }
         }
 

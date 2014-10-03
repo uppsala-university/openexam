@@ -61,7 +61,7 @@ class ResourceTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Resource());
                         $helper->tryPersist();
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }
@@ -70,7 +70,7 @@ class ResourceTest extends TestCase
                         $helper = new TestModelBasic(new Resource());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $helper->checkDefaults(array(
@@ -90,7 +90,7 @@ class ResourceTest extends TestCase
                         $helper = new TestModelBasic(new Resource());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail("Unexcepted constraint violation exception");
+                        self::error("Unexcepted constraint violation exception");
                 }
 
                 $values = array(
@@ -105,7 +105,7 @@ class ResourceTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Resource());
                         $helper->tryPersist($values);
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }

@@ -32,7 +32,7 @@ class AdminTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Admin());
                         $helper->tryPersist();
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }
@@ -41,7 +41,7 @@ class AdminTest extends TestCase
                         $helper = new TestModelBasic(new Admin());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $values = array(
@@ -52,7 +52,7 @@ class AdminTest extends TestCase
                         $helper = new TestModelBasic(new Admin());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail("Unexcepted constraint violation exception");
+                        self::error("Unexcepted constraint violation exception");
                 }
         }
 

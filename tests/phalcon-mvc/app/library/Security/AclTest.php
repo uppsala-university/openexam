@@ -127,7 +127,7 @@ class AclTest extends TestCase
         private function checkPermission($role, $resource, $action, $expect)
         {
                 $actual = $this->object->isAllowed($role, $resource, $action);
-                printf("%s: role=%s, resource=%s, action=%s: allowed=%s\n", __METHOD__, $role, $resource, $action, $actual ? 'yes' : 'no');
+                self::info("role=%s, resource=%s, action=%s: allowed=%s", $role, $resource, $action, $actual ? 'yes' : 'no');
                 self::assertEquals($expect, $actual);
         }
 

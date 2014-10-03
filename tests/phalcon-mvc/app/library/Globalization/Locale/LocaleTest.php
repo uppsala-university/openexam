@@ -107,7 +107,7 @@ class LocaleTest extends TestCase
                 self::assertTrue($result == false);
                 $actual = setlocale(LC_ALL, "0");
                 self::assertEquals($actual, $locale);
-                
+
                 $expect = null;
                 $result = $this->object->setLocale('no_LOCALE');
                 self::assertTrue($result == false);
@@ -206,7 +206,7 @@ class LocaleTest extends TestCase
                         // 
                         $_REQUEST[$name] = $lang;
                         $actual = $this->object->detect($name, $default);
-                        printf("%s(%s): lang=%s, expect=%s, actual=%s\n", __METHOD__, "request", $lang, $expect, $actual);
+                        self::info("(request): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                         self::assertNotNull($actual);
                         self::assertEquals($expect, $actual);
                         unset($_REQUEST[$name]);
@@ -218,7 +218,7 @@ class LocaleTest extends TestCase
                         if ($this->session->isStarted()) {
                                 $this->session->set($name, $lang);
                                 $actual = $this->object->detect($name, $default);
-                                printf("%s(%s): lang=%s, expect=%s, actual=%s\n", __METHOD__, "session", $lang, $expect, $actual);
+                                self::info("(session): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                                 self::assertNotNull($actual);
                                 self::assertEquals($expect, $actual);
                                 $this->session->destroy();
@@ -230,7 +230,7 @@ class LocaleTest extends TestCase
                         if (isset($this->persistent)) {
                                 $this->persistent->set($name, $lang);
                                 $actual = $this->object->detect($name, $default);
-                                printf("%s(%s): lang=%s, expect=%s, actual=%s\n", __METHOD__, "persistent", $lang, $expect, $actual);
+                                self::info("(persistent): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                                 self::assertNotNull($actual);
                                 self::assertEquals($expect, $actual);
                                 $this->persistent->remove($name);
@@ -241,7 +241,7 @@ class LocaleTest extends TestCase
                         // 
                         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
                         $actual = $this->object->detect($name, $default);
-                        printf("%s(%s): lang=%s, expect=%s, actual=%s\n", __METHOD__, "accept", $lang, $expect, $actual);
+                        self::info("(accept): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                         self::assertNotNull($actual);
                         self::assertEquals($expect, $actual);
                 }
@@ -260,7 +260,7 @@ class LocaleTest extends TestCase
                                 putenv("$name=$lang");
                                 self::assertEquals($lang, getenv($name));
                                 $actual = $this->object->detect($name, $default);
-                                printf("%s(%s): lang=%s, expect=%s, actual=%s\n", __METHOD__, "cli[$name]", $lang, $expect, $actual);
+                                self::info("(cli[$name]): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                                 self::assertNotNull($actual);
                                 self::assertEquals($expect, $actual);
                         }

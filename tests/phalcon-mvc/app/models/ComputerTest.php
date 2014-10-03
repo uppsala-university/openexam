@@ -63,7 +63,7 @@ class ComputerTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Computer());
                         $helper->tryPersist();
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }
@@ -72,7 +72,7 @@ class ComputerTest extends TestCase
                         $helper = new TestModelBasic(new Computer());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $values = array(
@@ -88,7 +88,7 @@ class ComputerTest extends TestCase
                         $helper = new TestModelBasic(new Computer());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $values = array(
@@ -100,7 +100,7 @@ class ComputerTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Computer());
                         $helper->tryPersist();
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected excetion (user required)
                 }

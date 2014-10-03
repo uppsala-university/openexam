@@ -102,7 +102,7 @@ class ExamTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist();
-                        self::fail("Excepted constraint violation exception");
+                        self::error("Excepted constraint violation exception");
                 } catch (Exception $exception) {
                         // Expected exception
                 }
@@ -111,7 +111,7 @@ class ExamTest extends TestCase
                         $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $helper->checkDefaults(array(
@@ -134,7 +134,7 @@ class ExamTest extends TestCase
                         $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
 
                 $values = array(
@@ -156,7 +156,7 @@ class ExamTest extends TestCase
                         $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
-                        self::fail($exception);
+                        self::error($exception);
                 }
         }
 

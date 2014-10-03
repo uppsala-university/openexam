@@ -59,4 +59,109 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
                 }
         }
 
+        /**
+         * Output message.
+         * @param string|array $trace The origin method.
+         * @param string $status The status symbol (e.g. '+').
+         * @param string $message The message string.
+         */
+        private static function output($trace, $status, $args)
+        {
+                if (is_array($trace)) {
+                        $method = $trace['class'] . '::' . $trace['function'];
+                } else {
+                        $method = $trace;
+                }
+                if (is_array($args)) {
+                        $format = array_shift($args);
+                        $message = vsprintf($format, $args);
+                } else {
+                        $message = $args;
+                }
+                printf("%s: (%s) %s\n", $method, $status, $message);
+        }
+
+        /**
+         * Output a success message.
+         * @param string $format The format string.
+         */
+        public static function success($format)
+        {
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+                if (func_num_args() > 1) {
+                        self::output($trace, "+", func_get_args());
+                } else {
+                        self::output($trace, "+", $format);
+                }
+        }
+
+        /**
+         * Output a info message.
+         * @param string $format The format string.
+         */
+        public static function info($format)
+        {
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+                if (func_num_args() > 1) {
+                        self::output($trace, "i", func_get_args());
+                } else {
+                        self::output($trace, "i", $format);
+                }
+        }
+
+        /**
+         * Output a warning message.
+         * @param string $format The format string.
+         */
+        public static function warn($format)
+        {
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+                if (func_num_args() > 1) {
+                        self::output($trace, "!", func_get_args());
+                } else {
+                        self::output($trace, "!", $format);
+                }
+        }
+
+        /**
+         * Fail this test.
+         * 
+         * Accepted and recognized arguments are exception, method name
+         * and format string with optional arguments. The format string
+         * has to be the last argument.
+         * 
+         * <code>
+         * self::error($exception);     // recommended<br/>
+         * self::error($exception, "failed in %s:%d", __FILE__, __LINE__);<br/>
+         * self::error("failed in %s:%d", __FILE__, __LINE__);<br/>
+         * self.:error("failed in func()");<br/>
+         * </code>
+         */
+        public static function error($message = "")
+        {
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+
+                $message = "";
+                if (func_num_args() > 0) {
+                        $args = func_get_args();
+                        while (($arg = array_shift($args)) != null) {
+                                if ($arg instanceof \Exception) {
+                                        $exception = $arg;
+                                } else {
+                                        $format = $arg;
+                                        break;
+                                }
+                        }
+                }
+                if (isset($format)) {
+                        $message = vsprintf($format, $args);
+                }
+                if (isset($exception)) {
+                        $message .= sprintf(" [%s(%s:%d): %s]", get_class($exception), basename($exception->getFile()), $exception->getLine(), $exception->getMessage());
+                }
+
+                self::output($trace, "-", trim($message));
+                self::fail(trim($message));
+        }
+
 }
