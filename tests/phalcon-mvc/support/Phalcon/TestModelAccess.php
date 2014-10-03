@@ -52,10 +52,9 @@ class TestModelAccess extends TestModelBasic
         /**
          * Constructor
          * @param AuthorizationInterface $object An not yet persisted model object.
-         * @param array $values The default values.
          * @param User $user Optional user for access test.
          */
-        public function __construct($object, $values)
+        public function __construct($object)
         {
                 parent::__construct($object);
 
@@ -81,13 +80,26 @@ class TestModelAccess extends TestModelBasic
                         );
                 }
 
+                // 
+                // Setup access list:
+                // 
                 $this->access = self::getAccessList(require(CONFIG_DIR . '/access.def'));
-                $this->values = $values;
-                $this->sample = sprintf("%s/unittest/sample.dat", $this->config->application->cacheDir);
 
+                // 
+                // Load sample data:
+                //                
+                $this->sample = sprintf("%s/unittest/sample.dat", $this->config->application->cacheDir);
                 if (!file_exists($this->sample)) {
                         self::fail("Sample data is missing, please run 'php phalcon-mvc/script/unittest.php --setup'");
                 }
+                $this->sample = unserialize(file_get_contents($this->sample));
+                printf("%s: sample=%s\n", __METHOD__, print_r($this->sample, true));
+
+                // 
+                // Set test values from sample data:
+                // 
+                $this->values = $this->sample[$object->getName()];
+                $this->object->assign($this->values);
         }
 
         /**
@@ -174,22 +186,17 @@ class TestModelAccess extends TestModelBasic
                 printf("%s: name=%s\n", __METHOD__, $this->object->getName());
 
                 // 
-                // Load sample data:
-                //
-                $sample = unserialize(file_get_contents($this->sample));
-
-                // 
                 // Use sample exam:
                 // 
                 $roles = array();
-                $roles['admin'] = Admin::findFirstById($sample['admin']['id']);
-                $roles['teacher'] = Teacher::findFirstById($sample['teacher']['id']);
-                $roles['contributor'] = Contributor::findFirstById($sample['contributor']['id']);
-                $roles['corrector'] = Corrector::findFirstById($sample['corrector']['id']);
-                $roles['decoder'] = Decoder::findFirstById($sample['decoder']['id']);
-                $roles['invigilator'] = Invigilator::findFirstById($sample['invigilator']['id']);
-                $roles['student'] = Student::findFirstById($sample['student']['id']);
-                $roles['creator'] = Exam::findFirstById($sample['exam']['id']);
+                $roles['admin'] = Admin::findFirst($this->sample['admin']['id']);
+                $roles['teacher'] = Teacher::findFirst($this->sample['teacher']['id']);
+                $roles['contributor'] = Contributor::findFirst($this->sample['contributor']['id']);
+                $roles['corrector'] = Corrector::findFirst($this->sample['corrector']['id']);
+                $roles['decoder'] = Decoder::findFirst($this->sample['decoder']['id']);
+                $roles['invigilator'] = Invigilator::findFirst($this->sample['invigilator']['id']);
+                $roles['student'] = Student::findFirst($this->sample['student']['id']);
+                $roles['creator'] = Exam::findFirst($this->sample['exam']['id']);
 
                 // 
                 // Inject unauthenticated user:
@@ -347,8 +354,7 @@ class TestModelAccess extends TestModelBasic
         private function checkModelCreate($role, $resource, $permit)
         {
                 if ($this->object->id != 0) {
-                        printf("%s: (!) Object id != 0 (skipped)\n", __METHOD__);
-                        return;
+                        $this->object->id = 0;
                 }
                 if ($this->object->create() == false) {
                         throw new Exception(print_r($this->object->getMessages(), true));
