@@ -50,7 +50,7 @@ class Answer extends ModelBase
         {
                 parent::initialize();
                 $this->hasMany("id", "OpenExam\Models\File", "answer_id", array("alias" => 'files'));
-                $this->hasMany('id', 'OpenExam\Models\Result', 'answer_id', array('alias' => 'result'));
+                $this->hasOne('id', 'OpenExam\Models\Result', 'answer_id', array('alias' => 'result'));
                 $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array('foreignKey' => true, 'alias' => 'question'));
                 $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array('foreignKey' => true, 'alias' => 'student'));
         }
