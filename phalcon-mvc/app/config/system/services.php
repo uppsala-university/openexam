@@ -188,12 +188,43 @@ $di->set('user', function() use($config) {
 }, true);
 
 /**
- * The system log.
+ * Setup system logging (debug, system and auth)
  */
 $di->set('logger', function() use($config) {
-        $logfile = $config->application->logsDir . DIRECTORY_SEPARATOR . 'openexam.log';
-        $logger = new Phalcon\Logger\Adapter\File($logfile);
-        return $logger;
+        $logger = array();
+        foreach ($config->logging as $name => $option) {
+                if (!isset($option)) {
+                        continue;
+                } elseif (isset($option->file)) {
+                        if (strpos($option->file, DIRECTORY_SEPARATOR) == false) {
+                                $option->file = $config->application->logsDir . DIRECTORY_SEPARATOR . $option->file;
+                        }
+                        $logger[$name] = (
+                            new Phalcon\Logger\Adapter\File($option->file)
+                            )->setLogLevel($option->level);
+                } elseif (isset($option->syslog)) {
+                        $logger[$name] = (
+                            new Phalcon\Logger\Adapter\Syslog($option->syslog, $option)
+                            )->setLogLevel($option->level);
+                } elseif (isset($option->stream)) {
+                        $logger[$name] = (
+                            new Phalcon\Logger\Adapter\Stream($option->stream, $option)
+                            )->setLogLevel($option->level);
+                } elseif (isset($option->database)) {
+                        $logger[$name] = (
+                            new Phalcon\Logger\Adapter\Database($option->database, $option)
+                            )->setLogLevel($option->level);
+                } elseif (isset($option->firelogger)) {
+                        $logger[$name] = (
+                            new Phalcon\Logger\Adapter\Firelogger($option->firelogger, $option)
+                            )->setLogLevel($option->level);
+                } elseif (isset($option->firephp)) {
+                        $logger[$name] = (
+                            new Phalcon\Logger\Adapter\Firephp()
+                            )->setLogLevel($option->level);
+                }
+        }
+        return new \Phalcon\Config($logger);
 }, true);
 
 return $di;

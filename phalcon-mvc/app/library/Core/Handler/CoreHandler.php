@@ -157,11 +157,11 @@ class CoreHandler extends Component
          */
         private function error($model, $action)
         {
-                $this->logger->begin();
+                $this->logger->system->begin();
                 foreach ($model->getMessages() as $message) {
-                        $this->logger->error($message);
+                        $this->logger->system->error($message);
                 }
-                $this->logger->commit();
+                $this->logger->system->commit();
 
                 throw new Exception("Failed $action object.");
         }

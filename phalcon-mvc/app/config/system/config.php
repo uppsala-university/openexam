@@ -145,6 +145,24 @@ $config = new \Phalcon\Config(
 //                        'directories' => array('phalcon-mvc/app/views/staff'),
 //                        'merge'       => array('core', 'web')
 //                )
+        ),
+        /**
+         * System logging to file and syslog(3). See README-LOGGER.
+         */
+        'logging'     => array(
+                'debug'  => array(
+                        'file'  => 'debug.log',
+                        'level' => LOG_DEBUG
+                ),
+                'system' => array(
+                        'file'  => 'system.log',
+                        'level' => LOG_NOTICE
+                ),
+                'auth'   => array(
+                        'syslog'   => 'openexam',
+                        'facility' => LOG_AUTH,
+                        'level'    => LOG_INFO
+                )
         )
     )
 );

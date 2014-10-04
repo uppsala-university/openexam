@@ -14,6 +14,7 @@
 namespace OpenExam\Plugins\Security;
 
 use OpenExam\Library\Security\Exception;
+use OpenExam\Library\Security\Roles;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Events\Event;
 use Phalcon\Events\EventsAwareInterface;
@@ -48,13 +49,21 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         private function checkAccessList($event, $model, $action)
         {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(event=%s, model=%s, action=%s)", __METHOD__, $event->getType(), $model->getName(), $action
+                        ));
+                }
+
                 // 
                 // Check system services:
                 // 
                 if (($acl = $this->getDI()->get('acl')) == false) {
+                        $this->logger->system->critical("The ACL service ('acl') is missing.");
                         throw new Exception('acl');
                 }
                 if (($user = $this->getDI()->get('user')) == false) {
+                        $this->logger->system->critical("The User service ('user') is missing.");
                         throw new Exception('user');
                 }
 
@@ -63,8 +72,14 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // peer is authenticated if primary role is set.
                 // 
                 if ($user->hasPrimaryRole() == false) {
+                        $this->logger->auth->debug(sprintf(
+                                "Granted %s access on %s for user %s (primary role unset) [%s]", $action, $model->getName(), $user->getPrincipalName(), $this->request->getClientAddress()
+                        ));
                         return true;    // unrestricted access
                 } elseif ($user->getUser() == null) {
+                        $this->logger->auth->error(sprintf(
+                                "Denied %s access on %s (unauthenticated user) [%s]", $action, $model->getName(), $this->request->getClientAddress()
+                        ));
                         throw new Exception('auth');
                 } else {
                         $role = $user->getPrimaryRole();
@@ -74,6 +89,9 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // Check that ACL permits access for this role:
                 // 
                 if ($acl->isAllowed($role, $model->getName(), $action) == false) {
+                        $this->logger->auth->error(sprintf(
+                                "Denied %s role %s access on %s for user %s (blocked by ACL) [%s]", $role, $action, $model->getName(), $user->getPrincipalName(), $this->request->getClientAddress()
+                        ));
                         throw new Exception('access');
                 }
 
@@ -82,8 +100,14 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // trigger object specific role verification.
                 // 
                 if ($user->roles->aquire($role) == false) {
+                        $this->logger->auth->error(sprintf(
+                                "Denied %s role %s access on %s for user %s (failed aquire role) [%s]", $role, $action, $model->getName(), $user->getPrincipalName(), $this->request->getClientAddress()
+                        ));
                         throw new Exception('role');
                 } elseif (Roles::isCustom($role)) {
+                        $this->logger->auth->debug(sprintf(
+                                "Granted custom %s role %s access on %s for user %s [%s]", $role, $action, $model->getName(), $user->getPrincipalName(), $this->request->getClientAddress()
+                        ));
                         return true;    // Custom roles are global
                 } else {
                         $this->_eventsManager->fire($model->getName() . ':' . $event->getType(), $model, $user);

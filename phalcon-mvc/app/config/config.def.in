@@ -130,5 +130,19 @@ return array(
                         'msgconv'  => '/usr/bin/msgconv',
                         'msginit'  => '/usr/bin/msginit'
                 )
+        ),
+        /**
+         * System logging to file and syslog(3). See README-LOGGER.
+         */
+        'logging'    => array(
+                'system' => array(
+                        'file'     => 'system.log',
+                        'level'    => LOG_NOTICE
+                ),
+                'auth' => array(
+                        'syslog'   => 'openexam',
+                        'facility' => LOG_AUTH,
+                        'level'    => LOG_INFO
+                )
         )
 );
