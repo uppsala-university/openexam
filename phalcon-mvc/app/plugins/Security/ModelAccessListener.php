@@ -40,18 +40,55 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
 {
 
         /**
-         * Check that ACL permit access to resource.
+         * @var callable 
+         */
+        private $callable;
+        /**
+         * @var array 
+         */
+        private $register;
+        /**
+         * @var array
+         */
+        private $aclcache = array();
+
+        /**
+         * Constructor.
+         * @param callable $callable
+         * @param array $register
+         */
+        public function __construct($callable, $register = array())
+        {
+                $this->callable = $callable;
+                $this->register = $register;
+        }
+
+        /**
+         * Reset internal state.
+         */
+        public function reset()
+        {
+                $this->aclcache = array();
+                $this->register = array();
+        }
+
+        /**
+         * Check that caller has access to resource.
          * @param Event $event
          * @param Model $model
          * @param string $action
          * @return boolean
-         * @throws Exception (acl|user|auth|access|role)
+         * @throws Exception message=(acl|user|auth|access|role)
          */
-        private function checkAccessList($event, $model, $action)
+        public function checkAccess($event, $model, $action)
         {
+                $type = $event->getType();
+                $name = $model->getName();
+                $addr = $this->request->getClientAddress();
+
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
-                                "%s(event=%s, model=%s, action=%s)", __METHOD__, $event->getType(), $model->getName(), $action
+                                "%s(event=%s, model=%s, action=%s)", __METHOD__, $type, $name, $action
                         ));
                 }
 
@@ -65,6 +102,8 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 if (($user = $this->getDI()->get('user')) == false) {
                         $this->logger->system->critical("The User service ('user') is missing.");
                         throw new Exception('user');
+                } else {
+                        $principal = $user->getPrincipalName();
                 }
 
                 // 
@@ -73,12 +112,16 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // 
                 if ($user->hasPrimaryRole() == false) {
                         $this->logger->auth->debug(sprintf(
-                                "Granted %s access on %s for user %s (primary role unset) [%s]", $action, $model->getName(), $user->getPrincipalName(), $this->request->getClientAddress()
+                                "Granted %s access on %s to user %s (primary role unset) [%s]", $action, $name, $principal, $addr
                         ));
+                        $this->logger->auth->debug(sprintf(
+                                "Granted %s access on %s:%d (into ACL cache) [%s]", $action, $name, $model->id, $addr
+                        ));
+                        $this->aclcache[$name][$action][$model->id] = true;
                         return true;    // unrestricted access
                 } elseif ($user->getUser() == null) {
                         $this->logger->auth->error(sprintf(
-                                "Denied %s access on %s (unauthenticated user) [%s]", $action, $model->getName(), $this->request->getClientAddress()
+                                "Denied %s access on %s (unauthenticated user) [%s]", $action, $name, $addr
                         ));
                         throw new Exception('auth');
                 } else {
@@ -86,11 +129,21 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 }
 
                 // 
+                // Bypass if object access control is already done:
+                // 
+                if (isset($this->aclcache[$name][$action][$model->id])) {
+                        $this->logger->auth->debug(sprintf(
+                                "Granted %s access on %s:%d (from ACL cache) [%s]", $action, $name, $model->id, $addr
+                        ));
+                        return true;
+                }
+
+                // 
                 // Check that ACL permits access for this role:
                 // 
-                if ($acl->isAllowed($role, $model->getName(), $action) == false) {
+                if ($acl->isAllowed($role, $name, $action) == false) {
                         $this->logger->auth->error(sprintf(
-                                "Denied %s role %s access on %s for user %s (blocked by ACL) [%s]", $role, $action, $model->getName(), $user->getPrincipalName(), $this->request->getClientAddress()
+                                "Denied %s access on %s for user %s using role %s (blocked by ACL) [%s]", $action, $name, $principal, $role, $addr
                         ));
                         throw new Exception('access');
                 }
@@ -101,16 +154,21 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // 
                 if ($user->roles->aquire($role) == false) {
                         $this->logger->auth->error(sprintf(
-                                "Denied %s role %s access on %s for user %s (failed aquire role) [%s]", $role, $action, $model->getName(), $user->getPrincipalName(), $this->request->getClientAddress()
+                                "Denied %s access on %s for user %s using role %s (failed aquire role) [%s]", $action, $name, $principal, $role, $addr
                         ));
                         throw new Exception('role');
                 } elseif (Roles::isCustom($role)) {
                         $this->logger->auth->debug(sprintf(
-                                "Granted custom %s role %s access on %s for user %s [%s]", $role, $action, $model->getName(), $user->getPrincipalName(), $this->request->getClientAddress()
+                                "Granted %s access on %s for user %s using role %s [%s]", $action, $name, $principal, $role, $addr
                         ));
                         return true;    // Custom roles are global
+                } elseif (($access = $this->getObjectAccess($name))) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(event=%s, model=%s, user=%s) [calling]", get_class($access), $type, $name, $principal
+                        ));
+                        return $access->notify($type, $model, $user);
                 } else {
-                        $this->_eventsManager->fire($model->getName() . ':' . $event->getType(), $model, $user);
+                        return false;
                 }
         }
 
@@ -121,7 +179,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         protected function beforeCreate($event, $model)
         {
-                return $this->checkAccessList($event, $model, ObjectAccess::CREATE);
+                return $this->checkAccess($event, $model, ObjectAccess::CREATE);
         }
 
         /**
@@ -131,7 +189,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         protected function beforeUpdate($event, $model)
         {
-                return $this->checkAccessList($event, $model, ObjectAccess::UPDATE);
+                return $this->checkAccess($event, $model, ObjectAccess::UPDATE);
         }
 
         /**
@@ -141,7 +199,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         protected function beforeDelete($event, $model)
         {
-                return $this->checkAccessList($event, $model, ObjectAccess::DELETE);
+                return $this->checkAccess($event, $model, ObjectAccess::DELETE);
         }
 
         /**
@@ -151,7 +209,21 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         protected function afterFetch($event, $model)
         {
-                return $this->checkAccessList($event, $model, ObjectAccess::READ);
+                return $this->checkAccess($event, $model, ObjectAccess::READ);
+        }
+
+        /**
+         * Get object access check object.
+         * @param string $name The model name.
+         * @return ObjectAccess
+         */
+        private function getObjectAccess($name)
+        {
+                if (!isset($this->register[$name])) {
+                        $loader = $this->callable;
+                        $this->register[$name] = $loader($name);
+                }
+                return $this->register[$name];
         }
 
 }
