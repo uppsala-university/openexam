@@ -40,7 +40,10 @@ class ResourceAccess extends ObjectAccess
                         ));
                 }
 
-                $role = $user->getPrimaryRole();
+                // 
+                // Temporarily disable access control:
+                // 
+                $role = $user->setPrimaryRole(null);
 
                 /**
                  * Assumption: 
@@ -61,8 +64,10 @@ class ResourceAccess extends ObjectAccess
                 // 
                 if ($role == Roles::STUDENT) {
                         if ($user->roles->aquire($role, $model->exam_id)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         } else {
+                                $user->setPrimaryRole($role);
                                 throw new Exception('access');
                         }
                 }
@@ -76,6 +81,7 @@ class ResourceAccess extends ObjectAccess
                 if ($action == self::READ) {
                         if ($model->shared == Resource::NOT_SHARED) {
                                 if ($model->user != $user->getPrincipalName()) {
+                                        $user->setPrimaryRole($role);
                                         throw new Exception('access');
                                 }
                         } elseif ($model->shared == Resource::SHARED_EXAM) {
@@ -84,11 +90,13 @@ class ResourceAccess extends ObjectAccess
                                     $role == Roles::DECODER ||
                                     $role == Roles::INVIGILATOR) {
                                         if ($user->roles->aquire($role, $model->exam_id)) {
+                                                $user->setPrimaryRole($role);
                                                 return true;
                                         }
                                 } elseif ($role == Roles::CORRECTOR) {
                                         foreach ($model->exam->questions as $question) {
                                                 if ($user->roles->aquire($role, $question->id)) {
+                                                        $user->setPrimaryRole($role);
                                                         return true;
                                                 }
                                         }
@@ -96,14 +104,17 @@ class ResourceAccess extends ObjectAccess
                         } elseif ($model->shared == Resource::SHARED_GROUP) {
                                 // TODO: depends on directory service and caller having the same primary group.
                         } elseif ($model->shared == Resource::SHARED_GLOBAL) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 } elseif ($action == self::UPDATE || $action == self::DELETE) {
                         if ($model->user == $user->getPrincipalName()) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 } elseif ($action == self::CREATE) {
                         if ($user->roles->aquire($role, $model->exam_id)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 }

@@ -41,8 +41,11 @@ class RoomAccess extends ObjectAccess
                         ));
                 }
 
-                $role = $user->getPrimaryRole();
-                
+                // 
+                // Temporarily disable access control:
+                // 
+                $role = $user->setPrimaryRole(null);
+
                 // 
                 // Check role on exam, question or global:
                 // 
@@ -54,6 +57,7 @@ class RoomAccess extends ObjectAccess
                         foreach ($model->computers as $computer) {
                                 foreach ($computer->locks as $lock) {
                                         if ($user->roles->aquire($role, $lock->exam_id)) {
+                                                $user->setPrimaryRole($role);
                                                 return true;
                                         }
                                 }
@@ -64,6 +68,7 @@ class RoomAccess extends ObjectAccess
                                         if (($questions = Question::find("exam_id='$lock->exam_id'"))) {
                                                 foreach ($questions as $question) {
                                                         if ($user->roles->aquire($role, $question->id)) {
+                                                                $user->setPrimaryRole($role);
                                                                 return true;
                                                         }
                                                 }
@@ -72,13 +77,16 @@ class RoomAccess extends ObjectAccess
                         }
                 } elseif (isset($role)) {
                         if ($user->roles->aquire($role)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 }
 
                 if (isset($role)) {
+                        $user->setPrimaryRole($role);
                         throw new Exception('role');
                 } else {
+                        $user->setPrimaryRole($role);
                         return true;
                 }
         }

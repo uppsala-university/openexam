@@ -13,9 +13,12 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use OpenExam\Library\Security\Exception;
+use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
 use OpenExam\Models\Question;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
+use UUP\Authentication\Restrictor\DateTimeRestrictor;
 
 /**
  * Access control for the Question model.
@@ -38,7 +41,56 @@ class QuestionAccess extends ObjectAccess
                         ));
                 }
 
-                return true;
+                // 
+                // Temporarily disable access control:
+                // 
+                $role = $user->setPrimaryRole(null);
+
+                // 
+                // Students should not have access to questions before
+                // the exam starts.
+                // 
+                if ($role == Roles::STUDENT) {
+                        $restrictor = new DateTimeRestrictor($model->exam->starttime, $model->exam->endtime);
+                        if ($restrictor->accepted() == false) {
+                                $user->setPrimaryRole($role);
+                                throw new Exception('access');
+                        }
+                }
+
+                // 
+                // Check role on exam, question or global:
+                // 
+                if ($role == Roles::CONTRIBUTOR ||
+                    $role == Roles::CREATOR ||
+                    $role == Roles::DECODER ||
+                    $role == Roles::INVIGILATOR ||
+                    $role == Roles::STUDENT) {
+                        if ($user->roles->aquire($role, $model->exam_id)) {
+                                $user->setPrimaryRole($role);
+                                return true;
+                        }
+                } elseif ($role == Roles::CORRECTOR) {
+                        foreach ($model->exam->questions as $question) {
+                                if ($user->roles->aquire($role, $question->id)) {
+                                        $user->setPrimaryRole($role);
+                                        return true;
+                                }
+                        }
+                } elseif (isset($role)) {
+                        if ($user->roles->aquire($role)) {
+                                $user->setPrimaryRole($role);
+                                return true;
+                        }
+                }
+
+                if (isset($role)) {
+                        $user->setPrimaryRole($role);
+                        throw new Exception('role');
+                } else {
+                        $user->setPrimaryRole($role);
+                        return true;
+                }
         }
 
 }

@@ -40,7 +40,10 @@ class TopicAccess extends ObjectAccess
                         ));
                 }
 
-                $role = $user->getPrimaryRole();
+                // 
+                // Temporarily disable access control:
+                // 
+                $role = $user->setPrimaryRole(null);
 
                 // 
                 // Check role on exam, question or global:
@@ -51,23 +54,28 @@ class TopicAccess extends ObjectAccess
                     $role == Roles::INVIGILATOR ||
                     $role == Roles::STUDENT) {
                         if ($user->roles->aquire($role, $model->exam_id)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 } elseif ($role == Roles::CORRECTOR) {
                         foreach ($model->exam->questions as $question) {
                                 if ($user->roles->aquire($role, $question->id)) {
+                                        $user->setPrimaryRole($role);
                                         return true;
                                 }
                         }
                 } elseif (isset($role)) {
                         if ($user->roles->aquire($role)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 }
 
                 if (isset($role)) {
+                        $user->setPrimaryRole($role);
                         throw new Exception('role');
                 } else {
+                        $user->setPrimaryRole($role);
                         return true;
                 }
         }

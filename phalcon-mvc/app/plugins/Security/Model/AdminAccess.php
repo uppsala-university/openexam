@@ -15,6 +15,7 @@ namespace OpenExam\Plugins\Security\Model;
 
 use OpenExam\Library\Security\User;
 use OpenExam\Models\Admin;
+use OpenExam\Plugins\Security\Model\ObjectAccess;
 
 /**
  * Access control for the Admin model.

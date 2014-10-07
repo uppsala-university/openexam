@@ -40,7 +40,10 @@ class ResultAccess extends ObjectAccess
                         ));
                 }
 
-                $role = $user->getPrimaryRole();
+                // 
+                // Temporarily disable access control:
+                // 
+                $role = $user->setPrimaryRole(null);
 
                 // 
                 // Object access control:
@@ -48,6 +51,7 @@ class ResultAccess extends ObjectAccess
                 if ($model->id != 0) {
                         if ($role == Roles::STUDENT) {
                                 if ($model->answer->student->user != $user->getPrincipalName()) {
+                                        $user->setPrimaryRole($role);
                                         throw new Exception('owner');
                                 }
                         }
@@ -61,25 +65,31 @@ class ResultAccess extends ObjectAccess
                     $role == Roles::DECODER ||
                     $role == Roles::INVIGILATOR) {
                         if ($user->roles->aquire($role, $model->answer->question->exam_id)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 } elseif ($role == Roles::STUDENT) {
                         if ($user->roles->aquire($role, $model->answer->student->exam_id)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 } elseif ($role == Roles::CORRECTOR) {
                         if ($user->roles->aquire($role, $model->answer->question->id)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 } elseif (isset($role)) {
                         if ($user->roles->aquire($role)) {
+                                $user->setPrimaryRole($role);
                                 return true;
                         }
                 }
 
                 if (isset($role)) {
+                        $user->setPrimaryRole($role);
                         throw new Exception('role');
                 } else {
+                        $user->setPrimaryRole($role);
                         return true;
                 }
         }
