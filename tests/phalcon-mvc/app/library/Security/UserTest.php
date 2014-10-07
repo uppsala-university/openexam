@@ -41,9 +41,11 @@ class UserTest extends TestCase
         /**
          * @covers OpenExam\Library\Security\User::__construct
          * @group security
+         * @expectedException Exception
          */
         public function testConstructor()
         {
+
                 // 
                 // test User(user, domain):
                 // 
@@ -77,21 +79,20 @@ class UserTest extends TestCase
                 // test User(user): -> without default domain (throws)
                 // 
                 $user = self::$user;
-                try {
-                        $this->object = new User($user);
-                        self::error();
-                } catch (\Exception $exception) {
-                        
-                }
+                $domain = $this->config->user->domain;
+                $this->config->user->domain = null;
+                $this->setExpectedExceptionFromAnnotation();
+                $this->object = new User($user);
+                $this->setExpectedException(null);
+                $this->config->user->domain = $domain;
 
                 // 
                 // test User(null): -> empty user
                 // 
-                $user = self::$user;
                 try {
                         $this->object = new User();
-                } catch (\Exception $exception) {
-                        self::error();
+                } catch (Exception $exception) {
+                        self::error($exception);
                 }
 
                 // 
@@ -99,19 +100,19 @@ class UserTest extends TestCase
                 // 
                 $domain = $this->config->user->domain;
                 $this->config->user->domain = null;
+
                 $user = sprintf("%s@%s", self::$user, self::$domain);
                 try {
                         $this->object = new User($user);
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         self::error($exception);
                 }
+
                 $user = self::$user;
-                try {
-                        $this->object = new User($user);
-                        self::error();
-                } catch (\Exception $exception) {
-                        // OK, should throw
-                }
+                $this->setExpectedExceptionFromAnnotation();
+                $this->object = new User($user);
+                $this->setExpectedException(null);
+
                 $this->config->user->domain = $domain;
 
                 // 
@@ -123,7 +124,7 @@ class UserTest extends TestCase
                         2 => array(Roles::DECODER, Roles::INVIGILATOR),
                         3 => array(Roles::INVIGILATOR)
                 );
-                $this->object = new User($user, null, null, $roles);
+                $this->object = new User(self::$user, self::$domain, null, $roles);
                 self::assertTrue(count($this->object->roles->getRoles(0)) == 5);
                 self::assertTrue(count($this->object->roles->getRoles(1)) == 1);
                 self::assertTrue(count($this->object->roles->getRoles(2)) == 2);
