@@ -47,10 +47,6 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          * @var array 
          */
         private $register;
-        /**
-         * @var array
-         */
-        private $aclcache = array();
 
         /**
          * Constructor.
@@ -61,15 +57,6 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
         {
                 $this->callable = $callable;
                 $this->register = $register;
-        }
-
-        /**
-         * Reset internal state.
-         */
-        public function reset()
-        {
-                $this->aclcache = array();
-                $this->register = array();
         }
 
         /**
@@ -117,7 +104,6 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         $this->logger->auth->debug(sprintf(
                                 "Granted %s access on %s:%d (into ACL cache) [%s]", $action, $name, $model->id, $addr
                         ));
-                        $this->aclcache[$name][$action][$model->id] = true;
                         return true;    // unrestricted access
                 } elseif ($user->getUser() == null) {
                         $this->logger->auth->error(sprintf(
@@ -126,16 +112,6 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         throw new Exception('auth');
                 } else {
                         $role = $user->getPrimaryRole();
-                }
-
-                // 
-                // Bypass if object access control is already done:
-                // 
-                if (isset($this->aclcache[$name][$action][$model->id])) {
-                        $this->logger->auth->debug(sprintf(
-                                "Granted %s access on %s:%d (from ACL cache) [%s]", $action, $name, $model->id, $addr
-                        ));
-                        return true;
                 }
 
                 // 
