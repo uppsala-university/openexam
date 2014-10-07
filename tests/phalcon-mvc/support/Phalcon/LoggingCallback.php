@@ -110,6 +110,10 @@ class LoggingCallback extends FileAdapter
          */
         private function apply()
         {
+                if (!($stat = stat($this->options->logfile))) {
+                        return false;
+                }
+                
                 if ($this->options->truncate) {
                         unlink($this->options->logfile);
                 } elseif ($this->options->rotate) {

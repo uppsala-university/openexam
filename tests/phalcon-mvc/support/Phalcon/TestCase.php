@@ -17,6 +17,73 @@ use Phalcon\DI\InjectionAwareInterface,
     Phalcon\DI as PhalconDI;
 
 /**
+ * Test output handler.
+ * @author Anders Lövgren (QNET/BMC CompDept)
+ */
+class TestLogger
+{
+
+        /**
+         * @var \Phalcon\Config
+         */
+        private $config;
+        /**
+         * @var \Phalcon\Logger
+         */
+        private $logger;
+
+        /**
+         * Constructor.
+         * @param \Phalcon\Config $config
+         * @param \Phalcon\Logger $logger
+         */
+        public function __construct($config, $logger)
+        {
+                $this->config = $config;
+                $this->logger = $logger;
+        }
+
+        /**
+         * Output message.
+         * @param string|array $trace The origin method.
+         * @param string $status The status symbol (e.g. '+').
+         * @param string|array $args The output arguments.
+         */
+        public function output($trace, $status, $args)
+        {
+                if (is_array($trace)) {
+                        $method = $trace['class'] . '::' . $trace['function'];
+                } else {
+                        $method = $trace;
+                }
+                if (is_array($args)) {
+                        $format = array_shift($args);
+                        $message = vsprintf($format, $args);
+                } else {
+                        $message = $args;
+                }
+                if ($this->config->phpunit->logging) {
+                        printf("%s: (%s) %s\n", $method, $status, $message);
+                }
+                if ($this->logger->phpunit) {
+                        switch ($status) {
+                                case '+':
+                                case 'i':
+                                        $this->logger->phpunit->info(sprintf("%s: %s", $method, $message));
+                                        break;
+                                case '!':
+                                        $this->logger->phpunit->warning(sprintf("%s: %s", $method, $message));
+                                        break;
+                                case '-':
+                                        $this->logger->phpunit->error(sprintf("%s: %s", $method, $message));
+                                        break;
+                        }
+                }
+        }
+
+}
+
+/**
  * Provides dependency injection and service access for unit tests.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -28,11 +95,19 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
          * @var PhalconDI 
          */
         protected $di;
+        /**
+         * @var TestLogger 
+         */
+        private static $logger;
 
         public function __construct($name = NULL, array $data = array(), $dataName = '')
         {
                 parent::__construct($name, $data, $dataName);
                 $this->setDI(PhalconDI::getDefault());
+
+                if (!isset(self::$logger)) {
+                        self::$logger = new TestLogger($this->config, $this->logger);
+                }
 
                 if ($this->config->phpunit->logging) {
                         parent::setOutputCallback(new LoggingCallback(
@@ -41,11 +116,19 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
                 }
         }
 
+        /**
+         * Get dependency injector.
+         * @return Phalcon\DI
+         */
         public function getDI()
         {
                 return $this->di;
         }
 
+        /**
+         * Set dependency injector.
+         * @param Phalcon\DI $dependencyInjector
+         */
         public function setDI($dependencyInjector)
         {
                 $this->di = $dependencyInjector;
@@ -63,22 +146,11 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
          * Output message.
          * @param string|array $trace The origin method.
          * @param string $status The status symbol (e.g. '+').
-         * @param string $message The message string.
+         * @param string|array $args The output arguments.
          */
         private static function output($trace, $status, $args)
         {
-                if (is_array($trace)) {
-                        $method = $trace['class'] . '::' . $trace['function'];
-                } else {
-                        $method = $trace;
-                }
-                if (is_array($args)) {
-                        $format = array_shift($args);
-                        $message = vsprintf($format, $args);
-                } else {
-                        $message = $args;
-                }
-                printf("%s: (%s) %s\n", $method, $status, $message);
+                self::$logger->output($trace, $status, $args);
         }
 
         /**

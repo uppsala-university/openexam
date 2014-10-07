@@ -162,6 +162,10 @@ $config = new \Phalcon\Config(
                         'syslog'   => 'openexam',
                         'facility' => LOG_AUTH,
                         'level'    => LOG_INFO
+                ),
+                'test'   => array(
+                        'file'  => 'phpunit.log',
+                        'level' => LOG_DEBUG
                 )
         )
     )

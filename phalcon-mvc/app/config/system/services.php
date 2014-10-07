@@ -218,6 +218,9 @@ $di->set('logger', function() use($config) {
                             )->setLogLevel($option->level);
                 }
         }
+        $logger['phpunit'] = new \Phalcon\Logger\Multiple();
+        $logger['phpunit']->push($logger['debug']);
+        $logger['phpunit']->push($logger['test']);
         return new \Phalcon\Config($logger);
 }, true);
 
