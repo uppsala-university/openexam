@@ -50,9 +50,10 @@ class AjaxController extends ServiceController
                 $this->response->send();
         }
 
-        public function indexAction($role, $model, $action)
+        public function indexAction($role, $type, $action)
         {
                 $result = array();
+                $models = array();
 
                 try {
                         // 
@@ -71,6 +72,9 @@ class AjaxController extends ServiceController
                                 if ($this->request->getBestAccept() == 'application/json') {
                                         $data = json_decode($data);
                                 } else {
+                                        $data = json_decode($data);
+                                }
+                                if (!isset($data)) {
                                         throw new Exception("Unhandled content type");
                                 }
                         }
@@ -90,8 +94,22 @@ class AjaxController extends ServiceController
                         // Handler request thru core handler:
                         // 
                         $handler = new CoreHandler($role);
-                        $model = $handler->build($model, $data);
-                        $result[self::SUCCESS] = $handler->action($model, $action);
+
+                        // 
+                        // Handle single or multiple models:
+                        // 
+                        if (is_numeric(key($data))) {
+                                foreach ($data as $d) {
+                                        $models[] = $handler->build($type, (array) $d);
+                                }
+                        } else {
+                                $models[] = $handler->build($type, $data);
+                        }
+
+                        // 
+                        // Perform action on model(s):
+                        // 
+                        $result[self::SUCCESS] = $handler->action($models, $action);
                 } catch (\Exception $exception) {
                         $result[self::FAILURE] = $exception->getMessage();
                 }

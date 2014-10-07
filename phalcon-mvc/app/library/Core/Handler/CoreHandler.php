@@ -16,6 +16,8 @@ namespace OpenExam\Library\Core\Handler;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Resultset;
+use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -58,21 +60,65 @@ class CoreHandler extends Component
 
         /**
          * Perform action.
-         * @param Model $model The input model.
+         * 
+         * This function uses database transactions if number of models are
+         * greater than one. Requested action is etiher performed on all
+         * models or none (rollback).
+         * 
+         * @param Model[] $models The input models.
          * @param string $action The action to perform.
          * @return mixed 
+         * @throws Exception
          */
-        public function action($model, $action)
+        public function action($models, $action)
         {
-                switch ($action) {
-                        case ObjectAccess::CREATE:
-                                return $this->create($model);
-                        case ObjectAccess::READ:
-                                return $this->read($model);
-                        case ObjectAccess::UPDATE:
-                                return $this->update($model);
-                        case ObjectAccess::DELETE:
-                                return $this->delete($model);
+                try {
+                        $result = array();
+                        $transaction = null;
+
+                        if ($action != ObjectAccess::READ && count($models) > 1) {
+                                $transactionManager = new TransactionManager();
+                                $transactionManager->setDbService($models[0]->getReadConnectionService());
+                                $transaction = $transactionManager->get();
+                        }
+
+                        foreach ($models as $model) {
+                                switch ($action) {
+                                        case ObjectAccess::CREATE:
+                                                if (isset($transaction)) {
+                                                        $model->setTransaction($transaction);
+                                                }
+                                                $result[] = $this->create($model);
+                                                break;
+                                        case ObjectAccess::READ:
+                                                $result[] = $this->read($model);
+                                                break;
+                                        case ObjectAccess::UPDATE:
+                                                if (isset($transaction)) {
+                                                        $model->setTransaction($transaction);
+                                                }
+                                                $result = $this->update($model);
+                                                break;
+                                        case ObjectAccess::DELETE:
+                                                if (isset($transaction)) {
+                                                        $model->setTransaction($transaction);
+                                                }
+                                                $result = $this->delete($model);
+                                                break;
+                                }
+                        }
+                        if (isset($transaction)) {
+                                $transaction->commit();
+                        }
+                        return $result;
+                } catch (TransactionFailed $exception) {
+                        $this->logger->system->error($exception->getMessage());
+                        throw new Exception("Failed $action object.");
+                } catch (Exception $exception) {
+                        if (isset($transaction)) {
+                                $transaction->rollback();
+                        }
+                        throw $exception;
                 }
         }
 
