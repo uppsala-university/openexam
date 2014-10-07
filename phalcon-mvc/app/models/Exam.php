@@ -197,6 +197,7 @@ class Exam extends ModelBase
                 $this->decoded = $this->decoded == 'Y';
                 $this->testcase = $this->testcase == 'Y';
                 $this->lockdown = $this->lockdown == 'Y';
+                parent::afterFetch();
         }
 
         public function getSource()

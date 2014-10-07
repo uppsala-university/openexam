@@ -87,6 +87,7 @@ class Answer extends ModelBase
         protected function afterFetch()
         {
                 $this->answered = $this->answered == 'Y';
+                parent::afterFetch();
         }
 
         public function getSource()

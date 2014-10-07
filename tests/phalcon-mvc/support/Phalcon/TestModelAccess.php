@@ -203,25 +203,6 @@ class TestModelAccess extends TestModelBasic
         }
 
         /**
-         * Reset model access control.
-         */
-        private function resetModelAccess()
-        {
-                if (($di = $this->getDI()) != null) {
-                        if ($di->has('modelsManager')) {
-                                $modelsManager = $this->getDI()->get('modelsManager');
-                                $eventsManager = $modelsManager->getEventsManager();
-                                foreach ($eventsManager->getListeners('model') as $handler) {
-                                        if ($handler instanceof \OpenExam\Plugins\Security\ModelAccessListener) {
-                                                self::info("Reset model access listener");
-                                                $handler->reset();
-                                        }
-                                }
-                        }
-                }
-        }
-
-        /**
          * Check role access on this model.
          * 
          * Checking that allowed actions succeed is equal important that
@@ -257,7 +238,7 @@ class TestModelAccess extends TestModelBasic
                 // Should pass. If primary role is unset, then the model
                 // layer should grant unrestricted access.
                 // 
-                self::info("*** expect: pass ***");
+                self::info("*** expect: pass (primary role unset) ***");
                 foreach ($roles as $role => $object) {
                         try {
                                 $this->user->setPrimaryRole(null);
@@ -266,13 +247,12 @@ class TestModelAccess extends TestModelBasic
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
-                $this->resetModelAccess();
 
                 // 
                 // Should fail. Primary role is set, but user is not
                 // authenticated.
                 // 
-                self::info("*** expect: fail ***");
+                self::info("*** expect: fail (user not authenticated) ***");
                 foreach ($roles as $role => $object) {
                         try {
                                 $this->user->setPrimaryRole($role);
@@ -281,7 +261,6 @@ class TestModelAccess extends TestModelBasic
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
-                $this->resetModelAccess();
 
                 // 
                 // Inject a fake authenticated user:
@@ -292,7 +271,7 @@ class TestModelAccess extends TestModelBasic
                 // 
                 // Should fail. User is authenticated, but lacks any roles.
                 // 
-                self::info("*** expect: fail ***");
+                self::info("*** expect: fail (no assigned roles) ***");
                 foreach ($roles as $role => $object) {
                         try {
                                 $this->user->setPrimaryRole($role);
@@ -301,7 +280,6 @@ class TestModelAccess extends TestModelBasic
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
-                $this->resetModelAccess();
 
                 // 
                 // Set roles to authenticated user:
@@ -338,16 +316,15 @@ class TestModelAccess extends TestModelBasic
                 // Should succeed. Authenticated user has the requested
                 // primary role (changed by $object->update()).
                 // 
-                self::info("*** expect: pass ***");
+                self::info("*** expect: pass (primary roles assigned) ***");
                 foreach ($roles as $role => $object) {
                         try {
                                 $this->user->setPrimaryRole($role);
-                                $this->checkModelAccess($role, null);
+                                $this->checkModelAccess($role, 'access');
                         } catch (\Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
-                $this->resetModelAccess();
 
                 // 
                 // Keep phpunit happy:
@@ -428,8 +405,10 @@ class TestModelAccess extends TestModelBasic
                 self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
 
                 // 
-                // Successful operations of read, update and delete requires
-                // that we preserve the original object ID.
+                // For read, update and delete to be successful tested, its 
+                // required that we preserve the orignial object ID. This is
+                // is because we need to preserve the model relations with
+                // other models for authorization to make sense.
                 // 
                 if ($this->object->id != 0) {
                         $this->object->old_id = $this->object->id;
@@ -460,17 +439,21 @@ class TestModelAccess extends TestModelBasic
         {
                 self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
 
+                if ($this->object->id == 0) {
+                        self::warn("Object id == 0 (skipped)");
+                        return;
+                }
+
                 $class = get_class($this->object);
 
-                if ($class::findFirst() == false) {
+                if (($object = $class::findFirstById($this->object->id)) == false) {
                         throw new LocalException(print_r($this->object->getMessages(), true));
                 }
-                // TODO: implement read access control
-//                if (!$permit && isset($error)) {
-//                        throw new LocalException("Expected $error exception not thrown (not permitted).");
-//                } else {
-//                        self::success("Read object %s(id=%d)", $this->object->getName(), $this->object->id);
-//                }
+                if (!$permit && isset($error)) {
+                        throw new LocalException("Expected $error exception not thrown (not permitted).");
+                } else {
+                        self::success("Read object %s(id=%d)", $this->object->getName(), $this->object->id);
+                }
         }
 
         /**
