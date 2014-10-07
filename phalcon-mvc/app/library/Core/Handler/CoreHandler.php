@@ -82,7 +82,7 @@ class CoreHandler extends Component
 
                         if ($action != ObjectAccess::READ && count($models) > 1) {
                                 $transactionManager = new TransactionManager();
-                                $transactionManager->setDbService($models[0]->getReadConnectionService());
+                                $transactionManager->setDbService($models[0]->getWriteConnectionService());
                                 $transaction = $transactionManager->get();
                         }
 
