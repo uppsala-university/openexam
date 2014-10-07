@@ -228,6 +228,11 @@ class UserTest extends TestCase
                 $this->object->setPrimaryRole($expect);
                 $actual = $this->object->getPrimaryRole();
                 self::assertEquals($expect, $actual);
+                
+                $expect = 'somerole';
+                $this->object->setPrimaryRole($expect);
+                $actual = $this->object->setPrimaryRole(null);
+                self::assertEquals($expect, $actual);                
         }
 
         /**

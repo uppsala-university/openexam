@@ -138,11 +138,13 @@ class User extends Component
         /**
          * Set primary role.
          * @param string $role The primary role.
-         * @return bool True if primary role was successful aquired.
+         * @return string The previous primary role.
          */
         public function setPrimaryRole($role)
         {
+                $prev = $this->_role;
                 $this->_role = $role;
+                return $prev;
         }
 
         /**
