@@ -26,16 +26,18 @@ class AnswerAccess extends ObjectAccess
 {
 
         /**
-         * Behaviour hook.
-         * @param string $event
-         * @param Answer $model
+         * Check model access.
+         * @param string $action The model action.
+         * @param Answer $model The model.
          * @param User $user The peer object.
-         * @return boolean 
-         * @throws Exception
          */
-        public function notify($event, $model, $user)
+        public function checkAccess($action, $model, $user)
         {
-                printf("%s: event=%s, model=%s, user=%s\n", __METHOD__, $event, $model->getName(), $user->getPrincipalName());
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getName(), $user->getPrincipalName()
+                        ));
+                }
 
                 $role = $user->getPrimaryRole();
 
@@ -44,7 +46,7 @@ class AnswerAccess extends ObjectAccess
                 // 
                 if ($model->id != 0) {
                         if ($role == Roles::STUDENT) {
-                                if ($model->Student->user != $user->getPrincipalName()) {
+                                if ($model->student->user != $user->getPrincipalName()) {
                                         throw new Exception('owner');
                                 }
                         }
@@ -57,24 +59,28 @@ class AnswerAccess extends ObjectAccess
                     $role == Roles::CREATOR ||
                     $role == Roles::DECODER ||
                     $role == Roles::INVIGILATOR) {
-                        if ($user->roles->aquire($role, $model->question->exam_id) == false) {
-                                throw new Exception('role');
+                        if ($user->roles->aquire($role, $model->question->exam_id)) {
+                                return true;
                         }
                 } elseif ($role == Roles::STUDENT) {
-                        if ($user->roles->aquire($role, $model->student->exam_id) == false) {
-                                throw new Exception('role');
+                        if ($user->roles->aquire($role, $model->student->exam_id)) {
+                                return true;
                         }
                 } elseif ($role == Roles::CORRECTOR) {
-                        if ($user->roles->aquire($role, $model->question->id) == false) {
-                                throw new Exception('role');
+                        if ($user->roles->aquire($role, $model->question->id)) {
+                                return true;
                         }
                 } elseif (isset($role)) {
-                        if ($user->roles->aquire($role) == false) {
-                                throw new Exception('role');
+                        if ($user->roles->aquire($role)) {
+                                return true;
                         }
                 }
 
-                return true;
+                if (isset($role)) {
+                        throw new Exception('role');
+                } else {
+                        return true;
+                }
         }
 
 }

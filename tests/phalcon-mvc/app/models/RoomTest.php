@@ -39,7 +39,7 @@ class RoomTest extends TestCase
                 $room = Computer::findFirst()->room;
                 self::assertNotNull($room);
 
-                self::assertNotEquals($room->computers->count(), 0);
+                self::assertNotEquals(0, $room->computers->count());
                 self::assertTrue(count($room->computers) > 0);
         }
 

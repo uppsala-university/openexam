@@ -41,7 +41,7 @@ class DecoderTest extends TestCase
                 $decoder = Decoder::findFirst();
                 self::assertNotNull($decoder);
 
-                self::assertNotEquals($decoder->exam->count(), 0);
+                self::assertNotEquals(0, $decoder->exam->count());
                 self::assertTrue(count($decoder->exam) == 1);
         }
 

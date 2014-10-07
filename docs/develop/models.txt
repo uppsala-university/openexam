@@ -39,4 +39,8 @@ Phalcon devtools.
 
         $user->setPrimaryRole(null);
 
+   If using unchecked access (primary role == null) and later turning on access 
+   restriction, make sure to persist all models or model cache (pre-save) will
+   probably cause problems.
+
 // Anders Lövgren, 2014-09-10

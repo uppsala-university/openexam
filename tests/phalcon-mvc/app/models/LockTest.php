@@ -40,8 +40,8 @@ class LockTest extends TestCase
                 $lock = Lock::findFirst();
                 self::assertNotNull($lock);
 
-                self::assertNotEquals($lock->exam->count(), 0);
-                self::assertNotEquals($lock->computer->count(), 0);
+                self::assertNotEquals(0, $lock->exam->count());
+                self::assertNotEquals(0, $lock->computer->count());
 
                 self::assertTrue(count($lock->exam) == 1);
                 self::assertTrue(count($lock->computer) == 1);

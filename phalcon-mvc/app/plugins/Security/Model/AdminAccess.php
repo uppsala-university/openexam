@@ -24,14 +24,20 @@ class AdminAccess extends ObjectAccess
 {
 
         /**
-         * Behavour hook.
-         * @param string $event
-         * @param Admin $model
+         * Check model access.
+         * @param string $action The model action.
+         * @param Admin $model The model.
          * @param User $user The peer object.
          */
-        public function notify($event, $model, $user)
+        public function checkAccess($action, $model, $user)
         {
-                printf("%s: event=%s, model=%s, user=%s\n", __METHOD__, $event, $model->getName(),$user->getPrincipalName());
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getName(), $user->getPrincipalName()
+                        ));
+                }
+
+                return true;
         }
 
 }

@@ -13,7 +13,6 @@
 
 namespace OpenExam\Tests\Phalcon;
 
-use Exception;
 use OpenExam\Library\Security\User;
 use OpenExam\Models\Access\AuthorizationInterface;
 use OpenExam\Models\Admin;
@@ -25,6 +24,11 @@ use OpenExam\Models\Invigilator;
 use OpenExam\Models\Student;
 use OpenExam\Models\Teacher;
 
+class LocalException extends \Exception
+{
+        
+}
+
 /**
  * Helper class for testing model access.
  * 
@@ -32,8 +36,10 @@ use OpenExam\Models\Teacher;
  * and uses it to validate that the outcome holds (permitted actions succeed 
  * and disallowed action fails).
  * 
- * Tests are performed by injecting a user object. The first test check that
- * a unauthenticated user don't have access to any 
+ * Tests are performed using sample data inserted by running:
+ * <code>
+ * bash$> 'php phalcon-mvc/script/unittest.php --setup'
+ * </code>
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -51,10 +57,10 @@ class TestModelAccess extends TestModelBasic
 
         /**
          * Constructor
-         * @param AuthorizationInterface $object An not yet persisted model object.
-         * @param User $user Optional user for access test.
+         * @param AuthorizationInterface $object An model object.
+         * @param string $access Path to access list definition.
          */
-        public function __construct($object)
+        public function __construct($object, $access = null)
         {
                 parent::__construct($object);
 
@@ -83,7 +89,14 @@ class TestModelAccess extends TestModelBasic
                 // 
                 // Setup access list:
                 // 
-                $this->access = self::getAccessList(require(CONFIG_DIR . '/access.def'));
+                if (!isset($access)) {
+                        $access = CONFIG_DIR . '/access.def';
+                }
+                if (!file_exists($access)) {
+                        self::error("Missing access control file $access");
+                } else {
+                        $this->access = self::getAccessList(require($access));
+                }
 
                 // 
                 // Load sample data:
@@ -157,9 +170,16 @@ class TestModelAccess extends TestModelBasic
          */
         private function createModelObject()
         {
+                self::info("object=%s", $this->object->getName());
+
+                $role = $this->user->getPrimaryRole();
+                $this->user->setPrimaryRole(null);
+
                 $class = get_class($this->object);
                 $this->object = new $class();
                 $this->object->assign($this->values);
+
+                $this->user->setPrimaryRole($role);
         }
 
         /**
@@ -167,8 +187,37 @@ class TestModelAccess extends TestModelBasic
          */
         private function deleteModelObject()
         {
+                self::info("object=%s", $this->object->getName());
+
+                $role = $this->user->getPrimaryRole();
+                $this->user->setPrimaryRole(null);
+
+                if (isset($this->object->new_id)) {
+                        $this->object->id = $this->object->new_id;
+                }
                 if ($this->object->id != 0) {
                         $this->object->delete();
+                }
+
+                $this->user->setPrimaryRole($role);
+        }
+
+        /**
+         * Reset model access control.
+         */
+        private function resetModelAccess()
+        {
+                if (($di = $this->getDI()) != null) {
+                        if ($di->has('modelsManager')) {
+                                $modelsManager = $this->getDI()->get('modelsManager');
+                                $eventsManager = $modelsManager->getEventsManager();
+                                foreach ($eventsManager->getListeners('model') as $handler) {
+                                        if ($handler instanceof \OpenExam\Plugins\Security\ModelAccessListener) {
+                                                self::info("Reset model access listener");
+                                                $handler->reset();
+                                        }
+                                }
+                        }
                 }
         }
 
@@ -205,44 +254,34 @@ class TestModelAccess extends TestModelBasic
                 $this->getDI()->set('user', $this->user);
 
                 // 
-                // Should pass (unchecked access):
+                // Should pass. If primary role is unset, then the model
+                // layer should grant unrestricted access.
                 // 
+                self::info("*** expect: pass ***");
                 foreach ($roles as $role => $object) {
-                        $this->user->setPrimaryRole(null);
-
-                        if ($role == 'creator') {
-                                $object->creator = $this->user->getPrincipalName();
-                                $object->update();
-                        } else {
-                                $object->user = $this->user->getPrincipalName();
-                                $object->update();
-                        }
                         try {
-                                $this->checkModelAccess($role);
+                                $this->user->setPrimaryRole(null);
+                                $this->checkModelAccess($role, null);
                         } catch (\Exception $exception) {
-                                self::error($exception, "Unexpected exception (%s)", get_class($object));
+                                self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
+                $this->resetModelAccess();
 
                 // 
-                // Should fail (unauthenticated user):
+                // Should fail. Primary role is set, but user is not
+                // authenticated.
                 // 
+                self::info("*** expect: fail ***");
                 foreach ($roles as $role => $object) {
-                        $this->user->setPrimaryRole($role);
-
-                        if ($role == 'creator') {
-                                $object->creator = $this->user->getPrincipalName();
-                                $object->update();
-                        } else {
-                                $object->user = $this->user->getPrincipalName();
-                                $object->update();
-                        }
                         try {
-                                $this->checkModelAccess($role);
+                                $this->user->setPrimaryRole($role);
+                                $this->checkModelAccess($role, 'auth');
                         } catch (\Exception $exception) {
-                                self::error($exception, "Unexpected exception (%s)", get_class($object));
+                                self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
+                $this->resetModelAccess();
 
                 // 
                 // Inject a fake authenticated user:
@@ -251,12 +290,24 @@ class TestModelAccess extends TestModelBasic
                 $this->getDI()->set('user', $this->user);
 
                 // 
-                // Should succeed:
+                // Should fail. User is authenticated, but lacks any roles.
+                // 
+                self::info("*** expect: fail ***");
+                foreach ($roles as $role => $object) {
+                        try {
+                                $this->user->setPrimaryRole($role);
+                                $this->checkModelAccess($role, 'role');
+                        } catch (\Exception $exception) {
+                                self::error($exception, "Unexpected exception (%s)", get_class($this->object));
+                        }
+                }
+                $this->resetModelAccess();
+
+                // 
+                // Set roles to authenticated user:
                 // 
                 foreach ($roles as $role => $object) {
-
                         $this->user->setPrimaryRole(null);
-
                         if ($role == 'creator') {
                                 $object->creator = $this->user->getPrincipalName();
                                 $object->update();
@@ -264,22 +315,47 @@ class TestModelAccess extends TestModelBasic
                                 $object->user = $this->user->getPrincipalName();
                                 $object->update();
                         }
-
-                        $this->user->setPrimaryRole($role);
-
-                        try {
-                                $this->checkModelAccess($role);
-                        } catch (\Exception $exception) {
-                                self::error($exception, "Unexpected exception (%s)", get_class($object));
+                        if ($this->object->getName() == $role) {
+                                $this->object->user = $this->user->getPrincipalName();
                         }
                 }
+
+                // 
+                // Update model create values:
+                // 
+                foreach (array('user', 'creator') as $key) {
+                        if (isset($this->values[$key])) {
+                                $this->values[$key] = $this->user->getPrincipalName();
+                        }
+                }
+
+                // 
+                // Force related objects to be persisted:
+                // 
+                $this->object->save();
+
+                // 
+                // Should succeed. Authenticated user has the requested
+                // primary role (changed by $object->update()).
+                // 
+                self::info("*** expect: pass ***");
+                foreach ($roles as $role => $object) {
+                        try {
+                                $this->user->setPrimaryRole($role);
+                                $this->checkModelAccess($role, null);
+                        } catch (\Exception $exception) {
+                                self::error($exception, "Unexpected exception (%s)", get_class($this->object));
+                        }
+                }
+                $this->resetModelAccess();
+
                 // 
                 // Keep phpunit happy:
                 // 
                 self::assertTrue(true);
         }
 
-        private function checkModelAccess($role)
+        private function checkModelAccess($role, $error)
         {
                 self::info("role=%s, user=%s", $role, $this->user->getPrincipalName());
 
@@ -287,7 +363,7 @@ class TestModelAccess extends TestModelBasic
                         if ($resource == $this->object->getName()) {
                                 $this->createModelObject();
                                 foreach ($actions as $action => $permit) {
-                                        $this->checkModelAction($role, $resource, $action, $permit);
+                                        $this->checkModelAction($action, $permit, $error);
                                 }
                                 $this->deleteModelObject();
                         }
@@ -295,135 +371,165 @@ class TestModelAccess extends TestModelBasic
         }
 
         /**
-         * Check performing action on resource having given role.
+         * Check performing action on current object.
          * 
-         * @param string $role The role.
-         * @param string $resource The resource.
          * @param string $action The action to perform.
          * @param bool $permit Should model action be permitted?
+         * @param string $error The expected exception message.
          * @group model
          * @group security
          */
-        private function checkModelAction($role, $resource, $action, $permit)
+        private function checkModelAction($action, $permit, $error)
         {
-                self::info("role=%s, resource=%s, action=%s, permit=%s", $role, $resource, $action, $permit ? "yes" : "no");
+                self::info("action=%s, permit=%s, error=%s", $action, $permit ? "yes" : "no", $error);
 
                 try {
                         switch ($action) {
                                 case 'create':
-                                        $this->checkModelCreate($role, $resource, $permit);
+                                        $this->checkModelCreate($permit, $error);
                                         break;
                                 case 'read':
-                                        $this->checkModelRead($role, $resource, $permit);
+                                        $this->checkModelRead($permit, $error);
                                         break;
                                 case 'update':
-                                        $this->checkModelUpdate($role, $resource, $permit);
+                                        $this->checkModelUpdate($permit, $error);
                                         break;
                                 case 'delete':
-                                        $this->checkModelDelete($role, $resource, $permit);
+                                        $this->checkModelDelete($permit, $error);
                                         break;
                                 default:
                                         self::error("Unknown action $action");
                         }
+                } catch (LocalException $exception) {
+                        self::error($exception);
                 } catch (\Exception $exception) {
-                        if ($exception->getMessage() == 'auth') {
-                                self::success("User not authenticated");
-                        } elseif ($exception->getMessage() == 'user' || $exception->getMessage() == 'acl') {
-                                self::error($exception, "Service not configured (%s)", $exception->getMessage());
-                        } elseif ($permit) {
-                                self::error("Permitted action failed: role=%s, resource=%s, action=%s", $role, $resource, $action);
+                        if ($exception->getMessage() == 'user' || $exception->getMessage() == 'acl') {
+                                self::error($exception, "System configuration error");
+                        } elseif (isset($error) && $exception->getMessage() == $error) {
+                                self::success("Trapped expected exception (type %s)", $exception->getMessage());
+                        } elseif ($permit == false && $exception->getMessage() == 'access') {
+                                self::success("Blocked access for disallowed role (type %s)", $exception->getMessage());
                         } else {
-                                self::success("Disallowed action failed: role=%s, resource=%s, action=%s", $role, $resource, $action);
+                                self::error($exception, "Unexpected exception");
                         }
                 }
         }
 
         /**
-         * Test create on resource having given role.
+         * Test create on current object.
          * 
-         * @param string $role The role.
-         * @param string $resource The resource.
          * @param bool $permit Should model action be permitted?
+         * @param string $error The expected exception message.
          * @group model
          * @group security
          */
-        private function checkModelCreate($role, $resource, $permit)
+        private function checkModelCreate($permit, $error)
         {
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
+
+                // 
+                // Successful operations of read, update and delete requires
+                // that we preserve the original object ID.
+                // 
                 if ($this->object->id != 0) {
+                        $this->object->old_id = $this->object->id;
                         $this->object->id = 0;
                 }
                 if ($this->object->create() == false) {
-                        throw new Exception(print_r($this->object->getMessages(), true));
+                        throw new LocalException(print_r($this->object->getMessages(), true));
+                } else {
+                        $this->object->new_id = $this->object->id;
+                        $this->object->id = $this->object->old_id;
                 }
-                if (!$permit) {
-                        self::error("Expected exception not thrown (not permitted).");
+                if (!$permit && isset($error)) {
+                        throw new LocalException("Expected $error exception not thrown (not permitted).");
+                } else {
+                        self::success("Created object %s(id=%d)", $this->object->getName(), $this->object->new_id);
                 }
         }
 
         /**
-         * Test read on resource having given role.
+         * Test read on current object.
          * 
-         * @param string $role The role.
-         * @param string $resource The resource.
          * @param bool $permit Should model action be permitted?
+         * @param string $error The expected exception message.
          * @group model
          * @group security
          */
-        private function checkModelRead($role, $resource, $permit)
+        private function checkModelRead($permit, $error)
         {
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
+
                 $class = get_class($this->object);
 
                 if ($class::findFirst() == false) {
-                        throw new Exception(print_r($this->object->getMessages(), true));
+                        throw new LocalException(print_r($this->object->getMessages(), true));
                 }
-                if (!$permit) {
-                        self::error("Expected exception not thrown (not permitted).");
-                }
+                // TODO: implement read access control
+//                if (!$permit && isset($error)) {
+//                        throw new LocalException("Expected $error exception not thrown (not permitted).");
+//                } else {
+//                        self::success("Read object %s(id=%d)", $this->object->getName(), $this->object->id);
+//                }
         }
 
         /**
-         * Test update on resource having given role.
+         * Test update on current object.
          * 
-         * @param string $role The role.
-         * @param string $resource The resource.
          * @param bool $permit Should model action be permitted?
+         * @param string $error The expected exception message.
          * @group model
          * @group security
          */
-        private function checkModelUpdate($role, $resource, $permit)
+        private function checkModelUpdate($permit, $error)
         {
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
+
                 if ($this->object->id == 0) {
                         self::warn("Object id == 0 (skipped)");
                         return;
                 }
                 if ($this->object->update() == false) {
-                        throw new Exception(print_r($this->object->getMessages(), true));
+                        throw new LocalException(print_r($this->object->getMessages(), true));
                 }
-                if (!$permit) {
-                        self::error("Expected exception not thrown (not permitted).");
+                if (!$permit && isset($error)) {
+                        throw new LocalException("Expected $error exception not thrown (not permitted).");
+                } else {
+                        self::success("Updated object %s(id=%d)", $this->object->getName(), $this->object->id);
                 }
         }
 
         /**
-         * Test delete on resource having given role.
+         * Test delete on current object.
          * 
-         * @param string $role The role.
-         * @param string $resource The resource.
          * @param bool $expect Expected result.
+         * @param string $error The expected exception message.
          * @group model
          * @group security
          */
-        private function checkModelDelete($role, $resource, $permit)
+        private function checkModelDelete($permit, $error)
         {
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
+
                 if ($this->object->id == 0) {
                         self::warn("Object id == 0 (skipped)");
                         return;
                 }
-                if ($this->object->delete() == false) {
-                        throw new Exception(print_r($this->object->getMessages(), true));
+                // 
+                // Delete the created object, not the one from sample data.
+                // 
+                if (isset($this->object->new_id)) {
+                        $this->object->id = $this->object->new_id;
                 }
-                if (!$permit) {
-                        self::error("Expected exception not thrown (not permitted).");
+                if ($this->object->delete() == false) {
+                        throw new LocalException(print_r($this->object->getMessages(), true));
+                } else {
+                        $this->object->id = $this->object->old_id;
+                }
+                if (!$permit && isset($error)) {
+                        throw new LocalException("Expected $error exception not thrown (not permitted).");
+                } else {
+                        self::success("Deleted object %s(id=%d)", $this->object->getName(), $this->object->new_id);
                 }
         }
 

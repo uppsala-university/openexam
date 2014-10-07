@@ -39,13 +39,13 @@ class TopicTest extends TestCase
                 $topic = Topic::findFirst();
                 self::assertNotNull($topic);
 
-                self::assertNotEquals($topic->exam->count(), 0);
+                self::assertNotEquals(0, $topic->exam->count());
                 self::assertTrue(count($topic->exam) == 1);
 
                 $topic = Question::findFirst()->topic;
                 self::assertNotNull($topic);
 
-                self::assertNotEquals($topic->questions->count(), 0);
+                self::assertNotEquals(0, $topic->questions->count());
                 self::assertTrue(count($topic->questions) >= 0);
         }
 

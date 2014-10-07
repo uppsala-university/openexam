@@ -40,7 +40,7 @@ class FileTest extends TestCase
                 $file = File::findFirst();
                 self::assertNotNull($file);
 
-                self::assertNotEquals($file->answer->count(), 0);
+                self::assertNotEquals(0, $file->answer->count());
                 self::assertTrue(count($file->answer) == 1);
         }
 

@@ -40,13 +40,13 @@ class StudentTest extends TestCase
                 $student = Student::findFirst();
                 self::assertNotNull($student);
 
-                self::assertNotEquals($student->exam->count(), 0);
+                self::assertNotEquals(0, $student->exam->count());
                 self::assertTrue(count($student->exam) == 1);
 
                 $student = Answer::findFirst()->student;
                 self::assertNotNull($student);
 
-                self::assertNotEquals($student->answers->count(), 0);
+                self::assertNotEquals(0, $student->answers->count());
                 self::assertTrue(count($student->answers) >= 0);
         }
 

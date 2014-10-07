@@ -41,7 +41,7 @@ class InvigilatorTest extends TestCase
                 $invigilator = Invigilator::findFirst();
                 self::assertNotNull($invigilator);
 
-                self::assertNotEquals($invigilator->exam->count(), 0);
+                self::assertNotEquals(0, $invigilator->exam->count());
                 self::assertTrue(count($invigilator->exam) == 1);
         }
 

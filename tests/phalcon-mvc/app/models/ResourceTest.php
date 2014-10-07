@@ -40,7 +40,7 @@ class ResourceTest extends TestCase
                 $resource = Resource::findFirst();
                 self::assertNotNull($resource);
 
-                self::assertNotEquals($resource->exam->count(), 0);
+                self::assertNotEquals(0, $resource->exam->count());
                 self::assertTrue(count($resource->exam) == 1);
         }
 

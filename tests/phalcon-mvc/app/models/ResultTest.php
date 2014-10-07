@@ -40,7 +40,7 @@ class ResultTest extends TestCase
                 $result = Result::findFirst();
                 self::assertNotNull($result);
 
-                self::assertNotEquals($result->answer->count(), 0);
+                self::assertNotEquals(0, $result->answer->count());
                 self::assertTrue(count($result->answer) == 1);
         }
 

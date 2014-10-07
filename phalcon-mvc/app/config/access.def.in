@@ -10,10 +10,14 @@
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
-// 
-// The map between role, resource and permission. This map is used
-// for defining the ACL in the system.
-// 
+
+/** 
+ * This map is used for defining the ACL in the system by defining relations 
+ * between roles, resources and permissions. 
+ * 
+ * Except for creator can't have the create (obvious), it should be safe to
+ * define any other mappings. 
+ */
 return array(
         // 
         // Permissions map:
@@ -21,7 +25,8 @@ return array(
         'permissions' => array(
                 '*'      => '*',
                 'read'   => 'read',
-                'change' => array('create', 'read', 'update'),
+                'modify' => array('read', 'update'),
+                'manage' => array('read', 'update', 'delete'),
                 'full'   => array('create', 'read', 'update', 'delete')
         ),
         // 
@@ -33,34 +38,38 @@ return array(
                         'exam' => '*'
                 ),
                 'creator'     => array(
-                        'exam'        => '*',
+                        'exam'        => 'manage',
                         'contributor' => '*',
                         'decoder'     => '*',
                         'invigilator' => '*',
+                        'student'     => 'read',
                         'question'    => 'read',
                         'topic'       => '*',
-                        'student'     => 'read'
+                        'resource'    => '*'
                 ),
                 'contributor' => array(
                         'exam'     => 'read',
                         'question' => '*',
-                        'topic'    => 'read'
+                        'topic'    => 'read',
+                        'resource' => '*'
                 ),
                 'invigilator' => array(
-                        'exam'        => 'change',
+                        'exam'        => 'modify',
                         'invigilator' => 'read',
                         'student'     => '*',
-                        'lock'        => '*',
                         'computer'    => 'read',
+                        'lock'        => '*',
                         'room'        => 'read'
                 ),
                 'decoder'     => array(
-                        'exam'     => 'change',
+                        'exam'     => 'modify',
                         'student'  => 'read',
                         'answer'   => 'read',
                         'result'   => 'read',
                         'question' => 'read',
-                        'topic'    => 'read'
+                        'topic'    => 'read',
+                        'resource' => 'read',
+                        'file'     => 'read'                        
                 ),
                 'corrector'   => array(
                         'exam'     => 'read',
@@ -71,10 +80,13 @@ return array(
                         'result'   => '*'
                 ),
                 'student'     => array(
-                        'exam'     => 'read',
-                        'question' => 'read',
-                        'topic'    => 'read',
-                        'answer'   => '*'
+                        'exam'      => 'read',
+                        'question'  => 'read',
+                        'topic'     => 'read',
+                        'answer'    => '*',
+                        'resource'  => 'read',
+                        'files'     => '*',
+                        'corrector' => 'read'
                 )
         )
 );

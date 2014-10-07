@@ -13,7 +13,11 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use OpenExam\Library\Security\Exception;
+use OpenExam\Library\Security\Roles;
+use OpenExam\Library\Security\User;
 use OpenExam\Models\Computer;
+use OpenExam\Models\Question;
 
 /**
  * Access control for the Computer model.
@@ -23,14 +27,55 @@ class ComputerAccess extends ObjectAccess
 {
 
         /**
-         * Behavour hook.
-         * @param string $event
-         * @param Computer $model
+         * Check model access.
+         * @param string $action The model action.
+         * @param Computer $model The model.
          * @param User $user The peer object.
          */
-        public function notify($event, $model, $user)
+        public function checkAccess($action, $model, $user)
         {
-                printf("%s: event=%s, model=%s, user=%s\n", __METHOD__, $event, $model->getName(),$user->getPrincipalName());
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getName(), $user->getPrincipalName()
+                        ));
+                }
+
+                $role = $user->getPrimaryRole();
+
+                // 
+                // Check role on exam, question or global:
+                // 
+                if ($role == Roles::CONTRIBUTOR ||
+                    $role == Roles::CREATOR ||
+                    $role == Roles::DECODER ||
+                    $role == Roles::INVIGILATOR ||
+                    $role == Roles::STUDENT) {
+                        foreach ($model->locks as $lock) {
+                                if ($user->roles->aquire($role, $lock->exam_id)) {
+                                        return true;
+                                }
+                        }
+                } elseif ($role == Roles::CORRECTOR) {
+                        foreach ($model->locks as $lock) {
+                                if (($questions = Question::find("exam_id='$lock->exam_id'"))) {
+                                        foreach ($questions as $question) {
+                                                if ($user->roles->aquire($role, $question->id)) {
+                                                        return true;
+                                                }
+                                        }
+                                }
+                        }
+                } elseif (isset($role)) {
+                        if ($user->roles->aquire($role)) {
+                                return true;
+                        }
+                }
+
+                if (isset($role)) {
+                        throw new Exception('role');
+                } else {
+                        return true;
+                }
         }
 
 }

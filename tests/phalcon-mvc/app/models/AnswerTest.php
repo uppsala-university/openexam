@@ -7,6 +7,11 @@ use OpenExam\Tests\Phalcon\TestCase;
 use OpenExam\Tests\Phalcon\TestModelAccess;
 use OpenExam\Tests\Phalcon\TestModelBasic;
 
+class LocalException extends \Exception
+{
+        
+}
+
 /**
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -41,16 +46,16 @@ class AnswerTest extends TestCase
                 $answer = Result::findFirst()->answer;
                 self::assertNotNull($answer);
 
-                self::assertNotEquals($answer->question->count(), 0);
-                self::assertNotEquals($answer->result->count(), 0);
-                self::assertNotEquals($answer->student->count(), 0);
+                self::assertNotEquals(0, $answer->question->count());
+                self::assertNotEquals(0, $answer->result->count());
+                self::assertNotEquals(0, $answer->student->count());
 
-                self::assertTrue(count($answer->question) == 1);
-                self::assertTrue(count($answer->result) == 1);
-                self::assertTrue(count($answer->student) == 1);
+                self::assertEquals(1, count($answer->question));
+                self::assertEquals(1, count($answer->result));
+                self::assertEquals(1, count($answer->student));
 
                 $answer = File::findFirst()->answer;
-                self::assertNotEquals($answer->files->count(), 0);
+                self::assertNotEquals(0, $answer->files->count());
                 self::assertTrue(count($answer->files) > 0);
         }
 

@@ -40,7 +40,7 @@ class CorrectorTest extends TestCase
                 $corrector = Corrector::findFirst();
                 self::assertNotNull($corrector);
 
-                self::assertNotEquals($corrector->question->count(), 0);
+                self::assertNotEquals(0, $corrector->question->count());
                 self::assertTrue(count($corrector->question) == 1);
         }
 

@@ -41,8 +41,8 @@ class ComputerTest extends TestCase
                 $computer = Computer::findFirst();
                 self::assertNotNull($computer);
 
-                self::assertNotEquals($computer->locks->count(), 0);
-                self::assertNotEquals($computer->room->count(), 0);
+                self::assertNotEquals(0, $computer->locks->count());
+                self::assertNotEquals(0, $computer->room->count());
 
                 self::assertTrue(count($computer->locks) > 0);
                 self::assertTrue(count($computer->room) == 1);

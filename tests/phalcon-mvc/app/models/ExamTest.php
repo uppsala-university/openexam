@@ -41,49 +41,49 @@ class ExamTest extends TestCase
                 $exam = Contributor::findFirst()->exam;
                 self::assertNotNull($exam);
 
-                self::assertNotEquals($exam->contributors->count(), 0);
+                self::assertNotEquals(0, $exam->contributors->count());
                 self::assertTrue(count($exam->contributors) > 0);
 
                 $exam = Decoder::findFirst()->exam;
                 self::assertNotNull($exam);
 
                 self::assertTrue(count($exam->decoders) > 0);
-                self::assertNotEquals($exam->decoders->count(), 0);
+                self::assertNotEquals(0, $exam->decoders->count());
 
                 $exam = Invigilator::findFirst()->exam;
                 self::assertNotNull($exam);
 
-                self::assertNotEquals($exam->invigilators->count(), 0);
+                self::assertNotEquals(0, $exam->invigilators->count());
                 self::assertTrue(count($exam->invigilators) > 0);
 
                 $exam = Question::findFirst()->exam;
                 self::assertNotNull($exam);
 
-                self::assertNotEquals($exam->questions->count(), 0);
+                self::assertNotEquals(0, $exam->questions->count());
                 self::assertTrue(count($exam->questions) > 0);
 
                 $exam = Student::findFirst()->exam;
                 self::assertNotNull($exam);
 
-                self::assertNotEquals($exam->students->count(), 0);
+                self::assertNotEquals(0, $exam->students->count());
                 self::assertTrue(count($exam->students) > 0);
 
                 $exam = Topic::findFirst()->exam;
                 self::assertNotNull($exam);
 
-                self::assertNotEquals($exam->topics->count(), 0);
+                self::assertNotEquals(0, $exam->topics->count());
                 self::assertTrue(count($exam->topics) > 0);
 
                 $exam = Lock::findFirst()->exam;
                 self::assertNotNull($exam);
 
-                self::assertNotEquals($exam->locks->count(), 0);
+                self::assertNotEquals(0, $exam->locks->count());
                 self::assertTrue(count($exam->locks) > 0);
 
                 $exam = Resource::findFirst()->exam;
                 self::assertNotNull($exam);
 
-                self::assertNotEquals($exam->resources->count(), 0);
+                self::assertNotEquals(0, $exam->resources->count());
                 self::assertTrue(count($exam->resources) > 0);
         }
 

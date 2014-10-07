@@ -13,14 +13,16 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use OpenExam\Library\Security\User;
 use Phalcon\Events\Event;
-use Phalcon\Paginator\Adapter\Model;
+use Phalcon\Mvc\Model;
+use Phalcon\Mvc\User\Plugin;
 
 /**
  * Abstract base class for object access control.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-abstract class ObjectAccess
+abstract class ObjectAccess extends Plugin
 {
 
         const CREATE = 'create';
@@ -29,12 +31,32 @@ abstract class ObjectAccess
         const DELETE = 'delete';
 
         /**
-         * Behavour hook.
+         * Check model access.
+         * @param string $action The model action.
+         * @param Model $model The model.
+         * @param User $user The peer object.
+         */
+        abstract function checkAccess($action, $model, $user);
+
+        /**
+         * Behaviour hook.
          * @param string $event The notify event name.
          * @param Model $model The model.
          * @param User $user The peer object.
          */
-        abstract function notify($event, $model, $user);
+        public function notify($event, $model, $user)
+        {
+                switch ($event) {
+                        case 'beforeCreate':
+                                return $this->checkAccess(self::CREATE, $model, $user);
+                        case 'afterFetch':
+                                return $this->checkAccess(self::READ, $model, $user);
+                        case 'beforeUpdate':
+                                return $this->checkAccess(self::UPDATE, $model, $user);
+                        case 'beforeDelete':
+                                return $this->checkAccess(self::DELETE, $model, $user);
+                }
+        }
 
         /**
          * Delete event hook.
@@ -44,7 +66,11 @@ abstract class ObjectAccess
          */
         protected function beforeDelete($event, $model, $user)
         {
-                printf("%s: event=%s, model=%s\n", __METHOD__, $event->getType(), $model->getName());
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getName(), $user->getPrincipalName()
+                        ));
+                }
                 return $this->notify($event->getType(), $model, $user);
         }
 
@@ -56,7 +82,11 @@ abstract class ObjectAccess
          */
         protected function beforeCreate($event, $model, $user)
         {
-                printf("%s: event=%s, model=%s\n", __METHOD__, $event->getType(), $model->getName());
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getName(), $user->getPrincipalName()
+                        ));
+                }
                 return $this->notify($event->getType(), $model, $user);
         }
 
@@ -68,7 +98,11 @@ abstract class ObjectAccess
          */
         protected function beforeUpdate($event, $model, $user)
         {
-                printf("%s: event=%s, model=%s\n", __METHOD__, $event->getType(), $model->getName());
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getName(), $user->getPrincipalName()
+                        ));
+                }
                 return $this->notify($event->getType(), $model, $user);
         }
 
@@ -80,7 +114,11 @@ abstract class ObjectAccess
          */
         protected function afterFetch($event, $model, $user)
         {
-                printf("%s: event=%s, model=%s\n", __METHOD__, $event->getType(), $model->getName());
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getName(), $user->getPrincipalName()
+                        ));
+                }
                 return $this->notify($event->getType(), $model, $user);
         }
 

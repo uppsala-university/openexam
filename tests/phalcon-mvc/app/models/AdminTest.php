@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-use Exception;
+use OpenExam\Models\Admin;
 use OpenExam\Tests\Phalcon\TestCase;
 use OpenExam\Tests\Phalcon\TestModelAccess;
 use OpenExam\Tests\Phalcon\TestModelBasic;
@@ -29,18 +29,15 @@ class AdminTest extends TestCase
                         'user' => 'user1'
                 );
 
-                try {
-                        $helper = new TestModelBasic(new Admin());
-                        $helper->tryPersist();
-                        self::error("Excepted constraint violation exception");
-                } catch (Exception $exception) {
-                        // Expected exception
-                }
+                $this->setExpectedException('\Exception');
+                $helper = new TestModelBasic(new Admin());
+                $helper->tryPersist();  // should throw
+                $this->setExpectedException(null);
 
                 try {
                         $helper = new TestModelBasic(new Admin());
                         $helper->tryPersist($values);
-                } catch (Exception $exception) {
+                } catch (\Exception $exception) {
                         self::error($exception);
                 }
 
@@ -51,7 +48,7 @@ class AdminTest extends TestCase
                 try {
                         $helper = new TestModelBasic(new Admin());
                         $helper->tryPersist($values);
-                } catch (Exception $exception) {
+                } catch (\Exception $exception) {
                         self::error("Unexcepted constraint violation exception");
                 }
         }

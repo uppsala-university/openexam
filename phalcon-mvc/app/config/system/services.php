@@ -22,28 +22,22 @@ $di->set('router', function() use($di) {
         return require CONFIG_SYS . '/routes.php';
 });
 
+/**
+ * Enforce model access check using custom model manager.
+ */
 $di->set('modelsManager', function() use($di) {
         $eventsManager = new \Phalcon\Events\Manager();
-        $accessListener = new OpenExam\Plugins\Security\ModelAccessListener();
+        $accessListener = new OpenExam\Plugins\Security\ModelAccessListener(
+            function($resource) {
+                $class = sprintf("OpenExam\Plugins\Security\Model\%sAccess", ucfirst($resource));
+                if (class_exists($class)) {
+                        return new $class();
+                } else {
+                        return false;
+                }
+        });
         $accessListener->setEventsManager($eventsManager);
         $eventsManager->attach('model', $accessListener);
-        $eventsManager->attach('admin', new OpenExam\Plugins\Security\Model\AdminAccess());
-        $eventsManager->attach('answer', new OpenExam\Plugins\Security\Model\AnswerAccess());
-        $eventsManager->attach('computer', new OpenExam\Plugins\Security\Model\ComputerAccess());
-        $eventsManager->attach('contributor', new OpenExam\Plugins\Security\Model\ContributorAccess());
-        $eventsManager->attach('corrector', new OpenExam\Plugins\Security\Model\CorrectorAccess());
-        $eventsManager->attach('decoder', new OpenExam\Plugins\Security\Model\DecoderAccess());
-        $eventsManager->attach('exam', new OpenExam\Plugins\Security\Model\ExamAccess());
-        $eventsManager->attach('file', new OpenExam\Plugins\Security\Model\FileAccess());
-        $eventsManager->attach('invigilator', new OpenExam\Plugins\Security\Model\InvigilatorAccess());
-        $eventsManager->attach('lock', new OpenExam\Plugins\Security\Model\LockAccess());
-        $eventsManager->attach('question', new OpenExam\Plugins\Security\Model\QuestionAccess());
-        $eventsManager->attach('resource', new OpenExam\Plugins\Security\Model\ResourceAccess());
-        $eventsManager->attach('result', new OpenExam\Plugins\Security\Model\ResultAccess());
-        $eventsManager->attach('room', new OpenExam\Plugins\Security\Model\RoomAccess());
-        $eventsManager->attach('student', new OpenExam\Plugins\Security\Model\StudentAccess());
-        $eventsManager->attach('teacher', new OpenExam\Plugins\Security\Model\TeacherAccess());
-        $eventsManager->attach('topic', new OpenExam\Plugins\Security\Model\TopicAccess());
         $modelsManager = new \Phalcon\Mvc\Model\Manager();
         $modelsManager->setEventsManager($eventsManager);
         return $modelsManager;

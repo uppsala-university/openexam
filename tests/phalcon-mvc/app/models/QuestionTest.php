@@ -40,21 +40,21 @@ class QuestionTest extends TestCase
                 $question = Question::findFirst();
                 self::assertNotNull($question);
 
-                self::assertNotEquals($question->exam->count(), 0);
-                self::assertNotEquals($question->topic->count(), 0);
+                self::assertNotEquals(0, $question->exam->count());
+                self::assertNotEquals(0, $question->topic->count());
                 self::assertTrue(count($question->exam) == 1);
                 self::assertTrue(count($question->topic) == 1);
 
                 $question = Answer::findFirst()->question;
                 self::assertNotNull($question);
 
-                self::assertNotEquals($question->answers->count(), 0);
+                self::assertNotEquals(0, $question->answers->count());
                 self::assertTrue(count($question->answers) > 0);
 
                 $question = Corrector::findFirst()->question;
                 self::assertNotNull($question);
 
-                self::assertNotEquals($question->correctors->count(), 0);
+                self::assertNotEquals(0, $question->correctors->count());
                 self::assertTrue(count($question->correctors) > 0);
         }
 

@@ -40,7 +40,7 @@ class ContributorTest extends TestCase
                 $contributor = Contributor::findFirst();
                 self::assertNotNull($contributor);
 
-                self::assertNotEquals($contributor->exam->count(), 0);
+                self::assertNotEquals(0, $contributor->exam->count());
                 self::assertTrue(count($contributor->exam) == 1);
         }
 
