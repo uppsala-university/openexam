@@ -24,6 +24,13 @@ class ModelBase extends \Phalcon\Mvc\Model
                 return strtolower(substr(strrchr(get_class($this), "\\"), 1));
         }
 
+        protected function afterFetch()
+        {
+                $modelsManager = $this->getModelsManager();
+                $eventsManager = $modelsManager->getEventsManager();
+                $eventsManager->fire('model:afterFetch', $this);
+        }
+
         protected function beforeValidationOnUpdate()
         {
                 // 
