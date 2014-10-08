@@ -13,6 +13,8 @@
 
 namespace OpenExam\Tests\Phalcon;
 
+use Exception;
+use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
 use OpenExam\Models\Access\AuthorizationInterface;
 use OpenExam\Models\Admin;
@@ -23,8 +25,10 @@ use OpenExam\Models\Exam;
 use OpenExam\Models\Invigilator;
 use OpenExam\Models\Student;
 use OpenExam\Models\Teacher;
+use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\Transaction;
 
-class LocalException extends \Exception
+class LocalException extends Exception
 {
         
 }
@@ -54,6 +58,7 @@ class TestModelAccess extends TestModelBasic
         protected static $resources;
         protected static $actions;
         protected $user;
+        protected $task;
 
         /**
          * Constructor
@@ -203,6 +208,51 @@ class TestModelAccess extends TestModelBasic
         }
 
         /**
+         * Set username on all defined roles.
+         * @param Model[] $roles The role models.
+         * @param string $user The username.
+         */
+        protected function setAllRolesUser($roles, $user)
+        {
+                $this->getDI()->set('db', $roles[key($roles)]->getWriteConnection());
+                
+                $transaction = new Transaction($this->getDI());
+                $transaction->begin();
+
+                self::info("Setting all roles user to %s", $user);
+                foreach ($roles as $role => $object) {
+                        $object->setTransaction($transaction);
+
+                        if ($this->object->getName() == $role) {
+                                $this->object->user = $user;
+                        }
+                        if ($role == Roles::CREATOR) {
+                                $object->creator = $user;
+                        } else {
+                                $object->user = $user;
+                        }
+                        if ($object->update() == false) {
+                                foreach ($object->getMessages() as $message) {
+                                        $transaction->rollback($message->getMessage());
+                                        self::error($message);
+                                }
+                        }
+
+                        self::info("Set user %s on %s (%s)", $user, $object->getName(), get_class($object));
+                }
+                
+                $transaction->commit();
+
+                self::info("Verifying roles for user %s", $user);
+                foreach ($roles as $role => $object) {
+                        $class = get_class($object);
+                        $model = $class::findFirstById($object->id);
+                        self::info("Verifying user %s on %s (%s)", $user, $model->getName(), get_class($model));
+                        self::assertEquals($object->dump(), $model->dump());
+                }
+        }
+
+        /**
          * Check role access on this model.
          * 
          * Checking that allowed actions succeed is equal important that
@@ -221,18 +271,29 @@ class TestModelAccess extends TestModelBasic
                 $roles = array();
                 $roles['admin'] = Admin::findFirst($this->sample['admin']['id']);
                 $roles['teacher'] = Teacher::findFirst($this->sample['teacher']['id']);
+                $roles['creator'] = Exam::findFirst($this->sample['exam']['id']);
                 $roles['contributor'] = Contributor::findFirst($this->sample['contributor']['id']);
-                $roles['corrector'] = Corrector::findFirst($this->sample['corrector']['id']);
                 $roles['decoder'] = Decoder::findFirst($this->sample['decoder']['id']);
                 $roles['invigilator'] = Invigilator::findFirst($this->sample['invigilator']['id']);
                 $roles['student'] = Student::findFirst($this->sample['student']['id']);
-                $roles['creator'] = Exam::findFirst($this->sample['exam']['id']);
+                $roles['corrector'] = Corrector::findFirst($this->sample['corrector']['id']);
 
                 // 
                 // Inject unauthenticated user:
                 // 
                 $this->user = new User();
                 $this->getDI()->set('user', $this->user);
+
+                // 
+                // Reset roles user:
+                // 
+                $role = $this->user->setPrimaryRole(null);
+                $this->setAllRolesUser($roles, 'user1');
+                $this->user->setPrimaryRole($role);
+
+                foreach ($roles as $role => $object) {
+                        self::info("%d: +++ user=%s, data=%s", __LINE__, $this->user->getPrincipalName(), print_r($object->dump(), true));
+                }
 
                 // 
                 // Should pass. If primary role is unset, then the model
@@ -243,7 +304,7 @@ class TestModelAccess extends TestModelBasic
                         try {
                                 $this->user->setPrimaryRole(null);
                                 $this->checkModelAccess($role, null);
-                        } catch (\Exception $exception) {
+                        } catch (Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
@@ -257,7 +318,7 @@ class TestModelAccess extends TestModelBasic
                         try {
                                 $this->user->setPrimaryRole($role);
                                 $this->checkModelAccess($role, 'auth');
-                        } catch (\Exception $exception) {
+                        } catch (Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
@@ -276,26 +337,24 @@ class TestModelAccess extends TestModelBasic
                         try {
                                 $this->user->setPrimaryRole($role);
                                 $this->checkModelAccess($role, 'role');
-                        } catch (\Exception $exception) {
+                        } catch (Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
+                }
+
+                foreach ($roles as $role => $object) {
+                        self::info("%d: +++ user=%s, data=%s", __LINE__, $this->user->getPrincipalName(), print_r($object->dump(), true));
                 }
 
                 // 
                 // Set roles to authenticated user:
                 // 
+                $role = $this->user->setPrimaryRole(null);
+                $this->setAllRolesUser($roles, $this->user->getPrincipalName());
+                $this->user->setPrimaryRole($role);
+
                 foreach ($roles as $role => $object) {
-                        $this->user->setPrimaryRole(null);
-                        if ($role == 'creator') {
-                                $object->creator = $this->user->getPrincipalName();
-                                $object->update();
-                        } else {
-                                $object->user = $this->user->getPrincipalName();
-                                $object->update();
-                        }
-                        if ($this->object->getName() == $role) {
-                                $this->object->user = $this->user->getPrincipalName();
-                        }
+                        self::info("%d: +++ user=%s, data=%s", __LINE__, $this->user->getPrincipalName(), print_r($object->dump(), true));
                 }
 
                 // 
@@ -308,11 +367,6 @@ class TestModelAccess extends TestModelBasic
                 }
 
                 // 
-                // Force related objects to be persisted:
-                // 
-                $this->object->save();
-
-                // 
                 // Should succeed. Authenticated user has the requested
                 // primary role (changed by $object->update()).
                 // 
@@ -321,7 +375,7 @@ class TestModelAccess extends TestModelBasic
                         try {
                                 $this->user->setPrimaryRole($role);
                                 $this->checkModelAccess($role, 'access');
-                        } catch (\Exception $exception) {
+                        } catch (Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
                 }
@@ -379,7 +433,7 @@ class TestModelAccess extends TestModelBasic
                         }
                 } catch (LocalException $exception) {
                         self::error($exception);
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         if ($exception->getMessage() == 'user' || $exception->getMessage() == 'acl') {
                                 self::error($exception, "System configuration error");
                         } elseif (isset($error) && $exception->getMessage() == $error) {

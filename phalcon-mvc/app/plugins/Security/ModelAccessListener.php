@@ -101,9 +101,6 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         $this->logger->auth->debug(sprintf(
                                 "Granted %s access on %s to user %s (primary role unset) [%s]", $action, $name, $principal, $addr
                         ));
-                        $this->logger->auth->debug(sprintf(
-                                "Granted %s access on %s:%d (into ACL cache) [%s]", $action, $name, $model->id, $addr
-                        ));
                         return true;    // unrestricted access
                 } elseif ($user->getUser() == null) {
                         $this->logger->auth->error(sprintf(
@@ -129,6 +126,11 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // trigger object specific role verification.
                 // 
                 if ($user->roles->aquire($role) == false) {
+                        if ($this->logger->debug) {
+                                $this->logger->debug->log(sprintf(
+                                        "%s(role=%s, user=%s, model=%s)", __METHOD__, $role, $principal, print_r($model->dump(), true)
+                                ));
+                        }
                         $this->logger->auth->error(sprintf(
                                 "Denied %s access on %s for user %s using role %s (failed aquire role) [%s]", $action, $name, $principal, $role, $addr
                         ));
