@@ -43,7 +43,7 @@ class ResourceAccess extends ObjectAccess
                 // 
                 // Temporarily disable access control:
                 // 
-                $role = $user->setPrimaryRole(null);
+                $role = $user->setPrimaryRole(Roles::TRUSTED);
 
                 /**
                  * Assumption: 

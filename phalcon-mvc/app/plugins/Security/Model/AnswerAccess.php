@@ -42,7 +42,7 @@ class AnswerAccess extends ObjectAccess
                 // 
                 // Temporarily disable access control:
                 // 
-                $role = $user->setPrimaryRole(null);
+                $role = $user->setPrimaryRole(Roles::TRUSTED);
 
                 // 
                 // Object access control:

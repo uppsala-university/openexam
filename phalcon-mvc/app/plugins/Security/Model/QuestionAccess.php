@@ -44,7 +44,7 @@ class QuestionAccess extends ObjectAccess
                 // 
                 // Temporarily disable access control:
                 // 
-                $role = $user->setPrimaryRole(null);
+                $role = $user->setPrimaryRole(Roles::TRUSTED);
 
                 // 
                 // Students should not have access to questions before

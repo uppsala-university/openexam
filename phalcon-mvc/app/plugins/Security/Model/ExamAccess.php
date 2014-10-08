@@ -43,7 +43,7 @@ class ExamAccess extends ObjectAccess
                 // 
                 // Temporarily disable access control:
                 // 
-                $role = $user->setPrimaryRole(null);
+                $role = $user->setPrimaryRole(Roles::TRUSTED);
 
                 // 
                 // Check role on exam, question or global:
