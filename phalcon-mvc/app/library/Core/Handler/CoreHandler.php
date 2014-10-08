@@ -114,7 +114,11 @@ class CoreHandler extends Component
                         if (isset($transaction)) {
                                 $transaction->commit();
                         }
-                        return $result;
+                        if (is_array($result) && count($result) == 1) {
+                                return $result[0];
+                        } else {
+                                return $result;
+                        }
                 } catch (TransactionFailed $exception) {
                         $this->logger->system->error($exception->getMessage());
                         throw new Exception("Failed $action object.");
