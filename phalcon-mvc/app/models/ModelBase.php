@@ -13,7 +13,7 @@ class ModelBase extends Model
 
         protected function initialize()
         {
-                $this->setReadConnectionService('dbread');
+                $this->setReadConnectionService('dbwrite');
                 $this->setWriteConnectionService('dbwrite');
         }
 

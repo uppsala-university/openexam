@@ -107,8 +107,11 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                                 "Denied %s access on %s (unauthenticated user) [%s]", $action, $name, $addr
                         ));
                         throw new Exception('auth');
-                } else {
-                        $role = $user->getPrimaryRole();
+                } elseif (($role = $user->getPrimaryRole()) == Roles::TRUSTED) {
+                        $this->logger->auth->debug(sprintf(
+                                "Granted %s access on %s for %s (trusted role) [%s]", $action, $name, $role, $addr
+                        ));
+                        return true;    // Control ACL System
                 }
 
                 // 
@@ -144,7 +147,11 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         $this->logger->debug->log(sprintf(
                                 "%s(event=%s, model=%s, user=%s) [calling]", get_class($access), $type, $name, $principal
                         ));
-                        return $access->notify($type, $model, $user);
+                        if ($access->notify($type, $model, $user)) {
+                                $this->logger->auth->debug(sprintf(
+                                        "Granted %s access on %s for user %s using role %s [%s]", $action, $name, $principal, $role, $addr
+                                ));
+                        }
                 } else {
                         return false;
                 }

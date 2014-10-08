@@ -113,6 +113,10 @@ class Roles extends Component
          * The student role (bound to specific exam).
          */
         const STUDENT = 'student';
+        /**
+         * Control ACL system (internal role).
+         */
+        const TRUSTED = 'cacls';
 
         /**
          * @var array 
@@ -249,6 +253,11 @@ class Roles extends Component
                         }
                 }
 
+                // 
+                // Temporarily disable access control:
+                // 
+                $rold = $user->setPrimaryRole(Roles::TRUSTED);
+
                 if ($role == self::ADMIN) {
                         $parameters = array(
                                 "user = :user:",
@@ -256,6 +265,7 @@ class Roles extends Component
                         );
                         if (Admin::count($parameters)) {
                                 $this->addRole($role);
+                                $user->setPrimaryRole($rold);
                                 return true;
                         }
                 } elseif ($role == self::TEACHER) {
@@ -265,6 +275,7 @@ class Roles extends Component
                         );
                         if (Teacher::count($parameters)) {
                                 $this->addRole($role);
+                                $user->setPrimaryRole($rold);
                                 return true;
                         }
                 } elseif ($role == self::CONTRIBUTOR) {
@@ -281,6 +292,7 @@ class Roles extends Component
                         }
                         if (Contributor::count($parameters) > 0) {
                                 $this->addRole($role, $id);
+                                $user->setPrimaryRole($rold);
                                 return true;
                         }
                 } elseif ($role == self::DECODER) {
@@ -297,6 +309,7 @@ class Roles extends Component
                         }
                         if (Decoder::count($parameters) > 0) {
                                 $this->addRole($role, $id);
+                                $user->setPrimaryRole($rold);
                                 return true;
                         }
                 } elseif ($role == self::INVIGILATOR) {
@@ -313,6 +326,7 @@ class Roles extends Component
                         }
                         if (Invigilator::count($parameters) > 0) {
                                 $this->addRole($role, $id);
+                                $user->setPrimaryRole($rold);
                                 return true;
                         }
                 } elseif ($role == self::STUDENT) {
@@ -329,6 +343,7 @@ class Roles extends Component
                         }
                         if (Student::count($parameters) > 0) {
                                 $this->addRole($role, $id);
+                                $user->setPrimaryRole($rold);
                                 return true;
                         }
                 } elseif ($role == self::CREATOR) {
@@ -345,6 +360,7 @@ class Roles extends Component
                         }
                         if (Exam::count($parameters) > 0) {
                                 $this->addRole($role, $id);
+                                $user->setPrimaryRole($rold);
                                 return true;
                         }
                 } elseif ($role == self::CORRECTOR) {
@@ -367,6 +383,7 @@ class Roles extends Component
                                         $this->addRole($role, $corrector->question->exam->id);
                                 }
                                 $this->addRole($role, $id);
+                                $user->setPrimaryRole($rold);
                                 return true;
                         }
                 }
@@ -376,12 +393,14 @@ class Roles extends Component
                 // 
                 if (self::isCustom($role)) {
                         $this->addRole($role);
+                        $user->setPrimaryRole($rold);
                         return true;
                 }
 
                 // 
                 // Role was not aquired.
                 // 
+                $user->setPrimaryRole($rold);
                 return false;
         }
 
@@ -448,7 +467,7 @@ class Roles extends Component
          */
         public static function isGlobal($role)
         {
-                return self::isCustom($role) || $role == self::TEACHER || $role == self::ADMIN;
+                return self::isCustom($role) || $role == self::TEACHER || $role == self::ADMIN || $role == self::TRUSTED;
         }
 
 }
