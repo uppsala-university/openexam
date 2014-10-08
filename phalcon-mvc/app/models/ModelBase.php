@@ -2,11 +2,13 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model;
+
 /**
  * Base class for all models.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class ModelBase extends \Phalcon\Mvc\Model
+class ModelBase extends Model
 {
 
         protected function initialize()
@@ -54,6 +56,16 @@ class ModelBase extends \Phalcon\Mvc\Model
 
                 foreach ($required as $attr) {
                         if (!isset($this->$attr)) {
+                                $this->$attr = $model->$attr;
+                        }
+                }
+
+                // 
+                // Now it gets even more ugly:
+                // 
+                $attributes = get_object_vars($this);
+                foreach ($attributes as $attr => $value) {
+                        if (!isset($this->$attr) && isset($model->$attr)) {
                                 $this->$attr = $model->$attr;
                         }
                 }
