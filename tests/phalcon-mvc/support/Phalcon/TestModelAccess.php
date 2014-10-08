@@ -215,7 +215,7 @@ class TestModelAccess extends TestModelBasic
         protected function setAllRolesUser($roles, $user)
         {
                 $this->getDI()->set('db', $roles[key($roles)]->getWriteConnection());
-                
+
                 $transaction = new Transaction($this->getDI());
                 $transaction->begin();
 
@@ -240,7 +240,7 @@ class TestModelAccess extends TestModelBasic
 
                         self::info("Set user %s on %s (%s)", $user, $object->getName(), get_class($object));
                 }
-                
+
                 $transaction->commit();
 
                 self::info("Verifying roles for user %s", $user);
@@ -303,7 +303,7 @@ class TestModelAccess extends TestModelBasic
                 foreach ($roles as $role => $object) {
                         try {
                                 $this->user->setPrimaryRole(null);
-                                $this->checkModelAccess($role, null);
+                                $this->checkModelAccess($role, null, true);
                         } catch (Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
@@ -317,7 +317,7 @@ class TestModelAccess extends TestModelBasic
                 foreach ($roles as $role => $object) {
                         try {
                                 $this->user->setPrimaryRole($role);
-                                $this->checkModelAccess($role, 'auth');
+                                $this->checkModelAccess($role, 'auth', false);
                         } catch (Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
@@ -336,7 +336,7 @@ class TestModelAccess extends TestModelBasic
                 foreach ($roles as $role => $object) {
                         try {
                                 $this->user->setPrimaryRole($role);
-                                $this->checkModelAccess($role, 'role');
+                                $this->checkModelAccess($role, 'role', false);
                         } catch (Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
@@ -374,7 +374,7 @@ class TestModelAccess extends TestModelBasic
                 foreach ($roles as $role => $object) {
                         try {
                                 $this->user->setPrimaryRole($role);
-                                $this->checkModelAccess($role, 'access');
+                                $this->checkModelAccess($role, 'access', true);
                         } catch (Exception $exception) {
                                 self::error($exception, "Unexpected exception (%s)", get_class($this->object));
                         }
@@ -386,7 +386,13 @@ class TestModelAccess extends TestModelBasic
                 self::assertTrue(true);
         }
 
-        private function checkModelAccess($role, $error)
+        /**
+         * Check create, read, update and delete actions on this model.
+         * @param string $role The role.
+         * @param string $error Expected error.
+         * @param bool $pass True if the check should pass or not.
+         */
+        private function checkModelAccess($role, $error, $pass)
         {
                 self::info("role=%s, user=%s", $role, $this->user->getPrincipalName());
 
@@ -394,7 +400,7 @@ class TestModelAccess extends TestModelBasic
                         if ($resource == $this->object->getName()) {
                                 $this->createModelObject();
                                 foreach ($actions as $action => $permit) {
-                                        $this->checkModelAction($action, $permit, $error);
+                                        $this->checkModelAction($action, $permit, $error, $pass);
                                 }
                                 $this->deleteModelObject();
                         }
@@ -407,26 +413,27 @@ class TestModelAccess extends TestModelBasic
          * @param string $action The action to perform.
          * @param bool $permit Should model action be permitted?
          * @param string $error The expected exception message.
+         * @param bool $pass Should this check should pass or not?
          * @group model
          * @group security
          */
-        private function checkModelAction($action, $permit, $error)
+        private function checkModelAction($action, $permit, $error, $pass)
         {
-                self::info("action=%s, permit=%s, error=%s", $action, $permit ? "yes" : "no", $error);
+                self::info("action=%s, permit=%s, error=%s, pass=%s", $action, $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 try {
                         switch ($action) {
                                 case 'create':
-                                        $this->checkModelCreate($permit, $error);
+                                        $this->checkModelCreate($permit, $error, $pass);
                                         break;
                                 case 'read':
-                                        $this->checkModelRead($permit, $error);
+                                        $this->checkModelRead($permit, $error, $pass);
                                         break;
                                 case 'update':
-                                        $this->checkModelUpdate($permit, $error);
+                                        $this->checkModelUpdate($permit, $error, $pass);
                                         break;
                                 case 'delete':
-                                        $this->checkModelDelete($permit, $error);
+                                        $this->checkModelDelete($permit, $error, $pass);
                                         break;
                                 default:
                                         self::error("Unknown action $action");
@@ -451,12 +458,13 @@ class TestModelAccess extends TestModelBasic
          * 
          * @param bool $permit Should model action be permitted?
          * @param string $error The expected exception message.
+         * @param bool $pass Should this check should pass or not?
          * @group model
          * @group security
          */
-        private function checkModelCreate($permit, $error)
+        private function checkModelCreate($permit, $error, $pass)
         {
-                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 // 
                 // For read, update and delete to be successful tested, its 
@@ -474,8 +482,10 @@ class TestModelAccess extends TestModelBasic
                         $this->object->new_id = $this->object->id;
                         $this->object->id = $this->object->old_id;
                 }
-                if (!$permit && isset($error)) {
+                if ($pass == false && $permit == false) {
                         throw new LocalException("Expected $error exception not thrown (not permitted).");
+                } elseif ($pass == false) {
+                        throw new LocalException("Action not failing as expected");
                 } else {
                         self::success("Created object %s(id=%d)", $this->object->getName(), $this->object->new_id);
                 }
@@ -486,12 +496,13 @@ class TestModelAccess extends TestModelBasic
          * 
          * @param bool $permit Should model action be permitted?
          * @param string $error The expected exception message.
+         * @param bool $pass Should this check should pass or not?
          * @group model
          * @group security
          */
-        private function checkModelRead($permit, $error)
+        private function checkModelRead($permit, $error, $pass)
         {
-                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 if ($this->object->id == 0) {
                         self::warn("Object id == 0 (skipped)");
@@ -503,8 +514,10 @@ class TestModelAccess extends TestModelBasic
                 if (($object = $class::findFirstById($this->object->id)) == false) {
                         throw new LocalException(print_r($this->object->getMessages(), true));
                 }
-                if (!$permit && isset($error)) {
+                if ($pass == false && $permit == false) {
                         throw new LocalException("Expected $error exception not thrown (not permitted).");
+                } elseif ($pass == false) {
+                        throw new LocalException("Action not failing as expected");
                 } else {
                         self::success("Read object %s(id=%d)", $this->object->getName(), $this->object->id);
                 }
@@ -515,12 +528,13 @@ class TestModelAccess extends TestModelBasic
          * 
          * @param bool $permit Should model action be permitted?
          * @param string $error The expected exception message.
+         * @param bool $pass Should this check should pass or not?
          * @group model
          * @group security
          */
-        private function checkModelUpdate($permit, $error)
+        private function checkModelUpdate($permit, $error, $pass)
         {
-                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 if ($this->object->id == 0) {
                         self::warn("Object id == 0 (skipped)");
@@ -529,8 +543,10 @@ class TestModelAccess extends TestModelBasic
                 if ($this->object->update() == false) {
                         throw new LocalException(print_r($this->object->getMessages(), true));
                 }
-                if (!$permit && isset($error)) {
+                if ($pass == false && $permit == false) {
                         throw new LocalException("Expected $error exception not thrown (not permitted).");
+                } elseif ($pass == false) {
+                        throw new LocalException("Action not failing as expected");
                 } else {
                         self::success("Updated object %s(id=%d)", $this->object->getName(), $this->object->id);
                 }
@@ -539,14 +555,15 @@ class TestModelAccess extends TestModelBasic
         /**
          * Test delete on current object.
          * 
-         * @param bool $expect Expected result.
+         * @param bool $permit Expected result.
          * @param string $error The expected exception message.
+         * @param bool $pass Should this check should pass or not?
          * @group model
          * @group security
          */
-        private function checkModelDelete($permit, $error)
+        private function checkModelDelete($permit, $error, $pass)
         {
-                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error);
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 if ($this->object->id == 0) {
                         self::warn("Object id == 0 (skipped)");
@@ -563,8 +580,10 @@ class TestModelAccess extends TestModelBasic
                 } else {
                         $this->object->id = $this->object->old_id;
                 }
-                if (!$permit && isset($error)) {
+                if ($pass == false && $permit == false) {
                         throw new LocalException("Expected $error exception not thrown (not permitted).");
+                } elseif ($pass == false) {
+                        throw new LocalException("Action not failing as expected");
                 } else {
                         self::success("Deleted object %s(id=%d)", $this->object->getName(), $this->object->new_id);
                 }
