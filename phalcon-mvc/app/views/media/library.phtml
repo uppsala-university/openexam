@@ -1,0 +1,152 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    library.phtml
+// 
+// Author:  Ahsan Shahzad (MedfarmDoIT)
+// 
+?>
+<?= Phalcon\Tag::stylesheetLink('plugins/jquery-file-upload/css/jquery.fileupload.css'); ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/jquery-file-upload/js/jquery.fileupload.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('js/views/media/library.js'); ?>
+
+
+<div>
+  <div id="lib-items-added">
+      <div id="lib-default-msg">
+          <div>
+               Currently no items have been selected from Library. <br />
+				Click on images to select items from Library &raquo;
+          </div>
+      </div>
+      <ul id="selected-lib-img"></ul>
+  </div>
+  <div id="lib-items-addables">
+  
+		<div class="libheader" >
+          <div>
+              <h1 style="font-size:1.5em">Select a file from your computer ...</h1>
+          </div>
+          <div style="text-align:right">
+            <span class="btn btn-success fileinput-button">
+                <i class="fa fa-plus-square"></i>
+                <span>Click here to select</span>
+                <!-- The file input field used as target for the file upload widget -->
+                <input type="file" multiple="" name="files[]" id="fileupload">
+            </span>
+          </div>            
+      	</div>  
+  
+  
+    	<div class="libheader" style="padding-top:25px">
+              <div>
+                  <h1 style="font-size:1.5em">Select from your old uploads ...</h1>
+              </div>
+              <div style="text-align:right">
+                
+              </div>            
+        </div>      
+        
+        <div id="media_types" style="margin-top:20px">
+            <ul>
+                <li><a href="#images-tab">Images</a></li>
+                <li><a href="#videos-tab">Videos</a></li>
+                <li><a href="#other-files-tab">Other files</a></li>
+            </ul>
+            <div id="images-tab">
+                <div class="lib-tab-area">
+                      <?php for($i=1; $i<=2; $i++):?>
+                      <div class="lib-item-line">
+                          <div class="lib-item" id="lib-item-1">
+                                <a class="select-lib-img darken" href="#">
+                                    <img src="http://media.medfarm.uu.se/play/thumbfile/video/3894" file-path="http://media.medfarm.uu.se/play/thumbfile/video/3894" class="lib-img">
+                                    <span>Click to select</span>
+                                </a>   
+                                <div class="title-box">
+                                    <div class="lib-item-title" >This is title 1</div>
+                                    <div class="lib-item-settings">
+                                        <i class="fa fa-pencil" item-title="Title 1" item-share="1" media-id="1"></i>
+                                    </div>
+                                </div>
+                          </div>
+                          <div class="lib-item" id="lib-item-2">
+                              <a href="#" class="select-lib-img darken">
+                                  <img class="lib-img" src="http://media.medfarm.uu.se/play/thumbfile/video/3895">
+                                  <span>Click to select</span>
+                              </a>                                
+                              <div class="title-box">
+                                    <div class="lib-item-title">This is title 2</div>
+                                    <div class="lib-item-settings">
+										<i class="fa fa-pencil" item-title="Title 2" item-share="2" media-id="2"></i>
+                                    </div>
+                              </div>
+						  </div>
+                          <div class="lib-item" id="lib-item-3">
+                              <a href="#" class="select-lib-img darken">
+                                  <img class="lib-img" src="http://media.medfarm.uu.se/play/thumbfile/video/3896">
+                                  <span>Click to select</span>
+                              </a>                                
+                              <div class="title-box">
+                                    <div class="lib-item-title">This is title 3</div>
+                                    <div class="lib-item-settings">
+										<i class="fa fa-pencil" item-title="Title 3" item-share="3" media-id="3"></i>
+                                    </div>
+                              </div>
+                          </div>
+                      </div>
+                      <?php endfor;?>
+                  </div>
+             </div>
+            <div id="videos-tab">
+            	<div class="lib-tab-area">
+                      <?php for($i=1; $i<=2; $i++):?>
+                      <div class="lib-item-line">
+                      	  <?php for($j=1; $j<=3; $j++):?>	
+                          <div class="lib-item" id="lib-item-<?=$i?><?=$j?>">
+                                <a class="select-lib-img darken" href="#">
+                                    <img src="http://www.sophiedoesbroadband.co.uk/wp-content/uploads/video.png" class="lib-img">
+                                    <span>Click to select</span>
+                                </a>   
+                                <div class="title-box">
+                                    <div class="lib-item-title" >This is title <?=$i?><?=$j?></div>
+                                    <div class="lib-item-settings">
+                                        <i class="fa fa-pencil" item-title="Title <?=$i?><?=$j?>" item-share="1" media-id="1"></i>
+                                    </div>
+                                </div>
+                          </div>
+                          <?php endfor?>
+                      </div>
+                      <?php endfor;?>
+                </div>     
+            </div>
+            <div id="other-files-tab">
+            	<div class="lib-tab-area">
+                      <?php for($i=1; $i<=2; $i++):?>
+                      <div class="lib-item-line">
+                      	  <?php for($j=1; $j<=3; $j++):?>	
+                          <div class="lib-item" id="lib-item-<?=$i?><?=$j?>">
+                                <a class="select-lib-img darken" href="#">
+                                    <img src="http://media.medfarm.uu.se/play/thumbfile/video/3894" class="lib-img">
+                                    <span>Click to select</span>
+                                </a>   
+                                <div class="title-box">
+                                    <div class="lib-item-title" >This is title <?=$i?><?=$j?></div>
+                                    <div class="lib-item-settings">
+                                        <i class="fa fa-pencil" item-title="Title <?=$i?><?=$j?>" item-share="1" media-id="1"></i>
+                                    </div>
+                                </div>
+                          </div>
+                          <?php endfor?>
+                      </div>
+                      <?php endfor;?>
+                </div>     
+            </div>
+        </div>      
+  </div>
+</div>
+<br style="clear:both" />
+

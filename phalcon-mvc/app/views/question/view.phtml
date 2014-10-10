@@ -1,0 +1,138 @@
+<!-- BISMILLAH-->
+    <div class='col-xs-12'>
+      
+      <!-- question title row -->  	
+      <div class='row'>
+        <div class='col-sm-12'>
+        
+          <!-- question title -->
+          <div class='page-header'>
+            <h1 class='pull-left' style="font-size:24px">
+              <i class='icon-edit'></i>
+              <span>Q1: Short question description goes here (same as it appears in menu on left side)?</span>
+            </h1>
+            <div class='pull-right'>
+                Right_area
+            </div>
+          </div>
+          <!-- question title ends -->
+          
+        </div>
+      </div>
+      <!-- question title row ends -->  	
+      
+      
+      <!-- question content row -->
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="box">
+            <div class="box-content box-padding">
+              <div class="fuelux">
+              
+                <!-- Question Content area -->
+                <div class="step-content">
+                
+                  Detailed question goes here ...
+                  <br>
+                  <form action="#" method="post" style="margin-bottom: 0; margin-top:25px" class="form">
+                      <input type="hidden" name="authenticity_token">
+                      <div id="step1" class="step-pane active">
+                        <div class="form-group">
+                          <label for="inputText" class="control-label">Please describe the behaviour of ....</label>
+                          <div class="controls">
+                            <input type="text" placeholder="Text field" id="inputText" class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                      <div id="step3" class="step-pane">
+                        <div class="form-group">
+                          <label for="inputTextArea" class="control-label">Comments</label>
+                          <div class="controls">
+                            <textarea rows="3" placeholder="Textarea" id="inputTextArea" class="form-control"></textarea>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="step4" class="step-pane">
+                        <div class="form-group">
+                          <div class="controls">
+                            <label class="checkbox-inline">
+                              <input type="checkbox" value="option1" id="inlineCheckbox1">
+                              Option 1
+                            </label>
+                            <label class="checkbox-inline">
+                              <input type="checkbox" value="option2" id="inlineCheckbox2">
+                              Option 2
+                            </label>
+                            <label class="checkbox-inline">
+                              <input type="checkbox" value="option3" id="inlineCheckbox3">
+                              Option 3
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                  </form>
+      
+                </div>
+                <br>
+                <hr class="hr-normal">
+                <div class="actions" style="margin:15px">
+                    <div style="padding-bottom:25px">
+                        <label><input type="checkbox" name="" value="" id="highlight_q"> &nbsp; I would like to review my answer later so highlight it.</label>
+                    </div>
+                    <button class="btn btn-xs btn-prev"><i class="icon-arrow-left"></i> Prev. Question
+                    </button>
+                    <button data-last="Finish" class="btn btn-xs btn-success btn-next">
+                      Next Question
+                      
+                    <i class="icon-arrow-right"></i></button>
+                </div>                        
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>              
+      <!-- question content row ends -->  	
+      
+    </div>
+    
+    <script language="javascript">
+		var count	= 18000;
+		var counter	= setInterval(timer, 1000); 
+		
+		function timer()
+		{
+		  count=count-1;
+		  if (count <= 0)
+		  {
+			 clearInterval(counter);
+			 return;
+		  }
+		
+		 document.getElementById("timer").innerHTML=toHHMMSS(count); // watch for spelling
+		}
+		
+		function toHHMMSS (sec) {
+			var sec_num = parseInt(sec, 10); // don't forget the second param
+			var hours   = Math.floor(sec_num / 3600);
+			var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+			var seconds = sec_num - (hours * 3600) - (minutes * 60);
+		
+			if (hours   < 10) {hours   = "0"+hours;}
+			if (minutes < 10) {minutes = "0"+minutes;}
+			if (seconds < 10) {seconds = "0"+seconds;}
+			var time    = hours+':'+minutes+':'+seconds;
+			return time;
+		}		
+		
+		$(function () {
+			$('#highlight_q').on('click', function() {
+				if($(this).is(':checked')) {
+					$('#q1_short > a').css('background-color', '#FBC676');
+				} else {
+					$('#q1_short > a').css('background-color', '#FEFEFE');
+				}
+			});
+			
+		});
+	</script>
+    

@@ -1,0 +1,215 @@
+    <!-- / bootstrap -->
+    <?=Phalcon\Tag::stylesheetLink('thin-layout/stylesheets/bootstrap/bootstrap.css');?>
+    <!-- / theme file -->
+    <?=Phalcon\Tag::stylesheetLink(array('thin-layout/stylesheets/light-theme.css', "media"=>"all", "id"=>"color-settings-body-color"));?>
+    <!-- / coloring file -->
+    <?=Phalcon\Tag::stylesheetLink(array('thin-layout/stylesheets/theme-colors.css', "media"=>"all", "rel"=>"stylesheet"));?>
+    <?=Phalcon\Tag::stylesheetLink('thin-layout/stylesheets/text-zoom.css');?>
+    <!--[if lt IE 9]>
+      <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/ie/html5shiv.js');?>	
+      <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/ie/respond.min.js');?>	
+    <![endif]-->
+
+    <!-- / jquery -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery.min.js');?>	
+    <!-- / jquery mobile (for touch events) -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery.mobile.custom.min.js');?>	
+    <!-- / jquery migrate (for compatibility with new jquery) [required] -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery-migrate.min.js');?>	
+    <!-- / jquery ui -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery-ui.min.js');?>
+    <!-- / jQuery UI Touch Punch -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/plugins/jquery_ui_touch_punch/jquery.ui.touch-punch.min.js');?>
+    <!-- / bootstrap  -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/bootstrap/bootstrap.js');?>
+    <!-- / modernizr -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/plugins/modernizr/modernizr.min.js');?>    
+    <!-- / retina -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/plugins/retina/retina.js');?>    
+    <!-- / theme file  -->
+    <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/theme.js');?>    
+
+    <!-- / START - page related files and scripts [optional] -->
+    
+    <!-- / END - page related files and scripts [optional] -->
+    
+    
+    <script type="text/javascript" src="http://www.jqueryscript.net/demo/jQuery-Plugin-For-On-Page-Text-Control-Plugin-Text-Zoom/examples/js/zoom.min.js"></script>
+    <script type="text/javascript">
+    $("document").ready(function(){	
+        $("#demo").zoom({
+                    path: "#content-wrapper"
+                    //show/hide				
+                    , show_zoom: true //font-size
+                    , show_alignment: false //text-align
+                    , show_font_family: false //font-family
+                    , show_bold: true //font-weight
+                    , show_colors: true //color
+                    , show_reset: true //reset
+    
+                     //default properties
+                    , font_size: "14"
+                    , font_family: "Arial"
+                    , font_weight: "normal"
+                    , line_height_step: 3
+                    , text_align: "left"
+                    , color: "#333333"
+                    , cookies: true
+                    , expiration: 10 //cookies expiration in days (-1 = cookies expire when browser is closed)
+                    , colors: ["#333333", "#000000", "#006300", "#774500", "#2918C9", "#4F2C7A", "#518E2D", "#96122C"]
+                });
+    });
+    </script>
+
+
+    <!-- page header --> 
+    <header>
+      <nav class='navbar navbar-default navbar-fixed-top'>
+        <a class='navbar-brand' href='index.html'>
+          <img class="logo" src="/thin-layout/images/logo.png" />
+        </a>
+        <a class='toggle-nav btn pull-left' href='#'>
+          <i class='icon-reorder'></i>
+        </a>
+        <ul class='nav'>
+<li class='dropdown light only-icon'>
+            <a class='dropdown-toggle' data-toggle='dropdown' href='#'>
+              <i class='icon-cog'></i>
+            </a>
+            <ul class='dropdown-menu color-settings' style="font-size:12px">
+              <li class='color-settings-body-color'>
+                <div class='color-title' style="font-weight: bold; color:#DB4741"> Change Font style</div>
+                <div class="box">
+                    <div class="zoom" id="demo"></div>
+                </div>
+                <br style="clear:both" />
+              </li>
+              <li class='divider'></li>
+              <li class='color-settings-contrast-color'>
+                <div class='color-title' style="font-weight: bold; color:#DB4741"> Change Top Menu color</div>
+                            <a data-change-to="contrast-red" href="#"><i class='icon-cog text-red'></i>
+                Red
+                <small>(default)</small>
+                </a>
+    
+                            <a data-change-to="contrast-blue" href="#"><i class='icon-cog text-blue'></i>
+                Blue
+                </a>
+    
+                            <a data-change-to="contrast-orange" href="#"><i class='icon-cog text-orange'></i>
+                Orange
+                </a>
+    
+                            <a data-change-to="contrast-purple" href="#"><i class='icon-cog text-purple'></i>
+                Purple
+                </a>
+    
+                            <a data-change-to="contrast-green" href="#"><i class='icon-cog text-green'></i>
+                Green
+                </a>
+    
+                            <a data-change-to="contrast-muted" href="#"><i class='icon-cog text-muted'></i>
+                Muted
+                </a>
+    
+                            <a data-change-to="contrast-fb" href="#"><i class='icon-cog text-fb'></i>
+                Facebook
+                </a>
+    
+                            <a data-change-to="contrast-dark" href="#"><i class='icon-cog text-dark'></i>
+                Dark
+                </a>
+    
+                            <a data-change-to="contrast-pink" href="#"><i class='icon-cog text-pink'></i>
+                Pink
+                </a>
+    
+                            <a data-change-to="contrast-grass-green" href="#"><i class='icon-cog text-grass-green'></i>
+                Grass green
+                </a>
+    
+                            <a data-change-to="contrast-sea-blue" href="#"><i class='icon-cog text-sea-blue'></i>
+                Sea blue
+                </a>
+    
+                            <a data-change-to="contrast-banana" href="#"><i class='icon-cog text-banana'></i>
+                Banana
+                </a>
+    
+                            <a data-change-to="contrast-dark-orange" href="#"><i class='icon-cog text-dark-orange'></i>
+                Dark orange
+                </a>
+    
+                            <a data-change-to="contrast-brown" href="#"><i class='icon-cog text-brown'></i>
+                Brown
+                </a>
+    
+              </li>
+            </ul>
+          </li>        
+          <li class='dropdown dark user-menu'>
+            <a href='#'>
+              <span class='user-name'><strong>Ahsan Shahzad &nbsp;&nbsp;&nbsp;&nbsp;( 19841217 - 4057 )</strong></span>
+            </a>
+          </li>
+        </ul>
+        
+        <div style="float:right; padding:5px 55px; font-size:22px; color:#F8A325">
+          <i class="icon-time"></i>
+          <span style="margin-top:25px" id="timer">05:00:00</span>
+        </div>        
+      </nav>
+    </header>
+    <!-- page header ends -->
+
+    
+    <!-- page wrapper -->
+    <div id='wrapper'>
+      <div id='main-nav-bg'></div>
+      <!-- main navigation -->
+      <nav class='main-nav-fixed' id='main-nav'>
+        <div class='navigation'>
+          <ul class='nav nav-stacked'>
+            <li class=''>
+              <a href='index.html'>
+                <div style="float:left; width:20%"><i class='icon-book'></i></div>
+                <div style="float:left; width:80%"><span>Exam Instructions</span></div>
+              </a>
+            </li>
+            <li class='active' id="q1_short">
+              <a class="dropdown-collapse" href="#">
+					<div style="float:left; width:20%"><i class="icon-q1" ></i></div>
+					<div style="float:left; width:80%"><span>What is the name of capital of Sweden?</span></div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <!-- main navigation ends -->
+      
+      <!-- main content area -->
+      <section id='content'>
+        <div class='container'>
+          <div class='row' id='content-wrapper'>
+          	<?=$this->getContent()?>  
+          </div>
+          
+          <!-- Footer area -->
+          <footer id='footer'>
+            <div class='footer-wrapper'>
+              <div class='row'>
+                <div class='col-sm-6 text'>
+                  Copyright &copy; 2014 Uppsala Universitet
+                </div>
+              </div>
+            </div>
+          </footer>
+          <!-- Footer area ends -->
+          
+        </div>
+      </section>
+      <!-- main content area ends -->
+      
+    </div>
+    
+    <!-- wrapper ends -->
