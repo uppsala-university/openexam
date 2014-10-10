@@ -1,0 +1,127 @@
+.zoom ul.zoom-list {
+list-style: none;
+/*margin: 5px 0px 0px 15px;*/
+margin: 0px;
+padding: 5px 3px 3px 3px;
+float: left;
+/*border: 1px solid #888A85;
+background: #efefef url('../img/bg.png') repeat-x;*/
+border-radius: 5px;
+}
+.zoom .zoom-list li {
+margin: 3px;
+padding: 0px 0px 0px 0px;
+float: left;
+cursor: pointer;
+font-family: 'arial';
+font-size: 14px;
+line-height: 14px;
+background: url('../images/plugins/text-zoom/sprite.png') no-repeat top left;
+}
+.zoom .zoom-list li select {
+border: 1px solid #888A85;
+border-radius: 5px;
+height: 22px;
+}
+.zoom .zoom-color {
+position: relative;
+}
+.zoom .zoom-colors-list {
+list-style: none;
+margin: 0px 0px 0px 0px;
+padding: 3px 0px 0px 3px;
+position: absolute;
+top: 22px;
+left: 0px;
+z-index: 1000;
+width: 73px;
+background-color: #fff;
+border: 1px solid #888A85;
+border-radius: 5px;
+display: none;
+}
+.zoom .zoom-colors-list li {
+margin: 0px 3px 3px 0px;
+padding: 0px 0px 0px 0px;
+float: left;
+width: 15px;
+height: 15px;
+border: 0px;
+border-collapse: collapse;
+background-color: #ccc;
+background-image: none;
+}
+.zoom .zoom-color .color-preview {
+position: absolute;
+top: 4px;
+left: 4px;
+z-index: 1000;
+width: 15px;
+height: 14px;
+}
+/* buttons */
+.zoom .zoom-list .zoom-in {
+background-position: 0 -432px;
+width: 22px;
+height: 22px;
+}
+.zoom .zoom-list .zoom-out {
+background-position: 0 -504px;
+width: 22px;
+height: 22px;
+}
+.zoom .zoom-list .zoom-left {
+background-position: 0 -216px;
+width: 25px;
+height: 22px;
+}
+.zoom .zoom-list .zoom-center {
+background-position: 0 -72px;
+width: 26px;
+height: 22px;
+}
+.zoom .zoom-list .zoom-right {
+background-position: 0 -360px;
+width: 24px;
+height: 22px;
+}
+.zoom .zoom-list .zoom-bold {
+background-position: 0 0;
+width: 22px;
+height: 22px;
+}
+.zoom .zoom-list .zoom-color {
+background-position: 0 -144px;
+width: 31px;
+height: 22px;
+}
+.zoom .zoom-list .zoom-reset {
+background-position: 0 -288px;
+width: 22px;
+height: 22px;
+}
+/* active state */
+.zoom .zoom-list .zoom-in:hover, .zoom .zoom-list .zoom-in-active {
+background-position: -33px -432px;
+}
+.zoom .zoom-list .zoom-out:hover, .zoom .zoom-list .zoom-out-active {
+background-position: -33px -504px;
+}
+.zoom .zoom-list .zoom-left:hover, .zoom .zoom-list .zoom-left-active {
+background-position: -33px -216px;
+}
+.zoom .zoom-list .zoom-center:hover, .zoom .zoom-list .zoom-center-active {
+background-position: -33px -72px;
+}
+.zoom .zoom-list .zoom-right:hover, .zoom .zoom-list .zoom-right-active {
+background-position: -33px -360px;
+}
+.zoom .zoom-list .zoom-bold:hover, .zoom .zoom-list .zoom-bold-active {
+background-position: -33px 0;
+}
+.zoom .zoom-list .zoom-color:hover, .zoom .zoom-list .zoom-color-active {
+background-position: -33px -144px;
+}
+.zoom .zoom-list .zoom-reset:hover, .zoom .zoom-list .zoom-reset-active {
+background-position: -33px -288px;
+}
