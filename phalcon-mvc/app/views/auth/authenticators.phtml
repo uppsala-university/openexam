@@ -53,10 +53,10 @@
 			var selAuthMethod = $(this).find(':selected');
                         var selAuthMethodUrl = '<?=$this->url->get("auth/login/")?>' + $(selAuthMethod).val();
                         
-			if($(selAuthMethod).attr('auth_type') == 'urlbased') {
+			if($(selAuthMethod).attr('auth_type') == 'remote') {
 				
 				location.href = selAuthMethodUrl;
-			} else if($(selAuthMethod).attr('auth_type') == 'formbased') {
+			} else if($(selAuthMethod).attr('auth_type') == 'onsite') {
 				
 				$('#select_auth_method').hide();
 				$('#' + $(selAuthMethod).val())
