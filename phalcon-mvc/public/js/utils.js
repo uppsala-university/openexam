@@ -111,4 +111,10 @@ $(document).ready(function () {
 		$('#ajax_loader').hide();
 	});	
     
+        $('.fancybox').fancybox({
+                    autoHeight : true, 
+                    autoWidth: true,helpers : { 
+                        overlay : {closeClick: false}
+                }
+        });
 });
