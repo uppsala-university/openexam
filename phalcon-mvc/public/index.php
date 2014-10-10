@@ -2,7 +2,7 @@
 
 //BISMILLAH
 
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 
 try {
         define('CONFIG_PHP', __DIR__ . '/../app/config/system/config.php');

@@ -224,4 +224,11 @@ $di->set('logger', function() use($config) {
         return new \Phalcon\Config($logger);
 }, true);
 
+/**
+ * Phql based model manager
+ */
+$di->set('phql', function() {
+      return new Phalcon\Mvc\Model\Manager();
+ }, true);
+
 return $di;

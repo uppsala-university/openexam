@@ -769,6 +769,7 @@ button.ui-button::-moz-focus-inner {
 	border-width: 0;
 	padding: 1em 1.4em;
 	background: none;
+	border-top: 1px solid #eeeeee
 }
 .ui-tooltip {
 	padding: 8px;

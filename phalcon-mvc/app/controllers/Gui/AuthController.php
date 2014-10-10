@@ -26,7 +26,7 @@ class AuthController extends \OpenExam\Controllers\GuiController
         /**
          * Redirection URLs after Authentication
          */
-        CONST LOGIN_SUCCESS_URL = "index";
+        CONST LOGIN_SUCCESS_URL = "exam/index";
         CONST LOGIN_FAILURE_URL = "";
 
         public function initialize()
@@ -138,13 +138,33 @@ class AuthController extends \OpenExam\Controllers\GuiController
          * @param String $authMethod Name of authentication method used to login
          */
         private function _registerUserSession($authMethod)
-        {
+        {		
+		
+				######################################################################################
+				## 	Please ignore all changes in this function as they will be reverted back		##
+				##	Intention of making these changes was just to make Cas Authentication functional##
+				##  for now for Catherina and Susane												##
+				######################################################################################
+		
+				/**
+				 * @ToDO: restore this code area by uncomenting commented out code
+				 */
                 // prepare user object
-                $userObj = $this->user->set(new User($this->auth->getSubject()));
-
+                //$userObj = $this->user->set(new User($this->auth->getSubject()));
+				
+				/**
+				 * @ToDO: remove session starting from here
+				 * needed to override session_write_close() call from CasAuthenticator.php [line#108]
+				 */
+				session_start();
+				
+				/**
+				 * @ToDO: store serialized $userObj object in 'user' session variable
+				 * 	serialize($userObj);
+				 */
                 // store user data in session
                 $this->session->set('authenticated', array(
-                        'user'          => serialize($userObj),
+                        'user'          => $this->auth->getSubject(), 
                         'authenticator' => $authMethod
                 ));
 

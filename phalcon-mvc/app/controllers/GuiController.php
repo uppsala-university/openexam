@@ -26,7 +26,7 @@ class GuiController extends \Phalcon\Mvc\Controller
 
         public function initialize()
         {
-                $this->view->setTemplateAfter('main');
+                $this->view->setLayout('main');
         }
         
 }

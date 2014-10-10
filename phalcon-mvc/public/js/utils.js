@@ -1,67 +1,114 @@
+/**
+ * Application level utility functions
+ * 
+ * @author Ahsan Shahzad (MedfarmDoIT)
+**/
 
-var Profile = {
-    check: function (id) {
-        if ($.trim($("#" + id)[0].value) == '') {
-            $("#" + id)[0].focus();
-            $("#" + id + "_alert").show();
 
-            return false;
-        };
+/**
+ * Ajax wrapper
+ * 
+ * @param {String} url
+ * @param {Json} data
+ * @param {string} target [e.g: undefined, 'return', '#id-of-element', '.class-name']
+ * @param {type} type [POST, GET]
+ */ 
+    var ajax = function (url, data, callback, type) {
 
-        return true;
-    },
-    validate: function () {
-        if (SignUp.check("name") == false) {
-            return false;
-        }
-        if (SignUp.check("email") == false) {
-            return false;
-        }
-        $("#profileForm")[0].submit();
-    }
+            type = typeof type !== 'undefined' ? type : 'POST';
+
+            var request = $.ajax({
+                    url: url,
+                    type: type,
+                    data: data,
+                    dataType: "json"
+            });
+
+            request.done(function( response ) {
+
+                    // check response status
+                    if (typeof response.failed != "undefined") {
+
+                            showMessage(response.failed, 'error');
+                    } else if (typeof response.success != "undefined") {
+
+                            callback(response.success);
+
+                            // show message if defined
+                            if (typeof response.message != "undefined") {
+                                    showMessage(response.message, 'success');
+                            }
+                    } else {
+                        showMessage( 'Request failed. Please contact system administrators.', 'error');
+                    }
+            });
+
+            request.fail(function( jqXHR, textStatus ) {
+                    showMessage( 'Request failed. Please contact system administrators: ' + textStatus, 'error');
+            });
 };
 
-var SignUp = {
-    check: function (id) {
-        if ($.trim($("#" + id)[0].value) == '') {
-            $("#" + id)[0].focus();
-            $("#" + id + "_alert").show();
-
-            return false;
-        };
-
-        return true;
-    },
-    validate: function () {
-        if (SignUp.check("name") == false) {
-            return false;
-        }
-        if (SignUp.check("username") == false) {
-            return false;
-        }
-        if (SignUp.check("email") == false) {
-            return false;
-        }
-        if (SignUp.check("password") == false) {
-            return false;
-        }
-        if ($("#password")[0].value != $("#repeatPassword")[0].value) {
-            $("#repeatPassword")[0].focus();
-            $("#repeatPassword_alert").show();
-
-            return false;
-        }
-        $("#registerForm")[0].submit();
-    }
+/**
+ * Shows a message for 3 seconds
+ * 
+ * @param {String} message
+ * @param {String} message
+ * @returns 
+ */
+var showMessage = function ( message, type ) {
+    
+        type = typeof type !== 'undefined' ? type : 'info';
+        
+        $('#msg-box')
+                .attr('class', 'alert alert-' + type)
+                .html( message )
+                .slideDown(300)
+                .delay(3000)
+                .slideUp(300);
 }
 
+/**
+ * Helper to close all opened tooltips
+ * @returns 
+ */
+var closeTooltips = function () {
+        for (var i = 0; i < Opentip.tips.length; i++) {
+                        Opentip.tips[i].hide();
+        }
+}
+
+
+/**
+ * Returns length of json object
+ * 
+ * @param {json} object
+ * @returns {Number}
+ */
+function objectLength(object) 
+{
+        var length = 0;
+        for( var key in object ) {
+                if( object.hasOwnProperty(key) ) {
+                        ++length;
+                }
+        }
+        return length;
+};
+
+
+/**
+ * Global loading and events handlers
+ * @param {type} param
+ */
 $(document).ready(function () {
-    $("#registerForm .alert").hide();
-    $("div.profile .alert").hide();
-	$('.fancybox').fancybox({
-		autoHeight : true, 
-		autoWidth: true,helpers : { 
-  overlay : {closeClick: false}
-}
-	});
+
+        $( document ).ajaxStart(function() {
+		$('#ajax_loader').show();
+	});	
+	
+
+	$( document ).ajaxStop(function() {
+		$('#ajax_loader').hide();
+	});	
+    
 });

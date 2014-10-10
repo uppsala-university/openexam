@@ -63,6 +63,60 @@ $router->add(
 /**
  * Route Gui - private pages
  */
+$router->add(
+    "/exam/:action/:params", array(
+        "controller" => "exam",
+        "action"     => 1,
+		"params"     => 2,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+$router->add(
+    "/exam/:int/?", array (
+        "controller" => "exam",
+        "action"     => "instruction",
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+/*
+$router->add(
+    "/exam/:int/view/?(.*)?", array(
+        "controller" => "exam",
+        "action"     => "view",
+        "examId"     => 1,
+        "questId"    => 2,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);*/
+
+$router->add(
+    "/exam/:int/question/:int", array(
+        "controller" => "question",
+        "action"     => "view",
+        "examId"     => 1,
+        "questId"    => 2,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+$router->add(
+    "/question/:action/:params", array(
+        "controller" => "question",
+        "action"     => 1,
+        "params"     => 2,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+
+$router->add(
+    "/media/:action", array(
+        "controller" => "media",
+        "action"     => 1,
+        "namespace"  => "OpenExam\Controllers\Utility"
+    )
+);
 $router->mount(
     new PrefixRoute(array(
         "prefix"    => "/",
