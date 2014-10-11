@@ -4739,6 +4739,17 @@ text-decoration:none;
         float:left 
 }
 
+#selected-lib-img li input {
+	padding: 0px; 
+	margin: 0px; 
+	border: 0px none; 
+	height: 100%; 
+	width: 100%; 
+	box-shadow: none; 
+	font-size: 10px;
+	border-radius:0;
+}
+
 .q_resources {
         border: 1px dashed #e2e2e2; /*#c6e1ec*/
         margin-top: 10px; 
@@ -5238,7 +5249,7 @@ a.selected-lib-img .lib-img {
         font-size:9px;
         border-top:1px dashed #dedede;
         margin:2px;
-        height:15px;
+        height:20px;
         white-space: nowrap; 
         width: 90%; 
         overflow: hidden;
@@ -5282,7 +5293,7 @@ a.selected-lib-img .lib-img {
 
 .lib-tab-area {
         clear:both; 
-        height:400px; 
+        /*height:400px;*/
         overflow:auto; 
         margin-top:15px;
 }

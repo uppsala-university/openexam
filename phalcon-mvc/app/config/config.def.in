@@ -61,6 +61,10 @@ return array(
                  */
                 'cacheDir' => BASE_DIR . '/cache/',
                 /**
+                 * Media files upload directory.
+                 */
+                'mediaDir' => BASE_DIR . '/cache/media/',
+                /**
                  * Logs directory.
                  */
                 'logsDir'  => BASE_DIR . '/logs',

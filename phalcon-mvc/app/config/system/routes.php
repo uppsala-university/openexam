@@ -30,9 +30,10 @@ class PrefixRoute extends Phalcon\Mvc\Router\Group
                         "namespace"  => $config['namespace']
                     )
                 );
-                $this->add("/:controller/:action", array(
+                $this->add("/:controller/:action/:params", array(
                         "controller" => 1,
                         "action"     => 2,
+						"params"     => 3,
                         "namespace"  => $config['namespace']
                     )
                 );

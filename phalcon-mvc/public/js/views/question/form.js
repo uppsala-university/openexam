@@ -53,12 +53,12 @@
 											modal: true,
 											buttons: {
 													"Add selected resources to question": function() {
-															$('#selected-lib-img > li > .title-box').each(function(index, itemTitle) {
+															$('#selected-lib-img > li:visible > .title-box').each(function(index, itemTitle) {
 																
 																$('#'+$(".ui-tabs-active").attr("aria-controls")).find('.lib_resources_list').append('\
 																	<li>\
 																		<i class="fa fa-close"></i>\
-																		<a href="#" file-path="'+$(this).attr('file-path')+'" target="_blank">'+$(itemTitle).html()+'</a>\
+																		<a href="#" file-path="'+$(this).attr('file-path')+'" target="_blank">'+$(itemTitle).find('input').val()+'</a>\
 																	</li>'
 																);
 																

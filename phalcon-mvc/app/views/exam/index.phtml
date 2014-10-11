@@ -1,7 +1,5 @@
-       
 <?=Phalcon\Tag::stylesheetLink('css/web.css');?>
 <?=Phalcon\Tag::javascriptInclude("js/modernizr.js")?>
-
 <?php
 	$sectionTitles = array(
 		'manager' 		=> 'Manage your exams',
@@ -12,97 +10,80 @@
 	);
 ?>
 <div id="container" class="left_menu_space" class="container">
+
 <div class="hero-unit" style="margin:15px">
-    <h1>Welcome!</h1>
-    
-<h3>Information for teachers</h3>
-<p>The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. It allows people manage examinations and result from online exams.</p>
-<p>If you wish to create your own online exam, contact <a href="mailto:anders.lovgren@bmc.uu.se">Anders Lövgren</a> to gain access to the system. General and getting started information can be found on the <a href="help.php">Help</a> page.</p></div>
-
-  <section class="ac-container">
-  	  <?php $sectId = 1;?>
-      <?php foreach($roleBasedExamList as $role => $exams) : ?>
-      <div>
-          <input id="ac-<?=$sectId?>" name="accordion-1" type="radio" <?=$sectId == 1 ? "checked" : ""?> />
-          <label for="ac-<?=$sectId?>">
-          	<?=$sectionTitles[$role]?>
-            
-            <?php if($role == 'manager'):?>
-            <a href="<?=$this->url->get('exam/create')?>">
-                <span style="float: right; font-size: 12px;">
-                	<span class="label label-blue" style="padding:4px"><i class="fa fa-plus-square"></i> New Exam</span>
-                </span>    
-            </a>
-            <?php endif;?>
-          </label>
-          <article class="ac-large">
-
-				<div style="float:right; padding:5px;">
-                    <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
-                    <span class="label label-orange"><i class="fa fa-search" style="color:#FFF"></i></span>
-                </div>
-                
-				<?php if(count($exams)):?>
-                <div class="exam-listing-area">
-                    <ul class="list-group">
-                    	<?php $count = 1;?>
-						<?php foreach($exams as $exam):?>
-                        <li class="list-group-item">
-                            <div style="width:75%; float:left">
-                                <i class="fa fa-graduation-cap"></i> <a href="#"><?=$exam->name?></a>
-                                <div style="color: grey; font-size: 9px;">
-                                    <?=substr(strip_tags($exam->descr), 0, 145)." ...";?>
-                                </div>
-                            </div>
-                            <div style="float:right">
-                            	<div >
-                                    <a href="<?=$this->url->get('exam/update/'.$exam->id)?>" class="prevent">
-                                    	<span class="label label-green"><i class="fa fa-gear"></i> Manage</span>
-                                    </a>
-                                    <a href="<?=$this->url->get('exam/update/'.$exam->id)?>" class="prevent">
-                                    	<span class="label label-blue"><i class="fa fa-thumbs-o-up"></i> Test exam</span>
-                                    </a>
-                                    <a href="#" class="prevent"><span class="label label-red"><i class="fa fa-trash"></i> Delete</span></a>
-                                </div>
-                                <div style="padding-top: 5px; margin-left: 72px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> <?=date("Y-m-d", strtotime($exam->starttime))?></span>
-                                    <span style="font-size: 9px;">
-                                    	<i class="fa fa-clock-o"></i> 
-										<?=date("H:m", strtotime($exam->starttime))?>&mdash;<?=date("H:m", strtotime($exam->endtime))?>
-                                    </span>
-                                </div>                        
-                            </div>
-                            <div style="clear:both"></div>
-                        </li>
-                        <?php if(++$count > 3) break;?>
-                        <?php endforeach;?>
-                    </ul>
-                    <?php
+        <h1>Welcome!</h1>
+        <h3>Information for teachers</h3>
+        <p>The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. It allows people manage examinations and result from online exams.</p>
+        <p>If you wish to create your own online exam, contact <a href="mailto:anders.lovgren@bmc.uu.se">Anders Lövgren</a> to gain access to the system. General and getting started information can be found on the <a href="help.php">Help</a> page.</p>
+</div>
+<section class="ac-container">
+        <?php $sectId = 1;?>
+        <?php foreach($roleBasedExamList as $role => $exams) : ?>
+        <div>
+                <input id="ac-<?=$sectId?>" name="accordion-1" type="radio" <?=$sectId == 1 ? "checked" : ""?> />
+                <label for="ac-<?=$sectId?>">
+                        <?=$sectionTitles[$role]?>
+                        <?php if($role == 'manager'):?>
+                        <a href="<?=$this->url->get('exam/create')?>"> <span style="float: right; font-size: 12px;"> <span class="label label-blue" style="padding:4px"><i class="fa fa-plus-square"></i> New Exam</span> </span> </a>
+                        <?php endif;?>
+                </label>
+                <article class="ac-large">
+                        <div style="float:right; padding:5px;">
+                                <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here">
+                                <span class="label label-orange"><i class="fa fa-search" style="color:#FFF"></i></span> </div>
+                        <?php if(count($exams)):?>
+                        <div class="exam-listing-area">
+                                <ul class="list-group">
+                                        <?php $count = 1;?>
+                                        <?php foreach($exams as $exam):?>
+                                        <li class="list-group-item">
+                                                <div style="width:75%; float:left"> <i class="fa fa-graduation-cap"></i> <a href="#">
+                                                        <?=$exam->name?>
+                                                        </a>
+                                                        <div style="color: grey; font-size: 9px;">
+                                                                <?=substr(strip_tags($exam->descr), 0, 145)." ...";?>
+                                                        </div>
+                                                </div>
+                                                <div style="float:right">
+                                                        <div > <a href="<?=$this->url->get('exam/update/'.$exam->id)?>" class="prevent"> <span class="label label-green"><i class="fa fa-gear"></i> Manage</span> </a> <a href="<?=$this->url->get('exam/update/'.$exam->id)?>" class="prevent"> <span class="label label-blue"><i class="fa fa-thumbs-o-up"></i> Test exam</span> </a> <a href="#" class="prevent"><span class="label label-red"><i class="fa fa-trash"></i> Delete</span></a> </div>
+                                                        <div style="padding-top: 5px; margin-left: 72px;"> <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i>
+                                                                <?=date("Y-m-d", strtotime($exam->starttime))?>
+                                                                </span> <span style="font-size: 9px;"> <i class="fa fa-clock-o"></i>
+                                                                <?=date("H:m", strtotime($exam->starttime))?>
+                                                                &mdash;
+                                                                <?=date("H:m", strtotime($exam->endtime))?>
+                                                                </span> </div>
+                                                </div>
+                                                <div style="clear:both"></div>
+                                        </li>
+                                        <?php if(++$count > 3) break;?>
+                                        <?php endforeach;?>
+                                </ul>
+                                <?php
 					$totalRec 	= count($exams);
 					$totalPages = ceil($totalRec/3);
 					?>
-                    <div style="margin:auto; width:700px">
-                        <ul class="pagination" style="margin:auto; width:100%">
-                          <li class="disabled"><a href="#">«</a></li>
-                          <?php for($i=1; $i<=$totalPages; $i++):?>
-                          <li class="<?=($i == 1) ? 'active':''?>">
-                          	<a href="#"><?=$i?> <span class="sr-only">(current)</span></a>
-                          </li>
-                          <?php endfor;?>
-                       </ul>
-                    </div>   
-               </div>
-               <?php else:?>
-               		<div class="exam-listing-default-msg">
-               		<i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
-               </div>               
-               <?php endif;?>
-   		</article>
-      </div>
-      <?php $sectId++; ?>
-      <?php endforeach;?>
-
-<!--      
+                                <div style="margin:auto; width:700px">
+                                        <ul class="pagination" style="margin:auto; width:100%">
+                                                <li class="disabled"><a href="#">«</a></li>
+                                                <?php for($i=1; $i<=$totalPages; $i++):?>
+                                                <li class="<?=($i == 1) ? 'active':''?>"> <a href="#">
+                                                        <?=$i?>
+                                                        <span class="sr-only">(current)</span></a> </li>
+                                                <?php endfor;?>
+                                        </ul>
+                                </div>
+                        </div>
+                        <?php else:?>
+                        <div class="exam-listing-default-msg"> <i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage. </div>
+                        <?php endif;?>
+                </article>
+        </div>
+        <?php $sectId++; ?>
+        <?php endforeach;?>
+        
+        <!--      
       <div>
           <input id="ac-2" name="accordion-1" type="radio" />
           <label for="ac-2">Contribute in an exam</label>
@@ -147,7 +128,7 @@
                             </div>
                             
                           </li>
-                          <li class="list-group-item">
+                          <li class="list-group-item"> 
                             <div style="float:right">
                                 <span class="label label-primary"><i class="fa fa-times"></i> No more open to contribute</span>
         
@@ -404,8 +385,8 @@
                <?php //endif;?>
                            
    		</article>
-      </div> -->
-  </section>
+      </div> --> 
+</section>
 
-  <!-- container --> 
+<!-- container -->
 </div>

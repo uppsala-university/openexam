@@ -13,24 +13,33 @@
 		// initialize tabs
 		$('#media_types').tabs();
 		
-		// Change this to the location of your server-side upload handler:
-		var url = 'plugins/jquery-file-upload/server/php/';
+		var url = baseURL + 'utility/media/upload';
 		$('#fileupload').fileupload({
 			url: url,
 			dataType: 'json',
 			done: function (e, data) {
+				$('#lib-default-msg').hide();
+				
 				$.each(data.result.files, function (index, file) {
-					$('<li/>').append($('<img/>').css('width', '100%').attr('src', file.url)).prependTo( "#selected-lib-img" );
-					$( "#selected-lib-img" ).sortable();
+					if(typeof file.url != 'undefined') {
+						var thumbnail = ((file.type.indexOf('image') < 0) ? baseURL + "img/file-icon.png" : file.url);
+						var newItem = $( "#selected-lib-img >li:first" ).clone()
+						newItem.attr('media-id', '')
+							.find('img')
+								.attr('src', thumbnail)
+							.end()
+							.find('.title-box')
+								.attr('file-path', file.url)
+							.end()	
+							.show();
+						
+						$( "#selected-lib-img" ).prepend(newItem);
+						$( "#selected-lib-img" ).sortable();
+					} else {
+						alert("Unable to upload file '"+ file.name + "': " + file.error)
+					}
 				});
-			}/*,
-			progressall: function (e, data) {
-				var progress = parseInt(data.loaded / data.total * 100, 10);
-				$('#progress .progress-bar').css(
-					'width',
-					progress + '%'
-				);
-			}*/
+			}
 		}).prop('disabled', !$.support.fileInput)
 			.parent().addClass($.support.fileInput ? undefined : 'disabled');
 			
@@ -41,12 +50,23 @@
 				var title = $(this).parent().find('.lib-item-title').html();
 				
 				$('#lib-default-msg').hide();
-				$('#lib-items-added > ul').append('\
-								<li media-id="'+mediaId+'">\
-									<img src="'+$(this).find('img').attr('src')+'">\
-									<div class="title-box" file-path="'+$(this).find('img').attr('file-path')+'">'+title+'</div>\
-									<i class="fa fa-close"></i>\
-								</li>');
+				
+				var newItem = $( "#selected-lib-img >li:first" ).clone()
+				newItem.attr('media-id', mediaId)
+					.find('img')
+						.attr('src', $(this).find('img').attr('src'))
+					.end()
+					.find('.title-box')
+						.attr('file-path', $(this).find('img').attr('file-path'))
+						.find('input')
+							.val(title)
+						.end()
+					.end()
+					.show();
+				
+				$('#lib-items-added > ul').append(newItem);
+				$('#lib-items-added > ul > li:last').find('input').focus().select();
+				
 				$(this).find('span').html('<i class="fa fa-check-square-o"></i> Selected');
 				$(this).removeClass('select-lib-img').addClass('selected-lib-img').removeAttr('href');
 				$( "#selected-lib-img" ).sortable();
