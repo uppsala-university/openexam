@@ -263,7 +263,6 @@ class RolesTest extends TestCase
         /**
          * @covers OpenExam\Library\Security\Roles::aquire
          * @group security
-         * @todo   Implement testAquire().
          */
         public function testAquire()
         {

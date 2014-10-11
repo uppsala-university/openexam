@@ -53,9 +53,9 @@ class User extends Component
 
         /**
          * Constructor.
-         * @param string $role The primary role (for authorization).
          * @param string $user The username (simple or principal).
          * @param string $domain The user domain.
+         * @param string $role The primary role (for authorization).
          * @param array $roles Array of "act-as" roles.
          */
         public function __construct($user = null, $domain = null, $role = null, $roles = array())
