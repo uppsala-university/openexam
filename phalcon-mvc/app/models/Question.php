@@ -244,16 +244,4 @@ class Question extends ModelBase
                 return $builder->getQuery()->execute();
         }
 
-        /**
-         * Get first question model from query result.
-         * @param array $parameters The query parameters.
-         * @return Model
-         * @uses Model::findFirst()
-         */
-        public static function findFirst($parameters = null)
-        {
-                $parameters['limit'] = 1;
-                return self::find($parameters)[0];
-        }
-
 }

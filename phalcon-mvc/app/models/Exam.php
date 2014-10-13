@@ -337,19 +337,8 @@ class Exam extends ModelBase
                             ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id'))
                             ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
                 }
-                
+
                 return $builder->getQuery()->execute();
         }
 
-        /**
-         * Get first exam model from query result.
-         * @param array $parameters The query parameters.
-         * @return Model
-         * @uses Model::findFirst()
-         */
-        public static function findFirst($parameters = null)
-        {
-                $parameters['limit'] = 1;
-                return self::find($parameters)[0];
-        }
 }
