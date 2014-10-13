@@ -33,7 +33,7 @@ class ModelBase extends Model
          * @param string $rightcol The right hand column.
          * @return string
          */
-        protected static function getRelation($resource, $leftcol = null, $rightcol = null)
+        public static function getRelation($resource, $leftcol = null, $rightcol = null)
         {
                 if (isset($rightcol)) {
                         return __NAMESPACE__ . '\\' . ucfirst($resource) . '.' . $leftcol . '=' . $rightcol;

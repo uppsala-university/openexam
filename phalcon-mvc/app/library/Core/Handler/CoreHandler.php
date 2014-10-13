@@ -13,8 +13,9 @@
 
 namespace OpenExam\Library\Core\Handler;
 
-use OpenExam\Library\Security\User;
+use OpenExam\Models\ModelBase;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
+use PDO;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
@@ -49,7 +50,7 @@ class CoreHandler extends Component
          */
         public function build($name, $data)
         {
-                $class = sprintf("\OpenExam\Models\%s", ucfirst($name));
+                $class = ModelBase::getRelation($name);
                 if (!class_exists($class)) {
                         throw new Exception("Failed map request target.");
                 }
@@ -112,6 +113,8 @@ class CoreHandler extends Component
                                                 }
                                                 $result = $this->delete($model);
                                                 break;
+                                        default:
+                                                throw new Exception("The method $action don't exist.");
                                 }
                         }
                         if (isset($transaction)) {
@@ -168,8 +171,7 @@ class CoreHandler extends Component
         {
                 if ($model->id != 0) {
                         $class = get_class($model);
-                        $result = $class::findFirstById($model->id);
-                        return $result;
+                        return $class::findFirstById($model->id);
                 } else {
                         $class = get_class($model);
 
@@ -185,7 +187,7 @@ class CoreHandler extends Component
                                                 $params['conditions'][] = array(
                                                         "$class.$key LIKE :$key:",
                                                         array($key => "%$val%"),
-                                                        array($ley => \PDO::PARAM_STR)
+                                                        array($key => PDO::PARAM_STR)
                                                 );
                                         } else {
                                                 $params['conditions'][] = array(
@@ -196,7 +198,13 @@ class CoreHandler extends Component
                                 }
                         }
 
-                        return $class::find($params)->toArray();
+                        // 
+                        // Using filter() triggers afterFetch. This is required 
+                        // both for conversion and ACL to apply.
+                        // 
+                        return $class::find($params)->filter(function($m) {
+                                    return $m;
+                            });
                 }
         }
 
