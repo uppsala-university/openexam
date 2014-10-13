@@ -68,14 +68,7 @@ $router->add(
     "/exam/:action/:params", array(
         "controller" => "exam",
         "action"     => 1,
-		"params"     => 2,
-        "namespace"  => "OpenExam\Controllers\Gui"
-    )
-);
-$router->add(
-    "/exam/:int/?", array (
-        "controller" => "exam",
-        "action"     => "instruction",
+	"params"     => 2,
         "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
@@ -91,15 +84,6 @@ $router->add(
     )
 );*/
 
-$router->add(
-    "/exam/:int/question/:int", array(
-        "controller" => "question",
-        "action"     => "view",
-        "examId"     => 1,
-        "questId"    => 2,
-        "namespace"  => "OpenExam\Controllers\Gui"
-    )
-);
 
 $router->add(
     "/question/:action/:params", array(
@@ -135,6 +119,24 @@ $router->mount(
         "prefix"    => "/utility",
         "namespace" => "OpenExam\Controllers\Utility"
     ))
+);
+$router->add(
+    "/exam/:int/?", array (
+        "controller" => "exam",
+        "action"     => "instruction",
+        "examId"     => 1,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+$router->add(
+    "/exam/:int/question/:int", array(
+        "controller" => "question",
+        "action"     => "view",
+        "examId"     => 1,
+        "questId"    => 2,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
 );
 
 /**

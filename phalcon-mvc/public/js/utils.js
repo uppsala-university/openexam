@@ -13,15 +13,17 @@
  * @param {string} target [e.g: undefined, 'return', '#id-of-element', '.class-name']
  * @param {type} type [POST, GET]
  */ 
-    var ajax = function (url, data, callback, type) {
+    var ajax = function (url, data, callback, type, async) {
 
-            type = typeof type !== 'undefined' ? type : 'POST';
+            type  = typeof type !== 'undefined' ? type : 'POST';
+	    async = typeof async !== 'undefined' ? async : true;
 
             var request = $.ajax({
                     url: url,
                     type: type,
                     data: data,
-                    dataType: "json"
+                    dataType: "json",
+		    async:async
             });
 
             request.done(function( response ) {
@@ -110,11 +112,16 @@ $(document).ready(function () {
 	$( document ).ajaxStop(function() {
 		$('#ajax_loader').hide();
 	});	
-    
+    	
         $('.fancybox').fancybox({
                     autoHeight : true, 
                     autoWidth: true,helpers : { 
                         overlay : {closeClick: false}
                 }
         });
+	
+	$( document ).on('click', '.prevent', function() {
+		return false;
+	});
+
 });

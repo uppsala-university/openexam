@@ -1673,8 +1673,8 @@ a .icon-flip-vertical:before {
   font-style: normal; }
 
 h1, h2, h3, h4, h5, h6 {
-  /*font-family: Montserrat;*/
-  font-family: "Lucida Grande";
+  /*font-family: Montserrat;
+  font-family: "Lucida Grande";*/
   font-weight: 400;
   color: #222222; }
 
@@ -5334,3 +5334,80 @@ pre {
 
 .select2-results .select2-highlighted {
   background-color: #f34541; }
+
+/*** student page related ***/ 
+
+.q-part-ans-area {
+	padding-right: 8.33333%; 
+	margin-left:0px; 
+}
+
+.q-part-resource-area {
+	border-left:1px dashed #dedede;
+	width:40.3333%;
+}
+
+.q-no {
+	position:absolute; 
+	left:-5px; top:-5px; 
+	font-size:24px; 
+	background-color: #F4F4F4; 
+	padding:8px; 
+	border:1px solid #dedede; 
+	border-radius:5px 5px 0;
+	/*-webkit-box-shadow: -6px 3px 6px -5px rgba(0,0,0,0.75);
+	-moz-box-shadow: -6px 3px 6px -5px rgba(0,0,0,0.75);
+	box-shadow: -6px 3px 6px -5px rgba(0,0,0,0.75);	*/
+}
+
+
+.q-part-title {
+	position: absolute; 
+	font-size: 16px; 
+	color: rgb(169, 169, 169); 
+	left: 26px; 
+	z-index: 1; 
+	padding-top: 3px;
+}
+
+.q-part-pts {
+	position: absolute; 
+	font-size: 12px; 
+	padding: 22px 3px 4px 8px;
+	background-color: rgb(251, 251, 251); 
+	color: rgb(74, 125, 177); 
+	border-right: 1px solid rgb(222, 222, 222); 
+	border-bottom: 1px solid rgb(222, 222, 222); 
+	border-top: 1px solid rgb(222, 222, 222); 
+	border-radius: 0px 5px 5px 0px;
+	left: 0px; 
+}
+
+
+.q-part-text label {
+	font-weight:bold;
+	font-size:12px;
+	font-family:Verdana, Geneva, sans-serif;
+}
+
+.checkbox label {
+	font-size:11px;
+}
+
+.ans-sync-msg {
+	right: 5px; 
+	position: fixed; 
+	top: 45px; 
+	background: none repeat scroll 0% 0% yellow; 
+	padding: 5px;	
+	display:none;
+}
+.exam-descr {
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px
+}
+.q-actions {
+	background-color: #FBFBFB; margin-top:25px; padding:15px; border-top: 1px solid #eee
+}
+
+

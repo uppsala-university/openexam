@@ -1,80 +1,57 @@
 <!-- BISMILLAH-->
 <div class='col-xs-12' style="padding:0px 35px">
-  <div class='row'>
-    <div class='col-sm-12'>
-      <div class='page-header'>
-        <h1 class='pull-left'>
-          <i class='icon-book'></i>
-          <span>Examination for "Advanced Programming Concepts"</span>
-        </h1>
-      </div>
-    </div>
-  </div>
-  <div class='alert alert-info alert-dismissable'>
-    <a class='close' data-dismiss='alert' href='#'>&times;</a>
-    <strong>Hey Ahsan!</strong>
-    Please do check that your computer is well functional before you start your exam. All answers to the questions are automatically saved while you write them.  In case you face any problem, please feel free to contact invigilator.
-  </div>
-  
-  	<br>
-  	<u>General Directions (<strong>Please read carefully!</strong>):</u>
-    <p>
-        <ol>
-            <li> DO NOT STaRT EXAM UNTIL TOLD TO DO SO. </li>
-            
-            <li> NO CALCULATORS OF ANY KIND MAY BE USED. </li>
-            
-            <li> There are 40 questions on this contest exam. You have 45 minutes to complete this contest. If you are in the process of actually writing an answer when the signal to stop is given, you may finish writing that answer. </li>
-            
-            <li> Papers may not be turned in until 45 minutes have elapsed. If you finish the test before the end of the allotted time, 
-            
-            remain at your seat and retain your paper until told to do otherwise. You may use this time to check your answers. </li>
-            
-            <li> All answers must be written on the answer sheet/Scantron card provided. Indicate your answers in the appropriate 
-            
-            blanks provided on the answer sheet or on the Scantron card. Clean erasures are necessary for accurate Scantron 
-            
-            grading. </li>
-            
-            <li> You may place as many notations as you desire anywhere on the test paper, but not on the answer sheet or 
-            
-            Scantron card which are reserved for answers only. 
-            </li>
-            <li> You may use additional scratch paper provided by the contest director. </li>
-            
-            <li> All questions have ONE and only ONE correct (BEST) answer. There is a penalty for all incorrect answers. All 
-            
-            provided code segments are intended to be syntactically correct, unless otherwise stated. Ignore any 
-            
-            typographical errors and assume any undefined variables are defined as used.
-            </li>
-            <li> A reference to commonly used Java classes is provided at the end of the test, and you may use this reference sheet 
-            
-            during the contest. You may detach the reference sheets from the test booklet, but DO NOT DO SO UNTIL THE 
-            
-            CONTEST BEGINS. </li>
-            
-            <li> Assume that any necessary import statements for standard Java packages and classes (e.g. .util, ArrayList, 
-            
-            etc.) are included in any programs or code segments that refer to methods from these classes and packages.</li> 
-        </ol>
-    </p>
-    <p>
-       <u>Scoring: </u>
-       	<ol>
-            <li> All questions will receive <u>6 points</u> if answered correctly; no points will be given or subtracted if unanswered; <u>2 points</u> will be deducted for an incorrect answer. 
-            </li>
-        </ol>
-      	<br>
-	    <strong>Best of luck!</strong>
-      	<br>
-	    <center><input onClick="javascript:location.href='exam_page.html';" class="btn btn-success btn-lg" value="I am ready, start the exam" type="button"></center>
-    </p>   
+        <div class='row'>
+                <div class='col-sm-12'>
+                        <div class='page-header'>
+                                <h1 class='pull-left'> <i class='icon-book'></i> 
+                                        <span>
+                                                <?=$exam->name?>
+                                        </span> 
+                                </h1>
+                        </div>
+                </div>
+        </div>
+        <div class='alert alert-info alert-dismissable'> 
+        	<a class='close' data-dismiss='alert' href='#'>&times;</a> <strong>Hey Ahsan!</strong>
+                <br />
+                Please do check that your computer is well functional before you start your exam. 
+                All answers to the questions are automatically saved while you write.  
+                In case you face any problem, please feel free to contact invigilator. 
+        </div>
+        <div class="exam-descr">
+        	<?=$exam->descr?>
+        </div>
+        
+        <div class="exam-status-area">
+                <center>
+                <input onClick="javascript:location.href='<?=$this->url->get('exam/'.$exam->id.'/question/1')?>';" class="btn btn-success btn-lg" value="I am ready, start the exam" type="button" style=" <?=(strtotime($exam->starttime) <= strtotime("now")) ? '':'display:none'?>">
+                <?php if(strtotime($exam->starttime) > strtotime("now")):?>
+                <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam starts in: " type="button" disabled="disabled">
+                <?php endif;?>
+                </center>
+        </div>        
 </div>
-
 
 <script language="javascript">
 $('#main-nav').remove();
+$('#main-nav-bg').remove();
 $('#content').css("margin-left", "0px");
 $('.toggle-nav').remove();
-</script>
+<?php if(strtotime($exam->starttime) > strtotime("now")):?>
+var examStartCount = <?=(strtotime($exam->starttime) - strtotime("now"))?>;
+var examStartCountDown = setInterval(function() {
+	examStartCount--;
+	if (examStartCount <= 0)
+	{
+		$('#countdown-btn').hide();
+		$('.btn-success').show(500);
+		clearInterval(examStartCountDown);
+		
+		return;
+	}
+	$("#countdown-btn").val("Exam starts in: " + toHHMMSS(examStartCount));
+
+}, 1000); 
+<?php endif;?>
+
+</script> 

@@ -1,392 +1,598 @@
-<?=Phalcon\Tag::stylesheetLink('css/web.css');?>
-<?=Phalcon\Tag::javascriptInclude("js/modernizr.js")?>
+<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('css/opentip.css'); ?>
+
+<?= Phalcon\Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('js/views/exam/index.js')?>
 <?php
-	$sectionTitles = array(
-		'manager' 		=> 'Manage your exams',
-		'contributor' 	=> 'Contribute in an exam',
-		'corrector' 	=> 'Correct an exam',
-		'decoder' 		=> 'Decode an exam',
-		'invigilator' 	=> 'Invigilate an exam',
-	);
+use  OpenExam\Library\Core\Exam\State;
+
+/**
+ * Define page sections and section operations along with exam state based permissions
+ * @ToDO: move to config file
+ */
+$sections = array (
+	'staff' => array(
+		'manager' 	=> array (
+			'title' => 'Manage your exams',
+			'show-options' => array (
+					'manage-exam' => array(
+							'target'=> 'manage-students',
+							'allowed-states' => array (
+								State::EDITABLE,
+								State::CONTRIBUTABLE,
+								State::UPCOMING
+							)
+						),
+					'test-exam' => array(
+							'target'=> 'exam/test/',
+							'allowed-states' => array (
+								State::EDITABLE,
+								State::CONTRIBUTABLE,
+								State::UPCOMING
+							)
+						),
+					'del-exam' => array(
+							'target'=> 'exam/delete/',
+							'allowed-states' => array (
+								State::EDITABLE,
+								State::CONTRIBUTABLE,
+								State::UPCOMING
+							)
+						)
+			)
+		),
+		'contributor' 	=> array (
+			'title' => 'Contribute in an exam',
+			'show-options' => array (
+					'add-q' => array(
+							'target'=> 'exam/update/',
+							'allowed-states' => array (
+								State::CONTRIBUTABLE,
+							)
+						),
+					'view-q' => array(
+							'target'=> 'exam/update/',
+							'allowed-states' => array (
+								'*'
+							)
+						)
+			)
+		),
+		'corrector' 	=> array (
+			'title' => 'Correct an exam',
+			'show-options' => array (
+					'ans-correction' => array(
+							'target'=> 'question/correct/',
+							'allowed-states' => array (
+								State::FINISHED,
+							)
+						),
+					'view-results' => array(
+							'target'=> 'result/view/',
+							'allowed-states' => array (
+								State::DECODED,
+							)
+						),
+					'downlod-result' => array(
+							'target'=> 'result/download/',
+							'allowed-states' => array (
+								State::DECODED,
+							)
+						)
+			)
+		),
+		'decoder' 	=> array (
+			'title' => 'Decode an exam',
+			'show-options' => array (
+					'decode-exam' => array(
+							'target'=> 'exam/decode/',
+							'allowed-states' => array (
+								State::DECODABLE,
+							)
+						),
+					'view-results' => array(
+							'target'=> 'result/view/',
+							'allowed-states' => array (
+								State::DECODED,
+							)
+						),
+					'downlod-result' => array(
+							'target'=> 'result/download/',
+							'allowed-states' => array (
+								State::DECODED,
+							)
+						)
+			)
+		),
+		'invigilator' 	=> array (
+			'title' => 'Invigilate an exam',
+			'show-options' => array (
+					'manage-student' => array(
+							'target'=> 'add-students',
+							'allowed-states' => array (
+								State::EDITABLE,
+								State::CONTRIBUTABLE,
+								State::UPCOMING,
+								State::RUNNING
+							)
+						),
+					'change-time' => array(
+							'target'=> 'change-time',
+							'allowed-states' => array (
+								State::EDITABLE,
+								State::CONTRIBUTABLE,
+								State::UPCOMING,
+								State::RUNNING
+							)
+						)
+			)
+		),
+	),
+	'student' => array(
+		//'ongoing-exams'	=> array (),
+		'upcoming-exams'=> array (
+			'title' => 'Your upcoming exams',
+			'show-options' => array (
+					'st-exam-page' => array(
+							'target'=> 'exam/',
+							'allowed-states' => array (
+								State::UPCOMING
+							)
+					)
+			)
+		),
+		'finished-exams'=> array (
+			'title' => 'Your finished exams',
+			'show-options' => array (
+					'st-view-exam' => array(
+							'target'=> 'result/view/',
+							'allowed-states' => array (
+								State::DECODED,
+							)
+						),
+					'downlod-result' => array(
+							'target'=> 'result/download/',
+							'allowed-states' => array (
+								State::DECODED,
+							)
+						)
+			)
+		),
+	)
+);
+
+
+$opButtonsHtml = array(
+	'manage-exam'	=> '<span class="label label-green"><i class="fa fa-gear"></i> Manage</span>',
+	'test-exam'	=> '<span class="label label-blue"><i class="fa fa-thumbs-o-up"></i> Test exam</span>',
+	'del-exam'	=> '<span class="label label-red"><i class="fa fa-trash"></i> Delete</span>',
+	'add-q'  	=> '<span class="label label-green"><i class="fa fa-question-circle"></i> View questions</span>',
+	'view-q'	=> '<span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>',
+	//'contrib-closed'=> '<span class="label label-primary"><i class="fa fa-times"></i> No more open to contribute</span>',
+	'ans-correction'=> '<span class="label label-green"><i class="fa fa-check-square-o"></i> Answer correction</span>',
+	'view-results'	=> '<span class="label label-warning"><i class="fa fa-line-chart"></i> View results</span>',
+	'downlod-result'=> '<span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>',
+	'decode-exam'	=> '<span class="label label-green"><i class="fa fa-code"></i> Decode this exam</span>',
+	'decode-closed'	=> '<span class="label label-primary"><i class="fa fa-times"></i> Not open for decoding yet</span>',
+	'finished-exam'	=> '<span class="label label-primary"><i class="fa fa-times"></i> Finished exam</span>',
+	'manage-student'=> '<span class="label label-green"><i class="fa fa-user"></i> Manage students</span>',
+	'change-time'	=> '<span class="label label-blue"><i class="fa fa-clock-o"></i> Change schedule</span>',
+	'st-exam-page'	=> '<span class="label label-green"><i class="fa fa-gear"></i> Go to exam page</span>',
+	'st-view-exam'	=> '<span class="label label-green"><i class="fa fa-gear"></i> View exam</span>',	
+);
+
 ?>
+
+
 <div id="container" class="left_menu_space" class="container">
 
-<div class="hero-unit" style="margin:15px">
-        <h1>Welcome!</h1>
-        <h3>Information for teachers</h3>
-        <p>The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. It allows people manage examinations and result from online exams.</p>
-        <p>If you wish to create your own online exam, contact <a href="mailto:anders.lovgren@bmc.uu.se">Anders Lövgren</a> to gain access to the system. General and getting started information can be found on the <a href="help.php">Help</a> page.</p>
-</div>
-<section class="ac-container">
-        <?php $sectId = 1;?>
-        <?php foreach($roleBasedExamList as $role => $exams) : ?>
-        <div>
-                <input id="ac-<?=$sectId?>" name="accordion-1" type="radio" <?=$sectId == 1 ? "checked" : ""?> />
-                <label for="ac-<?=$sectId?>">
-                        <?=$sectionTitles[$role]?>
-                        <?php if($role == 'manager'):?>
-                        <a href="<?=$this->url->get('exam/create')?>"> <span style="float: right; font-size: 12px;"> <span class="label label-blue" style="padding:4px"><i class="fa fa-plus-square"></i> New Exam</span> </span> </a>
-                        <?php endif;?>
-                </label>
-                <article class="ac-large">
-                        <div style="float:right; padding:5px;">
-                                <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here">
-                                <span class="label label-orange"><i class="fa fa-search" style="color:#FFF"></i></span> </div>
-                        <?php if(count($exams)):?>
-                        <div class="exam-listing-area">
-                                <ul class="list-group">
-                                        <?php $count = 1;?>
-                                        <?php foreach($exams as $exam):?>
-                                        <li class="list-group-item">
-                                                <div style="width:75%; float:left"> <i class="fa fa-graduation-cap"></i> <a href="#">
-                                                        <?=$exam->name?>
-                                                        </a>
-                                                        <div style="color: grey; font-size: 9px;">
-                                                                <?=substr(strip_tags($exam->descr), 0, 145)." ...";?>
-                                                        </div>
-                                                </div>
-                                                <div style="float:right">
-                                                        <div > <a href="<?=$this->url->get('exam/update/'.$exam->id)?>" class="prevent"> <span class="label label-green"><i class="fa fa-gear"></i> Manage</span> </a> <a href="<?=$this->url->get('exam/update/'.$exam->id)?>" class="prevent"> <span class="label label-blue"><i class="fa fa-thumbs-o-up"></i> Test exam</span> </a> <a href="#" class="prevent"><span class="label label-red"><i class="fa fa-trash"></i> Delete</span></a> </div>
-                                                        <div style="padding-top: 5px; margin-left: 72px;"> <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i>
-                                                                <?=date("Y-m-d", strtotime($exam->starttime))?>
-                                                                </span> <span style="font-size: 9px;"> <i class="fa fa-clock-o"></i>
-                                                                <?=date("H:m", strtotime($exam->starttime))?>
-                                                                &mdash;
-                                                                <?=date("H:m", strtotime($exam->endtime))?>
-                                                                </span> </div>
-                                                </div>
-                                                <div style="clear:both"></div>
-                                        </li>
-                                        <?php if(++$count > 3) break;?>
-                                        <?php endforeach;?>
-                                </ul>
-                                <?php
-					$totalRec 	= count($exams);
-					$totalPages = ceil($totalRec/3);
-					?>
-                                <div style="margin:auto; width:700px">
-                                        <ul class="pagination" style="margin:auto; width:100%">
-                                                <li class="disabled"><a href="#">«</a></li>
-                                                <?php for($i=1; $i<=$totalPages; $i++):?>
-                                                <li class="<?=($i == 1) ? 'active':''?>"> <a href="#">
-                                                        <?=$i?>
-                                                        <span class="sr-only">(current)</span></a> </li>
-                                                <?php endfor;?>
-                                        </ul>
+	<div class="hero-unit" style="margin:15px">
+                <h1>Welcome!</h1>
+                <h3>Information for teachers</h3>
+                <p>
+                	The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. 
+	                It allows people manage examinations and result from online exams.</p>
+                <p>
+                        If you wish to create your own online exam, contact <a href="mailto:anders.lovgren@bmc.uu.se">Anders Lövgren</a> to gain access to the system. 
+                        General and getting started information can be found on the <a href="help.php">Help</a> page.
+                </p>
+	</div>
+        <section class="ac-container">
+                <?php $sectId = 1;?>
+                <?php foreach($roleBasedExamList as $role => $exams) : ?>
+                <div>
+                        <input id="ac-<?=$sectId?>" name="accordion-1" type="radio" <?=$sectId == 1 ? "checked" : ""?> />
+                        <label for="ac-<?=$sectId?>">
+                                <?=$sections[$mainRole][$role]['title']?>
+                                <?php if($role == 'manager'):?>
+                                <a href="<?=$this->url->get('exam/create')?>"> 
+                                	<span style="float: right; font-size: 12px;"> <span class="label label-blue" style="padding:4px">
+                                        <i class="fa fa-plus-square"></i> New Exam</span> </span> 
+                                </a>
+                                <?php endif;?>
+                        </label>
+                        <article class="ac-large">
+                                <div style="float:right; padding:5px;">
+                                        <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here">
+                                        <span class="label label-orange"><i class="fa fa-search" style="color:#FFF"></i></span> 
                                 </div>
+                                <?php if(count($exams)):?>
+                                <div class="exam-listing-area">
+                                        <ul class="list-group">
+                                                <?php $count = 1;?>
+                                                <?php foreach($exams as $exam):?>
+                                                <li class="list-group-item">
+                                                        <div style="width:75%; float:left"> <i class="fa fa-graduation-cap"></i> 
+                                                                <a href="#"><?=$exam->name?></a>
+                                                                <div style="color: grey; font-size: 9px;">
+                                                                        <?=substr(strip_tags($exam->descr), 0, 145)." ...";?>
+                                                                </div>
+                                                        </div>
+                                                        <div style="float:right">
+                                                                <div class="exam-show-options">
+                                                                <?php foreach($sections[$mainRole][$role]['show-options'] as $op => $opData):?>
+                                                                	<?php $isUrl = preg_match('/.*\/.*/', $opData['target']);?>
+                                                                        
+                                                                	<?php if(1 == 1/*in_array($exam->getState(), $opData['allowed-states'])*/) :?>
+                                                                                <a data-id="<?=$exam->id?>" 
+                                                                                href="<?=($isUrl ? $this->url->get($opData['target'] . $exam->id) : '#')?>" 
+                                                                                class="<?=($isUrl ? '' : $opData['target'].' prevent')?>">
+                                                                                	<?=$opButtonsHtml[$op]?>
+                                                                                </a>
+                                                                        <?php endif;?>
+                                                                        
+                                                                <?php endforeach;?>
+                                                                </div>
+                                                                <div style="padding-top: 5px; float:right"> 
+                                                                        <span style="padding-right: 5px; font-size: 9px;">
+                                                                                <i class="fa fa-calendar"></i>
+                                                                                <?=date("Y-m-d", strtotime($exam->starttime))?>
+                                                                        </span> 
+                                                                        <span style="font-size: 9px;"> <i class="fa fa-clock-o"></i>
+                                                                                <?=date("H:m", strtotime($exam->starttime))?>
+                                                                                &mdash;
+                                                                                <?=date("H:m", strtotime($exam->endtime))?>
+                                                                        </span> 
+                                                                </div>
+                                                        </div>
+                                                        <div style="clear:both"></div>
+                                                </li>
+                                                <?php if(++$count > 3) break;?>
+                                                <?php endforeach;?>
+                                        </ul>
+                                        <?php
+                                        $totalRec   = count($exams);
+                                        $totalPages = ceil($totalRec/3);
+                                        ?>
+                                        <div style="margin:auto; width:700px">
+                                                <ul class="pagination" style="margin:auto; width:100%">
+                                                        <li class="disabled"><a href="#">«</a></li>
+                                                        <?php for($i=1; $i<=$totalPages; $i++):?>
+                                                        <li class="<?=($i == 1) ? 'active':''?>"> <a href="#">
+                                                                <?=$i?>
+                                                                <span class="sr-only">(current)</span></a> </li>
+                                                        <?php endfor;?>
+                                                </ul>
+                                        </div>
+                                </div>
+                                <?php else:?>
+                                <div class="exam-listing-default-msg"> 
+                                	<i class="fa fa-hand-o-right"></i> Currently you don't have any exams as <?=$role?>.
+                                </div>
+                                <?php endif;?>
+                        </article>
+                </div>
+                <?php $sectId++; ?>
+                <?php endforeach; ?>
+        
+        <!--        
+              <div>
+                  <input id="ac-2" name="accordion-1" type="radio" />
+                  <label for="ac-2">Contribute in an exam</label>
+                  <article class="ac-large">
+        
+                                        <div style="float:right; padding:5px;">
+                            <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
+                            <a href="#" class="prevent"><span class="label label-warning"><i class="fa fa-search" style="color:#FFF"></i></span></a>
                         </div>
-                        <?php else:?>
-                        <div class="exam-listing-default-msg"> <i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage. </div>
-                        <?php endif;?>
-                </article>
-        </div>
-        <?php $sectId++; ?>
-        <?php endforeach;?>
-        
-        <!--      
-      <div>
-          <input id="ac-2" name="accordion-1" type="radio" />
-          <label for="ac-2">Contribute in an exam</label>
-          <article class="ac-large">
-
-				<div style="float:right; padding:5px;">
-                    <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
-                    <a href="#" class="prevent"><span class="label label-warning"><i class="fa fa-search" style="color:#FFF"></i></span></a>
-                </div>
+                        
+                                        <?php //if(count($exams['contributor'])):?>
+                        <div class="exam-listing-area">
+                            <ul class="list-group">
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-green"><i class="fa fa-question-circle"></i> View questions</span>
+                                        <span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>
+                                        
+                                        <div style="padding-top: 5px; margin-left: 85px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>                    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Compiler construction</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-green"><i class="fa fa-question-circle"></i> View questions</span>
+                                        <span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>
                 
-				<?php //if(count($exams['contributor'])):?>
-                <div class="exam-listing-area">
-                    <ul class="list-group">
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-green"><i class="fa fa-question-circle"></i> View questions</span>
-                                <span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>
-                                
-                                <div style="padding-top: 5px; margin-left: 85px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>                    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Compiler construction</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                          </li>
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-green"><i class="fa fa-question-circle"></i> View questions</span>
-                                <span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>
-        
-                                <div style="padding-top: 5px; margin-left: 85px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Programming in Perl</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                            
-                          </li>
-                          <li class="list-group-item"> 
-                            <div style="float:right">
-                                <span class="label label-primary"><i class="fa fa-times"></i> No more open to contribute</span>
-        
-                                <div style="padding-top: 5px; margin-left: 48px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Introduction to Computer science</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                            
-                          </li>
-                    </ul>
-                    
-                    <ul class="pagination" style="margin-left:35%">
-                      <li class="disabled"><a href="#">«</a></li>
-                      <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">»</a></li>
-                   </ul>          
-               </div>
-               <?php //else:?>
-               	<div class="exam-listing-default-msg">
-               		<i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
-               </div>               
-               <?php // endif;?>
-   		</article>
-      </div>
-      
-      <div>
-          <input id="ac-3" name="accordion-1" type="radio" />
-          <label for="ac-3">Correct an exam</label>
-          <article class="ac-large">
-
-				<div style="float:right; padding:5px;">
-                    <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
-                    <a href="#" class="prevent"><span class="label label-warning"><i class="fa fa-search" style="color:#FFF"></i></span></a>
-                </div>
+                                        <div style="padding-top: 5px; margin-left: 85px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Programming in Perl</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                    
+                                  </li>
+                                  <li class="list-group-item"> 
+                                    <div style="float:right">
+                                        <span class="label label-primary"><i class="fa fa-times"></i> No more open to contribute</span>
                 
-				<?php //if(count($exams['corrector'])):?>
-                <div class="exam-listing-area">
-                    <ul class="list-group">
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-green"><i class="fa fa-check-square-o"></i> View answers to correct</span>
-                                
-                                <div style="padding-top: 5px; margin-left: 28px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>                    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Hardware components</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                          </li>
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-green"><i class="fa fa-check-square-o"></i> View answers to correct</span>
+                                        <div style="padding-top: 5px; margin-left: 48px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Introduction to Computer science</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                    
+                                  </li>
+                            </ul>
+                            
+                            <ul class="pagination" style="margin-left:35%">
+                              <li class="disabled"><a href="#">«</a></li>
+                              <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                              <li><a href="#">2</a></li>
+                              <li><a href="#">»</a></li>
+                           </ul>          
+                       </div>
+                       <?php //else:?>
+                        <div class="exam-listing-default-msg">
+                                <i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
+                       </div>               
+                       <?php // endif;?>
+                        </article>
+              </div>
+              
+              <div>
+                  <input id="ac-3" name="accordion-1" type="radio" />
+                  <label for="ac-3">Correct an exam</label>
+                  <article class="ac-large">
         
-                                <div style="padding-top: 5px; margin-left: 28px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Computer control systems</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                            
-                          </li>
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-warning"><i class="fa fa-line-chart"></i> View results</span>
-                                <span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>
-                                
-                                <div style="padding-top: 5px; margin-left: 89px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Advanced Human computer interaction</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                            
-                          </li>
-                    </ul>
-                    
-                    <ul class="pagination" style="margin-left:35%">
-                      <li class="disabled"><a href="#">«</a></li>
-                      <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">»</a></li>
-                   </ul>          
-               </div>
-               <?php //else:?>
-               	<div class="exam-listing-default-msg">
-               		<i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
-               </div>               
-               <?php //endif;?>
-                   
-   		</article>          
-      </div>
-      <div>
-          <input id="ac-4" name="accordion-1" type="radio" />
-          <label for="ac-4">Decode an exam</label>
-          <article class="ac-large">
-
-				<div style="float:right; padding:5px;">
-                    <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
-                    <a href="#" class="prevent"><span class="label label-warning"><i class="fa fa-search" style="color:#FFF"></i></span></a>
-                </div>
+                                        <div style="float:right; padding:5px;">
+                            <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
+                            <a href="#" class="prevent"><span class="label label-warning"><i class="fa fa-search" style="color:#FFF"></i></span></a>
+                        </div>
+                        
+                                        <?php //if(count($exams['corrector'])):?>
+                        <div class="exam-listing-area">
+                            <ul class="list-group">
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-green"><i class="fa fa-check-square-o"></i> View answers to correct</span>
+                                        
+                                        <div style="padding-top: 5px; margin-left: 28px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>                    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Hardware components</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-green"><i class="fa fa-check-square-o"></i> View answers to correct</span>
                 
-				<?php //if(count($exams['decoder'])):?>
-                <div class="exam-listing-area">
-                    <ul class="list-group">
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-green"><i class="fa fa-code"></i> Decode this exam</span>
-                                
-                                <div style="padding-top: 5px; margin-left: -14px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>                    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Programming in Java language</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                          </li>
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-primary"><i class="fa fa-times"></i> Not open for decoding yet</span>
-        
-                                <div style="padding-top: 5px; margin-left: 38px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Introdo. to Computer architecture</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
+                                        <div style="padding-top: 5px; margin-left: 28px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Computer control systems</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                    
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-warning"><i class="fa fa-line-chart"></i> View results</span>
+                                        <span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>
+                                        
+                                        <div style="padding-top: 5px; margin-left: 89px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Advanced Human computer interaction</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                    
+                                  </li>
+                            </ul>
                             
-                          </li>
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-warning"><i class="fa fa-line-chart"></i> View results</span>
-                                <span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>
-        
-                                <div style="padding-top: 5px; margin-left: 89px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Electronics component designing</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                            
-                          </li>
-                    </ul>
-                    
-                    <ul class="pagination" style="margin-left:35%">
-                      <li class="disabled"><a href="#">«</a></li>
-                      <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">»</a></li>
-                   </ul>  
-               </div>
-               <?php //else:?>
-               	<div class="exam-listing-default-msg">
-               		<i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
-               </div>               
-               <?php //endif;?>
+                            <ul class="pagination" style="margin-left:35%">
+                              <li class="disabled"><a href="#">«</a></li>
+                              <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                              <li><a href="#">2</a></li>
+                              <li><a href="#">»</a></li>
+                           </ul>          
+                       </div>
+                       <?php //else:?>
+                        <div class="exam-listing-default-msg">
+                                <i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
+                       </div>               
+                       <?php //endif;?>
                            
-   		</article>
-      </div>
-      <div>
-          <input id="ac-5" name="accordion-1" type="radio" />
-          <label for="ac-5">Invigilate an exam</label>
-          <article class="ac-large">
-
-				<div style="float:right; padding:5px;">
-                    <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
-                    <a href="#" class="prevent"><span class="label label-warning"><i class="fa fa-search" style="color:#FFF"></i></span></a>
-                </div>
+                        </article>          
+              </div>
+              <div>
+                  <input id="ac-4" name="accordion-1" type="radio" />
+                  <label for="ac-4">Decode an exam</label>
+                  <article class="ac-large">
+        
+                                        <div style="float:right; padding:5px;">
+                            <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
+                            <a href="#" class="prevent"><span class="label label-warning"><i class="fa fa-search" style="color:#FFF"></i></span></a>
+                        </div>
+                        
+                                        <?php //if(count($exams['decoder'])):?>
+                        <div class="exam-listing-area">
+                            <ul class="list-group">
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-green"><i class="fa fa-code"></i> Decode this exam</span>
+                                        
+                                        <div style="padding-top: 5px; margin-left: -14px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>                    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Programming in Java language</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-primary"><i class="fa fa-times"></i> Not open for decoding yet</span>
                 
-				<?php //if(count($exams['invigilator'])):?>
-                <div class="exam-listing-area">
-                    <ul class="list-group">
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-primary"><i class="fa fa-times"></i> Finished exam</span>
-                                
-                                <div style="padding-top: 5px; margin-left: -37px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>                    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Advance computer architecture</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
-                          </li>
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-green"><i class="fa fa-user"></i> Manage students</span>
-                                <span class="label label-blue"><i class="fa fa-clock-o"></i> Change schedule</span>
-        
-                                <div style="padding-top: 5px; margin-left: 111px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Introduction to Java programming</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
+                                        <div style="padding-top: 5px; margin-left: 38px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Introdo. to Computer architecture</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                    
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-warning"><i class="fa fa-line-chart"></i> View results</span>
+                                        <span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>
+                
+                                        <div style="padding-top: 5px; margin-left: 89px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Electronics component designing</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                    
+                                  </li>
+                            </ul>
                             
-                          </li>
-                          <li class="list-group-item">
-                            <div style="float:right">
-                                <span class="label label-green"><i class="fa fa-user"></i> Manage students</span>
-                                <span class="label label-blue"><i class="fa fa-clock-o"></i> Change schedule</span>
+                            <ul class="pagination" style="margin-left:35%">
+                              <li class="disabled"><a href="#">«</a></li>
+                              <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                              <li><a href="#">2</a></li>
+                              <li><a href="#">»</a></li>
+                           </ul>  
+                       </div>
+                       <?php //else:?>
+                        <div class="exam-listing-default-msg">
+                                <i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
+                       </div>               
+                       <?php //endif;?>
+                                   
+                        </article>
+              </div>
+              <div>
+                  <input id="ac-5" name="accordion-1" type="radio" />
+                  <label for="ac-5">Invigilate an exam</label>
+                  <article class="ac-large">
         
-                                <div style="padding-top: 5px; margin-left: 111px;">
-                                    <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
-                                    <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
-                                </div>                        
-                            </div>    
-                            <i class="fa fa-graduation-cap"></i> <a href="#">Programming in C++</a>
-                            <div style="color: grey; font-size: 9px;">
-                                Here goes the first pargraph from exam description ... it can be long long long .....
-                            </div>
+                                        <div style="float:right; padding:5px;">
+                            <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here"> 
+                            <a href="#" class="prevent"><span class="label label-warning"><i class="fa fa-search" style="color:#FFF"></i></span></a>
+                        </div>
+                        
+                                        <?php //if(count($exams['invigilator'])):?>
+                        <div class="exam-listing-area">
+                            <ul class="list-group">
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-primary"><i class="fa fa-times"></i> Finished exam</span>
+                                        
+                                        <div style="padding-top: 5px; margin-left: -37px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>                    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Advance computer architecture</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-green"><i class="fa fa-user"></i> Manage students</span>
+                                        <span class="label label-blue"><i class="fa fa-clock-o"></i> Change schedule</span>
+                
+                                        <div style="padding-top: 5px; margin-left: 111px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Introduction to Java programming</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                    
+                                  </li>
+                                  <li class="list-group-item">
+                                    <div style="float:right">
+                                        <span class="label label-green"><i class="fa fa-user"></i> Manage students</span>
+                                        <span class="label label-blue"><i class="fa fa-clock-o"></i> Change schedule</span>
+                
+                                        <div style="padding-top: 5px; margin-left: 111px;">
+                                            <span style="padding-right: 5px; font-size: 9px;"><i class="fa fa-calendar"></i> 2014-08-10</span>
+                                            <span style="font-size: 9px;"><i class="fa fa-clock-o"></i> 09:15&mdash;12:00</span>
+                                        </div>                        
+                                    </div>    
+                                    <i class="fa fa-graduation-cap"></i> <a href="#">Programming in C++</a>
+                                    <div style="color: grey; font-size: 9px;">
+                                        Here goes the first pargraph from exam description ... it can be long long long .....
+                                    </div>
+                                    
+                                  </li>
+                            </ul>
                             
-                          </li>
-                    </ul>
-                    
-                    <ul class="pagination" style="margin-left:35%">
-                      <li class="disabled"><a href="#">«</a></li>
-                      <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">»</a></li>
-                   </ul>  
-               </div>
-               <?php //else:?>
-               	<div class="exam-listing-default-msg">
-               		<i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
-               </div>               
-               <?php //endif;?>
-                           
-   		</article>
-      </div> --> 
-</section>
-
+                            <ul class="pagination" style="margin-left:35%">
+                              <li class="disabled"><a href="#">«</a></li>
+                              <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                              <li><a href="#">2</a></li>
+                              <li><a href="#">»</a></li>
+                           </ul>  
+                       </div>
+                       <?php //else:?>
+                        <div class="exam-listing-default-msg">
+                                <i class="fa fa-hand-o-right"></i> Currently you don't have any exams to manage.
+                       </div>               
+                       <?php //endif;?>
+                                   
+                        </article>
+              </div>-->
+        </section>
+        
+        <!-- hidden divs -->
+	<div id="mng-students" title="Manage students for exam" style="display:none"></div>
+        
 <!-- container -->
 </div>

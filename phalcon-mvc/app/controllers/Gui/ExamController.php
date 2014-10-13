@@ -14,6 +14,8 @@
 namespace OpenExam\Controllers\Gui;
 
 use  OpenExam\Controllers\GuiController;
+use  OpenExam\Models\Exam;
+use  OpenExam\Models\Student;
 
 /**
  * Controller for loading Exam pages
@@ -22,56 +24,97 @@ use  OpenExam\Controllers\GuiController;
  */
 class ExamController extends GuiController
 {
-
+        /**
+         * @ToDO: consider alternatives
+         * constants
+         */
+        const STAFF_ROLE   = 'staff';
+        const STUDENT_ROLE = 'student';
+        
 	/**
          * Home page for exam management to list all exams
 	 * exam/index
 	 */
         public function indexAction()
         {
+                // initializations
+                $mainRole = self::STAFF_ROLE;
                 $loggedIn = $this->session->get('authenticated');
                 
-                $exams['manager'] = $this->phql
-                        ->executeQuery(
-                                "select * from OpenExam\Models\Exam "
-                                .   "where creator = :user: order by id desc",
-                                array("user" => $loggedIn['user'])
-		);
+                // check if this person exists in students table
+                $isStudent = Student::findFirst("user = '".$loggedIn['user']."'");
+                if($isStudent) {
+                        $mainRole = self::STUDENT_ROLE;
+                        
+                        $exams['upcoming-exams'] = $this->phql
+                                ->executeQuery(
+                                        "select e.id, e.name, e.descr, e.starttime, e.endtime from OpenExam\Models\Exam e "
+                                        .   "inner join OpenExam\Models\Student s "
+                                        .   "where s.user = :user: and endtime >= NOW() order by endtime desc",
+                                        array("user" => $loggedIn['user'])
+                        );
+
+                        $exams['finished-exams'] = $this->phql
+                                ->executeQuery(
+                                        "select e.id, e.name, e.descr, e.starttime, e.endtime from OpenExam\Models\Exam e "
+                                        .   "inner join OpenExam\Models\Student s "
+                                        .   "where s.user = :user: and endtime < NOW() order by endtime desc",
+                                        array("user" => $loggedIn['user'])
+                        );
+                        
+                } else {
+                        $mainRole = self::STAFF_ROLE;
+                        
+                        $colList = "e.id, e.name, e.descr, e.starttime, e.endtime";
+                        $exams['manager'] = $this->phql
+                                ->executeQuery(
+                                        "select $colList from OpenExam\Models\Exam e "
+                                        .   "where creator = :user: order by id desc",
+                                        array("user" => $loggedIn['user'])
+                        );
+
+                        $exams['contributor'] = $this->phql
+                                ->executeQuery(
+                                        "select $colList from OpenExam\Models\Exam e "
+                                        .   "inner join OpenExam\Models\Contributor c "
+                                        .   "where c.user = :user: ",
+                                        array("user" => $loggedIn['user'])
+                        );
+
+                        $exams['decoder'] = $this->phql
+                                ->executeQuery(
+                                        "select $colList from OpenExam\Models\Exam e "
+                                        .   "inner join OpenExam\Models\Decoder d "
+                                        .   "where d.user = :user: ",
+                                        array("user" => $loggedIn['user'])
+                        );
+
+                        $exams['invigilator'] = $this->phql
+                                ->executeQuery(
+                                        "select $colList from OpenExam\Models\Exam e "
+                                        .   "inner join OpenExam\Models\Invigilator i "
+                                        .   "where i.user = :user: ",
+                                        array("user" => $loggedIn['user'])
+                        );
+
+                        $exams['corrector'] = $this->phql
+                                ->executeQuery(
+                                        "select $colList from OpenExam\Models\Exam e "
+                                        .   "inner join OpenExam\Models\Question q "
+                                        .   "inner join OpenExam\Models\Corrector c "
+                                        .   "where c.user = :user:",
+                                        array("user" => $loggedIn['user'])
+                        );
+
+                }
                 
-                $exams['contributor'] = $this->phql
-                        ->executeQuery(
-                                "select * from OpenExam\Models\Exam e "
-                                .   "inner join OpenExam\Models\Contributor c "
-                                .   "where c.user = :user: ",
-                                array("user" => $loggedIn['user'])
-		);
-
-                $exams['decoder'] = $this->phql
-                        ->executeQuery(
-                                "select * from OpenExam\Models\Exam e "
-                                .   "inner join OpenExam\Models\Decoder d "
-                                .   "where d.user = :user: ",
-                                array("user" => $loggedIn['user'])
-		);
-
-                $exams['invigilator'] = $this->phql
-                        ->executeQuery(
-                                "select * from OpenExam\Models\Exam e "
-                                .   "inner join OpenExam\Models\Invigilator i "
-                                .   "where i.user = :user: ",
-                                array("user" => $loggedIn['user'])
-		);
-
-                $exams['corrector'] = $this->phql
-                        ->executeQuery(
-                                "select * from OpenExam\Models\Exam e "
-                                .   "inner join OpenExam\Models\Question q "
-                                .   "inner join OpenExam\Models\Corrector c "
-                                .   "where c.user = :user:",
-                                array("user" => $loggedIn['user'])
-		);
-                
-                $this->view->setVar('roleBasedExamList', $exams);
+                // pass data to view
+                $this->view->setVars(
+                    array(
+                        'mainRole' => $mainRole,
+                        'roleBasedExamList' => $exams
+                    )
+                );
         }
 
 	/**
@@ -137,28 +180,32 @@ class ExamController extends GuiController
 		$this->view->setVar('exam', $exam);
          }
         
-
-        /**
-         * Exam view. that list questions one by one
-         * For students and for exam manager
-         * 
-	 * exam/{exam_id}/view/{question_id}?
-	 
-        public function viewAction()
-        {
-                $examId  = $this->dispatcher->getParam("examId");
-                $questId = $this->dispatcher->getParam("questId");
-        }*/
-        
         /**
          * Shows exam instructions for student and for test exam
 	 * exam/{exam_id}
 	 */
-        public function instructionAction()
+        public function instructionAction($examId)
         {
-                $this->view->setLayout('thin-layout');
+                // sanitize
+                $examId = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
                 
-                print "Fetch and show exam instructions here";
+                // fetch exam data if it has not been finished yet
+                $exam = Exam::findFirst("id = " . $examId . " and endtime > NOW()");
+                if(!$exam) {
+                        return $this->response->redirect('exam/index');
+                }
+                
+                $this->view->setVar("exam", $exam);
+                $this->view->setLayout('thin-layout');
         }
 
+        /**
+         * Load popup for student management under the exam
+	 * exam/students
+	 */
+        public function studentsAction()
+        {
+                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+        }
+        
 }

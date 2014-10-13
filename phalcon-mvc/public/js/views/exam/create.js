@@ -456,16 +456,10 @@
 		
 		
 				/*----------------------------------------------*/ 
-				/*	Generalized  events 					*/
+				/*	Generalized  events 			*/
 				/*----------------------------------------------*/
 		
-				$(document).on('click', '.prevent', function() {
-					return false;
-				});
-		
-				$(function() {
-					$( ".datepicker" ).datepicker();
-				});
+				$( ".datepicker" ).datepicker();
 				
 		});
 

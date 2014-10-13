@@ -14,7 +14,10 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
+use OpenExam\Models\Student;
+use OpenExam\Models\Exam;
 use OpenExam\Models\Question;
+use OpenExam\Models\Answer;
 
 /**
  * Controller for adding/loading Exam questions
@@ -32,20 +35,55 @@ class QuestionController extends GuiController
          */
         public function viewAction()
         {
+                $loggedIn = $this->session->get('authenticated');
+                
+                ## sanitize
+                $examId  = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
+                $questId = $this->filter->sanitize($this->dispatcher->getParam("questId"), "int");
+                
+                ## load exam with time checking
+                $exam = Exam::findFirst("id = " . $examId . " and starttime <= NOW() and endtime > NOW()");
+                if (!$exam) {
+                        return $this->response->redirect('exam/index');
+                }
+                
+                ## pass data to view and load
+                $quest = Question::findFirst("name = '" . $questId ."' and exam_id=" . $examId);
+                if(!$quest) {
+                        // load first question if requested question don't exist
+                        $quest = Question::findFirst(array(
+                                'exam_id=' . $examId,
+                                'order' => 'name asc'
+                        ));
+                }
+                
+                ## create an entry in answer table for this question against this student
+                // first, find student id of this logged in person for this exam
+                $student = Student::findFirst("user = '" . $loggedIn['user'] ."' and exam_id=" . $examId);
+                if(!$student) {
+                        throw new \Exception("You are not authorized to access this question");
+                }
+                
 
+                ## pick up answer data if student has answered
+                $ans = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $quest->id);
+                if(!$ans) {
+                        //lets add answer record in database now
+                        $ans = new Answer();
+                        $ans->save(array(
+                                'student_id' => $student->id,
+                                'question_id'=> $quest->id,
+                                'answered'   => 'N'
+                        ));
+                }
+                
+                
+                $this->view->setVars(array(
+                        'exam'          => $exam,
+                        'quest'         => $quest,
+                        'answer'        => $ans
+                ));
                 $this->view->setLayout('thin-layout');
-
-                $examId = $this->dispatcher->getParam("examId");
-                $questId = $this->dispatcher->getParam("questId");
-                //print $examId . "--" . $questId;
-
-                // show exam instructions page if no quesiton id provided and
-                // user has not started his exam yet. Redirect to exam/view, otherwise
-                // fetch exam instructions for this exam and show
-                // if student, check if he has permissions to view this exam
-                // and the time has been started for this exam
-                // Show instructions page if exam has not been started yet
-                // otherwise, show exam 
         }
 
         /**

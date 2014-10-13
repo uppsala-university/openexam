@@ -1401,7 +1401,7 @@ li a {
 }
  li a:hover {
 	background:#eee;
-        border-bottom: 1px solid #cc0066 !important;
+        /*border-bottom: 1px solid #cc0066 !important;*/
         color:#cc0066 !important;
         text-decoration:none;
 }
@@ -5137,16 +5137,17 @@ text-decoration:none;
 }
 .exam-listing-default-msg {
     margin:13% auto auto;
-    width:365px;
+    width:380px;
     color: #aeaeae; 
     font-family: "BebasNeueRegular","Arial Narrow",Arial,sans-serif; 
     font-size: 16px;
 }
 .exam-search-box {
     height: 13px; 
-    width:195px; 
+    width:215px !important; 
     display: inline !important; 
     border:1px solid #dedede;
+    font-size:11px;
 }
 .label-green {
     background-color: #468847;
