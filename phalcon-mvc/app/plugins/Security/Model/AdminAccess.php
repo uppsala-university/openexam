@@ -34,7 +34,7 @@ class AdminAccess extends ObjectAccess
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
-                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getName(), $user->getPrincipalName()
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
                         ));
                 }
 

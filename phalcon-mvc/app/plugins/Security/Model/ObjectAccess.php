@@ -68,7 +68,7 @@ abstract class ObjectAccess extends Plugin
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
-                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getName(), $user->getPrincipalName()
+                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getResourceName(), $user->getPrincipalName()
                         ));
                 }
                 return $this->notify($event->getType(), $model, $user);
@@ -84,7 +84,7 @@ abstract class ObjectAccess extends Plugin
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
-                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getName(), $user->getPrincipalName()
+                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getResourceName(), $user->getPrincipalName()
                         ));
                 }
                 return $this->notify($event->getType(), $model, $user);
@@ -100,7 +100,7 @@ abstract class ObjectAccess extends Plugin
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
-                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getName(), $user->getPrincipalName()
+                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getResourceName(), $user->getPrincipalName()
                         ));
                 }
                 return $this->notify($event->getType(), $model, $user);
@@ -116,7 +116,7 @@ abstract class ObjectAccess extends Plugin
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
-                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getName(), $user->getPrincipalName()
+                                "%s(event=%s, model=%s, user=%s)", __METHOD__, $event->getType(), $model->getResourceName(), $user->getPrincipalName()
                         ));
                 }
                 return $this->notify($event->getType(), $model, $user);

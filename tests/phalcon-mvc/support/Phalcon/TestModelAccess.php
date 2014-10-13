@@ -116,7 +116,7 @@ class TestModelAccess extends TestModelBasic
                 // 
                 // Set test values from sample data:
                 // 
-                $this->values = $this->sample[$object->getName()];
+                $this->values = $this->sample[$object->getResourceName()];
                 $this->object->assign($this->values);
         }
 
@@ -175,7 +175,7 @@ class TestModelAccess extends TestModelBasic
          */
         private function createModelObject()
         {
-                self::info("object=%s", $this->object->getName());
+                self::info("object=%s", $this->object->getResourceName());
 
                 $role = $this->user->getPrimaryRole();
                 $this->user->setPrimaryRole(null);
@@ -192,7 +192,7 @@ class TestModelAccess extends TestModelBasic
          */
         private function deleteModelObject()
         {
-                self::info("object=%s", $this->object->getName());
+                self::info("object=%s", $this->object->getResourceName());
 
                 $role = $this->user->getPrimaryRole();
                 $this->user->setPrimaryRole(null);
@@ -223,7 +223,7 @@ class TestModelAccess extends TestModelBasic
                 foreach ($roles as $role => $object) {
                         $object->setTransaction($transaction);
 
-                        if ($this->object->getName() == $role) {
+                        if ($this->object->getResourceName() == $role) {
                                 $this->object->user = $user;
                         }
                         if ($role == Roles::CREATOR) {
@@ -238,7 +238,7 @@ class TestModelAccess extends TestModelBasic
                                 }
                         }
 
-                        self::info("Set user %s on %s (%s)", $user, $object->getName(), get_class($object));
+                        self::info("Set user %s on %s (%s)", $user, $object->getResourceName(), get_class($object));
                 }
 
                 $transaction->commit();
@@ -247,7 +247,7 @@ class TestModelAccess extends TestModelBasic
                 foreach ($roles as $role => $object) {
                         $class = get_class($object);
                         $model = $class::findFirstById($object->id);
-                        self::info("Verifying user %s on %s (%s)", $user, $model->getName(), get_class($model));
+                        self::info("Verifying user %s on %s (%s)", $user, $model->getResourceName(), get_class($model));
                         self::assertEquals($object->dump(), $model->dump());
                 }
         }
@@ -263,7 +263,7 @@ class TestModelAccess extends TestModelBasic
          */
         public function testModelAccess()
         {
-                self::info("name=%s", $this->object->getName());
+                self::info("name=%s", $this->object->getResourceName());
 
                 // 
                 // Use sample exam:
@@ -397,7 +397,7 @@ class TestModelAccess extends TestModelBasic
                 self::info("role=%s, user=%s", $role, $this->user->getPrincipalName());
 
                 foreach ($this->access[$role] as $resource => $actions) {
-                        if ($resource == $this->object->getName()) {
+                        if ($resource == $this->object->getResourceName()) {
                                 $this->createModelObject();
                                 foreach ($actions as $action => $permit) {
                                         $this->checkModelAction($action, $permit, $error, $pass);
@@ -464,7 +464,7 @@ class TestModelAccess extends TestModelBasic
          */
         private function checkModelCreate($permit, $error, $pass)
         {
-                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getResourceName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 // 
                 // For read, update and delete to be successful tested, its 
@@ -487,7 +487,7 @@ class TestModelAccess extends TestModelBasic
                 } elseif ($pass == false) {
                         throw new LocalException("Action not failing as expected");
                 } else {
-                        self::success("Created object %s(id=%d)", $this->object->getName(), $this->object->new_id);
+                        self::success("Created object %s(id=%d)", $this->object->getResourceName(), $this->object->new_id);
                 }
         }
 
@@ -502,7 +502,7 @@ class TestModelAccess extends TestModelBasic
          */
         private function checkModelRead($permit, $error, $pass)
         {
-                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getResourceName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 if ($this->object->id == 0) {
                         self::warn("Object id == 0 (skipped)");
@@ -519,7 +519,7 @@ class TestModelAccess extends TestModelBasic
                 } elseif ($pass == false) {
                         throw new LocalException("Action not failing as expected");
                 } else {
-                        self::success("Read object %s(id=%d)", $this->object->getName(), $this->object->id);
+                        self::success("Read object %s(id=%d)", $this->object->getResourceName(), $this->object->id);
                 }
         }
 
@@ -534,7 +534,7 @@ class TestModelAccess extends TestModelBasic
          */
         private function checkModelUpdate($permit, $error, $pass)
         {
-                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getResourceName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 if ($this->object->id == 0) {
                         self::warn("Object id == 0 (skipped)");
@@ -548,7 +548,7 @@ class TestModelAccess extends TestModelBasic
                 } elseif ($pass == false) {
                         throw new LocalException("Action not failing as expected");
                 } else {
-                        self::success("Updated object %s(id=%d)", $this->object->getName(), $this->object->id);
+                        self::success("Updated object %s(id=%d)", $this->object->getResourceName(), $this->object->id);
                 }
         }
 
@@ -563,7 +563,7 @@ class TestModelAccess extends TestModelBasic
          */
         private function checkModelDelete($permit, $error, $pass)
         {
-                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
+                self::info("model=%s, user=%s, role=%s, permit=%s, error=%s, pass=%s", $this->object->getResourceName(), $this->user->getPrincipalName(), $this->user->getPrimaryRole(), $permit ? "yes" : "no", $error, $pass ? "yes" : "no");
 
                 if ($this->object->id == 0) {
                         self::warn("Object id == 0 (skipped)");
@@ -585,7 +585,7 @@ class TestModelAccess extends TestModelBasic
                 } elseif ($pass == false) {
                         throw new LocalException("Action not failing as expected");
                 } else {
-                        self::success("Deleted object %s(id=%d)", $this->object->getName(), $this->object->new_id);
+                        self::success("Deleted object %s(id=%d)", $this->object->getResourceName(), $this->object->new_id);
                 }
         }
 

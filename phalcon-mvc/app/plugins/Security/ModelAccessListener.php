@@ -70,7 +70,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
         public function checkAccess($event, $model, $action)
         {
                 $type = $event->getType();
-                $name = $model->getName();
+                $name = $model->getResourceName();
                 $addr = $this->request->getClientAddress();
 
                 if ($this->logger->debug) {

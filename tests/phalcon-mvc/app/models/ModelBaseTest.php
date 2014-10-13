@@ -39,13 +39,13 @@ class ModelBaseTest extends TestCase
         }
 
         /**
-         * @covers OpenExam\Models\ModelBase::getName
+         * @covers OpenExam\Models\ModelBase::getResourceName
          * @group model
          */
-        public function testGetName()
+        public function testGetResourceName()
         {
                 $expect = 'examplemodel';
-                $actual = $this->object->getName();
+                $actual = $this->object->getResourceName();
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }

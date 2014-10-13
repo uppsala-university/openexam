@@ -21,7 +21,7 @@ class ModelBase extends Model
          * Get model resource name.
          * @return string
          */
-        public function getName()
+        public function getResourceName()
         {
                 return strtolower(substr(strrchr(get_class($this), "\\"), 1));
         }
