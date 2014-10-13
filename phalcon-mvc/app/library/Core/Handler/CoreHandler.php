@@ -13,9 +13,9 @@
 
 namespace OpenExam\Library\Core\Handler;
 
+use OpenExam\Library\Security\User;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\Model;
-use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Mvc\User\Component;
@@ -67,10 +67,13 @@ class CoreHandler extends Component
          * 
          * @param Model[] $models The input models.
          * @param string $action The action to perform.
+         * @param array $params Optional parameters for read action.
+         * 
          * @return mixed 
          * @throws Exception
+         * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
          */
-        public function action($models, $action)
+        public function action($models, $action, $params = array())
         {
                 try {
                         $result = array();
@@ -95,7 +98,7 @@ class CoreHandler extends Component
                                                 $result[] = $this->create($model);
                                                 break;
                                         case ObjectAccess::READ:
-                                                $result[] = $this->read($model);
+                                                $result[] = $this->read($model, $params);
                                                 break;
                                         case ObjectAccess::UPDATE:
                                                 if (isset($transaction)) {
@@ -148,28 +151,52 @@ class CoreHandler extends Component
         /**
          * Query model.
          * 
-         * The behavour depends on whether the model ID is set or not. 
+         * The behavour depends on whether the model ID is set or not. If the 
+         * ID != 0, then the single object having that ID is returned. If the
+         * ID == 0, then a result set is returned where the model argument is
+         * used for defining a simple where query.
          * 
-         * If ID is set and != 0, then the associated object is returned from 
-         * the database. 
-         * 
-         * If ID is unset, then the model properties is treated as query
-         * parameters. The query is a simple natural join on defined values
-         * in the model object.
+         * If called with primary role set and if the argument is an exam or 
+         * question model object, then the returned objects is restricted to
+         * the calling user and role.
          * 
          * @param Model $model
-         * @return Resultset
+         * @return array|Model
          * @throws Exception
          */
-        public function read($model)
+        public function read($model, $params = array())
         {
                 if ($model->id != 0) {
                         $class = get_class($model);
                         $result = $class::findFirstById($model->id);
                         return $result;
                 } else {
-                        $criteria = $model->query()->fromInput($this->getDI(), get_class($model), $model->dump());
-                        return $criteria->execute()->toArray();
+                        $class = get_class($model);
+
+                        // 
+                        // Create conditions from model values:
+                        // 
+                        foreach ($model->dump() as $key => $val) {
+                                if (isset($val)) {
+                                        if (!isset($params['conditions'])) {
+                                                $params['conditions'] = array();
+                                        }
+                                        if (is_string($val)) {
+                                                $params['conditions'][] = array(
+                                                        "$class.$key LIKE :$key:",
+                                                        array($key => "%$val%"),
+                                                        array($ley => \PDO::PARAM_STR)
+                                                );
+                                        } else {
+                                                $params['conditions'][] = array(
+                                                        "$class.$key = :$key:",
+                                                        array($key => "$val")
+                                                );
+                                        }
+                                }
+                        }
+
+                        return $class::find($params)->toArray();
                 }
         }
 

@@ -26,6 +26,24 @@ class ModelBase extends Model
                 return strtolower(substr(strrchr(get_class($this), "\\"), 1));
         }
 
+        /**
+         * Get relation map.
+         * @param string $resource The resource name.
+         * @param string $leftcol The left hand column.
+         * @param string $rightcol The right hand column.
+         * @return string
+         */
+        protected static function getRelation($resource, $leftcol = null, $rightcol = null)
+        {
+                if (isset($rightcol)) {
+                        return __NAMESPACE__ . '\\' . ucfirst($resource) . '.' . $leftcol . '=' . $rightcol;
+                } elseif (isset($leftcol)) {
+                        return __NAMESPACE__ . '\\' . ucfirst($resource) . '.' . $leftcol;
+                } else {
+                        return __NAMESPACE__ . '\\' . ucfirst($resource);
+                }
+        }
+
         protected function afterFetch()
         {
                 $modelsManager = $this->getModelsManager();

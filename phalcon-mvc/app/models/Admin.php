@@ -13,7 +13,7 @@ class Admin extends ModelBase
 {
 
         /**
-         * This object ID.
+         * The object ID.
          * @var integer
          */
         public $id;
@@ -22,11 +22,6 @@ class Admin extends ModelBase
          * @var string
          */
         public $user;
-
-        protected function initialize()
-        {
-                parent::initialize();
-        }
 
         /**
          * Return source table name.

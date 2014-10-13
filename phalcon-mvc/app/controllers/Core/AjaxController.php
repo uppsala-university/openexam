@@ -19,7 +19,7 @@ use OpenExam\Library\Core\Handler\Exception;
 
 /**
  * AJAX controller for core service.
- *
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class AjaxController extends ServiceController
@@ -34,13 +34,10 @@ class AjaxController extends ServiceController
          */
         const FAILURE = 'failed';
 
-        public function initialize()
-        {
-                parent::initialize();
-        }
-
         public function apiAction()
         {
+                // TODO: use view for displaying API docs
+
                 $content = array(
                         "usage"   => array("/core/ajax/{role}/{model}/{action}" => "POST"),
                         "example" => array("/core/ajax/student/exam/read")

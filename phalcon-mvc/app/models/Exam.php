@@ -3,7 +3,13 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Core\Exam\State;
+use OpenExam\Library\Security\Roles;
+use Phalcon\DI as PhalconDI;
+use Phalcon\DiInterface;
+use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
+use Phalcon\Mvc\Model\Criteria;
+use Phalcon\Mvc\Model\Query\Builder;
 
 /**
  * The exam model.
@@ -214,4 +220,136 @@ class Exam extends ModelBase
                 return new State($this);
         }
 
+        /**
+         * Specialization of the query() function for the exam model.
+         * 
+         * This function provides role based access to the exam model. If the 
+         * primary role is set, then the returned criteria is prepared with
+         * inner joins against resp. role table.
+         * 
+         * The critera should ensure that only exams related to caller and
+         * requested role is returned.
+         * 
+         * @param DiInterface $dependencyInjector
+         * @return Criteria  
+         */
+        public static function query($dependencyInjector = null)
+        {
+                if (!isset($dependencyInjector)) {
+                        $dependencyInjector = PhalconDI::getDefault();
+                }
+
+                $user = $dependencyInjector->get('user');
+                $role = $user->getPrimaryRole();
+
+                if ($user->getUser() == null) {
+                        return parent::query($dependencyInjector);
+                }
+                if ($user->hasPrimaryRole() == false || Roles::isGlobal($role)) {
+                        return parent::query($dependencyInjector);
+                }
+
+                $criteria = parent::query($dependencyInjector);
+                if ($role == Roles::CORRECTOR) {
+                        $criteria
+                            ->join(self::getRelation('question'), self::getRelation('exam', 'id', 'exam_id'))
+                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id'))
+                            ->where(sprintf("user = '%s'", $user->getPrincipalName()));
+                } elseif ($role == Roles::CREATOR) {
+                        $criteria->where(sprintf("creator = '%s'", $user->getPrincipalName()));
+                } else {
+                        $criteria
+                            ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id'))
+                            ->where(sprintf("user = '%s'", $user->getPrincipalName()));
+                }
+
+                return $criteria;
+        }
+
+        /**
+         * Specialization of find() for exam model.
+         * 
+         * This function provides checked access for queries against the exam
+         * model. If primary role is unset, user is not authenticated or if
+         * accessed using a global role (teacher, admin, trsuted or custom),
+         * then the behavour is the same as calling parent::find().
+         * 
+         * @param array $parameters The query parameters.
+         * @return mixed
+         * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
+         * @uses Model::find()
+         */
+        public static function find($parameters = null)
+        {
+                $dependencyInjector = PhalconDI::getDefault();
+
+                $user = $dependencyInjector->get('user');
+                $role = $user->getPrimaryRole();
+
+                // 
+                // Don't accept access to other models:
+                // 
+                if (isset($parameters['models'])) {
+                        unset($parameters['models']);
+                }
+
+                // 
+                // Group by exam by default:
+                // 
+                if (!isset($parameters['group'])) {
+                        $parameters['group'] = self::getRelation('exam') . '.id';
+                }
+
+                // 
+                // Use parent find() if user is not authenticated:
+                // 
+                if ($user->getUser() == null) {
+                        return parent::find($parameters);
+                }
+
+                // 
+                // Use parent find() if primary role is unset or if accessed 
+                // using global role (these are not tied to any exam).
+                // 
+                if ($user->hasPrimaryRole() == false || Roles::isGlobal($role)) {
+                        return parent::find($parameters);
+                }
+
+                // 
+                // Create the builder using supplied options (conditions,
+                // order, limit, ...):
+                // 
+                $builder = new Builder($parameters);
+
+                if ($role == Roles::CORRECTOR) {
+                        $builder
+                            ->from(self::getRelation('exam'))
+                            ->join(self::getRelation('question'), self::getRelation('exam', 'id', 'exam_id'))
+                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id'))
+                            ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
+                } elseif ($role == Roles::CREATOR) {
+                        $builder
+                            ->from(self::getRelation('exam'))
+                            ->andWhere(sprintf("creator = '%s'", $user->getPrincipalName()));
+                } else {
+                        $builder
+                            ->from(self::getRelation('exam'))
+                            ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id'))
+                            ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
+                }
+                
+                return $builder->getQuery()->execute();
+        }
+
+        /**
+         * Get first exam model from query result.
+         * @param array $parameters The query parameters.
+         * @return Model
+         * @uses Model::findFirst()
+         */
+        public static function findFirst($parameters = null)
+        {
+                $parameters['limit'] = 1;
+                return self::find($parameters)[0];
+        }
 }
