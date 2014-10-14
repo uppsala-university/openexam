@@ -199,12 +199,25 @@ class CoreHandler extends Component
                         }
 
                         // 
-                        // Using filter() triggers afterFetch. This is required 
-                        // both for conversion and ACL to apply.
+                        // Get matching models, possibly taking roles into account
+                        // and collect requested model data excluding any relations
+                        // with other models.
                         // 
-                        return $class::find($params)->filter(function($m) {
-                                    return $m;
-                            });
+
+                        $models = $class::find($params);
+                        $result = array();
+
+                        foreach ($models as $m) {
+                                $dump = array();
+                                foreach ($m->dump() as $key => $val) {
+                                        if (!is_object($val)) {
+                                                $dump[$key] = $val;
+                                        }
+                                }
+                                $result[] = $dump;
+                        }
+
+                        return $result;
                 }
         }
 
