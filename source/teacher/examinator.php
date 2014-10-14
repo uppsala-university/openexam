@@ -246,7 +246,17 @@ class ExaminatorPage extends TeacherPage
         private function saveEditSchedule()
         {
                 $handler = new Examinator($this->param->exam);
-                $handler->setSchedule(strtotime($this->param->stime), strtotime($this->param->etime));
+
+                if (($stime = strtotime($this->param->stime)) == 0) {
+                        $stime = strtotime(str_replace('/', '-', $this->param->stime));
+                }
+                if (($etime = strtotime($this->param->etime)) == 0) {
+                        $etime = strtotime(str_replace('/', '-', $this->param->etime));
+                }
+                if ($stime == 0 || $etime == 0) {
+                        $this->fatal(_("Failed convert timestamps"), _("Could not convert input timestamp. Please try another locale (e.g. Swedish in the language menu) that is known to be working."));
+                }
+                $handler->setSchedule($stime, $etime);
 
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
         }

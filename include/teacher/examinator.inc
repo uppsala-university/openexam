@@ -121,6 +121,9 @@ class Examinator
         //
         public function setSchedule($stime, $etime)
         {
+                if ($stime == 0 || $etime == 0) {
+                        return;         // refuse
+                }
                 $sql = sprintf("UPDATE exams SET starttime = '%s', endtime = '%s' WHERE id = %d", date('Y-m-d H:i:s', $stime), date('Y-m-d H:i:s', $etime), $this->exam);
 
                 $res = Database::getConnection()->query($sql);
