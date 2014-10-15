@@ -12,8 +12,13 @@
  * 3. http://code.google.com/p/php-wsdl-generator/downloads
  * 
  * -----------------------
- * Edited to support namespace in complex types, xsd:integer and short 
- * class name as service port.
+ * Some modifications done:
+ * 
+ *   o) Added support for namespace in complex types.
+ *   o) Added support for xsd:integer (big int)
+ *   o) Use short class name as service port. 
+ *   o) Include argument and return type in methods wsdl:documentation.
+ *   o) Added support for arrays as parameter and return type.
  * 
  * Anders Lövgren, 2014-10-14
  */
@@ -96,17 +101,17 @@ class WSDL_Gen
                         $doc = $method->getDocComment();
 
                         // extract input params
-                        if (preg_match_all('|@param\s+(?:object\s+)?(.*)?\s+\$(\w+)\s*([\w\. ]*)|', $doc, $matches, PREG_SET_ORDER)) {
+                        if (preg_match_all('|@param\s+(?:object\s+)?(.*?)?(\[\])*\s+\$(\w+)\s*([\w\. ]*)|', $doc, $matches, PREG_SET_ORDER)) {
                                 foreach ($matches as $match) {
                                         $this->mytypes[$match[1]] = 1;
-                                        $this->operations[$method->getName()]['input'][] = array('name' => $match[2], 'type' => $match[1], 'docs' => $match[3]);
+                                        $this->operations[$method->getName()]['input'][] = array('name' => $match[3], 'type' => $match[1], 'repeat' => $match[2] == '[]' ? 'unbounded' : '1', 'docs' => $match[4]);
                                 }
                         }
 
                         // extract return types
-                        if (preg_match('|@return\s+([^\s]+)\s*(.*)\n|', $doc, $match)) {
+                        if (preg_match('|@return\s+([^\s(\[\])]+)?(\[\])*\s*(.*)\n|', $doc, $match)) {
                                 $this->mytypes[$match[1]] = 1;
-                                $this->operations[$method->getName()]['output'][] = array('name' => 'return', 'type' => $match[1], 'docs' => $match[2]);
+                                $this->operations[$method->getName()]['output'][] = array('name' => 'return', 'type' => $match[1], 'repeat' => $match[2] == '[]' ? 'unbounded' : '1', 'docs' => $match[3]);
                         }
 
                         // extract documentation
@@ -349,6 +354,7 @@ class WSDL_Gen
                                         $pare->setAttribute('name', $param['name']);
                                         $prefix = $root->lookupPrefix($this->types[$param['type']]['ns']);
                                         $pare->setAttribute('type', "$prefix:" . $this->types[$param['type']]['name']);
+                                        $pare->setAttribute('maxOccurs', $param['repeat']);
                                         $ctseq->appendChild($pare);
                                 }
                                 $el->appendChild($ct);
