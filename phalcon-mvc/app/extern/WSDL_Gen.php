@@ -99,14 +99,14 @@ class WSDL_Gen
                         if (preg_match_all('|@param\s+(?:object\s+)?(.*)?\s+\$(\w+)\s*([\w\. ]*)|', $doc, $matches, PREG_SET_ORDER)) {
                                 foreach ($matches as $match) {
                                         $this->mytypes[$match[1]] = 1;
-                                        $this->operations[$method->getName()]['input'][] = array('name' => $match[2], 'type' => $match[1]);
+                                        $this->operations[$method->getName()]['input'][] = array('name' => $match[2], 'type' => $match[1], 'docs' => $match[3]);
                                 }
                         }
 
                         // extract return types
                         if (preg_match('|@return\s+([^\s]+)\s*(.*)\n|', $doc, $match)) {
                                 $this->mytypes[$match[1]] = 1;
-                                $this->operations[$method->getName()]['output'][] = array('name' => 'return', 'type' => $match[1]);
+                                $this->operations[$method->getName()]['output'][] = array('name' => 'return', 'type' => $match[1], 'docs' => $match[2]);
                         }
 
                         // extract documentation
@@ -214,7 +214,14 @@ class WSDL_Gen
                         $op = $doc->createElementNS(self::SCHEMA_WSDL, 'operation');
                         $op->setAttribute('name', $name);
                         $opDocu = $doc->createElementNS(self::SCHEMA_WSDL, 'documentation');
-                        $docuText = $doc->createTextNode($params['documentation']);
+                        $documentation = "\n\t" . $params['documentation'];
+                        foreach ($params['input'] as $method) {
+                                $documentation .= "\n\t@param " . $this->types[$method['type']]['name'] . " " . $method['docs'] . " [name=" . $method['name'] . "]";
+                        }
+                        foreach ($params['output'] as $method) {
+                                $documentation .= "\n\t@return " . $this->types[$method['type']]['name'] . " " . $method['docs'];
+                        }
+                        $docuText = $doc->createTextNode($documentation);
                         $opDocu->appendChild($docuText);
                         $op->appendChild($opDocu);
                         foreach (array('input' => '', 'output' => 'Response') as $type => $postfix) {
