@@ -105,13 +105,10 @@ class RestRequest
 class RestController extends ServiceController
 {
 
-        public function initialize()
-        {
-                parent::initialize();
-        }
-
         public function apiAction()
         {
+                // TODO: use view for displaying API docs
+                
                 $content = array(
                         "usage"   => array(
                                 "/core/rest/{role}/{target}"        => array("GET", "POST"),
