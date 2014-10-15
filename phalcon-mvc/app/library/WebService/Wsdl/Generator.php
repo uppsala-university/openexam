@@ -13,7 +13,7 @@
 
 namespace OpenExam\Library\WebService\Wsdl;
 
-require_once (__DIR__ . DIRECTORY_SEPARATOR . 'WSDL_Gen.php');
+require_once (EXTERN_DIR . 'WSDL_Gen.php');
 
 /**
  * SOAP service description (WSDL) generator.
