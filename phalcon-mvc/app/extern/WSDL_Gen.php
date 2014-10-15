@@ -96,7 +96,7 @@ class WSDL_Gen
                         $doc = $method->getDocComment();
 
                         // extract input params
-                        if (preg_match_all('|@param\s+(?:object\s+)?(.*)?\s+\$(\w+)|', $doc, $matches, PREG_SET_ORDER)) {
+                        if (preg_match_all('|@param\s+(?:object\s+)?(.*)?\s+\$(\w+)\s*([\w\. ]*)|', $doc, $matches, PREG_SET_ORDER)) {
                                 foreach ($matches as $match) {
                                         $this->mytypes[$match[1]] = 1;
                                         $this->operations[$method->getName()]['input'][] = array('name' => $match[2], 'type' => $match[1]);
@@ -104,7 +104,7 @@ class WSDL_Gen
                         }
 
                         // extract return types
-                        if (preg_match('|@return\s+(?:object\s+)?(\w+)?\s?.*|', $doc, $match)) {
+                        if (preg_match('|@return\s+([^\s]+)\s*(.*)\n|', $doc, $match)) {
                                 $this->mytypes[$match[1]] = 1;
                                 $this->operations[$method->getName()]['output'][] = array('name' => 'return', 'type' => $match[1]);
                         }
@@ -124,7 +124,7 @@ class WSDL_Gen
                                 $line = trim(substr($line, $lineStart + 1));
                                 if (!isset($line[0]) || $line[0] != "@") {
                                         if (strlen($line) > 0) {
-                                                $description .= "\n$line";
+                                                $description .= trim($line);
                                         }
                                 }
                         }
