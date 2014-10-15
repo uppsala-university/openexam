@@ -18,21 +18,14 @@
 						width: "50%",
 						position:  ['center',20],
 						modal: true,
-/*							buttons: {
+/*						buttons: {
 							"Save": function() {
-										addQuestPartTab();
 							},
-							"I am done, save this question": function() {
-										
-										// add question to qsJson and in database
-										saveQuestionToExam(qId);
-										
-										// close popup window
-										$(this).dialog('destroy');
-								},
-								Cancel: function() {
-										$(this).dialog('destroy');
-								}
+							"btn ": function() {
+							},
+							Cancel: function() {
+								$(this).dialog('destroy');
+							}
 						},*/
 						close: function() {
 							$(this).dialog('destroy');

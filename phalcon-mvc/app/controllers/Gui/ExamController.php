@@ -125,6 +125,9 @@ class ExamController extends GuiController
 	 */
         public function createAction()
         {
+                
+                $loggedIn = $this->session->get('authenticated');
+                
                 // Insert a new record in exam table whenever someone tries to create a new exam
                 if (!$this->session->has('draft-exam-id')) {
                         
@@ -133,7 +136,7 @@ class ExamController extends GuiController
                         $examSaved = $exam->save( array(
                                 'name'    => ' ',
                                 'descr'   => ' ',
-                                'creator' => 'ahssh488',
+                                'creator' => $loggedIn['user'],
                                 'orgunit' => 'MedfarmDoIT',
                                 'grades'  => ' '
                         ));

@@ -226,7 +226,7 @@ $opButtonsHtml = array(
                                                         <div style="width:75%; float:left"> <i class="fa fa-graduation-cap"></i> 
                                                                 <a href="#"><?=$exam->name?></a>
                                                                 <div style="color: grey; font-size: 9px;">
-                                                                        <?=substr(strip_tags($exam->descr), 0, 145)." ...";?>
+                                                                        <?=substr(strip_tags($exam->descr), 0, 120)." ...";?>
                                                                 </div>
                                                         </div>
                                                         <div style="float:right">
@@ -278,7 +278,11 @@ $opButtonsHtml = array(
                                 </div>
                                 <?php else:?>
                                 <div class="exam-listing-default-msg"> 
-                                	<i class="fa fa-hand-o-right"></i> Currently you don't have any exams as <?=$role?>.
+                                	<?php if($mainRole == 'student'):?>
+                                        <i class="fa fa-hand-o-right"></i> Currently you don't have any <?=$role?>.
+                                        <?php else:?>
+                                        <i class="fa fa-hand-o-right"></i> Currently you don't have any exams as <?=$role?>.
+                                        <?php endif;?>
                                 </div>
                                 <?php endif;?>
                         </article>

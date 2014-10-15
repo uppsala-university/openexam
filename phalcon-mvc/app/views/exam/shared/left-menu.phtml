@@ -4,105 +4,82 @@
 	$userRoles = array('contributor' => 'Contributors', 'decoder' => 'Decoders', 'invigilators' => 'Invigilators');
 	$i = 1;
 ?>
+
 <div id="leftCol">
         <div class="treeMenuContainer componentContainer">
                 <ul class="menuLevel0">
-	                	<?php foreach($userRoles as $model => $role):?>
-                        <li>
-                        	<a href="#" class="prevent" data-model="<?=$model?>">
-								<?=$oBullet?> &nbsp;<?=$role?>
-								<?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "id" => "uu-id".($i++))); ?>
-                            </a>
-                            
-                            <?php $roleData =  $exam->$role;?>
-                            <ul class="menuLevel1">
-                                    <li style="display:none">
-											<?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> "")); ?>
-                                            <a href="#" class="prevent"><span class="left-col-user" data-user=""></span></a>                                            
-                                    </li>
-                                    <li style=" <?=(count($roleData) ? 'display:none' : '')?>" class="left-col-def-msg">
-                                    		<a href="#" class="prevent">&nbsp;<span class="left-col-def-msg">No user has been added</span></a>
-                                    </li>  
-
-                                    <?php foreach( $roleData as $data ):?>
-                                    <li>
-											<?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> $data->id)); ?>
-                                            <a href="#" class="prevent">
-                                                <span class="left-col-user" data-user="<?=$data->user?>"><?=$data->user?></span>
-                                            </a>                                            
-                                    </li>
-                                    <?php endforeach?>
-                            </ul>
+                        <?php foreach($userRoles as $model => $role):?>
+                        <li> <a href="#" class="prevent" data-model="<?=$model?>">
+                                <?=$oBullet?>
+                                &nbsp;
+                                <?=$role?>
+                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "id" => "uu-id".($i++))); ?>
+                                </a>
+                                <?php $roleData =  $exam->$role;?>
+                                <ul class="menuLevel1">
+                                        <li style="display:none">
+                                                <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> "")); ?>
+                                                <a href="#" class="prevent"><span class="left-col-user" data-user=""></span></a> </li>
+                                        <li style=" <?=(count($roleData) ? 'display:none' : '')?>" class="left-col-def-msg"> <a href="#" class="prevent">&nbsp;<span class="left-col-def-msg">No user has been added</span></a> </li>
+                                        <?php foreach( $roleData as $data ):?>
+                                        <li>
+                                                <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> $data->id)); ?>
+                                                <a href="#" class="prevent"> <span class="left-col-user" data-user="<?=$data->user?>">
+                                                <?=$data->user?>
+                                                </span> </a> </li>
+                                        <?php endforeach?>
+                                </ul>
                         </li>
-						<?php endforeach;?>  
-                          
-                        <li>
-                        	<a href="#" class="prevent">
-								<?=$oBullet?> &nbsp;Questions &nbsp;
-								<?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "add_new_qs")); ?>
-                            </a>
-                            <?php $topics = $exam->getTopics();?>
-                            <ul class="menuLevel1 sortable-q-topic">
-                                    	<li>
-                                            <a href="#" class="prevent add-q-topic" style="padding-bottom: 15px">
-												<span style="color:#99001d; font-size:9px;">
-                                                	 <?=Phalcon\Tag::image(array("img/plus-circle.png", "height" => "10"))?> Add a question section
-                                                </span>
-                                            </a>
-										</li>
-                            			<?php foreach($topics as $key => $topic):?>  
-                                        <?php $topicQs = $topic->getQuestions(array("order" => "name"));?>
-                                    	<li>
-                                            <a href="#" class="topic-line prevent" style=" <?=(count($topics) == 1 ? 'display:none': '')?>">
-                                                <div>
-                                                    <?=$oBullet?> &nbsp;
-                                                    <span style="color:#4A7DB1" class="topic-name" data-id="<?=$topic->id?>"><?=$topic->name?></span> 
-                                                    <i class="fa fa-gear topic-settings" data-randomize="<?=$topic->randomize?>"></i> 
-                                                    <i class="fa fa-trash topic-del"></i>
-                                                </div>
-                                                <div class="section-default-msg" style=" <?=(count($topicQs)?'display:none':'')?>">    
-                                                        <span style="padding-top: 0px; color: grey; ">
-                                                            <i class="fa fa-arrows"></i> Drag and drop questions here
-                                                        </span>
-                                                </div>
-                                            </a>
-                                            
-                                            <ul class="menuLevel2 sortable-qs" topic-id="<?=$topic->id?>">
-                                                    <li style="display:none">
-                                                        <span class="q" q-no=""></span> 
-                                                        <span class="q-txt"></span>
-                                                    </li>
-                                                    <?php foreach($topicQs as $key => $question):
-                                                        preg_match('/.*"q_text":"(.*)","q_points"/im', $question->quest, $qTxt);
-                                                    ?>  
-                                                    <li>
-                                                        <span class="q" q-no="<?=$question->name?>">Q<?=$question->name?>:</span> 
-                                                        <span class="q-txt"><?=substr(strip_tags($qTxt[1]), 0, 75)?></span>
-                                                    </li>
-                                                    <?php endforeach;?>	
-                                            </ul>
+                        <?php endforeach;?>
+                        <li> <a href="#" class="prevent">
+                                <?=$oBullet?>
+                                &nbsp;Questions &nbsp;
+                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "add_new_qs")); ?>
+                                </a>
+                                <?php $topics = $exam->getTopics();?>
+                                <ul class="menuLevel1 sortable-q-topic">
+                                        <li> 
+                                        	<a href="#" class="prevent add-q-topic" style="padding-bottom: 15px"> <span style="color:#99001d; font-size:9px;">
+							<?=Phalcon\Tag::image(array("img/plus-circle.png", "height" => "10"))?>
+                                                        Add a question section </span> 
+  	                                        </a> 
                                         </li>
-										<?php endforeach; ?>
-                            </ul>
+                                        <?php foreach($topics as $key => $topic):?>
+                                        <?php $topicQs = $topic->getQuestions(array("order" => "name"));?>
+                                        <li> <a href="#" class="topic-line prevent" style=" <?=(count($topics) == 1 ? 'display:none': '')?>">
+                                                <div>
+                                                        <?=$oBullet?>
+                                                        &nbsp; <span style="color:#4A7DB1" class="topic-name" data-id="<?=$topic->id?>">
+                                                        <?=$topic->name?>
+                                                        </span> <i class="fa fa-gear topic-settings" data-randomize="<?=$topic->randomize?>"></i> <i class="fa fa-trash topic-del"></i> </div>
+                                                <div class="section-default-msg" style=" <?=(count($topicQs)?'display:none':'')?>"> <span style="padding-top: 0px; color: grey; "> <i class="fa fa-arrows"></i> Drag and drop questions here </span> </div>
+                                                </a>
+                                                <ul class="menuLevel2 sortable-qs" topic-id="<?=$topic->id?>">
+                                                        <?php foreach($topicQs as $key => $question):?>
+                                                        <?php $questArr = json_decode($question->quest, true);?>
+                                                        <li> 
+                                                        	<span class="q" q-no="<?=$question->name?>">Q<?=$question->name?>:</span> 
+                                                                <span class="q-txt"><?=substr(strip_tags($questArr['a']['q_text']), 0, 75)?></span> 
+                                                        </li>
+                                                        <?php endforeach;?>
+							<li style="display:none"> <span class="q" q-no=""></span> <span class="q-txt"></span> </li>                                                </ul>
+                                        </li>
+                                        <?php endforeach; ?>
+                                </ul>
                         </li>
                 </ul>
         </div>
 </div>
-<!--------------- Hidden Divs ----------------->     
+<!--------------- Hidden Divs -----------------> 
 
 <!-- Question topic settings -->
 <div style="display:none" id="question-topic-settings-box">
-        <div style="font-size:8px">
-        	If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. This value is used for duggor, leave it as zero for ordinary examinations (use all questions).
-        </div>
-        <div style="padding-top:10px">
-            Randomize: <input type="text" size="5" value="0" style="border:1px solid #CCCCCC" class="topic-rand-val">
-            <input class="topic-settings-save" type="submit" value="Save" data-id="">
+        <div style="font-size:8px"> If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. This value is used for duggor, leave it as zero for ordinary examinations (use all questions). </div>
+        <div style="padding-top:10px"> Randomize:
+                <input type="text" size="5" value="0" style="border:1px solid #CCCCCC" class="topic-rand-val">
+                <input class="topic-settings-save" type="submit" value="Save" data-id="">
         </div>
 </div>
-
-
-
 <script language="javascript">
 	$(function() {
 		
@@ -138,14 +115,14 @@
 				function(topicData) {
 					
 					// prepare cloned row to add in menu
-					newTopic
-						.find('ul > li:visible').remove().end()
-						.find('.topic-name')
+					newTopic.find('.topic-name')
 							.html(topicData.name)
 							.attr('data-id', topicData.id)
 							.end()
 						.find('.topic-settings').attr('data-randomize', topicData.randomize).end()
 						.find('a').show();
+						
+					newTopic.find('.sortable-qs > li').not(':last').remove().end();
 					
 					
 					// show it in menu now
@@ -248,4 +225,4 @@
 		});
 		
 	});
-</script>
+</script> 

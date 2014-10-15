@@ -15,6 +15,7 @@ namespace OpenExam\Controllers\Utility;
 
 use OpenExam\Controllers\ControllerBase;
 use OpenExam\Library\UploadHandler;
+use OpenExam\Models\Resource;
 
 /**
  * Controller for loading media resources
@@ -30,7 +31,42 @@ class MediaController extends ControllerBase
          */
         public function libraryAction()
         {
+                $loggedIn = $this->session->get('authenticated');
+                
                 // fetch and pass data to view
+                $resources = Resource::find( array(
+                        'user'  => $loggedIn['user'],
+                        'shared'=> Resource::SHARED_GLOBAL,
+                        'order' => 'id desc'
+                    ));
+                
+                ## filter by main resource types show in tabs 
+                // filter images
+                $images = $resources->filter(function($resource){
+                    if ($resource->type == 'image') {
+                            return $resource;
+                    }
+                });
+                // filter videos
+                $videos = $resources->filter(function($resource){
+                    if ($resource->type == 'video') {
+                            return $resource;
+                    }
+                });
+                // filter other files
+                $others = $resources->filter(function($resource){
+                    if (!in_array($resource->type, array('image', 'video'))) {
+                            return $resource;
+                    }
+                });
+
+                // pass data
+                $this->view->setVar('resources', array(
+                        "images" => $images,
+                        "videos" => $videos,
+                        "others" => $others
+                    ));
+                
                 // set rendering level
                 $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         }

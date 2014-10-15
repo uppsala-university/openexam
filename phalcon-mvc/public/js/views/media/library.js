@@ -14,6 +14,7 @@
 		$('#media_types').tabs();
 		
 		var url = baseURL + 'utility/media/upload';
+		
 		$('#fileupload').fileupload({
 			url: url,
 			dataType: 'json',
@@ -21,7 +22,10 @@
 				$('#lib-default-msg').hide();
 				
 				$.each(data.result.files, function (index, file) {
+
 					if(typeof file.url != 'undefined') {
+						
+						// add this image in selected library image area
 						var thumbnail = ((file.type.indexOf('image') < 0) ? baseURL + "img/file-icon.png" : file.url);
 						var newItem = $( "#selected-lib-img >li:first" ).clone()
 						newItem.attr('media-id', '')
@@ -35,6 +39,54 @@
 						
 						$( "#selected-lib-img" ).prepend(newItem);
 						$( "#selected-lib-img" ).sortable();
+						
+						if(confirm("File '"+file.name+"' has been uploaded successfully. \n\r Do you want to save this file in your file library for using it in future as well? "))
+						{
+							var fType = file.type.split('/');
+							// send ajax request to insert this upload in resource table
+							ajax (
+								baseURL + 'core/ajax/contributor/resource/create',
+								{"exam_id":examId, "name":file.name, "path":file.url, "type":fType[0], "subtype":fType[1], "user":user},
+								function (rData) {
+									fType[0] = fType[0]+'s';
+									tabId = ($('#'+fType[0]+'-tab').length) ? '#'+fType[0]+'-tab' : '#other-files-tab'
+									
+									// show this image in library on right side
+									var newItem = $(tabId).find(".recent-uploads").find('.lib-item:hidden').clone();
+									newItem .attr('id', 'lib-item-'+rData.id)
+										.find('.selected-lib-img')
+											.find('img')
+												.attr('src', file.url)
+												.attr('file-path', file.url)
+											.end()	
+										.end()
+										.find('.lib-img')
+											.attr('src', (fType[0] == 'images' ? file.url : baseURL + "img/file-icon.png"))
+											.attr('file-path', file.url)
+										.end()
+										.find('.lib-item-title')
+											.html(file.name)
+										.end()
+										.find('.lib-item-settings > i')
+											.attr('item-title', file.name)
+											.attr('media-id', rData.id)
+										.end()
+										.show();
+									$(tabId).find(".recent-uploads").append(newItem);
+									
+									// update media id of image previously added on left side
+									$('#lib-items-added')
+										.find('.title-box[file-path="'+file.url+'"]')
+										.closest('li')
+										.attr('media-id', 'lib-item-'+rData.id);
+									
+									refreshSettingsTooltips();
+									
+								}
+							);
+						}
+						
+						
 					} else {
 						alert("Unable to upload file '"+ file.name + "': " + file.error)
 					}
@@ -43,8 +95,47 @@
 		}).prop('disabled', !$.support.fileInput)
 			.parent().addClass($.support.fileInput ? undefined : 'disabled');
 			
+
+		// attach settings tooltip on all library items
+		var refreshSettingsTooltips = function() {
+			$(".lib-item-settings > i").each(function(i, tagElement) {
+				
+				var title 	= $(tagElement).attr('item-title');
+				var shared 	= $(tagElement).attr('item-share');
+				var mediaId = $(tagElement).attr('media-id');
+				
+				new Opentip(tagElement,
+						'<div>\
+							<div>Title</div>\
+							<div><input type="text" class="update-lib-item-title" value="'+title+'"></div>\
+							\
+							<br style="clear:both">\
+							\
+							<div>This can be reused </div>\
+							<div>\
+								<select class="update-lib-item-shared" style="width:145px; height:25px">\
+									<option value="exam" '+(shared == 'exam' ? 'selected' :'')+'>only for my exams</option>\
+									<option value="group" '+(shared == 'group' ? 'selected' :'')+'>for all exams in my department</option>\
+									<option value="global" '+(shared == 'global' ? 'selected' :'')+'>for any exam within Uppsala University</option>\
+								</select>\
+							</div>\
+							<br />\
+							<span class="btn btn-success update-lib-item-details" media-id="'+mediaId+'"> Save</span>\
+						</div>',
+						{style: "drops", tipJoint: "top left"});
+			});
 			
-		$('.select-lib-img').click(function() {
+		} 
+		refreshSettingsTooltips();
+			
+		if(libJs == 'loaded') {
+			return;
+		} else {
+			libJs = 'loaded';
+		}
+			
+			
+		$(document).on('click', '.select-lib-img', function() {
 			if($(this).hasClass('select-lib-img')) {
 				var mediaId = $(this).parent().attr('id');
 				var title = $(this).parent().find('.lib-item-title').html();
@@ -76,58 +167,42 @@
 		
 		$( "#selected-lib-img" ).sortable();
 		
-		// attach settings tooltip on all library items
-		$(".lib-item-settings > i").each(function(i, tagElement) {
-			
-			var title 	= $(tagElement).attr('item-title');
-			var shared 	= $(tagElement).attr('item-share');
-			var mediaId = $(tagElement).attr('media-id');
-			
-			new Opentip(tagElement,
-					'<div>\
-						<div>Title</div>\
-						<div><input type="text" class="update-lib-item-title" value="'+title+'"></div>\
-						\
-						<br style="clear:both">\
-						\
-						<div>This can be reused </div>\
-						<div>\
-							<select class="update-lib-item-shared" style="width:145px; height:25px">\
-								<option value="1" '+(shared == 1 ? 'selected' :'')+'>only for my exams</option>\
-								<option value="2" '+(shared == 2 ? 'selected' :'')+'>for all exams in my department</option>\
-								<option value="3" '+(shared == 3 ? 'selected' :'')+'>for any exam in Uppsala University</option>\
-							</select>\
-						</div>\
-						<br />\
-						<span class="btn btn-success update-lib-item-details" media-id="'+mediaId+'"> Save</span>\
-					</div>',
-					{style: "drops", tipJoint: "top left"});
-		});
-		
 		/** update title and share settings **/
 		$(document).on('click', '.update-lib-item-details', function() {
 			// grab data
 			var title 	= $(this).parent().find('.update-lib-item-title').val();
 			var shared 	= $(this).parent().find('.update-lib-item-shared').val();
-			var mediaId = $(this).attr('media-id');
+			var mediaId 	= $(this).attr('media-id');
 			
 			// send ajax request to save data
+			ajax (
+				baseURL + 'core/ajax/contributor/resource/update',
+				{"id":mediaId, "name":title, "shared":shared},
+				function (rData) {
+					// update dom as per the changes
+					$('#lib-item-'+mediaId).find('.lib-item-title').html(title);
+					$('#lib-items-added > ul').find('li[media-id="lib-item-'+mediaId+'"] > .title-box').find('input').val(title);
+					// close tooltip
+					close_tooltips();
+				}
+			);
 			
-			// update dom as per the changes
-			$('#lib-item-'+mediaId).find('.lib-item-title').html(title);
-			$('#lib-items-added > ul').find('li[media-id="lib-item-'+mediaId+'"] > .title-box').html(title);
-			// close tooltip
-			close_tooltips();
 		});
 		
 		$(document).on('click', '#selected-lib-img li i', function() {
-			
-			$('#'+$(this).parent().attr('media-id')).find('.selected-lib-img').removeClass('selected-lib-img').addClass('select-lib-img');
+			$('#'+$(this).parent().attr('media-id'))
+				.find('.selected-lib-img')
+					.removeClass('selected-lib-img')
+					.addClass('select-lib-img')
+					.find('span')
+						.html('Click to select')
+					.end();
 			$(this).parent().hide(300).remove();
 			if(!$('#lib-items-added > ul > li').length)
 				$('#lib-default-msg').show(500);
 			
 		});
+
 		
 	});
 			

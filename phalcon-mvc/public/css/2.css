@@ -5073,6 +5073,10 @@ text-decoration:none;
 .del-corrector {
         cursor:pointer;
 }
+.addNewSortable {
+	background:url('../img/plus-button-2.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0); 
+	padding-left:15px	
+}
 
 
 /*====== specific to exam/index =========*/
@@ -5297,6 +5301,7 @@ a.selected-lib-img .lib-img {
         /*height:400px;*/
         overflow:auto; 
         margin-top:15px;
+	max-height:250px;
 }
 
 #lib-items-added {

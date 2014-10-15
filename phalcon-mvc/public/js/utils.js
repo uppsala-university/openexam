@@ -97,6 +97,17 @@ function objectLength(object)
         return length;
 };
 
+/**
+ * Closes all opened opentip instances
+ * 
+ */
+function close_tooltips()
+{
+	for (var i = 0; i < Opentip.tips.length; i++) {
+			Opentip.tips[i].hide();
+	}
+}
+
 
 /**
  * Global loading and events handlers
