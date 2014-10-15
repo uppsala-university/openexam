@@ -41,6 +41,12 @@ if (!defined('BASE_DIR')) {
 if (!defined('PROJ_DIR')) {
         define('PROJ_DIR', dirname(BASE_DIR));
 }
+/**
+ * External source directory.
+ */
+if (!defined('EXTERN_DIR')) {
+        define('EXTERN_DIR', APP_DIR . '/extern/');
+}
 
 /**
  * These are the system default settings. Site local configuration can 
