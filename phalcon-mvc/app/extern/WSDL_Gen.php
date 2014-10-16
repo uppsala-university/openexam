@@ -21,6 +21,7 @@
  *   o) Added support for arrays as parameter and return type.
  *   o) Skip constructor, non-public/abstract methods and static functions.
  *   o) Add support for class paths (namespace for unqualified classes).
+ *   o) Create map between XSD complex type and PHP classes.
  * 
  * Anders Lövgren, 2014-10-14
  */
@@ -72,6 +73,7 @@ class WSDL_Gen
         private $style = SOAP_RPC;
         private $use = SOAP_ENCODED;
         private $classPath = array();
+        private $classMap = array();
 
         /** The WSDL_Gen constructor
          * @param string $className The class containing the methods to implement
@@ -106,6 +108,15 @@ class WSDL_Gen
         public function setClassPath($pathes)
         {
                 $this->classPath = $pathes;
+        }
+
+        /**
+         * Get map between XSD complex types and PHP classes.
+         * @return array
+         */
+        public function getClassMap()
+        {
+                return $this->classMap;
         }
 
         /**
@@ -227,6 +238,8 @@ class WSDL_Gen
                 } else {
                         $typeName = $className;
                 }
+                
+                $this->classMap[$typeName] = $class->getName();
                 $this->types[$className] = array('name' => $typeName, 'ns' => $this->ns);
 
                 foreach ($class->getProperties() as $prop) {
