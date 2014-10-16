@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    SoapServiceDescription.php
+// File:    ServiceDescription.php
 // Created: 2014-10-10 03:38:57
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -98,8 +98,7 @@ class ServiceDescription
                         
                         $this->generator->addClassPath('OpenExam\Models');
                         $this->generator->addClassPath('OpenExam\Library\Security');
-                        $this->generator->addClassPath('OpenExam\Library\WebService\Soap');
-                        $this->generator->addClassPath('OpenExam\Models');
+                        $this->generator->addClassPath('OpenExam\Library\WebService\Soap\Types');
                         
                         $this->generator->discover();
                 }

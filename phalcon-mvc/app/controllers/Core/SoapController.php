@@ -15,7 +15,7 @@ namespace OpenExam\Controllers\Core;
 
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\WebService\Soap\CoreService;
-use OpenExam\Library\WebService\Soap\DocumentLiteralWrapper;
+use OpenExam\Library\WebService\Soap\Wrapper\DocumentLiteral as DocumentLiteralWrapper;
 use OpenExam\Library\WebService\Soap\SoapService;
 
 /**

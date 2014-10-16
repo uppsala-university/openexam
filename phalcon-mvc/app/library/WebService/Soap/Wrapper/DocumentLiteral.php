@@ -5,13 +5,15 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    DocumentLiteralWrapper.php
+// File:    DocumentLiteral.php
 // Created: 2014-10-16 03:13:46
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\WebService\Soap;
+namespace OpenExam\Library\WebService\Soap\Wrapper;
+
+use OpenExam\Library\WebService\Soap\SoapHandler;
 
 /**
  * Document literal wrapper class.
@@ -51,7 +53,7 @@ namespace OpenExam\Library\WebService\Soap;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class DocumentLiteralWrapper implements SoapHandler
+class DocumentLiteral implements SoapHandler
 {
 
         /**

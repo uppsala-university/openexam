@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    BaseSoapService.php
+// File:    SoapService.php
 // Created: 2014-08-21 01:05:58
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
