@@ -19,6 +19,7 @@
  *   o) Use short class name as service port. 
  *   o) Include argument and return type in methods wsdl:documentation.
  *   o) Added support for arrays as parameter and return type.
+ *   o) Skip constructor, non-public/abstract methods and static functions.
  * 
  * Anders Lövgren, 2014-10-14
  */
@@ -96,6 +97,19 @@ class WSDL_Gen
         protected function discoverOperations($methods)
         {
                 foreach ($methods as $method) {
+                        if ($method->isConstructor()) {
+                                continue;       // Skip constructor
+                        }
+                        if ($method->isPublic() == false) {
+                                continue;       // Skip non-public
+                        }
+                        if ($method->isStatic()) {
+                                continue;       // Skip static functions
+                        }
+                        if ($method->isAbstract()) {
+                                continue;       // Skip abstract members
+                        }
+
                         $this->operations[$method->getName()]['input'] = array();
                         $this->operations[$method->getName()]['output'] = array();
                         $doc = $method->getDocComment();
