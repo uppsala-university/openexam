@@ -95,6 +95,13 @@ class ServiceDescription
         {
                 if (!isset($this->generator)) {
                         $this->generator = new Generator($this->class, $this->location, $this->namespace);
+                        
+                        $this->generator->addClassPath('OpenExam\Models');
+                        $this->generator->addClassPath('OpenExam\Library\Security');
+                        $this->generator->addClassPath('OpenExam\Library\WebService\Soap');
+                        $this->generator->addClassPath('OpenExam\Models');
+                        
+                        $this->generator->discover();
                 }
                 return $this->generator;
         }

@@ -20,6 +20,7 @@
  *   o) Include argument and return type in methods wsdl:documentation.
  *   o) Added support for arrays as parameter and return type.
  *   o) Skip constructor, non-public/abstract methods and static functions.
+ *   o) Add support for class paths (namespace for unqualified classes).
  * 
  * Anders Lövgren, 2014-10-14
  */
@@ -70,6 +71,7 @@ class WSDL_Gen
         private $mytypes = array();
         private $style = SOAP_RPC;
         private $use = SOAP_ENCODED;
+        private $classPath = array();
 
         /** The WSDL_Gen constructor
          * @param string $className The class containing the methods to implement
@@ -86,8 +88,32 @@ class WSDL_Gen
                 $this->ns = $ns;
                 $this->endpoint = $endpoint;
                 $this->createPHPTypes();
+        }
+        
+        /**
+         * Add namespace for unqualified classes.
+         * @param string $path The namespaces.
+         */
+        public function addClassPath($path)
+        {
+                $this->classPath[] = $path;
+        }
 
-                $class = new ReflectionClass($className);
+        /**
+         * Set array of namespaces for unqualified classes.
+         * @param array $pathes The array of namespaces.
+         */
+        public function setClassPath($pathes)
+        {
+                $this->classPath = $pathes;
+        }
+
+        /**
+         * Start service discover (reflection).
+         */
+        public function discover()
+        {
+                $class = new ReflectionClass($this->className);
                 $this->serviceName = $class->getShortName();
                 $methods = $class->getMethods();
                 $this->discoverOperations($methods);
@@ -180,7 +206,21 @@ class WSDL_Gen
 
         protected function addComplexType($className)
         {
-                $class = new ReflectionClass($className);
+                if (strpos($className, '\\') == false) {
+                        foreach ($this->classPath as $path) {
+                                try {
+                                        $class = new ReflectionClass($path . '\\' . $className);
+                                        break;
+                                } catch (\ReflectionException $exception) {
+                                        // ignore
+                                }
+                        }
+                }
+                
+                if (!isset($class)) {
+                        $class = new ReflectionClass($className);
+                }
+                
                 $this->complexTypes[$className] = array();
                 if (($str = strrchr($className, '\\'))) {
                         $typeName = trim($str, '\\');
