@@ -176,9 +176,9 @@ class Capabilities
 
         /**
          * Check if role has permission to perform action on resource.
-         * @param type $role
-         * @param type $resource
-         * @param type $action
+         * @param string $role
+         * @param string $resource
+         * @param string $action
          * @return boolean
          */
         public function hasPermission($role, $resource, $action)
@@ -188,6 +188,15 @@ class Capabilities
                 } else {
                         return in_array($action, $this->rolecap[$role][$resource]);
                 }
+        }
+
+        /**
+         * Get all capabilities grouped by role.
+         * @return array
+         */
+        public function getCapabilities()
+        {
+                return $this->rolecap;
         }
 
 }
