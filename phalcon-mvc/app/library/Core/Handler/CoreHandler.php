@@ -169,9 +169,22 @@ class CoreHandler extends Component
          */
         public function read($model, $params = array())
         {
+                // 
+                // Strip relations from model.
+                // 
+                $strip = function($model) {
+                        $dump = array();
+                        foreach ($model->dump() as $key => $val) {
+                                if (!is_object($val)) {
+                                        $dump[$key] = $val;
+                                }
+                        }
+                        return $dump;
+                };
+
                 if ($model->id != 0) {
                         $class = get_class($model);
-                        return $class::findFirstById($model->id);
+                        return $strip($class::findFirstById($model->id));
                 } else {
                         $class = get_class($model);
 
@@ -208,13 +221,7 @@ class CoreHandler extends Component
                         $result = array();
 
                         foreach ($models as $m) {
-                                $dump = array();
-                                foreach ($m->dump() as $key => $val) {
-                                        if (!is_object($val)) {
-                                                $dump[$key] = $val;
-                                        }
-                                }
-                                $result[] = $dump;
+                                $result[] = $strip($m);
                         }
 
                         return $result;
