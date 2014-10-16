@@ -229,7 +229,10 @@ class SoapService
                         'uri'      => $this->description,
                         'location' => $this->location,
                         'style'    => SOAP_DOCUMENT,
-                        'use'      => SOAP_LITERAL
+                        'use'      => SOAP_LITERAL,
+                        'classmap' => array(
+                                'Handle' => 'OpenExam\Library\WebService\Soap\Handle'
+                        )
                 );
 
                 // 

@@ -89,7 +89,7 @@ class WSDL_Gen
                 $this->endpoint = $endpoint;
                 $this->createPHPTypes();
         }
-        
+
         /**
          * Add namespace for unqualified classes.
          * @param string $path The namespaces.
@@ -216,11 +216,11 @@ class WSDL_Gen
                                 }
                         }
                 }
-                
+
                 if (!isset($class)) {
                         $class = new ReflectionClass($className);
                 }
-                
+
                 $this->complexTypes[$className] = array();
                 if (($str = strrchr($className, '\\'))) {
                         $typeName = trim($str, '\\');

@@ -15,6 +15,7 @@ namespace OpenExam\Controllers\Core;
 
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\WebService\Soap\CoreService;
+use OpenExam\Library\WebService\Soap\DocumentLiteralWrapper;
 use OpenExam\Library\WebService\Soap\SoapService;
 
 /**
@@ -53,7 +54,7 @@ class SoapController extends ServiceController
                 // TODO: use view for displaying API docs (DOM document)
 //                $description = $this->service->getServiceDescription();
 //                $domdocument = $description->getGenerator()->getDocument();
-                
+
                 $this->service->sendDocumentation();
         }
 
@@ -80,7 +81,8 @@ class SoapController extends ServiceController
                         return;
                 }
                 if ($this->request->isSoapRequested()) {
-                        $this->service->setHandler(new CoreService());
+                        $service = new CoreService($this->user);
+                        $this->service->setHandler(new DocumentLiteralWrapper($service));
                         $this->service->handleRequest();
                         return;
                 }
