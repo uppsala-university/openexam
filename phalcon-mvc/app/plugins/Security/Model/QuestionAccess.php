@@ -13,12 +13,12 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Security\Exception;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
 use OpenExam\Models\Question;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
-use UUP\Authentication\Restrictor\DateTimeRestrictor;
 
 /**
  * Access control for the Question model.
@@ -107,8 +107,7 @@ class QuestionAccess extends ObjectAccess
                 // the exam starts.
                 // 
                 if ($role == Roles::STUDENT) {
-                        $restrictor = new DateTimeRestrictor($model->exam->starttime, $model->exam->endtime);
-                        if ($restrictor->accepted() == false) {
+                        if($model->exam->getState()->has(State::UPCOMING)) {
                                 $user->setPrimaryRole($role);
                                 throw new Exception('access');
                         }
