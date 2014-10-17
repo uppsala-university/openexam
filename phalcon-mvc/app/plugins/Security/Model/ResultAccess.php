@@ -27,12 +27,14 @@ class ResultAccess extends ObjectAccess
 {
 
         /**
-         * Check model access.
+         * Check object role.
+         * 
          * @param string $action The model action.
-         * @param Result $model The model.
+         * @param Result $model The model object.
          * @param User $user The peer object.
+         * @return boolean
          */
-        public function checkAccess($action, $model, $user)
+        public function checkObjectRole($action, $model, $user)
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
@@ -44,18 +46,6 @@ class ResultAccess extends ObjectAccess
                 // Temporarily disable access control:
                 // 
                 $role = $user->setPrimaryRole(Roles::TRUSTED);
-
-                // 
-                // Object access control:
-                // 
-                if ($model->id != 0) {
-                        if ($role == Roles::STUDENT) {
-                                if ($model->answer->student->user != $user->getPrincipalName()) {
-                                        $user->setPrimaryRole($role);
-                                        throw new Exception('owner');
-                                }
-                        }
-                }
 
                 // 
                 // Check role on exam or question:
@@ -92,6 +82,40 @@ class ResultAccess extends ObjectAccess
                         $user->setPrimaryRole($role);
                         return true;
                 }
+        }
+
+        /**
+         * Check object action.
+         * 
+         * @param string $action The model action.
+         * @param Result $model The model object.
+         * @param User $user The peer object.
+         * @return boolean
+         */
+        public function checkObjectAction($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                // 
+                // Temporarily disable access control:
+                // 
+                $role = $user->setPrimaryRole(Roles::TRUSTED);
+
+                // 
+                // Students should only have access to their own results:
+                // 
+                if ($role == Roles::STUDENT) {
+                        if ($model->answer->student->user != $user->getPrincipalName()) {
+                                $user->setPrimaryRole($role);
+                                throw new Exception('owner');
+                        }
+                }
+
+                return true;
         }
 
 }

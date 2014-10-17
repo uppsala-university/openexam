@@ -27,12 +27,14 @@ class ComputerAccess extends ObjectAccess
 {
 
         /**
-         * Check model access.
+         * Check object role.
+         * 
          * @param string $action The model action.
-         * @param Computer $model The model.
+         * @param Computer $model The model object.
          * @param User $user The peer object.
+         * @return boolean
          */
-        public function checkAccess($action, $model, $user)
+        public function checkObjectRole($action, $model, $user)
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(

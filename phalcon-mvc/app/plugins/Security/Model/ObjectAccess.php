@@ -33,15 +33,78 @@ abstract class ObjectAccess extends Plugin
         /**
          * Check model access.
          * @param string $action The model action.
-         * @param Model $model The model.
+         * @param Model $model The model object.
          * @param User $user The peer object.
+         * @return boolean
          */
-        abstract function checkAccess($action, $model, $user);
+        public final function checkAccess($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                if ($this->checkObjectRole($action, $model, $user)) {
+                        if ($this->checkObjectAction($action, $model, $user)) {
+                                return true;
+                        }
+                }
+
+                return false;
+        }
+
+        /**
+         * Adapter function for model role verification.
+         * 
+         * Sub classes can override this function to provide role based
+         * access control on this specific model object. That is, verify that
+         * the user has the requested role on this model object.
+         * 
+         * @param string $action The model action.
+         * @param Model $model The model object.
+         * @param User $user The peer object.
+         * @return boolean
+         */
+        public function checkObjectRole($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                return true;
+        }
+
+        /**
+         * Adapter function for model action verification.
+         * 
+         * Sub classes can override this function to provide action based
+         * access control on this specific model object. That is, verify that
+         * the user has permissions to perform requested action on this model
+         * object (business rule).
+         * 
+         * @param string $action The model action.
+         * @param Model $model The model object.
+         * @param User $user The peer object.
+         * @return boolean
+         */
+        public function checkObjectAction($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                return true;
+        }
 
         /**
          * Behaviour hook.
          * @param string $event The notify event name.
-         * @param Model $model The model.
+         * @param Model $model The model object.
          * @param User $user The peer object.
          */
         public function notify($event, $model, $user)

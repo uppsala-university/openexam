@@ -21,18 +21,33 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
 
 /**
  * Access control for the Resource model.
+ * 
+ * Assumption: 
+ * 
+ * This model is an abstraction of the "media" library. The resources defined 
+ * here can be inserted in questions. The permitted action are already defined 
+ * by ACL.
+ * 
+ * Create, update and delete of resources are always done in the context of 
+ * an specific exam. Read access are defined by the sharing level. 
+ * 
+ * For students, the resource has to be connected with their exam for being 
+ * accessable.
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class ResourceAccess extends ObjectAccess
 {
 
         /**
-         * Check model access.
+         * Check object role.
+         * 
          * @param string $action The model action.
-         * @param Resource $model The model.
+         * @param Resource $model The model object.
          * @param User $user The peer object.
+         * @return boolean
          */
-        public function checkAccess($action, $model, $user)
+        public function checkObjectRole($action, $model, $user)
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
@@ -45,60 +60,109 @@ class ResourceAccess extends ObjectAccess
                 // 
                 $role = $user->setPrimaryRole(Roles::TRUSTED);
 
-                /**
-                 * Assumption: 
-                 * 
-                 * This model is an abstraction of the "media" library. The
-                 * resources defined here can be inserted in questions. The 
-                 * permitted action are already defined by ACL.
-                 * 
-                 * Create, update and delete of resources are always done in 
-                 * the context of an specific exam. Read access are defined 
-                 * by the sharing level. 
-                 * 
-                 * For students, the resource has to be connected with their 
-                 * exam for being accessable.
-                 */
                 // 
-                // Handle student access separate:
+                // Check role on exam, question or global:
                 // 
-                if ($role == Roles::STUDENT) {
+                if ($role == Roles::CONTRIBUTOR ||
+                    $role == Roles::CREATOR ||
+                    $role == Roles::DECODER ||
+                    $role == Roles::INVIGILATOR ||
+                    $role == Roles::STUDENT) {
                         if ($user->roles->aquire($role, $model->exam_id)) {
                                 $user->setPrimaryRole($role);
                                 return true;
-                        } else {
+                        }
+                } elseif ($role == Roles::CORRECTOR) {
+                        foreach ($model->exam->questions as $question) {
+                                if ($user->roles->aquire($role, $question->id)) {
+                                        $user->setPrimaryRole($role);
+                                        return true;
+                                }
+                        }
+                } elseif (isset($role)) {
+                        if ($user->roles->aquire($role)) {
                                 $user->setPrimaryRole($role);
-                                throw new Exception('access');
+                                return true;
+                        }
+                }
+
+                if (isset($role)) {
+                        $user->setPrimaryRole($role);
+                        throw new Exception('role');
+                } else {
+                        $user->setPrimaryRole($role);
+                        return true;
+                }
+        }
+
+        /**
+         * Check object action.
+         * 
+         * @param string $action The model action.
+         * @param Resource $model The model object.
+         * @param User $user The peer object.
+         * @return boolean
+         */
+        public function checkObjectAction($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                // 
+                // Temporarily disable access control:
+                // 
+                $role = $user->setPrimaryRole(Roles::TRUSTED);
+
+                // 
+                // Student can read any resource connected with the exam:
+                // 
+                if ($role == Roles::STUDENT) {
+                        if ($action == self::READ) {
+                                if ($user->roles->aquire($role, $model->exam_id)) {
+                                        $user->setPrimaryRole($role);
+                                        return true;
+                                }
                         }
                 }
 
                 // 
-                // Here we make a distinction between the action modes. Only
-                // allow the resource publisher to modify or delete it. All 
-                // staff members can publish (create) new resources. Control
-                // of the sharing level is enforced when reading resource.
+                // Here we make a distinction between the action modes. 
+                // 
+                // 1. Only allow the resource publisher to modify or delete 
+                //    a resource. 
+                // 2. All staff members can publish (create) new resources. 
+                // 3. Control of the sharing level is enforced when reading 
+                //    a resource.
                 // 
                 if ($action == self::READ) {
                         if ($model->shared == Resource::NOT_SHARED) {
-                                if ($model->user != $user->getPrincipalName()) {
+                                if ($model->user == $user->getPrincipalName()) {
                                         $user->setPrimaryRole($role);
-                                        throw new Exception('access');
+                                        return true;
                                 }
                         } elseif ($model->shared == Resource::SHARED_EXAM) {
-                                if ($role == Roles::CONTRIBUTOR ||
-                                    $role == Roles::CREATOR ||
-                                    $role == Roles::DECODER ||
-                                    $role == Roles::INVIGILATOR) {
-                                        if ($user->roles->aquire($role, $model->exam_id)) {
+                                if (Roles::isGlobal($role)) {
+                                        $user->setPrimaryRole($role);
+                                        return true;
+                                }
+                                if ($role == Roles::CORRECTOR) {
+                                        if ($user->roles->hasRole($role, $model->exam_id)) {
                                                 $user->setPrimaryRole($role);
                                                 return true;
                                         }
-                                } elseif ($role == Roles::CORRECTOR) {
                                         foreach ($model->exam->questions as $question) {
                                                 if ($user->roles->aquire($role, $question->id)) {
                                                         $user->setPrimaryRole($role);
                                                         return true;
                                                 }
+                                        }
+                                } else {
+                                        if ($user->roles->aquire($role, $model->exam_id)) {
+                                                $user->setPrimaryRole($role);
+                                                return true;
                                         }
                                 }
                         } elseif ($model->shared == Resource::SHARED_GROUP) {
@@ -117,6 +181,14 @@ class ResourceAccess extends ObjectAccess
                                 $user->setPrimaryRole($role);
                                 return true;
                         }
+                }
+
+                if (isset($role)) {
+                        $user->setPrimaryRole($role);
+                        throw new Exception('access');
+                } else {
+                        $user->setPrimaryRole($role);
+                        return true;
                 }
         }
 

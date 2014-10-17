@@ -28,12 +28,68 @@ class QuestionAccess extends ObjectAccess
 {
 
         /**
-         * Check model access.
+         * Check object role.
+         * 
          * @param string $action The model action.
-         * @param Question $model The model.
+         * @param Question $model The model object.
          * @param User $user The peer object.
+         * @return boolean
          */
-        public function checkAccess($action, $model, $user)
+        public function checkObjectRole($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                // 
+                // Temporarily disable access control:
+                // 
+                $role = $user->setPrimaryRole(Roles::TRUSTED);
+
+                // 
+                // Check role on exam, question or global:
+                // 
+                if ($role == Roles::CONTRIBUTOR ||
+                    $role == Roles::CREATOR ||
+                    $role == Roles::DECODER ||
+                    $role == Roles::INVIGILATOR ||
+                    $role == Roles::STUDENT) {
+                        if ($user->roles->aquire($role, $model->exam_id)) {
+                                $user->setPrimaryRole($role);
+                                return true;
+                        }
+                } elseif ($role == Roles::CORRECTOR) {
+                        if ($user->roles->aquire($role, $model->id)) {
+                                $user->setPrimaryRole($role);
+                                return true;
+                        }
+                } elseif (isset($role)) {
+                        if ($user->roles->aquire($role)) {
+                                $user->setPrimaryRole($role);
+                                return true;
+                        }
+                }
+
+                if (isset($role)) {
+                        $user->setPrimaryRole($role);
+                        throw new Exception('role');
+                } else {
+                        $user->setPrimaryRole($role);
+                        return true;
+                }
+        }
+
+        /**
+         * Check object action.
+         * 
+         * @param string $action The model action.
+         * @param Question $model The model object.
+         * @param User $user The peer object.
+         * @return boolean
+         */
+        public function checkObjectAction($action, $model, $user)
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
@@ -56,40 +112,6 @@ class QuestionAccess extends ObjectAccess
                                 $user->setPrimaryRole($role);
                                 throw new Exception('access');
                         }
-                }
-
-                // 
-                // Check role on exam, question or global:
-                // 
-                if ($role == Roles::CONTRIBUTOR ||
-                    $role == Roles::CREATOR ||
-                    $role == Roles::DECODER ||
-                    $role == Roles::INVIGILATOR ||
-                    $role == Roles::STUDENT) {
-                        if ($user->roles->aquire($role, $model->exam_id)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                } elseif ($role == Roles::CORRECTOR) {
-                        foreach ($model->exam->questions as $question) {
-                                if ($user->roles->aquire($role, $question->id)) {
-                                        $user->setPrimaryRole($role);
-                                        return true;
-                                }
-                        }
-                } elseif (isset($role)) {
-                        if ($user->roles->aquire($role)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                }
-
-                if (isset($role)) {
-                        $user->setPrimaryRole($role);
-                        throw new Exception('role');
-                } else {
-                        $user->setPrimaryRole($role);
-                        return true;
                 }
         }
 
