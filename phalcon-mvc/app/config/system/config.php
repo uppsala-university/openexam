@@ -11,40 +11,40 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-/**
- * System configuration directory.
- */
 if (!defined('CONFIG_SYS')) {
+        /**
+         * System configuration directory.
+         */
         define('CONFIG_SYS', __DIR__);
 }
-/**
- * User settings directory.
- */
 if (!defined('CONFIG_DIR')) {
+        /**
+         * User settings directory.
+         */
         define('CONFIG_DIR', dirname(CONFIG_SYS));
 }
-/**
- * Application directory.
- */
 if (!defined('APP_DIR')) {
+        /**
+         * Application directory.
+         */
         define('APP_DIR', dirname(CONFIG_DIR));
 }
-/**
- * Base directory (the Phalcon MVC app).
- */
 if (!defined('BASE_DIR')) {
+        /**
+         * Base directory (the Phalcon MVC app).
+         */
         define('BASE_DIR', dirname(APP_DIR));
 }
-/**
- * Project root directory.
- */
 if (!defined('PROJ_DIR')) {
+        /**
+         * Project root directory.
+         */
         define('PROJ_DIR', dirname(BASE_DIR));
 }
-/**
- * External source directory.
- */
 if (!defined('EXTERN_DIR')) {
+        /**
+         * External source directory.
+         */
         define('EXTERN_DIR', APP_DIR . '/extern/');
 }
 
