@@ -287,6 +287,13 @@ class Exam extends ModelBase
                 $role = $user->getPrimaryRole();
 
                 // 
+                // Wrap string search in array:
+                // 
+                if (is_string($parameters)) {
+                        $parameters = array($parameters);
+                }
+
+                // 
                 // Don't accept access to other models:
                 // 
                 if (isset($parameters['models'])) {
