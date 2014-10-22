@@ -19,6 +19,7 @@ use PDO;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
+use Phalcon\Mvc\Model\TransactionInterface;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -76,42 +77,33 @@ class CoreHandler extends Component
          */
         public function action($models, $action, $params = array())
         {
-                try {
-                        $result = array();
-                        $transaction = null;
+                $result = array();
+                $transaction = null;
 
+                try {
                         if (!is_array($models)) {
                                 $models = array($models);
                         }
 
                         if ($action != ObjectAccess::READ && count($models) > 1) {
                                 $transactionManager = new TransactionManager();
-                                $transactionManager->setDbService($models[0]->getWriteConnectionService());
+                                $transactionManager->setDbService('dbwrite');
                                 $transaction = $transactionManager->get();
                         }
 
                         foreach ($models as $model) {
                                 switch ($action) {
                                         case ObjectAccess::CREATE:
-                                                if (isset($transaction)) {
-                                                        $model->setTransaction($transaction);
-                                                }
-                                                $result[] = $this->create($model);
+                                                $result[] = $this->create($model, $transaction);
                                                 break;
                                         case ObjectAccess::READ:
                                                 $result[] = $this->read($model, $params);
                                                 break;
                                         case ObjectAccess::UPDATE:
-                                                if (isset($transaction)) {
-                                                        $model->setTransaction($transaction);
-                                                }
-                                                $result = $this->update($model);
+                                                $result = $this->update($model, $transaction);
                                                 break;
                                         case ObjectAccess::DELETE:
-                                                if (isset($transaction)) {
-                                                        $model->setTransaction($transaction);
-                                                }
-                                                $result = $this->delete($model);
+                                                $result = $this->delete($model, $transaction);
                                                 break;
                                         default:
                                                 throw new Exception("The method $action don't exist.");
@@ -126,29 +118,96 @@ class CoreHandler extends Component
                                 return $result;
                         }
                 } catch (TransactionFailed $exception) {
-                        $this->logger->system->error($exception->getMessage());
-                        throw new Exception("Failed $action object.");
-                } catch (Exception $exception) {
-                        if (isset($transaction)) {
-                                $transaction->rollback();
-                        }
+                        $this->report($exception, $model);
                         throw $exception;
+                } catch (Exception $exception) {
+                        $this->report($exception, $model);
+                        if (isset($transaction)) {
+                                $transaction->rollback($exception->getMessage());
+                        } else {
+                                throw $exception;
+                        }
                 }
         }
 
         /**
          * Create model.
          * @param Model $model Input data.
+         * @param TransactionInterface $transaction The transaction.
          * @return Model The created model.
          * @throws Exception
          */
-        public function create($model)
+        public function create($model, $transaction)
         {
+                if ($model->getDI() == null) {
+                        $model = self::instantiate($model);
+                }
+                if (isset($transaction)) {
+                        $model->setTransaction($transaction);
+                }
                 if ($model->create() == false) {
                         $this->error($model, ObjectAccess::CREATE);
                 } else {
                         return $model;
                 }
+        }
+
+        /**
+         * Update model.
+         * @param Model $model The model to update.
+         * @param TransactionInterface $transaction The transaction.
+         * @return bool True if successful.
+         * @throws Exception
+         */
+        public function update($model, $transaction)
+        {
+                if ($model->getDI() == null) {
+                        $model = self::instantiate($model);
+                }
+                if (isset($transaction)) {
+                        $model->setTransaction($transaction);
+                }
+                if ($model->update() == false) {
+                        $this->error($model, ObjectAccess::UPDATE);
+                } else {
+                        return true;
+                }
+        }
+
+        /**
+         * Delete model.
+         * @param Model $model The model to delete.
+         * @param TransactionInterface $transaction The transaction.
+         * @return bool True if successful.
+         * @throws Exception
+         */
+        public function delete($model, $transaction)
+        {
+                if ($model->getDI() == null) {
+                        $model = self::instantiate($model);
+                }
+                if (isset($transaction)) {
+                        $model->setTransaction($transaction);
+                }
+                if ($model->delete() == false) {
+                        $this->error($model, ObjectAccess::DELETE);
+                } else {
+                        return true;
+                }
+        }
+
+        /**
+         * Instantiate partial constructed model object.
+         * @param Model $model The partial constructed object.
+         * @return Model
+         */
+        private static function instantiate($model)
+        {
+                $array = $model->dump();
+                $class = get_class($model);
+                $model = new $class();
+                $model->assign($array);
+                return $model;
         }
 
         /**
@@ -229,36 +288,6 @@ class CoreHandler extends Component
         }
 
         /**
-         * Update model.
-         * @param Model $model The model to update.
-         * @return bool True if successful.
-         * @throws Exception
-         */
-        public function update($model)
-        {
-                if ($model->update() == false) {
-                        $this->error($model, ObjectAccess::UPDATE);
-                } else {
-                        return true;
-                }
-        }
-
-        /**
-         * Delete model.
-         * @param Model $model The model to delete.
-         * @return bool True if successful.
-         * @throws Exception
-         */
-        public function delete($model)
-        {
-                if ($model->delete() == false) {
-                        $this->error($model, ObjectAccess::DELETE);
-                } else {
-                        return true;
-                }
-        }
-
-        /**
          * Error handler.
          * @param Model $model
          * @param string $action
@@ -272,7 +301,27 @@ class CoreHandler extends Component
                 }
                 $this->logger->system->commit();
 
-                throw new Exception("Failed $action object.");
+                throw new Exception("Failed $action object ($message).");
+        }
+
+        /**
+         * Report exception.
+         * @param Exception $exception The exception to report.
+         * @param Model $model The current model.
+         */
+        private function report($exception, $model)
+        {
+                $this->logger->system->begin();
+                $this->logger->system->error(
+                    print_r(array(
+                        'Exception' => get_class($exception),
+                        'Message'   => $exception->getMessage(),
+                        'Model'     => get_class($model),
+                        'Data'      => print_r($model->dump(), true)
+                        ), true
+                    )
+                );
+                $this->logger->system->commit();
         }
 
 }
