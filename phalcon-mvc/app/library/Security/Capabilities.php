@@ -1,7 +1,7 @@
 <?php
 
 // 
-// The source code is copyrighted, with equal shared rights, between the
+// The source code is copyrighted, with equal shared right', between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
@@ -55,10 +55,14 @@ class Capabilities
          */
         private $rescap = array();
         /**
-         * Discovered resources.
+         * All managable resources.
          * @var array 
          */
-        private static $resources = array();
+        private static $resources = array(
+                'admin', 'answer', 'computer', 'contributor', 'corrector',
+                'decoder', 'exam', 'file', 'invigilator', 'lock', 'question',
+                'resource', 'result', 'room', 'student', 'teacher', 'topic'
+        );
 
         /**
          * Constructor.
@@ -87,19 +91,6 @@ class Capabilities
                                 $permissions[$name] = $access['permissions']['full'];
                         } else {
                                 $permissions[$name] = array($action);
-                        }
-                }
-
-                // 
-                // Collect all defined resources:
-                // 
-                foreach ($access['roles'] as $role => $resources) {
-                        if (is_array($resources)) {
-                                foreach (array_keys($resources) as $resource) {
-                                        if (!in_array($resource, self::$resources)) {
-                                                self::$resources[] = $resource;
-                                        }
-                                }
                         }
                 }
 
