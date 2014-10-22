@@ -21,6 +21,11 @@ class Handle
 {
 
         /**
+         * Requested role for call.
+         * @var string 
+         */
+        public $role;
+        /**
          * Username for authentication.
          * @var string 
          */
@@ -31,14 +36,16 @@ class Handle
          */
         public $pass;
         /**
-         * Requested role for call.
-         * @var string 
-         */
-        public $role;
-        /**
          * Use session authentication.
          * @var boolean
          */
         public $session;
+
+        public function __construct($role, $user = null, $pass = null)
+        {
+                $this->role = $role;
+                $this->user = $user;
+                $this->pass = $pass;
+        }
 
 }

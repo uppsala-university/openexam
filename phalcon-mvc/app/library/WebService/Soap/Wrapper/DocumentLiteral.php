@@ -18,36 +18,28 @@ use OpenExam\Library\WebService\Soap\SoapHandler;
 /**
  * Document literal wrapper class.
  * 
- * This class wraps the SOAP method call supporting normal access to argument.
- * Returning values don't either requiring wrapping in inside a response 
- * object/array.
+ * Wrapper for SOAP method call supporting standard access to arguments and
+ * normal way of returning method result. 
  * 
- * Heres the difference between non-wrapper and wrapped mode:
+ * In non-wrapped mode, the argument is accessed thru a standard PHP object 
+ * and return values needs to be set in a returned array:
  * 
  * <code>
- * // 
- * // In non-wrapped mode (all arguments in first parameter):
- * // 
- * public function method($arg1, $arg2) 
+ * public function add($num1, $num2)
  * {
- *      $arg1->arg1->val1;      // OK
- *      $arg1->arg2->val2;      // OK
- *      $arg2->...              // unset
- * 
- *      return array(           // Return value must be wrapped
- *              'result' => $response
- *      );
+ *      $sum = $num1->num1 + $num1->num2;       // All args in $num1
+ *      return array('return' => $sum);         // Must use array
  * }
+ * </code>
  * 
- * // 
- * // In wrapped mode (arguments are separated):
- * // 
- * public function method($arg1, $arg2) 
+ * In wrapped mode, the method arguments are accessed as normal parameters 
+ * and the return value can be returned as usual:
+ * 
+ * <code>
+ * public function add($num1, $num2)
  * {
- *      $arg1->val1;            // OK
- *      $arg2->val2;            // OK
- * 
- *      return $response;       // Return value don't need to be wrapped.
+ *      $sum = $num1 + $num2;
+ *      return $sum;
  * }
  * </code>
  *

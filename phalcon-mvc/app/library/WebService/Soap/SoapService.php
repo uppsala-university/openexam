@@ -56,7 +56,7 @@ use SoapServer;
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class SoapService
+class SoapService extends \Phalcon\Mvc\User\Component
 {
 
         /**
