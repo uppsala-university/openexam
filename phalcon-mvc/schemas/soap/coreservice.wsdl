@@ -1,0 +1,3854 @@
+<?xml version="1.0"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bmc.uu.se/soap/openexam/core" xmlns:soap-env="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://bmc.uu.se/soap/openexam/core">
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://bmc.uu.se/soap/openexam/core">
+      <xsd:complexType name="Handle">
+        <xsd:all>
+          <xsd:element name="role" type="xsd:string"/>
+          <xsd:element name="user" type="xsd:string"/>
+          <xsd:element name="pass" type="xsd:string"/>
+          <xsd:element name="session" type="xsd:boolean"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Admin">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="user" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Answer">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="question_id" type="xsd:int"/>
+          <xsd:element name="student_id" type="xsd:int"/>
+          <xsd:element name="answered" type="xsd:boolean"/>
+          <xsd:element name="answer" type="xsd:string"/>
+          <xsd:element name="comment" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Computer">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="room_id" type="xsd:int"/>
+          <xsd:element name="hostname" type="xsd:string"/>
+          <xsd:element name="ipaddr" type="xsd:string"/>
+          <xsd:element name="port" type="xsd:int"/>
+          <xsd:element name="password" type="xsd:string"/>
+          <xsd:element name="created" type="xsd:string"/>
+          <xsd:element name="updated" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Contributor">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="exam_id" type="xsd:int"/>
+          <xsd:element name="user" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Corrector">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="question_id" type="xsd:int"/>
+          <xsd:element name="user" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Decoder">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="exam_id" type="xsd:int"/>
+          <xsd:element name="user" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Exam">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+          <xsd:element name="descr" type="xsd:string"/>
+          <xsd:element name="starttime" type="xsd:string"/>
+          <xsd:element name="endtime" type="xsd:string"/>
+          <xsd:element name="created" type="xsd:string"/>
+          <xsd:element name="updated" type="xsd:string"/>
+          <xsd:element name="creator" type="xsd:string"/>
+          <xsd:element name="details" type="xsd:int"/>
+          <xsd:element name="decoded" type="xsd:boolean"/>
+          <xsd:element name="orgunit" type="xsd:string"/>
+          <xsd:element name="grades" type="xsd:string"/>
+          <xsd:element name="testcase" type="xsd:boolean"/>
+          <xsd:element name="lockdown" type="xsd:boolean"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="File">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="answer_id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+          <xsd:element name="path" type="xsd:string"/>
+          <xsd:element name="type" type="xsd:string"/>
+          <xsd:element name="subtype" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Invigilator">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="exam_id" type="xsd:int"/>
+          <xsd:element name="user" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Lock">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="computer_id" type="xsd:int"/>
+          <xsd:element name="exam_id" type="xsd:int"/>
+          <xsd:element name="aquired" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Question">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="exam_id" type="xsd:int"/>
+          <xsd:element name="topic_id" type="xsd:int"/>
+          <xsd:element name="score" type="xsd:double"/>
+          <xsd:element name="name" type="xsd:string"/>
+          <xsd:element name="quest" type="xsd:string"/>
+          <xsd:element name="status" type="xsd:string"/>
+          <xsd:element name="comment" type="xsd:string"/>
+          <xsd:element name="grades" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Resource">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="exam_id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+          <xsd:element name="path" type="xsd:string"/>
+          <xsd:element name="type" type="xsd:string"/>
+          <xsd:element name="subtype" type="xsd:string"/>
+          <xsd:element name="user" type="xsd:string"/>
+          <xsd:element name="shared" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Result">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="answer_id" type="xsd:int"/>
+          <xsd:element name="score" type="xsd:double"/>
+          <xsd:element name="comment" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Room">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+          <xsd:element name="description" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Student">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="exam_id" type="xsd:int"/>
+          <xsd:element name="user" type="xsd:string"/>
+          <xsd:element name="code" type="xsd:string"/>
+          <xsd:element name="tag" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Teacher">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="user" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="Topic">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="exam_id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+          <xsd:element name="randomize" type="xsd:int"/>
+          <xsd:element name="grades" type="xsd:string"/>
+          <xsd:element name="depend" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:element name="addAdmin" type="tns:addAdmin"/>
+      <xsd:complexType name="addAdmin">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="admin" type="tns:Admin" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addAdminResponse" type="tns:addAdminResponse"/>
+      <xsd:complexType name="addAdminResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addAdmins" type="tns:addAdmins"/>
+      <xsd:complexType name="addAdmins">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="admins" type="tns:Admin" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addAdminsResponse" type="tns:addAdminsResponse"/>
+      <xsd:complexType name="addAdminsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Admin" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addAnswer" type="tns:addAnswer"/>
+      <xsd:complexType name="addAnswer">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="answer" type="tns:Answer" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addAnswerResponse" type="tns:addAnswerResponse"/>
+      <xsd:complexType name="addAnswerResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addAnswers" type="tns:addAnswers"/>
+      <xsd:complexType name="addAnswers">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="answers" type="tns:Answer" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addAnswersResponse" type="tns:addAnswersResponse"/>
+      <xsd:complexType name="addAnswersResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Answer" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addComputer" type="tns:addComputer"/>
+      <xsd:complexType name="addComputer">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="computer" type="tns:Computer" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addComputerResponse" type="tns:addComputerResponse"/>
+      <xsd:complexType name="addComputerResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addComputers" type="tns:addComputers"/>
+      <xsd:complexType name="addComputers">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="computers" type="tns:Computer" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addComputersResponse" type="tns:addComputersResponse"/>
+      <xsd:complexType name="addComputersResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Computer" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addContributor" type="tns:addContributor"/>
+      <xsd:complexType name="addContributor">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="contributor" type="tns:Contributor" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addContributorResponse" type="tns:addContributorResponse"/>
+      <xsd:complexType name="addContributorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addContributors" type="tns:addContributors"/>
+      <xsd:complexType name="addContributors">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="contributors" type="tns:Contributor" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addContributorsResponse" type="tns:addContributorsResponse"/>
+      <xsd:complexType name="addContributorsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Contributor" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addCorrector" type="tns:addCorrector"/>
+      <xsd:complexType name="addCorrector">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="corrector" type="tns:Corrector" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addCorrectorResponse" type="tns:addCorrectorResponse"/>
+      <xsd:complexType name="addCorrectorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addCorrectors" type="tns:addCorrectors"/>
+      <xsd:complexType name="addCorrectors">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="correctors" type="tns:Corrector" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addCorrectorsResponse" type="tns:addCorrectorsResponse"/>
+      <xsd:complexType name="addCorrectorsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Corrector" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addDecoder" type="tns:addDecoder"/>
+      <xsd:complexType name="addDecoder">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="decoder" type="tns:Decoder" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addDecoderResponse" type="tns:addDecoderResponse"/>
+      <xsd:complexType name="addDecoderResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addDecoders" type="tns:addDecoders"/>
+      <xsd:complexType name="addDecoders">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="decoders" type="tns:Decoder" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addDecodersResponse" type="tns:addDecodersResponse"/>
+      <xsd:complexType name="addDecodersResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Decoder" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addExam" type="tns:addExam"/>
+      <xsd:complexType name="addExam">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="exam" type="tns:Exam" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addExamResponse" type="tns:addExamResponse"/>
+      <xsd:complexType name="addExamResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addExams" type="tns:addExams"/>
+      <xsd:complexType name="addExams">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="exams" type="tns:Exam" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addExamsResponse" type="tns:addExamsResponse"/>
+      <xsd:complexType name="addExamsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Exam" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addFile" type="tns:addFile"/>
+      <xsd:complexType name="addFile">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="file" type="tns:File" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addFileResponse" type="tns:addFileResponse"/>
+      <xsd:complexType name="addFileResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addFiles" type="tns:addFiles"/>
+      <xsd:complexType name="addFiles">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="files" type="tns:File" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addFilesResponse" type="tns:addFilesResponse"/>
+      <xsd:complexType name="addFilesResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:File" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addInvigilator" type="tns:addInvigilator"/>
+      <xsd:complexType name="addInvigilator">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="invigilator" type="tns:Invigilator" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addInvigilatorResponse" type="tns:addInvigilatorResponse"/>
+      <xsd:complexType name="addInvigilatorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addInvigilators" type="tns:addInvigilators"/>
+      <xsd:complexType name="addInvigilators">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="invigilators" type="tns:Invigilator" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addInvigilatorsResponse" type="tns:addInvigilatorsResponse"/>
+      <xsd:complexType name="addInvigilatorsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Invigilator" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addLock" type="tns:addLock"/>
+      <xsd:complexType name="addLock">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="lock" type="tns:Lock" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addLockResponse" type="tns:addLockResponse"/>
+      <xsd:complexType name="addLockResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addLocks" type="tns:addLocks"/>
+      <xsd:complexType name="addLocks">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="locks" type="tns:Lock" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addLocksResponse" type="tns:addLocksResponse"/>
+      <xsd:complexType name="addLocksResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Lock" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addQuestion" type="tns:addQuestion"/>
+      <xsd:complexType name="addQuestion">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="question" type="tns:Question" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addQuestionResponse" type="tns:addQuestionResponse"/>
+      <xsd:complexType name="addQuestionResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addQuestions" type="tns:addQuestions"/>
+      <xsd:complexType name="addQuestions">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="questions" type="tns:Question" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addQuestionsResponse" type="tns:addQuestionsResponse"/>
+      <xsd:complexType name="addQuestionsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Question" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addResource" type="tns:addResource"/>
+      <xsd:complexType name="addResource">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="resource" type="tns:Resource" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addResourceResponse" type="tns:addResourceResponse"/>
+      <xsd:complexType name="addResourceResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addResources" type="tns:addResources"/>
+      <xsd:complexType name="addResources">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="resources" type="tns:Resource" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addResourcesResponse" type="tns:addResourcesResponse"/>
+      <xsd:complexType name="addResourcesResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Resource" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addResult" type="tns:addResult"/>
+      <xsd:complexType name="addResult">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="result" type="tns:Result" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addResultResponse" type="tns:addResultResponse"/>
+      <xsd:complexType name="addResultResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addResults" type="tns:addResults"/>
+      <xsd:complexType name="addResults">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="results" type="tns:Result" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addResultsResponse" type="tns:addResultsResponse"/>
+      <xsd:complexType name="addResultsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Result" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addRoom" type="tns:addRoom"/>
+      <xsd:complexType name="addRoom">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="room" type="tns:Room" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addRoomResponse" type="tns:addRoomResponse"/>
+      <xsd:complexType name="addRoomResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addRooms" type="tns:addRooms"/>
+      <xsd:complexType name="addRooms">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="rooms" type="tns:Room" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addRoomsResponse" type="tns:addRoomsResponse"/>
+      <xsd:complexType name="addRoomsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Room" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addStudent" type="tns:addStudent"/>
+      <xsd:complexType name="addStudent">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="student" type="tns:Student" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addStudentResponse" type="tns:addStudentResponse"/>
+      <xsd:complexType name="addStudentResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addStudents" type="tns:addStudents"/>
+      <xsd:complexType name="addStudents">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="students" type="tns:Student" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addStudentsResponse" type="tns:addStudentsResponse"/>
+      <xsd:complexType name="addStudentsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Student" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addTeacher" type="tns:addTeacher"/>
+      <xsd:complexType name="addTeacher">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="teacher" type="tns:Teacher" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addTeacherResponse" type="tns:addTeacherResponse"/>
+      <xsd:complexType name="addTeacherResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addTeachers" type="tns:addTeachers"/>
+      <xsd:complexType name="addTeachers">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="teachers" type="tns:Teacher" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addTeachersResponse" type="tns:addTeachersResponse"/>
+      <xsd:complexType name="addTeachersResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Teacher" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addTopic" type="tns:addTopic"/>
+      <xsd:complexType name="addTopic">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="topic" type="tns:Topic" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addTopicResponse" type="tns:addTopicResponse"/>
+      <xsd:complexType name="addTopicResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addTopics" type="tns:addTopics"/>
+      <xsd:complexType name="addTopics">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="topics" type="tns:Topic" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addTopicsResponse" type="tns:addTopicsResponse"/>
+      <xsd:complexType name="addTopicsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Topic" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteAdmin" type="tns:deleteAdmin"/>
+      <xsd:complexType name="deleteAdmin">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteAdminResponse" type="tns:deleteAdminResponse"/>
+      <xsd:complexType name="deleteAdminResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteAnswer" type="tns:deleteAnswer"/>
+      <xsd:complexType name="deleteAnswer">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteAnswerResponse" type="tns:deleteAnswerResponse"/>
+      <xsd:complexType name="deleteAnswerResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteComputer" type="tns:deleteComputer"/>
+      <xsd:complexType name="deleteComputer">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteComputerResponse" type="tns:deleteComputerResponse"/>
+      <xsd:complexType name="deleteComputerResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteContributor" type="tns:deleteContributor"/>
+      <xsd:complexType name="deleteContributor">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteContributorResponse" type="tns:deleteContributorResponse"/>
+      <xsd:complexType name="deleteContributorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteCorrector" type="tns:deleteCorrector"/>
+      <xsd:complexType name="deleteCorrector">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteCorrectorResponse" type="tns:deleteCorrectorResponse"/>
+      <xsd:complexType name="deleteCorrectorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteDecoder" type="tns:deleteDecoder"/>
+      <xsd:complexType name="deleteDecoder">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteDecoderResponse" type="tns:deleteDecoderResponse"/>
+      <xsd:complexType name="deleteDecoderResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteExam" type="tns:deleteExam"/>
+      <xsd:complexType name="deleteExam">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteExamResponse" type="tns:deleteExamResponse"/>
+      <xsd:complexType name="deleteExamResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteFile" type="tns:deleteFile"/>
+      <xsd:complexType name="deleteFile">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteFileResponse" type="tns:deleteFileResponse"/>
+      <xsd:complexType name="deleteFileResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteInvigilator" type="tns:deleteInvigilator"/>
+      <xsd:complexType name="deleteInvigilator">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteInvigilatorResponse" type="tns:deleteInvigilatorResponse"/>
+      <xsd:complexType name="deleteInvigilatorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteLock" type="tns:deleteLock"/>
+      <xsd:complexType name="deleteLock">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteLockResponse" type="tns:deleteLockResponse"/>
+      <xsd:complexType name="deleteLockResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteQuestion" type="tns:deleteQuestion"/>
+      <xsd:complexType name="deleteQuestion">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteQuestionResponse" type="tns:deleteQuestionResponse"/>
+      <xsd:complexType name="deleteQuestionResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteResource" type="tns:deleteResource"/>
+      <xsd:complexType name="deleteResource">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteResourceResponse" type="tns:deleteResourceResponse"/>
+      <xsd:complexType name="deleteResourceResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteResult" type="tns:deleteResult"/>
+      <xsd:complexType name="deleteResult">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteResultResponse" type="tns:deleteResultResponse"/>
+      <xsd:complexType name="deleteResultResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteRoom" type="tns:deleteRoom"/>
+      <xsd:complexType name="deleteRoom">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteRoomResponse" type="tns:deleteRoomResponse"/>
+      <xsd:complexType name="deleteRoomResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteStudent" type="tns:deleteStudent"/>
+      <xsd:complexType name="deleteStudent">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteStudentResponse" type="tns:deleteStudentResponse"/>
+      <xsd:complexType name="deleteStudentResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteTeacher" type="tns:deleteTeacher"/>
+      <xsd:complexType name="deleteTeacher">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteTeacherResponse" type="tns:deleteTeacherResponse"/>
+      <xsd:complexType name="deleteTeacherResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteTopic" type="tns:deleteTopic"/>
+      <xsd:complexType name="deleteTopic">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="deleteTopicResponse" type="tns:deleteTopicResponse"/>
+      <xsd:complexType name="deleteTopicResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getAdmin" type="tns:getAdmin"/>
+      <xsd:complexType name="getAdmin">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getAdminResponse" type="tns:getAdminResponse"/>
+      <xsd:complexType name="getAdminResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Admin" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getAdmins" type="tns:getAdmins"/>
+      <xsd:complexType name="getAdmins">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getAdminsResponse" type="tns:getAdminsResponse"/>
+      <xsd:complexType name="getAdminsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Admin" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getAnswer" type="tns:getAnswer"/>
+      <xsd:complexType name="getAnswer">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getAnswerResponse" type="tns:getAnswerResponse"/>
+      <xsd:complexType name="getAnswerResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Answer" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getAnswers" type="tns:getAnswers"/>
+      <xsd:complexType name="getAnswers">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getAnswersResponse" type="tns:getAnswersResponse"/>
+      <xsd:complexType name="getAnswersResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Answer" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getComputer" type="tns:getComputer"/>
+      <xsd:complexType name="getComputer">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getComputerResponse" type="tns:getComputerResponse"/>
+      <xsd:complexType name="getComputerResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Computer" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getComputers" type="tns:getComputers"/>
+      <xsd:complexType name="getComputers">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getComputersResponse" type="tns:getComputersResponse"/>
+      <xsd:complexType name="getComputersResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Computer" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getContributor" type="tns:getContributor"/>
+      <xsd:complexType name="getContributor">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getContributorResponse" type="tns:getContributorResponse"/>
+      <xsd:complexType name="getContributorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Contributor" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getContributors" type="tns:getContributors"/>
+      <xsd:complexType name="getContributors">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getContributorsResponse" type="tns:getContributorsResponse"/>
+      <xsd:complexType name="getContributorsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Contributor" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getCorrector" type="tns:getCorrector"/>
+      <xsd:complexType name="getCorrector">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getCorrectorResponse" type="tns:getCorrectorResponse"/>
+      <xsd:complexType name="getCorrectorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Corrector" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getCorrectors" type="tns:getCorrectors"/>
+      <xsd:complexType name="getCorrectors">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getCorrectorsResponse" type="tns:getCorrectorsResponse"/>
+      <xsd:complexType name="getCorrectorsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Corrector" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getDecoder" type="tns:getDecoder"/>
+      <xsd:complexType name="getDecoder">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getDecoderResponse" type="tns:getDecoderResponse"/>
+      <xsd:complexType name="getDecoderResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Decoder" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getDecoders" type="tns:getDecoders"/>
+      <xsd:complexType name="getDecoders">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getDecodersResponse" type="tns:getDecodersResponse"/>
+      <xsd:complexType name="getDecodersResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Decoder" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getExam" type="tns:getExam"/>
+      <xsd:complexType name="getExam">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getExamResponse" type="tns:getExamResponse"/>
+      <xsd:complexType name="getExamResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Exam" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getExams" type="tns:getExams"/>
+      <xsd:complexType name="getExams">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getExamsResponse" type="tns:getExamsResponse"/>
+      <xsd:complexType name="getExamsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Exam" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getFile" type="tns:getFile"/>
+      <xsd:complexType name="getFile">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getFileResponse" type="tns:getFileResponse"/>
+      <xsd:complexType name="getFileResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:File" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getFiles" type="tns:getFiles"/>
+      <xsd:complexType name="getFiles">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getFilesResponse" type="tns:getFilesResponse"/>
+      <xsd:complexType name="getFilesResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:File" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getInvigilator" type="tns:getInvigilator"/>
+      <xsd:complexType name="getInvigilator">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getInvigilatorResponse" type="tns:getInvigilatorResponse"/>
+      <xsd:complexType name="getInvigilatorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Invigilator" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getInvigilators" type="tns:getInvigilators"/>
+      <xsd:complexType name="getInvigilators">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getInvigilatorsResponse" type="tns:getInvigilatorsResponse"/>
+      <xsd:complexType name="getInvigilatorsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Invigilator" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getLock" type="tns:getLock"/>
+      <xsd:complexType name="getLock">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getLockResponse" type="tns:getLockResponse"/>
+      <xsd:complexType name="getLockResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Lock" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getLocks" type="tns:getLocks"/>
+      <xsd:complexType name="getLocks">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getLocksResponse" type="tns:getLocksResponse"/>
+      <xsd:complexType name="getLocksResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Lock" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getQuestion" type="tns:getQuestion"/>
+      <xsd:complexType name="getQuestion">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getQuestionResponse" type="tns:getQuestionResponse"/>
+      <xsd:complexType name="getQuestionResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Question" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getQuestions" type="tns:getQuestions"/>
+      <xsd:complexType name="getQuestions">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getQuestionsResponse" type="tns:getQuestionsResponse"/>
+      <xsd:complexType name="getQuestionsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Question" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getResource" type="tns:getResource"/>
+      <xsd:complexType name="getResource">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getResourceResponse" type="tns:getResourceResponse"/>
+      <xsd:complexType name="getResourceResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Resource" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getResources" type="tns:getResources"/>
+      <xsd:complexType name="getResources">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getResourcesResponse" type="tns:getResourcesResponse"/>
+      <xsd:complexType name="getResourcesResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Resource" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getResult" type="tns:getResult"/>
+      <xsd:complexType name="getResult">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getResultResponse" type="tns:getResultResponse"/>
+      <xsd:complexType name="getResultResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Result" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getResults" type="tns:getResults"/>
+      <xsd:complexType name="getResults">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getResultsResponse" type="tns:getResultsResponse"/>
+      <xsd:complexType name="getResultsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Result" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getRoom" type="tns:getRoom"/>
+      <xsd:complexType name="getRoom">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getRoomResponse" type="tns:getRoomResponse"/>
+      <xsd:complexType name="getRoomResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Room" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getRooms" type="tns:getRooms"/>
+      <xsd:complexType name="getRooms">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getRoomsResponse" type="tns:getRoomsResponse"/>
+      <xsd:complexType name="getRoomsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Room" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getStudent" type="tns:getStudent"/>
+      <xsd:complexType name="getStudent">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getStudentResponse" type="tns:getStudentResponse"/>
+      <xsd:complexType name="getStudentResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Student" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getStudents" type="tns:getStudents"/>
+      <xsd:complexType name="getStudents">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getStudentsResponse" type="tns:getStudentsResponse"/>
+      <xsd:complexType name="getStudentsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Student" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getTeacher" type="tns:getTeacher"/>
+      <xsd:complexType name="getTeacher">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getTeacherResponse" type="tns:getTeacherResponse"/>
+      <xsd:complexType name="getTeacherResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Teacher" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getTeachers" type="tns:getTeachers"/>
+      <xsd:complexType name="getTeachers">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getTeachersResponse" type="tns:getTeachersResponse"/>
+      <xsd:complexType name="getTeachersResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Teacher" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getTopic" type="tns:getTopic"/>
+      <xsd:complexType name="getTopic">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="id" type="xsd:int" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getTopicResponse" type="tns:getTopicResponse"/>
+      <xsd:complexType name="getTopicResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Topic" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getTopics" type="tns:getTopics"/>
+      <xsd:complexType name="getTopics">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getTopicsResponse" type="tns:getTopicsResponse"/>
+      <xsd:complexType name="getTopicsResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Topic" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="openExam" type="tns:openExam"/>
+      <xsd:complexType name="openExam">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="openExamResponse" type="tns:openExamResponse"/>
+      <xsd:complexType name="openExamResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="tns:Handle" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setAdmin" type="tns:setAdmin"/>
+      <xsd:complexType name="setAdmin">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="admin" type="tns:Admin" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setAdminResponse" type="tns:setAdminResponse"/>
+      <xsd:complexType name="setAdminResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setAnswer" type="tns:setAnswer"/>
+      <xsd:complexType name="setAnswer">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="answer" type="tns:Answer" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setAnswerResponse" type="tns:setAnswerResponse"/>
+      <xsd:complexType name="setAnswerResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setComputer" type="tns:setComputer"/>
+      <xsd:complexType name="setComputer">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="computer" type="tns:Computer" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setComputerResponse" type="tns:setComputerResponse"/>
+      <xsd:complexType name="setComputerResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setContributor" type="tns:setContributor"/>
+      <xsd:complexType name="setContributor">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="contributor" type="tns:Contributor" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setContributorResponse" type="tns:setContributorResponse"/>
+      <xsd:complexType name="setContributorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setCorrector" type="tns:setCorrector"/>
+      <xsd:complexType name="setCorrector">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="corrector" type="tns:Corrector" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setCorrectorResponse" type="tns:setCorrectorResponse"/>
+      <xsd:complexType name="setCorrectorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setDecoder" type="tns:setDecoder"/>
+      <xsd:complexType name="setDecoder">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="decoder" type="tns:Decoder" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setDecoderResponse" type="tns:setDecoderResponse"/>
+      <xsd:complexType name="setDecoderResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setExam" type="tns:setExam"/>
+      <xsd:complexType name="setExam">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="exam" type="tns:Exam" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setExamResponse" type="tns:setExamResponse"/>
+      <xsd:complexType name="setExamResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setFile" type="tns:setFile"/>
+      <xsd:complexType name="setFile">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="file" type="tns:File" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setFileResponse" type="tns:setFileResponse"/>
+      <xsd:complexType name="setFileResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setInvigilator" type="tns:setInvigilator"/>
+      <xsd:complexType name="setInvigilator">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="invigilator" type="tns:Invigilator" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setInvigilatorResponse" type="tns:setInvigilatorResponse"/>
+      <xsd:complexType name="setInvigilatorResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setLock" type="tns:setLock"/>
+      <xsd:complexType name="setLock">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="lock" type="tns:Lock" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setLockResponse" type="tns:setLockResponse"/>
+      <xsd:complexType name="setLockResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setQuestion" type="tns:setQuestion"/>
+      <xsd:complexType name="setQuestion">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="question" type="tns:Question" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setQuestionResponse" type="tns:setQuestionResponse"/>
+      <xsd:complexType name="setQuestionResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setResource" type="tns:setResource"/>
+      <xsd:complexType name="setResource">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="resource" type="tns:Resource" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setResourceResponse" type="tns:setResourceResponse"/>
+      <xsd:complexType name="setResourceResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setResult" type="tns:setResult"/>
+      <xsd:complexType name="setResult">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="result" type="tns:Result" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setResultResponse" type="tns:setResultResponse"/>
+      <xsd:complexType name="setResultResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setRoom" type="tns:setRoom"/>
+      <xsd:complexType name="setRoom">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="room" type="tns:Room" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setRoomResponse" type="tns:setRoomResponse"/>
+      <xsd:complexType name="setRoomResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setStudent" type="tns:setStudent"/>
+      <xsd:complexType name="setStudent">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="student" type="tns:Student" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setStudentResponse" type="tns:setStudentResponse"/>
+      <xsd:complexType name="setStudentResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setTeacher" type="tns:setTeacher"/>
+      <xsd:complexType name="setTeacher">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="teacher" type="tns:Teacher" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setTeacherResponse" type="tns:setTeacherResponse"/>
+      <xsd:complexType name="setTeacherResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setTopic" type="tns:setTopic"/>
+      <xsd:complexType name="setTopic">
+        <xsd:sequence>
+          <xsd:element name="handle" type="tns:Handle" maxOccurs="1"/>
+          <xsd:element name="topic" type="tns:Topic" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="setTopicResponse" type="tns:setTopicResponse"/>
+      <xsd:complexType name="setTopicResponse">
+        <xsd:sequence>
+          <xsd:element name="return" type="xsd:boolean" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="addAdmin">
+    <wsdl:part element="tns:addAdmin" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addAdmins">
+    <wsdl:part element="tns:addAdmins" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addAnswer">
+    <wsdl:part element="tns:addAnswer" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addAnswers">
+    <wsdl:part element="tns:addAnswers" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addComputer">
+    <wsdl:part element="tns:addComputer" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addComputers">
+    <wsdl:part element="tns:addComputers" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addContributor">
+    <wsdl:part element="tns:addContributor" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addContributors">
+    <wsdl:part element="tns:addContributors" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addCorrector">
+    <wsdl:part element="tns:addCorrector" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addCorrectors">
+    <wsdl:part element="tns:addCorrectors" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addDecoder">
+    <wsdl:part element="tns:addDecoder" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addDecoders">
+    <wsdl:part element="tns:addDecoders" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addExam">
+    <wsdl:part element="tns:addExam" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addExams">
+    <wsdl:part element="tns:addExams" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addFile">
+    <wsdl:part element="tns:addFile" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addFiles">
+    <wsdl:part element="tns:addFiles" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addInvigilator">
+    <wsdl:part element="tns:addInvigilator" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addInvigilators">
+    <wsdl:part element="tns:addInvigilators" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addLock">
+    <wsdl:part element="tns:addLock" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addLocks">
+    <wsdl:part element="tns:addLocks" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addQuestion">
+    <wsdl:part element="tns:addQuestion" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addQuestions">
+    <wsdl:part element="tns:addQuestions" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addResource">
+    <wsdl:part element="tns:addResource" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addResources">
+    <wsdl:part element="tns:addResources" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addResult">
+    <wsdl:part element="tns:addResult" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addResults">
+    <wsdl:part element="tns:addResults" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addRoom">
+    <wsdl:part element="tns:addRoom" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addRooms">
+    <wsdl:part element="tns:addRooms" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addStudent">
+    <wsdl:part element="tns:addStudent" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addStudents">
+    <wsdl:part element="tns:addStudents" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addTeacher">
+    <wsdl:part element="tns:addTeacher" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addTeachers">
+    <wsdl:part element="tns:addTeachers" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addTopic">
+    <wsdl:part element="tns:addTopic" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addTopics">
+    <wsdl:part element="tns:addTopics" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteAdmin">
+    <wsdl:part element="tns:deleteAdmin" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteAnswer">
+    <wsdl:part element="tns:deleteAnswer" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteComputer">
+    <wsdl:part element="tns:deleteComputer" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteContributor">
+    <wsdl:part element="tns:deleteContributor" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteCorrector">
+    <wsdl:part element="tns:deleteCorrector" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteDecoder">
+    <wsdl:part element="tns:deleteDecoder" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteExam">
+    <wsdl:part element="tns:deleteExam" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteFile">
+    <wsdl:part element="tns:deleteFile" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteInvigilator">
+    <wsdl:part element="tns:deleteInvigilator" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteLock">
+    <wsdl:part element="tns:deleteLock" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteQuestion">
+    <wsdl:part element="tns:deleteQuestion" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteResource">
+    <wsdl:part element="tns:deleteResource" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteResult">
+    <wsdl:part element="tns:deleteResult" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteRoom">
+    <wsdl:part element="tns:deleteRoom" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteStudent">
+    <wsdl:part element="tns:deleteStudent" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteTeacher">
+    <wsdl:part element="tns:deleteTeacher" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteTopic">
+    <wsdl:part element="tns:deleteTopic" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAdmin">
+    <wsdl:part element="tns:getAdmin" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAdmins">
+    <wsdl:part element="tns:getAdmins" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAnswer">
+    <wsdl:part element="tns:getAnswer" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAnswers">
+    <wsdl:part element="tns:getAnswers" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getComputer">
+    <wsdl:part element="tns:getComputer" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getComputers">
+    <wsdl:part element="tns:getComputers" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getContributor">
+    <wsdl:part element="tns:getContributor" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getContributors">
+    <wsdl:part element="tns:getContributors" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getCorrector">
+    <wsdl:part element="tns:getCorrector" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getCorrectors">
+    <wsdl:part element="tns:getCorrectors" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getDecoder">
+    <wsdl:part element="tns:getDecoder" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getDecoders">
+    <wsdl:part element="tns:getDecoders" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getExam">
+    <wsdl:part element="tns:getExam" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getExams">
+    <wsdl:part element="tns:getExams" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getFile">
+    <wsdl:part element="tns:getFile" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getFiles">
+    <wsdl:part element="tns:getFiles" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getInvigilator">
+    <wsdl:part element="tns:getInvigilator" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getInvigilators">
+    <wsdl:part element="tns:getInvigilators" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getLock">
+    <wsdl:part element="tns:getLock" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getLocks">
+    <wsdl:part element="tns:getLocks" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getQuestion">
+    <wsdl:part element="tns:getQuestion" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getQuestions">
+    <wsdl:part element="tns:getQuestions" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getResource">
+    <wsdl:part element="tns:getResource" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getResources">
+    <wsdl:part element="tns:getResources" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getResult">
+    <wsdl:part element="tns:getResult" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getResults">
+    <wsdl:part element="tns:getResults" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getRoom">
+    <wsdl:part element="tns:getRoom" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getRooms">
+    <wsdl:part element="tns:getRooms" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getStudent">
+    <wsdl:part element="tns:getStudent" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getStudents">
+    <wsdl:part element="tns:getStudents" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTeacher">
+    <wsdl:part element="tns:getTeacher" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTeachers">
+    <wsdl:part element="tns:getTeachers" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTopic">
+    <wsdl:part element="tns:getTopic" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTopics">
+    <wsdl:part element="tns:getTopics" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="openExam">
+    <wsdl:part element="tns:openExam" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setAdmin">
+    <wsdl:part element="tns:setAdmin" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setAnswer">
+    <wsdl:part element="tns:setAnswer" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setComputer">
+    <wsdl:part element="tns:setComputer" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setContributor">
+    <wsdl:part element="tns:setContributor" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setCorrector">
+    <wsdl:part element="tns:setCorrector" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setDecoder">
+    <wsdl:part element="tns:setDecoder" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setExam">
+    <wsdl:part element="tns:setExam" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setFile">
+    <wsdl:part element="tns:setFile" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setInvigilator">
+    <wsdl:part element="tns:setInvigilator" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setLock">
+    <wsdl:part element="tns:setLock" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setQuestion">
+    <wsdl:part element="tns:setQuestion" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setResource">
+    <wsdl:part element="tns:setResource" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setResult">
+    <wsdl:part element="tns:setResult" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setRoom">
+    <wsdl:part element="tns:setRoom" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setStudent">
+    <wsdl:part element="tns:setStudent" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setTeacher">
+    <wsdl:part element="tns:setTeacher" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setTopic">
+    <wsdl:part element="tns:setTopic" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addAdminResponse">
+    <wsdl:part element="tns:addAdminResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addAdminsResponse">
+    <wsdl:part element="tns:addAdminsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addAnswerResponse">
+    <wsdl:part element="tns:addAnswerResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addAnswersResponse">
+    <wsdl:part element="tns:addAnswersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addComputerResponse">
+    <wsdl:part element="tns:addComputerResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addComputersResponse">
+    <wsdl:part element="tns:addComputersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addContributorResponse">
+    <wsdl:part element="tns:addContributorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addContributorsResponse">
+    <wsdl:part element="tns:addContributorsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addCorrectorResponse">
+    <wsdl:part element="tns:addCorrectorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addCorrectorsResponse">
+    <wsdl:part element="tns:addCorrectorsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addDecoderResponse">
+    <wsdl:part element="tns:addDecoderResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addDecodersResponse">
+    <wsdl:part element="tns:addDecodersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addExamResponse">
+    <wsdl:part element="tns:addExamResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addExamsResponse">
+    <wsdl:part element="tns:addExamsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addFileResponse">
+    <wsdl:part element="tns:addFileResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addFilesResponse">
+    <wsdl:part element="tns:addFilesResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addInvigilatorResponse">
+    <wsdl:part element="tns:addInvigilatorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addInvigilatorsResponse">
+    <wsdl:part element="tns:addInvigilatorsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addLockResponse">
+    <wsdl:part element="tns:addLockResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addLocksResponse">
+    <wsdl:part element="tns:addLocksResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addQuestionResponse">
+    <wsdl:part element="tns:addQuestionResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addQuestionsResponse">
+    <wsdl:part element="tns:addQuestionsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addResourceResponse">
+    <wsdl:part element="tns:addResourceResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addResourcesResponse">
+    <wsdl:part element="tns:addResourcesResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addResultResponse">
+    <wsdl:part element="tns:addResultResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addResultsResponse">
+    <wsdl:part element="tns:addResultsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addRoomResponse">
+    <wsdl:part element="tns:addRoomResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addRoomsResponse">
+    <wsdl:part element="tns:addRoomsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addStudentResponse">
+    <wsdl:part element="tns:addStudentResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addStudentsResponse">
+    <wsdl:part element="tns:addStudentsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addTeacherResponse">
+    <wsdl:part element="tns:addTeacherResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addTeachersResponse">
+    <wsdl:part element="tns:addTeachersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addTopicResponse">
+    <wsdl:part element="tns:addTopicResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addTopicsResponse">
+    <wsdl:part element="tns:addTopicsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteAdminResponse">
+    <wsdl:part element="tns:deleteAdminResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteAnswerResponse">
+    <wsdl:part element="tns:deleteAnswerResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteComputerResponse">
+    <wsdl:part element="tns:deleteComputerResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteContributorResponse">
+    <wsdl:part element="tns:deleteContributorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteCorrectorResponse">
+    <wsdl:part element="tns:deleteCorrectorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteDecoderResponse">
+    <wsdl:part element="tns:deleteDecoderResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteExamResponse">
+    <wsdl:part element="tns:deleteExamResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteFileResponse">
+    <wsdl:part element="tns:deleteFileResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteInvigilatorResponse">
+    <wsdl:part element="tns:deleteInvigilatorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteLockResponse">
+    <wsdl:part element="tns:deleteLockResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteQuestionResponse">
+    <wsdl:part element="tns:deleteQuestionResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteResourceResponse">
+    <wsdl:part element="tns:deleteResourceResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteResultResponse">
+    <wsdl:part element="tns:deleteResultResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteRoomResponse">
+    <wsdl:part element="tns:deleteRoomResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteStudentResponse">
+    <wsdl:part element="tns:deleteStudentResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteTeacherResponse">
+    <wsdl:part element="tns:deleteTeacherResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="deleteTopicResponse">
+    <wsdl:part element="tns:deleteTopicResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAdminResponse">
+    <wsdl:part element="tns:getAdminResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAdminsResponse">
+    <wsdl:part element="tns:getAdminsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAnswerResponse">
+    <wsdl:part element="tns:getAnswerResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAnswersResponse">
+    <wsdl:part element="tns:getAnswersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getComputerResponse">
+    <wsdl:part element="tns:getComputerResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getComputersResponse">
+    <wsdl:part element="tns:getComputersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getContributorResponse">
+    <wsdl:part element="tns:getContributorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getContributorsResponse">
+    <wsdl:part element="tns:getContributorsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getCorrectorResponse">
+    <wsdl:part element="tns:getCorrectorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getCorrectorsResponse">
+    <wsdl:part element="tns:getCorrectorsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getDecoderResponse">
+    <wsdl:part element="tns:getDecoderResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getDecodersResponse">
+    <wsdl:part element="tns:getDecodersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getExamResponse">
+    <wsdl:part element="tns:getExamResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getExamsResponse">
+    <wsdl:part element="tns:getExamsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getFileResponse">
+    <wsdl:part element="tns:getFileResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getFilesResponse">
+    <wsdl:part element="tns:getFilesResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getInvigilatorResponse">
+    <wsdl:part element="tns:getInvigilatorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getInvigilatorsResponse">
+    <wsdl:part element="tns:getInvigilatorsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getLockResponse">
+    <wsdl:part element="tns:getLockResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getLocksResponse">
+    <wsdl:part element="tns:getLocksResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getQuestionResponse">
+    <wsdl:part element="tns:getQuestionResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getQuestionsResponse">
+    <wsdl:part element="tns:getQuestionsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getResourceResponse">
+    <wsdl:part element="tns:getResourceResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getResourcesResponse">
+    <wsdl:part element="tns:getResourcesResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getResultResponse">
+    <wsdl:part element="tns:getResultResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getResultsResponse">
+    <wsdl:part element="tns:getResultsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getRoomResponse">
+    <wsdl:part element="tns:getRoomResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getRoomsResponse">
+    <wsdl:part element="tns:getRoomsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getStudentResponse">
+    <wsdl:part element="tns:getStudentResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getStudentsResponse">
+    <wsdl:part element="tns:getStudentsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTeacherResponse">
+    <wsdl:part element="tns:getTeacherResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTeachersResponse">
+    <wsdl:part element="tns:getTeachersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTopicResponse">
+    <wsdl:part element="tns:getTopicResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getTopicsResponse">
+    <wsdl:part element="tns:getTopicsResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="openExamResponse">
+    <wsdl:part element="tns:openExamResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setAdminResponse">
+    <wsdl:part element="tns:setAdminResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setAnswerResponse">
+    <wsdl:part element="tns:setAnswerResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setComputerResponse">
+    <wsdl:part element="tns:setComputerResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setContributorResponse">
+    <wsdl:part element="tns:setContributorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setCorrectorResponse">
+    <wsdl:part element="tns:setCorrectorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setDecoderResponse">
+    <wsdl:part element="tns:setDecoderResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setExamResponse">
+    <wsdl:part element="tns:setExamResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setFileResponse">
+    <wsdl:part element="tns:setFileResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setInvigilatorResponse">
+    <wsdl:part element="tns:setInvigilatorResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setLockResponse">
+    <wsdl:part element="tns:setLockResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setQuestionResponse">
+    <wsdl:part element="tns:setQuestionResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setResourceResponse">
+    <wsdl:part element="tns:setResourceResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setResultResponse">
+    <wsdl:part element="tns:setResultResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setRoomResponse">
+    <wsdl:part element="tns:setRoomResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setStudentResponse">
+    <wsdl:part element="tns:setStudentResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setTeacherResponse">
+    <wsdl:part element="tns:setTeacherResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="setTopicResponse">
+    <wsdl:part element="tns:setTopicResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="CoreServicePortType">
+    <wsdl:operation name="addAdmin">
+      <wsdl:documentation>
+	Add single admin.
+	@param Handle The handle object. [name=handle]
+	@param Admin The admin object. [name=admin]
+	@return int The created admin ID.</wsdl:documentation>
+      <wsdl:input message="tns:addAdmin" name="addAdmin"/>
+      <wsdl:output message="tns:addAdminResponse" name="addAdminResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addAdmins">
+      <wsdl:documentation>
+	Add list of admins.
+	@param Handle The handle object. [name=handle]
+	@param Admin The list of admin object. [name=admins]
+	@return Admin The list of created admins.</wsdl:documentation>
+      <wsdl:input message="tns:addAdmins" name="addAdmins"/>
+      <wsdl:output message="tns:addAdminsResponse" name="addAdminsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addAnswer">
+      <wsdl:documentation>
+	Add single answer.
+	@param Handle The handle object. [name=handle]
+	@param Answer The answer object. [name=answer]
+	@return int The created answer ID.</wsdl:documentation>
+      <wsdl:input message="tns:addAnswer" name="addAnswer"/>
+      <wsdl:output message="tns:addAnswerResponse" name="addAnswerResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addAnswers">
+      <wsdl:documentation>
+	Add list of answers.
+	@param Handle The handle object. [name=handle]
+	@param Answer The list of answer object. [name=answers]
+	@return Answer The list of created answers.</wsdl:documentation>
+      <wsdl:input message="tns:addAnswers" name="addAnswers"/>
+      <wsdl:output message="tns:addAnswersResponse" name="addAnswersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addComputer">
+      <wsdl:documentation>
+	Add single computer.
+	@param Handle The handle object. [name=handle]
+	@param Computer The computer object. [name=computer]
+	@return int The created computer ID.</wsdl:documentation>
+      <wsdl:input message="tns:addComputer" name="addComputer"/>
+      <wsdl:output message="tns:addComputerResponse" name="addComputerResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addComputers">
+      <wsdl:documentation>
+	Add list of computers.
+	@param Handle The handle object. [name=handle]
+	@param Computer The list of computer object. [name=computers]
+	@return Computer The list of created computers.</wsdl:documentation>
+      <wsdl:input message="tns:addComputers" name="addComputers"/>
+      <wsdl:output message="tns:addComputersResponse" name="addComputersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addContributor">
+      <wsdl:documentation>
+	Add single contributor.
+	@param Handle The handle object. [name=handle]
+	@param Contributor The contributor object. [name=contributor]
+	@return int The created contributor ID.</wsdl:documentation>
+      <wsdl:input message="tns:addContributor" name="addContributor"/>
+      <wsdl:output message="tns:addContributorResponse" name="addContributorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addContributors">
+      <wsdl:documentation>
+	Add list of contributors.
+	@param Handle The handle object. [name=handle]
+	@param Contributor The list of contributor object. [name=contributors]
+	@return Contributor The list of created contributors.</wsdl:documentation>
+      <wsdl:input message="tns:addContributors" name="addContributors"/>
+      <wsdl:output message="tns:addContributorsResponse" name="addContributorsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addCorrector">
+      <wsdl:documentation>
+	Add single corrector.
+	@param Handle The handle object. [name=handle]
+	@param Corrector The corrector object. [name=corrector]
+	@return int The created corrector ID.</wsdl:documentation>
+      <wsdl:input message="tns:addCorrector" name="addCorrector"/>
+      <wsdl:output message="tns:addCorrectorResponse" name="addCorrectorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addCorrectors">
+      <wsdl:documentation>
+	Add list of correctors.
+	@param Handle The handle object. [name=handle]
+	@param Corrector The list of corrector object. [name=correctors]
+	@return Corrector The list of created correctors.</wsdl:documentation>
+      <wsdl:input message="tns:addCorrectors" name="addCorrectors"/>
+      <wsdl:output message="tns:addCorrectorsResponse" name="addCorrectorsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addDecoder">
+      <wsdl:documentation>
+	Add single decoder.
+	@param Handle The handle object. [name=handle]
+	@param Decoder The decoder object. [name=decoder]
+	@return int The created decoder ID.</wsdl:documentation>
+      <wsdl:input message="tns:addDecoder" name="addDecoder"/>
+      <wsdl:output message="tns:addDecoderResponse" name="addDecoderResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addDecoders">
+      <wsdl:documentation>
+	Add list of decoders.
+	@param Handle The handle object. [name=handle]
+	@param Decoder The list of decoder object. [name=decoders]
+	@return Decoder The list of created decoders.</wsdl:documentation>
+      <wsdl:input message="tns:addDecoders" name="addDecoders"/>
+      <wsdl:output message="tns:addDecodersResponse" name="addDecodersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addExam">
+      <wsdl:documentation>
+	Add single exam.
+	@param Handle The handle object. [name=handle]
+	@param Exam The exam object. [name=exam]
+	@return int The created exam ID.</wsdl:documentation>
+      <wsdl:input message="tns:addExam" name="addExam"/>
+      <wsdl:output message="tns:addExamResponse" name="addExamResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addExams">
+      <wsdl:documentation>
+	Add list of exams.
+	@param Handle The handle object. [name=handle]
+	@param Exam The list of exam object. [name=exams]
+	@return Exam The list of created exams.</wsdl:documentation>
+      <wsdl:input message="tns:addExams" name="addExams"/>
+      <wsdl:output message="tns:addExamsResponse" name="addExamsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addFile">
+      <wsdl:documentation>
+	Add single file.
+	@param Handle The handle object. [name=handle]
+	@param File The file object. [name=file]
+	@return int The created file ID.</wsdl:documentation>
+      <wsdl:input message="tns:addFile" name="addFile"/>
+      <wsdl:output message="tns:addFileResponse" name="addFileResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addFiles">
+      <wsdl:documentation>
+	Add list of files.
+	@param Handle The handle object. [name=handle]
+	@param File The list of file object. [name=files]
+	@return File The list of created files.</wsdl:documentation>
+      <wsdl:input message="tns:addFiles" name="addFiles"/>
+      <wsdl:output message="tns:addFilesResponse" name="addFilesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addInvigilator">
+      <wsdl:documentation>
+	Add single invigilator.
+	@param Handle The handle object. [name=handle]
+	@param Invigilator The invigilator object. [name=invigilator]
+	@return int The created invigilator ID.</wsdl:documentation>
+      <wsdl:input message="tns:addInvigilator" name="addInvigilator"/>
+      <wsdl:output message="tns:addInvigilatorResponse" name="addInvigilatorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addInvigilators">
+      <wsdl:documentation>
+	Add list of invigilators.
+	@param Handle The handle object. [name=handle]
+	@param Invigilator The list of invigilator object. [name=invigilators]
+	@return Invigilator The list of created invigilators.</wsdl:documentation>
+      <wsdl:input message="tns:addInvigilators" name="addInvigilators"/>
+      <wsdl:output message="tns:addInvigilatorsResponse" name="addInvigilatorsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addLock">
+      <wsdl:documentation>
+	Add single lock.
+	@param Handle The handle object. [name=handle]
+	@param Lock The lock object. [name=lock]
+	@return int The created lock ID.</wsdl:documentation>
+      <wsdl:input message="tns:addLock" name="addLock"/>
+      <wsdl:output message="tns:addLockResponse" name="addLockResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addLocks">
+      <wsdl:documentation>
+	Add list of locks.
+	@param Handle The handle object. [name=handle]
+	@param Lock The list of lock object. [name=locks]
+	@return Lock The list of created locks.</wsdl:documentation>
+      <wsdl:input message="tns:addLocks" name="addLocks"/>
+      <wsdl:output message="tns:addLocksResponse" name="addLocksResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addQuestion">
+      <wsdl:documentation>
+	Add single question.
+	@param Handle The handle object. [name=handle]
+	@param Question The question object. [name=question]
+	@return int The created question ID.</wsdl:documentation>
+      <wsdl:input message="tns:addQuestion" name="addQuestion"/>
+      <wsdl:output message="tns:addQuestionResponse" name="addQuestionResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addQuestions">
+      <wsdl:documentation>
+	Add list of questions.
+	@param Handle The handle object. [name=handle]
+	@param Question The list of question object. [name=questions]
+	@return Question The list of created questions.</wsdl:documentation>
+      <wsdl:input message="tns:addQuestions" name="addQuestions"/>
+      <wsdl:output message="tns:addQuestionsResponse" name="addQuestionsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addResource">
+      <wsdl:documentation>
+	Add single resource.
+	@param Handle The handle object. [name=handle]
+	@param Resource The resource object. [name=resource]
+	@return int The created resource ID.</wsdl:documentation>
+      <wsdl:input message="tns:addResource" name="addResource"/>
+      <wsdl:output message="tns:addResourceResponse" name="addResourceResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addResources">
+      <wsdl:documentation>
+	Add list of resources.
+	@param Handle The handle object. [name=handle]
+	@param Resource The list of resource object. [name=resources]
+	@return Resource The list of created resources.</wsdl:documentation>
+      <wsdl:input message="tns:addResources" name="addResources"/>
+      <wsdl:output message="tns:addResourcesResponse" name="addResourcesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addResult">
+      <wsdl:documentation>
+	Add single result.
+	@param Handle The handle object. [name=handle]
+	@param Result The result object. [name=result]
+	@return int The created result ID.</wsdl:documentation>
+      <wsdl:input message="tns:addResult" name="addResult"/>
+      <wsdl:output message="tns:addResultResponse" name="addResultResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addResults">
+      <wsdl:documentation>
+	Add list of results.
+	@param Handle The handle object. [name=handle]
+	@param Result The list of result object. [name=results]
+	@return Result The list of created results.</wsdl:documentation>
+      <wsdl:input message="tns:addResults" name="addResults"/>
+      <wsdl:output message="tns:addResultsResponse" name="addResultsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addRoom">
+      <wsdl:documentation>
+	Add single room.
+	@param Handle The handle object. [name=handle]
+	@param Room The room object. [name=room]
+	@return int The created room ID.</wsdl:documentation>
+      <wsdl:input message="tns:addRoom" name="addRoom"/>
+      <wsdl:output message="tns:addRoomResponse" name="addRoomResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addRooms">
+      <wsdl:documentation>
+	Add list of rooms.
+	@param Handle The handle object. [name=handle]
+	@param Room The list of room object. [name=rooms]
+	@return Room The list of created rooms.</wsdl:documentation>
+      <wsdl:input message="tns:addRooms" name="addRooms"/>
+      <wsdl:output message="tns:addRoomsResponse" name="addRoomsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addStudent">
+      <wsdl:documentation>
+	Add single student.
+	@param Handle The handle object. [name=handle]
+	@param Student The student object. [name=student]
+	@return int The created student ID.</wsdl:documentation>
+      <wsdl:input message="tns:addStudent" name="addStudent"/>
+      <wsdl:output message="tns:addStudentResponse" name="addStudentResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addStudents">
+      <wsdl:documentation>
+	Add list of students.
+	@param Handle The handle object. [name=handle]
+	@param Student The list of student object. [name=students]
+	@return Student The list of created students.</wsdl:documentation>
+      <wsdl:input message="tns:addStudents" name="addStudents"/>
+      <wsdl:output message="tns:addStudentsResponse" name="addStudentsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addTeacher">
+      <wsdl:documentation>
+	Add single teacher.
+	@param Handle The handle object. [name=handle]
+	@param Teacher The teacher object. [name=teacher]
+	@return int The created teacher ID.</wsdl:documentation>
+      <wsdl:input message="tns:addTeacher" name="addTeacher"/>
+      <wsdl:output message="tns:addTeacherResponse" name="addTeacherResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addTeachers">
+      <wsdl:documentation>
+	Add list of teachers.
+	@param Handle The handle object. [name=handle]
+	@param Teacher The list of teacher object. [name=teachers]
+	@return Teacher The list of created teachers.</wsdl:documentation>
+      <wsdl:input message="tns:addTeachers" name="addTeachers"/>
+      <wsdl:output message="tns:addTeachersResponse" name="addTeachersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addTopic">
+      <wsdl:documentation>
+	Add single topic.
+	@param Handle The handle object. [name=handle]
+	@param Topic The topic object. [name=topic]
+	@return int The created topic ID.</wsdl:documentation>
+      <wsdl:input message="tns:addTopic" name="addTopic"/>
+      <wsdl:output message="tns:addTopicResponse" name="addTopicResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="addTopics">
+      <wsdl:documentation>
+	Add list of topics.
+	@param Handle The handle object. [name=handle]
+	@param Topic The list of topic object. [name=topics]
+	@return Topic The list of created topics.</wsdl:documentation>
+      <wsdl:input message="tns:addTopics" name="addTopics"/>
+      <wsdl:output message="tns:addTopicsResponse" name="addTopicsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteAdmin">
+      <wsdl:documentation>
+	Delete admin.
+	@param Handle The handle object. [name=handle]
+	@param int The admin ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteAdmin" name="deleteAdmin"/>
+      <wsdl:output message="tns:deleteAdminResponse" name="deleteAdminResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteAnswer">
+      <wsdl:documentation>
+	Delete answer.
+	@param Handle The handle object. [name=handle]
+	@param int The answer ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteAnswer" name="deleteAnswer"/>
+      <wsdl:output message="tns:deleteAnswerResponse" name="deleteAnswerResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteComputer">
+      <wsdl:documentation>
+	Delete computer.
+	@param Handle The handle object. [name=handle]
+	@param int The computer ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteComputer" name="deleteComputer"/>
+      <wsdl:output message="tns:deleteComputerResponse" name="deleteComputerResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteContributor">
+      <wsdl:documentation>
+	Delete contributor.
+	@param Handle The handle object. [name=handle]
+	@param int The contributor ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteContributor" name="deleteContributor"/>
+      <wsdl:output message="tns:deleteContributorResponse" name="deleteContributorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteCorrector">
+      <wsdl:documentation>
+	Delete corrector.
+	@param Handle The handle object. [name=handle]
+	@param int The corrector ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteCorrector" name="deleteCorrector"/>
+      <wsdl:output message="tns:deleteCorrectorResponse" name="deleteCorrectorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteDecoder">
+      <wsdl:documentation>
+	Delete decoder.
+	@param Handle The handle object. [name=handle]
+	@param int The decoder ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteDecoder" name="deleteDecoder"/>
+      <wsdl:output message="tns:deleteDecoderResponse" name="deleteDecoderResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteExam">
+      <wsdl:documentation>
+	Delete exam.
+	@param Handle The handle object. [name=handle]
+	@param int The exam ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteExam" name="deleteExam"/>
+      <wsdl:output message="tns:deleteExamResponse" name="deleteExamResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteFile">
+      <wsdl:documentation>
+	Delete file.
+	@param Handle The handle object. [name=handle]
+	@param int The file ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteFile" name="deleteFile"/>
+      <wsdl:output message="tns:deleteFileResponse" name="deleteFileResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteInvigilator">
+      <wsdl:documentation>
+	Delete invigilator.
+	@param Handle The handle object. [name=handle]
+	@param int The invigilator ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteInvigilator" name="deleteInvigilator"/>
+      <wsdl:output message="tns:deleteInvigilatorResponse" name="deleteInvigilatorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteLock">
+      <wsdl:documentation>
+	Delete lock.
+	@param Handle The handle object. [name=handle]
+	@param int The lock ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteLock" name="deleteLock"/>
+      <wsdl:output message="tns:deleteLockResponse" name="deleteLockResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteQuestion">
+      <wsdl:documentation>
+	Delete question.
+	@param Handle The handle object. [name=handle]
+	@param int The question ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteQuestion" name="deleteQuestion"/>
+      <wsdl:output message="tns:deleteQuestionResponse" name="deleteQuestionResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteResource">
+      <wsdl:documentation>
+	Delete resource.
+	@param Handle The handle object. [name=handle]
+	@param int The resource ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteResource" name="deleteResource"/>
+      <wsdl:output message="tns:deleteResourceResponse" name="deleteResourceResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteResult">
+      <wsdl:documentation>
+	Delete result.
+	@param Handle The handle object. [name=handle]
+	@param int The result ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteResult" name="deleteResult"/>
+      <wsdl:output message="tns:deleteResultResponse" name="deleteResultResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteRoom">
+      <wsdl:documentation>
+	Delete room.
+	@param Handle The handle object. [name=handle]
+	@param int The room ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteRoom" name="deleteRoom"/>
+      <wsdl:output message="tns:deleteRoomResponse" name="deleteRoomResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteStudent">
+      <wsdl:documentation>
+	Delete student.
+	@param Handle The handle object. [name=handle]
+	@param int The student ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteStudent" name="deleteStudent"/>
+      <wsdl:output message="tns:deleteStudentResponse" name="deleteStudentResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteTeacher">
+      <wsdl:documentation>
+	Delete teacher.
+	@param Handle The handle object. [name=handle]
+	@param int The teacher ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteTeacher" name="deleteTeacher"/>
+      <wsdl:output message="tns:deleteTeacherResponse" name="deleteTeacherResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteTopic">
+      <wsdl:documentation>
+	Delete topic.
+	@param Handle The handle object. [name=handle]
+	@param int The topic ID. [name=id]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:deleteTopic" name="deleteTopic"/>
+      <wsdl:output message="tns:deleteTopicResponse" name="deleteTopicResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getAdmin">
+      <wsdl:documentation>
+	Read single admin.
+	@param Handle The handle object. [name=handle]
+	@param int The admin ID. [name=id]
+	@return Admin The admin object.</wsdl:documentation>
+      <wsdl:input message="tns:getAdmin" name="getAdmin"/>
+      <wsdl:output message="tns:getAdminResponse" name="getAdminResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getAdmins">
+      <wsdl:documentation>
+	Read list of admins.
+	@param Handle The handle object. [name=handle]
+	@return Admin The admin list.</wsdl:documentation>
+      <wsdl:input message="tns:getAdmins" name="getAdmins"/>
+      <wsdl:output message="tns:getAdminsResponse" name="getAdminsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getAnswer">
+      <wsdl:documentation>
+	Read single answer.
+	@param Handle The handle object. [name=handle]
+	@param int The answer ID. [name=id]
+	@return Answer The answer object.</wsdl:documentation>
+      <wsdl:input message="tns:getAnswer" name="getAnswer"/>
+      <wsdl:output message="tns:getAnswerResponse" name="getAnswerResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getAnswers">
+      <wsdl:documentation>
+	Read list of answers.
+	@param Handle The handle object. [name=handle]
+	@return Answer The answer list.</wsdl:documentation>
+      <wsdl:input message="tns:getAnswers" name="getAnswers"/>
+      <wsdl:output message="tns:getAnswersResponse" name="getAnswersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getComputer">
+      <wsdl:documentation>
+	Read single computer.
+	@param Handle The handle object. [name=handle]
+	@param int The computer ID. [name=id]
+	@return Computer The computer object.</wsdl:documentation>
+      <wsdl:input message="tns:getComputer" name="getComputer"/>
+      <wsdl:output message="tns:getComputerResponse" name="getComputerResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getComputers">
+      <wsdl:documentation>
+	Read list of computers.
+	@param Handle The handle object. [name=handle]
+	@return Computer The computer list.</wsdl:documentation>
+      <wsdl:input message="tns:getComputers" name="getComputers"/>
+      <wsdl:output message="tns:getComputersResponse" name="getComputersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getContributor">
+      <wsdl:documentation>
+	Read single contributor.
+	@param Handle The handle object. [name=handle]
+	@param int The contributor ID. [name=id]
+	@return Contributor The contributor object.</wsdl:documentation>
+      <wsdl:input message="tns:getContributor" name="getContributor"/>
+      <wsdl:output message="tns:getContributorResponse" name="getContributorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getContributors">
+      <wsdl:documentation>
+	Read list of contributors.
+	@param Handle The handle object. [name=handle]
+	@return Contributor The contributor list.</wsdl:documentation>
+      <wsdl:input message="tns:getContributors" name="getContributors"/>
+      <wsdl:output message="tns:getContributorsResponse" name="getContributorsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getCorrector">
+      <wsdl:documentation>
+	Read single corrector.
+	@param Handle The handle object. [name=handle]
+	@param int The corrector ID. [name=id]
+	@return Corrector The corrector object.</wsdl:documentation>
+      <wsdl:input message="tns:getCorrector" name="getCorrector"/>
+      <wsdl:output message="tns:getCorrectorResponse" name="getCorrectorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getCorrectors">
+      <wsdl:documentation>
+	Read list of correctors.
+	@param Handle The handle object. [name=handle]
+	@return Corrector The corrector list.</wsdl:documentation>
+      <wsdl:input message="tns:getCorrectors" name="getCorrectors"/>
+      <wsdl:output message="tns:getCorrectorsResponse" name="getCorrectorsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getDecoder">
+      <wsdl:documentation>
+	Read single decoder.
+	@param Handle The handle object. [name=handle]
+	@param int The decoder ID. [name=id]
+	@return Decoder The decoder object.</wsdl:documentation>
+      <wsdl:input message="tns:getDecoder" name="getDecoder"/>
+      <wsdl:output message="tns:getDecoderResponse" name="getDecoderResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getDecoders">
+      <wsdl:documentation>
+	Read list of decoders.
+	@param Handle The handle object. [name=handle]
+	@return Decoder The decoder list.</wsdl:documentation>
+      <wsdl:input message="tns:getDecoders" name="getDecoders"/>
+      <wsdl:output message="tns:getDecodersResponse" name="getDecodersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getExam">
+      <wsdl:documentation>
+	Read single exam.
+	@param Handle The handle object. [name=handle]
+	@param int The exam ID. [name=id]
+	@return Exam The exam object.</wsdl:documentation>
+      <wsdl:input message="tns:getExam" name="getExam"/>
+      <wsdl:output message="tns:getExamResponse" name="getExamResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getExams">
+      <wsdl:documentation>
+	Read list of exams.
+	@param Handle The handle object. [name=handle]
+	@return Exam The exam list.</wsdl:documentation>
+      <wsdl:input message="tns:getExams" name="getExams"/>
+      <wsdl:output message="tns:getExamsResponse" name="getExamsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getFile">
+      <wsdl:documentation>
+	Read single file.
+	@param Handle The handle object. [name=handle]
+	@param int The file ID. [name=id]
+	@return File The file object.</wsdl:documentation>
+      <wsdl:input message="tns:getFile" name="getFile"/>
+      <wsdl:output message="tns:getFileResponse" name="getFileResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getFiles">
+      <wsdl:documentation>
+	Read list of files.
+	@param Handle The handle object. [name=handle]
+	@return File The file list.</wsdl:documentation>
+      <wsdl:input message="tns:getFiles" name="getFiles"/>
+      <wsdl:output message="tns:getFilesResponse" name="getFilesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getInvigilator">
+      <wsdl:documentation>
+	Read single invigilator.
+	@param Handle The handle object. [name=handle]
+	@param int The invigilator ID. [name=id]
+	@return Invigilator The invigilator object.</wsdl:documentation>
+      <wsdl:input message="tns:getInvigilator" name="getInvigilator"/>
+      <wsdl:output message="tns:getInvigilatorResponse" name="getInvigilatorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getInvigilators">
+      <wsdl:documentation>
+	Read list of invigilators.
+	@param Handle The handle object. [name=handle]
+	@return Invigilator The invigilator list.</wsdl:documentation>
+      <wsdl:input message="tns:getInvigilators" name="getInvigilators"/>
+      <wsdl:output message="tns:getInvigilatorsResponse" name="getInvigilatorsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getLock">
+      <wsdl:documentation>
+	Read single lock.
+	@param Handle The handle object. [name=handle]
+	@param int The lock ID. [name=id]
+	@return Lock The lock object.</wsdl:documentation>
+      <wsdl:input message="tns:getLock" name="getLock"/>
+      <wsdl:output message="tns:getLockResponse" name="getLockResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getLocks">
+      <wsdl:documentation>
+	Read list of locks.
+	@param Handle The handle object. [name=handle]
+	@return Lock The lock list.</wsdl:documentation>
+      <wsdl:input message="tns:getLocks" name="getLocks"/>
+      <wsdl:output message="tns:getLocksResponse" name="getLocksResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getQuestion">
+      <wsdl:documentation>
+	Read single question.
+	@param Handle The handle object. [name=handle]
+	@param int The question ID. [name=id]
+	@return Question The question object.</wsdl:documentation>
+      <wsdl:input message="tns:getQuestion" name="getQuestion"/>
+      <wsdl:output message="tns:getQuestionResponse" name="getQuestionResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getQuestions">
+      <wsdl:documentation>
+	Read list of questions.
+	@param Handle The handle object. [name=handle]
+	@return Question The question list.</wsdl:documentation>
+      <wsdl:input message="tns:getQuestions" name="getQuestions"/>
+      <wsdl:output message="tns:getQuestionsResponse" name="getQuestionsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getResource">
+      <wsdl:documentation>
+	Read single resource.
+	@param Handle The handle object. [name=handle]
+	@param int The resource ID. [name=id]
+	@return Resource The resource object.</wsdl:documentation>
+      <wsdl:input message="tns:getResource" name="getResource"/>
+      <wsdl:output message="tns:getResourceResponse" name="getResourceResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getResources">
+      <wsdl:documentation>
+	Read list of resources.
+	@param Handle The handle object. [name=handle]
+	@return Resource The resource list.</wsdl:documentation>
+      <wsdl:input message="tns:getResources" name="getResources"/>
+      <wsdl:output message="tns:getResourcesResponse" name="getResourcesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getResult">
+      <wsdl:documentation>
+	Read single result.
+	@param Handle The handle object. [name=handle]
+	@param int The result ID. [name=id]
+	@return Result The result object.</wsdl:documentation>
+      <wsdl:input message="tns:getResult" name="getResult"/>
+      <wsdl:output message="tns:getResultResponse" name="getResultResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getResults">
+      <wsdl:documentation>
+	Read list of results.
+	@param Handle The handle object. [name=handle]
+	@return Result The result list.</wsdl:documentation>
+      <wsdl:input message="tns:getResults" name="getResults"/>
+      <wsdl:output message="tns:getResultsResponse" name="getResultsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getRoom">
+      <wsdl:documentation>
+	Read single room.
+	@param Handle The handle object. [name=handle]
+	@param int The room ID. [name=id]
+	@return Room The room object.</wsdl:documentation>
+      <wsdl:input message="tns:getRoom" name="getRoom"/>
+      <wsdl:output message="tns:getRoomResponse" name="getRoomResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getRooms">
+      <wsdl:documentation>
+	Read list of rooms.
+	@param Handle The handle object. [name=handle]
+	@return Room The room list.</wsdl:documentation>
+      <wsdl:input message="tns:getRooms" name="getRooms"/>
+      <wsdl:output message="tns:getRoomsResponse" name="getRoomsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStudent">
+      <wsdl:documentation>
+	Read single student.
+	@param Handle The handle object. [name=handle]
+	@param int The student ID. [name=id]
+	@return Student The student object.</wsdl:documentation>
+      <wsdl:input message="tns:getStudent" name="getStudent"/>
+      <wsdl:output message="tns:getStudentResponse" name="getStudentResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStudents">
+      <wsdl:documentation>
+	Read list of students.
+	@param Handle The handle object. [name=handle]
+	@return Student The student list.</wsdl:documentation>
+      <wsdl:input message="tns:getStudents" name="getStudents"/>
+      <wsdl:output message="tns:getStudentsResponse" name="getStudentsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getTeacher">
+      <wsdl:documentation>
+	Read single teacher.
+	@param Handle The handle object. [name=handle]
+	@param int The teacher ID. [name=id]
+	@return Teacher The teacher object.</wsdl:documentation>
+      <wsdl:input message="tns:getTeacher" name="getTeacher"/>
+      <wsdl:output message="tns:getTeacherResponse" name="getTeacherResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getTeachers">
+      <wsdl:documentation>
+	Read list of teachers.
+	@param Handle The handle object. [name=handle]
+	@return Teacher The teacher list.</wsdl:documentation>
+      <wsdl:input message="tns:getTeachers" name="getTeachers"/>
+      <wsdl:output message="tns:getTeachersResponse" name="getTeachersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getTopic">
+      <wsdl:documentation>
+	Read single topic.
+	@param Handle The handle object. [name=handle]
+	@param int The topic ID. [name=id]
+	@return Topic The topic object.</wsdl:documentation>
+      <wsdl:input message="tns:getTopic" name="getTopic"/>
+      <wsdl:output message="tns:getTopicResponse" name="getTopicResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getTopics">
+      <wsdl:documentation>
+	Read list of topics.
+	@param Handle The handle object. [name=handle]
+	@return Topic The topic list.</wsdl:documentation>
+      <wsdl:input message="tns:getTopics" name="getTopics"/>
+      <wsdl:output message="tns:getTopicsResponse" name="getTopicsResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="openExam">
+      <wsdl:documentation>
+	Open SOAP service handle for subsequent calls.
+	@param Handle The handle object  [name=handle]
+	@return Handle The handle object (return).</wsdl:documentation>
+      <wsdl:input message="tns:openExam" name="openExam"/>
+      <wsdl:output message="tns:openExamResponse" name="openExamResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setAdmin">
+      <wsdl:documentation>
+	Edit (update/set) admin.
+	@param Handle The handle object. [name=handle]
+	@param Admin The admin object. [name=admin]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setAdmin" name="setAdmin"/>
+      <wsdl:output message="tns:setAdminResponse" name="setAdminResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setAnswer">
+      <wsdl:documentation>
+	Edit (update/set) answer.
+	@param Handle The handle object. [name=handle]
+	@param Answer The answer object. [name=answer]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setAnswer" name="setAnswer"/>
+      <wsdl:output message="tns:setAnswerResponse" name="setAnswerResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setComputer">
+      <wsdl:documentation>
+	Edit (update/set) computer.
+	@param Handle The handle object. [name=handle]
+	@param Computer The computer object. [name=computer]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setComputer" name="setComputer"/>
+      <wsdl:output message="tns:setComputerResponse" name="setComputerResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setContributor">
+      <wsdl:documentation>
+	Edit (update/set) contributor.
+	@param Handle The handle object. [name=handle]
+	@param Contributor The contributor object. [name=contributor]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setContributor" name="setContributor"/>
+      <wsdl:output message="tns:setContributorResponse" name="setContributorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setCorrector">
+      <wsdl:documentation>
+	Edit (update/set) corrector.
+	@param Handle The handle object. [name=handle]
+	@param Corrector The corrector object. [name=corrector]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setCorrector" name="setCorrector"/>
+      <wsdl:output message="tns:setCorrectorResponse" name="setCorrectorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setDecoder">
+      <wsdl:documentation>
+	Edit (update/set) decoder.
+	@param Handle The handle object. [name=handle]
+	@param Decoder The decoder object. [name=decoder]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setDecoder" name="setDecoder"/>
+      <wsdl:output message="tns:setDecoderResponse" name="setDecoderResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setExam">
+      <wsdl:documentation>
+	Edit (update/set) exam.
+	@param Handle The handle object. [name=handle]
+	@param Exam The exam object. [name=exam]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setExam" name="setExam"/>
+      <wsdl:output message="tns:setExamResponse" name="setExamResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setFile">
+      <wsdl:documentation>
+	Edit (update/set) file.
+	@param Handle The handle object. [name=handle]
+	@param File The file object. [name=file]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setFile" name="setFile"/>
+      <wsdl:output message="tns:setFileResponse" name="setFileResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setInvigilator">
+      <wsdl:documentation>
+	Edit (update/set) invigilator.
+	@param Handle The handle object. [name=handle]
+	@param Invigilator The invigilator object. [name=invigilator]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setInvigilator" name="setInvigilator"/>
+      <wsdl:output message="tns:setInvigilatorResponse" name="setInvigilatorResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setLock">
+      <wsdl:documentation>
+	Edit (update/set) lock.
+	@param Handle The handle object. [name=handle]
+	@param Lock The lock object. [name=lock]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setLock" name="setLock"/>
+      <wsdl:output message="tns:setLockResponse" name="setLockResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setQuestion">
+      <wsdl:documentation>
+	Edit (update/set) question.
+	@param Handle The handle object. [name=handle]
+	@param Question The question object. [name=question]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setQuestion" name="setQuestion"/>
+      <wsdl:output message="tns:setQuestionResponse" name="setQuestionResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setResource">
+      <wsdl:documentation>
+	Edit (update/set) resource.
+	@param Handle The handle object. [name=handle]
+	@param Resource The resource object. [name=resource]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setResource" name="setResource"/>
+      <wsdl:output message="tns:setResourceResponse" name="setResourceResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setResult">
+      <wsdl:documentation>
+	Edit (update/set) result.
+	@param Handle The handle object. [name=handle]
+	@param Result The result object. [name=result]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setResult" name="setResult"/>
+      <wsdl:output message="tns:setResultResponse" name="setResultResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setRoom">
+      <wsdl:documentation>
+	Edit (update/set) room.
+	@param Handle The handle object. [name=handle]
+	@param Room The room object. [name=room]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setRoom" name="setRoom"/>
+      <wsdl:output message="tns:setRoomResponse" name="setRoomResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setStudent">
+      <wsdl:documentation>
+	Edit (update/set) student.
+	@param Handle The handle object. [name=handle]
+	@param Student The student object. [name=student]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setStudent" name="setStudent"/>
+      <wsdl:output message="tns:setStudentResponse" name="setStudentResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setTeacher">
+      <wsdl:documentation>
+	Edit (update/set) teacher.
+	@param Handle The handle object. [name=handle]
+	@param Teacher The teacher object. [name=teacher]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setTeacher" name="setTeacher"/>
+      <wsdl:output message="tns:setTeacherResponse" name="setTeacherResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="setTopic">
+      <wsdl:documentation>
+	Edit (update/set) topic.
+	@param Handle The handle object. [name=handle]
+	@param Topic The topic object. [name=topic]
+	@return boolean True if successful.</wsdl:documentation>
+      <wsdl:input message="tns:setTopic" name="setTopic"/>
+      <wsdl:output message="tns:setTopicResponse" name="setTopicResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CoreServiceBinding" type="tns:CoreServicePortType">
+    <soap-env:binding xmlns="http://schemas.xmlsoap.org/wsdl/soap/" style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addAdmin">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addAdmins">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addAnswer">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addAnswers">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addComputer">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addComputers">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addContributor">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addContributors">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addCorrector">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addCorrectors">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addDecoder">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addDecoders">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addExam">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addExams">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addFile">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addFiles">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addInvigilator">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addInvigilators">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addLock">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addLocks">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addQuestion">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addQuestions">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addResource">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addResources">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addResult">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addResults">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addRoom">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addRooms">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addStudent">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addStudents">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addTeacher">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addTeachers">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addTopic">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="addTopics">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteAdmin">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteAnswer">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteComputer">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteContributor">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteCorrector">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteDecoder">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteExam">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteFile">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteInvigilator">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteLock">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteQuestion">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteResource">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteResult">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteRoom">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteStudent">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteTeacher">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="deleteTopic">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getAdmin">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getAdmins">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getAnswer">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getAnswers">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getComputer">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getComputers">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getContributor">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getContributors">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getCorrector">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getCorrectors">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getDecoder">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getDecoders">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getExam">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getExams">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getFile">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getFiles">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getInvigilator">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getInvigilators">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getLock">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getLocks">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getQuestion">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getQuestions">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getResource">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getResources">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getResult">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getResults">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getRoom">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getRooms">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getStudent">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getStudents">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getTeacher">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getTeachers">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getTopic">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="getTopics">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="openExam">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setAdmin">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setAnswer">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setComputer">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setContributor">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setCorrector">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setDecoder">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setExam">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setFile">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setInvigilator">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setLock">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setQuestion">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setResource">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setResult">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setRoom">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setStudent">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setTeacher">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="setTopic">
+      <wsdl:input xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:input>
+      <wsdl:output xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/">
+        <soap-env:body xmlns="http://schemas.xmlsoap.org/wsdl/soap/" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CoreServiceService">
+    <wsdl:port xmlns:default="http://schemas.xmlsoap.org/wsdl/soap/" name="CoreServicePort" binding="tns:CoreServiceBinding">
+      <soap-env:address xmlns="http://schemas.xmlsoap.org/wsdl/soap/" location="http://localhost/phalcon-mvc//core/soap"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

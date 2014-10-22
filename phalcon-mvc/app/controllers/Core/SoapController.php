@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    AjaxController.php
+// File:    SoapController.php
 // Created: 2014-08-20 11:36:22
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -14,9 +14,9 @@
 namespace OpenExam\Controllers\Core;
 
 use OpenExam\Controllers\ServiceController;
-use OpenExam\Library\WebService\Soap\CoreService;
-use OpenExam\Library\WebService\Soap\Wrapper\DocumentLiteral as DocumentLiteralWrapper;
+use OpenExam\Library\WebService\Soap\Service\CoreService;
 use OpenExam\Library\WebService\Soap\SoapService;
+use OpenExam\Library\WebService\Soap\Wrapper\DocumentLiteral as DocumentLiteralWrapper;
 
 /**
  * SOAP controller for the core service.
@@ -40,7 +40,7 @@ class SoapController extends ServiceController
                     "%s://%s%s", $this->request->getScheme(), $this->request->getServerName(), $this->url->get($this->request->getQuery('_url'))
                 );
 
-                $this->service = new SoapService('OpenExam\Library\WebService\Soap\CoreService');
+                $this->service = new SoapService('OpenExam\Library\WebService\Soap\Service\CoreService');
                 $this->service->setLocation($location);
                 $this->service->setSchemaDirectory($this->config->application->schemasDir . 'soap');
                 $this->service->setNamespace("http://bmc.uu.se/soap/openexam/core");
@@ -63,7 +63,7 @@ class SoapController extends ServiceController
          */
         public function wsdlAction()
         {
-                $this->response->setContentType('application/wsdl+xml');
+                $this->response->setContentType('application/wsdl+xml', 'utf-8');
                 $this->service->sendDescription();
         }
 
@@ -73,11 +73,11 @@ class SoapController extends ServiceController
         public function indexAction()
         {
                 if ($this->request->has("wsdl")) {
-                        $this->service->sendDescription();
+                        $this->wsdlAction();
                         return;
                 }
                 if ($this->request->has("api")) {
-                        $this->service->sendDocumentation();
+                        $this->apiAction();
                         return;
                 }
                 if ($this->request->isSoapRequested()) {
