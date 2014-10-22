@@ -11,8 +11,6 @@
  * http://www.opensource.org/licenses/MIT
  */
 
-namespace OpenExam\Library;
-
 class UploadHandler
 {
 
@@ -1227,25 +1225,26 @@ class UploadHandler
                 $this->send_content_type_header();
         }
 
-/*        
-        public function get($print_response = true)
-        {
-                if ($print_response && isset($_GET['download'])) {
-                        return $this->download();
-                }
-                $file_name = $this->get_file_name_param();
-                if ($file_name) {
-                        $response = array(
-                                $this->get_singular_param_name() => $this->get_file_object($file_name)
-                        );
-                } else {
-                        $response = array(
-                                $this->options['param_name'] => $this->get_file_objects()
-                        );
-                }
-                return $this->generate_response($response, $print_response);
-        }
-*/
+        /*
+          public function get($print_response = true)
+          {
+          if ($print_response && isset($_GET['download'])) {
+          return $this->download();
+          }
+          $file_name = $this->get_file_name_param();
+          if ($file_name) {
+          $response = array(
+          $this->get_singular_param_name() => $this->get_file_object($file_name)
+          );
+          } else {
+          $response = array(
+          $this->options['param_name'] => $this->get_file_objects()
+          );
+          }
+          return $this->generate_response($response, $print_response);
+          }
+         */
+
         public function post($print_response = true)
         {
                 if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
@@ -1287,29 +1286,28 @@ class UploadHandler
                 );
         }
 
-/*        public function delete($print_response = true)
-        {
-                $file_names = $this->get_file_names_params();
-                if (empty($file_names)) {
-                        $file_names = array($this->get_file_name_param());
-                }
-                $response = array();
-                foreach ($file_names as $file_name) {
-                        $file_path = $this->get_upload_path($file_name);
-                        $success = is_file($file_path) && $file_name[0] !== '.' && unlink($file_path);
-                        if ($success) {
-                                foreach ($this->options['image_versions'] as $version => $options) {
-                                        if (!empty($version)) {
-                                                $file = $this->get_upload_path($file_name, $version);
-                                                if (is_file($file)) {
-                                                        unlink($file);
-                                                }
-                                        }
-                                }
-                        }
-                        $response[$file_name] = $success;
-                }
-                return $this->generate_response($response, $print_response);
-        }*/
-
+        /*        public function delete($print_response = true)
+          {
+          $file_names = $this->get_file_names_params();
+          if (empty($file_names)) {
+          $file_names = array($this->get_file_name_param());
+          }
+          $response = array();
+          foreach ($file_names as $file_name) {
+          $file_path = $this->get_upload_path($file_name);
+          $success = is_file($file_path) && $file_name[0] !== '.' && unlink($file_path);
+          if ($success) {
+          foreach ($this->options['image_versions'] as $version => $options) {
+          if (!empty($version)) {
+          $file = $this->get_upload_path($file_name, $version);
+          if (is_file($file)) {
+          unlink($file);
+          }
+          }
+          }
+          }
+          $response[$file_name] = $success;
+          }
+          return $this->generate_response($response, $print_response);
+          } */
 }

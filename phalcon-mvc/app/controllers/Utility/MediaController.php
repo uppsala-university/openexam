@@ -14,8 +14,9 @@
 namespace OpenExam\Controllers\Utility;
 
 use OpenExam\Controllers\ControllerBase;
-use OpenExam\Library\UploadHandler;
 use OpenExam\Models\Resource;
+
+require_once (EXTERN_DIR . 'UploadHandler.php');
 
 /**
  * Controller for loading media resources
