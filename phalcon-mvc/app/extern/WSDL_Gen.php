@@ -49,11 +49,19 @@ class WSDL_Gen
                         'ns'   => self::SOAP_XML_SCHEMA_VERSION,
                         'name' => 'float'
                 ),
+                'double'       => array(
+                        'ns'   => self::SOAP_XML_SCHEMA_VERSION,
+                        'name' => 'double'
+                ),
                 'string'       => array(
                         'ns'   => self::SOAP_XML_SCHEMA_VERSION,
                         'name' => 'string'
                 ),
                 'boolean'      => array(
+                        'ns'   => self::SOAP_XML_SCHEMA_VERSION,
+                        'name' => 'boolean'
+                ),
+                'bool'         => array(
                         'ns'   => self::SOAP_XML_SCHEMA_VERSION,
                         'name' => 'boolean'
                 ),
@@ -238,7 +246,7 @@ class WSDL_Gen
                 } else {
                         $typeName = $className;
                 }
-                
+
                 $this->classMap[$typeName] = $class->getName();
                 $this->types[$className] = array('name' => $typeName, 'ns' => $this->ns);
 
