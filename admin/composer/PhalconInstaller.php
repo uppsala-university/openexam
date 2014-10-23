@@ -35,6 +35,7 @@ class PhalconInstaller extends PackageInstaller
         {
                 $this->symlink("ide/1.3.0", "api");
                 $this->patch("admin/patch/phalcon_devtools_fix_script_exception.diff");
+                $this->patch("admin/patch/phalcon_devtools_autocomplete_for_project_services.diff");
         }
 
 }
