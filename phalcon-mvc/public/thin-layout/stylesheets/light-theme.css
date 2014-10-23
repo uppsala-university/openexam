@@ -5385,8 +5385,8 @@ pre {
 
 
 .q-part-text label {
-	font-weight:bold;
-	font-size:12px;
+	font-weight:normal;
+/*	font-size:12px;*/
 	font-family:Verdana, Geneva, sans-serif;
 }
 

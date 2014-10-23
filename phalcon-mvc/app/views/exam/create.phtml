@@ -13,11 +13,8 @@
 
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/create.js'); ?>
 
-
 <!-- Left Column -->
-<div id="leftCol">
-        <?php $this->partial("exam/shared/left-menu", array('exam', $exam)) ?>
-</div> 
+<?php $this->partial("exam/shared/left-menu", array('exam', $exam)) ?>
 
 <!-- Main area -->         
 <div id="container" class="left_menu_space" style="">
@@ -60,7 +57,7 @@
                                         </div>
                                 </div>
                                 <div class="qs_area_line_q_parts">
-                                        <div class="qs_area_line_q" >
+                                        <div class="qs_area_line_q" style="display:none">
                                                 <div class="q_head">
                                                         <span class="q_part_no"></span>
                                                         <span class="q_title"></span>

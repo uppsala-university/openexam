@@ -1,0 +1,280 @@
+<!-- Left Column -->
+<?php //$this->partial("exam/shared/left-menu", array('exam', $exam)) ?>
+
+<?php 
+$qArr = array();
+$questions = $exam->getQuestions();
+foreach($questions as $question) {
+	$qArr[] = $question->id;
+}
+$students  = $exam->getStudents();	
+?>
+
+<!-- Main area -->
+<div id="container" class="left_menu_space" style="width:100%">
+        <div id="centerColWide" style="width:95%">
+                <div id="mainview">
+                        <h3>Correct Answers</h3>
+                        <p>This table shows all answers from students to questions for the examination 'Unix'. </p>
+                        <p>Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.</p>
+			<div style="margin:25px">
+                                <table class="tablesorter">
+                                        <tbody>
+                                                <tr>
+                                                        <th>Code </th>
+                                                        <?php $qCorrectors = array();?>
+                                                        <?php foreach($questions as $question):?>
+                                                        <th><a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->name?></a> </th>
+                                                        <?php 
+							// gather question corrector details
+							$corrs = $question->getCorrectors();
+							foreach($corrs as $corr) {
+								$qCorrectors[$question->id][] = $corr->user;
+							}
+							?>
+							
+                                                        <?php endforeach;?>
+                                                        <th>Percent </th>
+                                                        <th>Grade </th>
+                                                </tr>
+						<?php foreach($students as $student):?>
+                                                <tr>
+                                                        <td style="border-bottom:1px #dedede solid"><a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>"><?=$student->code?></a></td>
+							<?php $totalPoints = $pointsGained = 0;?>
+								<?php foreach($questions as $question):
+								
+									//$totalPoints += $question->score;
+									$result = NULL;
+                                                                        $answer = $question->getAnswers("student_id = '".$student->id."'");
+                                                                        if($answerd = $answer->count()) {
+										$result = $answer->getFirst()->getResult();
+									}
+									?>
+                                                                        <?php //$ansResult = count($answers) ? $answers[0]->getResult() : array()?>
+									
+                                                                                <?php /*foreach($answers as $ans):?>
+                                                                                        <?php $result = $ans->getResult()?>
+												<?php $pointsGained += $result->score;?>
+										<?php endforeach; */?>
+                                                                                
+                                                                        <?php 
+									// find color code
+									$cLink = true;
+                                                                        if(!in_array($this->user->getUser(), $qCorrectors[$question->id])) :
+                                                                                $cc = 'no';
+										$cLink = false;
+                                                                        else :
+										if(!$answerd) :
+											$cc = 'na';
+											$cLink = false;
+										elseif(is_object($result) && $result->count())  :
+											$cc = 'ac';
+										else :
+											$cc = 'nc';
+										endif;
+									endif;
+                                                                        ?>
+                                                                        <td class="cc <?=$cc?>">
+                                                                                <?php if($cLink):?>
+                                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/answer/'.$answer->getFirst()->id)?>"><i class="fa fa-check-square-o"></i></a>
+                                                                                
+                                                                                <?php else:?>
+                                                                                <i class="fa fa-ban"></i>
+                                                                                <?php endif;?>
+                                                                        </td>
+
+                                                                <?php endforeach;?>
+                                                        
+                                                        <td style="border-bottom:1px #dedede solid">0.0%</td>
+                                                        <td class="gru" style="border-bottom:1px #dedede solid">U</td>
+                                                </tr>
+						<?php endforeach;?>
+                                                <tr class="avarage">
+                                                        <th align="right">Avarage:</th>
+                                                        <td title="Answers: 0 Percent: 0.0%" class="cc aa">-</td>
+                                                        <td title="Answers: 0 Percent: 0.0%" class="cc aa">-</td>
+                                                </tr>
+                                        </tbody>
+                                </table>
+                        </div>        
+                        <h5>Color Codes</h5>
+                        <p>Following are the color codes used in the score board:</p>
+                        <table style="margin:0">
+                                <tbody>
+                                        <tr class="colorcode">
+                                                <td class="cc ac">&nbsp;</td>
+                                                <td>Answer has been corrected.</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc no">&nbsp;</td>
+                                                <td>This answer should be corrected by another person.</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc na">&nbsp;</td>
+                                                <td>No answer was given for this question.</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc nc">&nbsp;</td>
+                                                <td>The answer has not yet been corrected.</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc qr">&nbsp;</td>
+                                                <td>Question is flagged as removed (no scores for this question is counted).</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc qu">&nbsp;</td>
+                                                <td>This question was not assigned to this student.</td>
+                                        </tr>
+                                </tbody>
+                        </table>
+                        <h5>Download Scoreboard</h5>
+                        <p>Click <a href="?exam=711&amp;mode=save">here</a> to download the score board.</p>
+                </div>
+        </div>
+        <br clear="both">
+        <!-- container --> 
+</div>
+
+<style>
+td.cc {
+    text-align: center;
+    width: 25px;
+}
+td.no {
+    background-color: #dddddd;
+    border: 1px solid #999999;
+    color:#999999 !important;
+}
+td.na {
+    background-color: #f34541;
+    border: 1px solid #f34541;
+    color:#880000 !important;    
+}
+td.nc {
+    background-color: #66DA79;
+    border: 1px solid #65d02c;
+    color:#65d02c !important;        
+}
+td.ac {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    color:#cccccc !important;            
+}
+td.qu {
+    background-color: #666666;
+    border: 1px solid #333333;
+    color:#333333 !important;                
+}
+td.qr {
+    background-color: #6ebadc;
+    border: 1px solid #4285f4;
+    color:#4285f4 !important;                    
+}
+td.aa {
+    background-color: #eeeeee;
+    border: 1px solid #dddddd;
+}
+tr.avarage, tr.colorcode {
+    background-color: #ffffff;
+}
+td.s0 {
+    background: none repeat scroll 0 0 #000033;
+    border: 1px solid #000000;
+    color: white;
+}
+td.s20 {
+    background: none repeat scroll 0 0 #000066;
+    border: 1px solid #000033;
+    color: white;
+}
+td.s40 {
+    background: none repeat scroll 0 0 #000099;
+    border: 1px solid #000066;
+    color: white;
+}
+td.s60 {
+    background: none repeat scroll 0 0 #33ccff;
+    border: 1px solid #0099cc;
+    color: black;
+}
+td.s80 {
+    background: none repeat scroll 0 0 #ddffff;
+    border: 1px solid #aacccc;
+    color: black;
+}
+td.s100 {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #cccccc;
+    color: black;
+}
+
+table {
+	border:1px solid #dedede;
+	border-collapse:inherit;
+	margin:auto;
+	border-spacing:2px
+}
+</style>
+<!--------------- Hidden Divs -----------------> 
+<?= Phalcon\Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js')?>
+<?= Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js')?>
+
+<script language="javascript">
+$(document).ready(function () {
+        $('.fb').fancybox({
+                    autoHeight : true, 
+                    autoWidth: false,
+		    width: '800px',
+		    helpers : { 
+                        overlay : {closeClick: false}
+		    },
+		    afterClose: function() {
+			    location.reload();
+		    }
+        });
+	
+	$(document).on('click', '.save-result', function() {
+		
+		var resultJson = {};
+		var resId = ansId = 0;
+		$(this).closest('.q-body').find('.q-points').each(function(index, element) {
+			resultJson[$(element).attr('q-part')] = $.isNumeric($(element).val()) ? $(element).val() : 0;
+                        ansId = $(element).attr('ans-id');
+			resId = $(element).attr('res-id');
+                });
+
+		// send ajax requedt to update question's topic
+		if(resId != 0) {
+			param = {id:resId, "score":JSON.stringify(resultJson)};
+			action= 'update';
+		} else {
+			param = {"answer_id":ansId,"score":JSON.stringify(resultJson)};
+			action= 'create';
+		}
+		
+		ajax (
+			baseURL + 'core/ajax/corrector/result/' + action,
+			param,
+			function(rData) {
+				// do nothing for now
+			}
+		);
+	});
+	
+});	
+</script>
+
+<!--
+<script>
+	jQuery(document).ready(function(){
+		// binds form submission and fields to the validation engine
+		jQuery("#q-part-student-score").validationEngine();
+		$(".saved-result").click(function(){
+			alert("dd");
+			jQuery("#q-part-student-score").validationEngine('validate');
+		})
+	});
+
+</script>
+-->

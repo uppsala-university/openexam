@@ -121,7 +121,7 @@ $router->mount(
     ))
 );
 $router->add(
-    "/exam/:int/?", array (
+    "/exam/:int", array (
         "controller" => "exam",
         "action"     => "instruction",
         "examId"     => 1,
@@ -129,10 +129,21 @@ $router->add(
     )
 );
 
+//@ToDO: combine following rules to make them more generic
 $router->add(
     "/exam/:int/question/:int", array(
         "controller" => "question",
         "action"     => "view",
+        "examId"     => 1,
+        "questId"    => 2,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+$router->add(
+    "/exam/:int/correction/:params", array(
+        "controller" => "question",
+        "action"     => "correction",
         "examId"     => 1,
         "questId"    => 2,
         "namespace"  => "OpenExam\Controllers\Gui"
@@ -212,6 +223,8 @@ $router->add(
         "namespace"  => "OpenExam\Controllers\Core"
     )
 )->setHttpMethods('POST');
+
+$router->removeExtraSlashes(true);
 
 $router->handle();
 

@@ -49,7 +49,7 @@
 								{"exam_id":examId, "name":file.name, "path":file.url, "type":fType[0], "subtype":fType[1], "user":user},
 								function (rData) {
 									fType[0] = fType[0]+'s';
-									tabId = ($('#'+fType[0]+'-tab').length) ? '#'+fType[0]+'-tab' : '#other-files-tab'
+									var tabId = ($('#'+fType[0]+'-tab').length) ? '#'+fType[0]+'-tab' : '#other-files-tab';
 									
 									// show this image in library on right side
 									var newItem = $(tabId).find(".recent-uploads").find('.lib-item:hidden').clone();

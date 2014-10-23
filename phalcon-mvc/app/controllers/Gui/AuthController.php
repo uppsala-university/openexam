@@ -52,7 +52,7 @@ class AuthController extends \OpenExam\Controllers\GuiController
         {
 
                 // redirect if already logged in
-                if ($this->session->has('authenticated'))
+                if ($this->user->getUser())
                         return $this->response->redirect($loginSuccessUrl);
 
                 // if authentication method is set, activate it and authenticate
@@ -139,30 +139,8 @@ class AuthController extends \OpenExam\Controllers\GuiController
          */
         private function _registerUserSession($authMethod)
         {		
-		
-				######################################################################################
-				## 	Please ignore all changes in this function as they will be reverted back		##
-				##	Intention of making these changes was just to make Cas Authentication functional##
-				##  for now for Catherina and Susane												##
-				######################################################################################
-		
-				/**
-				 * @ToDO: restore this code area by uncomenting commented out code
-				 */
-                // prepare user object
-                //$userObj = $this->user->set(new User($this->auth->getSubject()));
-				
-				/**
-				 * @ToDO: remove session starting from here
-				 * needed to override session_write_close() call from CasAuthenticator.php [line#108]
-				 */
-				session_start();
-				
-				/**
-				 * @ToDO: store serialized $userObj object in 'user' session variable
-				 * 	serialize($userObj);
-				 */
                 // store user data in session
+                $this->session->start();
                 $this->session->set('authenticated', array(
                         'user'          => $this->auth->getSubject(), 
                         'authenticator' => $authMethod

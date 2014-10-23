@@ -13,11 +13,10 @@
 
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/create.js'); ?>
 
+<?php use \OpenExam\Library\Security\Roles;?>
 
 <!-- Left Column -->
-<div id="leftCol">
-        <?php $this->partial("exam/shared/left-menu", array('exam', $exam)) ?>
-</div> 
+<?php $this->partial("exam/shared/left-menu", array('exam' => $exam, 'myRole' => $myRole)) ?>
 
 <!-- Main area -->         
 <div id="container" class="left_menu_space" style="">
@@ -26,14 +25,24 @@
 
                 <? /* --Exam title and description-- */ ?>
                 <h1>
-                        <input id="exam-title" class="exam-title" type="text" placeholder="Write exam title here" old-value="<?=trim($exam->name)?>" value="<?=trim($exam->name)?>">
+                	<?php if($myRole == Roles::CREATOR):?>
+                        <input id="exam-title" class="exam-title" type="text" placeholder="Write exam title here" value="<?=trim($exam->name)?>" />
+                        <?php else:?>
+                        <?=trim($exam->name)?>
+                        <?php endif;?>
+                        
+                        <?php if($myRole == Roles::CREATOR):?>
                         <a href="#" class="prevent">
                                 <i class="fa fa-gear" id="exam-settings"></i>
                         </a>
+                        <?php endif;?>
                 </h1>
                 
-                <!--<div contenteditable="true" placeholder="Click here to add exam description." style="min-height:100px"></div>-->
-                <textarea id="exam-desc" old-val="<?= trim($exam->descr) ?>"  style="width:99%;" rows="1" placeholder="Write exam description here"><?= trim($exam->descr) ?></textarea>
+                <?php if($myRole == Roles::CREATOR):?>
+                <textarea id="exam-desc"  style="width:99%;" rows="1" placeholder="Write exam description here"><?= trim($exam->descr) ?></textarea>
+                <?php else:?>
+                <?= trim($exam->descr) ?>
+                <?php endif;?>
 
                 <? /* --seprator-- */ ?>
                 <div class="seprator"></div>
@@ -41,7 +50,12 @@
 
                 <? /* --Questions area-- */ ?>
                 <div id="qs_area">
-
+                	<?php if($myRole == Roles::CONTRIBUTOR):?>
+			<a href="#" style="font-size: 12px; float:right" class="add_new_qs">
+                        	<?= Phalcon\Tag::image("img/plus-button-2.png"); ?> Add a new question
+                        </a>
+                        <?php endif;?>
+                        
                         <? /* --default message when there are no questions-- */ ?>
                         <div id="default_msg_qs">
                                 There are no questions in this exam yet. <br>
@@ -60,7 +74,7 @@
                                         </div>
                                 </div>
                                 <div class="qs_area_line_q_parts">
-                                        <div class="qs_area_line_q" >
+                                        <div class="qs_area_line_q" style="display:none">
                                                 <div class="q_head">
                                                         <span class="q_part_no"></span>
                                                         <span class="q_title"></span>
@@ -70,15 +84,17 @@
                                 </div>   
                         </div>   
                 </div>
+                
+		<?php if( $myRole == Roles::CREATOR ):?>
                 <div id="save_exam_btn">
                         <center>
                                 <span class="btn btn-success">
-                                        <i class="fa fa-step-backward"></i>
-                                        <span>Return to main</span>
+                                        <i class="fa fa-chevron-circle-right"></i>
+                                        <span>Save exam</span>
                                 </span>
                         </center>
                 </div>
-
+		<?php endif;?>
 
                 <!-- centerColWide --> 
         </div>
@@ -123,7 +139,7 @@
                 Include other students statistics
                 <br>
         </div>
-		<div class="st-line">
+	<div class="st-line">
 	        <center><input class="save-exam-settings" type="button" value="Save exam settings"></center>
         </div>    
 <?php 
@@ -133,11 +149,8 @@
 				});
         </script>*/
 ?>
-
 	</div>
-    
 </div>
-
 
 <?php 
 	// combine question json to initialize exam
@@ -150,12 +163,12 @@
 		
 		$combinedJson[$qData->name] = $qJson;
 	}
-	$combinedJson = (!count($combinedJson) ? "JSON.parse('{}')" : $combinedJson);
+	$combinedJson = (!count($combinedJson) ? "JSON.parse('{}')" : json_encode($combinedJson));
 ?>
 <script language="javascript">
+	mngr	= '<?=$exam->creator?>';
+	user	= '<?=$this->user->getUser()?>';
 	examId 	= <?=$exam->id?>;
-	qsJson 	= <?=json_encode($combinedJson)?>;
+	qsJson 	= <?=$combinedJson?>;
 	qsCorrectorsJson = {};
-	
-	refreshQs();
 </script>

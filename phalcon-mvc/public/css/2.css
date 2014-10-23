@@ -286,7 +286,7 @@ h5  {
         background:#fff;
         padding:10px 0 0; 
         box-shadow: 1px 5px 4px #999999;
--ie-box-shadow: #999 1px 0px 6px;
+	-ie-box-shadow: #999 1px 0px 6px;
         -moz-box-shadow: 1px 5px 4px #999999;
         -webkit-box-shadow:1px 5px 4px #999999;
         border: 1px solid #ddd;
@@ -1233,13 +1233,13 @@ overflow:hidden;
 
 
 ul {
-    list-style-image: url("../img/grey-bullet.gif");
+    list-style-image: url("../img/red-bullet.png");
     margin: 20px 0 0 40px;
     padding: 0;
 }	
 
 ul li ul {
-    list-style-image:url("/digitalAssets/5/5052_line.gif");
+    /*list-style-image:url("/digitalAssets/5/5052_line.gif");*/
     margin:0 0 0 20px;
 }
 ol {
@@ -1250,7 +1250,7 @@ ol li ol {
     margin:0 0 0 20px;
 }
 #centerCol ul, #centerColWide ul{
-        list-style-image:url("/digitalAssets/5/5048_dot.gif");	
+        /*list-style-image:url("/digitalAssets/5/5048_dot.gif");	*/
 }
 #centerColWide ul {
       /* max-width:430px;*/
@@ -1268,7 +1268,7 @@ ol li ol {
         color:#333;
 }
 #centerCol ul li ul,  #centerColWide ul li ul {
-	list-style-image:url("/digitalAssets/5/5052_line.gif");
+	/*list-style-image:url("/digitalAssets/5/5052_line.gif");*/
 	margin:5px 0 0 2.2em;
 }
 
@@ -3206,7 +3206,7 @@ margin:5px 4px 20px;
 #centerFourBottomArea ul {
     margin:0 0 20px 20px;
     padding: 0;
-    list-style-image:url("/digitalAssets/5/5048_dot.gif");
+    /*list-style-image:url("/digitalAssets/5/5048_dot.gif");*/
 }
 #centerFourBottomArea ul li {
     margin:0px 0;
@@ -4869,7 +4869,6 @@ text-decoration:none;
         margin-left:55px; 
         padding-left:10px;
         min-height:85px;
-        display:none;
 }
 
 .qs_area_line_q .q_head {
@@ -4983,7 +4982,8 @@ text-decoration:none;
 
 .left-col-user {
         color:#4a7db1; 
-        font-size:10px
+        font-size:10px;
+	padding-left:5px;
 }
 
 .left-col-def-msg{
@@ -4994,7 +4994,7 @@ text-decoration:none;
 
 .deluuid {
         float: left; 
-        margin-left: 20px; 
+        margin-left: 40px; 
         padding-top: 3px;
         height:10px;
         cursor:pointer
@@ -5054,6 +5054,10 @@ text-decoration:none;
         padding:8px !important;
 }
 
+.exam-show-options a {
+	float:right; 
+	padding-right:3px;
+}
 .section-default-msg {
         margin-top:12px !important; 
         padding-left:4px 5px 4px 30px !important;
@@ -5141,7 +5145,7 @@ text-decoration:none;
 }
 .exam-listing-default-msg {
     margin:13% auto auto;
-    width:380px;
+    width:400px;
     color: #aeaeae; 
     font-family: "BebasNeueRegular","Arial Narrow",Arial,sans-serif; 
     font-size: 16px;

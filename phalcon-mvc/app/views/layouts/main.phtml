@@ -65,7 +65,7 @@
                 <ul id="menucontainer" style="float:right">
                     <li id="start">
                         <?php
-                        if(!$this->session->has("authenticated")) {
+                        if(!$this->user->getUser()) {
                                 print Phalcon\Tag::linkTo( array(
                                         "auth/login", 
                                         '<i class="fa fa-lock"></i> Login', 

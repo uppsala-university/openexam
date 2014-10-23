@@ -102,7 +102,6 @@
         </div>
 </div>
 <br style="clear:both" />
-<?php $loggedIn = $this->session->get('authenticated');?>
 <script language="javascript">
-var user = '<?=$loggedIn['user']?>';
+var user = '<?=$this->user->getUser()?>';
 </script>

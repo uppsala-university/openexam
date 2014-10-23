@@ -38,9 +38,11 @@
                                                                         <ul class="lib_resources_list">
                                                                                 <?php if(count($qParts[$qPartTitle]['resources'])):?>
                                                                                 <?php foreach($qParts[$qPartTitle]['resources'] as $rTitle => $rLink):?>
-                                                                                <li> <i class="fa fa-close"></i> <a target="_blank" file-path="<?=$rLink?>" href="#">
-                                                                                        <?=$rTitle?>
-                                                                                        </a> </i> </li>
+                                                                                <li> 
+                                                                                        <i class="fa fa-close"></i> 
+                                                                                        <a target="_blank" file-path="<?=$rLink?>" href="#"><?=$rTitle?></a> 
+                                                                                        </i> 
+                                                                                </li>
                                                                                 <?php endforeach;?>
                                                                                 <?php endif;?>
                                                                         </ul>
@@ -89,8 +91,8 @@
                                                                                                         </div>
                                                                                                         <?php endforeach;?>
                                                                                                         <?php else:?>
-                                                                                                        <?php for($i=1; $i<=3; $i++) :?>
-                                                                                                        <?php $optTxt = "Option ".$i."click to edit";?>
+                                                                                                        <?php for($j=1; $j<=3; $j++) :?>
+                                                                                                        <?php $optTxt = "Option ".$j." - click to edit";?>
                                                                                                         <div style="padding-top:5px">
                                                                                                                 <?=$delOpt?>
                                                                                                                 <input type="checkbox" class="readable">

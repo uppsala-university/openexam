@@ -61,6 +61,14 @@ class User extends Component
         public function __construct($user = null, $domain = null, $role = null, $roles = array())
         {
                 $this->_role = $role;
+                
+                // @ToDO: move this sessions based user object initialzation to dispatcher
+                if (!isset($user)) {
+                        if($this->session->has('authenticated')) {
+                                $loggedIn = $this->session->get('authenticated');
+                                $user = $loggedIn['user'];
+                        }        
+                }
 
                 if (isset($user)) {
                         if (isset($domain)) {
@@ -156,4 +164,27 @@ class User extends Component
                 return isset($this->_role);
         }
 
+        /** 
+         * @ToDO: consider relocation of this function, after discussing with Anders
+         * 
+         * Returns first role from list of roles which logged in persion can acquire 
+         * for the provided exam id
+         * 
+         * @param array $roleList
+         * @param int $examId
+         * @return bool
+         */
+        public function hasWhichRole($roleList, $examId)
+        {
+                $roleObj = new \OpenExam\Library\Security\Roles();
+
+                foreach( $roleList as $role ) {
+                        if( $roleObj->aquire( $role, $examId ) ) {
+                                return $role; 
+                        }
+                }
+                
+                return false;
+        }
+        
 }

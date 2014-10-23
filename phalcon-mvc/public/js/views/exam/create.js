@@ -10,26 +10,52 @@ var qJson = {};
 var exam = exam || {};
 var formJs = '';
 
+/*------------------------------*/
+/*	Open tip template	*/
+/*------------------------------*/
+//initialize tool tip theme
+Opentip.styles.drops = {
+	className: "drops",
+	borderWidth: 1,
+	stemLength: 5,
+	stemBase: 10,
+	borderRadius: 5,
+	background: "#F6F6F6",
+	borderColor: "#CCCCCC",
+	target: true,
+	tipJoint: "bottom",
+	targetJoint: "top",
+	containInViewport: false,
+	showOn: "click",
+	hideOn: "click",
+	closeButtonOffset: [3, 3],
+	closeButtonCrossColor: "#CF3B18",
+	closeButtonCrossSize: 5,
+	closeButtonCrossLineWidth: 2,
+	group: "tags",
+	hideTrigger: 'closeButton'
+};
+
 
 /*-- Event handlers --*/
 $(document).ready(function () {
 
     /*------------------------------------------*/
-    /*	Initializing CkEditor 					*/
+    /*	Initializing CkEditor 			*/
     /*------------------------------------------*/
-    CKEDITOR.replace('exam-desc', {
-        height: '100px',
-        toolbar: [
-            ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
-                'Undo', 'Redo', 'Outdent', 'Indent', '-',
-                'Bold', 'Italic', 'Underline', '-',
-                'NumberedList', 'BulletedList'
-            ]
-        ]
-
-    });
-
-
+    if($('#exam-desc').length) {
+	    CKEDITOR.replace('exam-desc', {
+		height: '100px',
+		toolbar: [
+		    ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
+			'Undo', 'Redo', 'Outdent', 'Indent', '-',
+			'Bold', 'Italic', 'Underline', '-',
+			'NumberedList', 'BulletedList'
+		    ]
+		]
+	
+	    });
+    }
 
     /*------------------------------------------*/
     /*	Sortable questions related				*/
@@ -46,7 +72,7 @@ $(document).ready(function () {
 
                 // send ajax requedt to update question's topic
                 ajax (
-			baseURL + 'core/ajax/manager/question/update',
+			baseURL + 'core/ajax/creator/question/update',
 			{"id": qsJson[oldQNo]["questId"], "topic_id": topicId},
 			function (qData) {
 	
@@ -96,7 +122,7 @@ $(document).ready(function () {
 
         // send ajax request to update question's names as per new sorting order
         ajax(
-                baseURL + 'core/ajax/manager/question/update',
+                baseURL + 'core/ajax/creator/question/update',
                 JSON.stringify(qArr),
                 function (qData) {
                     qsJson = JSON.parse(JSON.stringify(tmpJson));
@@ -115,51 +141,19 @@ $(document).ready(function () {
      });*/
 
 
-
-
-    /*--------------------------------------------------*/
-    /*	Opentip and Ldap based user search (by name)	*/
-    /*	This helps to add contributors, decoders and 	*/
-    /*	invigilators									*/
-    /*--------------------------------------------------*/
-
-    //initialize tool tip theme
-    Opentip.styles.drops = {
-        className: "drops",
-        borderWidth: 1,
-        stemLength: 5,
-        stemBase: 10,
-        borderRadius: 5,
-        background: "#F6F6F6",
-        borderColor: "#CCCCCC",
-        target: true,
-        tipJoint: "bottom",
-        targetJoint: "top",
-        containInViewport: false,
-        showOn: "click",
-        hideOn: "click",
-        closeButtonOffset: [3, 3],
-        closeButtonCrossColor: "#CF3B18",
-        closeButtonCrossSize: 5,
-        closeButtonCrossLineWidth: 2,
-        group: "tags",
-        hideTrigger: 'closeButton'
-    };
-
     //initliaze tooltips in left menu
-    new Opentip('#uu-id1',
-            'Search by name: <input type="text" class="uu-user-search" isfor="uu-id1">',
-            {style: "drops", tipJoint: "top left"});
-    new Opentip('#uu-id2',
-            'Search by name: <input type="text" class="uu-user-search" isfor="uu-id2">',
-            {style: "drops", tipJoint: "top left"});
-    new Opentip('#uu-id3',
-            'Search by name: <input type="text" class="uu-user-search" isfor="uu-id3">',
-            {style: "drops", tipJoint: "top left"});
-    new Opentip('#exam-settings',
-            $('#exam-settings-box').html(),
-            {style: "drops", tipJoint: "top right", showOn: "click", });
-
+    $('.search-ldap').each(function(index, element) {
+	    new Opentip(element,
+		    'Search by name: <input type="text" class="uu-user-search" isfor="uu-id1">',
+		    {style: "drops", tipJoint: "top left"});
+    });
+    
+    if($('#exam-settings').length) {
+	    new Opentip('#exam-settings',
+		$('#exam-settings-box').html(),
+		{style: "drops", tipJoint: "top right", showOn: "click", });
+    }
+    
     //ajx request for searching user
     var userSelected = false;
     $(document).on("keyup.autocomplete", '.uu-user-search', function () {
@@ -191,7 +185,7 @@ $(document).ready(function () {
                 // send ajax request to save added role
                 model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
                 ajax(
-                        baseURL + 'core/ajax/manager/' + model + '/create',
+                        baseURL + 'core/ajax/creator/' + model + '/create',
                         {"exam_id": examId, "user": ui.item.id},
                 function (userData) {
 
@@ -246,7 +240,7 @@ $(document).ready(function () {
 
         // send ajax request to delete this record
         model = $(this).closest('.menuLevel1').parent().find('a').attr('data-model');
-        reqUrl = baseURL + 'core/ajax/manager/' + model + '/delete';
+        reqUrl = baseURL + 'core/ajax/creator/' + model + '/delete';
         thisItem = $(this);
         ajax(reqUrl, {"id": $(this).attr('data-ref')}, function (json) {
             $(thisItem).closest('li').remove();
@@ -362,7 +356,7 @@ $(document).ready(function () {
 
             // delete from database and then from json
             ajax(
-                    baseURL + 'core/ajax/manager/question/delete',
+                    baseURL + 'core/ajax/creator/question/delete',
                     {"id": qsJson[qNo]["questId"]},
             function (status) {
 
@@ -404,7 +398,7 @@ $(document).ready(function () {
 
         if (newVal != oldVal) {
             ajax(
-                    baseURL + 'core/ajax/manager/exam/update',
+                    baseURL + 'core/ajax/creator/exam/update',
                     {"id": examId, "name": newVal},
             function (examData) {
                 $('#exam-title').attr('old-value', examData.name)
@@ -413,23 +407,25 @@ $(document).ready(function () {
         }
 
     });
-    // exam description update
-    CKEDITOR.instances['exam-desc'].on('blur', function (event) {
-
-        oldVal = $('#exam-desc').attr('old-val');
-        newVal = CKEDITOR.instances['exam-desc'].getData();
-
-        if (newVal != oldVal) {
-            ajax(
-                    baseURL + 'core/ajax/manager/exam/update',
-                    {"id": examId, "descr": newVal},
-            function (examData) {
-                $('#exam-desc').attr('old-value', examData.descr)
-            }
-            );
-        }
-
-    });
+    if($('#exam-desc').length) {
+	    // exam description update
+	    CKEDITOR.instances['exam-desc'].on('blur', function (event) {
+	
+		oldVal = $('#exam-desc').attr('old-val');
+		newVal = CKEDITOR.instances['exam-desc'].getData();
+	
+		if (newVal != oldVal) {
+		    ajax(
+			    baseURL + 'core/ajax/creator/exam/update',
+			    {"id": examId, "descr": newVal},
+		    function (examData) {
+			$('#exam-desc').attr('old-value', examData.descr)
+		    }
+		    );
+		}
+	
+	    });
+    }
     // exam's other setting's update
     $(document).on('click', '.save-exam-settings', function () {
 
@@ -445,11 +441,11 @@ $(document).ready(function () {
         });
 
         ajax(
-                baseURL + 'core/ajax/manager/exam/update',
+                baseURL + 'core/ajax/creator/exam/update',
                 {"id": examId, "orgunit": org, "starttime": start, "endtime": end, "grades": grades, "details": details},
-        function (examData) {
-            closeTooltips();
-        }
+		function (examData) {
+		    closeTooltips();
+		}
         );
 
     });
@@ -589,7 +585,12 @@ $(document).ready(function () {
         /////////// Send ajax request to add/update this question in database ///////////////////
         //	prepare exam data and send request. Add/update qJson to global qsJson if successful
         /////////////////////////////////////////////////////////////////////////////////////////
-        topicId = $('.sortable-q-topic > li:last').find('.topic-name').attr('data-id');
+	if($('.sortable-q-topic').length) {
+	        topicId = $('.sortable-q-topic > li:last').find('.topic-name').attr('data-id');
+	} else {
+		topicId = $('#default_topic_id').val();
+	}
+	
         if (!qId) {
             data = {"exam_id": examId, "topic_id": topicId, "score": totalScore, "name": qIndex, "quest": JSON.stringify(qJson), "status": 'active'};
         } else {
@@ -629,7 +630,6 @@ $(document).ready(function () {
                     }
 
 
-		    alert(JSON.stringify(qJson));
                     // finally, add this question to qsJson
                     qsJson[qIndex] = qJson;
 
@@ -686,6 +686,9 @@ $(document).ready(function () {
             // clone first line that was kept hidden
             var qLine = $('.qs_area_line:first').clone();
             $(qLine).attr('q-no', qNo).find('.q_no').html('Q' + qNo + ':').end();
+	    if(mngr != user) {
+		    $(qLine).find('.q_line_op').remove();
+	    }
 
             var totalScore = 0;
             var firstPartQText = '';
