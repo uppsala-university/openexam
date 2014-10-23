@@ -257,11 +257,11 @@ class Roles extends Component
                 // Temporarily disable access control:
                 // 
                 $rold = $user->setPrimaryRole(Roles::TRUSTED);
-                $userName = $user->getUser();
+
                 if ($role == self::ADMIN) {
                         $parameters = array(
                                 "user = :user:",
-                                "bind" => array("user" => $userName)
+                                "bind" => array("user" => $user)
                         );
                         if (Admin::count($parameters)) {
                                 $this->addRole($role);
@@ -271,7 +271,7 @@ class Roles extends Component
                 } elseif ($role == self::TEACHER) {
                         $parameters = array(
                                 "user = :user:",
-                                "bind" => array("user" => $userName)
+                                "bind" => array("user" => $user)
                         );
                         if (Teacher::count($parameters)) {
                                 $this->addRole($role);
@@ -282,12 +282,12 @@ class Roles extends Component
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND exam_id = :id:",
-                                        "bind" => array("user" => $userName, "id" => $id)
+                                        "bind" => array("user" => $user, "id" => $id)
                                 );
                         } else {
                                 $parameters = array(
                                         "user = :user:",
-                                        "bind" => array("user" => $userName)
+                                        "bind" => array("user" => $user)
                                 );
                         }
                         if (Contributor::count($parameters) > 0) {
@@ -299,12 +299,12 @@ class Roles extends Component
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND exam_id = :id:",
-                                        "bind" => array("user" => $userName, "id" => $id)
+                                        "bind" => array("user" => $user, "id" => $id)
                                 );
                         } else {
                                 $parameters = array(
                                         "user = :user:",
-                                        "bind" => array("user" => $userName)
+                                        "bind" => array("user" => $user)
                                 );
                         }
                         if (Decoder::count($parameters) > 0) {
@@ -316,12 +316,12 @@ class Roles extends Component
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND exam_id = :id:",
-                                        "bind" => array("user" => $userName, "id" => $id)
+                                        "bind" => array("user" => $user, "id" => $id)
                                 );
                         } else {
                                 $parameters = array(
                                         "user = :user:",
-                                        "bind" => array("user" => $userName)
+                                        "bind" => array("user" => $user)
                                 );
                         }
                         if (Invigilator::count($parameters) > 0) {
@@ -333,12 +333,12 @@ class Roles extends Component
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND exam_id = :id:",
-                                        "bind" => array("user" => $userName, "id" => $id)
+                                        "bind" => array("user" => $user, "id" => $id)
                                 );
                         } else {
                                 $parameters = array(
                                         "user = :user:",
-                                        "bind" => array("user" => $userName)
+                                        "bind" => array("user" => $user)
                                 );
                         }
                         if (Student::count($parameters) > 0) {
@@ -350,12 +350,12 @@ class Roles extends Component
                         if ($id != 0) {
                                 $parameters = array(
                                         "creator = :user: AND id = :id:",
-                                        "bind" => array("user" => $userName, "id" => $id)
+                                        "bind" => array("user" => $user, "id" => $id)
                                 );
                         } else {
                                 $parameters = array(
                                         "creator = :user:",
-                                        "bind" => array("user" => $userName)
+                                        "bind" => array("user" => $user)
                                 );
                         }
                         if (Exam::count($parameters) > 0) {
@@ -367,12 +367,12 @@ class Roles extends Component
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND question_id = :id:",
-                                        "bind" => array("user" => $userName, "id" => $id)
+                                        "bind" => array("user" => $user, "id" => $id)
                                 );
                         } else {
                                 $parameters = array(
                                         "user = :user:",
-                                        "bind" => array("user" => $userName)
+                                        "bind" => array("user" => $user)
                                 );
                         }
                         if (($corrector = Corrector::find($parameters)->getFirst())) {
