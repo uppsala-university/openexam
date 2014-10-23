@@ -182,7 +182,7 @@ class ExamController extends GuiController
                 
                 // get the role because of which this looged in person has got 
                 // permissions to be in current controller/action
-                $role = $this->user->hasWhichRole($allowedRoleList, $examId);
+                $role = $this->user->aquire($allowedRoleList, $examId, false)[0];
 
                 // sanitize
                 $examId = $this->filter->sanitize($examId, "int");

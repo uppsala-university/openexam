@@ -61,13 +61,13 @@ class User extends Component
         public function __construct($user = null, $domain = null, $role = null, $roles = array())
         {
                 $this->_role = $role;
-                
+
                 // @ToDO: move this sessions based user object initialzation to dispatcher
                 if (!isset($user)) {
-                        if($this->session->has('authenticated')) {
+                        if ($this->session->has('authenticated')) {
                                 $loggedIn = $this->session->get('authenticated');
                                 $user = $loggedIn['user'];
-                        }        
+                        }
                 }
 
                 if (isset($user)) {
@@ -164,27 +164,38 @@ class User extends Component
                 return isset($this->_role);
         }
 
-        /** 
-         * @ToDO: consider relocation of this function, after discussing with Anders
+        /**
+         * Aquire roles on object.
          * 
-         * Returns first role from list of roles which logged in persion can acquire 
-         * for the provided exam id
+         * Try to aquire multiple roles at once. Returns the aquired roles or
+         * false if none was aquired. If $id == 0, then roles are aquired 
+         * globally.
          * 
-         * @param array $roleList
-         * @param int $examId
-         * @return bool
+         * <code>
+         * // Get specific roles aquired:
+         * $roles = $this->user->aquire(array('admin', 'teacher', 'student'), $id);
+         * 
+         * // Get all aquired roles:
+         * $roles = $this->user->roles->getRoles($id);
+         * </code>
+         * 
+         * @param array $roles The requested roles.
+         * @param int $id The object ID.
+         * @param mixed $default The default value if no role was aquired.
+         * @return array
+         * @see Roles::aquire()
          */
-        public function hasWhichRole($roleList, $examId)
+        public function aquire($roles, $id = 0, $default = false)
         {
-                $roleObj = new \OpenExam\Library\Security\Roles();
+                $aquired = array();
 
-                foreach( $roleList as $role ) {
-                        if( $roleObj->aquire( $role, $examId ) ) {
-                                return $role; 
+                foreach ($roles as $role) {
+                        if ($this->roles->aquire($role, $id)) {
+                                $aquired[] = $role;
                         }
                 }
-                
-                return false;
+
+                return count($aquired) != 0 ? $aquired : $default;
         }
-        
+
 }
