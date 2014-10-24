@@ -228,11 +228,11 @@ class UserTest extends TestCase
                 $this->object->setPrimaryRole($expect);
                 $actual = $this->object->getPrimaryRole();
                 self::assertEquals($expect, $actual);
-                
+
                 $expect = 'somerole';
                 $this->object->setPrimaryRole($expect);
                 $actual = $this->object->setPrimaryRole(null);
-                self::assertEquals($expect, $actual);                
+                self::assertEquals($expect, $actual);
         }
 
         /**
@@ -255,6 +255,43 @@ class UserTest extends TestCase
                 $expect = sprintf("%s@%s", self::$user, self::$domain);
                 $actual = (string) $this->object;
                 self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+        }
+
+        /**
+         * @covers OpenExam\Library\Security\User::aquire
+         * @group security
+         */
+        public function testAquire()
+        {
+                $id = 2;        // faked object ID
+
+                // 
+                // Some roles to test:
+                // 
+                $expect = array('admin', 'corrector', 'decoder');
+                
+                //
+                // Use "act-as" impersonation to inject roles into the user 
+                // object. This saves us from having to insert all related
+                // database records.
+                // 
+                $this->object = new User(self::$user, self::$domain, null, array($id => $expect));
+
+                // 
+                // Test aquire global:
+                // 
+                $actual = $this->object->aquire($expect);
+                self::assertNotNull($actual);
+                self::assertTrue(is_array($actual));
+                self::assertEquals($expect, $actual);
+
+                // 
+                // Test aquire object specific:
+                // 
+                $actual = $this->object->aquire($expect, $id);
+                self::assertNotNull($actual);
+                self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
         }
 
