@@ -78,6 +78,10 @@ class State
          * This examination requires lockdown.
          */
         const LOCKDOWN = 1024;
+        /**
+         * Examination is a draft (not yet scheduled).
+         */
+        const DRAFT = 2048;
 
         /**
          * @var Exam 
@@ -123,6 +127,8 @@ class State
 
                 if ($this->exam->decoded) {
                         $this->state = self::DECODED | self::DECODABLE | self::FINISHED;
+                } elseif (!isset($this->exam->starttime)) {
+                        $this->state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::DRAFT;
                 } else {
                         $this->state = 0;
 
