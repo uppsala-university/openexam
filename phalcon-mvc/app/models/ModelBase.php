@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\Model;
 
 /**
@@ -42,6 +43,16 @@ class ModelBase extends Model
                 } else {
                         return __NAMESPACE__ . '\\' . ucfirst($resource);
                 }
+        }
+
+        /**
+         * Get model access control object.
+         * @return ObjectAccess
+         */
+        public function getObjectAccess()
+        {
+                $class = sprintf("OpenExam\Plugins\Security\Model\%sAccess", ucfirst($this->getResourceName()));
+                return new $class();
         }
 
         protected function afterFetch()

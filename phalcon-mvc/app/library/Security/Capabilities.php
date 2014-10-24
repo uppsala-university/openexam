@@ -13,6 +13,9 @@
 
 namespace OpenExam\Library\Security;
 
+use OpenExam\Models\ModelBase;
+use Phalcon\Mvc\User\Component;
+
 /**
  * Collects capabilities from access list.
  * 
@@ -41,8 +44,27 @@ namespace OpenExam\Library\Security;
  * </code>
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Capabilities
+class Capabilities extends Component
 {
+
+        const CHECK_MIN = 1;
+        const CHECK_MAX = 7;
+        /**
+         * Perform static check against access control list (ACL).
+         */
+        const CHECK_STATIC = 1;
+        /**
+         * Perform role control on model object.
+         */
+        const CHECK_ROLE = 2;
+        /**
+         * Perform action  control on model object.
+         */
+        const CHECK_ACTION = 4;
+        /**
+         * Perform all model action controls (CHECK_STATIC | CHECK_ROLE | CHECK_ACTION).
+         */
+        const CHECK_ALL = -1;
 
         /**
          * Role to resource permission map.
@@ -178,6 +200,65 @@ class Capabilities
                         return false;
                 } else {
                         return in_array($action, $this->rolecap[$role][$resource]);
+                }
+        }
+
+        /**
+         * Check if caller has permission to perform action on model object.
+         * 
+         * This method checks if performing requested action on model object
+         * would succeed without actually performing the action. 
+         * 
+         * The $filter argument defines which checks to perform. If $filter
+         * includes CHECK_STATIC, then $this->hasPermission() is called. If
+         * $filter includes CHECK_ROLE and CHECK_ACTION, then the role and
+         * action is checked on the model object.
+         *
+         * Notice that these two method call are equivalent:
+         * 
+         * <code>
+         * $role = $this->user->getPrimaryRole();
+         * $name = $model->getResourceName();
+         * $action = ObjectAccess::READ;
+         * 
+         * $capabilities->hasCapability($model, $access, CHECK_STATIC);
+         * $capabilities->hasPermission($role, $name, $access);
+         * </code>
+         * 
+         * @param ModelBase $model The model object.
+         * @param string $action The requested action.
+         * @param int $filter The checks to perform.
+         * @return bool True if action is allowed.
+         */
+        public function hasCapability($model, $action, $filter = self::CHECK_ALL)
+        {
+                try {
+                        if ($filter < self::CHECK_MIN || $filter > self::CHECK_MAX) {
+                                return false;   // Sanity check
+                        }
+
+                        if ($filter & self::CHECK_STATIC != 0) {
+                                $role = $this->user->getPrimaryRole();
+                                $name = $model->getResourceName();
+
+                                if ($this->hasPermission($role, $name, $action) == false) {
+                                        return false;
+                                }
+                        }
+                        if ($filter & self::CHECK_ROLE != 0) {
+                                if ($model->getObjectAccess()->checkObjectRole($action, $model, $this->user) == false) {
+                                        return false;
+                                }
+                        }
+                        if ($filter & self::CHECK_ACTION != 0) {
+                                if ($model->getObjectAccess()->checkObjectAction($action, $model, $this->user) == false) {
+                                        return false;
+                                }
+                        }
+
+                        return true;    // All check passed
+                } catch (\Exception $ex) {
+                        return false;
                 }
         }
 
