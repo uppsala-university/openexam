@@ -123,6 +123,16 @@ class Exam extends ModelBase
          * @var bool
          */
         public $lockdown;
+        /**
+         * Examination state (bitmask).
+         * @var int 
+         */
+        public $state;
+        /**
+         * Examination flags (e.g. decodable).
+         * @var type 
+         */
+        public $flags;
 
         protected function initialize()
         {
@@ -203,6 +213,9 @@ class Exam extends ModelBase
                 $this->decoded = $this->decoded == 'Y';
                 $this->testcase = $this->testcase == 'Y';
                 $this->lockdown = $this->lockdown == 'Y';
+                $state = new State($this);
+                $this->state = $state->getState();
+                $this->flags = $state->getFlags();
                 parent::afterFetch();
         }
 

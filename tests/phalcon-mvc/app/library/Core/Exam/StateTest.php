@@ -206,7 +206,7 @@ class StateTest extends TestCase
                 self::assertTrue(($this->state->getState() & State::FINISHED) != 0);
                 self::assertTrue(($this->state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->state->getState() & State::UPCOMING) == 0);
-                
+
                 // 
                 // Finished examination (decoded):
                 // 
@@ -245,11 +245,11 @@ class StateTest extends TestCase
                 self::assertFalse($this->state->has(State::CORRECTABLE));
                 self::assertFalse($this->state->has(State::DECODABLE));
                 self::assertFalse($this->state->has(State::DECODED));
-                self::assertTrue($this->state->has(State::EDITABLE) );
-                self::assertTrue($this->state->has(State::EXAMINATABLE) );
+                self::assertTrue($this->state->has(State::EDITABLE));
+                self::assertTrue($this->state->has(State::EXAMINATABLE));
                 self::assertFalse($this->state->has(State::FINISHED));
                 self::assertFalse($this->state->has(State::RUNNING));
-                self::assertTrue($this->state->has(State::UPCOMING) );
+                self::assertTrue($this->state->has(State::UPCOMING));
 
                 // 
                 // Ongoing examination:
@@ -264,9 +264,9 @@ class StateTest extends TestCase
                 self::assertFalse($this->state->has(State::DECODABLE));
                 self::assertFalse($this->state->has(State::DECODED));
                 self::assertFalse($this->state->has(State::EDITABLE));
-                self::assertTrue($this->state->has(State::EXAMINATABLE) );
+                self::assertTrue($this->state->has(State::EXAMINATABLE));
                 self::assertFalse($this->state->has(State::FINISHED));
-                self::assertTrue($this->state->has(State::RUNNING) );
+                self::assertTrue($this->state->has(State::RUNNING));
                 self::assertFalse($this->state->has(State::UPCOMING));
 
                 // 
@@ -278,12 +278,12 @@ class StateTest extends TestCase
                 $this->state->refresh();
 
                 self::assertFalse($this->state->has(State::CONTRIBUTABLE));
-                self::assertTrue($this->state->has(State::CORRECTABLE) );
+                self::assertTrue($this->state->has(State::CORRECTABLE));
                 self::assertFalse($this->state->has(State::DECODABLE));
                 self::assertFalse($this->state->has(State::DECODED));
                 self::assertFalse($this->state->has(State::EDITABLE));
                 self::assertFalse($this->state->has(State::EXAMINATABLE));
-                self::assertTrue($this->state->has(State::FINISHED) );
+                self::assertTrue($this->state->has(State::FINISHED));
                 self::assertFalse($this->state->has(State::RUNNING));
                 self::assertFalse($this->state->has(State::UPCOMING));
 
@@ -299,15 +299,15 @@ class StateTest extends TestCase
                 $this->state->refresh();
 
                 self::assertFalse($this->state->has(State::CONTRIBUTABLE));
-                self::assertTrue($this->state->has(State::CORRECTABLE) );
-                self::assertTrue($this->state->has(State::DECODABLE) );
+                self::assertTrue($this->state->has(State::CORRECTABLE));
+                self::assertTrue($this->state->has(State::DECODABLE));
                 self::assertFalse($this->state->has(State::DECODED));
                 self::assertFalse($this->state->has(State::EDITABLE));
                 self::assertFalse($this->state->has(State::EXAMINATABLE));
-                self::assertTrue($this->state->has(State::FINISHED) );
+                self::assertTrue($this->state->has(State::FINISHED));
                 self::assertFalse($this->state->has(State::RUNNING));
                 self::assertFalse($this->state->has(State::UPCOMING));
-                
+
                 // 
                 // Finished examination (decoded):
                 // 
@@ -317,14 +317,134 @@ class StateTest extends TestCase
 
                 self::assertFalse($this->state->has(State::CONTRIBUTABLE));
                 self::assertFalse($this->state->has(State::CORRECTABLE));
-                self::assertTrue($this->state->has(State::DECODABLE) );
-                self::assertTrue($this->state->has(State::DECODED) );
+                self::assertTrue($this->state->has(State::DECODABLE));
+                self::assertTrue($this->state->has(State::DECODED));
                 self::assertFalse($this->state->has(State::EDITABLE));
                 self::assertFalse($this->state->has(State::EXAMINATABLE));
-                self::assertTrue($this->state->has(State::FINISHED) );
+                self::assertTrue($this->state->has(State::FINISHED));
                 self::assertFalse($this->state->has(State::RUNNING));
                 self::assertFalse($this->state->has(State::UPCOMING));
-                
+        }
+
+        /**
+         * @covers OpenExam\Library\Core\Exam\State::getFlags()
+         * @group core
+         */
+        public function testGetFlags()
+        {
+                self::assertTrue(is_array($this->state->getFlags()));
+
+                // 
+                // Before examination started:
+                // 
+                $this->exam->starttime = date('Y-m-d H:i:s', time() + 60);
+                $this->exam->endtime = date('Y-m-d H:i:s', time() + 120);
+                $this->exam->update();
+                $this->state->refresh();
+
+                $flags = $this->state->getFlags();
+                printf("Before examination started:\n");
+                print_r($flags);
+
+                self::assertTrue(in_array('contributable', $flags));
+                self::assertFalse(in_array('correctable', $flags));
+                self::assertFalse(in_array('decodable', $flags));
+                self::assertFalse(in_array('decoded', $flags));
+                self::assertTrue(in_array('editable', $flags));
+                self::assertTrue(in_array('examinatable', $flags));
+                self::assertFalse(in_array('finished', $flags));
+                self::assertFalse(in_array('running', $flags));
+                self::assertTrue(in_array('upcoming', $flags));
+
+                // 
+                // Ongoing examination:
+                // 
+                $this->exam->starttime = date('Y-m-d H:i:s', time() - 60);
+                $this->exam->endtime = date('Y-m-d H:i:s', time() + 60);
+                $this->exam->update();
+                $this->state->refresh();
+
+                $flags = $this->state->getFlags();
+                printf("Ongoing examination:\n");
+                print_r($flags);
+
+                self::assertFalse(in_array('contributable', $flags));
+                self::assertFalse(in_array('correctable', $flags));
+                self::assertFalse(in_array('decodable', $flags));
+                self::assertFalse(in_array('decoded', $flags));
+                self::assertFalse(in_array('editable', $flags));
+                self::assertTrue(in_array('examinatable', $flags));
+                self::assertFalse(in_array('finished', $flags));
+                self::assertTrue(in_array('running', $flags));
+                self::assertFalse(in_array('upcoming', $flags));
+
+                // 
+                // Finished examination (not yet corrected):
+                // 
+                $this->exam->starttime = date('Y-m-d H:i:s', time() - 120);
+                $this->exam->endtime = date('Y-m-d H:i:s', time() - 60);
+                $this->exam->update();
+                $this->state->refresh();
+
+                $flags = $this->state->getFlags();
+                printf("Finished examination (not yet corrected):\n");
+                print_r($flags);
+
+                self::assertFalse(in_array('contributable', $flags));
+                self::assertTrue(in_array('correctable', $flags));
+                self::assertFalse(in_array('decodable', $flags));
+                self::assertFalse(in_array('decoded', $flags));
+                self::assertFalse(in_array('editable', $flags));
+                self::assertFalse(in_array('examinatable', $flags));
+                self::assertTrue(in_array('finished', $flags));
+                self::assertFalse(in_array('running', $flags));
+                self::assertFalse(in_array('upcoming', $flags));
+
+                // 
+                // Finished examination (corrected):
+                // 
+                $this->result = new Result();
+                $this->result->create(self::$data['result']);
+
+                $this->exam->starttime = date('Y-m-d H:i:s', time() - 120);
+                $this->exam->endtime = date('Y-m-d H:i:s', time() - 60);
+                $this->exam->update();
+                $this->state->refresh();
+
+                $flags = $this->state->getFlags();
+                printf("Finished examination (corrected):\n");
+                print_r($flags);
+
+                self::assertFalse(in_array('contributable', $flags));
+                self::assertTrue(in_array('correctable', $flags));
+                self::assertTrue(in_array('decodable', $flags));
+                self::assertFalse(in_array('decoded', $flags));
+                self::assertFalse(in_array('editable', $flags));
+                self::assertFalse(in_array('examinatable', $flags));
+                self::assertTrue(in_array('finished', $flags));
+                self::assertFalse(in_array('running', $flags));
+                self::assertFalse(in_array('upcoming', $flags));
+
+                // 
+                // Finished examination (decoded):
+                // 
+                $this->exam->decoded = true;
+                $this->exam->update();
+                $this->state->refresh();
+
+                $flags = $this->state->getFlags();
+                printf("Finished examination (decoded):\n");
+                print_r($flags);
+
+                self::assertFalse(in_array('contributable', $flags));
+                self::assertFalse(in_array('correctable', $flags));
+                self::assertTrue(in_array('decodable', $flags));
+                self::assertTrue(in_array('decoded', $flags));
+                self::assertFalse(in_array('editable', $flags));
+                self::assertFalse(in_array('examinatable', $flags));
+                self::assertTrue(in_array('finished', $flags));
+                self::assertFalse(in_array('running', $flags));
+                self::assertFalse(in_array('upcoming', $flags));
         }
 
 }

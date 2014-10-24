@@ -88,6 +88,11 @@ class State
          * @var int 
          */
         private $state;
+        /**
+         * State flags (e.g. contributable, editable, upcoming).
+         * @var array 
+         */
+        private $flags;
 
         /**
          * Constructor.
@@ -112,6 +117,10 @@ class State
          */
         private function setState()
         {
+                if (isset($this->flags)) {
+                        unset($this->flags);    // Called from refresh
+                }
+
                 if ($this->exam->decoded) {
                         $this->state = self::DECODED | self::DECODABLE | self::FINISHED;
                 } else {
@@ -175,6 +184,29 @@ class State
                         a.answered = 'Y' AND
                         r.id IS NULL", array('examid' => $this->exam->id));
                 return $resultset->numRows() == 0;
+        }
+
+        /**
+         * Get exam state as array.
+         * 
+         * Returns the string
+         * @return array 
+         */
+        public function getFlags()
+        {
+                if (isset($this->flags)) {
+                        return $this->flags;
+                }
+
+                $this->flags = array();
+                $reflection = new \ReflectionObject($this);
+                foreach ($reflection->getConstants() as $name => $value) {
+                        if ($this->has($value)) {
+                                $this->flags[] = strtolower($name);
+                        }
+                }
+
+                return $this->flags;
         }
 
 }
