@@ -324,12 +324,18 @@ class AjaxController extends ServiceController
                         } else {
                                 $models[] = $handler->build($type, $data);
                         }
-                        
+
                         // 
-                        // handle capability checks if requested:
+                        // handle dynamic capability checks:
                         // 
                         if (isset($params['capability'])) {
-                                return $this->capabilityAction($models, $action, $params);
+                                $filter = Capabilities::getFilter($params['capability']);
+                                foreach ($models as $model) {
+                                        if (($result = $this->capabilities->hasCapability($model, $action, $filter)) == false) {
+                                                break;
+                                        }
+                                }
+                                return $this->sendResponse(self::SUCCESS, $result);
                         }
 
                         // 
@@ -342,41 +348,19 @@ class AjaxController extends ServiceController
         }
 
         /**
-         * Handle capability checks.
-         * 
-         * This action is called from route and internal (with models set). If
-         * models is set, then capabilities are checked dynamic against the
-         * model otherwise the capabilities are checked static against the
-         * access.def config.
-         * 
-         * The dynamic and static mode overlaps if models is set and filter
-         * requests a static check.
-         * 
-         * @param string $role The requested role.
-         * @param string $type The requested model.
+         * Handle static capability checks.
          */
-        public function capabilityAction($models = null, $action = null, $params = null)
+        public function capabilityAction()
         {
+                list($data, $params) = $this->getInput();
+                $filter = array(
+                        'role'     => false,
+                        'resource' => false,
+                        'action'   => false
+                );
+                $filter = array_merge($filter, $params);
 
-                if (!isset($params['capability'])) {
-                        list($data, $params) = $this->getInput();
-                        $filter = array(
-                                'role'     => false,
-                                'resource' => false,
-                                'action'   => false
-                        );
-                        $filter = array_merge($filter, $params);
-                } else {
-                        $filter = Capabilities::getFilter($params['capability']);
-                }
-
-                if (isset($models)) {
-                        foreach ($models as $model) {
-                                if (($result = $this->capabilities->hasCapability($model, $action, $filter)) == false) {
-                                        break;
-                                }
-                        }
-                } elseif ($filter['role'] && $filter['resource'] && $filter['action']) {
+                if ($filter['role'] && $filter['resource'] && $filter['action']) {
                         $result = $this->capabilities->hasPermission($filter['role'], $filter['resource'], $filter['action']);
                 } elseif ($filter['role'] && $filter['resource']) {
                         $result = $this->capabilities->getPermissions($filter['role'], $filter['resource']);
