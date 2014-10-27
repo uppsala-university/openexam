@@ -47,7 +47,7 @@ use Phalcon\Mvc\User\Component;
 class Capabilities extends Component
 {
 
-        const CHECK_MIN = 1;
+        const CHECK_MIN = 0;
         const CHECK_MAX = 7;
         /**
          * Perform static check against access control list (ACL).
@@ -64,7 +64,11 @@ class Capabilities extends Component
         /**
          * Perform all model action controls (CHECK_STATIC | CHECK_ROLE | CHECK_ACTION).
          */
-        const CHECK_ALL = -1;
+        const CHECK_ALL = self::CHECK_MAX;
+        /**
+         * Don't perform any model action checks.
+         */
+        const CHECK_NONE = 0;
 
         /**
          * Role to resource permission map.
@@ -227,12 +231,15 @@ class Capabilities extends Component
          * 
          * @param ModelBase $model The model object.
          * @param string $action The requested action.
-         * @param int $filter The checks to perform.
+         * @param mixed $filter The checks to perform.
          * @return bool True if action is allowed.
          */
         public function hasCapability($model, $action, $filter = self::CHECK_ALL)
         {
                 try {
+                        if (!is_int($filter)) {
+                                $filter = self::getFilter($filter);
+                        }
                         if ($filter < self::CHECK_MIN || $filter > self::CHECK_MAX) {
                                 return false;   // Sanity check
                         }
@@ -269,6 +276,56 @@ class Capabilities extends Component
         public function getCapabilities()
         {
                 return $this->rolecap;
+        }
+
+        /**
+         * Get bitmask from $filter argument.
+         * 
+         * <code>
+         * $filter = Capabilities::getFilter(array('static','role','action');
+         * $filter = Capabilities::getFilter(array('all');
+         * $filter = Capabilities::getFilter(true);
+         * $filter = Capabilities::getFilter(true);
+         * $filter = Capabilities::getFilter(true);
+         * </code>
+         * 
+         * @param array|int|bool|string $filter The filter argument.
+         * @return int
+         */
+        public static function getFilter($filter)
+        {
+                $result = 0;
+                $lookup = array(
+                        'all'    => self::CHECK_ALL,
+                        'static' => self::CHECK_STATIC,
+                        'role'   => self::CHECK_ROLE,
+                        'action' => self::CHECK_ACTION
+                );
+
+                if (is_string($filter)) {
+                        $filter = $lookup[$filter];
+                }
+
+                if (is_bool($filter)) {
+                        return $filter ? self::CHECK_ALL : self::CHECK_NONE;
+                }
+
+                if (is_int($filter)) {
+                        if ($filter < self::CHECK_MIN) {
+                                return self::CHECK_NONE;
+                        } elseif ($filter > self::CHECK_MAX) {
+                                return self::CHECK_MAX;
+                        } else {
+                                return $filter;
+                        }
+                }
+
+                if (is_array($filter)) {
+                        foreach ($filter as $key) {
+                                $result |= $lookup[$key];
+                        }
+                        return $result;
+                }
         }
 
 }
