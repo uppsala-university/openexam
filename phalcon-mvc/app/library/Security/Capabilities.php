@@ -150,12 +150,18 @@ class Capabilities extends Component
 
         /**
          * Get roles having permissions on resource.
+         * 
+         * If $resource is unset, then this method returns all defined roles.
+         * If the resource is not defined, then false is returned.
+         * 
          * @param string $resource
          * @return boolean|array
          */
-        public function getRoles($resource)
+        public function getRoles($resource = null)
         {
-                if (isset($this->rescap[$resource])) {
+                if (!isset($resource)) {
+                        return array_keys($this->rolecap);
+                } elseif (isset($this->rescap[$resource])) {
                         return $this->rescap[$resource];
                 } else {
                         return false;
@@ -164,12 +170,18 @@ class Capabilities extends Component
 
         /**
          * Get permitted resources for role.
+         * 
+         * If $role is unset, then this method returns all defined resources. 
+         * If the role is not defined, then false is returned.
+         * 
          * @param string $role The role name.
          * @return boolean|array
          */
-        public function getResources($role)
+        public function getResources($role = null)
         {
-                if (isset($this->rolecap[$role])) {
+                if (!isset($role)) {
+                        return array_keys($this->rescap);
+                } elseif (isset($this->rolecap[$role])) {
                         return $this->rolecap[$role];
                 } else {
                         return false;

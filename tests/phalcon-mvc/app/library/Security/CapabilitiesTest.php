@@ -32,9 +32,9 @@ class CapabilitiesTest extends TestCase
                                 'exam' => '*'
                         ),
                         'creator'     => array(
-                                'exam'        => 'manage',
-                                'contributor' => '*',
-                                'student'     => 'read'
+                                'exam'     => 'manage',
+                                'question' => '*',
+                                'student'  => 'read'
                         ),
                         'contributor' => array(
                                 'exam'     => 'read',
@@ -68,7 +68,13 @@ class CapabilitiesTest extends TestCase
         public function testGetRoles()
         {
                 $expect = array('teacher', 'creator', 'contributor');
-                $actual = $this->object->getRoles('exam');
+                $actual = $this->object->getRoles();
+                self::assertNotNull($actual);
+                self::assertTrue(is_array($actual));
+                self::assertEquals($expect, $actual);
+                
+                $expect = array('creator', 'contributor');
+                $actual = $this->object->getRoles('question');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, array_keys($actual));
@@ -85,8 +91,14 @@ class CapabilitiesTest extends TestCase
          */
         public function testGetResources()
         {
-                $expect = array('exam', 'contributor', 'student');
-                $actual = $this->object->getResources('creator');
+                $expect = array('exam', 'question', 'student');
+                $actual = $this->object->getResources();
+                self::assertNotNull($actual);
+                self::assertTrue(is_array($actual));
+                self::assertEquals($expect, $actual);
+                
+                $expect = array('exam', 'question');
+                $actual = $this->object->getResources('contributor');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, array_keys($actual));
