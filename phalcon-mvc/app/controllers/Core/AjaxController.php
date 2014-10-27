@@ -224,9 +224,9 @@ class AjaxController extends ServiceController
                 // 
                 if (is_string($input)) {
                         if ($this->request->getBestAccept() == 'application/json') {
-                                $input = json_decode($input);
+                                $input = json_decode($input, true);
                         } else {
-                                if (($temp = json_decode($input)) != null) {
+                                if (($temp = json_decode($input, true)) != null) {
                                         $input = $temp;
                                 }
                         }
@@ -326,7 +326,7 @@ class AjaxController extends ServiceController
                         }
 
                         // 
-                        // handle dynamic capability checks:
+                        // Handle dynamic capability checks:
                         // 
                         if (isset($params['capability'])) {
                                 $filter = Capabilities::getFilter($params['capability']);
