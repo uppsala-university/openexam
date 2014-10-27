@@ -232,6 +232,9 @@ class CoreHandler extends Component
                 // Strip relations from model.
                 // 
                 $strip = function($model) {
+                        if (!($model instanceof \Phalcon\Mvc\Model)) {
+                                throw new \InvalidArgumentException(_("Invalid argument"));
+                        }
                         $dump = array();
                         foreach ($model->dump() as $key => $val) {
                                 if (!is_object($val)) {
