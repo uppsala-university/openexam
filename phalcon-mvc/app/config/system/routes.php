@@ -33,7 +33,7 @@ class PrefixRoute extends Phalcon\Mvc\Router\Group
                 $this->add("/:controller/:action/:params", array(
                         "controller" => 1,
                         "action"     => 2,
-						"params"     => 3,
+                        "params"     => 3,
                         "namespace"  => $config['namespace']
                     )
                 );
@@ -68,21 +68,21 @@ $router->add(
     "/exam/:action/:params", array(
         "controller" => "exam",
         "action"     => 1,
-	"params"     => 2,
+        "params"     => 2,
         "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
 
 /*
-$router->add(
-    "/exam/:int/view/?(.*)?", array(
-        "controller" => "exam",
-        "action"     => "view",
-        "examId"     => 1,
-        "questId"    => 2,
-        "namespace"  => "OpenExam\Controllers\Gui"
-    )
-);*/
+  $router->add(
+  "/exam/:int/view/?(.*)?", array(
+  "controller" => "exam",
+  "action"     => "view",
+  "examId"     => 1,
+  "questId"    => 2,
+  "namespace"  => "OpenExam\Controllers\Gui"
+  )
+  ); */
 
 
 $router->add(
@@ -121,7 +121,7 @@ $router->mount(
     ))
 );
 $router->add(
-    "/exam/:int", array (
+    "/exam/:int", array(
         "controller" => "exam",
         "action"     => "instruction",
         "examId"     => 1,
@@ -192,8 +192,16 @@ $router->add(
     )
 );
 $router->add(
-    "/core/ajax/{role}/{model}/{task}", array(
+    "/core/ajax/capability", array(
         "controller" => "ajax",
+        "action"     => "capability",
+        "namespace"  => "OpenExam\Controllers\Core"
+    )
+)->setHttpMethods("POST");
+$router->add(
+    "/core/ajax/{role}/{model}/:action", array(
+        "controller" => "ajax",
+        "action"     => 3,
         "namespace"  => "OpenExam\Controllers\Core"
     )
 )->setHttpMethods("POST");

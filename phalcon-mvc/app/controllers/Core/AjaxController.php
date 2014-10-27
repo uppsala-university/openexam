@@ -16,6 +16,8 @@ namespace OpenExam\Controllers\Core;
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\Core\Handler\CoreHandler;
 use OpenExam\Library\Core\Handler\Exception;
+use OpenExam\Library\Security\Capabilities;
+use OpenExam\Plugins\Security\Model\ObjectAccess;
 
 /**
  * AJAX controller for core service.
@@ -40,6 +42,9 @@ use OpenExam\Library\Core\Handler\Exception;
  * );
  * </code>
  * 
+ * CRUD (create, read, update, delete) operations:
+ * -----------------------------------------------------
+ * 
  * The params part can contain any data supported by the query builder:
  * <code>
  * $params = array(
@@ -63,17 +68,49 @@ use OpenExam\Library\Core\Handler\Exception;
  * Input data encoding examples for jQuery POST:
  * <code>
  * // Read single object:
- * data: {"id":56}
+ * input: {"id":56}
  * 
  * // Same as previous:
- * data: {"data":{"id":56}}
+ * input: {"data":{"id":56}}
  * 
  * // Pagination example:
- * data: {"params":{"limit":[1,0]}}
+ * input: {"params":{"limit":[1,0]}}
  * 
  * // Somewhat more complex:
- * data: {"params":{"columns":["id","name","status"],"conditions":[["created > :min: AND created < :max:",{"min":"2013-01-01","max":"2014-01-01"},{"min":2,"max":2}]],"group":["id","name"],"having":"name = 'Kamil'","order":["name","id"],"limit":20,"offset":20}}
+ * input: {"params":{"columns":["id","name","status"],"conditions":[["created > :min: AND created < :max:",{"min":"2013-01-01","max":"2014-01-01"},{"min":2,"max":2}]],"group":["id","name"],"having":"name = 'Kamil'","order":["name","id"],"limit":20,"offset":20}}
  * </code>
+ * 
+ * To dynamic check capability to perform an action, pass a capability 
+ * definition in the params. The capability field can be mixed with ordinary 
+ * query/filter params:
+ * 
+ * <code>
+ * // Perform all capability checks (same):
+ * input: {"data":{...}:"params":{...,"capability":true}}
+ * input: {"data":{...}:"params":{...,"capability":"all"}}
+ * input: {"data":{...}:"params":{...,"capability":["all"]}}
+ * 
+ * // Perform the selected capability checks:
+ * input: {"data":{...}:"params":{...,"capability":["static","role","action"]}}
+ * </code>
+ * 
+ * Capabilities (static rules):
+ * -----------------------------------------------------
+ * 
+ * Static capability maps can be queried by passing zero or more of the 
+ * requested checks (role, resource and action):
+ * 
+ * // Get resources accessable by student role:
+ * input: {"params":{"role":"student"}}
+ * 
+ * // Get roles with access to exam resource:
+ * input: {"params":{"resource":"exam"}}
+ * 
+ * // Check if action is static allowed:
+ * input: {"params":{"role":"student","resource":"exam","action":"read"}}
+ * 
+ * // Get all capabilities grouped by role (same):
+ * input: {"params":{}}
  * 
  * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
  * @author Anders Lövgren (QNET/BMC CompDept)
@@ -90,81 +127,188 @@ class AjaxController extends ServiceController
          */
         const FAILURE = 'failed';
 
+        /**
+         * The capabilities mapper.
+         * @var Capabilities 
+         */
+        private $capabilities;
+
+        public function initialize()
+        {
+                $this->capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
+                parent::initialize();
+        }
+
+        /**
+         * Display documentation of the AJAX service API.
+         */
         public function apiAction()
         {
                 // TODO: use view for displaying API docs
 
                 $content = array(
-                        "usage"   => array("/core/ajax/{role}/{model}/{action}" => "POST"),
-                        "example" => array("/core/ajax/student/exam/read")
+                        "usage"   => array(
+                                "/core/ajax/{role}/{model}/{action}" => "POST"
+                        ),
+                        "example" => array(
+                                "/core/ajax/student/exam/create"     => "Create exam",
+                                "/core/ajax/student/exam/read"       => "Read exam",
+                                "/core/ajax/student/exam/update"     => "Update exam",
+                                "/core/ajax/student/exam/delete"     => "Delete exam",
+                                "/core/ajax/student/exam/capability" => "Get static capabilities"
+                        )
                 );
 
                 $this->response->setJsonContent($content);
                 $this->response->send();
         }
 
-        public function indexAction($role, $type, $action)
+        /**
+         * Perform create operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         */
+        public function createAction($role, $type)
+        {
+                $this->crudAction($role, $type, ObjectAccess::CREATE);
+        }
+
+        /**
+         * Perform read operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         */
+        public function readAction($role, $type)
+        {
+                $this->crudAction($role, $type, ObjectAccess::READ);
+        }
+
+        /**
+         * Perform update operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         */
+        public function updateAction($role, $type)
+        {
+                $this->crudAction($role, $type, ObjectAccess::UPDATE);
+        }
+
+        /**
+         * Perform delete operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         */
+        public function deleteAction($role, $type)
+        {
+                $this->crudAction($role, $type, ObjectAccess::DELETE);
+        }
+
+        /**
+         * Get input (model) data and params from request.
+         * @return array
+         * @throws Exception
+         */
+        private function getInput()
+        {
+                // 
+                // Payload is either on stdin or in POST-data:
+                // 
+                if (count($this->request->getPost()) > 0) {
+                        $input = $this->request->getPost();
+                } else {
+                        $input = file_get_contents("php://input");
+                }
+
+                // 
+                // Convert data if needed/requested:
+                // 
+                if (is_string($input)) {
+                        if ($this->request->getBestAccept() == 'application/json') {
+                                $input = json_decode($input);
+                        } else {
+                                if (($temp = json_decode($input)) != null) {
+                                        $input = $temp;
+                                }
+                        }
+                        if (!isset($input)) {
+                                throw new Exception("Unhandled content type");
+                        }
+                }
+
+                if (!isset($input)) {
+                        throw new Exception("Input data is missing");
+                }
+
+                // 
+                // Currently, we are only handling array data;
+                // 
+                if (!is_array($input)) {
+                        $input = (array) $input;
+                }
+
+                // 
+                // Separate on model data and query params:
+                // 
+                foreach (array('data', 'params') as $part) {
+                        if (isset($input[$part])) {
+                                $$part = (array) $input[$part];
+                        }
+                }
+
+                // 
+                // Assume input is data by default:
+                // 
+                if (!isset($data) && !isset($params)) {
+                        $data = $input;
+                }
+                if (!isset($data)) {
+                        $data = array();
+                }
+                if (!isset($params)) {
+                        $params = array();
+                }
+
+                return array($data, $params);
+        }
+
+        /**
+         * Send result to peer.
+         * @param string $status The status label.
+         * @param mixed $result The operation result.
+         */
+        private function sendResponse($status, $result)
+        {
+                $this->response->setJsonContent(array($status => $result));
+                $this->response->send();
+        }
+
+        /**
+         * Perform CRUD operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         * @param string $action The requested action.
+         * @throws Exception
+         */
+        private function crudAction($role, $type, $action)
         {
                 $result = array();
                 $models = array();
 
                 try {
                         // 
-                        // Payload is either on stdin or in POST-data:
+                        // Get request input:
                         // 
-                        if (count($this->request->getPost()) > 0) {
-                                $input = $this->request->getPost();
-                        } else {
-                                $input = file_get_contents("php://input");
-                        }
-                        
+                        list($data, $params) = $this->getInput();
+
                         // 
-                        // Convert data if needed/requested:
+                        // Static check if capabilities allow this action:
                         // 
-                        if (is_string($input)) {
-                                if ($this->request->getBestAccept() == 'application/json') {
-                                        $input = json_decode($input);
-                                } else {
-                                        $input = json_decode($input);
-                                }
-                                if (!isset($input)) {
-                                        throw new Exception("Unhandled content type");
+                        if (!isset($params['capability'])) {
+                                if ($this->capabilities->hasPermission($role, $type, $action) == false) {
+                                        return $this->sendResponse(self::FAILURE, _("You don't have permissions to perform this action."));
                                 }
                         }
 
-                        if (!isset($input)) {
-                                throw new Exception("Input data is missing");
-                        }
-
-                        // 
-                        // Currently, we are only handling array data;
-                        // 
-                        if (!is_array($input)) {
-                                $input = (array) $input;
-                        }
-
-                        // 
-                        // Separate on model data and query params:
-                        // 
-                        foreach (array('data', 'params') as $part) {
-                                if (isset($input[$part])) {
-                                        $$part = (array) $input[$part];
-                                }
-                        }
-
-                        // 
-                        // Assume input is data by default:
-                        // 
-                        if (!isset($data) && !isset($params)) {
-                                $data = $input;
-                        }
-                        if (!isset($data)) {
-                                $data = array();
-                        }
-                        if (!isset($params)) {
-                                $params = array();
-                        }
-                        
                         // 
                         // Handler request thru core handler:
                         // 
@@ -180,17 +324,72 @@ class AjaxController extends ServiceController
                         } else {
                                 $models[] = $handler->build($type, $data);
                         }
+                        
+                        // 
+                        // handle capability checks if requested:
+                        // 
+                        if (isset($params['capability'])) {
+                                return $this->capabilityAction($models, $action, $params);
+                        }
 
                         // 
                         // Perform action on model(s):
                         // 
-                        $result[self::SUCCESS] = $handler->action($models, $action, $params);
+                        $this->sendResponse(self::SUCCESS, $handler->action($models, $action, $params));
                 } catch (\Exception $exception) {
-                        $result[self::FAILURE] = $exception->getMessage();
+                        $this->sendResponse(self::FAILURE, $exception->getMessage());
+                }
+        }
+
+        /**
+         * Handle capability checks.
+         * 
+         * This action is called from route and internal (with models set). If
+         * models is set, then capabilities are checked dynamic against the
+         * model otherwise the capabilities are checked static against the
+         * access.def config.
+         * 
+         * The dynamic and static mode overlaps if models is set and filter
+         * requests a static check.
+         * 
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         */
+        public function capabilityAction($models = null, $action = null, $params = null)
+        {
+
+                if (!isset($params['capability'])) {
+                        list($data, $params) = $this->getInput();
+                        $filter = array(
+                                'role'     => false,
+                                'resource' => false,
+                                'action'   => false
+                        );
+                        $filter = array_merge($filter, $params);
+                } else {
+                        $filter = Capabilities::getFilter($params['capability']);
                 }
 
-                $this->response->setJsonContent($result);
-                $this->response->send();
+                if (isset($models)) {
+                        foreach ($models as $model) {
+                                if (($result = $this->capabilities->hasCapability($model, $action, $filter)) == false) {
+                                        break;
+                                }
+                        }
+                } elseif ($filter['role'] && $filter['resource'] && $filter['action']) {
+                        $result = $this->capabilities->hasPermission($filter['role'], $filter['resource'], $filter['action']);
+                } elseif ($filter['role'] && $filter['resource']) {
+                        $result = $this->capabilities->getPermissions($filter['role'], $filter['resource']);
+                } elseif ($filter['role']) {
+                        $result = $this->capabilities->getResources($filter['role']);
+                } elseif ($filter['resource']) {
+                        $result = $this->capabilities->getRoles($filter['resource']);
+                } else {
+                        $result = $this->capabilities->getCapabilities();
+                }
+
+
+                $this->sendResponse(self::SUCCESS, $result);
         }
 
 }
