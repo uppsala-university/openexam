@@ -225,6 +225,13 @@ $di->set('logger', function() use($config) {
 }, true);
 
 /**
+ * Get render service.
+ */
+$di->set('render', function() use($config){
+        return new \OpenExam\Library\Render\RenderService();
+}, true);
+
+/**
  * Phql based model manager
  */
 $di->set('phql', function() {

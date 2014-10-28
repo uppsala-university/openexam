@@ -173,6 +173,21 @@ $config = new \Phalcon\Config(
                         'file'  => 'phpunit.log',
                         'level' => LOG_DEBUG
                 )
+        ),
+        /**
+         * Configuration for the render service.
+         * See http://wkhtmltopdf.org/libwkhtmltox/pagesettings.html
+         */
+        'render'      => array(
+                'image' => array(
+                        'fmt'          => 'png',
+                        'imageQuality' => 95
+                ),
+                'pdf'   => array(
+                        'produceForms' => false,
+                        'outline'      => true,
+                        'outlineDepth' => 2
+                )
         )
     )
 );
