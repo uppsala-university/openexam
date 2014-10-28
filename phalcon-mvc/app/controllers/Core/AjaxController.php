@@ -112,6 +112,20 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
  * // Get all capabilities grouped by role (same):
  * input: {"params":{}}
  * 
+ * Filtering result set:
+ * -----------------------------------------------------
+ * 
+ * It's possible to filter result set (after query). It requires that the
+ * model class has been prepared to handle attribute filtering. 
+ * 
+ * For example, the resultset from Exam::find(...) can be filtered by passing
+ * a params filter that triggers the getFilter() to return a filter object:
+ * 
+ * // These are all equivalent:
+ * input: {"params":{"state":64}}               // filter on state
+ * input: {"params":{"flags":"upcoming"}}       // filter on single flag
+ * input: {"params":{"flags":["upcoming"]}}     // filter on multiple flags
+ * 
  * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
