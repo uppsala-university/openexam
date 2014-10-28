@@ -225,10 +225,8 @@ class AjaxController extends ServiceController
                 if (is_string($input)) {
                         if ($this->request->getBestAccept() == 'application/json') {
                                 $input = json_decode($input, true);
-                        } else {
-                                if (($temp = json_decode($input, true)) != null) {
-                                        $input = $temp;
-                                }
+                        } elseif (($temp = json_decode($input, true)) != null) {
+                                $input = $temp;
                         }
                         if (!isset($input)) {
                                 throw new Exception("Unhandled content type");
@@ -256,9 +254,9 @@ class AjaxController extends ServiceController
                 }
 
                 // 
-                // Assume input is data by default:
+                // Assume non-empty input is data by default:
                 // 
-                if (!isset($data) && !isset($params)) {
+                if (!isset($data) && !isset($params) && key($input) != "0") {
                         $data = $input;
                 }
                 if (!isset($data)) {
