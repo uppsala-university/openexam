@@ -62,7 +62,7 @@ abstract class RenderBase
          */
         public function setOptions($globals)
         {
-                $this->globals = $globals;
+                $this->globals = array_merge($this->globals, $globals);
         }
 
         /**
@@ -90,9 +90,9 @@ abstract class RenderBase
                 // Emulate '-' output option:
                 // 
                 $tmpfile = tempnam(sys_get_temp_dir(), 'wktohtml');
-                $dstfile = $globals['out'];                
+                $dstfile = $globals['out'];
                 $globals['out'] = $tmpfile;
-                
+
                 $result = wkhtmltox_convert($type, $globals, $objects);
 
                 if ($dstfile == '-') {
@@ -101,7 +101,8 @@ abstract class RenderBase
                 } else {
                         rename($tmpfile, $dstfile);
                 }
-                
+
                 return $result;
         }
+
 }
