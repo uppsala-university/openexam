@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Filter;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\Model;
 
@@ -53,6 +54,16 @@ class ModelBase extends Model
         {
                 $class = sprintf("OpenExam\Plugins\Security\Model\%sAccess", ucfirst($this->getResourceName()));
                 return new $class();
+        }
+
+        /**
+         * Get filter for result set.
+         * @param array $params The query parameters.
+         * @return Filter The result set filter object.
+         */
+        public function getFilter($params)
+        {
+                return null;
         }
 
         protected function afterFetch()

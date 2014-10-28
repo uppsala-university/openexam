@@ -2,11 +2,12 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Core\Exam\Grades;
 use OpenExam\Library\Core\Exam\State;
+use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\DiInterface;
-use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Mvc\Model\Query\Builder;
@@ -231,6 +232,37 @@ class Exam extends ModelBase
         public function getState()
         {
                 return new State($this);
+        }
+
+        /**
+         * Get examination graduation.
+         * @return Grades
+         */
+        public function getGrades()
+        {
+                return new Grades($this);
+        }
+
+        /**
+         * Get filter for result set.
+         * @param array $params The query parameters.
+         * @return Filter The result set filter object.
+         */
+        public function getFilter($params)
+        {
+                $filter = array();
+
+                foreach (array('state', 'flags') as $key) {
+                        if (isset($params[$key])) {
+                                $filter[$key] = $params[$key];
+                        }
+                }
+
+                if (count($filter) != 0) {
+                        return new Filter($filter);
+                } else {
+                        return parent::getFilter($params);
+                }
         }
 
         /**
