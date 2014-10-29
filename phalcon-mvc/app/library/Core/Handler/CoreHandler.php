@@ -305,13 +305,19 @@ class CoreHandler extends Component
 
                         $models = $class::find($params);
                         $result = array();
-                        $filter = $models[0]->getFilter($params);
 
-                        if (isset($filter)) {
-                                $result = $models->filter($filter);
-                        } else {
-                                foreach ($models as $m) {
-                                        $result[] = $strip($m);
+                        // 
+                        // Process non-empty resultset:
+                        // 
+                        if (count($models) != 0) {
+                                $filter = $models->getFirst()->getFilter($params);
+
+                                if (isset($filter)) {
+                                        $result = $models->filter($filter);
+                                } else {
+                                        foreach ($models as $m) {
+                                                $result[] = $strip($m);
+                                        }
                                 }
                         }
 
