@@ -94,6 +94,17 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
  * input: {"data":{...}:"params":{...,"capability":["static","role","action"]}}
  * </code>
  * 
+ * Pass count = true in the params to find out the number of matching records.
+ * Notice that the count is computed on the actual resultset.
+ * 
+ * <code>
+ * // Simple count on number of matching records:
+ * input: {"data":{...}:"params":{...,"count":true}}      // {"success":2}
+ * 
+ * // Inline the count in result:
+ * input: {"data":{...}:"params":{...,"count":"inline"}}  // {"success":{"count":2,"result":[...]}}
+ * </code>
+ * 
  * Capabilities (static rules):
  * -----------------------------------------------------
  * 

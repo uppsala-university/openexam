@@ -35,6 +35,23 @@ class CoreHandler extends Component
 {
 
         /**
+         * Inline count in result:
+         */
+        const COUNT_INLINE = 'inline';
+        /**
+         * Use simple count on result:
+         */
+        const COUNT_SIMPLE = true;
+        /**
+         * Don't count anything:
+         */
+        const COUNT_NOTHING = false;
+        /**
+         * Default count policy:
+         */
+        const COUNT_DEFAULT = self::COUNT_NOTHING;
+
+        /**
          * Constructor.
          * @param string $role The prefered role.
          */
@@ -229,6 +246,13 @@ class CoreHandler extends Component
         public function read($model, $params = array())
         {
                 // 
+                // Set default count policy:
+                // 
+                if (!isset($params['count'])) {
+                        $params['count'] = self::COUNT_DEFAULT;
+                }
+
+                // 
                 // Strip relations from model.
                 // 
                 $strip = function($model) {
@@ -284,13 +308,24 @@ class CoreHandler extends Component
                         $filter = $models[0]->getFilter($params);
 
                         if (isset($filter)) {
-                                return $models->filter($filter);
+                                $result = $models->filter($filter);
                         } else {
                                 foreach ($models as $m) {
                                         $result[] = $strip($m);
                                 }
+                        }
 
+                        // 
+                        // Return count on resultset or simply the result:
+                        // 
+                        if ($params['count'] === self::COUNT_INLINE) {
+                                return array('count' => count($result), 'result' => $result);
+                        } elseif ($params['count'] === self::COUNT_SIMPLE) {
+                                return count($result);
+                        } elseif ($params['count'] === self::COUNT_NOTHING) {
                                 return $result;
+                        } else {
+                                throw new Exception("Unknown argument for count.");
                         }
                 }
         }
