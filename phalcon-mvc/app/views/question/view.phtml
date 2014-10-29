@@ -39,7 +39,7 @@ $answerData = json_decode($answer->answer, true);
 					<span class="q-part-title"><?=$qPart?>.</span>                                        	
                                         <?php endif;?>
                                         
-					<span class="q-part-pts" style=" <?=$qPart=='a' ? 'border-radius: 0 0 5px' : ''?>"><?=$qPartData['q_points']?> pt.</span>
+					<span class="q-part-pts" style=" <?=$qPart=='a' ? 'border-radius: 0 0 5px' : ''?>"><?=sprintf("%02d", $qPartData['q_points'])?> pt.</span>
                                         
                                         <div style="margin-bottom: 0;" class="form q-part" data-id="<?=$qPart?>" >
                                                 <fieldset>
@@ -50,7 +50,7 @@ $answerData = json_decode($answer->answer, true);
                                                                 <div class="form-group q-part-ans-type" data-id="<?=$qPartData['ans_area']['type']?>">
                                                                 	<?php if($qPartData['ans_area']['type'] == 'textbox'):?>
                                                                         	
-                                                                                <input type="text" style="font-size:11px" class="form-control changeable" value="<?=$answerData[$qPart]['ans'][0]?>" />
+                                                                                <input type="text" style="font-size:11px" class="form-control changeable" value="<?=$answerData[$qPart]['ans'][0]?>" placeholder="Write your answer here ..." />
                                                                                 
                                                                 	<?php elseif($qPartData['ans_area']['type'] == 'canvas'):?>
                                                                         
@@ -84,9 +84,19 @@ $answerData = json_decode($answer->answer, true);
                                                                         </div>
                                                                         <?php foreach($qPartData['resources'] as $resTitle => $resUrl) :?>
                                                                         <div style="margin-bottom:15px; ">
+										<?php 
+										$type = basename(dirname($resUrl)).'s';
+										$path = $this->config->application->mediaDir.$type.DIRECTORY_SEPARATOR.basename($resUrl);
+										$mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), urldecode($path)); 
+										?>
                                                                                 <div>
 	                                                                            <a class="fancybox" rel="fancybox" href="<?=$resUrl?>" title="<?=$resTitle?>">
-                                                                                        <img src="<?=$resUrl?>" style="max-width: 100%"/>
+                                                                                        <?php if(stristr($mimeType, "image/")):?>
+                                                                                        <img style="max-width:300px" class="img-zoom" src='<?=$resUrl?>' data-zoom-image="<?=$resUrl?>"/>
+                                                                                        <?php else:?>
+                                                                                        <a class="media {width:480, height:425}" href="<?=$resUrl?>"></a> 
+                                                                                        <a target="_blank" href="<?=$resUrl?>" style="font-size:9px">Download this file</a>
+                                                                                        <?php endif;?>
                                                                                     </a>    
                                                                                 </div>
                                                                                 <div>
@@ -108,7 +118,7 @@ $answerData = json_decode($answer->answer, true);
                                                 <div class="row q-actions">
                                                         <div style="padding-bottom:25px">
                                                                 <label style="font-weight:normal">
-                                                                <input type="checkbox" id="highlight_q" value="" name="">
+                                                                <input type="checkbox" id="highlight_q" value="1" class="changeable" <?=$answerData['highlight-q'] == 'yes' ? 'checked':''?>>
                                                                  I would like to review my answer for this question later on, so mark it.</label>
                                                         </div>
                                                         <?php if($quest->name != '1'):?>
@@ -134,10 +144,11 @@ $answerData = json_decode($answer->answer, true);
 <div class="ans-sync-msg">Saving ... </div>
 <div id="exam-instructions" style="display:none; font-family:Verdana, Geneva, sans-serif; font-size:13px"><?=$exam->descr?></div>
 
-
-<?= Phalcon\Tag::javascriptInclude('js/views/question/view.js'); ?>
+<?=Phalcon\Tag::javascriptInclude('js/jquery.media.js'); ?>
+<?=Phalcon\Tag::javascriptInclude('js/jquery.elevatezoom.js'); ?>
 <?=Phalcon\Tag::javascriptInclude('plugins/ckeditor/ckeditor.js');?>
 <?=Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js');?>
+<?=Phalcon\Tag::javascriptInclude('js/views/question/view.js'); ?>
 <script language="javascript" type="text/javascript">
 	var qName   = <?=$quest->name?>;
 	var ansId = <?=$answer->id?>;

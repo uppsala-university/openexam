@@ -42,6 +42,8 @@
 	
 	$timeLeft = $start->diff($end);
 	$secDiff = (int)$end->format('U') - (int)$start->format('U');
+	
+	$answerData = json_decode($answer->answer, true); //highlight-q
     ?>
 
     <header>
@@ -69,10 +71,20 @@
           </li>        
           
 	  <li class="dropdown dark user-menu">
-            <a href="#">
-              <span class="user-name">Ahsan Shahzad &nbsp;<span style="color:#FFFF66">19841217-4057</span><!--#F9C271--></span>
+            <a class='dropdown-toggle' data-toggle='dropdown' href="#">
+              <span class="user-name">Ahsan Shahzad &nbsp;<span style="color:#f9c271">19841217-4057</span><!--#FFFF66--></span>
+              <b class='caret'></b>
             </a>
-          </li>          
+	    <ul class='dropdown-menu' style="width:275px">
+              <!--<li class='divider'></li>-->
+              <li>
+                <a href='<?=$this->url->get('auth/logout')?>'>
+                  <i class='icon-signout'></i>
+                  Sign out
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
         
         <div style="float:right; padding:5px 1%; font-size:20px; color:#F9C271; background-color:#F34541"><!--#F8A325-->
@@ -104,7 +116,7 @@
                     <?php $questionData = json_decode($question->quest);?>
 
                     <li class='<?=($question->name == $quest->name ? 'active' : '')?>' id="q<?=$question->name?>_short">
-                              <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.$question->name)?>">
+                              <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.$question->name)?>" style=" <?=(in_array($question->id, $highlightedQs) === TRUE ? 'background-color: #FBC676;':'')?>">
                                       <div style="float:left; width:20%"><i class="icon-q<?=$question->name?>" ></i></div>
                                       <div style="float:left; width:80%"><span><?=substr(strip_tags($questionData->a->q_text), 0, 65)?></span></div>
                               </a>

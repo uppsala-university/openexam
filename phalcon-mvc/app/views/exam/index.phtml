@@ -1,9 +1,11 @@
-<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
+<? //= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
 <?= Phalcon\Tag::stylesheetLink('css/opentip.css'); ?>
 
 <?= Phalcon\Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<? //= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<? //= Phalcon\Tag::javascriptInclude('js/moment.js')?>
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/index.js')?>
+
 <?php
 use  OpenExam\Library\Core\Exam\State;
 use  OpenExam\Library\Security\Roles;
@@ -188,7 +190,6 @@ $opButtonsHtml = array(
 
 ?>
 
-
 <div id="container" class="left_menu_space" class="container">
 
 	<div class="hero-unit" style="margin:15px">
@@ -223,84 +224,105 @@ $opButtonsHtml = array(
                                 </a>
                                 <?php endif;?>
                         </label>
-                        <article class="ac-large">
-                                <div style="float:right; padding:5px;">
-                                        <input type="text" class="exam-search-box" placeholder="Looking for old exams? Search here">
-                                        <span class="label label-orange"><i class="fa fa-search" style="color:#FFF"></i></span> 
-                                </div>
+                        <?php $title =str_replace(" ", "_", $sections[$role]['title']);?>
+                        <article class="ac-large exam-listing-wrapper" data-id="<?=$title?>" exam-role="<?=$role?>">
                                 <?php $totalExams = count($exams);?>
                                 <?php if($totalExams):?>
-                                <div class="exam-listing-area">
-                                        <ul class="list-group">
-                                                <?php $count = 1;?>
-                                                <?php foreach($exams as $exam):?>
-                                                <li class="list-group-item" data-id="<?=$exam->id?>">
-                                                        <div style="float:left"> <i class="fa fa-graduation-cap"></i> 
-                                                                <a href="#" class="exam-name"><?=$exam->name?></a>
-                                                                <div style="color: grey; font-size: 9px;">
-                                                                        <?=substr(strip_tags($exam->descr), 0, 120)." ...";?>
-                                                                </div>
-                                                        </div>
-                                                        <div style="float:right">
-                                                                <div class="exam-show-options">
-                                                                <?php foreach($sections[$role]['show-options'] as $op => $opData):?>
-
-                                                                	<?php $isUrl = preg_match('/.*\/.*/', $opData['target']);?>
-                                                                	<?php if(1 == 1/*in_array($exam->getState(), $opData['allowed-states'])*/) :?>
-                                                                        	<?php $href = ($isUrl ? str_replace("{exam-id}", $exam->id, $opData['target']) : '#');?>
-                                                                                <a data-id="<?=$exam->id?>" 
-                                                                                href="<?=$this->url->get($href)?>" 
-                                                                                class="<?=($isUrl ? '' : $opData['target'].' prevent')?>">
-                                                                                	<?=$opButtonsHtml[$op]?>
-                                                                                </a>
-                                                                        <?php endif;?>
-                                                                        
-                                                                <?php endforeach;?>
-                                                                </div>
-                                                                <div style="padding-top: 5px; float:right"> 
-                                                                        <span style="padding-right: 5px; font-size: 9px;">
-                                                                                <i class="fa fa-calendar"></i>
-                                                                                <?=date("Y-m-d", strtotime($exam->starttime))?>
-                                                                        </span> 
-                                                                        <span style="font-size: 9px;"> <i class="fa fa-clock-o"></i>
-                                                                                <?=date("H:m", strtotime($exam->starttime))?>
-                                                                                &mdash;
-                                                                                <?=date("H:m", strtotime($exam->endtime))?>
-                                                                        </span> 
-                                                                </div>
-                                                        </div>
-                                                        <div style="clear:both"></div>
-                                                </li>
-                                                <?php if($count == 3) break;?>
-                                                <?php $count++;?>
-                                                <?php endforeach;?>
-                                        </ul>
-                                        <?php
-                                        $totalPages = ceil($totalExams/3);
-					if($totalPages > 1):
-                                        ?>
-                                        <div style="margin:auto; width:700px">
-                                                <ul class="pagination" style="margin:auto; width:100%">
-                                                        <li class="disabled"><a href="#">«</a></li>
-                                                        <?php for($i=1; $i<=$totalPages; $i++):?>
-                                                        <li class="<?=($i == 1) ? 'active':''?>"> <a href="#">
-                                                                <?=$i?>
-                                                                <span class="sr-only">(current)</span></a> </li>
-                                                        <?php endfor;?>
-                                                </ul>
-                                        </div>
-                                        <?php endif;?>
+                                <div style="float:right; padding:5px;">
+                                        <input type="text" class="exam-search-box" placeholder="Quick search for exams as exam <?=$role?>">
+                                        <span class="label label-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
                                 </div>
+                                <div>
+                                        <div class="exam-listing-area" style="min-height:400px">
+                                                <ul class="list-group exam-list">
+                                                        <li class="list-group-item" style="background-color: rgb(245, 245, 245); padding: 5px; font-size: 11px;">
+                                                                <span style="font-size:9px">Sort by: </span>
+                                                                <select class="exam-sort-by" style="font-size: 9px; height: 20px; width: 85px;">
+                                                                        <option value="created">Date created</option>
+                                                                        <option value="name">Exam title</option>
+                                                                        <option value="starttime">Exam starts</option>                                                        
+                                                                </select>
+                                                                <i class="fa fa-arrow-circle-down fa-lg exam-sort-order" order="desc" style="color: rgb(193, 0, 43);"></i>
+                                                        </li>
+                                                        <?php $count = 1;?>
+                                                        <?php foreach($exams as $exam):?>
+                                                        <li class="list-group-item" data-id="<?=$exam->id?>">
+                                                                <div style="float:left"> <i class="fa fa-graduation-cap"></i> 
+                                                                        <a href="#" class="exam-name"><?=$exam->name?></a>
+                                                                        <div class="exam-descr" style="color: grey; font-size: 9px;">
+                                                                                <?=substr(strip_tags($exam->descr), 0, 120)." ...";?>
+                                                                        </div>
+                                                                </div>
+                                                                <div style="float:right">
+                                                                        <div class="exam-show-options">
+                                                                        <?php foreach($sections[$role]['show-options'] as $op => $opData):?>
+        
+                                                                                <?php $isUrl = preg_match('/.*\/.*/', $opData['target']);?>
+                                                                                <?php if(1 == 1/*in_array($exam->getState(), $opData['allowed-states'])*/) :?>
+                                                                                        <?php $href = ($isUrl ? str_replace("{exam-id}", $exam->id, $opData['target']) : '#');?>
+                                                                                        <a data-id="<?=$exam->id?>" 
+                                                                                        href="<?=$this->url->get($href)?>" 
+                                                                                        class="<?=($isUrl ? '' : $opData['target'].' prevent')?>">
+                                                                                                <?=$opButtonsHtml[$op]?>
+                                                                                        </a>
+                                                                                <?php endif;?>
+                                                                                
+                                                                        <?php endforeach;?>
+                                                                        </div>
+                                                                        <div style="padding-top: 5px; float:right"> 
+                                                                                <span class="exam-date" style="padding-right: 5px; font-size: 9px;">
+                                                                                        <i class="fa fa-calendar"></i>
+                                                                                        <?=date("Y-m-d", strtotime($exam->starttime))?>
+                                                                                </span> 
+                                                                                <span style="font-size: 9px;"> <i class="fa fa-clock-o"></i>
+                                                                                        <span class="exam-starts"><?=date("H:m", strtotime($exam->starttime))?></span>
+                                                                                        &mdash;
+                                                                                        <span class="exam-ends"><?=date("H:m", strtotime($exam->endtime))?></span>
+                                                                                </span> 
+                                                                        </div>
+                                                                </div>
+                                                                <div style="clear:both"></div>
+                                                        </li>
+                                                        <?php if($count == 3) break;?>
+                                                        <?php $count++;?>
+                                                        <?php endforeach;?>
+                                                </ul>
+                                                <?php
+                                                $totalPages = ceil($totalExams/3);
+                                                if($totalPages > 1):
+                                                ?>
+                                                <div style=" float: right; left: -50%; margin-bottom: 2em; position: relative; text-align: left;">
+                                                        <ul class="pagination" style="left: 50%; list-style: none outside none; margin: 0; padding: 0; position: relative;">
+                                                                <!--<li class="disabled"><a href="#">«</a></li>-->
+                                                                <?php for($i=1; $i<=$totalPages; $i++):?>
+                                                                <li class="<?=($i == 1) ? 'active':''?>" offset="<?=(($i-1) * 3)?>">
+                                                                	<a href="#"><?=$i?><span class="sr-only">(current)</span></a> 
+                                                                </li>
+                                                                <?php endfor;?>
+                                                        </ul>
+                                                </div>
+                                                <?php endif;?>
+                                        </div>
+                                </div>       
                                 <?php else:?>
                                 <div class="exam-listing-default-msg"> 
                                 	<?php if($baseRole == "student"):?>
-                                        <i class="fa fa-hand-o-right"></i> Currently you don't have any <?=str_replace("student-", "",$role)?> exams.
+                                        <i class="fa fa-info-circle"></i> Currently you don't have any <?=str_replace("student-", "",$role)?> exams.
                                         <?php else:?>
-                                        <i class="fa fa-hand-o-right"></i> Currently you don't have any exams as <?=$role?>.
+                                        <i class="fa fa-info-circle"></i> Currently you don't have any exams as <?=$role?>.
                                         <?php endif;?>
                                 </div>
                                 <?php endif;?>
                         </article>
+                        <?php $examData = array();?>
+			<?php foreach($exams as $exam):?>
+                        	<?php $examData[$exam->id] = $exam->toArray();?>
+                        <?php endforeach;?>
+			<script language="javascript">
+				exams["<?=$title?>"] = <?=count($examData) ? json_encode($examData) : '{}';?>;
+				exams["<?=$title?>_search"] = {};
+                        </script>
+                        
                 </div>
                 <?php $sectId++; ?>
                 <?php endforeach; ?>

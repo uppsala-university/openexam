@@ -5409,5 +5409,7 @@ pre {
 .q-actions {
 	background-color: #FBFBFB; margin-top:25px; padding:15px; border-top: 1px solid #eee
 }
-
+.q-highlight {
+	background-color:#FBC676 !important;
+}
 

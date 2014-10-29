@@ -60,6 +60,8 @@
 			
                 });
 		
+		ansJson["highlight-q"] = $('#highlight_q').is(':checked') ? 'yes' : 'no';
+		
 //		if(!failed) {
 			$('.ans-sync-msg').show();
 			
@@ -112,7 +114,22 @@
 		  	syncAnswers(false);
 			//return 'Are you sure you want to leave?';
 		});		
+
+		$('.img-zoom').elevateZoom({
+			zoomType: "window",
+			zoomWindowPosition: 10,
+			borderColour:"#dedede",
+			cursor: "crosshair",
+			scrollZoom:true,
+			cursor:"pointer",
+			zoomWindowFadeIn: 500,
+			zoomWindowFadeOut: 750
+		}); 
 		
+		// media plugin related settings and initializations
+		$.fn.media.defaults.flvPlayer = baseURL + 'swf/mediaplayer.swf';
+		$.fn.media.defaults.mp3Player = baseURL + 'swf/mediaplayer.swf';
+		$('a.media').media();
 	});
 //console.log("ALHAMDULILAH");
 		

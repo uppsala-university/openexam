@@ -36,8 +36,7 @@ class ExamController extends GuiController
         public function indexAction()
         {
                 // initializations
-                $loggedIn = $this->user->getUser();
-                
+                $loggedIn = $this->user;
                 // check if this person exists in students table
                 $isStudent = Student::findFirst("user = '".$loggedIn."'");
                 if($isStudent) {

@@ -5097,7 +5097,7 @@ text-decoration:none;
 .list-group {
     margin:22px 26px 0; 
     clear:both; 
-    padding-top: 12px
+    /*padding-top: 12px*/
 }
 .list-group-item:first-child {
     border-top-left-radius: 4px;
@@ -5134,7 +5134,7 @@ text-decoration:none;
     white-space: nowrap;
 }
 .ac-container input:checked ~ article.ac-large {
-	height: 275px !important;
+	height: 285px !important;
 }
 .label {
 	font-weight:normal;
@@ -5149,6 +5149,9 @@ text-decoration:none;
     color: #aeaeae; 
     font-family: "BebasNeueRegular","Arial Narrow",Arial,sans-serif; 
     font-size: 16px;
+}
+.exam-sort-order {
+	cursor:pointer !important;
 }
 .exam-search-box {
     height: 13px; 
