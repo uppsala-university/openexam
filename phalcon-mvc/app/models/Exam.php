@@ -131,7 +131,7 @@ class Exam extends ModelBase
         public $state;
         /**
          * Examination flags (e.g. decodable).
-         * @var type 
+         * @var string[]
          */
         public $flags;
 

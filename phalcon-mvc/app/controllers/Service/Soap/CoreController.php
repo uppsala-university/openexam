@@ -14,7 +14,16 @@
 namespace OpenExam\Controllers\Service\Soap;
 
 use OpenExam\Controllers\ServiceController;
+use OpenExam\Library\WebService\Soap\Service\AdminService;
+use OpenExam\Library\WebService\Soap\Service\ContributorService;
 use OpenExam\Library\WebService\Soap\Service\CoreService;
+use OpenExam\Library\WebService\Soap\Service\CorrectorService;
+use OpenExam\Library\WebService\Soap\Service\CreatorService;
+use OpenExam\Library\WebService\Soap\Service\DecoderService;
+use OpenExam\Library\WebService\Soap\Service\InvigilatorService;
+use OpenExam\Library\WebService\Soap\Service\StudentService;
+use OpenExam\Library\WebService\Soap\Service\TeacherService;
+use OpenExam\Library\WebService\Soap\SoapRequest;
 use OpenExam\Library\WebService\Soap\SoapService;
 use OpenExam\Library\WebService\Soap\Wrapper\DocumentLiteral as DocumentLiteralWrapper;
 
@@ -35,15 +44,17 @@ class CoreController extends ServiceController
         public function initialize()
         {
                 parent::initialize();
+                $this->createService($this->dispatcher->getActionName());
+        }
 
-                $location = sprintf(
-                    "%s://%s%s", $this->request->getScheme(), $this->request->getServerName(), $this->url->get($this->request->getQuery('_url'))
-                );
-
-                $this->service = new SoapService('OpenExam\Library\WebService\Soap\Service\CoreService');
-                $this->service->setLocation($location);
-                $this->service->setSchemaDirectory($this->config->application->schemasDir . 'soap');
-                $this->service->setNamespace("http://bmc.uu.se/soap/openexam/core");
+        /**
+         * Create (set) the SOAP service object.
+         * @param string $action Create service for core action.
+         */
+        private function createService($action)
+        {
+                $request = new SoapRequest($this->request, $action, $this->url->get($this->request->getQuery('_url')));
+                $this->service = $request->createService();
         }
 
         /**
@@ -51,10 +62,6 @@ class CoreController extends ServiceController
          */
         public function apiAction()
         {
-                // TODO: use view for displaying API docs (DOM document)
-//                $description = $this->service->getServiceDescription();
-//                $domdocument = $description->getGenerator()->getDocument();
-
                 $this->service->sendDocumentation();
         }
 
@@ -68,9 +75,92 @@ class CoreController extends ServiceController
         }
 
         /**
-         * The main action (/core/soap/[?wsdl]).
+         * Admin service request (/soap/core/admin).
          */
-        public function indexAction()
+        public function adminAction()
+        {
+                $this->handlerRequest(AdminService);
+        }
+
+        /**
+         * Core service request (/soap/core).
+         */
+        public function indexAction($service = null)
+        {
+                if (isset($service)) {
+                        $this->createService($service);
+                        $this->handlerRequest(sprintf("OpenExam\Library\WebService\Soap\Service\%sService", ucfirst($service)));
+                } else {
+                        $this->createService("core");
+                        $this->handlerRequest(CoreService);
+                }
+        }
+
+        /**
+         * Contributor service request (/soap/core/contributor).
+         */
+        public function contributorAction()
+        {
+                $this->handlerRequest(ContributorService);
+        }
+
+        /**
+         * Core service request (/soap/core).
+         */
+        public function coreAction()
+        {
+                $this->handlerRequest(CoreService);
+        }
+
+        /**
+         * Corrector service request (/soap/core/corrector).
+         */
+        public function correctorAction()
+        {
+                $this->handlerRequest(CorrectorService);
+        }
+
+        /**
+         * Creator service request (/soap/core/creator).
+         */
+        public function creatorAction()
+        {
+                $this->handlerRequest(CreatorService);
+        }
+
+        /**
+         * Decoder service request (/soap/core/decoder).
+         */
+        public function decoderAction()
+        {
+                $this->handlerRequest(DecoderService);
+        }
+
+        /**
+         * Invigilator service request (/soap/core/invigilator).
+         */
+        public function invigilatorAction()
+        {
+                $this->handlerRequest(InvigilatorService);
+        }
+
+        /**
+         * Student service request (/soap/core/student).
+         */
+        public function studentAction()
+        {
+                $this->handlerRequest(StudentService);
+        }
+
+        /**
+         * Teacher service request (/soap/core/teacher).
+         */
+        public function teacherAction()
+        {
+                $this->handlerRequest(TeacherService);
+        }
+
+        private function handlerRequest($handler)
         {
                 if ($this->request->has("wsdl")) {
                         $this->wsdlAction();
@@ -83,6 +173,7 @@ class CoreController extends ServiceController
                 if ($this->request->isSoapRequested()) {
                         $service = new CoreService($this->user);
                         $this->service->setHandler(new DocumentLiteralWrapper($service));
+                        $this->service->setSchemaDirectory($this->config->application->schemasDir . 'soap');
                         $this->service->handleRequest();
                         return;
                 }
