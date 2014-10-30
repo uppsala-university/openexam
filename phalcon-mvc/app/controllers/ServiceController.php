@@ -13,6 +13,8 @@
 
 namespace OpenExam\Controllers;
 
+use OpenExam\Library\Security\Capabilities;
+
 /**
  * Base class for data service controllers.
  * 
@@ -25,9 +27,16 @@ namespace OpenExam\Controllers;
 class ServiceController extends \Phalcon\Mvc\Controller
 {
 
+        /**
+         * The capabilities mapper.
+         * @var Capabilities 
+         */
+        protected $capabilities;
+
         public function initialize()
         {
                 $this->view->disable();
+                $this->capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
         }
 
 }

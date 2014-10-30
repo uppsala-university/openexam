@@ -153,18 +153,6 @@ class CoreController extends ServiceController
         const FAILURE = 'failed';
 
         /**
-         * The capabilities mapper.
-         * @var Capabilities 
-         */
-        private $capabilities;
-
-        public function initialize()
-        {
-                $this->capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
-                parent::initialize();
-        }
-
-        /**
          * Display documentation of the AJAX service API.
          */
         public function apiAction()
