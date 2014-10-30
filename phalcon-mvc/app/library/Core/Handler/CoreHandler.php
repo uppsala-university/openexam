@@ -282,16 +282,16 @@ class CoreHandler extends Component
                                         if (!isset($params['conditions'])) {
                                                 $params['conditions'] = array();
                                         }
-                                        if (is_string($val)) {
+                                        if (is_numeric($val)) {
+                                                $params['conditions'][] = array(
+                                                        "$class.$key = :$key:",
+                                                        array($key => "$val")
+                                                );
+                                        } elseif (is_string($val)) {
                                                 $params['conditions'][] = array(
                                                         "$class.$key LIKE :$key:",
                                                         array($key => "%$val%"),
                                                         array($key => PDO::PARAM_STR)
-                                                );
-                                        } else {
-                                                $params['conditions'][] = array(
-                                                        "$class.$key = :$key:",
-                                                        array($key => "$val")
                                                 );
                                         }
                                 }

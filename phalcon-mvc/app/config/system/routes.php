@@ -203,16 +203,16 @@ $group = $router->mount(
     ))
 );
 $group->add(
-    "/core/rest/{role}/{target}/:params", array(
-        "controller" => "rest",
+    "/rest/core/{role}/{target}/:params", array(
+        "controller" => "core",
         "action"     => "index",
         "namespace"  => "OpenExam\Controllers\Service\Rest",
         "params"     => 3
     )
 );
 $group->add(
-    "/core/rest/{role}/search/{target}", array(
-        "controller" => "rest",
+    "/rest/core/{role}/search/{target}", array(
+        "controller" => "core",
         "action"     => "search",
         "namespace"  => "OpenExam\Controllers\Service\Rest"
     )

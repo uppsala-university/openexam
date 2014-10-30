@@ -14,6 +14,7 @@
 namespace OpenExam\Controllers;
 
 use OpenExam\Library\Security\Capabilities;
+use Phalcon\Mvc\Controller;
 
 /**
  * Base class for data service controllers.
@@ -24,7 +25,7 @@ use OpenExam\Library\Security\Capabilities;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class ServiceController extends \Phalcon\Mvc\Controller
+class ServiceController extends Controller
 {
 
         /**
@@ -37,6 +38,76 @@ class ServiceController extends \Phalcon\Mvc\Controller
         {
                 $this->view->disable();
                 $this->capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
+        }
+
+        /**
+         * Get input (model) data and params from request.
+         * @return array
+         * @throws \Exception
+         */
+        protected function getInput()
+        {
+                // 
+                // Payload is either on stdin or in POST/PUT-data:
+                // 
+                if ($this->request->isPost()) {
+                        $input = $this->request->getPost();
+                }
+                if ($this->request->isPut()) {
+                        $input = key($this->request->getPut());
+                }
+                if (isset($input) && $input == false) {
+                        $input = file_get_contents("php://input");
+                }
+
+                // 
+                // Convert data if needed/requested:
+                // 
+                if (is_string($input)) {
+                        if ($this->request->getBestAccept() == 'application/json') {
+                                $input = json_decode($input, true);
+                        } elseif (($temp = json_decode($input, true)) != null) {
+                                $input = $temp;
+                        }
+                        if (!isset($input)) {
+                                throw new \Exception("Unhandled content type");
+                        }
+                }
+
+                if (!isset($input)) {
+                        throw new \Exception("Input data is missing");
+                }
+
+                // 
+                // Currently, we are only handling array data;
+                // 
+                if (!is_array($input)) {
+                        $input = (array) $input;
+                }
+
+                // 
+                // Separate on model data and query params:
+                // 
+                foreach (array('data', 'params') as $part) {
+                        if (isset($input[$part])) {
+                                $$part = (array) $input[$part];
+                        }
+                }
+
+                // 
+                // Assume non-empty input is data by default:
+                // 
+                if (!isset($data) && !isset($params) && key($input) != "0") {
+                        $data = $input;
+                }
+                if (!isset($data)) {
+                        $data = array();
+                }
+                if (!isset($params)) {
+                        $params = array();
+                }
+
+                return array($data, $params);
         }
 
 }
