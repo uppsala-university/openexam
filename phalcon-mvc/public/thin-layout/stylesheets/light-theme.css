@@ -5413,3 +5413,25 @@ pre {
 	background-color:#FBC676 !important;
 }
 
+.hero-unit {
+	padding:20px 20px 0px;
+	margin-bottom:30px;
+	background-color:#eeeeee;
+	-webkit-border-radius:6px;
+	-moz-border-radius:6px;
+	border-radius:6px;
+}
+
+.hero-unit .head {
+	border-bottom:5px solid #dedede;
+	margin-bottom:15px;
+	padding-bottom:5px;
+	font-size:15px;
+}
+
+.hero-unit p {
+	font-size:18px;
+	font-weight:200;
+	line-height:27px;
+	color:inherit;
+}

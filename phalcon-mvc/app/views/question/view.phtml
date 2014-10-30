@@ -142,7 +142,12 @@ $answerData = json_decode($answer->answer, true);
 </div>
 
 <div class="ans-sync-msg">Saving ... </div>
-<div id="exam-instructions" style="display:none; font-family:Verdana, Geneva, sans-serif; font-size:13px"><?=$exam->descr?></div>
+<div id="exam-instructions" class="hero-unit" style="min-width:800px; display:none; font-family:Verdana, Geneva, sans-serif; font-size:13px;">
+        <div class="head"><?=Phalcon\Tag::image(array("img/uu_logo.svg", "height"=>"55px", "style"=>"padding-right:20px"));?>
+        	<span style="color: #c2100c">Exam instructions: <?=$exam->name?></span>
+        </div>
+        <?=$exam->descr?>
+</div>
 
 <?=Phalcon\Tag::javascriptInclude('js/jquery.media.js'); ?>
 <?=Phalcon\Tag::javascriptInclude('js/jquery.elevatezoom.js'); ?>

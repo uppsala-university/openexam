@@ -5337,3 +5337,82 @@ a.selected-lib-img .lib-img {
         text-align:center; 
         margin-top:150px
 }
+
+td.cc {
+    text-align: center;
+    width: 25px;
+}
+td.no {
+    background-color: #dddddd;
+    border: 1px solid #999999;
+    color:#999999 !important;
+}
+td.na {
+    background-color: #f34541;
+    border: 1px solid #f34541;
+    color:#880000 !important;    
+}
+td.nc {
+    background-color: #66DA79;
+    border: 1px solid #65d02c;
+    color:#65d02c !important;        
+}
+td.ac {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    color:#cccccc !important;            
+}
+td.qu {
+    background-color: #666666;
+    border: 1px solid #333333;
+    color:#333333 !important;                
+}
+td.qr {
+    background-color: #6ebadc;
+    border: 1px solid #4285f4;
+    color:#4285f4 !important;                    
+}
+td.aa {
+    background-color: #eeeeee;
+    border: 1px solid #dddddd;
+}
+tr.avarage, tr.colorcode {
+    background-color: #ffffff;
+}
+td.s0 {
+    background: none repeat scroll 0 0 #000033;
+    border: 1px solid #000000;
+    color: white;
+}
+td.s20 {
+    background: none repeat scroll 0 0 #000066;
+    border: 1px solid #000033;
+    color: white;
+}
+td.s40 {
+    background: none repeat scroll 0 0 #000099;
+    border: 1px solid #000066;
+    color: white;
+}
+td.s60 {
+    background: none repeat scroll 0 0 #33ccff;
+    border: 1px solid #0099cc;
+    color: black;
+}
+td.s80 {
+    background: none repeat scroll 0 0 #ddffff;
+    border: 1px solid #aacccc;
+    color: black;
+}
+td.s100 {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #cccccc;
+    color: black;
+}
+
+table {
+	border:1px solid #dedede;
+	border-collapse:inherit;
+	margin:auto;
+	border-spacing:2px
+}

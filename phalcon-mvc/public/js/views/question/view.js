@@ -101,6 +101,7 @@
 			dirtybit = 1;
 		});
 		
+		CKEDITOR.config.removeButtons = 'Link,Unlink';
                 $('.ckeditor').each(function(index, element) {
 			CKEDITOR.replace(element.id, {
 				height: '100px'
@@ -116,6 +117,7 @@
 		});		
 
 		$('.img-zoom').elevateZoom({
+			responsive: true,
 			zoomType: "window",
 			zoomWindowPosition: 10,
 			borderColour:"#dedede",

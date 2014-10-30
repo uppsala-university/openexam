@@ -46,11 +46,14 @@ $(document).ready(function () {
     if($('#exam-desc').length) {
 	    CKEDITOR.replace('exam-desc', {
 		height: '100px',
+		extraPlugins: 'mathjax,specialchar,link',
 		toolbar: [
 		    ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
 			'Undo', 'Redo', 'Outdent', 'Indent', '-',
 			'Bold', 'Italic', 'Underline', '-',
-			'NumberedList', 'BulletedList'
+			'NumberedList', 'BulletedList', '-',
+			'Link', 'Unlink', '-',
+			'Mathjax', 'Specialchar'
 		    ]
 		]
 	
