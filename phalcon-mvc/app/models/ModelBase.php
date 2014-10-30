@@ -33,11 +33,16 @@ class ModelBase extends Model
          * @param string $resource The resource name.
          * @param string $leftcol The left hand column.
          * @param string $rightcol The right hand column.
+         * @param string $rightres The right hand resource.
          * @return string
          */
-        public static function getRelation($resource, $leftcol = null, $rightcol = null)
+        public static function getRelation($resource, $leftcol = null, $rightcol = null, $rightres = null)
         {
-                if (isset($rightcol)) {
+                if (isset($rightres)) {
+                        return
+                            __NAMESPACE__ . '\\' . ucfirst($resource) . '.' . $leftcol . '=' .
+                            __NAMESPACE__ . '\\' . ucfirst($rightres) . '.' . $rightcol;
+                } elseif (isset($rightcol)) {
                         return __NAMESPACE__ . '\\' . ucfirst($resource) . '.' . $leftcol . '=' . $rightcol;
                 } elseif (isset($leftcol)) {
                         return __NAMESPACE__ . '\\' . ucfirst($resource) . '.' . $leftcol;

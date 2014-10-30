@@ -297,8 +297,8 @@ class Exam extends ModelBase
                 $criteria = parent::query($dependencyInjector);
                 if ($role == Roles::CORRECTOR) {
                         $criteria
-                            ->join(self::getRelation('question'), self::getRelation('exam', 'id', 'exam_id'))
-                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id'))
+                            ->join(self::getRelation('question'), self::getRelation('exam', 'id', 'exam_id', 'question'))
+                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id', 'corrector'))
                             ->where(sprintf("user = '%s'", $user->getPrincipalName()));
                 } elseif ($role == Roles::CREATOR) {
                         $criteria->where(sprintf("creator = '%s'", $user->getPrincipalName()));
@@ -376,8 +376,8 @@ class Exam extends ModelBase
                 if ($role == Roles::CORRECTOR) {
                         $builder
                             ->from(self::getRelation('exam'))
-                            ->join(self::getRelation('question'), self::getRelation('exam', 'id', 'exam_id'))
-                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id'))
+                            ->join(self::getRelation('question'), self::getRelation('exam', 'id', 'exam_id', 'question'))
+                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id', 'corrector'))
                             ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
                 } elseif ($role == Roles::CREATOR) {
                         $builder

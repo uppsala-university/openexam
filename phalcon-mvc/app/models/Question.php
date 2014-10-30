@@ -156,13 +156,13 @@ class Question extends ModelBase
                             ->where(sprintf("user = '%s'", $user->getPrincipalName()));
                 } elseif ($role == Roles::CREATOR) {
                         $criteria
-                            ->join(self::getRelation('exam'), self::getRelation('question', 'id', 'exam_id'))
+                            ->join(self::getRelation('exam'), self::getRelation('exam', 'id', 'exam_id'))
                             ->where(sprintf("creator = '%s'", $user->getPrincipalName()));
                 } else {
                         $criteria
-                            ->join(self::getRelation('exam'), self::getRelation('question', 'id', 'exam_id'))
-                            ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id'))
-                            ->where(sprintf("user = '%s'", $user->getPrincipalName()));
+                            ->join(self::getRelation('exam'), self::getRelation('question', 'exam_id', 'id', 'exam'))
+                            ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id', $role))
+                            ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
                 }
 
                 return $criteria;
@@ -194,7 +194,7 @@ class Question extends ModelBase
                 if (is_string($parameters)) {
                         $parameters = array($parameters);
                 }
-                
+
                 // 
                 // Don't accept access to other models:
                 // 
@@ -238,13 +238,13 @@ class Question extends ModelBase
                 } elseif ($role == Roles::CREATOR) {
                         $builder
                             ->from(self::getRelation('question'))
-                            ->join(self::getRelation('exam'), self::getRelation('question', 'id', 'exam_id'))
+                            ->join(self::getRelation('exam'), self::getRelation('exam', 'id', 'exam_id'))
                             ->andWhere(sprintf("creator = '%s'", $user->getPrincipalName()));
                 } else {
                         $builder
                             ->from(self::getRelation('question'))
-                            ->join(self::getRelation('exam'), self::getRelation('question', 'id', 'exam_id'))
-                            ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id'))
+                            ->join(self::getRelation('exam'), self::getRelation('question', 'exam_id', 'id', 'exam'))
+                            ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id', $role))
                             ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
                 }
 
