@@ -134,7 +134,7 @@ class ExamController extends GuiController
                         $examSaved = $exam->save( array(
                                 'name'    => ' ',
                                 'descr'   => ' ',
-                                'creator' => $this->user,
+                                'creator' => $this->user->getPrincipalName(),
                                 'orgunit' => 'MedfarmDoIT',
                                 'grades'  => ' '
                         ));
@@ -201,7 +201,7 @@ class ExamController extends GuiController
         {
                 $this->view->disable();
                 
-                $loggedIn = $this->user;
+                $loggedIn = $this->user->getPrincipalName();
                 $examId = $this->filter->sanitize($examId, "int");
                 
                 if($examId && $exam = Exam::findFirst($examId)) {
