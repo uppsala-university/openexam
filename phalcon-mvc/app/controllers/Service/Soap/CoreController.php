@@ -5,13 +5,13 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    SoapController.php
+// File:    CoreController.php
 // Created: 2014-08-20 11:36:22
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Controllers\Core;
+namespace OpenExam\Controllers\Service\Soap;
 
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\WebService\Soap\Service\CoreService;
@@ -23,7 +23,7 @@ use OpenExam\Library\WebService\Soap\Wrapper\DocumentLiteral as DocumentLiteralW
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class SoapController extends ServiceController
+class CoreController extends ServiceController
 {
 
         /**

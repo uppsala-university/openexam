@@ -5,13 +5,13 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    AjaxController.php
+// File:    CoreController.php
 // Created: 2014-08-20 11:36:22
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Controllers\Core;
+namespace OpenExam\Controllers\Service\Ajax;
 
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\Core\Handler\CoreHandler;
@@ -140,7 +140,7 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
  * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class AjaxController extends ServiceController
+class CoreController extends ServiceController
 {
 
         /**

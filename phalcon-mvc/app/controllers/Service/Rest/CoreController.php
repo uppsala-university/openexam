@@ -5,16 +5,15 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    RestController.php
+// File:    CoreController.php
 // Created: 2014-08-20 11:35:41
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Controllers\Core;
+namespace OpenExam\Controllers\Service\Rest;
 
 use Exception;
-use OpenExam\Controllers\Core\RestRequest;
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\Core\Handler\CoreHandler;
 use OpenExam\Library\Security\Exception as SecurityException;
@@ -102,13 +101,13 @@ class RestRequest
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class RestController extends ServiceController
+class CoreController extends ServiceController
 {
 
         public function apiAction()
         {
                 // TODO: use view for displaying API docs
-                
+
                 $content = array(
                         "usage"   => array(
                                 "/core/rest/{role}/{target}"        => array("GET", "POST"),

@@ -52,7 +52,6 @@ $router->add(
     )
 );
 
-
 $router->add(
     "/:action", array(
         "controller" => "public",
@@ -84,7 +83,6 @@ $router->add(
   )
   ); */
 
-
 $router->add(
     "/question/:action/:params", array(
         "controller" => "question",
@@ -93,7 +91,6 @@ $router->add(
         "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
-
 
 $router->add(
     "/media/:action", array(
@@ -162,75 +159,84 @@ $router->add(
     )
 );
 
-
 /**
  * Route SOAP and WSDL requests:
  */
-$router->add(
-    "/core/soap/:action", array(
-        "controller" => "wsdl",
-        "action"     => 1,
-        "namespace"  => "OpenExam\Controllers\Core"
-    )
+$router->mount(
+    new PrefixRoute(array(
+        "prefix"    => "/soap",
+        "namespace" => "OpenExam\Controllers\Service\Soap"
+    ))
 );
-$router->add(
-    "/core/soap", array(
-        "controller" => "soap",
-        "action"     => "index",
-        "namespace"  => "OpenExam\Controllers\Core"
-    )
-)->setName('core-soap');
 
 /**
  * Route AJAX requests (e.g. "/core/ajax/student/exam/read").
  */
-$router->add(
-    "/core/ajax", array(
-        "controller" => "ajax",
-        "action"     => "api",
-        "namespace"  => "OpenExam\Controllers\Core"
+$group = $router->mount(
+    new PrefixRoute(array(
+        "prefix"    => "/ajax",
+        "namespace" => "OpenExam\Controllers\Service\Ajax"
+    ))
+);
+$group->addPost(
+    "/ajax/core/{role}/{model}/:action", array(
+        "controller" => "core",
+        "action"     => 3,
+        "namespace"  => "OpenExam\Controllers\Service\Ajax"
     )
 );
-$router->add(
-    "/core/ajax/capability", array(
-        "controller" => "ajax",
-        "action"     => "capability",
-        "namespace"  => "OpenExam\Controllers\Core"
+$group->addPost(
+    "/ajax/core/:action", array(
+        "controller" => "core",
+        "action"     => 1,
+        "namespace"  => "OpenExam\Controllers\Service\Ajax"
     )
-)->setHttpMethods("POST");
-$router->add(
-    "/core/ajax/{role}/{model}/:action", array(
-        "controller" => "ajax",
-        "action"     => 3,
-        "namespace"  => "OpenExam\Controllers\Core"
-    )
-)->setHttpMethods("POST");
+);
 
 /**
  * Route REST requests.
  */
-$router->add(
-    "/core/rest", array(
-        "controller" => "rest",
-        "action"     => "api",
-        "namespace"  => "OpenExam\Controllers\Core"
-    )
+$group = $router->mount(
+    new PrefixRoute(array(
+        "prefix"    => "/rest",
+        "namespace" => "OpenExam\Controllers\Service\Rest"
+    ))
 );
-$router->add(
+$group->add(
     "/core/rest/{role}/{target}/:params", array(
         "controller" => "rest",
         "action"     => "index",
-        "namespace"  => "OpenExam\Controllers\Core",
+        "namespace"  => "OpenExam\Controllers\Service\Rest",
         "params"     => 3
     )
 );
-$router->add(
+$group->add(
     "/core/rest/{role}/search/{target}", array(
         "controller" => "rest",
         "action"     => "search",
-        "namespace"  => "OpenExam\Controllers\Core"
+        "namespace"  => "OpenExam\Controllers\Service\Rest"
     )
 )->setHttpMethods('POST');
+
+// --------------------------------------------------------------
+// Compatibility routes (should be removed).
+// --------------------------------------------------------------
+// 
+// TODO: change all use of changing /core/ajax -> /ajax/core
+$router->add(
+    "/core/ajax/capability", array(
+        "controller" => "core",
+        "action"     => "capability",
+        "namespace"  => "OpenExam\Controllers\Service\Ajax"
+    )
+)->setHttpMethods("POST");
+$router->add(
+    "/core/ajax/{role}/{model}/:action", array(
+        "controller" => "core",
+        "action"     => 3,
+        "namespace"  => "OpenExam\Controllers\Service\Ajax"
+    )
+)->setHttpMethods("POST");
 
 $router->removeExtraSlashes(true);
 
