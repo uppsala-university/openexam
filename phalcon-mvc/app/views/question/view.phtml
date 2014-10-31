@@ -86,8 +86,8 @@ $answerData = json_decode($answer->answer, true);
                                                                         <div style="margin-bottom:15px; ">
 										<?php 
 										$type = basename(dirname($resUrl)).'s';
-										$path = $this->config->application->mediaDir.$type.DIRECTORY_SEPARATOR.basename($resUrl);
-										$mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), urldecode($path)); 
+										$path = $this->config->application->mediaDir.$type.DIRECTORY_SEPARATOR.basename(urldecode($resUrl));
+										$mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path); 
 										?>
                                                                                 <div>
 	                                                                            <a class="fancybox" rel="fancybox" href="<?=$resUrl?>" title="<?=$resTitle?>">
