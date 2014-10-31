@@ -119,7 +119,8 @@ $answerData = json_decode($answer->answer, true);
                                                         <div style="padding-bottom:25px">
                                                                 <label style="font-weight:normal">
                                                                 <input type="checkbox" id="highlight_q" value="1" class="changeable" <?=$answerData['highlight-q'] == 'yes' ? 'checked':''?>>
-                                                                 I would like to review my answer for this question later on, so mark it.</label>
+                                                                 <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
+                                                                 </label>
                                                         </div>
                                                         <?php if($quest->name != '1'):?>
                                                         <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.($quest->name-1))?>">
@@ -142,7 +143,7 @@ $answerData = json_decode($answer->answer, true);
 </div>
 
 <div class="ans-sync-msg">Saving ... </div>
-<div id="exam-instructions" class="hero-unit" style="min-width:800px; display:none; font-family:Verdana, Geneva, sans-serif; font-size:13px;">
+<div id="exam-instructions" class="hero-unit" style="min-width:800px; display:none; font-family:Verdana, Geneva, sans-serif;">
         <div class="head"><?=Phalcon\Tag::image(array("img/uu_logo.svg", "height"=>"55px", "style"=>"padding-right:20px"));?>
         	<span style="color: #c2100c">Exam instructions: <?=$exam->name?></span>
         </div>
