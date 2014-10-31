@@ -5385,8 +5385,8 @@ pre {
 
 
 .q-part-text label {
-	font-weight:normal;
-/*	font-size:12px;*/
+/*	font-weight:normal;
+	font-size:12px;*/
 	font-family:Verdana, Geneva, sans-serif;
 }
 
@@ -5434,4 +5434,8 @@ pre {
 	font-weight:200;
 	line-height:27px;
 	color:inherit;
+}
+
+#main-nav .navigation > .nav > .active {
+	border-left: 10px solid #F34541;/*#797C80*/
 }

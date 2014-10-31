@@ -127,6 +127,9 @@
 			zoomWindowFadeIn: 500,
 			zoomWindowFadeOut: 750
 		}); 
+		$(document).on('click','.zoom-in, .zoom-out', function() {
+			return false;
+		});
 		
 		// media plugin related settings and initializations
 		$.fn.media.defaults.flvPlayer = baseURL + 'swf/mediaplayer.swf';

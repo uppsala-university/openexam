@@ -118,12 +118,15 @@ class QuestionController extends GuiController
                 
                 ## get list of all questions that this student has asked to highlight
                 $highlightedQuestList = array();
-                $allAns = $quest->getAnswers('student_id = '.$student->id);
-                if(is_object($allAns) && $allAns->count()) {
-                        foreach($allAns as $stAns) {
-                                $stAnsData = json_decode($stAns->answer, true);
-                                if(isset($stAnsData['highlight-q']) && $stAnsData['highlight-q'] == 'yes') {
-                                        $highlightedQuestList[] = $stAns->question_id;
+                $allQs = $exam->getQuestions();
+                foreach ($allQs as $q) {
+                        $allAns = $q->getAnswers('student_id = '.$student->id);
+                        if(is_object($allAns) && $allAns->count()) {
+                                foreach($allAns as $stAns) {
+                                        $stAnsData = json_decode($stAns->answer, true);
+                                        if(isset($stAnsData['highlight-q']) && $stAnsData['highlight-q'] == 'yes') {
+                                                $highlightedQuestList[] = $stAns->question_id;
+                                        }
                                 }
                         }
                 }
