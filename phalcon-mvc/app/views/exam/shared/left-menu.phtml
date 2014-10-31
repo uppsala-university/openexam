@@ -149,7 +149,7 @@
 			// send ajax requedt to add this topic in db
 			ajax(
 				baseURL + 'core/ajax/creator/topic/create', 
-				{"exam_id": examId, "name": 'Click to edit section title', "randomize" : "0"}, 
+				{"exam_id": examId, "name": 'Click to edit title', "randomize" : "0"}, 
 				function(topicData) {
 					
 					// prepare cloned row to add in menu
@@ -215,7 +215,7 @@
 		$(document).on('blur', '.q-topic-txtbox', function() {
 
 			$this = $(this);
-			valToBeUpdated = $(this).val() != '' ? $(this).val() : 'Click to edit section title';
+			valToBeUpdated = $(this).val() != '' ? $(this).val() : 'Click to edit title';
 			
 			// send ajax requedt to update topic name in db
 			ajax(

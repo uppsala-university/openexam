@@ -194,7 +194,7 @@ $opButtonsHtml = array(
 
 	<div class="hero-unit" style="margin:15px">
         	<h1>Welcome!</h1>
-		<?php if($baseRole == 'student'):?>
+		<?php if($baseRole == Roles::STUDENT):?>
                 <h3>Information for students.</h3>
                 <p>
                 	Something important for students
@@ -225,16 +225,19 @@ $opButtonsHtml = array(
                                 <?php endif;?>
                         </label>
                         <?php $title =str_replace(" ", "_", $sections[$role]['title']);?>
-                        <article class="ac-large exam-listing-wrapper" data-id="<?=$title?>" exam-role="<?=$role?>">
+                        <article class="ac-large exam-listing-wrapper" data-id="<?=$title?>" exam-role="<?=($baseRole == Roles::STUDENT ? Roles::STUDENT : $role)?>">
                                 <?php $totalExams = count($exams);?>
                                 <?php if($totalExams):?>
-                                <div style="float:right; padding:5px;">
-                                        <input type="text" class="exam-search-box" placeholder="Quick search for exams as exam <?=$role?>">
-                                        <span class="label label-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
-                                </div>
+					<?php if($totalExams > 3):?>
+                                        <div style="float:right; padding:5px;">
+                                                <input type="text" class="exam-search-box" placeholder="Quick search for exams as exam <?=($baseRole == Roles::STUDENT ? Roles::STUDENT : $role)?>">
+                                                <span class="label label-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
+                                        </div>
+                                        <?php endif;?>
                                 <div>
                                         <div class="exam-listing-area" style="min-height:400px">
                                                 <ul class="list-group exam-list">
+                                                	<?php //if($totalExams > 3):?>
                                                         <li class="list-group-item" style="background-color: rgb(245, 245, 245); padding: 5px; font-size: 11px;">
                                                                 <span style="font-size:9px">Sort by: </span>
                                                                 <select class="exam-sort-by" style="font-size: 9px; height: 20px; width: 95px;">
@@ -244,6 +247,7 @@ $opButtonsHtml = array(
                                                                 </select>
                                                                 <i class="fa fa-arrow-circle-down fa-lg exam-sort-order" order="desc" style="color: rgb(193, 0, 43);"></i>
                                                         </li>
+                                                        <?php //endif;?>
                                                         <?php $count = 1;?>
                                                         <?php foreach($exams as $exam):?>
                                                         <li class="list-group-item" data-id="<?=$exam->id?>">
@@ -306,7 +310,7 @@ $opButtonsHtml = array(
                                 </div>       
                                 <?php else:?>
                                 <div class="exam-listing-default-msg"> 
-                                	<?php if($baseRole == "student"):?>
+                                	<?php if($baseRole == Roles::STUDENT):?>
                                         <i class="fa fa-info-circle"></i> Currently you don't have any <?=str_replace("student-", "",$role)?> exams.
                                         <?php else:?>
                                         <i class="fa fa-info-circle"></i> Currently you don't have any exams as <?=$role?>.

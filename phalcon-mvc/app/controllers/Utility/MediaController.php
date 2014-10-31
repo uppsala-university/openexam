@@ -87,7 +87,7 @@ class MediaController extends ControllerBase
                 $uploadUrl = $this->url->get('utility/media/view/' . $mediaType[1]);
 
                 // upload file
-                $uploadHandler = new UploadHandler(array(
+                $uploadHandler = new \UploadHandler(array(
                         'upload_dir' => $uploadDir,
                         'upload_url' => $uploadUrl."/",
                 ));
