@@ -28,6 +28,11 @@ use OpenExam\Models\Exam;
  * }
  * </code>
  * 
+ * Two special cases arise based on starttime/endtime:
+ * 
+ * o) starttime == null -> The exam is considered to be a draft (not yet scheduled).
+ * o) endtime   == null -> The exam is ongoing (running), but without an ending.
+ * 
  * @see http://it.bmc.uu.se/andlov/proj/edu/openexam/manual/workflow.php
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -129,6 +134,8 @@ class State
                         $this->state = self::DECODED | self::DECODABLE | self::FINISHED;
                 } elseif (!isset($this->exam->starttime)) {
                         $this->state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::DRAFT;
+                } elseif (!isset($this->exam->endtime)) {
+                        $this->state = self::EXAMINATABLE | self::RUNNING;      // Has starttime set, but no endtime -> never ending exam
                 } else {
                         $this->state = 0;
 
