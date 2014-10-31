@@ -1,70 +1,67 @@
-    <!-- Css -->
-    <?=Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap.css');?>
-    <?=Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap-responsive.css');?>
-    <?=Phalcon\Tag::stylesheetLink("css/1.css");?>
-    <?=Phalcon\Tag::stylesheetLink("css/2.css");?>
-    <?=Phalcon\Tag::stylesheetLink("css/3.css");?>
-    <?=Phalcon\Tag::stylesheetLink("css/acordion.css");?> 
-    <?=Phalcon\Tag::stylesheetLink("css/font-awesome.css");?> 
-    <?=Phalcon\Tag::stylesheetLink("plugins/fancy-box/source/jquery.fancybox.css");?>        
+<!-- Css -->
+<?=Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap.css');?>
+<?=Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap-responsive.css');?>
+<?=Phalcon\Tag::stylesheetLink("css/1.css");?>
+<?=Phalcon\Tag::stylesheetLink("css/2.css");?>
+<?=Phalcon\Tag::stylesheetLink("css/3.css");?>
+<?=Phalcon\Tag::stylesheetLink("css/acordion.css");?>
+<?=Phalcon\Tag::stylesheetLink("css/font-awesome.css");?>
+<?=Phalcon\Tag::stylesheetLink("plugins/fancy-box/source/jquery.fancybox.css");?>
 
-    <!-- Js -->
-    <?=Phalcon\Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js');?>            
-    <?=Phalcon\Tag::javascriptInclude('bootstrap/js/bootstrap.js');?>
-	
-    <?php 
+<!-- Js -->
+<?=Phalcon\Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js');?>
+<?=Phalcon\Tag::javascriptInclude('bootstrap/js/bootstrap.js');?>
+<?php 
 		$controllerName = $this->dispatcher->getControllerName(); 
 		$actionName = $this->dispatcher->getActionName(); 
 	?>
-    
-    <!-- page wrapper -->
-    <div id="wrapper" class="wrapper">
 
+<!-- page wrapper -->
+
+<div id="wrapper" class="wrapper"> 
+        
         <!-- Header area -->
-        <div id="header">
-
-            <!-- Top navigation -->
-            <div class="headerComponent componentContainer">
-
-                <!-- Logo -->
-                <div class="toppImg">
-                    <h1 class="logo">
-                        <a href="http://www.uu.se/">
-                        <?=Phalcon\Tag::image(array("img/uu_logo.svg", "style" => "max-height:120px"));?>	
-                        </a> 
-                        <span class="alt-logo">Uppsala universitet</span>
-                    </h1>
+        <div id="header"> 
+                
+                <!-- Top navigation -->
+                <div class="headerComponent componentContainer"> 
+                        
+                        <!-- Logo -->
+                        <div class="toppImg">
+                                <h1 class="logo"> <a href="http://www.uu.se/">
+                                        <?=Phalcon\Tag::image(array("img/uu_logo.svg", "style" => "max-height:120px"));?>
+                                        </a> <span class="alt-logo">Uppsala universitet</span> </h1>
+                        </div>
+                        
+                        <!-- Logo Text -->
+                        <div class="toppNav"> <br>
+                                <br>
+                                <h1 class="siteName"> <a href="http://www.bmc.uu.se/">OpenExam</a> - online examination system </h1>
+                        </div>
                 </div>
-
-                <!-- Logo Text -->   
-                <div class="toppNav"> 
-                    <br><br>
-                    <h1 class="siteName">
-                        <a href="http://www.bmc.uu.se/">OpenExam</a>
-                        - online examination system
-                    </h1>
-                </div>
-
-            </div>
-
-            <!-- Top menu -->
-            <div id="topMenu">
-
-                <!-- Top left menu -->
-                <ul id="menucontainer">
-                    <li class="first <?=(($controllerName == 'public' && $actionName == 'index') ? 'selected' : '')?>">
-						<?=Phalcon\Tag::linkTo('', 'Home')?>
-                    </li>
-                    <li class="<?=($controllerName == 'exam' ? 'selected' : '')?>">
-						<?=Phalcon\Tag::linkTo('exam/index', 'Exam management')?>
-                    </li>
-                    <li><?=Phalcon\Tag::linkTo('help', 'Help')?></li>
-                    <li><?=Phalcon\Tag::linkTo('about', 'About')?></li>
-                </ul>
-                <!-- Top right menu -->
-                <ul id="menucontainer" style="float:right">
-                    <li id="start">
-                        <?php
+                
+                <!-- Top menu -->
+                <div id="topMenu"> 
+                        
+                        <!-- Top left menu -->
+                        <ul id="menucontainer">
+                                <li class="first <?=(($controllerName == 'public' && $actionName == 'index') ? 'selected' : '')?>">
+                                        <?=Phalcon\Tag::linkTo('', 'Home')?>
+                                </li>
+                                <li class="<?=($controllerName == 'exam' ? 'selected' : '')?>">
+                                        <?=Phalcon\Tag::linkTo('exam/index', 'My Exams')?>
+                                </li>
+                                <li>
+                                        <?=Phalcon\Tag::linkTo('help', 'Help')?>
+                                </li>
+                                <li>
+                                        <?=Phalcon\Tag::linkTo('about', 'About')?>
+                                </li>
+                        </ul>
+                        <!-- Top right menu -->
+                        <ul id="menucontainer" style="float:right">
+                                <li id="start">
+                                        <?php
                         if(!$this->user->getUser()) {
                                 print Phalcon\Tag::linkTo( array(
                                         "auth/login", 
@@ -79,30 +76,24 @@
                                 )); 
                         }        
                         ?>
-                    </li>
-                </ul>
-
-            </div>
-
+                                </li>
+                        </ul>
+                </div>
         </div>
-
-
+        
         <!-- Content area -->
         <div id="containerflarp">
                 <div id="msg-box" class="alert" style="display:none"></div>
                 <?=$this->getContent() ?>
         </div>
-
-
+        
         <!-- Footer area -->
         <div id="footer">
-            <div class="uuFooter">
-                <div class="footerText">
-                  <div class="sidfot vcard" style="width: auto;"> &copy; 2014 <a class="url fn org" href="http://www.uu.se/">Uppsala University</a> <a class="url fn org" href="http://www.bmc.uu.se/">BMC</a>
-                  </div>
+                <div class="uuFooter">
+                        <div class="footerText">
+                                <div class="sidfot vcard" style="width: auto;"> &copy; 2014 <a class="url fn org" href="http://www.uu.se/">Uppsala University</a> <a class="url fn org" href="http://www.bmc.uu.se/">BMC</a> </div>
+                        </div>
                 </div>
-            </div>
         </div>
-
-    </div>		
-    <!-- wrapper ends -->
+</div>
+<!-- wrapper ends --> 
