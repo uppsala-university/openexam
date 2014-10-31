@@ -134,8 +134,6 @@ class State
                         $this->state = self::DECODED | self::DECODABLE | self::FINISHED;
                 } elseif (!isset($this->exam->starttime)) {
                         $this->state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::DRAFT;
-                } elseif (!isset($this->exam->endtime)) {
-                        $this->state = self::EXAMINATABLE | self::RUNNING;      // Has starttime set, but no endtime -> never ending exam
                 } else {
                         $this->state = 0;
 
@@ -145,6 +143,8 @@ class State
 
                         if ($ctime < $stime) {                  // Before exam begins
                                 $this->state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::UPCOMING;
+                        } elseif ($etime == 0) {                // Has starttime set, but no endtime -> never ending exam
+                                $this->state = self::EXAMINATABLE | self::RUNNING;
                         } elseif ($ctime < $etime) {            // After exam begin, but before its finished
                                 $this->state = self::EXAMINATABLE | self::RUNNING;
                         } elseif ($this->isCorrected()) {       // After exam has finished
