@@ -707,7 +707,7 @@ class ServiceGenerator
 EOL
                 );
                 $this->addRelations($method, $relations, '$model');
-                $method->setReturn(new Result("${restype}[]", "The $resource list."));
+                $method->setReturn(new Result("${resname}[]", "The $resource list."));
                 $method->addCode(
                     <<< EOL
                 return \$this->core->action(\$model, ObjectAccess::READ);
@@ -722,7 +722,7 @@ EOL
                 $method->setComment("Read single ${resource}.");
                 $this->addInitilize($method);
                 $method->addParam(new Parameter("id", "int", "The $resource ID."));
-                $method->setReturn(new Result("${restype}", "The $resource object."));
+                $method->setReturn(new Result("${resname}", "The $resource object."));
                 $method->addCode(
                     <<< EOL
                 \$model = new $resname();
@@ -752,8 +752,8 @@ EOL
                 $method->setComment("Add list of ${resource}s.");
                 $this->addInitilize($method);
                 $this->addRelations($method, $relations, "\$${resource}", "${resource}s");
-                $method->addParam(new Parameter("${resource}s", "${restype}[]", "The list of ${resource} object."));
-                $method->setReturn(new Result("${restype}[]", "The list of created ${resource}s."));
+                $method->addParam(new Parameter("${resource}s", "${resname}[]", "The list of ${resource} object."));
+                $method->setReturn(new Result("${resname}[]", "The list of created ${resource}s."));
                 $method->addCode(
                     <<< EOL
                 return \$this->core->action(\$${resource}s, ObjectAccess::CREATE);
@@ -817,6 +817,21 @@ EOL
                 $this->service->addUse('OpenExam\Plugins\Security\Model\ObjectAccess');
                 $resname = trim(strrchr($restype, '\\'), '\\');
 
+                // 
+                // The deleteTypes(type[]) method:
+                // 
+                $method = new Method(sprintf("delete%ss", ucfirst($resource)));
+                $method->setComment("Delete list of ${resource}s.");
+                $this->addInitilize($method);
+                $method->addParam(new Parameter("${resource}s", "${resname}[]", "The list of ${resource} object."));
+                $method->setReturn(new Result("boolean", "True if successful."));
+                $method->addCode(
+                    <<< EOL
+                return \$this->core->action(\$${resource}s, ObjectAccess::DELETE);
+EOL
+                );
+                $this->service->addMethod($method);
+                
                 // 
                 // The deleteType(type) method:
                 // 
