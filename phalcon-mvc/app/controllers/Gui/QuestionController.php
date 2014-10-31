@@ -74,7 +74,7 @@ class QuestionController extends GuiController
          */
         public function viewAction()
         {
-                $loggedIn = $this->user->getUser();
+                $loggedIn = $this->user->getPrincipalName();
                 
                 ## sanitize
                 $examId  = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");

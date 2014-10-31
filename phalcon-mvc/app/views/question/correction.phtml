@@ -60,7 +60,7 @@ $students  = $exam->getStudents();
                                                                         <?php 
 									// find color code
 									$cLink = true;
-                                                                        if(!in_array($this->user->getUser(), $qCorrectors[$question->id])) :
+                                                                        if(!in_array($this->user->getPrincipalName(), $qCorrectors[$question->id])) :
                                                                                 $cc = 'no';
 										$cLink = false;
                                                                         else :

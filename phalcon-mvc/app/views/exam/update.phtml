@@ -167,7 +167,7 @@
 ?>
 <script language="javascript">
 	mngr	= '<?=$exam->creator?>';
-	user	= '<?=$this->user->getUser()?>';
+	user	= '<?=$this->user->getPrincipalName()?>';
 	examId 	= <?=$exam->id?>;
 	qsJson 	= <?=$combinedJson?>;
 	qsCorrectorsJson = {};
