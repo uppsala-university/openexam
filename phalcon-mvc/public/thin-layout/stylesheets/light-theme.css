@@ -5380,7 +5380,8 @@ pre {
 	border-bottom: 1px solid rgb(222, 222, 222); 
 	border-top: 1px solid rgb(222, 222, 222); 
 	border-radius: 0px 5px 5px 0px;
-	left: 0px; 
+	left: 0px;
+	margin-top:-1px;
 }
 
 
@@ -5437,5 +5438,5 @@ pre {
 }
 
 #main-nav .navigation > .nav > .active {
-	border-left: 10px solid #F34541;/*#797C80*/
+	border-left: 10px solid #d1d1d1;/* #F34541 #797C80*/
 }
