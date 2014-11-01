@@ -22,6 +22,8 @@
 	var syncAnswers = function (async) {
 		
 		var failed = false;
+		if(ansId === 'None!')
+			return;
 		
 		$('.q-part').each(function(index, qPart) {
 			var qPartName = $(qPart).attr('data-id');

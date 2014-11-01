@@ -74,11 +74,19 @@ class QuestionController extends GuiController
          */
         public function viewAction()
         {
+                //initializations
+                $questData = $ansData = array();
                 $loggedIn = $this->user->getPrincipalName();
                 
                 ## sanitize
                 $examId  = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
                 $questId = $this->filter->sanitize($this->dispatcher->getParam("questId"), "int");
+
+                ## find student id of this logged in person for this exam
+                $student = Student::findFirst("user = '" . $loggedIn ."' and exam_id = " . $examId);
+                if(!$student) {
+                        throw new \Exception("You are not authorized to access this question");
+                }
                 
                 ## load exam with time checking
                 $exam = Exam::findFirst("id = " . $examId . " and starttime <= NOW() and endtime > NOW()");
@@ -86,39 +94,55 @@ class QuestionController extends GuiController
                         return $this->response->redirect('exam/index');
                 }
                 
-                ## pass data to view and load
-                $quest = Question::findFirst("name = '" . $questId ."' and exam_id=" . $examId);
-                if(!$quest) {
-                        // load first question if requested question don't exist
-                        $quest = Question::findFirst(array(
-                                'exam_id=' . $examId,
-                                'order' => 'name asc'
-                        ));
-                }
+                ## load all questions in this exam for highlighting questions
+                $allQs = $exam->getQuestions();
                 
-                ## create an entry in answer table for this question against this student
-                // first, find student id of this logged in person for this exam
-                $student = Student::findFirst("user = '" . $loggedIn ."' and exam_id=" . $examId);
-                if(!$student) {
-                        throw new \Exception("You are not authorized to access this question");
-                }
-                
+                ## check if needed to load a specific question
+                if($questId) {
+                        $viewMode = 'single';
+                        
+                        ## load question data
+                        $quest = Question::findFirst("name = '" . $questId ."' and exam_id=" . $examId);
+                        if(!$quest) {
+                                // load first question if requested question don't exist
+                                $quest = Question::findFirst(array(
+                                        'exam_id=' . $examId,
+                                        'order' => 'name asc'
+                                ));
+                        }
 
-                ## pick up answer data if student has answered
-                $ans = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $quest->id);
-                if(!$ans) {
-                        //lets add answer record in database now
-                        $ans = new Answer();
-                        $ans->save(array(
-                                'student_id' => $student->id,
-                                'question_id'=> $quest->id,
-                                'answered'   => 'N'
-                        ));
+                        ## pick up answer data if student has answered
+                        ## otherwise, create an entry in answer table for this question against this student
+                        $ans = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $quest->id);
+                        if(!$ans) {
+                                //lets add answer record in database now
+                                $ans = new Answer();
+                                $ans->save(array(
+                                        'student_id' => $student->id,
+                                        'question_id'=> $quest->id,
+                                        'answered'   => 'N'
+                                ));
+                        }
+                        
+                        // to array, doing so to keeps things clean in view
+                        $questData[0] = $quest;
+                        $ansData[$quest->id]   = $ans;
+                        
+                } else {
+                        $viewMode = 'all';
+                        $questData = $allQs;
+                        
+                        ## load all answers that logged in student has given against all qs
+                        foreach ($allQs as $qObj) {
+                                $tmp = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $qObj->id);
+                                if(is_object($tmp) && $tmp->count()) {
+                                        $ansData[$qObj->id] = $tmp;
+                                }
+                        }
                 }
                 
                 ## get list of all questions that this student has asked to highlight
                 $highlightedQuestList = array();
-                $allQs = $exam->getQuestions();
                 foreach ($allQs as $q) {
                         $allAns = $q->getAnswers('student_id = '.$student->id);
                         if(is_object($allAns) && $allAns->count()) {
@@ -133,9 +157,11 @@ class QuestionController extends GuiController
                 
                 $this->view->setVars(array(
                         'exam'          => $exam,
-                        'quest'         => $quest,
-                        'answer'        => $ans,
-                        'highlightedQs' => $highlightedQuestList
+                        'questions'     => $allQs,
+                        'quest'         => $questData,
+                        'answer'        => $ansData,
+                        'highlightedQs' => $highlightedQuestList,
+                        'viewMode'      => $viewMode
                 ));
                 $this->view->setLayout('thin-layout');
         }

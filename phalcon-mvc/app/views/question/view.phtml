@@ -1,11 +1,5 @@
 <!-- BISMILLAH-->
 
-<?php
-$qParts     = json_decode($quest->quest, true);
-$questions  = $exam->getQuestions();
-$answerData = json_decode($answer->answer, true);
-?>
-
 <!-- question content row ends --> 
 <div class='col-xs-12'>
 
@@ -26,12 +20,27 @@ $answerData = json_decode($answer->answer, true);
                 </div>
         </div>
 	*/?>
+        
+	<?php if($viewMode == 'all'):?>
+        <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
+                <a href="#" data-dismiss="alert" class="close">×</a>
+                Here you can preview all of your answers. Please <a href="<?=$this->url->get('auth/logout')?>">sign out</a> and close all opened browser windows, once you are satisfied with your answers.
+        </div>
+        <?php endif;?>
+
+	<?php foreach($quest as $qKey => $qObj):?>
+	
+        <?php
+        $qParts     = json_decode($qObj->quest, true);
+        $answerData = json_decode($answer[$qObj->id]->answer, true);
+        ?>
         <!-- question content row -->
         <div class="row" style="margin-top:15px">
+        
                 <div class="col-sm-12">
                         <div class="box bordered-box blue-border">
-                                <div class="box-content box-double-padding" style="font-family:verdana">
-                                	<i class="q-no icon-q<?=$quest->name?> text-contrast">:</i>
+                                <div class="box-content box-double-padding" style="font-family:verdana; <?=$viewMode == 'all' ? 'border-bottom: 10px solid #F34541':''?>">
+                                	<i class="q-no icon-q<?=$qObj->name?> text-contrast">:</i>
                                         <?php $partCount = 1;?>
                                         <?php foreach($qParts as $qPart => $qPartData):?>
                                         
@@ -44,10 +53,40 @@ $answerData = json_decode($answer->answer, true);
                                         <div style="margin-bottom: 0;" class="form q-part" data-id="<?=$qPart?>" >
                                                 <fieldset>
                                                         <div class="q-part-ans-area col-sm-7 col-sm-offset-1">
-                                                                <div class="q-part-text">
+                                                                <div class="q-part-text" style="padding-bottom:10px">
                                                                 	<label><?=$qPartData['q_text']?></label>
                                                                 </div>
-                                                                <div class="form-group q-part-ans-type" data-id="<?=$qPartData['ans_area']['type']?>">
+                                                                
+                                                                <?php if($viewMode == 'all'): ?>
+                                                                
+									<?php if(is_array($qPartData['ans_area']['data']) && count($qPartData['ans_area']['data'])):?>
+                                                                        <div>
+                                                                        	<ul>
+											<?php foreach($qPartData['ans_area']['data'] as $qPartOpt => $ans):?>
+                                                                                        <li><?=$qPartOpt?></li>
+                                                                                        <?php endforeach;?>
+                                                                                </ul>
+                                                                        </div>                                                                        
+                                                                	<?php endif;?>
+                                                                        
+                                                                        <div style="color:#F45956; padding-top:15px">Your Answer:</div>
+                                                                        <?php if(!empty($answerData[$qPart]['ans'][0])):?>
+                                                                        <div style="background-color:#F4F4F4; border-left: 5px solid #dedede; padding:10px">
+                                                                                <?php if(count($answerData[$qPart]['ans']) > 1):?>
+                                                                                <ul>
+                                                                                        <?php foreach($answerData[$qPart]['ans'] as $optAns):?>
+                                                                                                <li><?=$optAns?></li>
+                                                                                        <?php endforeach;?>
+                                                                                </ul>
+                                                                                <?php else:?>
+                                                                                <?=$answerData[$qPart]['ans'][0]?>
+                                                                                <?php endif;?>
+                                                                        </div>
+                                                                        <?php else:?>
+                                                                        <i>You haven't answerd this part.</i>
+                                                                        <?php endif;?>
+                                                                <?php else:?>
+	                                                                <div class="form-group q-part-ans-type" data-id="<?=$qPartData['ans_area']['type']?>">
                                                                 	<?php if($qPartData['ans_area']['type'] == 'textbox'):?>
                                                                         	
                                                                                 <input type="text" style="font-size:11px" class="form-control changeable" value="<?=$answerData[$qPart]['ans'][0]?>" placeholder="Write your answer here ..." />
@@ -72,9 +111,10 @@ $answerData = json_decode($answer->answer, true);
                                                                                 </div>                                                                        
                                                                                 
                                                                 	<?php else:?>
-                                                                                <textarea id="q-<?=$quest->name?>_part-<?=$qPart?>" class="form-control changeable ckeditor"><?=$answerData[$qPart]['ans'][0]?></textarea>
+                                                                                <textarea id="q-<?=$qObj->name?>_part-<?=$qPart?>" class="form-control changeable ckeditor"><?=$answerData[$qPart]['ans'][0]?></textarea>
                                                                         <?php endif;?>
-                                                                </div>
+                                                                	</div>
+                                                                <?php endif;?>
                                                         </div>
                                                         <?php if(count($qPartData['resources'])):?>
 							<div class="q-part-resource-area col-sm-4" style="width:40.3333%">
@@ -116,23 +156,33 @@ $answerData = json_decode($answer->answer, true);
 					
                                         <div style="margin:0px 15px " class="actions">
                                                 <div class="row q-actions">
-                                                        <div style="padding-bottom:25px">
-                                                                <label style="font-weight:normal">
-                                                                <input type="checkbox" id="highlight_q" value="1" class="changeable" <?=$answerData['highlight-q'] == 'yes' ? 'checked':''?>>
-                                                                 <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
-                                                                 </label>
-                                                        </div>
-                                                        <?php if($quest->name != '1'):?>
-                                                        <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.($quest->name-1))?>">
-                                                        	<button class="btn btn-xs btn-prev"><i class="icon-arrow-left"></i> Prev. Question </button>
-                                                        </a>
-                                                        <?php endif;?>
-                                                        
-                                                        <?php if($quest->name != count($questions)):?>
-                                                        <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.($quest->name+1))?>">
-                                                        	<button class="btn btn-xs btn-success btn-next"> Next Question <i class="icon-arrow-right"></i></button>
-                                                        </a>
-                                                        <?php endif;?>
+                                                	<?php if($viewMode == 'single'): ?>
+                                                                <div style="padding-bottom:25px">
+                                                                        <label style="font-weight:normal">
+                                                                        <input type="checkbox" id="highlight_q" value="1" class="changeable" <?=$answerData['highlight-q'] == 'yes' ? 'checked':''?>>
+                                                                         <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
+                                                                         </label>
+                                                                </div>
+                                                                <?php if($qObj->name != '1'):?>
+                                                                <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.($qObj->name-1))?>">
+                                                                        <button class="btn btn-xs btn-prev"><i class="icon-arrow-left"></i> Prev. Question </button>
+                                                                </a>
+                                                                <?php endif;?>
+                                                                
+                                                                <?php if($qObj->name != count($questions)):?>
+                                                                <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.($qObj->name+1))?>">
+                                                                        <button class="btn btn-xs btn-success btn-next"> Next Question <i class="icon-arrow-right"></i></button>
+                                                                </a>
+                                                                <?php else:?>
+                                                                <a href="<?=$this->url->get('exam/'.$exam->id.'/question/all')?>">
+                                                                        <button class="btn btn-xs btn-success btn-next"><i class="icon-list"></i> Preview your answers for all questions</button>
+                                                                </a>
+                                                                <?php endif;?>
+                                                        <?php else:?>
+                                                                <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.($qObj->name))?>">
+                                                                        <button class="btn btn-xs btn-success btn-prev"><i class="icon-pencil"></i> Change your Answer for this question </button>
+                                                                </a>
+							<?php endif;?>
                                                 </div>
                                         </div>
                         	</div>
@@ -140,6 +190,7 @@ $answerData = json_decode($answer->answer, true);
                                         
                 </div>
         </div>
+        <?php endforeach;?>
 </div>
 
 <div class="ans-sync-msg">Saving ... </div>
@@ -156,7 +207,12 @@ $answerData = json_decode($answer->answer, true);
 <?=Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js');?>
 <?=Phalcon\Tag::javascriptInclude('js/views/question/view.js'); ?>
 <script language="javascript" type="text/javascript">
-	var qName   = <?=$quest->name?>;
-	var ansId = <?=$answer->id?>;
+	<?php if($viewMode == 'single'):?>
+	var qName   = <?=$qObj->name?>;
+	var ansId   = <?=$answer[$qObj->id]->id?>;
+	<?php else:?>
+	var ansId   = 'None!';
+	<?php endif;?>
+	
 	var count = <?=(strtotime($exam->starttime) - strtotime("now"))?>;
 </script> 

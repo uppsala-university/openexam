@@ -128,11 +128,9 @@ $router->add(
 
 //@ToDO: combine following rules to make them more generic
 $router->add(
-    "/exam/:int/question/:int", array(
+    "/exam/{examId}/question/{questId}", array(
         "controller" => "question",
         "action"     => "view",
-        "examId"     => 1,
-        "questId"    => 2,
         "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
