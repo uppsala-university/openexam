@@ -48,9 +48,11 @@
                                 <li class="first <?=(($controllerName == 'public' && $actionName == 'index') ? 'selected' : '')?>">
                                         <?=Phalcon\Tag::linkTo('', 'Home')?>
                                 </li>
+                                <?php if($this->user->getUser()):?>
                                 <li class="<?=($controllerName == 'exam' ? 'selected' : '')?>">
                                         <?=Phalcon\Tag::linkTo('exam/index', 'My Exams')?>
                                 </li>
+                                <?php endif;?>
                                 <li>
                                         <?=Phalcon\Tag::linkTo('help', 'Help')?>
                                 </li>
