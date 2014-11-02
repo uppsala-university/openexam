@@ -1,6 +1,19 @@
 <!-- Main area -->
 
-<div>
+<?php
+$i=0;
+$stList = array(); 
+$students = $exam->getStudents();
+foreach($students as $student):
+	$stList[$i]["id"] = $student->id;
+	$stList[$i]["value"] = $student->user." - ".$student->code;
+	$i++;
+endforeach;
+?>
+<div id="st-mng-wrapper" exam-id="<?=$this->request->getPost('exam_id')?>">
+	<div style="padding-bottom:15px">
+        	<h3><?=$exam->name?></h3>
+        </div>
         <div class="tabs">
                 <ul>
                         <li><a href="#tabs-1">Add new students</a></li>
@@ -12,10 +25,15 @@
                             <h3>Add single or multiple students</h3>
                             <div>
                                 <p>
-                                        Write usernames or person number of student(s) to add. <br />
-                                        While adding multiple students, Usernames/Person number should be comma sperated.
+                                    Write usernames and exam code of single or multiple students. Username and exam code should be space seprated.
+                                    To add multiple students, data of students should be comma seprated.
+                                    <br />
+                                    <small>
+                                    Format to add single student: <strong>username code</strong><br />
+                                    Format to add multiple student: <strong>username1 code1, username2 code2</strong><br />
+                                    </small>
                                 </p>
-                                <textarea placeholder="Write student usernames or person number of students here." style="height:100px; width:480px"></textarea>
+                                <textarea id="student_list" placeholder="username code" style="height:100px; width:480px"></textarea>
                                 
                                 <div id="add_students_btn" style="display: block;margin:10px 0px 30px 0px;">        
                                         <span class="btn btn-success">
@@ -58,23 +76,27 @@
                         </div>
                 </div>
                 <div id="tabs-2">
-                	<h4>Search exsisting students in this exam.</h4>
-                        <input class="search-students" type="text" placeholder="Type student's real name or UpUnet-S username or Person number here to search." style="width:70%" /><br />
+                	<h4 style="float:left">Registered students in this exam</h4>
+                        <div style="float:right">
+                                <input class="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
+                                <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
+                        </div>
+                       	<div style="clear:both"></div>
                        
-                                <div id="import_students_by_file" style="display: block;margin:10px 0px 30px 0px;">        
-                                        <span class="btn btn-success">
-                                                <i class="fa fa-chevron-circle-right"></i>
-                                                <span>Search</span>
-                                        </span>
-                                </div>                                
-                       
-                        <a href="#" id="lsit-all-students" class="prevent" style="color:#CC0066"> Show me all students in this exam</a><br />
-                        
-			<ul class="student-list" style="list-style:none; max-height:500px; overflow:auto;" >
-                        	<li style="float:left; min-width:50%; display:none">
-                                	<a href="#" class="prevent del-student" data-id=""><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
-                                	<span></span>
+                       	<!--
+                        <a href="#" id="lsit-all-students" class="prevent" style="color:#CC0066"> View list of all students</a><br />
+                        -->
+			<ul class="student-list" style="list-style:none; max-height:500px; overflow:auto; margin-left:0px" >
+                                <li style="float: left; background-color: #FEFF99; border: 1px solid rgb(222, 222, 222); padding: 5px; margin:2px; display:none">
+                                        <a href="#" class="prevent del-student" data-id=""><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
+                                        <span></span>
                                 </li>
+                                <?php foreach($students as $student):?>
+                                        <li style="float: left; background-color: #F5F5F5; border: 1px solid #dedede; padding: 5px; margin:2px">
+                                                <a href="#" class="prevent del-student" data-id="<?=$student->id?>"><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
+                                                <span><?=$student->user." - ".$student->code?></span>
+                                        </li>
+                                <?php endforeach;?>
                         </ul>
                         <div style="clear:both"></div>
                 </div>
@@ -82,7 +104,7 @@
 </div>
 
 <script language="javascript">
-var studentList = [{"id":"ahssh488", "value":"Ahsan Shahzad (198412174057) ahssh488"},{"id":"wwwahssh488", "value":"Ahsawwwn Shahzad (198412174057) ahssh488"},{"id":"aheeessh488", "value":"Ah2222san Shahzad (198412174057) ahssh488"}];
+var studentList = <?=json_encode($stList)?>;
 
 $(function() {
 
@@ -99,13 +121,21 @@ $(function() {
 			newItem.find('span').html(ui.item.value).end()
 				.find('a').attr('data-id', ui.item.id).end()
 				.show();
+			$('.student-list').empty();
 			$('.student-list').append(newItem);
-			$(this).val('');
+			$('.ui-autocomplete-input').val('');
 		}
 		
 	});
+
+	if(stEvents == 'loaded') {
+		return;
+	} else {
+		stEvents = 'loaded';
+	}
 	
-	$('#lsit-all-students').click(function() {
+	/*
+	$(document).on('click', '#lsit-all-students', function () {
 
 		$('.student-list > li:visible').remove();
 		jQuery.each(studentList , function( i, studentData ) {
@@ -123,29 +153,78 @@ $(function() {
 		}
 		$('.student-list').show();
 		
+	});*/
+	
+	$(document).on('click', '.del-student', function () {
+		var student = $(this);
+		if(confirm("Are you sure you want to delete this student?")) {
+			ajax(
+				baseURL + 'core/ajax/invigilator/student/delete', 
+				{"id":$(this).attr('data-id')}, 
+				function(status) {
+					
+					jQuery.each(studentList , function( i, sData ) {
+						if(sData.id == $(student).attr('data-id')) {
+							delete studentList[i];
+						}
+					});
+					
+					// hide from list
+					$(student).parent().slideUp('500', function() {
+						// hide
+						$(this).remove();
+					});
+		
+				}
+			);
+		}
 	});
 	
-	$(document).on('.del-student', 'click', function () {
-		var student = $(this);
-		ajax(
-			baseURL + 'core/ajax/invigilator/student/delete', 
-			{"id":$(this).attr('data-id')}, 
-			function(status) {
-				
-				jQuery.each(studentList , function( i, studentData ) {
-					if(studentData.id == $(student).attr('data-id')) {
-						delete studentList[i];
-					}
+	$(document).on('click', '#add_students_btn', function () {
+		
+		stData = [];
+		examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
+		if(examId) {
+			stList = jQuery.trim($('#student_list').val()).split(',');
+			
+/*			@ToDo: replace belower with this commented out once Anders fixes the bug
+			$.each(stList, function(i, val) {
+				st = jQuery.trim(val).split(/\s/g);
+				stData.push({'exam_id': examId, "user": st[0], "code": st[1]})
+			});
+*/
+
+			if(stList.length > 1) {
+				$.each(stList, function(i, val) {
+					st = jQuery.trim(val).split(/\s/g);
+					stData.push({'exam_id': examId, "user": st[0], "code": st[1]})
 				});
-				
-				// hide from list
-				$(student).parent().slideUp('500', function() {
-					// hide
-					$(this).remove();
-				});
-	
+				stData = JSON.stringify(stData);
+			} else {
+				st = jQuery.trim(stList).split(/\s/g);
+				stData = {'exam_id': examId, "user": st[0], "code": st[1]};
 			}
-		);
+			
+			
+			
+			
+			// send ajax request to add these students to the exam
+			ajax(
+				baseURL + 'core/ajax/invigilator/student/create',
+				stData,
+				function (userData) {
+					userData = [{"id":"10","exam_id":"1","user":"ahsan1111","code":"1111","tag":null},{"id":"11","exam_id":"1","user":"ahsan222","code":"2222","tag":null}];
+					$.each(userData, function(i, user){
+						newItem = $('.student-list > li').first().clone();
+						$(newItem)
+							.find('.del-student').attr('data-id', user.id).end()
+							.find('span').html(user.user+" - "+user.code).end()
+							.show();
+						$('.student-list').prepend($(newItem));
+					});
+				}
+			);
+		}
 	});
 	
 });

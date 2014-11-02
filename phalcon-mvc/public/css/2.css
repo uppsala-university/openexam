@@ -4816,7 +4816,7 @@ text-decoration:none;
 }
 
 .ac-container input:checked ~ article.ac-large {
-        height: 275px;
+        height: 300px;
 }
 
 #q-parts-wrapper .ui-state-active {
@@ -5134,7 +5134,7 @@ text-decoration:none;
     white-space: nowrap;
 }
 .ac-container input:checked ~ article.ac-large {
-	height: 285px !important;
+	height: 300px !important;
 }
 .label {
 	font-weight:normal;

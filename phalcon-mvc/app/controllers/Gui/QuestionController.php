@@ -82,17 +82,26 @@ class QuestionController extends GuiController
                 $examId  = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
                 $questId = $this->filter->sanitize($this->dispatcher->getParam("questId"), "int");
 
-                ## find student id of this logged in person for this exam
-                $student = Student::findFirst("user = '" . $loggedIn ."' and exam_id = " . $examId);
-                if(!$student) {
-                        throw new \Exception("You are not authorized to access this question");
-                }
+                ## load exam
+                $exam = Exam::findFirst($examId);
                 
-                ## load exam with time checking
-                $exam = Exam::findFirst("id = " . $examId . " and starttime <= NOW() and endtime > NOW()");
-                if (!$exam) {
-                        return $this->response->redirect('exam/index');
-                }
+                ## if it is exam test mode?
+                $testMode = FALSE;
+                if($exam->creator == $loggedIn) {
+                        $testMode = TRUE;
+                } else {
+                        
+                        ## find student id of this logged in person for this exam
+                        $student = Student::findFirst("user = '" . $loggedIn ."' and exam_id = " . $examId);
+                        if(!$student) {
+                                throw new \Exception("You are not authorized to access this question");
+                        }
+                        
+                        ## load exam with time checking
+                        if (strtotime($exam->starttime) > strtotime("now") || strtotime($exam->endtime) < strtotime("now")) {
+                                return $this->response->redirect('exam/index');
+                        }
+                }        
                 
                 ## load all questions in this exam for highlighting questions
                 $allQs = $exam->getQuestions();
@@ -110,46 +119,53 @@ class QuestionController extends GuiController
                                         'order' => 'name asc'
                                 ));
                         }
+                        // to array, doing so to keeps things clean in view
+                        $questData[0] = $quest;
 
                         ## pick up answer data if student has answered
                         ## otherwise, create an entry in answer table for this question against this student
-                        $ans = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $quest->id);
-                        if(!$ans) {
-                                //lets add answer record in database now
-                                $ans = new Answer();
-                                $ans->save(array(
-                                        'student_id' => $student->id,
-                                        'question_id'=> $quest->id,
-                                        'answered'   => 'N'
-                                ));
+                        if(!$testMode) {
+                                
+                                $ans = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $quest->id);
+                                if(!$ans) {
+                                        //lets add answer record in database now
+                                        $ans = new Answer();
+                                        $ans->save(array(
+                                                'student_id' => $student->id,
+                                                'question_id'=> $quest->id,
+                                                'answered'   => 'N'
+                                        ));
+                                }
+                                // to array, doing so to keeps things clean in view
+                                $ansData[$quest->id]   = $ans;                                
                         }
-                        
-                        // to array, doing so to keeps things clean in view
-                        $questData[0] = $quest;
-                        $ansData[$quest->id]   = $ans;
                         
                 } else {
                         $viewMode = 'all';
                         $questData = $allQs;
                         
                         ## load all answers that logged in student has given against all qs
-                        foreach ($allQs as $qObj) {
-                                $tmp = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $qObj->id);
-                                if(is_object($tmp) && $tmp->count()) {
-                                        $ansData[$qObj->id] = $tmp;
+                        if(!$testMode) {
+                                foreach ($allQs as $qObj) {
+                                        $tmp = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $qObj->id);
+                                        if(is_object($tmp) && $tmp->count()) {
+                                                $ansData[$qObj->id] = $tmp;
+                                        }
                                 }
-                        }
+                        }        
                 }
                 
                 ## get list of all questions that this student has asked to highlight
                 $highlightedQuestList = array();
-                foreach ($allQs as $q) {
-                        $allAns = $q->getAnswers('student_id = '.$student->id);
-                        if(is_object($allAns) && $allAns->count()) {
-                                foreach($allAns as $stAns) {
-                                        $stAnsData = json_decode($stAns->answer, true);
-                                        if(isset($stAnsData['highlight-q']) && $stAnsData['highlight-q'] == 'yes') {
-                                                $highlightedQuestList[] = $stAns->question_id;
+                if(!$testMode) {
+                        foreach ($allQs as $q) {
+                                $allAns = $q->getAnswers('student_id = '.$student->id);
+                                if(is_object($allAns) && $allAns->count()) {
+                                        foreach($allAns as $stAns) {
+                                                $stAnsData = json_decode($stAns->answer, true);
+                                                if(isset($stAnsData['highlight-q']) && $stAnsData['highlight-q'] == 'yes') {
+                                                        $highlightedQuestList[] = $stAns->question_id;
+                                                }
                                         }
                                 }
                         }
@@ -161,7 +177,8 @@ class QuestionController extends GuiController
                         'quest'         => $questData,
                         'answer'        => $ansData,
                         'highlightedQs' => $highlightedQuestList,
-                        'viewMode'      => $viewMode
+                        'viewMode'      => $viewMode,
+                        'testMode'      => $testMode
                 ));
                 $this->view->setLayout('thin-layout');
         }

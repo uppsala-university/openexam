@@ -36,7 +36,6 @@
     
     
     <?php
-    	// find remaining time in this exam
 	$start 	= date_create(strtotime($exam->starttime) > strtotime("now") ? $exam->starttime : "now");
 	$end 	= date_create($exam->endtime);
 	
@@ -117,7 +116,7 @@
                     <?php $questionData = json_decode($question->quest);?>
 
                     <li class='<?=($viewMode == 'single' && $question->name == $quest[0]->name ? 'active' : '')?>' id="q<?=$question->name?>_short">
-                              <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.$question->name)?>" style=" <?=(in_array($question->id, $highlightedQs) === TRUE ? 'background-color: #FBC676;':'')?>">
+                              <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.$question->name)?>" style=" <?=(in_array($question->id, $highlightedQs) === TRUE ? 'background-color: #FEFF99;':'')?>"><!--#FBC676-->
                                       <div style="float:left; width:20%"><i class="icon-q<?=$question->name?>" ></i></div>
                                       <div style="float:left; width:80%; max-height:30px"><span><?=substr(strip_tags($questionData->a->q_text), 0, 65)?></span></div>
                               </a>

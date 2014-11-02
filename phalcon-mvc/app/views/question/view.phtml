@@ -20,18 +20,30 @@
                 </div>
         </div>
 	*/?>
+	<?php if($testMode):?>
+        <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
+                <strong>Test mode activated.</strong> <br />
+		You are currently previewing these questions in test mode. Please note that your Answers will <strong>not</strong> be saved.<br />
+                If you see any issues, please feel free to <a href="#">contact us</a>.
+                Click <a href="<?=$this->url->get('exam/index')?>">here</a> to return back on exam management page.
+        </div>
+        <?php endif;?>
         
-	<?php if($viewMode == 'all'):?>
+	<?php if(!$testMode && $viewMode == 'all'):?>
         <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
                 <a href="#" data-dismiss="alert" class="close">×</a>
                 Here you can preview all of your answers. Please <a href="<?=$this->url->get('auth/logout')?>">sign out</a> and close all opened browser windows, once you are satisfied with your answers.
         </div>
         <?php endif;?>
 
-	<?php foreach($quest as $qKey => $qObj):?>
+
+	<?php foreach($quest as $qKey => $qObj):
+		if(!$qObj->id)
+			continue;
+	?>
 	
         <?php
-        $qParts     = json_decode($qObj->quest, true);
+        $qParts  = json_decode($qObj->quest, true);
         $answerData = json_decode($answer[$qObj->id]->answer, true);
         ?>
         <!-- question content row -->
@@ -159,7 +171,7 @@
                                                 	<?php if($viewMode == 'single'): ?>
                                                                 <div style="padding-bottom:25px">
                                                                         <label style="font-weight:normal">
-                                                                        <input type="checkbox" id="highlight_q" value="1" class="changeable" <?=$answerData['highlight-q'] == 'yes' ? 'checked':''?>>
+                                                                        <input type="checkbox" id="highlight_q" value="1" class="changeable" <?=$answerData['highlight-q'] == 'yes' ? 'checked':''?> <?=$testMode ? 'disabled':''?>>
                                                                          <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
                                                                          </label>
                                                                 </div>
@@ -207,7 +219,7 @@
 <?=Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js');?>
 <?=Phalcon\Tag::javascriptInclude('js/views/question/view.js'); ?>
 <script language="javascript" type="text/javascript">
-	<?php if($viewMode == 'single'):?>
+	<?php if(!$testMode && $viewMode == 'single'):?>
 	var qName   = <?=$qObj->name?>;
 	var ansId   = <?=$answer[$qObj->id]->id?>;
 	<?php else:?>

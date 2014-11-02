@@ -1,4 +1,7 @@
 <!-- BISMILLAH-->
+
+<?php $testMode = $exam->creator == $this->user->getPrincipalName() ? TRUE : FALSE;?>
+
 <div class='col-xs-12' style="padding:0px 35px">
         <div class='row'>
                 <div class='col-sm-12'>
@@ -24,9 +27,9 @@
         
         <div class="exam-status-area">
                 <center>
-                <input onClick="javascript:location.href='<?=$this->url->get('exam/'.$exam->id.'/question/1')?>';" class="btn btn-success btn-lg" value="I am ready, start the exam" type="button" style=" <?=(strtotime($exam->starttime) <= strtotime("now")) ? '':'display:none'?>">
+                <input onClick="javascript:location.href='<?=$this->url->get('exam/'.$exam->id.'/question/1')?>';" class="btn btn-success btn-lg" value="I am ready, start the exam <?=$testMode?'in test mode':''?>" type="button" style=" <?=(strtotime($exam->starttime) <= strtotime("now")) ? '':'display:none'?>">
                 <?php if(strtotime($exam->starttime) > strtotime("now")):?>
-                <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam starts in: " type="button" disabled="disabled">
+                <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam <?=$testMode?'testing':''?> starts in: " type="button" disabled="disabled">
                 <?php endif;?>
                 </center>
         </div>        
@@ -38,7 +41,7 @@ $('#main-nav-bg').remove();
 $('#content').css("margin-left", "0px");
 $('.toggle-nav').remove();
 <?php if(strtotime($exam->starttime) > strtotime("now")):?>
-var examStartCount = <?=(strtotime($exam->starttime) - strtotime("now"))?>;
+var examStartCount = <?=(strtotime(!$testMode ? $exam->starttime : "+10 seconds") - strtotime("now"))?>;
 var examStartCountDown = setInterval(function() {
 	examStartCount--;
 	if (examStartCount <= 0)
@@ -49,7 +52,7 @@ var examStartCountDown = setInterval(function() {
 		
 		return;
 	}
-	$("#countdown-btn").val("Exam starts in: " + toHHMMSS(examStartCount));
+	$("#countdown-btn").val("Exam <?=$testMode?'testing':''?> starts in: " + toHHMMSS(examStartCount));
 
 }, 1000); 
 <?php endif;?>

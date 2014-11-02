@@ -1,8 +1,10 @@
-<? //= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.timepicker.css'); ?>
 <?= Phalcon\Tag::stylesheetLink('css/opentip.css'); ?>
 
 <?= Phalcon\Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
-<? //= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/ui/jquery-ui-timepicker.js'); ?>
 <? //= Phalcon\Tag::javascriptInclude('js/moment.js')?>
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/index.js')?>
 
@@ -33,7 +35,7 @@ $sections = array (
 						)
 					),
 				'test-exam' => array(
-						'target'=> 'exam/test/{exam-id}',
+						'target'=> 'exam/{exam-id}',
 						'allowed-states' => array (
 							State::EDITABLE,
 							State::CONTRIBUTABLE,
@@ -276,7 +278,7 @@ $opButtonsHtml = array(
                                                                         <div style="padding-top: 5px; float:right; clear:both">
                                                                                 <span class="exam-date" style="padding-right: 5px; font-size: 9px;">
                                                                                         <i class="fa fa-calendar"></i>
-                                                                                        <?=date("Y-m-d", strtotime($exam->starttime))?>
+                                                                                        <span><?=date("Y-m-d", strtotime($exam->starttime))?></span>
                                                                                 </span> 
                                                                                 <span style="font-size: 9px;"> <i class="fa fa-clock-o"></i>
                                                                                         <span class="exam-starts"><?=date("H:m", strtotime($exam->starttime))?></span>
@@ -347,6 +349,31 @@ $opButtonsHtml = array(
                         Exam roles<br>
                 </div>         
         </div>
+        <div id="change-time" title="Change exam data and time" style="display:none">
+        	<h4 id="exam-title"></h4>
+                <div style="margin-left:25px">
+                	<div  style="padding-bottom:15px">
+                                Examination time:
+                                <div>
+	                                <input type="text" class="timepicker" id="exam-starttime" value="" style="height:15px; width:60px" placeholder="Start time" /> 
+                                        &#8594;  
+                                        <input type="text" class="timepicker" id="exam-endtime" value="" style="height:15px; width:60px" placeholder="End time" />
+                                </div>         
+                        </div>
+                	<div>
+                                Examination date:
+                                <div> 
+                                <input type="text" class="datepicker" id="exam-date" value="" style="height:15px;" />
+                                </div>
+                        </div>
+                </div>         
+        </div>
         
 <!-- container -->
 </div>
+<script language="javascript">
+$(function() {
+	$('.datepicker').datepicker({"dateFormat": "yy-mm-dd"});
+	$('.timepicker').timepicker();
+});
+</script>

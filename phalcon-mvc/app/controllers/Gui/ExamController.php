@@ -349,6 +349,25 @@ class ExamController extends GuiController
         public function studentsAction()
         {
                 $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                
+                // sanitize
+               
+                $examId = $this->filter->sanitize($this->request->getPost("exam_id"), "int");
+                if($examId) {
+                        
+                        // load exam data if exam time has not been finished
+                        $exam = Exam::findFirst("id = " . $examId . " and endtime > NOW()");
+                        if(!$exam) {
+                                throw new \Exception("Sorry! "
+                                    . "Exam time has been finished. <br>"
+                                    . "It is no more possible to manage student's data.");
+                        }
+                        
+                } else {
+                        throw new \Exception("Unable to load student list for this exam");
+                }
+                
+                $this->view->setVar("exam", $exam);
         }
         
 }

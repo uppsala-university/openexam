@@ -93,7 +93,7 @@
 		
 		$('#highlight_q').on('click', function() {
 			if($(this).is(':checked')) {
-				$('#q'+qName+'_short > a').css('background-color', '#FBC676');
+				$('#q'+qName+'_short > a').css('background-color', '#FEFF99'); /*#FBC676*/
 			} else {
 				$('#q'+qName+'_short > a').css('background-color', '#FEFEFE');
 			}
