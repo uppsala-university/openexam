@@ -6,7 +6,9 @@
 	var dirtybit 	= 0;
 	var syncEvery	= 30000; //30 seconds
 	var ansJson	= {};
-	var totalSyncs	= 0;	
+	var totalSyncs	= 0;
+	var canvasData	= [];
+	var canvasElem	= [];
 
 	/*----------------------------------------------------------*/ 
 	/*	Sync answers in database every 30 seconds	    */
@@ -54,7 +56,10 @@
 				
 			} else if(ansType == 'canvas') {
 				
-				//ansJson[qPartName]["ans"] = ansType;
+				var canvasId = $(answers).attr('id');
+				var canvasJson = canvasData[canvasId];
+				var canvasUrl = canvasElem[canvasId].getImage().toDataURL();
+				ansJson[qPartName]["ans"].push({"canvasJson":canvasJson, "canvasUrl": canvasUrl});
 				
 			} else {
 				ansJson[qPartName]["ans"].push(CKEDITOR.instances[$(answers).attr('id')].getData());
@@ -85,6 +90,30 @@
 			Please report this issue to the exam invigilator immediately.");
 		}*/
 	}
+
+	/*----------------------------------------------------------*/ 
+	/*	initialize canvas elements			    */
+	/*----------------------------------------------------------*/
+	var initCanvas = function(elementId, canvasJson) {
+		$('#'+elementId).literallycanvas({
+			onInit: function(lc) {
+				
+				canvasElem[elementId] = lc;
+				
+				if(canvasJson != '') {
+					lc.loadSnapshotJSON(canvasJson);
+					canvasData[elementId] = canvasJson;
+				}
+				
+				lc.on('drawingChange', function() {
+					dirtybit = 1;
+					canvasData[elementId] = lc.getSnapshotJSON();
+				})
+			},
+			imageURLPrefix: baseURL + 'plugins/canvas/img', imageSize: {width: null, height: null}
+		});		
+	}
+	
 
 	/*------------------------------------------*/ 
 	/*	Events binding area						*/
@@ -129,6 +158,19 @@
 			zoomWindowFadeIn: 500,
 			zoomWindowFadeOut: 750
 		}); 
+		
+		$('.img-zoom-inner').elevateZoom({
+			responsive: true,
+			zoomType: "window",
+			zoomWindowPosition: 2,
+			borderColour:"#dedede",
+			cursor: "crosshair",
+			scrollZoom:true,
+			cursor:"pointer",
+			zoomWindowFadeIn: 500,
+			zoomWindowFadeOut: 750
+		}); 
+		
 		$(document).on('click','.zoom-in, .zoom-out', function() {
 			return false;
 		});
@@ -137,6 +179,7 @@
 		$.fn.media.defaults.flvPlayer = baseURL + 'swf/mediaplayer.swf';
 		$.fn.media.defaults.mp3Player = baseURL + 'swf/mediaplayer.swf';
 		$('a.media').media();
+		
 	});
 //console.log("ALHAMDULILAH");
 		

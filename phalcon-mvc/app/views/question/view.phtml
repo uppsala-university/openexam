@@ -1,5 +1,15 @@
 <!-- BISMILLAH-->
 
+<!-- ToDo: load only if a question type is canvas -->
+<?=Phalcon\Tag::stylesheetLink("plugins/canvas/css/literallycanvas.css");?>
+<?=Phalcon\Tag::javascriptInclude('plugins/canvas/js/react-with-addons.js');?>
+<?=Phalcon\Tag::javascriptInclude('plugins/canvas/js/ie_customevent.js');?>
+<?=Phalcon\Tag::javascriptInclude('plugins/canvas/js/literallycanvas.js');?>
+
+
+<!-- view.phtml specific js -->
+<?=Phalcon\Tag::javascriptInclude('js/views/question/view.js'); ?>
+
 <!-- question content row ends --> 
 <div class='col-xs-12'>
 
@@ -91,7 +101,11 @@
                                                                                         <?php endforeach;?>
                                                                                 </ul>
                                                                                 <?php else:?>
-                                                                                <?=$answerData[$qPart]['ans'][0]?>
+                                                                                	<?php if($answerData[$qPart]['type'] == 'canvas'):?>
+                                                                                		<img class="img-zoom-inner" src="<?=$answerData[$qPart]['ans'][0]['canvasUrl']?>" data-zoom-image="<?=$answerData[$qPart]['ans'][0]['canvasUrl']?>" style="max-width:100%; background-color:#f4f4f4" />
+                                                                                        <?php else:?>
+                                                                                        	<?=$answerData[$qPart]['ans'][0]?>
+											<?php endif;?>
                                                                                 <?php endif;?>
                                                                         </div>
                                                                         <?php else:?>
@@ -100,15 +114,11 @@
                                                                 <?php else:?>
 	                                                                <div class="form-group q-part-ans-type" data-id="<?=$qPartData['ans_area']['type']?>">
                                                                 	<?php if($qPartData['ans_area']['type'] == 'textbox'):?>
-                                                                        	
                                                                                 <input type="text" style="font-size:11px" class="form-control changeable" value="<?=$answerData[$qPart]['ans'][0]?>" placeholder="Write your answer here ..." />
-                                                                                
                                                                 	<?php elseif($qPartData['ans_area']['type'] == 'canvas'):?>
-                                                                        
-                                                                                <input type="text" style="font-size:11px" class="form-control changeable" value="<?=$answerData[$qPart]['ans'][0]?>"  />
-                                                                                
+                                                                                <div id="q<?=$qObj->id?>p<?=$qPart?>" class="literally changeable"></div>
+                                                                                <script language="javascript">initCanvas('q<?=$qObj->id?>p<?=$qPart?>', '<?=$answerData[$qPart]['ans'][0]['canvasJson']?>')</script>
                                                                 	<?php elseif($qPartData['ans_area']['type'] == 'choicebox'):?>
-                                                                        
                                                                                 <div class="col-md-10">
                                                                                 	<?php $i = 0;?>
                                                                                 	<?php foreach($qPartData['ans_area']['data'] as $qPartOpt => $ans):?>
@@ -121,7 +131,6 @@
                                                                                         <?php $i++;?>
                                                                                 	<?php endforeach;?>
                                                                                 </div>                                                                        
-                                                                                
                                                                 	<?php else:?>
                                                                                 <textarea id="q-<?=$qObj->name?>_part-<?=$qPart?>" class="form-control changeable ckeditor"><?=$answerData[$qPart]['ans'][0]?></textarea>
                                                                         <?php endif;?>
@@ -217,7 +226,7 @@
 <?=Phalcon\Tag::javascriptInclude('js/jquery.elevatezoom.js'); ?>
 <?=Phalcon\Tag::javascriptInclude('plugins/ckeditor/ckeditor.js');?>
 <?=Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js');?>
-<?=Phalcon\Tag::javascriptInclude('js/views/question/view.js'); ?>
+
 <script language="javascript" type="text/javascript">
 	<?php if(!$testMode && $viewMode == 'single'):?>
 	var qName   = <?=$qObj->name?>;
