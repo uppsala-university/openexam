@@ -1,8 +1,5 @@
-# Adds autocomplete support for project specific services.
-# Author: Anders Lövgren
-# Date:   2014-10-24
---- vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php.orig	2014-10-23 23:10:05.438491651 +0200
-+++ vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php	2014-10-24 01:00:41.841880685 +0200
+--- vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php.orig	2014-10-31 11:05:23.000000000 +0100
++++ vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php	2014-10-31 11:01:28.000000000 +0100
 @@ -1,7 +1,31 @@
  <?php 
  
@@ -36,7 +33,7 @@
      /**
       * Phalcon\DI\Injectable
       *
-@@ -180,5 +204,64 @@
+@@ -180,5 +204,76 @@
          {
          }
  
@@ -55,6 +52,12 @@
 +         * @var \OpenExam\Library\Security\Authentication
 +         */
 +        public $auth;
++        
++        /**
++         * The catalog (directory information) service.
++         * @var \OpenExam\Library\Catalog\DirectoryManager
++         */
++        public $catalog;
 +        
 +        /**
 +         * Database connection object (for read only).
@@ -86,6 +89,12 @@
 +         * @var \OpenExam\Library\DI\Logger
 +         */
 +        public $logger;
++        
++        /**
++         * The render service.
++         * @var \OpenExam\Library\Render\RenderService
++         */
++        public $render;
 +        
 +        /**
 +         * The translation service.
