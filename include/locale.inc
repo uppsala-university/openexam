@@ -42,7 +42,7 @@
 // cookie or request parameter. It should work as if the page was rendered
 // for the first time.
 // 
-class Locale
+class SystemLocale
 {
 
         private $langpref = null; // The browsers prefered language.
@@ -310,7 +310,7 @@ if (!extension_loaded('gettext')) {
 // 
 // Set language, locale and gettext domain.
 //
-$locale = new Locale();
+$locale = new SystemLocale();
 if (isset($_GET['lang'])) {
         if ($_GET['lang'] == "c") {
                 setcookie("lang", $locale->getLanguage(), 0, "/");
