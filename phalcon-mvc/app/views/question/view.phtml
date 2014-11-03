@@ -117,6 +117,7 @@
                                                                                 <input type="text" style="font-size:11px" class="form-control changeable" value="<?=$answerData[$qPart]['ans'][0]?>" placeholder="Write your answer here ..." />
                                                                 	<?php elseif($qPartData['ans_area']['type'] == 'canvas'):?>
                                                                                 <div id="q<?=$qObj->id?>p<?=$qPart?>" class="literally changeable"></div>
+                                                                                <button class="fullscreen" isfor="q<?=$qObj->id?>p<?=$qPart?>">Fullscreen</button>    
                                                                                 <script language="javascript">initCanvas('q<?=$qObj->id?>p<?=$qPart?>', '<?=$answerData[$qPart]['ans'][0]['canvasJson']?>')</script>
                                                                 	<?php elseif($qPartData['ans_area']['type'] == 'choicebox'):?>
                                                                                 <div class="col-md-10">

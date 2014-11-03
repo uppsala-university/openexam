@@ -183,6 +183,22 @@
 			    , expiration: -1 //cookies expiration in days (-1 = cookies expire when browser is closed)
 			    , colors: ["#333333", "#000000", "#006300", "#774500", "#2918C9", "#4F2C7A", "#518E2D", "#96122C"]
 		});
+
+		$(document).on('click', '.fullscreen', function() {
+			var docElm = document.getElementById($(this).attr('isfor'));
+			if (docElm.requestFullscreen) {
+			    docElm.requestFullscreen();
+			}
+			else if (docElm.msRequestFullscreen) {
+			    docElm.msRequestFullscreen();
+			}
+			else if (docElm.mozRequestFullScreen) {
+			    docElm.mozRequestFullScreen();
+			}
+			else if (docElm.webkitRequestFullScreen) {
+			    docElm.webkitRequestFullScreen();
+			}
+		});
 	});
 	    
 	/*----------------------------------------------------------*/ 
@@ -216,6 +232,6 @@
 		if (seconds < 10) {seconds = "0"+seconds;}
 		var time    = hours+':'+minutes+':'+seconds;
 		return time;
-	}		
-    
+	}
+	
     </script>
