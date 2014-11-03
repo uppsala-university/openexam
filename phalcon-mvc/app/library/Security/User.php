@@ -87,7 +87,7 @@ class User extends Component
                         }
 
                         if (!isset($this->_domain)) {
-                                throw new Exception(_("Missing domain part in username"));
+                                throw new Exception("Missing domain part in username");
                         }
 
                         if (count($roles) != 0) {

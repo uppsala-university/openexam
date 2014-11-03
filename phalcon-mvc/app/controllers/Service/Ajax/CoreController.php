@@ -250,7 +250,7 @@ class CoreController extends ServiceController
                         // 
                         if (!isset($params['capability'])) {
                                 if ($this->capabilities->hasPermission($role, $type, $action) == false) {
-                                        return $this->sendResponse(self::FAILURE, _("You don't have permissions to perform this action."));
+                                        return $this->sendResponse(self::FAILURE, $this->tr->_("You don't have permissions to perform this action."));
                                 }
                         }
 
@@ -288,6 +288,7 @@ class CoreController extends ServiceController
                         // 
                         $this->sendResponse(self::SUCCESS, $handler->action($models, $action, $params));
                 } catch (\Exception $exception) {
+                        error_log($exception);
                         $this->sendResponse(self::FAILURE, $exception->getMessage());
                 }
         }

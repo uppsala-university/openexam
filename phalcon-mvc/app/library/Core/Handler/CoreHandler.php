@@ -257,7 +257,7 @@ class CoreHandler extends Component
                 // 
                 $strip = function($model) {
                         if (!($model instanceof \Phalcon\Mvc\Model)) {
-                                throw new \InvalidArgumentException(_("Invalid argument"));
+                                throw new Exception("Expected model object");
                         }
                         $dump = array();
                         foreach ($model->dump() as $key => $val) {

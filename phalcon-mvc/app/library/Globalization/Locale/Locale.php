@@ -179,7 +179,7 @@ class Locale extends Component
                 if (extension_loaded('intl')) {
                         return LocaleSystem::getDisplayLanguage($locale);
                 } elseif (extension_loaded('gettext')) {
-                        return _($locale);
+                        return $this->tr->_($locale);
                 } else {
                         return $locale;
                 }

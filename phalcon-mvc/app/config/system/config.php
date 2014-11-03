@@ -118,6 +118,7 @@ $config = new \Phalcon\Config(
         'translate'   => array(
                 'core' => array(
                         'directories' => array(
+                                'phalcon-mvc/app/config',
                                 'phalcon-mvc/app/controllers',
                                 'phalcon-mvc/app/library',
                                 'phalcon-mvc/app/models',

@@ -80,6 +80,11 @@ class Translate extends Component implements TranslateInterface
 {
 
         /**
+         * Using version from incubator.
+         * @var bool 
+         */
+        private $incubator = false;
+        /**
          * @var Gettext
          */
         private $gettext;
@@ -94,7 +99,13 @@ class Translate extends Component implements TranslateInterface
                         throw new Exception('The gettext extension is not loaded.');
                 }
 
-                if (is_string($domain)) {
+                if ($this->incubator == false) {
+                        $this->gettext = new Gettext(array(
+                                'locale'        => $this->locale->getLocale(),
+                                'defaultDomain' => $domain,
+                                'directory'     => $this->config->application->localeDir
+                        ));
+                } elseif (is_string($domain)) {
                         $this->gettext = new Gettext(array(
                                 'locale'    => $this->locale->getLocale(),
                                 'file'      => $domain,
