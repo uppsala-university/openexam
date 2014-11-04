@@ -227,15 +227,30 @@ $di->set('logger', function() use($config) {
 /**
  * Get render service.
  */
-$di->set('render', function() use($config){
+$di->set('render', function() use($config) {
         return new \OpenExam\Library\Render\RenderService();
 }, true);
+
+/**
+ * Get catalog (directory information) service.
+ */
+$di->set('catalog', function() use($config) {
+        $manager = new \OpenExam\Library\Catalog\DirectoryManager();
+        $services = require CONFIG_DIR . '/catalog.def';
+        foreach ($services as $name => $data) {
+                $service = $data['service'];
+                $domains = $data['domains'];
+                $manager->register($service(), $domains, $name);
+        }
+        $manager->setDefaultDomain($config->user->domain);     // Set default domain.
+        return $manager;
+});
 
 /**
  * Phql based model manager
  */
 $di->set('phql', function() {
-      return new Phalcon\Mvc\Model\Manager();
- }, true);
+        return new Phalcon\Mvc\Model\Manager();
+}, true);
 
 return $di;

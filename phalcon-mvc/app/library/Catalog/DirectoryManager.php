@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Catalog;
 
+use Phalcon\Mvc\User\Component;
+
 /**
  * Directory service manager.
  * 
@@ -22,13 +24,14 @@ namespace OpenExam\Library\Catalog;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class DirectoryManager implements DirectoryService
+class DirectoryManager extends Component implements DirectoryService
 {
 
         /**
          * Default list of attributes returned.
          */
-        const DEFAULT_ATTR = array(Principal::ATTR_UID, Principal::ATTR_CN, Principal::ATTR_MAIL);
+        static $DEFAULT_ATTR = array(Principal::ATTR_UID, Principal::ATTR_CN, Principal::ATTR_MAIL);
+
         /**
          * Default search attribute.
          */
@@ -64,12 +67,12 @@ class DirectoryManager implements DirectoryService
         public function __destruct()
         {
                 foreach ($this->services as $domain => $services) {
-                        foreach ($services as $service) {
+                        foreach ($services as $name => $service) {
                                 if ($service->connected()) {
                                         try {
                                                 $service->close();
                                         } catch (Exception $exception) {
-                                                $this->logger->system->error($exception->getMessage());
+                                                $this->report($exception, $service, $name);
                                         }
                                 }
                         }
@@ -84,8 +87,9 @@ class DirectoryManager implements DirectoryService
          *  
          * @param DirectoryService $service The directory service.
          * @param array|string $domains The domains.
+         * @param string $name Directory service name (optional)
          */
-        public function register($service, $domains)
+        public function register($service, $domains, $name = null)
         {
                 if (!is_array($domains)) {
                         $domains = array($domains);
@@ -94,7 +98,11 @@ class DirectoryManager implements DirectoryService
                         if (!isset($this->services[$domain])) {
                                 $this->services[$domain] = array();
                         }
-                        $this->services[$domain][] = $service;
+                        if (isset($name)) {
+                                $this->services[$domain][$name] = $service;
+                        } else {
+                                $this->services[$domain][] = $service;
+                        }
                 }
         }
 
@@ -121,7 +129,7 @@ class DirectoryManager implements DirectoryService
          * Set default search domain.
          * @param string $domain The domain name.
          */
-        public function setDomain($domain)
+        public function setDefaultDomain($domain)
         {
                 $this->domain = $domain;
         }
@@ -137,18 +145,13 @@ class DirectoryManager implements DirectoryService
                 $result = array();
 
                 if (isset($this->services[$domain])) {
-                        foreach ($this->services[$domain] as $services) {
-                                foreach ($services as $service) {
-                                        try {
-                                                if (!$service->connected()) {
-                                                        $service->open();
-                                                }
-                                                if (($groups = $service->getGroups($principal)) != null) {
-                                                        $result = array_merge($result, $groups);
-                                                }
-                                        } catch (Exception $exception) {
-                                                $this->logger->system->error($exception->getMessage());
+                        foreach ($this->services[$domain] as $name => $service) {
+                                try {
+                                        if (($groups = $service->getGroups($principal)) != null) {
+                                                $result = array_merge($result, $groups);
                                         }
+                                } catch (Exception $exception) {
+                                        $this->report($exception, $service, $name);
                                 }
                         }
                 }
@@ -159,24 +162,23 @@ class DirectoryManager implements DirectoryService
         /**
          * Get members of group.
          * @param string $group The group name.
-         * @return array
+         * @param string $domain Restrict search to domain.
+         * @param array $attributes The attributes to return.
+         * @return Principal[]
          */
-        public function getMembers($group, $domain = null)
+        public function getMembers($group, $domain = null, $attributes = array(Principal::ATTR_UID, Principal::ATTR_CN, Principal::ATTR_MAIL))
         {
                 $result = array();
-
+                
                 foreach ($this->services as $dom => $services) {
                         if (!isset($domain) || $dom == $domain) {
-                                foreach ($services as $service) {
+                                foreach ($services as $name => $service) {
                                         try {
-                                                if (!$service->connected()) {
-                                                        $service->open();
-                                                }
-                                                if (($members = $service->getMembers($group)) != null) {
+                                                if (($members = $service->getMembers($group, $dom, $attributes)) != null) {
                                                         $result = array_merge($result, $members);
                                                 }
                                         } catch (Exception $exception) {
-                                                $this->logger->system->error($exception->getMessage());
+                                                $this->report($exception, $service, $name);
                                         }
                                 }
                         }
@@ -206,18 +208,13 @@ class DirectoryManager implements DirectoryService
                 $result = array();
 
                 if (isset($this->services[$domain])) {
-                        foreach ($this->services[$domain] as $services) {
-                                foreach ($services as $service) {
-                                        try {
-                                                if (!$service->connected()) {
-                                                        $service->open();
-                                                }
-                                                if (($attributes = $service->getAttribute($principal, $attribute)) != null) {
-                                                        $result = array_merge($result, $attributes);
-                                                }
-                                        } catch (Exception $exception) {
-                                                $this->logger->system->error($exception->getMessage());
+                        foreach ($this->services[$domain] as $name => $service) {
+                                try {
+                                        if (($attributes = $service->getAttribute($principal, $attribute)) != null) {
+                                                $result = array_merge($result, $attributes);
                                         }
+                                } catch (Exception $exception) {
+                                        $this->report($exception, $service, $name);
                                 }
                         }
                 }
@@ -232,8 +229,11 @@ class DirectoryManager implements DirectoryService
          * // Search three first Tomas in example.com domain:
          * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
          * 
-         * // Get email for tomas@example.com:
+         * // Get email for user tomas:
          * $manager->getPrincipal('thomas@example.com', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
+         * 
+         * // Get email for user principal tomas@example.com:
+         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
          * </code>
          * 
          * The $options parameter is an array containing zero or more of 
@@ -241,16 +241,11 @@ class DirectoryManager implements DirectoryService
          * 
          * <code>
          * array(
-         *       'attr'   => array(),
-         *       'limit'  => 0,
-         *       'domain' => null
+         *       'attr'   => array(),   // attributes to return
+         *       'limit'  => 0,         // limit number of entries
+         *       'domain' => null       // restrict to domain
          * )
          * </code>
-         * 
-         * The attr field defines which attributes to return. The limit field 
-         * limits the number of returned user principal objects (use 0 for 
-         * unlimited). The query can be restricted to a single domain by 
-         * setting the domain field.
          * 
          * @param string $needle The attribute search string.
          * @param string $search The attribute to query.
@@ -258,13 +253,13 @@ class DirectoryManager implements DirectoryService
          * @return Principal[] Matching user principal objects.
          */
         public function getPrincipal($needle, $search = self::DEFAULT_SEARCH, $options = array(
-                'attr'   => self::DEFAULT_ATTR,
+                'attr'   => null,
                 'limit'  => self::DEFAULT_LIMIT,
                 'domain' => null
         ))
         {
                 if (!isset($options['attr'])) {
-                        $options['attr'] = self::DEFAULT_ATTR;
+                        $options['attr'] = self::$DEFAULT_ATTR;
                 }
                 if (!isset($options['limit'])) {
                         $options['limit'] = self::DEFAULT_LIMIT;
@@ -277,16 +272,20 @@ class DirectoryManager implements DirectoryService
 
                 foreach ($this->services as $domain => $services) {
                         if (!isset($options['domain']) || $domain == $options['domain']) {
-                                foreach ($services as $service) {
-                                        $res = $service->getPrincipal($needle, $search, $options);
-                                        if ($options['limit'] == 0) {
-                                                $result = array_merge($result, $res);
-                                        } elseif (count($res) + count($result) < $options['limit']) {
-                                                $result = array_merge($result, $res);
-                                        } else {
-                                                $num = $options['limit'] - count($result);
-                                                $result = array_merge($result, array_slice($res, 0, $num));
-                                                return $result;
+                                foreach ($services as $name => $service) {
+                                        try {
+                                                $res = $service->getPrincipal($needle, $search, $options);
+                                                if ($options['limit'] == 0) {
+                                                        $result = array_merge($result, $res);
+                                                } elseif (count($res) + count($result) < $options['limit']) {
+                                                        $result = array_merge($result, $res);
+                                                } else {
+                                                        $num = $options['limit'] - count($result);
+                                                        $result = array_merge($result, array_slice($res, 0, $num));
+                                                        return $result;
+                                                }
+                                        } catch (Exception $exception) {
+                                                $this->report($exception, $service, $name);
                                         }
                                 }
                         }
@@ -312,7 +311,7 @@ class DirectoryManager implements DirectoryService
          */
         public function getName($principal)
         {
-                return $this->getAttribute($principal, Principal::ATTR_MAIL);
+                return $this->getAttribute($principal, Principal::ATTR_CN);
         }
 
         /**
@@ -327,6 +326,26 @@ class DirectoryManager implements DirectoryService
                 } else {
                         return $this->domain;   // Use default domain.
                 }
+        }
+
+        /**
+         * Report exception.
+         * @param Exception $exception The exception to report.
+         * @param DirectoryService $service The directory service.
+         * @param string $name The directory service name (from config).
+         */
+        private function report($exception, $service, $name)
+        {
+                $this->logger->system->begin();
+                $this->logger->system->error(
+                    print_r(array(
+                        'Exception' => get_class($exception),
+                        'Message'   => $exception->getMessage(),
+                        'Service'   => get_class($service) . ' [' . $name . ']'
+                        ), true
+                    )
+                );
+                $this->logger->system->commit();
         }
 
 }

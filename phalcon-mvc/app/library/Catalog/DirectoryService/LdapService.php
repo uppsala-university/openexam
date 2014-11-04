@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\Backend;
+namespace OpenExam\Library\Catalog\DirectoryService;
 
 use OpenExam\Library\Catalog\Exception;
 use OpenExam\Library\Catalog\Principal;
@@ -62,11 +62,14 @@ class LdapService extends ServiceAdapter
          * @var array 
          */
         private $attrmap = array(
-                Principal::ATTR_UID => 'uid',
-                Principal::ATTR_SN  => 'sn',
-                Principal::ATTR_CN  => 'cn',
-                Principal::ATTR_GN  => 'givenname',
-                Principal::ATTR_PNR => 'norEduPersonNIN'
+                Principal::ATTR_UID  => 'uid',
+                Principal::ATTR_SN   => 'sn',
+                Principal::ATTR_CN   => 'cn',
+                Principal::ATTR_GN   => 'givenname',
+                Principal::ATTR_MAIL => 'mail',
+                Principal::ATTR_PNR  => 'norEduPersonNIN',
+                Principal::ATTR_PN   => 'eduPersonPrincipalName',
+                Principal::ATTR_ALL  => '*'
         );
         /**
          * The search base DN.
@@ -188,17 +191,30 @@ class LdapService extends ServiceAdapter
          */
         public function getAttribute($principal, $attribute)
         {
-                $filter = sprintf("(%s=%s)", $this->attrmap[Principal::ATTR_UID], $principal);
+                $this->connect();
+                $this->attrmap[$attribute] = $attribute;        // add identity map
 
-                if (($result = ldap_search($this->ldap, $this->basedn, $filter, array($this->attrmap[$attribute]), 1)) == false) {
+                $filter = sprintf("(%s=%s)", $this->attrmap[Principal::ATTR_PN], $principal);
+
+                if (($result = ldap_search($this->ldap, $this->basedn, $filter, array($this->attrmap[$attribute]), 0)) == false) {
                         throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                 }
 
                 if (($entries = ldap_get_entries($this->ldap, $result)) == false) {
-                        throw new LdapException(ldap_error($this->ldap), ldap_errno($this->ldap));
+                        throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                 }
 
-                return $entries;
+                if (ldap_free_result($result) == false) {
+                        throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
+                }
+
+                $result = new LdapResult($attribute, array_flip($this->attrmap));
+                for ($i = 0; $i < $entries['count']; $i++) {
+                        $result->insert($entries[$i]);
+                }
+
+                $data = $result->getResult();
+                return $data[$attribute];
         }
 
         /**
@@ -235,6 +251,8 @@ class LdapService extends ServiceAdapter
          */
         public function getPrincipal($needle, $search, $options)
         {
+                $this->connect();
+
                 // 
                 // Prepare search options:
                 // 
@@ -253,12 +271,12 @@ class LdapService extends ServiceAdapter
                 // 
                 // Perform LDAP search:
                 // 
-                if (($result = ldap_search($this->ldap, $this->basedn, $filter, $attributes, 0, $options['limit'])) == false) {
+                if (($result = ldap_search($this->ldap, $this->basedn, $filter, array_keys($attributes), 1, $options['limit'])) == false) {
                         throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                 }
 
                 if (($entries = ldap_get_entries($this->ldap, $result)) == false) {
-                        throw new LdapException(ldap_error($this->ldap), ldap_errno($this->ldap));
+                        throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                 }
 
                 // 
@@ -266,6 +284,7 @@ class LdapService extends ServiceAdapter
                 // 
                 $principals = array();
                 foreach ($entries as $entry) {
+                        print_r($entry);
                         $principal = new Principal();
                         foreach ($attributes as $attr => $mapped) {
                                 $principal->$attr = $entry[$mapped];
@@ -274,6 +293,98 @@ class LdapService extends ServiceAdapter
                 }
 
                 return $principals;
+        }
+
+        /**
+         * Opens connection on-demand.
+         */
+        protected function connect()
+        {
+                if (!$this->connected()) {
+                        $this->open();
+                }
+        }
+
+}
+
+/**
+ * The LDAP search result.
+ */
+class LdapResult
+{
+
+        /**
+         * The attributes filter.
+         * @var string 
+         */
+        private $attribute;
+        /**
+         * Reverse attribute map.
+         * @var array 
+         */
+        private $revattr;
+        /**
+         * The result array.
+         * @var array 
+         */
+        private $result = array();
+
+        /**
+         * Constructor.
+         * @param string $attribute
+         */
+        public function __construct($attribute, $revattr)
+        {
+                $this->attribute = $attribute;
+                $this->revattr = $revattr;
+        }
+
+        /**
+         * Insert entry in result.
+         * @param array $entry The directory entry.
+         */
+        public function insert($entry)
+        {
+                for ($i = 0; $i < $entry['count']; $i++) {
+                        $key = $entry[$i];
+                        $val = $entry[$key];
+                        $this->add($key, $val, $this->attribute);
+                }
+        }
+
+        /**
+         * Add entry to result.
+         * @param string $key The entry key.
+         * @param array $val The entry data.
+         */
+        private function add($key, $val, $attribute)
+        {
+                list($key, $sub) = explode(';', $key);
+                if ($attribute == Principal::ATTR_ALL || $this->revattr[$key] == $attribute) {
+                        if (!isset($this->result[$attribute])) {
+                                $this->result[$attribute] = array();
+                        }
+                        if (!isset($this->result[$attribute][$key])) {
+                                $this->result[$attribute][$key] = array();
+                        }
+                        for ($i = 0; $i < $val['count']; $i++) {
+                                if (!in_array($val[$i], $this->result[$attribute][$key])) {
+                                        $this->result[$attribute][$key][] = $val[$i];
+                                }
+                                if (isset($sub)) {
+                                        $this->result[$attribute][$key][$sub] = $val[0];
+                                }
+                        }
+                }
+        }
+
+        /**
+         * Get result array.
+         * @return array
+         */
+        public function getResult()
+        {
+                return $this->result;
         }
 
 }

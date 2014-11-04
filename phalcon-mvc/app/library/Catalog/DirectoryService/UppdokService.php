@@ -17,6 +17,10 @@
 
 namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
 
+        use OpenExam\Library\Catalog\Exception;
+        use OpenExam\Library\Catalog\Principal;
+        use Phalcon\Mvc\User\Component;
+
         if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                 define('INFO_CGI_RECORD_SEPARATOR', "\n");
         }
@@ -34,6 +38,15 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
         }
         if (!defined('INFO_CGI_FIELD_NAME')) {
                 define('INFO_CGI_FIELD_NAME', 3);
+        }
+        if (!defined('INFO_CGI_FIELD_EXPIRES')) {
+                define('INFO_CGI_FIELD_EXPIRES', 3);
+        }
+        if (!defined('INFO_CGI_FIELD_SOCIAL_NUMBER')) {
+                define('INFO_CGI_FIELD_SOCIAL_NUMBER', 5);
+        }
+        if (!defined('INFO_CGI_FIELD_MAIL')) {
+                define('INFO_CGI_FIELD_MAIL', 7);
         }
         if (!defined('INFO_CGI_SERVER')) {
                 define('INFO_CGI_SERVER', 'localhost');
@@ -53,7 +66,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
                  * The record data.
                  * @var array 
                  */
-                private $data;
+                private $data = array();
 
                 /**
                  * Constructor.
@@ -61,10 +74,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
                  */
                 public function __construct($data)
                 {
-                        for ($i = 0; $i < count($data); ++$i) {
-                                $data[$i] = utf8_encode($data[$i]);
-                        }
-                        $this->data = $data;
+                        $this->data = array_map('utf8_encode', $data);
                 }
 
                 /**
@@ -95,6 +105,41 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
                 }
 
                 /**
+                 * Get user principal object.
+                 * @param string $domain The search domain.
+                 * @param array $attributes The attributes to return.
+                 * @return Principal
+                 */
+                public function getPrincipal($domain, $attributes)
+                {
+                        $principal = new Principal();
+
+                        if (in_array(Principal::ATTR_CN, $attributes)) {
+                                $principal->cn = $this->data[INFO_CGI_FIELD_NAME];
+                        }
+                        if (in_array(Principal::ATTR_MAIL, $attributes)) {
+                                $principal->mail[] = $this->data[INFO_CGI_FIELD_MAIL];
+                        }
+                        if (in_array(Principal::ATTR_PN, $attributes)) {
+                                $principal->principal = $this->data[INFO_CGI_FIELD_USER] . '@' . $domain;
+                        }
+                        if (in_array(Principal::ATTR_PNR, $attributes)) {
+                                $principal->pnr = $this->data[INFO_CGI_FIELD_SOCIAL_NUMBER];
+                        }
+                        if (in_array(Principal::ATTR_UID, $attributes)) {
+                                $principal->uid = $this->data[INFO_CGI_FIELD_USER];
+                        }
+                        if (in_array(Principal::ATTR_GN, $attributes)) {
+                                $principal->gn = trim(strstr($this->data[INFO_CGI_FIELD_NAME], ' ', true));
+                        }
+                        if (in_array(Principal::ATTR_SN, $attributes)) {
+                                $principal->sn = trim(strstr($this->data[INFO_CGI_FIELD_NAME], ' ', false));
+                        }
+
+                        return $principal;
+                }
+
+                /**
                  * Get data at position index.
                  * @param int $index The index position.
                  * @return string
@@ -114,7 +159,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
          * UPPDOK (InfoCGI) data service.
          * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
          */
-        class UppdokData
+        class UppdokData extends Component
         {
 
                 /**
@@ -301,7 +346,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
 
                         if (!$content || $info['http_code'] != 200) {
                                 $this->logger->system->error(sprintf("Failed fetch membership information from UPPDOK data: %s", $error));
-                                throw new Exception(_("There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"));
+                                throw new Exception($this->tr->_("There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"));
                         }
 
                         //
@@ -311,7 +356,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
                         $result = array();
                         $lines = explode(INFO_CGI_RECORD_SEPARATOR, $content);
                         foreach ($lines as $line) {
-                                $arr = split(INFO_CGI_FIELD_SEPARATOR, $line);
+                                $arr = explode(INFO_CGI_FIELD_SEPARATOR, $line);
                                 if ($arr[0] == 1) {
                                         if ($this->compact) {
                                                 array_push($result, $arr[INFO_CGI_FIELD_USER]);
@@ -327,9 +372,10 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
 
 }
 
-namespace OpenExam\Library\Catalog {
+namespace OpenExam\Library\Catalog\DirectoryService {
 
         use OpenExam\Library\Catalog\DirectoryService\Uppdok\UppdokData;
+        use OpenExam\Library\Catalog\ServiceAdapter;
 
         /**
          * UPPDOK directory service.
@@ -345,14 +391,35 @@ namespace OpenExam\Library\Catalog {
                  */
                 private $uppdok;
 
+                /**
+                 * Constructor.
+                 * @param string $user The service username.
+                 * @param string $pass The service password.
+                 * @param string $host The service hostname.
+                 * @param int $port The service port.
+                 */
                 public function __construct($user, $pass, $host = INFO_CGI_SERVER, $port = INFO_CGI_PORT)
                 {
                         $this->uppdok = new UppdokData($user, $pass, $host, $port);
+                        $this->uppdok->setCompactMode(false);
                 }
 
-                public function getMembers($group, $domain = null)
+                /**
+                 * Get members of group.
+                 * @param string $group The group name.
+                 * @param string $domain Restrict search to domain.
+                 * @param array $attributes The attributes to return.
+                 * @return Principal[]
+                 */
+                public function getMembers($group, $domain, $attributes)
                 {
-                        return $this->uppdok->members($group);
+                        $result = array();
+
+                        foreach ($this->uppdok->members($group) as $member) {
+                                $result[] = $member->getPrincipal($domain, $attributes);
+                        }
+                        
+                        return $result;
                 }
 
         }

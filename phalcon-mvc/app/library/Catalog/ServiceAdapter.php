@@ -32,7 +32,7 @@ abstract class ServiceAdapter extends Component implements DirectoryService
                 return null;
         }
 
-        public function getMembers($group, $domain = null)
+        public function getMembers($group, $domain, $attributes)
         {
                 return null;
         }

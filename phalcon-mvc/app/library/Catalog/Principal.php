@@ -21,19 +21,9 @@ class Principal
 {
 
         /**
-         * Security classing. Principal can be shown public.
+         * The principal name attribute.
          */
-        const ACCESS_PUBLIC = 1;
-        /**
-         * Security classing. Principal has hidden access attribute and 
-         * should not be displayed unrestricted.
-         */
-        const ACCESS_HIDDEN = 2;
-        /**
-         * Security classing. Principal has proteced access attribute and 
-         * should not be displayed unrestricted.
-         */
-        const ACCESS_PROTECT = 3;
+        const ATTR_PN = 'principal';
         /**
          * The UID attribute.
          */
@@ -50,7 +40,6 @@ class Principal
          * The given name attribute.
          */
         const ATTR_GN = 'gn';
-        const ATTR_GIVEN_NAME = 'gn';
         /**
          * The mail attribute.
          */
@@ -59,7 +48,30 @@ class Principal
          * The personal number attribute.
          */
         const ATTR_PNR = 'pnr';
+        /**
+         * All attributes.
+         */
+        const ATTR_ALL = '*';
+        /**
+         * Security classing. Principal can be shown public.
+         */
+        const ACCESS_PUBLIC = 'public';
+        /**
+         * Security classing. Principal has hidden access attribute and 
+         * should not be displayed unrestricted.
+         */
+        const ACCESS_HIDDEN = 'hidden';
+        /**
+         * Security classing. Principal has proteced access attribute and 
+         * should not be displayed unrestricted.
+         */
+        const ACCESS_PROTECT = 'protected';
 
+        /**
+         * The principal name.
+         * @var string 
+         */
+        public $principal;
         /**
          * The UID.
          * @var string 
@@ -90,5 +102,23 @@ class Principal
          * @var array 
          */
         public $mail = array();
+        /**
+         * The user principal security classification.
+         * @var int 
+         */
+        public $protection;
+        /**
+         * All attributes (including service specific).
+         * @var array 
+         */
+        public $attr;
+
+        /**
+         * Constructor.
+         */
+        public function __construct()
+        {
+                $this->protection = false;
+        }
 
 }

@@ -31,9 +31,10 @@ interface DirectoryService
          * Get members of group.
          * @param string $group The group name.
          * @param string $domain Restrict search to domain.
-         * @return array
+         * @param array $attributes The attributes to return.
+         * @return Principal[]
          */
-        function getMembers($group, $domain = null);
+        function getMembers($group, $domain, $attributes);
 
         /**
          * Get attribute (Principal::ATTR_XXX) for user.
