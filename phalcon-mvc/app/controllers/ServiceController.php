@@ -118,14 +118,6 @@ class ServiceController extends Controller
                         $data = array();
                 }
 
-                printf("--------------\n");
-                print_r($input);
-                print_r($data);
-                print_r($params);
-                printf("--------------\n");
-
-                exit(1);
-
                 return array($data, $params);
         }
 
