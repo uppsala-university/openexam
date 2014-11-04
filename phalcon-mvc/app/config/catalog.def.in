@@ -50,12 +50,15 @@ return array(
         'msad'  => array(
                 'service' => function() {
                         $service = new LdapService(
-                            'ldaps://dc.example.com', 636, 'user', 'secret', array(
-                                    LDAP_OPT_REFERRALS        => true,
+                            'ldaps://dc.example.com', 636, 'user@example.com', 'secret', array(
+                                    LDAP_OPT_REFERRALS        => false,
                                     LDAP_OPT_PROTOCOL_VERSION => 3
                                 )
                         );
-                        $service->setAttributeMap(array('uid' => 'sAMAccountName'));
+                        $service->setAttributeMap(array(
+                                Principal::ATTR_PN  => 'userPrincipalName',
+                                Principal::ATTR_UID => 'sAMAccountName'
+                        ));
                         $service->setBase('dc=users,dc=example,dc=com');
                         return $service;
                 },
