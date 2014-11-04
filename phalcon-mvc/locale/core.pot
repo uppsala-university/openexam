@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 2.0\n"
 "Report-Msgid-Bugs-To: support@bmc.uu.se\n"
-"POT-Creation-Date: 2014-09-23 02:05+0200\n"
+"POT-Creation-Date: 2014-11-04 01:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,50 +17,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: phalcon-mvc/app/library/Core/Handler/HandlerBase.php:62
-#: phalcon-mvc/app/models/Access/Traits/SystemWideTrait.php:30
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:123
-msgid "You are not authorized to make this call."
+#: phalcon-mvc/app/config/system/services.php:147
+msgid "Swedish"
 msgstr ""
 
-#: phalcon-mvc/app/library/Security/User.php:73
-msgid "Missing domain part in username"
+#: phalcon-mvc/app/config/system/services.php:148
+msgid "English (US)"
 msgstr ""
 
-#: phalcon-mvc/app/models/Access/Answer.php:32
-#: phalcon-mvc/app/models/Access/Result.php:31
-#: phalcon-mvc/app/models/Access/Exam.php:31
-#: phalcon-mvc/app/models/Access/Traits/SystemWideTrait.php:27
-#: phalcon-mvc/app/models/Access/Traits/ExamRelationTrait.php:27
-msgid "Roles service ('roles') is missing."
+#: phalcon-mvc/app/config/system/services.php:149
+msgid "English (GB)"
 msgstr ""
 
-#: phalcon-mvc/app/models/Access/Answer.php:35
-#: phalcon-mvc/app/models/Access/Result.php:34
-msgid "You are not authorized to access this answer."
+#: phalcon-mvc/app/config/system/services.php:150
+msgid "Browser Default"
 msgstr ""
 
-#: phalcon-mvc/app/models/Access/Answer.php:45
-msgid "You are not the owner of this answer."
+#: phalcon-mvc/app/controllers/Service/Ajax/CoreController.php:253
+msgid "You don't have permissions to perform this action."
 msgstr ""
 
-#: phalcon-mvc/app/models/Access/Exam.php:34
-#: phalcon-mvc/app/models/Access/Traits/ExamRelationTrait.php:30
-msgid "You are not authorized to access this exam."
+#: phalcon-mvc/app/library/Catalog/DirectoryService/UppdokService.php:349
+msgid "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
 msgstr ""
 
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:85
-msgid "Session service ('session') is missing."
-msgstr ""
-
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:88
-msgid "User session data ('auth') is missing."
-msgstr ""
-
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:91
-msgid "The calling user is missing in session data."
-msgstr ""
-
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:120
-msgid "ACL service ('acl') is missing."
+#: phalcon-mvc/app/library/Render/RenderService.php:69
+#, php-format
+msgid "Unknown format type %s"
 msgstr ""

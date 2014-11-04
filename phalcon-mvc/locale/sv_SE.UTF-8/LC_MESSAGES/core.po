@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 2.0\n"
 "Report-Msgid-Bugs-To: support@bmc.uu.se\n"
-"POT-Creation-Date: 2014-09-23 02:04+0200\n"
-"PO-Revision-Date: 2014-09-23 02:04+0200\n"
+"POT-Creation-Date: 2014-11-04 01:19+0100\n"
+"PO-Revision-Date: 2014-11-03 23:27+0100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: sv\n"
@@ -18,50 +18,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: phalcon-mvc/app/library/Core/Handler/HandlerBase.php:62
-#: phalcon-mvc/app/models/Access/Traits/SystemWideTrait.php:30
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:123
-msgid "You are not authorized to make this call."
-msgstr ""
+#: phalcon-mvc/app/config/system/services.php:147
+msgid "Swedish"
+msgstr "Svenska"
 
-#: phalcon-mvc/app/library/Security/User.php:73
-msgid "Missing domain part in username"
-msgstr ""
+#: phalcon-mvc/app/config/system/services.php:148
+msgid "English (US)"
+msgstr "Engelska (US)"
 
-#: phalcon-mvc/app/models/Access/Answer.php:32
-#: phalcon-mvc/app/models/Access/Result.php:31
-#: phalcon-mvc/app/models/Access/Exam.php:31
-#: phalcon-mvc/app/models/Access/Traits/SystemWideTrait.php:27
-#: phalcon-mvc/app/models/Access/Traits/ExamRelationTrait.php:27
-msgid "Roles service ('roles') is missing."
-msgstr ""
+#: phalcon-mvc/app/config/system/services.php:149
+msgid "English (GB)"
+msgstr "Engelska (GB)"
 
-#: phalcon-mvc/app/models/Access/Answer.php:35
-#: phalcon-mvc/app/models/Access/Result.php:34
-msgid "You are not authorized to access this answer."
-msgstr ""
+#: phalcon-mvc/app/config/system/services.php:150
+msgid "Browser Default"
+msgstr "Webbläsarens förvalda"
 
-#: phalcon-mvc/app/models/Access/Answer.php:45
-msgid "You are not the owner of this answer."
-msgstr ""
+#: phalcon-mvc/app/controllers/Service/Ajax/CoreController.php:253
+msgid "You don't have permissions to perform this action."
+msgstr "Du saknar rättigheter att utföra denna handling."
 
-#: phalcon-mvc/app/models/Access/Exam.php:34
-#: phalcon-mvc/app/models/Access/Traits/ExamRelationTrait.php:30
-msgid "You are not authorized to access this exam."
-msgstr ""
+#: phalcon-mvc/app/library/Catalog/DirectoryService/UppdokService.php:349
+msgid "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
+msgstr "Problem uppstod vid kommunikation med katalogtjänsten, kursinformation är inte tillgänglig p.g.a. nätverks- eller konfigurationproblem."
 
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:85
-msgid "Session service ('session') is missing."
-msgstr ""
+#: phalcon-mvc/app/library/Render/RenderService.php:69
+#, php-format
+msgid "Unknown format type %s"
+msgstr "Okänd formattyp %s"
 
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:88
-msgid "User session data ('auth') is missing."
-msgstr ""
+#~ msgid "Missing domain part in username"
+#~ msgstr "Användarnamnet saknar domän"
 
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:91
-msgid "The calling user is missing in session data."
-msgstr ""
-
-#: phalcon-mvc/app/models/Access/Traits/AuthorizationTrait.php:120
-msgid "ACL service ('acl') is missing."
-msgstr ""
+#~ msgid "Invalid argument"
+#~ msgstr "Ogiltigt argument"
