@@ -114,8 +114,13 @@ class ServiceController extends Controller
                 // 
                 // Cleanup if input data was missing.
                 // 
-                if (key($data) == "0" && ($data[0] == null || strpbrk($data[0], '{[') != false)) {
-                        $data = array();
+                if (key($data) == "0") {
+                        if ($data[0] == null) {
+                                $data = array();
+                        }
+                        if (is_string($data[0]) && strpbrk($data[0], '{[') != false) {
+                                $data = array();
+                        }
                 }
 
                 return array($data, $params);
