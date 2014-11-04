@@ -91,6 +91,7 @@ class ServiceController extends Controller
                 foreach (array('data', 'params') as $part) {
                         if (isset($input[$part])) {
                                 $$part = (array) $input[$part];
+                                unset($input[$part]);
                         }
                 }
 
@@ -100,12 +101,30 @@ class ServiceController extends Controller
                 if (!isset($data) && !isset($params) && key($input) != "0") {
                         $data = $input;
                 }
+                if (!isset($data) && count($input) != 0) {
+                        $data = $input;
+                }
                 if (!isset($data)) {
                         $data = array();
                 }
                 if (!isset($params)) {
                         $params = array();
                 }
+
+                // 
+                // Cleanup if input data was missing.
+                // 
+                if (key($data) == "0" && ($data[0] == null || strpbrk($data[0], '{[') != false)) {
+                        $data = array();
+                }
+
+                printf("--------------\n");
+                print_r($input);
+                print_r($data);
+                print_r($params);
+                printf("--------------\n");
+
+                exit(1);
 
                 return array($data, $params);
         }
