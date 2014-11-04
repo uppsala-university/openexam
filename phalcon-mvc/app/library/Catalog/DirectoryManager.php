@@ -169,7 +169,7 @@ class DirectoryManager extends Component implements DirectoryService
         public function getMembers($group, $domain = null, $attributes = array(Principal::ATTR_UID, Principal::ATTR_CN, Principal::ATTR_MAIL))
         {
                 $result = array();
-                
+
                 foreach ($this->services as $dom => $services) {
                         if (!isset($domain) || $dom == $domain) {
                                 foreach ($services as $name => $service) {
@@ -243,7 +243,8 @@ class DirectoryManager extends Component implements DirectoryService
          * array(
          *       'attr'   => array(),   // attributes to return
          *       'limit'  => 0,         // limit number of entries
-         *       'domain' => null       // restrict to domain
+         *       'domain' => null,      // restrict to domain
+         *       'data'   => true       // append search data in attr member
          * )
          * </code>
          * 
@@ -255,7 +256,8 @@ class DirectoryManager extends Component implements DirectoryService
         public function getPrincipal($needle, $search = self::DEFAULT_SEARCH, $options = array(
                 'attr'   => null,
                 'limit'  => self::DEFAULT_LIMIT,
-                'domain' => null
+                'domain' => null,
+                'data'   => false
         ))
         {
                 if (!isset($options['attr'])) {
@@ -274,15 +276,16 @@ class DirectoryManager extends Component implements DirectoryService
                         if (!isset($options['domain']) || $domain == $options['domain']) {
                                 foreach ($services as $name => $service) {
                                         try {
-                                                $res = $service->getPrincipal($needle, $search, $options);
-                                                if ($options['limit'] == 0) {
-                                                        $result = array_merge($result, $res);
-                                                } elseif (count($res) + count($result) < $options['limit']) {
-                                                        $result = array_merge($result, $res);
-                                                } else {
-                                                        $num = $options['limit'] - count($result);
-                                                        $result = array_merge($result, array_slice($res, 0, $num));
-                                                        return $result;
+                                                if (($res = $service->getPrincipal($needle, $search, $options)) != null) {
+                                                        if ($options['limit'] == 0) {
+                                                                $result = array_merge($result, $res);
+                                                        } elseif (count($res) + count($result) < $options['limit']) {
+                                                                $result = array_merge($result, $res);
+                                                        } else {
+                                                                $num = $options['limit'] - count($result);
+                                                                $result = array_merge($result, array_slice($res, 0, $num));
+                                                                return $result;
+                                                        }
                                                 }
                                         } catch (Exception $exception) {
                                                 $this->report($exception, $service, $name);

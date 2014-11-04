@@ -55,6 +55,18 @@ use OpenExam\Library\Catalog\DirectoryManager;
  * // Get first five user principals with given name equals to Anders:
  * input: '{"data":{"gn":"Anders"},"params":{"attr":["principal","mail","uid"],"domain":"example.com","limit":5}}'
  * 
+ * // Get complete principal objects:
+ * input: '{"data":{"uid":"test*"},"params":{"attr":["*"],"domain":"example.com","data":true}}'
+ * 
+ * // Get complete principal objects (better):
+ * input: '{"data":{"uid":"test*"},"params":{"attr":["principal","uid","cn","sn","gn","pnr","mail"]}}'
+ * 
+ * // Get complete principal objects including extended data:
+ * input: '{"data":{"uid":"test*"},"params":{"attr":["*"],"domain":"example.com","data":true}}'
+ * 
+ * // Format output. Possible arguments are strip, object, array or compact:
+ * input: '{"data":{"uid":"test*"},"params":{"output":"strip"}}'
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class CatalogController extends ServiceController
@@ -174,11 +186,13 @@ class CatalogController extends ServiceController
         public function principalAction()
         {
                 list($data, $params) = $this->getInput();
-                print_r($data);
-                print_r($params);
+
+                if (!isset($params['output'])) {
+                        $params['output'] = self::OUTPUT_OBJECT;
+                }
 
                 $result = $this->catalog->getPrincipal(current($data), key($data), $params);
-                // $result = $this->formatResult($result, $params['output']);
+                $result = $this->formatResult($result, $params['output']);
 
                 $this->sendResponse(self::SUCCESS, $result);
         }

@@ -58,7 +58,7 @@ class LdapService extends ServiceAdapter
          */
         private $options;
         /**
-         * Attribute map.
+         * Attribute map (must be in lower case).
          * @var array 
          */
         private $attrmap = array(
@@ -67,8 +67,8 @@ class LdapService extends ServiceAdapter
                 Principal::ATTR_CN   => 'cn',
                 Principal::ATTR_GN   => 'givenname',
                 Principal::ATTR_MAIL => 'mail',
-                Principal::ATTR_PNR  => 'norEduPersonNIN',
-                Principal::ATTR_PN   => 'eduPersonPrincipalName',
+                Principal::ATTR_PNR  => 'noredupersonnin',
+                Principal::ATTR_PN   => 'edupersonprincipalname',
                 Principal::ATTR_ALL  => '*'
         );
         /**
@@ -192,7 +192,7 @@ class LdapService extends ServiceAdapter
         public function getAttribute($principal, $attribute)
         {
                 $this->connect();
-                $this->attrmap[$attribute] = $attribute;        // add identity map
+                $this->attrmap[$attribute] = $attribute;        // Add identity map
 
                 $filter = sprintf("(%s=%s)", $this->attrmap[Principal::ATTR_PN], $principal);
 
@@ -224,8 +224,11 @@ class LdapService extends ServiceAdapter
          * // Search three first Tomas in example.com domain:
          * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
          * 
-         * // Get email for tomas@example.com:
+         * // Get email for user tomas:
          * $manager->getPrincipal('thomas@example.com', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
+         * 
+         * // Get email for user principal tomas@example.com:
+         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
          * </code>
          * 
          * The $options parameter is an array containing zero or more of 
@@ -233,16 +236,12 @@ class LdapService extends ServiceAdapter
          * 
          * <code>
          * array(
-         *       'attr'   => array(),
-         *       'limit'  => 0,
-         *       'domain' => null
+         *       'attr'   => array(),   // attributes to return
+         *       'limit'  => 0,         // limit number of entries
+         *       'domain' => null,      // restrict to domain
+         *       'data'   => true       // append search data in attr member
          * )
          * </code>
-         * 
-         * The attr field defines which attributes to return. The limit field 
-         * limits the number of returned user principal objects (use 0 for 
-         * unlimited). The query can be restricted to a single domain by 
-         * setting the domain field.
          * 
          * @param string $needle The attribute search string.
          * @param string $search The attribute to query.
@@ -254,24 +253,33 @@ class LdapService extends ServiceAdapter
                 $this->connect();
 
                 // 
+                // Add identity map:
+                // 
+                if (!isset($this->attrmap[$search])) {
+                        $this->attrmap[$search] = $search;
+                }
+
+                // 
                 // Prepare search options:
                 // 
                 $filter = sprintf("(%s=%s)", $this->attrmap[$search], $needle);
 
-                $attributes = array();
-                if (isset($options['attr'])) {
-                        foreach ($options['attr'] as $attr) {
-                                $attributes[$attr] = $this->attrmap[$attr];
+                // 
+                // Substitute generic principal object attributes, while 
+                // preserving service specific attributes:
+                // 
+                for ($i = 0; $i < count($options['attr']); $i++) {
+                        if (isset($this->attrmap[$options['attr'][$i]])) {
+                                $options['attr'][$i] = $this->attrmap[$options['attr'][$i]];
+                        } else {
+                                $this->attrmap[$options['attr'][$i]] = $options['attr'][$i];
                         }
-                }
-                if (count($attributes) == 0) {
-                        $attributes = null;
                 }
 
                 // 
                 // Perform LDAP search:
                 // 
-                if (($result = ldap_search($this->ldap, $this->basedn, $filter, array_keys($attributes), 1, $options['limit'])) == false) {
+                if (($result = ldap_search($this->ldap, $this->basedn, $filter, $options['attr'], 0, $options['limit'])) == false) {
                         throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                 }
 
@@ -279,16 +287,45 @@ class LdapService extends ServiceAdapter
                         throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                 }
 
+                if (ldap_free_result($result) == false) {
+                        throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
+                }
+
                 // 
-                // Create user principal objects from search result:
+                // Create principal objects array from directory entries.
                 // 
                 $principals = array();
-                foreach ($entries as $entry) {
-                        print_r($entry);
+                $revattrmap = array_flip($this->attrmap);
+                $result = new LdapResult('*', $revattrmap);
+
+                for ($i = 0; $i < $entries['count']; $i++) {
+                        $result->replace($entries[$i]);
+                        $data = $result->getResult();
+
+                        // 
+                        // Create user principal objects from search result:
+                        // 
                         $principal = new Principal();
-                        foreach ($attributes as $attr => $mapped) {
-                                $principal->$attr = $entry[$mapped];
+                        foreach ($data['*'] as $name => $attrs) {
+                                $attr = $revattrmap[$name];
+                                if (property_exists($principal, $attr)) {
+                                        if ($attr == Principal::ATTR_MAIL) {
+                                                $principal->mail = $attrs;
+                                                unset($data['*'][$name]);
+                                        } else {
+                                                $principal->$attr = $attrs[0];
+                                                unset($data['*'][$name]);
+                                        }
+                                }
                         }
+
+                        // 
+                        // Any left over attributes goes in attr member:
+                        // 
+                        if ($options['data'] && count($data['*']) != 0) {
+                                $principal->attr = $data['*'];
+                        }
+                        
                         $principals[] = $principal;
                 }
 
@@ -353,6 +390,27 @@ class LdapResult
         }
 
         /**
+         * Append entry using new attribute key.
+         * @param array $entry The directory entry.
+         * @param string $attribute The attribute name.
+         */
+        public function append($entry, $attribute)
+        {
+                $this->attribute = $attribute;
+                $this->insert($entry);
+        }
+
+        /**
+         * Replace result with new entry.
+         * @param array $entry The directory entry.
+         */
+        public function replace($entry)
+        {
+                $this->result = array();
+                $this->insert($entry);
+        }
+
+        /**
          * Add entry to result.
          * @param string $key The entry key.
          * @param array $val The entry data.
@@ -360,7 +418,7 @@ class LdapResult
         private function add($key, $val, $attribute)
         {
                 list($key, $sub) = explode(';', $key);
-                if ($attribute == Principal::ATTR_ALL || $this->revattr[$key] == $attribute) {
+                if ($attribute == Principal::ATTR_ALL || strcasecmp($this->revattr[$key], $attribute) == 0) {
                         if (!isset($this->result[$attribute])) {
                                 $this->result[$attribute] = array();
                         }
