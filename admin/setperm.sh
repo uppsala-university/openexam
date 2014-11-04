@@ -28,6 +28,6 @@ done
 for f in app/config/config.def; do
   if [ -f $root/$f ]; then
     setfacl -m u:$user:r $root/$f
-    chmod 640 $f
+    chmod 640 $root/$f
   fi
 done
