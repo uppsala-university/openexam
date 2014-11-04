@@ -58,17 +58,17 @@ class LdapService extends ServiceAdapter
          */
         private $options;
         /**
-         * Attribute map (must be in lower case).
+         * Attribute map.
          * @var array 
          */
         private $attrmap = array(
                 Principal::ATTR_UID  => 'uid',
                 Principal::ATTR_SN   => 'sn',
                 Principal::ATTR_CN   => 'cn',
-                Principal::ATTR_GN   => 'givenname',
+                Principal::ATTR_GN   => 'givenName',
                 Principal::ATTR_MAIL => 'mail',
-                Principal::ATTR_PNR  => 'noredupersonnin',
-                Principal::ATTR_PN   => 'edupersonprincipalname',
+                Principal::ATTR_PNR  => 'norEduPersonNIN',
+                Principal::ATTR_PN   => 'eduPersonPrincipalName',
                 Principal::ATTR_ALL  => '*'
         );
         /**
@@ -192,11 +192,19 @@ class LdapService extends ServiceAdapter
         public function getAttribute($principal, $attribute)
         {
                 $this->connect();
-                $this->attrmap[$attribute] = $attribute;        // Add identity map
 
-                $filter = sprintf("(%s=%s)", $this->attrmap[Principal::ATTR_PN], $principal);
+                // 
+                // Prepare attribute map:
+                // 
+                $attrmap = $this->attrmap;
+                foreach ($attrmap as $key => $val) {
+                        $attrmap[$key] = strtolower($val);
+                }
+                $attrmap[$attribute] = $attribute;        // Add identity map
 
-                if (($result = ldap_search($this->ldap, $this->basedn, $filter, array($this->attrmap[$attribute]), 0)) == false) {
+                $filter = sprintf("(%s=%s)", $attrmap[Principal::ATTR_PN], $principal);
+
+                if (($result = ldap_search($this->ldap, $this->basedn, $filter, array($attrmap[$attribute]), 0)) == false) {
                         throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                 }
 
@@ -208,7 +216,7 @@ class LdapService extends ServiceAdapter
                         throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                 }
 
-                $result = new LdapResult($attribute, array_flip($this->attrmap));
+                $result = new LdapResult($attribute, array_flip($attrmap));
                 for ($i = 0; $i < $entries['count']; $i++) {
                         $result->insert($entries[$i]);
                 }
@@ -253,26 +261,34 @@ class LdapService extends ServiceAdapter
                 $this->connect();
 
                 // 
+                // Prepare attribute map:
+                // 
+                $attrmap = $this->attrmap;
+                foreach ($attrmap as $key => $val) {
+                        $attrmap[$key] = strtolower($val);
+                }
+
+                // 
                 // Add identity map:
                 // 
-                if (!isset($this->attrmap[$search])) {
-                        $this->attrmap[$search] = $search;
+                if (!isset($attrmap[$search])) {
+                        $attrmap[$search] = $search;
                 }
 
                 // 
                 // Prepare search options:
                 // 
-                $filter = sprintf("(%s=%s)", $this->attrmap[$search], $needle);
+                $filter = sprintf("(%s=%s)", $attrmap[$search], $needle);
 
                 // 
                 // Substitute generic principal object attributes, while 
                 // preserving service specific attributes:
                 // 
                 for ($i = 0; $i < count($options['attr']); $i++) {
-                        if (isset($this->attrmap[$options['attr'][$i]])) {
-                                $options['attr'][$i] = $this->attrmap[$options['attr'][$i]];
+                        if (isset($attrmap[$options['attr'][$i]])) {
+                                $options['attr'][$i] = $attrmap[$options['attr'][$i]];
                         } else {
-                                $this->attrmap[$options['attr'][$i]] = $options['attr'][$i];
+                                $attrmap[$options['attr'][$i]] = $options['attr'][$i];
                         }
                 }
 
@@ -295,7 +311,7 @@ class LdapService extends ServiceAdapter
                 // Create principal objects array from directory entries.
                 // 
                 $principals = array();
-                $revattrmap = array_flip($this->attrmap);
+                $revattrmap = array_flip($attrmap);
                 $result = new LdapResult('*', $revattrmap);
 
                 for ($i = 0; $i < $entries['count']; $i++) {
@@ -325,7 +341,7 @@ class LdapService extends ServiceAdapter
                         if ($options['data'] && count($data['*']) != 0) {
                                 $principal->attr = $data['*'];
                         }
-                        
+
                         $principals[] = $principal;
                 }
 
