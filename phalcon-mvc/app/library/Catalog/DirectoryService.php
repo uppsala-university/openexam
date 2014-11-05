@@ -23,9 +23,10 @@ interface DirectoryService
         /**
          * Get groups for user.
          * @param string $principal The user principal name.
+         * @param array $attributes The attributes to return.
          * @return array
          */
-        function getGroups($principal);
+        function getGroups($principal, $attributes);
 
         /**
          * Get members of group.

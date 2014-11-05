@@ -49,6 +49,10 @@ class Principal
          */
         const ATTR_PNR = 'pnr';
         /**
+         * The group membership attribute.
+         */
+        const ATTR_GROUPS = 'groups';
+        /**
          * All attributes.
          */
         const ATTR_ALL = '*';

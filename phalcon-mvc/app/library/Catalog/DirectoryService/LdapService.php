@@ -62,14 +62,15 @@ class LdapService extends ServiceAdapter
          * @var array 
          */
         private $attrmap = array(
-                Principal::ATTR_UID  => 'uid',
-                Principal::ATTR_SN   => 'sn',
-                Principal::ATTR_CN   => 'cn',
-                Principal::ATTR_GN   => 'givenName',
-                Principal::ATTR_MAIL => 'mail',
-                Principal::ATTR_PNR  => 'norEduPersonNIN',
-                Principal::ATTR_PN   => 'eduPersonPrincipalName',
-                Principal::ATTR_ALL  => '*'
+                Principal::ATTR_UID    => 'uid',
+                Principal::ATTR_SN     => 'sn',
+                Principal::ATTR_CN     => 'cn',
+                Principal::ATTR_GN     => 'givenName',
+                Principal::ATTR_MAIL   => 'mail',
+                Principal::ATTR_PNR    => 'norEduPersonNIN',
+                Principal::ATTR_PN     => 'eduPersonPrincipalName',
+                Principal::ATTR_GROUPS => 'member',
+                Principal::ATTR_ALL    => '*'
         );
         /**
          * The search base DN.
@@ -223,6 +224,70 @@ class LdapService extends ServiceAdapter
 
                 $data = $result->getResult();
                 return $data[$attribute];
+        }
+
+        /**
+         * Get groups for user.
+         * @param string $principal The user principal name.
+         * @param array $attributes The attributes to return.
+         * @return array
+         */
+        public function getGroups($principal, $attributes)
+        {
+                // 
+                // Get distinguished names for all user principal groups:
+                // 
+                $member = $this->attrmap[Principal::ATTR_GROUPS];
+                $mapped = $this->getAttribute($principal, $member);
+                $groups = array();
+
+                // 
+                // Missing member attributes in LDAP:
+                // 
+                if (!isset($mapped[$member])) {
+                        return array();
+                }
+
+                // 
+                // Fetch group data from LDAP:
+                // 
+                foreach ($mapped[$member] as $group) {
+                        if (($result = ldap_read($this->ldap, $group, '(objectClass=group)', $attributes)) == false) {
+                                throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
+                        }
+
+                        if (($entry = ldap_first_entry($this->ldap, $result)) == false) {
+                                throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
+                        }
+
+                        if (($data = ldap_get_attributes($this->ldap, $entry)) == false) {
+                                throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
+                        }
+
+                        $groups[] = $data;
+                }
+
+                // 
+                // Collect group data in result object:
+                // 
+                $result = new LdapResult(Principal::ATTR_ALL, array_flip($this->attrmap));
+                foreach ($groups as $data) {
+                        $result->insert($data);
+                }
+
+                $output = $result->getResult();
+                $data = array();
+
+                // 
+                // Remap e.g. 'cn' => array() to N => array('cn' => ...):
+                // 
+                foreach ($output[Principal::ATTR_ALL] as $key => $arr) {
+                        foreach ($arr as $index => $val) {
+                                $data[$index][$key] = $val;
+                        }
+                }
+
+                return $data;
         }
 
         /**

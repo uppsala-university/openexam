@@ -137,9 +137,10 @@ class DirectoryManager extends Component implements DirectoryService
         /**
          * Get groups for user.
          * @param string $principal The user principal name.
+         * @param array $attributes The attributes to return.
          * @return array
          */
-        public function getGroups($principal)
+        public function getGroups($principal, $attributes = array(Principal::ATTR_CN))
         {
                 $domain = $this->getDomain($principal);
                 $result = array();
@@ -147,7 +148,7 @@ class DirectoryManager extends Component implements DirectoryService
                 if (isset($this->services[$domain])) {
                         foreach ($this->services[$domain] as $name => $service) {
                                 try {
-                                        if (($groups = $service->getGroups($principal)) != null) {
+                                        if (($groups = $service->getGroups($principal, $attributes)) != null) {
                                                 $result = array_merge($result, $groups);
                                         }
                                 } catch (Exception $exception) {

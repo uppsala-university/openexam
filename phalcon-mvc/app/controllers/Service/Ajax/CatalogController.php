@@ -15,12 +15,15 @@ namespace OpenExam\Controllers\Service\Ajax;
 
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\Catalog\DirectoryManager;
+use OpenExam\Library\Catalog\Principal;
 
 /**
  * AJAX controller for catalog (directory information) service.
  * 
  * Query attributes (/ajax/catalog/attribut):
  * ---------------------------------------------
+ * 
+ * Get attributes (like email addresses) for user principal.
  * 
  * // Get mail attribute(s) using default domain:
  * input: '{"principal":"user","attribute":"mail"}'
@@ -37,6 +40,8 @@ use OpenExam\Library\Catalog\DirectoryManager;
  * Query members (/ajax/catalog/members):
  * ---------------------------------------------
  * 
+ * Get members of group.
+ * 
  * // Get all members in group 3FV271, looking in all domains:
  * input: '{"group":"3FV271"}'
  * 
@@ -52,6 +57,8 @@ use OpenExam\Library\Catalog\DirectoryManager;
  * Query principals (/ajax/catalog/principal):
  * ---------------------------------------------
  * 
+ * Get user principal objects. This is a pure search action.
+ * 
  * // Get first five user principals with given name equals to Anders:
  * input: '{"data":{"gn":"Anders"},"params":{"attr":["principal","mail","uid"],"domain":"example.com","limit":5}}'
  * 
@@ -66,6 +73,24 @@ use OpenExam\Library\Catalog\DirectoryManager;
  * 
  * // Format output. Possible arguments are strip, object, array or compact:
  * input: '{"data":{"uid":"test*"},"params":{"output":"strip"}}'
+ * 
+ * Reading groups (/ajax/catalog/groups):
+ * ---------------------------------------------
+ * 
+ * Get groups that the user principal is a member of.
+ * 
+ * // The default is to only list group names:
+ * input: '{"principal":"user@example.com"}'
+ * 
+ * // Select attriubutes to include:
+ * input: '{"principal":"user@example.com","attributes":["cn","name","gidnumber","distinguishedName","description"]}'
+ * 
+ * // Format output. Possible arguments are strip, object, array or compact:
+ * '{"data":{"principal":"user@example.com"},"params":{"output":"array"}}'
+ * 
+ * // All attributes including nested groups etc. Will fail if attributes
+ * // contains binary data:
+ * input: '{"principal":"user@example.com","attributes":["*"]}'
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -154,6 +179,25 @@ class CatalogController extends ServiceController
         {
                 list($data, $params) = $this->getInput();
                 $result = $this->catalog->getAttribute($data['principal'], $data['attribute']);
+                $this->sendResponse(self::SUCCESS, $result);
+        }
+
+        public function groupsAction($principal = null, $output = null)
+        {
+                if ($this->request->isPost()) {
+                        list($data, $params) = $this->getInput();
+                }
+                if ($this->request->isGet()) {
+                        $data['principal'] = $principal;
+                        $params['output'] = $output;
+                }
+                if (!isset($data['attributes'])) {
+                        $data['attributes'] = array(Principal::ATTR_CN);
+                }
+
+                $result = $this->catalog->getGroups($data['principal'], $data['attributes']);
+                $result = $this->formatResult($result, $params['output']);
+                
                 $this->sendResponse(self::SUCCESS, $result);
         }
 

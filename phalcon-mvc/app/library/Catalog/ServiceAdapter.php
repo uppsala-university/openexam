@@ -27,7 +27,7 @@ use Phalcon\Mvc\User\Component;
 abstract class ServiceAdapter extends Component implements DirectoryService
 {
 
-        public function getGroups($principal)
+        public function getGroups($principal, $attributes)
         {
                 return null;
         }
