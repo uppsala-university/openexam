@@ -20,6 +20,14 @@ use OpenExam\Library\Catalog\Principal;
 /**
  * AJAX controller for catalog (directory information) service.
  * 
+ * All query handlers operating on an user principal name can be called without
+ * the principal argument. If principal is missing, then the logged on user
+ * principal is used instead.
+ * 
+ * To get the department of calling user, just append the required attribute:
+ * 
+ * input: '{"attribute":"department"}'  // Use logged on user principal name.
+ * 
  * Query attributes (/ajax/catalog/attribut):
  * ---------------------------------------------
  * 
@@ -164,6 +172,9 @@ class CatalogController extends ServiceController
         public function nameAction()
         {
                 list($data, $params) = $this->getInput();
+                if (!isset($data['principal'])) {
+                        $data['principal'] = $this->user->getPrincipalName();
+                }
                 $result = $this->catalog->getName($data['principal']);
                 $this->sendResponse(self::SUCCESS, $result);
         }
@@ -171,6 +182,9 @@ class CatalogController extends ServiceController
         public function mailAction()
         {
                 list($data, $params) = $this->getInput();
+                if (!isset($data['principal'])) {
+                        $data['principal'] = $this->user->getPrincipalName();
+                }
                 $result = $this->catalog->getMail($data['principal']);
                 $this->sendResponse(self::SUCCESS, $result);
         }
@@ -178,6 +192,9 @@ class CatalogController extends ServiceController
         public function attributeAction()
         {
                 list($data, $params) = $this->getInput();
+                if (!isset($data['principal'])) {
+                        $data['principal'] = $this->user->getPrincipalName();
+                }
                 $result = $this->catalog->getAttribute($data['principal'], $data['attribute']);
                 $this->sendResponse(self::SUCCESS, $result);
         }
@@ -190,6 +207,9 @@ class CatalogController extends ServiceController
                 if ($this->request->isGet()) {
                         $data['principal'] = $principal;
                         $params['output'] = $output;
+                }
+                if (!isset($data['principal'])) {
+                        $data['principal'] = $this->user->getPrincipalName();
                 }
                 if (!isset($data['attributes'])) {
                         $data['attributes'] = array(Principal::ATTR_CN);
