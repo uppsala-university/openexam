@@ -194,10 +194,16 @@ class CatalogController extends ServiceController
                 if (!isset($data['attributes'])) {
                         $data['attributes'] = array(Principal::ATTR_CN);
                 }
+                if (!isset($params['output'])) {
+                        $params['output'] = self::OUTPUT_COMPACT;
+                }
+
+                print_r($data);
+                print_r($params);
 
                 $result = $this->catalog->getGroups($data['principal'], $data['attributes']);
                 $result = $this->formatResult($result, $params['output']);
-                
+
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
