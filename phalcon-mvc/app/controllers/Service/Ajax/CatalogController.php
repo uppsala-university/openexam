@@ -198,9 +198,6 @@ class CatalogController extends ServiceController
                         $params['output'] = self::OUTPUT_COMPACT;
                 }
 
-                print_r($data);
-                print_r($params);
-
                 $result = $this->catalog->getGroups($data['principal'], $data['attributes']);
                 $result = $this->formatResult($result, $params['output']);
 
