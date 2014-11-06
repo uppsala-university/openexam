@@ -20,7 +20,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
         use OpenExam\Library\Catalog\Principal;
         use OpenExam\Library\Catalog\ServiceAdapter;
         use OpenExam\Library\Catalog\ServiceConnection;
-        
+
         /**
          * LDAP directory service.
          * 
@@ -75,6 +75,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                 public function __construct($host, $port = 636, $user = null, $pass = null, $options = array())
                 {
                         $this->ldap = new LdapConnection($host, $port, $user, $pass, $options);
+                        $this->type = 'ldap';
                 }
 
                 /**
@@ -275,6 +276,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         $search = $this->search(Principal::ATTR_PN, $principal, array($attribute));
 
                         $result = new LdapResult(array_flip($search['attrmap']));
+                        $result->setName($this->name);
                         $result->insert($search['entries']);
 
                         return $result->getResult();
@@ -317,6 +319,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Collect group data in result object:
                         // 
                         $result = new LdapResult(array_flip($search['attrmap']));
+                        $result->setName($this->name);
                         $result->append($groups);
 
                         return $result->getResult();
@@ -364,6 +367,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Collect group data in result object:
                         // 
                         $result = new LdapResult(array_flip($search['attrmap']));
+                        $result->setName($this->name);
                         $result->insert($search['entries']);
                         $data = $result->getResult();
 
@@ -373,6 +377,10 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         $principals = array();
                         foreach ($data as $d) {
                                 $principal = new Principal();
+
+                                // 
+                                // Populate public properties in principal object:
+                                // 
                                 foreach ($d['data'] as $attr => $attrs) {
                                         if (property_exists($principal, $attr)) {
                                                 if ($attr == Principal::ATTR_MAIL) {
@@ -383,18 +391,17 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                                         unset($d['data'][$attr]);
                                                 }
                                         }
-
-                                        // 
-                                        // Any left over attributes goes in attr member:
-                                        // 
-                                        if ($options['data'] && count($d['data']) != 0) {
-                                                $principal->attr = $d['data'];
-                                                $principal->attr['svc']['ref'] = $d['svc']['ref'];
-                                        } else {
-                                                $principal->attr = array();
-                                                $principal->attr['svc']['ref'] = $d['svc']['ref'];
-                                        }
                                 }
+
+                                // 
+                                // Any left over attributes goes in attr member:
+                                // 
+                                if ($options['data']) {
+                                        $principal->attr = $d['data'];
+                                } else {
+                                        $principal->attr['svc'] = $d['data']['svc'];
+                                }
+
                                 $principals[] = $principal;
                         }
 
@@ -424,6 +431,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Load members into result:
                         // 
                         $result = new LdapResult(array_flip($search['attrmap']));
+                        $result->setName($this->name);
                         $result->insert($search['entries']);
                         $data = $result->getResult();
 
@@ -457,6 +465,10 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         $principals = array();
                         foreach ($data as $d) {
                                 $principal = new Principal();
+
+                                // 
+                                // Populate public properties in principal object:
+                                // 
                                 foreach ($d['data'] as $attr => $attrs) {
                                         if (property_exists($principal, $attr)) {
                                                 if ($attr == Principal::ATTR_MAIL) {
@@ -467,18 +479,13 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                                         unset($d['data'][$attr]);
                                                 }
                                         }
-
-                                        // 
-                                        // Any left over attributes goes in attr member:
-                                        // 
-                                        if (count($d['data']) != 0) {
-                                                $principal->attr = $d['data'];
-                                                $principal->attr['svc']['ref'] = $d['svc']['ref'];
-                                        } else {
-                                                $principal->attr = array();
-                                                $principal->attr['svc']['ref'] = $d['svc']['ref'];
-                                        }
                                 }
+                                
+                                // 
+                                // Any left over attributes goes in attr member:
+                                // 
+                                $principal->attr = $d['data'];
+
                                 $principals[] = $principal;
                         }
 
@@ -641,14 +648,45 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  * @var array 
                  */
                 private $result = array();
+                /**
+                 * The service name.
+                 * @var type 
+                 */
+                private $name;
+                /**
+                 * The service type.
+                 */
+                private $type;
 
                 /**
                  * Constructor.
                  * @param array $attrmap The reverse attribute map.
+                 * @param string $name The service name.
+                 * @param string $type The service type.
                  */
-                public function __construct($attrmap)
+                public function __construct($attrmap, $name = null, $type = 'ldap')
                 {
                         $this->attrmap = array_change_key_case($attrmap);
+                        $this->name = $name;
+                        $this->type = $type;
+                }
+
+                /**
+                 * Set service name.
+                 * @param string $name The service name.
+                 */
+                public function setName($name)
+                {
+                        $this->name = $name;
+                }
+
+                /**
+                 * Set service type.
+                 * @param string $type The service type.
+                 */
+                public function setType($type)
+                {
+                        $this->type = $type;
                 }
 
                 /**
@@ -718,10 +756,13 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                 private function addEntry($index, $entry)
                 {
                         // 
-                        // Keep reference (DN):
+                        // Set service data reference:
                         // 
-                        $this->result[$index]['svc']['ref'] = $entry['dn'];
-
+                        $this->result[$index]['data']['svc'] = array(
+                                'name' => $this->name,
+                                'type' => $this->type,
+                                'ref'  => $entry['dn']
+                        );
                         // 
                         // Polulate entry data:
                         // 

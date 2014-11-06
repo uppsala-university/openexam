@@ -27,6 +27,26 @@ use Phalcon\Mvc\User\Component;
 abstract class ServiceAdapter extends Component implements DirectoryService
 {
 
+        /**
+         * The service name.
+         * @var string 
+         */
+        protected $name;
+        /**
+         * The service type.
+         * @var string 
+         */
+        protected $type;
+
+        /**
+         * Set service name.
+         * @param string $name The service name.
+         */
+        public function setName($name)
+        {
+                $this->name = $name;
+        }
+
         public function getGroups($principal, $attributes)
         {
                 return null;

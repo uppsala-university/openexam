@@ -21,7 +21,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
         use OpenExam\Library\Catalog\Principal;
         use Phalcon\Mvc\User\Component;
 
-        if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
+if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                 define('INFO_CGI_RECORD_SEPARATOR', "\n");
         }
         if (!defined('INFO_CGI_FIELD_SEPARATOR')) {
@@ -402,6 +402,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                 {
                         $this->uppdok = new UppdokData($user, $pass, $host, $port);
                         $this->uppdok->setCompactMode(false);
+                        $this->type = 'uppdok';
                 }
 
                 /**
@@ -414,11 +415,24 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                 public function getMembers($group, $domain, $attributes)
                 {
                         $result = array();
+                        $group = trim($group, '*');
 
                         foreach ($this->uppdok->members($group) as $member) {
-                                $result[] = $member->getPrincipal($domain, $attributes);
+                                $principal = $member->getPrincipal($domain, $attributes);
+                                $principal->attr = array(
+                                        'svc' => array(
+                                                'name' => $this->name,
+                                                'type' => $this->type,
+                                                'ref'  => array(
+                                                        'group'    => $group,
+                                                        'year'     => $this->uppdok->getYear(),
+                                                        'semester' => $this->uppdok->getSemester()
+                                                )
+                                        )
+                                );
+                                $result[] = $principal;
                         }
-                        
+
                         return $result;
                 }
 

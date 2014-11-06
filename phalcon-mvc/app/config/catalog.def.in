@@ -65,8 +65,9 @@ return array(
                         );
                         $service->setAttributeMap(array(
                                 'person' => array(
-                                        Principal::ATTR_PN  => 'userPrincipalName',
-                                        Principal::ATTR_UID => 'sAMAccountName'
+                                        Principal::ATTR_PN   => 'userPrincipalName',
+                                        Principal::ATTR_UID  => 'sAMAccountName',
+                                        Principal::ATTR_NAME => 'displayName'
                                 )
                         ));
                         $service->setBase('dc=users,dc=example,dc=com');

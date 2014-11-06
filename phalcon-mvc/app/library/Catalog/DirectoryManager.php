@@ -87,7 +87,7 @@ class DirectoryManager extends Component implements DirectoryService
          * This function register an direcory service as a catalog for
          * one or more domains.
          *  
-         * @param DirectoryService $service The directory service.
+         * @param ServiceAdapter $service The directory service.
          * @param array|string $domains The domains.
          * @param string $name Directory service name (optional)
          */
@@ -95,6 +95,9 @@ class DirectoryManager extends Component implements DirectoryService
         {
                 if (!is_array($domains)) {
                         $domains = array($domains);
+                }
+                if (isset($name)) {
+                        $service->setName($name);
                 }
                 foreach ($domains as $domain) {
                         if (!isset($this->services[$domain])) {
