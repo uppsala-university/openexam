@@ -30,12 +30,12 @@ class DirectoryManager extends Component implements DirectoryService
         /**
          * Default list of attributes returned.
          */
-        static $DEFAULT_ATTR = array(Principal::ATTR_UID, Principal::ATTR_CN, Principal::ATTR_MAIL);
+        static $DEFAULT_ATTR = array(Principal::ATTR_UID, Principal::ATTR_NAME, Principal::ATTR_MAIL);
 
         /**
          * Default search attribute.
          */
-        const DEFAULT_SEARCH = Principal::ATTR_CN;
+        const DEFAULT_SEARCH = Principal::ATTR_NAME;
         /**
          * Default limit on number of returned user principal objects.
          */
@@ -68,11 +68,13 @@ class DirectoryManager extends Component implements DirectoryService
         {
                 foreach ($this->services as $domain => $services) {
                         foreach ($services as $name => $service) {
-                                if ($service->connected()) {
-                                        try {
-                                                $service->close();
-                                        } catch (Exception $exception) {
-                                                $this->report($exception, $service, $name);
+                                if (($backend = $service->getConnection()) != null) {
+                                        if ($backend->connected()) {
+                                                try {
+                                                        $backend->close();
+                                                } catch (Exception $exception) {
+                                                        $this->report($exception, $service, $name);
+                                                }
                                         }
                                 }
                         }
@@ -140,7 +142,7 @@ class DirectoryManager extends Component implements DirectoryService
          * @param array $attributes The attributes to return.
          * @return array
          */
-        public function getGroups($principal, $attributes = array(Principal::ATTR_CN))
+        public function getGroups($principal, $attributes = array(Group::ATTR_NAME))
         {
                 $domain = $this->getDomain($principal);
                 $result = array();
@@ -167,7 +169,7 @@ class DirectoryManager extends Component implements DirectoryService
          * @param array $attributes The attributes to return.
          * @return Principal[]
          */
-        public function getMembers($group, $domain = null, $attributes = array(Principal::ATTR_UID, Principal::ATTR_CN, Principal::ATTR_MAIL))
+        public function getMembers($group, $domain = null, $attributes = array(Principal::ATTR_PN, Principal::ATTR_NAME, Principal::ATTR_MAIL))
         {
                 $result = array();
 
@@ -315,7 +317,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getName($principal)
         {
-                return $this->getAttribute($principal, Principal::ATTR_CN);
+                return $this->getAttribute($principal, Principal::ATTR_NAME);
         }
 
         /**

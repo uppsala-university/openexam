@@ -13,6 +13,7 @@
 
 
 use OpenExam\Library\Catalog\DirectoryService\LdapService;
+use OpenExam\Library\Catalog\Group;
 use OpenExam\Library\Catalog\Principal;
 
 // 
@@ -31,11 +32,18 @@ return array(
                         $service = new LdapService(
                             'ldaps://ldap.example.com', 636, 'user', 'secret'
                         );
-                        $service->setAttributeMap(
-                            array(
-                                    Principal::ATTR_PNR  => 'socialNumber',
-                                    Principal::ATTR_MAIL => 'email',
-                                    Principal::ATTR_PN   => 'userName'
+                        // 
+                        // Remap object class attributes:
+                        // 
+                        $service->setAttributeMap(array(
+                                'person' => array(
+                                        Principal::ATTR_PNR  => 'socialNumber',
+                                        Principal::ATTR_MAIL => 'email',
+                                        Principal::ATTR_PN   => 'userid'
+                                ),
+                                'group' => array(
+                                        Group::ATTR_NAME => 'cn'
+                                )
                         ));
                         $service->setBase('ou=employees,dc=example,dc=com');
                         return $service;
@@ -56,9 +64,10 @@ return array(
                                 )
                         );
                         $service->setAttributeMap(array(
-                                Principal::ATTR_PN     => 'userPrincipalName',
-                                Principal::ATTR_UID    => 'sAMAccountName',
-                                Principal::ATTR_GROUPS => 'memberof'
+                                'person' => array(
+                                        Principal::ATTR_PN  => 'userPrincipalName',
+                                        Principal::ATTR_UID => 'sAMAccountName'
+                                )
                         ));
                         $service->setBase('dc=users,dc=example,dc=com');
                         return $service;
@@ -66,4 +75,3 @@ return array(
                 'domains' => 'example.com'
         )
 );
-        

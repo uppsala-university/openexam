@@ -175,7 +175,12 @@ class CatalogController extends ServiceController
                 if (!isset($data['principal'])) {
                         $data['principal'] = $this->user->getPrincipalName();
                 }
+                if (!isset($params['output'])) {
+                        $params['output'] = self::OUTPUT_OBJECT;
+                }
                 $result = $this->catalog->getName($data['principal']);
+                $result = $this->formatResult($result, $params['output']);
+                
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
@@ -185,7 +190,12 @@ class CatalogController extends ServiceController
                 if (!isset($data['principal'])) {
                         $data['principal'] = $this->user->getPrincipalName();
                 }
+                if (!isset($params['output'])) {
+                        $params['output'] = self::OUTPUT_OBJECT;
+                }
                 $result = $this->catalog->getMail($data['principal']);
+                $result = $this->formatResult($result, $params['output']);
+                
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
@@ -195,7 +205,12 @@ class CatalogController extends ServiceController
                 if (!isset($data['principal'])) {
                         $data['principal'] = $this->user->getPrincipalName();
                 }
+                if (!isset($params['output'])) {
+                        $params['output'] = self::OUTPUT_OBJECT;
+                }
                 $result = $this->catalog->getAttribute($data['principal'], $data['attribute']);
+                $result = $this->formatResult($result, $params['output']);
+                
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
@@ -212,10 +227,10 @@ class CatalogController extends ServiceController
                         $data['principal'] = $this->user->getPrincipalName();
                 }
                 if (!isset($data['attributes'])) {
-                        $data['attributes'] = array(Principal::ATTR_CN);
+                        $data['attributes'] = array(Principal::ATTR_NAME);
                 }
                 if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_COMPACT;
+                        $params['output'] = self::OUTPUT_OBJECT;
                 }
 
                 $result = $this->catalog->getGroups($data['principal'], $data['attributes']);
@@ -241,7 +256,7 @@ class CatalogController extends ServiceController
                         $data['attributes'] = DirectoryManager::$DEFAULT_ATTR;
                 }
                 if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_STRIP;
+                        $params['output'] = self::OUTPUT_OBJECT;
                 }
 
                 $result = $this->catalog->getMembers($data['group'], $data['domain'], $data['attributes']);
@@ -257,7 +272,6 @@ class CatalogController extends ServiceController
                 if (!isset($params['output'])) {
                         $params['output'] = self::OUTPUT_OBJECT;
                 }
-
                 $result = $this->catalog->getPrincipal(current($data), key($data), $params);
                 $result = $this->formatResult($result, $params['output']);
 

@@ -48,29 +48,12 @@ abstract class ServiceAdapter extends Component implements DirectoryService
         }
 
         /**
-         * Open connection to backend server.
-         * @return bool True if successful connected.
+         * Get service connection.
+         * @return ServiceConnection
          */
-        public function open()
+        public function getConnection()
         {
-                return true;
-        }
-
-        /**
-         * Close connection to backend server.
-         */
-        public function close()
-        {
-                
-        }
-
-        /**
-         * Check if connected to backend server.
-         * @return bool True if already connected.
-         */
-        public function connected()
-        {
-                return true;
+                return null;
         }
 
 }

@@ -29,9 +29,9 @@ class Principal
          */
         const ATTR_UID = 'uid';
         /**
-         * The common name attribute.
+         * The name attribute.
          */
-        const ATTR_CN = 'cn';
+        const ATTR_NAME = 'name';
         /**
          * The sirname attribute.
          */
@@ -48,10 +48,6 @@ class Principal
          * The personal number attribute.
          */
         const ATTR_PNR = 'pnr';
-        /**
-         * The group membership attribute.
-         */
-        const ATTR_GROUPS = 'groups';
         /**
          * All attributes.
          */
@@ -85,7 +81,7 @@ class Principal
          * The common name (display name).
          * @var string 
          */
-        public $cn;
+        public $name;
         /**
          * The sirname (last name).
          * @var string 

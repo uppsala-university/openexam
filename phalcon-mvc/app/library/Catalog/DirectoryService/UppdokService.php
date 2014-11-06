@@ -114,8 +114,8 @@ namespace OpenExam\Library\Catalog\DirectoryService\Uppdok {
                 {
                         $principal = new Principal();
 
-                        if (in_array(Principal::ATTR_CN, $attributes)) {
-                                $principal->cn = $this->data[INFO_CGI_FIELD_NAME];
+                        if (in_array(Principal::ATTR_NAME, $attributes)) {
+                                $principal->name = $this->data[INFO_CGI_FIELD_NAME];
                         }
                         if (in_array(Principal::ATTR_MAIL, $attributes)) {
                                 $principal->mail[] = $this->data[INFO_CGI_FIELD_MAIL];
