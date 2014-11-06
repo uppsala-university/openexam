@@ -182,16 +182,6 @@ class CatalogController extends ServiceController
                         list($data, $params) = $this->getInput();
                 }
 
-                if (!isset($data['principal'])) {
-                        $data['principal'] = $this->user->getPrincipalName();
-                }
-                if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_OBJECT;
-                }
-                if (!isset($params['svcref'])) {
-                        $params['svcref'] = true;
-                }
-
                 if ($this->dispatcher->getActionName() == "groups") {
                         if (!isset($data['attributes'])) {
                                 $data['attributes'] = array(Principal::ATTR_NAME);
@@ -205,6 +195,27 @@ class CatalogController extends ServiceController
                         if (!isset($data['domain'])) {
                                 $data['domain'] = null;
                         }
+                }
+
+                if ($this->dispatcher->getActionName() == "attribute" ||
+                    $this->dispatcher->getActionName() == "name" ||
+                    $this->dispatcher->getActionName() == "mail") {
+                        if (!isset($params['svcref'])) {
+                                $params['svcref'] = false;
+                        }
+                        if (!isset($params['output'])) {
+                                $params['output'] = self::OUTPUT_COMPACT;
+                        }
+                }
+
+                if (!isset($data['principal'])) {
+                        $data['principal'] = $this->user->getPrincipalName();
+                }
+                if (!isset($params['output'])) {
+                        $params['output'] = self::OUTPUT_OBJECT;
+                }
+                if (!isset($params['svcref'])) {
+                        $params['svcref'] = true;
                 }
 
                 $this->data = $data;
