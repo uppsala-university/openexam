@@ -25,7 +25,7 @@ for d in cache logs schemas/soap; do
 done
 
 # These files contains secrets and should not be world readable:
-for f in app/config/config.def; do
+for f in app/config/config.def app/config/catalog.def; do
   if [ -f $root/$f ]; then
     setfacl -m u:$user:r $root/$f
     chmod 640 $root/$f
