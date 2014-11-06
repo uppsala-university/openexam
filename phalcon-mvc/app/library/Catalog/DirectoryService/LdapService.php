@@ -300,7 +300,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Missing member attributes in LDAP:
                         // 
-                        if (!isset($mapped[0]['data'][$member])) {
+                        if (!isset($mapped[0][$member])) {
                                 return array();
                         }
 
@@ -308,7 +308,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Fetch group data from LDAP:
                         // 
                         foreach ($mapped as $data) {
-                                foreach ($data['data'][$member] as $group) {
+                                foreach ($data[$member] as $group) {
                                         $search = $this->read($group, $attributes, 'group');
                                         $groups[] = $search['entry'];
                                 }
@@ -381,14 +381,14 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                 // 
                                 // Populate public properties in principal object:
                                 // 
-                                foreach ($d['data'] as $attr => $attrs) {
+                                foreach ($d as $attr => $attrs) {
                                         if (property_exists($principal, $attr)) {
                                                 if ($attr == Principal::ATTR_MAIL) {
                                                         $principal->mail = $attrs;
-                                                        unset($d['data'][$attr]);
+                                                        unset($d[$attr]);
                                                 } else {
                                                         $principal->$attr = $attrs[0];
-                                                        unset($d['data'][$attr]);
+                                                        unset($d[$attr]);
                                                 }
                                         }
                                 }
@@ -396,10 +396,10 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                 // 
                                 // Any left over attributes goes in attr member:
                                 // 
-                                if ($options['data']) {
-                                        $principal->attr = $d['data'];
+                                if ($options) {
+                                        $principal->attr = $d;
                                 } else {
-                                        $principal->attr['svc'] = $d['data']['svc'];
+                                        $principal->attr['svc'] = $d['svc'];
                                 }
 
                                 $principals[] = $principal;
@@ -446,7 +446,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Fetch user data from LDAP:
                         // 
                         foreach ($data as $d) {
-                                foreach ($d['data'][$member] as $path) {
+                                foreach ($d[$member] as $path) {
                                         $user = $this->read($path, $attributes);
                                         $users[] = $user['entry'];
                                 }
@@ -469,14 +469,14 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                 // 
                                 // Populate public properties in principal object:
                                 // 
-                                foreach ($d['data'] as $attr => $attrs) {
+                                foreach ($d as $attr => $attrs) {
                                         if (property_exists($principal, $attr)) {
                                                 if ($attr == Principal::ATTR_MAIL) {
                                                         $principal->mail = $attrs;
-                                                        unset($d['data'][$attr]);
+                                                        unset($d[$attr]);
                                                 } else {
                                                         $principal->$attr = $attrs[0];
-                                                        unset($d['data'][$attr]);
+                                                        unset($d[$attr]);
                                                 }
                                         }
                                 }
@@ -484,7 +484,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                 // 
                                 // Any left over attributes goes in attr member:
                                 // 
-                                $principal->attr = $d['data'];
+                                $principal->attr = $d;
 
                                 $principals[] = $principal;
                         }
@@ -758,7 +758,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                         // 
                         // Set service data reference:
                         // 
-                        $this->result[$index]['data']['svc'] = array(
+                        $this->result[$index]['svc'] = array(
                                 'name' => $this->name,
                                 'type' => $this->type,
                                 'ref'  => $entry['dn']
@@ -797,14 +797,14 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                         // Add attribute data to result:
                         // 
                         for ($i = 0; $i < $attr['count']; $i++) {
-                                if (!isset($this->result[$index]['data'][$name])) {
-                                        $this->result[$index]['data'][$name] = array();
+                                if (!isset($this->result[$index][$name])) {
+                                        $this->result[$index][$name] = array();
                                 }
-                                if (!in_array($attr[$i], $this->result[$index]['data'][$name])) {
-                                        $this->result[$index]['data'][$name][] = $attr[$i];
+                                if (!in_array($attr[$i], $this->result[$index][$name])) {
+                                        $this->result[$index][$name][] = $attr[$i];
                                 }
                                 if (isset($type)) {
-                                        $this->result[$index]['data'][$name][$type] = $attr[$i];
+                                        $this->result[$index][$name][$type] = $attr[$i];
                                 }
                         }
                 }
