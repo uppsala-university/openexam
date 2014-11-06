@@ -59,9 +59,6 @@ use OpenExam\Library\Catalog\Principal;
  * // Filter returned attriubutes (depends on directory service backend):
  * input: '{"group":"3FV271","attributes":["principal","cn","mail"]}'
  * 
- * // Format output. Possible arguments are strip, object, array or compact:
- * input: '{"data":{"group":"3FV271"},"params":{"output":"array"}}'
- * 
  * Query principals (/ajax/catalog/principal):
  * ---------------------------------------------
  * 
@@ -78,9 +75,6 @@ use OpenExam\Library\Catalog\Principal;
  * 
  * // Get complete principal objects including extended data:
  * input: '{"data":{"uid":"test*"},"params":{"attr":["*"],"domain":"example.com","data":true}}'
- * 
- * // Format output. Possible arguments are strip, object, array or compact:
- * input: '{"data":{"uid":"test*"},"params":{"output":"strip"}}'
  * 
  * Reading groups (/ajax/catalog/groups):
  * ---------------------------------------------
@@ -99,6 +93,45 @@ use OpenExam\Library\Catalog\Principal;
  * // All attributes including nested groups etc. Will fail if attributes
  * // contains binary data:
  * input: '{"principal":"user@example.com","attributes":["*"]}'
+ * 
+ * Output formatting:
+ * ---------------------------------------------
+ * 
+ * Most actions supports output filtering. The output format is submitted in
+ * params (for POST). The members and groups action also supports GET request,
+ * and the output format is then provided after the subject:
+ * 
+ * <code>
+ * curl -XGET ${BASEURL}/ajax/catalog/groups/user@example.com/array
+ * </code>
+ * 
+ * The possible output formatters are: object (default), array, compact
+ * and strip.
+ * 
+ * o) Some examples:
+ * 
+ * // Get member of group formatted as array:
+ * input: '{"data":{"group":"3FV271"},"params":{"output":"array"}}'
+ * 
+ * // User principals in stripped format:
+ * input: '{"data":{"uid":"test*"},"params":{"output":"strip"}}'
+ * 
+ * o) Directory entity references:
+ * 
+ * By default, the result contains directory entity references to support
+ * browsing. If browsing is not required, then the service reference can 
+ * be stripped by passing svcref == false:
+ * 
+ * input: '{"data":{...},"params":{"svcref":false}}'
+ * 
+ * Combining output formatting with svcref == false can be used to return
+ * plain values or simple key/value arrays:
+ * 
+ * // Return key/value array of first 10 people named Anders:
+ * input: '{"data":{"gn":"Anders"},"params":{"attr":["name"],"output":"strip","svcref":false,"limit":10}}'
+ * 
+ * // Same as above, but formatted as plain value array:
+ * input: '{"data":{"gn":"Anders"},"params":{"attr":["name"],"output":"compact","svcref":false,"limit":10}}'
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -129,6 +162,54 @@ class CatalogController extends ServiceController
          * Compact otuput format.
          */
         const OUTPUT_COMPACT = 'compact';
+
+        /**
+         * The query data.
+         * @var array 
+         */
+        private $data;
+        /**
+         * The query parameters.
+         * @var array 
+         */
+        private $params;
+
+        public function initialize()
+        {
+                parent::initialize();
+
+                if ($this->request->isPost()) {
+                        list($data, $params) = $this->getInput();
+                }
+
+                if (!isset($data['principal'])) {
+                        $data['principal'] = $this->user->getPrincipalName();
+                }
+                if (!isset($params['output'])) {
+                        $params['output'] = self::OUTPUT_OBJECT;
+                }
+                if (!isset($params['svcref'])) {
+                        $params['svcref'] = true;
+                }
+
+                if ($this->dispatcher->getActionName() == "groups") {
+                        if (!isset($data['attributes'])) {
+                                $data['attributes'] = array(Principal::ATTR_NAME);
+                        }
+                }
+
+                if ($this->dispatcher->getActionName() == "members") {
+                        if (!isset($data['attributes'])) {
+                                $data['attributes'] = DirectoryManager::$DEFAULT_ATTR;
+                        }
+                        if (!isset($data['domain'])) {
+                                $data['domain'] = null;
+                        }
+                }
+
+                $this->data = $data;
+                $this->params = $params;
+        }
 
         /**
          * Display documentation of the AJAX service API.
@@ -164,116 +245,85 @@ class CatalogController extends ServiceController
                 
         }
 
+        /**
+         * List all domains.
+         */
         public function domainsAction()
         {
                 $this->sendResponse(self::SUCCESS, $this->catalog->getDomains());
         }
 
+        /**
+         * Get name from user principal.
+         */
         public function nameAction()
         {
-                list($data, $params) = $this->getInput();
-                if (!isset($data['principal'])) {
-                        $data['principal'] = $this->user->getPrincipalName();
-                }
-                if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_OBJECT;
-                }
-                $result = $this->catalog->getName($data['principal']);
-                $result = $this->formatResult($result, $params['output']);
-                
+                $result = $this->catalog->getName($this->data['principal']);
+                $result = $this->formatResult($result, $this->params['output']);
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
+        /**
+         * Get mail address from user principal.
+         */
         public function mailAction()
         {
-                list($data, $params) = $this->getInput();
-                if (!isset($data['principal'])) {
-                        $data['principal'] = $this->user->getPrincipalName();
-                }
-                if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_OBJECT;
-                }
-                $result = $this->catalog->getMail($data['principal']);
-                $result = $this->formatResult($result, $params['output']);
-                
+                $result = $this->catalog->getMail($this->data['principal']);
+                $result = $this->formatResult($result, $this->params['output']);
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
+        /**
+         * Get attribute from user principal.
+         */
         public function attributeAction()
         {
-                list($data, $params) = $this->getInput();
-                if (!isset($data['principal'])) {
-                        $data['principal'] = $this->user->getPrincipalName();
-                }
-                if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_OBJECT;
-                }
-                $result = $this->catalog->getAttribute($data['principal'], $data['attribute']);
-                $result = $this->formatResult($result, $params['output']);
-                
+                $result = $this->catalog->getAttribute($this->data['principal'], $this->data['attribute']);
+                $result = $this->formatResult($result, $this->params['output']);
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
+        /**
+         * Get user principal groups (GET and POST).
+         * @param string $principal The user principal.
+         * @param string $output The output format.
+         */
         public function groupsAction($principal = null, $output = null)
         {
-                if ($this->request->isPost()) {
-                        list($data, $params) = $this->getInput();
-                }
                 if ($this->request->isGet()) {
-                        $data['principal'] = $principal;
-                        $params['output'] = $output;
-                }
-                if (!isset($data['principal'])) {
-                        $data['principal'] = $this->user->getPrincipalName();
-                }
-                if (!isset($data['attributes'])) {
-                        $data['attributes'] = array(Principal::ATTR_NAME);
-                }
-                if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_OBJECT;
+                        $this->data['principal'] = $principal;
+                        $this->params['output'] = $output;
                 }
 
-                $result = $this->catalog->getGroups($data['principal'], $data['attributes']);
-                $result = $this->formatResult($result, $params['output']);
-
+                $result = $this->catalog->getGroups($this->data['principal'], $this->data['attributes']);
+                $result = $this->formatResult($result, $this->params['output']);
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
+        /**
+         * Get group members (GET and POST).
+         * @param string $group The group name.
+         * @param string $output The output format.
+         */
         public function membersAction($group = null, $output = null)
         {
-                if ($this->request->isPost()) {
-                        list($data, $params) = $this->getInput();
-                }
                 if ($this->request->isGet()) {
-                        $data['group'] = $group;
-                        $params['output'] = $output;
+                        $this->data['group'] = $group;
+                        $this->params['output'] = $output;
                 }
 
-                if (!isset($data['domain'])) {
-                        $data['domain'] = null;
-                }
-                if (!isset($data['attributes'])) {
-                        $data['attributes'] = DirectoryManager::$DEFAULT_ATTR;
-                }
-                if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_OBJECT;
-                }
-
-                $result = $this->catalog->getMembers($data['group'], $data['domain'], $data['attributes']);
-                $result = $this->formatResult($result, $params['output']);
-
+                $result = $this->catalog->getMembers($this->data['group'], $this->data['domain'], $this->data['attributes']);
+                $result = $this->formatResult($result, $this->params['output']);
                 $this->sendResponse(self::SUCCESS, $result);
         }
 
+        /**
+         * Search for user principals.
+         */
         public function principalAction()
         {
-                list($data, $params) = $this->getInput();
-
-                if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_OBJECT;
-                }
-                $result = $this->catalog->getPrincipal(current($data), key($data), $params);
-                $result = $this->formatResult($result, $params['output']);
+                $result = $this->catalog->getPrincipal(current($this->data), key($this->data), $this->params);
+                $result = $this->formatResult($result, $this->params['output']);
 
                 $this->sendResponse(self::SUCCESS, $result);
         }
@@ -289,26 +339,63 @@ class CatalogController extends ServiceController
                 $this->response->send();
         }
 
-        private function formatResult($result, $output)
+        /**
+         * Format output based on request params preferences.
+         * @param array $input The result data.
+         * @return array
+         */
+        private function formatResult($input)
         {
+                $output = $this->params['output'];
+                $svcref = $this->params['svcref'];
+
+                // 
+                // Strip service references if requested:
+                // 
+                if ($svcref == false) {
+                        for ($i = 0; $i < count($input); $i++) {
+                                if ($input[$i] instanceof Principal) {
+                                        unset($input[$i]->attr['svc']);
+                                } else {
+                                        unset($input[$i]['svc']);
+                                }
+                        }
+                }
+
+                // 
+                // Convert single index array to strings:
+                // 
+                if (is_array(current($input))) {
+                        for ($i = 0; $i < count($input); $i++) {
+                                foreach ($input[$i] as $key => $val) {
+                                        if (is_array($val) && count($val) == 1) {
+                                                $input[$i][$key] = $input[$i][$key][0];
+                                        }
+                                }
+                        }
+                }
+
+                // 
+                // Format output:
+                // 
                 if ($output == self::OUTPUT_OBJECT) {
-                        return $result;
+                        return $input;
                 } elseif ($output == self::OUTPUT_STRIP) {
-                        for ($i = 0; $i < count($result); $i++) {
-                                $result[$i] = array_filter((array) $result[$i]);
+                        for ($i = 0; $i < count($input); $i++) {
+                                $input[$i] = array_filter((array) $input[$i]);
                         }
-                        return $result;
+                        return $input;
                 } elseif ($output == self::OUTPUT_COMPACT) {
-                        $output = array();
-                        for ($i = 0; $i < count($result); $i++) {
-                                $output = array_merge($output, array_values(array_filter((array) $result[$i])));
-                        }
-                        return $output;
-                } elseif ($output == self::OUTPUT_ARRAY) {
-                        for ($i = 0; $i < count($result); $i++) {
-                                $result[$i] = array_values(array_filter((array) $result[$i]));
+                        $result = array();
+                        for ($i = 0; $i < count($input); $i++) {
+                                $result = array_merge($result, array_values(array_filter((array) $input[$i])));
                         }
                         return $result;
+                } elseif ($output == self::OUTPUT_ARRAY) {
+                        for ($i = 0; $i < count($input); $i++) {
+                                $input[$i] = array_values(array_filter((array) $input[$i]));
+                        }
+                        return $input;
                 }
         }
 
