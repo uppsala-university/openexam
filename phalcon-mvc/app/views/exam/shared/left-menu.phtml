@@ -44,7 +44,7 @@
                                                 
                                                 <a href="#" class="prevent"> 
                                                         <span class="left-col-user" data-user="<?=$data->user?>">
- 	                                                       <?=($myRole == Roles::CONTRIBUTOR || !in_array("editable", $exam->flags)) ? '<i class="fa fa-arrow-circle-right" style="color:#990000"></i>':''?> 
+ 	                                                       <?=($myRole == Roles::CONTRIBUTOR || !in_array("editable", $exam->flags)) ? '&#10004;':''?> 
 							       <?=$this->helper->getCatalogAttribute($data->user, 'name').
 							       ' ['.$this->helper->getCatalogAttribute($data->user, 'uid').']'?>
                                                 	</span> 
