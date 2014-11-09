@@ -187,41 +187,36 @@ $(function() {
 		if(examId) {
 			stList = jQuery.trim($('#student_list').val()).split(',');
 			
-/*			@ToDo: replace belower with this commented out once Anders fixes the bug
+			//prepare data object
+                        var totalStudents = 0;
 			$.each(stList, function(i, val) {
 				st = jQuery.trim(val).split(/\s/g);
-				stData.push({'exam_id': examId, "user": st[0], "code": st[1]})
+				stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
+                                totalStudents++;
 			});
-*/
 
-			if(stList.length > 1) {
-				$.each(stList, function(i, val) {
-					st = jQuery.trim(val).split(/\s/g);
-					stData.push({'exam_id': examId, "user": st[0], "code": st[1]})
-				});
-				stData = JSON.stringify(stData);
-			} else {
-				st = jQuery.trim(stList).split(/\s/g);
-				stData = {'exam_id': examId, "user": st[0], "code": st[1]};
-			}
-			
-			
-			
-			
 			// send ajax request to add these students to the exam
 			ajax(
 				baseURL + 'core/ajax/invigilator/student/create',
-				stData,
+				JSON.stringify(stData),
 				function (userData) {
-					userData = [{"id":"10","exam_id":"1","user":"ahsan1111","code":"1111","tag":null},{"id":"11","exam_id":"1","user":"ahsan222","code":"2222","tag":null}];
-					$.each(userData, function(i, user){
-						newItem = $('.student-list > li').first().clone();
-						$(newItem)
-							.find('.del-student').attr('data-id', user.id).end()
-							.find('span').html(user.user+" - "+user.code).end()
-							.show();
-						$('.student-list').prepend($(newItem));
-					});
+                                        if(totalStudents > 1) {
+                                                $.each(userData, function(i, user) {
+                                                        newItem = $('.student-list > li').first().clone();
+                                                        $(newItem)
+                                                                .find('.del-student').attr('data-id', user.id)
+                                                                .find('span').html(user.user+" - "+user.code).end()
+                                                                .show();
+                                                        $('.student-list').prepend($(newItem));
+                                                });
+                                        } else {
+                                                newItem = $('.student-list > li').first().clone();
+                                                $(newItem)
+                                                        .find('.del-student').attr('data-id', userData.id)
+                                                        .find('span').html(userData.user+" - "+userData.code).end()
+                                                        .show();
+                                                $('.student-list').prepend($(newItem));
+                                        }        
 				}
 			);
 		}

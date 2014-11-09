@@ -47,7 +47,7 @@ $(document).ready(function() {
 
 	$(document).on('click', '.reuse-exam', function() {
 		var examId = $(this).closest('.list-group-item').attr('data-id');
-		$("#reuse-exam").dialog({
+		$("#reuse-exam-dialog").dialog({
 			autoOpen: true,
 			modal: true,
 			buttons: {
@@ -257,7 +257,10 @@ $(document).ready(function() {
 	var populateExamGrid = function (examData, section, populateInSearchGrid) {
 		
 		var populatePages = false;
-		if(populateInSearchGrid) {
+		var examRole = $(section).attr('exam-role');
+		
+		// grid that appears when someone searches for exam
+		if(populateInSearchGrid) { 
 			if($(section).find('.exam-listing-area').length > 1) {
 				var examListingArea = $(section).find('.exam-listing-area').first();
 			} else {
@@ -280,6 +283,32 @@ $(document).ready(function() {
 			$(examItem).find('.exam-date').html(start[0]);
 			$(examItem).find('.exam-starts').html(start[1]);
 			$(examItem).find('.exam-ends').html(ends[1]);				
+			
+			//list operational buttons as per the exam role and status
+			$(examItem).find('.exam-show-options').empty();
+			$.each(examSections[examRole]["show-options"], function(btnKey, btnProp) {
+				
+				var showBtn = false;
+				if(btnProp["show-on-flags"] == '*') {
+					showBtn = true;
+				} else {
+					$.each(btnProp["show-on-flags"], function(i, flag) {
+						if(exam.flags.indexOf(flag) >= 0) {
+							showBtn = true;
+							return false;
+						}
+					});
+				}
+				
+				if(showBtn) {
+					target = btnProp["target"].indexOf('/') >= 0 ? btnProp["target"] : '#';
+					btnClass = btnProp["target"].indexOf('/') >= 0 ? "" : btnProp["target"]+" prevent";
+					$(examItem)
+						.find('.exam-show-options')
+						.append('<a class="'+btnClass+'" href="'+target+'" data-id="'+exam.id+'">'+$('#'+btnKey).html()+'</a>');
+				}
+			})
+			
 			
 			$(examListingArea).find('.exam-list').append(examItem);
 		

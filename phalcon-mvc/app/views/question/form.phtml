@@ -69,7 +69,7 @@
                                                                                 <input type="radio"  class="ans_type_selector" value="textarea" <?=($qAnsType == 'textarea') ? 'checked="checked"' : ''?>/>
                                                                                 <span>Multi line text box</span> </div>
                                                                         <div class="ans_type" style=" <?=($qAnsType == 'textarea') ? 'display:block':'display:none'?>">
-                                                                                <textarea rows="3" style="width:350px" class="readable"></textarea>
+                                                                                <?=Phalcon\Tag::image(array("img/ckeditor.png", "width" => '40%'));?>
                                                                         </div>
                                                                 </div>
                                                                 <div class="ans_type_selector_box_wrap">
@@ -114,7 +114,7 @@
                                                                                 <span>Drawing Canvas</span> </div>
                                                                                 <div class="ans_type" style=" <?=($qAnsType == 'canvas') ? 'display:block':'display:none'?>">
                                                                                         <div class="qline_wrapper">
-                                                                                                <?=Phalcon\Tag::image(array("img/canvas.png", "width" => '30%'));?>
+                                                                                                <?=Phalcon\Tag::image(array("img/canvas.png", "width" => '40%'));?>
                                                                                         </div>
                                                                                 </div>
                                                                 </div>
@@ -138,9 +138,7 @@
         <br style="clear:both" />
         <div style="margin:25px 10px" id="q_correctors">
                 <article class="ac-large">
-                        <?php 
-				$correctors = is_object($question) ? $question->correctors : array('ahssh488' => 'Ahsan Shahzad [ahssh488]'); // exam creator, otherwise
-				?>
+                        <?php $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')." [".$this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'uid')."]");?>
                         <div style="font-weight:bold"> Question Correctors: <a href="#" onClick="return false;">
                                 <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "id" => "uu-id4")); ?>
                                 </a> <br>

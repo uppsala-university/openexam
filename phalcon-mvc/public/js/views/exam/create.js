@@ -147,7 +147,7 @@ $(document).ready(function () {
     //initliaze tooltips in left menu
     $('.search-ldap').each(function(index, element) {
 	    new Opentip(element,
-		    'Search by name: <input type="text" class="uu-user-search" isfor="uu-id1">',
+		    'Search by name: <input type="text" class="uu-user-search" isfor="uu-id'+(index+1)+'">',
 		    {style: "drops", tipJoint: "top left"});
     });
     
@@ -160,9 +160,28 @@ $(document).ready(function () {
     //ajx request for searching user
     var userSelected = false;
     $(document).on("keyup.autocomplete", '.uu-user-search', function () {
+
         $(this).autocomplete({
             //source: "search.php",
             source: function (request, response) {
+		respObj = [];
+		userList = [];
+		ajax(
+			baseURL+'ajax/catalog/principal', 
+			{"data":{"name":request.term+"*"},"params":{"attr":["name","uid","principal"],"limit":10}}, 
+			function (json) {
+				
+				$.each(json, function(i, result) {
+					if(userList.indexOf(result.principal) < 0) {
+						respObj.push({"id":result.principal,"label":result.name,"value":result.uid})
+						userList.push(result.principal);
+					}
+				});
+				
+				response(respObj);
+			}
+		);
+/*		    
                 $.ajax({
                     type: 'GET',
                     url: 'http://media.medfarm.uu.se/play/search_oe.php?callback=?',
@@ -175,56 +194,69 @@ $(document).ready(function () {
                         $("#uu-user-search").addClass((!data || !data.length) ? 'no-user-found-shadow' : '');
                         response(data);
                     }
-                });
+                });*/
             },
             minLength: 4,
             select: function (event, ui) {
 
                 // empty text box
                 $(this).val('');
+		
+		// format user's name to be added
+		var usernameText = ui.item.label + " ["+ui.item.value+"]";
 
                 addBtnId = $(this).attr('isfor');
-
-                // send ajax request to save added role
-                model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
-                ajax(
-                        baseURL + 'core/ajax/creator/' + model + '/create',
-                        {"exam_id": examId, "user": ui.item.id},
-                function (userData) {
-
-                    // prepare item to be added
-                    tempItem = $("#" + addBtnId)
-                            .closest('li')
-                            // hide default message, if it was visible
-                            .find('.menuLevel1')
-                            .find('.left-col-def-msg')
-                            .hide()
-                            .end()
-
-                            // find template item and prepare it to add
-                            .find('li:first')
-                            .clone()
-
-                            // update data-ref attribute; helpful in deletion
-                            .find('.deluuid')
-                            .attr('data-ref', userData.id)
-                            .end()
-                            .show()
-                            //update username data
-                            .find('.left-col-user')
-                            .attr('data-user', ui.item.id)
-                            .html(ui.item.value)
-                            .show()
-                            .end();
-
-                    // add item to the menu
-                    $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
-
-
-                    // close all tooltips
-                    //closeTooltips();
-                }
-                );
+		
+		var alreadyExists = false;
+		$("#" + addBtnId).closest('li').find('.menuLevel1').find('.left-col-user').each(function(index, element) {
+                        if($(element).attr('data-user') == ui.item.id) {
+				alreadyExists = true;
+			}
+                });
+		
+		if(!alreadyExists) {
+			
+			// send ajax request to save added role
+			model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
+			ajax(
+				baseURL + 'core/ajax/creator/' + model + '/create',
+				{"exam_id": examId, "user": ui.item.id},
+				function (userData) {
+		
+				    // prepare item to be added
+				    tempItem = $("#" + addBtnId)
+					    .closest('li')
+					    // hide default message, if it was visible
+					    .find('.menuLevel1')
+					    .find('.left-col-def-msg')
+					    .hide()
+					    .end()
+		
+					    // find template item and prepare it to add
+					    .find('li:first')
+					    .clone()
+		
+					    // update data-ref attribute; helpful in deletion
+					    .find('.deluuid')
+					    .attr('data-ref', userData.id)
+					    .end()
+					    .show()
+					    //update username data
+					    .find('.left-col-user')
+					    .attr('data-user', ui.item.id)
+					    .html(usernameText)
+					    .show()
+					    .end();
+		
+				    // add item to the menu
+				    $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
+		
+		
+				    // close all tooltips
+				    //closeTooltips();
+				}
+			);
+		}
 
                 return false;
             },
@@ -361,25 +393,25 @@ $(document).ready(function () {
             ajax(
                     baseURL + 'core/ajax/creator/question/delete',
                     {"id": qsJson[qNo]["questId"]},
-            function (status) {
-
-                delete qsJson[qNo];
-
-                i = 1;
-                jQuery.each(qsJson, function (newQNo, qData) {
-                    qsJson[i++] = qData;
-                });
-
-                // hide from central area
-                $(qAreaLine).slideUp('500', function () {
-
-                    // hide from left menu
-                    $('.sortable-qs').find('span[q-no="' + qNo + '"]').parent().remove();
-
-                    sortQuestions();
-                });
-
-            }
+		    function (status) {
+	
+			delete qsJson[qNo];
+	
+			i = 1;
+			jQuery.each(qsJson, function (newQNo, qData) {
+			    qsJson[i++] = qData;
+			});
+	
+			// hide from central area
+			$(qAreaLine).slideUp('500', function () {
+	
+			    // hide from left menu
+			    $('.sortable-qs').find('span[q-no="' + qNo + '"]').parent().remove();
+	
+			    sortQuestions();
+			});
+	
+		    }
             );
 
 
@@ -403,9 +435,9 @@ $(document).ready(function () {
             ajax(
                     baseURL + 'core/ajax/creator/exam/update',
                     {"id": examId, "name": newVal},
-            function (examData) {
-                $('#exam-title').attr('old-value', examData.name)
-            }
+		    function (examData) {
+			$('#exam-title').attr('old-value', examData.name)
+		    }
             );
         }
 
@@ -421,9 +453,9 @@ $(document).ready(function () {
 		    ajax(
 			    baseURL + 'core/ajax/creator/exam/update',
 			    {"id": examId, "descr": newVal},
-		    function (examData) {
-			$('#exam-desc').attr('old-value', examData.descr)
-		    }
+			    function (examData) {
+				$('#exam-desc').attr('old-value', examData.descr)
+			    }
 		    );
 		}
 	
@@ -612,9 +644,9 @@ $(document).ready(function () {
                     var qCorrectorList = $('.q_corrector_list');
                     qsCorrectorsJson[qIndex] = {};
 
-                    $(qCorrectorList).find('li > span').each(function (i, rElem) {
+                    $(qCorrectorList).find('.left-col-user').each(function (i, rElem) {
                         if (!qId) {
-                            qCorrectorsArr.push({'question_id': qData.id, "user": $(rElem).html()});
+                            qCorrectorsArr.push({'question_id': qData.id, "user": $(rElem).attr('data-user')});
                         }
 
                         // add correct to json for on page manuplation
@@ -646,11 +678,11 @@ $(document).ready(function () {
                                 .clone()
                                 .show()
                                 .find('.q')
-                                .attr('q-no', qIndex)
-                                .html("Q" + qIndex + ":")
+					.attr('q-no', qIndex)
+					.html("Q" + qIndex + ":")
                                 .end()
                                 .find('.q-txt')
-                                .html(qTxtLeftMenu)
+					.html(qTxtLeftMenu)
                                 .end();
                         $('.sortable-q-topic > li:last').find('.sortable-qs').append(newQ);
                     } else {

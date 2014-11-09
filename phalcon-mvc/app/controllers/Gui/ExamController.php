@@ -16,6 +16,7 @@ namespace OpenExam\Controllers\Gui;
 use  OpenExam\Controllers\GuiController;
 use  OpenExam\Models\Exam;
 use  OpenExam\Models\Student;
+//use  OpenExam\Library\Globalization\Translate;
 
 /**
  * Controller for loading Exam pages
@@ -135,7 +136,7 @@ class ExamController extends GuiController
                                 'name'    => ' ',
                                 'descr'   => ' ',
                                 'creator' => $this->user->getPrincipalName(),
-                                'orgunit' => 'MedfarmDoIT',
+                                'orgunit' => $this->catalog->getAttribute($this->user->getPrincipalName(), 'department')[1]['department'][0],
                                 'grades'  => ' '
                         ));
                         
@@ -339,6 +340,7 @@ class ExamController extends GuiController
                 }
                 
                 $this->view->setVar("exam", $exam);
+               // $this->view->setVar("tr", new Translate('admin'));
                 $this->view->setLayout('thin-layout');
         }
 

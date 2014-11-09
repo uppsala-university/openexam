@@ -32,12 +32,12 @@ class MediaController extends ControllerBase
          */
         public function libraryAction()
         {
-                $loggedIn = $this->session->get('authenticated');
+                $loggedIn = $this->user->getPrincipalName();
                 
                 // fetch and pass data to view
                 $resources = Resource::find( array(
-                        'user'  => $loggedIn['user'],
-                        'shared'=> Resource::SHARED_GLOBAL,
+                        'conditions'  => 'user = ?1 and shared = ?2',
+                        'bind' => array(1 => $loggedIn, 2 => Resource::SHARED_EXAM),
                         'order' => 'id desc'
                     ));
                 

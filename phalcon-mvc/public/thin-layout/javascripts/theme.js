@@ -49,8 +49,10 @@
     nav_toggler.on(click_event, function() {
       if (nav_open()) {
         $(document).trigger("nav-close");
+        $.cookie('qs-menu', 'nav-close');
       } else {
         $(document).trigger("nav-open");
+        $.cookie('qs-menu', 'nav-open');
       }
       return false;
     });

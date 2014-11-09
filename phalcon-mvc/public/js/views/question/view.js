@@ -180,6 +180,11 @@
 		$.fn.media.defaults.mp3Player = baseURL + 'swf/mediaplayer.swf';
 		$('a.media').media();
 		
+		
+		// handle question menu show/hide
+		if($.cookie('qs-menu')) {
+			$(document).trigger($.cookie('qs-menu'));
+		}
 	});
 //console.log("ALHAMDULILAH");
 		

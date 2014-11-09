@@ -22,32 +22,34 @@ $sections = array (
 		'show-options' => array (
 				'del-exam' => array(
 						'target'=> 'del-exam',
-						'allowed-states' => array (
-							State::EDITABLE,
-							State::CONTRIBUTABLE,
-							State::UPCOMING
+						'show-on-flags' => array (
+							"contributable",
 						)
 					),
 				'reuse-exam' => array(
 						'target'=> 'reuse-exam',
-						'allowed-states' => array (
+						'show-on-flags' => array (
 							'*'
 						)
 					),
 				'test-exam' => array(
 						'target'=> 'exam/{exam-id}',
-						'allowed-states' => array (
-							State::EDITABLE,
-							State::CONTRIBUTABLE,
-							State::UPCOMING
+						'show-on-flags' => array (
+							"contributable"
 						)
 					),
 				'manage-exam' => array(
 						'target'=> 'exam/update/{exam-id}',
-						'allowed-states' => array (
-							State::EDITABLE,
-							State::CONTRIBUTABLE,
-							State::UPCOMING
+						'show-on-flags' => array (
+							"contributable"
+						)
+					),
+					
+				'view-exam' => array(
+						'target'=> 'exam/update/{exam-id}',
+						'show-on-flags' => array (
+							"running",
+							"finished"
 						)
 					),
 		)
@@ -57,38 +59,51 @@ $sections = array (
 		'show-options' => array (
 				'add-q' => array(
 						'target'=> 'exam/update/{exam-id}',
-						'allowed-states' => array (
-							State::CONTRIBUTABLE,
+						'show-on-flags' => array (
+							"contributable"
 						)
 					),
-				/*'view-q' => array(
+				'view-exam' => array(
 						'target'=> 'exam/{exam-id}/view',
-						'allowed-states' => array (
+						'show-on-flags' => array (
 							'*'
 						)
-					)*/
+					),
+				'contrib-closed' => array(
+						'target'=> '#',
+						'show-on-flags' => array (
+							"running",
+							"finished"
+						)
+					),
 		)
 	),
 	'corrector' 	=> array (
 		'title' => 'Correct an exam',
 		'show-options' => array (
-				'downlod-result' => array(
+				'download-result' => array(
 						'target'=> 'exam/{exam-id}/result/download',
-						'allowed-states' => array (
-							State::DECODED,
+						'show-on-flags' => array (
+							"decoded"
 						)
 					),
 				'view-results' => array(
 						'target'=> 'exam/{exam-id}/result/view',
-						'allowed-states' => array (
-							State::DECODED,
+						'show-on-flags' => array (
+							"decoded"
 						)
 					),
-		
 				'ans-correction' => array(
 						'target'=> 'exam/{exam-id}/correction',
-						'allowed-states' => array (
-							State::FINISHED,
+						'show-on-flags' => array (
+							"correctable"
+						)
+					),
+				'exam-not-finished' => array(
+						'target'=> '#',
+						'show-on-flags' => array (
+							"upcoming",
+							"running",
 						)
 					),
 		)
@@ -96,22 +111,30 @@ $sections = array (
 	'decoder' 	=> array (
 		'title' => 'Decode an exam',
 		'show-options' => array (
-				'downlod-result' => array(
+				'download-result' => array(
 						'target'=> 'exam/{exam-id}/result/download',
-						'allowed-states' => array (
-							State::DECODED,
+						'show-on-flags' => array (
+							"decoded"
 						)
 					),
 				'view-results' => array(
 						'target'=> 'exam/{exam-id}/result/view',
-						'allowed-states' => array (
-							State::DECODED,
+						'show-on-flags' => array (
+							"decoded"
 						)
 					),
 				'decode-exam' => array(
 						'target'=> 'exam/{exam-id}/decode',
-						'allowed-states' => array (
-							State::DECODABLE,
+						'show-on-flags' => array (
+							"decodeable"
+						)
+					),
+				'decode-closed' => array(
+						'target'=> '#',
+						'show-on-flags' => array (
+							"contributable",
+							"running",
+							"correctable"
 						)
 					),
 		)
@@ -121,20 +144,20 @@ $sections = array (
 		'show-options' => array (
 				'change-time' => array(
 						'target'=> 'change-time',
-						'allowed-states' => array (
-							State::EDITABLE,
-							State::CONTRIBUTABLE,
-							State::UPCOMING,
-							State::RUNNING
+						'show-on-flags' => array (
+							"examinatable"
 						)
 					),
 				'manage-student' => array(
 						'target'=> 'manage-students',
-						'allowed-states' => array (
-							State::EDITABLE,
-							State::CONTRIBUTABLE,
-							State::UPCOMING,
-							State::RUNNING
+						'show-on-flags' => array (
+							"examinatable"
+						)
+					),
+				'finished-exam'	 => array(
+						'target'=> '#',
+						'show-on-flags' => array (
+							"finished"
 						)
 					)
 		)
@@ -144,8 +167,9 @@ $sections = array (
 		'show-options' => array (
 				'st-exam-page' => array(
 						'target'=> 'exam/{exam-id}',
-						'allowed-states' => array (
-							State::UPCOMING
+						'show-on-flags' => array (
+							"upcoming", 
+							"running"
 						)
 				)
 		)
@@ -153,34 +177,34 @@ $sections = array (
 	'student-finished' => array (
 		'title' => 'Your finished exams',
 		'show-options' => array (
-				'downlod-result' => array(
+				'download-result' => array(
 						'target'=> 'exam/{exam-id}/result/download',
-						'allowed-states' => array (
-							State::DECODED,
+						'show-on-flags' => array (
+							"decoded"
 						)
 					),
 				'st-view-exam' => array(
 						'target'=> 'exam/{exam-id}/result/view',
-						'allowed-states' => array (
-							State::DECODED,
+						'show-on-flags' => array (
+							"decoded"
 						)
 					)
 		)
 	),
 );
 
-
 $opButtonsHtml = array(
 	'manage-exam'	=> '<span class="label label-green"><i class="fa fa-gear"></i> Manage</span>',
 	'test-exam'	=> '<span class="label label-blue"><i class="fa fa-thumbs-o-up"></i> Test exam</span>',
 	'del-exam'	=> '<span class="label label-red"><i class="fa fa-trash"></i> Delete</span>',
 	'reuse-exam'	=> '<span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-refresh"></i> Reuse</span>',
-	'add-q'  	=> '<span class="label label-green"><i class="fa fa-question-circle"></i> View questions</span>',
-	'view-q'	=> '<span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>',
-	//'contrib-closed'=> '<span class="label label-primary"><i class="fa fa-times"></i> No more open to contribute</span>',
+	'view-exam'  	=> '<span class="label label-green"><i class="fa fa-question-circle"></i> View exam</span>',
+	'add-q'		=> '<span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>',
+	'contrib-closed'=> '<span class="label label-primary"><i class="fa fa-times"></i> No more open to contribute</span>',
 	'ans-correction'=> '<span class="label label-green"><i class="fa fa-check-square-o"></i> Answer correction</span>',
+	'exam-not-finished'=> '<span class="label label-primary"><i class="fa fa-times"></i> Exam not finished yet</span>',
 	'view-results'	=> '<span class="label label-warning"><i class="fa fa-line-chart"></i> View results</span>',
-	'downlod-result'=> '<span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>',
+	'download-result'=> '<span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>',
 	'decode-exam'	=> '<span class="label label-green"><i class="fa fa-code"></i> Decode this exam</span>',
 	'decode-closed'	=> '<span class="label label-primary"><i class="fa fa-times"></i> Not open for decoding yet</span>',
 	'finished-exam'	=> '<span class="label label-primary"><i class="fa fa-times"></i> Finished exam</span>',
@@ -189,7 +213,6 @@ $opButtonsHtml = array(
 	'st-exam-page'	=> '<span class="label label-green"><i class="fa fa-gear"></i> Go to exam page</span>',
 	'st-view-exam'	=> '<span class="label label-green"><i class="fa fa-gear"></i> View exam</span>',	
 );
-
 ?>
 
 <div id="container" class="left_menu_space" class="container" style="width:100%">
@@ -254,7 +277,7 @@ $opButtonsHtml = array(
                                                         <?php foreach($exams as $exam):?>
                                                         <li class="list-group-item" data-id="<?=$exam->id?>">
                                                                 <div style="float:left"> <i class="fa fa-graduation-cap"></i> 
-                                                                        <a href="#" class="exam-name"><?=$exam->name?></a>
+                                                                        <a href="#" class="exam-name prevent"><?=$exam->name?></a>
                                                                         <div class="exam-descr" style="color: grey; font-size: 9px;">
                                                                                 <?=substr(strip_tags($exam->descr), 0, 120)." ...";?>
                                                                         </div>
@@ -264,7 +287,7 @@ $opButtonsHtml = array(
                                                                         <?php foreach($sections[$role]['show-options'] as $op => $opData):?>
         
                                                                                 <?php $isUrl = preg_match('/.*\/.*/', $opData['target']);?>
-                                                                                <?php if(1 == 1/*in_array($exam->getState(), $opData['allowed-states'])*/) :?>
+                                                                                <?php if($opData['show-on-flags'][0] == '*' || count(array_diff($opData['show-on-flags'], $exam->flags)) != count($opData['show-on-flags'])) :?>
                                                                                         <?php $href = ($isUrl ? str_replace("{exam-id}", $exam->id, $opData['target']) : '#');?>
                                                                                         <a data-id="<?=$exam->id?>" 
                                                                                         href="<?=$this->url->get($href)?>" 
@@ -324,11 +347,6 @@ $opButtonsHtml = array(
 			<?php foreach($exams as $exam):?>
                         	<?php $examData[$exam->id] = $exam->toArray();?>
                         <?php endforeach;?>
-<!--			<script language="javascript">
-				exams["<?=$title?>"] = <?=count($examData) ? json_encode($examData) : '{}';?>;
-				exams["<?=$title?>_search"] = {};
-                        </script>
--->                        
                 </div>
                 <?php $sectId++; ?>
                 <?php endforeach; ?>
@@ -336,7 +354,7 @@ $opButtonsHtml = array(
         
         <!-- hidden divs -->
 	<div id="mng-students" title="Manage students for exam" style="display:none"></div>
-        <div id="reuse-exam" title="Reuse exam" style="display:none">
+        <div id="reuse-exam-dialog" title="Reuse exam" style="display:none">
                 <div style="margin-top:15px; margin-bottom:10px">
                         Along with <strong>Exam title, instructions and exam settings</strong>, please select if any of the following exam parts you would like to reuse:
                 </div>
@@ -368,6 +386,9 @@ $opButtonsHtml = array(
                         </div>
                 </div>         
         </div>
+        <?php foreach($opButtonsHtml as $btnKey => $btnHtml):?>
+        <div id="<?=$btnKey?>" style="display:none"><?=$btnHtml?></div>
+        <?php endforeach;?>
         
 <!-- container -->
 </div>
@@ -376,4 +397,5 @@ $(function() {
 	$('.datepicker').datepicker({"dateFormat": "yy-mm-dd"});
 	$('.timepicker').timepicker();
 });
+var examSections = <?=json_encode($sections);?>
 </script>

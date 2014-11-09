@@ -4,7 +4,7 @@
 	use \OpenExam\Library\Security\Roles;
 	
 	$oBullet = Phalcon\Tag::image(array("img/openeopt.png", "class" => "bullet-opened")); 
-	$userRoles = array('contributor' => 'Contributors', 'decoder' => 'Decoders', 'invigilators' => 'Invigilators');
+	$userRoles = array('contributor' => 'Contributors', 'decoder' => 'Decoders', 'invigilator' => 'Invigilators');
 	$i = 1;
 ?>
 
@@ -17,7 +17,7 @@
                                 <?=$oBullet?>
                                 &nbsp;
                                 <?=$role?>
-                                <?php if($myRole == Roles::CREATOR):?>
+                                <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
                                 <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "search-ldap")); ?>
                                 <?php endif;?>
                                 </a>
@@ -25,7 +25,7 @@
                                 
                                 <?php $roleData =  $exam->$role;?>
                                 <ul class="menuLevel1">
-                                        <?php if($myRole == Roles::CREATOR):?>
+                                        <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
                                         <li style="display:none">
                                                 <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> "")); ?>
                                                 <a href="#" class="prevent"><span class="left-col-user" data-user=""></span></a> 
@@ -38,13 +38,15 @@
                                         
                                         <?php foreach( $roleData as $data ):?>
                                         <li>
-                                        	<?php if($myRole == Roles::CREATOR):?>
+                                        	<?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
                                                 <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> $data->id)); ?>
                                                 <?php endif;?>
                                                 
                                                 <a href="#" class="prevent"> 
                                                         <span class="left-col-user" data-user="<?=$data->user?>">
- 	                                                       <?=($myRole == Roles::CONTRIBUTOR) ? '<i class="fa fa-arrow-circle-right" style="color:#990000"></i>':''?> <?=$data->user?>
+ 	                                                       <?=($myRole == Roles::CONTRIBUTOR || !in_array("editable", $exam->flags)) ? '<i class="fa fa-arrow-circle-right" style="color:#990000"></i>':''?> 
+							       <?=$this->helper->getCatalogAttribute($data->user, 'name').
+							       ' ['.$this->helper->getCatalogAttribute($data->user, 'uid').']'?>
                                                 	</span> 
                                                 </a> 
                                         </li>
@@ -54,7 +56,7 @@
                         <?php endforeach;?>
                         
                         <!-- question listing section -->
-                        <?php if($myRole == Roles::CREATOR):?>
+                        <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
                         <li> 
                         	<a href="#" class="prevent">
                                 <?=$oBullet?>
@@ -109,7 +111,7 @@
 </div>
 
 <!--------------- Hidden Divs -----------------> 
-<?php if($myRole == Roles::CREATOR):?>
+<?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
 <!-- Question topic settings -->
 <div style="display:none" id="question-topic-settings-box">
         <div style="font-size:8px"> If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. This value is used for duggor, leave it as zero for ordinary examinations (use all questions). </div>

@@ -126,6 +126,25 @@ $router->add(
     )
 );
 
+$router->add(
+    "/result/:int/:action", array(
+        "controller" => "result",
+        "action"     => 2,
+        "examId"     => 1,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+$router->add(
+    "/result/:int/:action/:int", array(
+        "controller" => "result",
+        "action"     => 2,
+        "examId"     => 1,
+        "studentId"  => 3,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
 //@ToDO: combine following rules to make them more generic
 $router->add(
     "/exam/{examId}/question/{questId}", array(

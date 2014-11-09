@@ -101,8 +101,8 @@ $di->set('flash', function() {
 /**
  * Register a user component
  */
-$di->set('elements', function() {
-        return new Elements();
+$di->set('helper', function() {
+        return new \OpenExam\Library\Gui\Helper();
 });
 
 /**

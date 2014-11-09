@@ -15,11 +15,12 @@
                 </div>
         </div>
         <div class='alert alert-info alert-dismissable'> 
-        	<a class='close' data-dismiss='alert' href='#'>&times;</a> <strong>Hey Catharina Svensson!</strong>
+        	<a class='close' data-dismiss='alert' href='#'>&times;</a> <strong>Hey <?=$this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')?>!</strong>
                 <br />
                 Please do check that your computer is well functional before you start your exam. 
                 All answers to the questions are automatically saved while you write.  
-                In case you face any problem, please feel free to contact invigilator. 
+                In case you face any problem, please feel free to contact invigilator.
+		
         </div>
         <div class="exam-descr">
         	<?=$exam->descr?>

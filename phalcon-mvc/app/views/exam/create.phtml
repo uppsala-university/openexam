@@ -150,6 +150,8 @@
 	$combinedJson = (!count($combinedJson) ? "JSON.parse('{}')" : json_encode($combinedJson));
 ?>
 <script language="javascript">
+	mngr	= '<?=$exam->creator?>';
+	user	= '<?=$this->user->getPrincipalName()?>';
 	examId 	= <?=$exam->id?>;
 	qsJson 	= <?=$combinedJson?>;
 	qsCorrectorsJson = {};
