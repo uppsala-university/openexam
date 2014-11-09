@@ -765,7 +765,7 @@ $(document).ready(function () {
                 } else if (ansType == 'canvas') {
                     ansTypeHtml = '<img width="30%" src="' + baseURL + '/img/canvas.png">';
                 } else {
-                    ansTypeHtml = '<textarea disabled style="width:350px" rows="3"></textarea>';
+                    ansTypeHtml = '<img width="30%" src="' + baseURL + '/img/ckeditor.png">';
                 }
 
                 $(qPartLine)
