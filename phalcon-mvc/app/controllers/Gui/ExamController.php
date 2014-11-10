@@ -163,7 +163,7 @@ class ExamController extends GuiController
                         $exam = \OpenExam\Models\Exam::findFirst($this->session->get('draft-exam-id'));
                 }
 
-                $this->view->setVar("exam", $exam);
+                $this->view->setVar("exam", Exam::findFirst($exam->id));
         }
         
 	/**

@@ -14,8 +14,8 @@ $students  = $exam->getStudents();
 <div id="container" class="left_menu_space" style="width:100%">
         <div id="centerColWide" style="width:95%">
                 <div id="mainview">
-                        <h3>Correct Answers</h3>
-                        <p>This table shows all answers from students to questions for the examination 'Unix'. </p>
+                        <h3>Answer correction</h3>
+                        <p>This table shows all answers from students to questions for the examination <strong>"<?=$exam->name?>"</strong>. </p>
                         <p>Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.</p>
 			<div style="margin:25px">
                                 <table class="tablesorter">
@@ -24,15 +24,18 @@ $students  = $exam->getStudents();
                                                         <th>Code </th>
                                                         <?php $qCorrectors = array();?>
                                                         <?php foreach($questions as $question):?>
-                                                        <th><a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->name?></a> </th>
-                                                        <?php 
-							// gather question corrector details
-							$corrs = $question->getCorrectors();
-							foreach($corrs as $corr) {
-								$qCorrectors[$question->id][] = $corr->user;
-							}
-							?>
-							
+								<?php 
+                                                                // gather question corrector details
+                                                                $corrs = $question->getCorrectors();
+                                                                foreach($corrs as $corr) :
+                                                                        $qCorrectors[$question->id][] = $corr->user;
+                                                                endforeach;
+                                                                ?>
+                                                                <?php if(in_array($this->user->getPrincipalName(), $qCorrectors[$question->id])):?>
+								<th><a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->name?></a> </th>
+                                                                <?php else:?>
+								<th>Q<?=$question->name?></th>	
+                                                                <?php endif;?>		
                                                         <?php endforeach;?>
                                                         <th>Percent </th>
                                                         <th>Grade </th>
@@ -136,26 +139,27 @@ $students  = $exam->getStudents();
 </div>
 
 <!--------------- Hidden Divs -----------------> 
-<?= Phalcon\Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js')?>
-<?= Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js')?>
+<? //=Phalcon\Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
+<? //=Phalcon\Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js')?>
+<? //=Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js')?>
 
 <script language="javascript">
 $(document).ready(function () {
         $('.fb').fancybox({
-                    autoHeight : true, 
-                    autoWidth: false,
-		    width: '800px',
-		    helpers : { 
-                        overlay : {closeClick: false}
-		    },
-		    afterClose: function() {
-			    location.reload();
-		    }
+                        'width': "100%", 
+                        'height': "95%", 
+                        'autoSize': false,
+                        helpers : { 
+                            overlay : {closeClick: false}
+                        },
+                        afterClose: function() {
+                                location.reload();
+                        }
         });
 	
 	$(document).on('click', '.save-result', function() {
 		
+		var saveResultBtn = $(this);
 		var resultJson = {};
 		var resId = ansId = 0;
 		$(this).closest('.q-body').find('.q-points').each(function(index, element) {
@@ -164,7 +168,7 @@ $(document).ready(function () {
 			resId = $(element).attr('res-id');
                 });
 
-		// send ajax requedt to update question's topic
+		// send ajax requedt to update student's socre
 		if(resId != 0) {
 			param = {id:resId, "score":JSON.stringify(resultJson)};
 			action= 'update';
@@ -177,7 +181,7 @@ $(document).ready(function () {
 			baseURL + 'core/ajax/corrector/result/' + action,
 			param,
 			function(rData) {
-				// do nothing for now
+				$(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
 			}
 		);
 	});

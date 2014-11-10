@@ -162,9 +162,9 @@ $(function() {
 				baseURL + 'core/ajax/invigilator/student/delete', 
 				{"id":$(this).attr('data-id')}, 
 				function(status) {
-					
+					console.log(studentList);
 					jQuery.each(studentList , function( i, sData ) {
-						if(sData.id == $(student).attr('data-id')) {
+						if(typeof sData !== 'undefined' && sData.id == $(student).attr('data-id')) {
 							delete studentList[i];
 						}
 					});
@@ -204,7 +204,7 @@ $(function() {
                                                 $.each(userData, function(i, user) {
                                                         newItem = $('.student-list > li').first().clone();
                                                         $(newItem)
-                                                                .find('.del-student').attr('data-id', user.id)
+                                                                .find('.del-student').attr('data-id', user.id).end()
                                                                 .find('span').html(user.user+" - "+user.code).end()
                                                                 .show();
                                                         $('.student-list').prepend($(newItem));
@@ -212,7 +212,7 @@ $(function() {
                                         } else {
                                                 newItem = $('.student-list > li').first().clone();
                                                 $(newItem)
-                                                        .find('.del-student').attr('data-id', userData.id)
+                                                        .find('.del-student').attr('data-id', userData.id).end()
                                                         .find('span').html(userData.user+" - "+userData.code).end()
                                                         .show();
                                                 $('.student-list').prepend($(newItem));

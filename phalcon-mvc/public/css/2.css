@@ -5357,6 +5357,9 @@ td.nc {
     border: 1px solid #65d02c;
     color:#65d02c !important;        
 }
+td.nc a{
+	color:#41612c;
+}
 td.ac {
     background-color: #ffffff;
     border: 1px solid #cccccc;
@@ -5415,4 +5418,8 @@ table {
 	border-collapse:inherit;
 	margin:auto;
 	border-spacing:2px
+}
+
+#msg-box {
+	z-index:10000;
 }

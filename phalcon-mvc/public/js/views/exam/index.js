@@ -301,7 +301,7 @@ $(document).ready(function() {
 				}
 				
 				if(showBtn) {
-					target = btnProp["target"].indexOf('/') >= 0 ? btnProp["target"] : '#';
+					target = btnProp["target"].indexOf('/') >= 0 ? baseURL + (btnProp["target"].replace("{exam-id}", exam.id)) : '#';
 					btnClass = btnProp["target"].indexOf('/') >= 0 ? "" : btnProp["target"]+" prevent";
 					$(examItem)
 						.find('.exam-show-options')
