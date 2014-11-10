@@ -10,7 +10,7 @@ namespace OpenExam\Models;
  * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Contributor extends ModelBase
+class Contributor extends Role
 {
 
         /**
@@ -34,7 +34,7 @@ class Contributor extends ModelBase
                 parent::initialize();
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
         }
-
+                
         public function getSource()
         {
                 return 'contributors';

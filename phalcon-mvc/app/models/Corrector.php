@@ -9,7 +9,7 @@ namespace OpenExam\Models;
  * @property Question $question The related question.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Corrector extends ModelBase
+class Corrector extends Role
 {
 
         /**

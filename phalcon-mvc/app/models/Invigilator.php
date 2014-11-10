@@ -10,7 +10,7 @@ namespace OpenExam\Models;
  * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Invigilator extends ModelBase
+class Invigilator extends Role
 {
 
         /**

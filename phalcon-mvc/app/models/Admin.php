@@ -9,7 +9,7 @@ namespace OpenExam\Models;
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Admin extends ModelBase
+class Admin extends Role
 {
 
         /**

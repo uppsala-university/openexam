@@ -10,7 +10,7 @@ namespace OpenExam\Models;
  * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Decoder extends ModelBase
+class Decoder extends Role
 {
 
         /**

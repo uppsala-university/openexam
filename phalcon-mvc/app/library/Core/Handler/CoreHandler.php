@@ -57,7 +57,7 @@ class CoreHandler extends Component
          */
         public function __construct($role)
         {
-                $this->getDI()->get('user')->setPrimaryRole($role);
+                $this->user->setPrimaryRole($role);
         }
 
         /**

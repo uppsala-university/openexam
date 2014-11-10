@@ -13,7 +13,7 @@ namespace OpenExam\Models;
  * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Student extends ModelBase
+class Student extends Role
 {
 
         /**
