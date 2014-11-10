@@ -556,8 +556,8 @@ class LdapSearch
         public function searchPersNr($persnr)
         {
                 if (strlen($persnr) != 12) {
-                        $pattern = '/^((\d{6,8})-?(\d{4}))|^((\d{6,8})-?(\d{3}[a-zA-Z]))$/';
-                        $replace = '${2}${3}';
+                        $pattern = '/^(\d{6,8})-?(\d{4}|[a-zA-Z]\d{3}|\d{3}[a-zA-Z])$/';
+                        $replace = '${1}${2}';
                         $persnr = preg_replace($pattern, $replace, $persnr);
                         if (!isset($persnr)) {
                                 throw new LdapException("Failed transform personal number.");
