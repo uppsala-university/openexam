@@ -51,7 +51,7 @@ class ContributorTest extends TestCase
         {
                 $values = array(
                         'exam_id' => Exam::findFirst()->id,
-                        'user'    => 'user1'
+                        'user'    => 'user1@example.com'
                 );
 
                 try {
@@ -71,8 +71,8 @@ class ContributorTest extends TestCase
 
                 $values = array(
                         'exam_id'      => Exam::findFirst()->id,
-                        'user'         => 'user1',
-                        'non_existing' => 666   // ignored wihout error
+                        'user'         => 'user1@example.com',
+                        'non_existing' => 666   // ignored without error
                 );
                 try {
                         $helper = new TestModelBasic(new Contributor());

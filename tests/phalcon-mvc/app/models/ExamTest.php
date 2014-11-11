@@ -93,7 +93,7 @@ class ExamTest extends TestCase
         public function testProperties()
         {
                 $values = array(
-                        'creator' => 'user1',
+                        'creator' => 'user1@example.com',
                         'orgunit' => 'orgunit1',
                         'grades'  => json_encode(array('data' => array('key1' => 'val1'))),
                         'name'    => 'name1'
@@ -125,7 +125,7 @@ class ExamTest extends TestCase
                         'updated' => date('Y-m-d H:i:s'),
                         'created' => date('Y-m-d H:i:s'),
                         'details' => 3,
-                        'creator' => 'user1',
+                        'creator' => 'user1@example.com',
                         'orgunit' => 'orgunit1',
                         'grades'  => json_encode(array('data' => (array('key1' => 'val1')))),
                         'name'    => 'name1'
@@ -145,7 +145,7 @@ class ExamTest extends TestCase
                         'descr'     => 'Description1',
                         'starttime' => date('Y-m-d H:i:s'),
                         'endtime'   => date('Y-m-d H:i:s'),
-                        'creator'   => 'user1',
+                        'creator'   => 'user1@example.com',
                         'decoded'   => true,
                         'orgunit'   => 'Orgunit1',
                         'grades'    => json_encode(array('data' => array())),
@@ -156,6 +156,8 @@ class ExamTest extends TestCase
                         $helper = new TestModelBasic(new Exam());
                         $helper->tryPersist($values);
                 } catch (Exception $exception) {
+                        print_r($values);
+                        print_r($exception->getTrace());
                         self::error($exception);
                 }
         }

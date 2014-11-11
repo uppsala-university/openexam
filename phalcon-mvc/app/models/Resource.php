@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Security\User;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
 /**
@@ -111,6 +112,14 @@ class Resource extends ModelBase
                 if (!isset($this->shared)) {
                         $this->shared = self::SHARED_EXAM;
                 }
+        }
+
+        /**
+         * Called before persisting the model object.
+         */
+        protected function beforeSave()
+        {
+                $this->user = (new User($this->user))->getPrincipalName();
         }
 
         public function getSource()

@@ -15,9 +15,11 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Catalog\DirectoryManager;
 use OpenExam\Library\Catalog\Principal;
+use OpenExam\Library\Security\User;
+use OpenExam\Models\ModelBase;
 
 /**
- * Description of ModelRole
+ * Base class for all role models.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -56,9 +58,17 @@ class Role extends ModelBase
                 parent::afterFetch();
         }
 
+        /**
+         * Called before persisting the model object.
+         */
+        protected function beforeSave()
+        {
+                $this->user = (new User($this->user))->getPrincipalName();
+        }
+
         private function getAttribute($name)
         {
-                if(($attrs = $this->catalog->getAttribute($this->user, $name))) {
+                if (($attrs = $this->catalog->getAttribute($this->user, $name))) {
                         return current($attrs)[$name][0];
                 }
         }

@@ -71,7 +71,7 @@ class ModelBaseTest extends TestCase
                 // 
                 // Test that unset required attributes are populated:
                 // 
-                $username = 'testBeforeValidationOnUpdate';
+                $username = sprintf('testBeforeValidationOnUpdate@%s', $this->config->user->domain);
                 $model2->user = $username;
                 $model2->code = null;
                 $model2->exam_id = null;

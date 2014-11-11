@@ -57,7 +57,7 @@ class StudentTest extends TestCase
         {
                 $values = array(
                         'exam_id' => Exam::findFirst()->id,
-                        'user'    => 'user1',
+                        'user'    => 'user1@example.com',
                         'code'    => '1234ABCD'
                 );
 
@@ -78,7 +78,7 @@ class StudentTest extends TestCase
 
                 $values = array(
                         'exam_id'      => Exam::findFirst()->id,
-                        'user'         => 'user1',
+                        'user'         => 'user1@example.com',
                         'code'         => '1234ABCD',
                         'non_existing' => 666   // ignored wihout error
                 );

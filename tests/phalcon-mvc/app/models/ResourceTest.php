@@ -55,7 +55,7 @@ class ResourceTest extends TestCase
                         'path'    => '/tmp/path',
                         'type'    => 'video',
                         'subtype' => 'mp4',
-                        'user'    => 'user1'
+                        'user'    => 'user1@example.com'
                 );
 
                 try {
@@ -83,7 +83,7 @@ class ResourceTest extends TestCase
                         'path'         => '/tmp/path',
                         'type'         => 'video',
                         'subtype'      => 'mp4',
-                        'user'         => 'user1',
+                        'user'         => 'user1@example.com',
                         'non_existing' => 666   // ignored wihout error
                 );
                 try {
@@ -99,7 +99,7 @@ class ResourceTest extends TestCase
                         'path'    => '/tmp/path',
                         'type'    => 'video',
                         'subtype' => 'mp4',
-                        'user'    => 'user1',
+                        'user'    => 'user1@example.com',
                         'shared'  => 'unknown' // should fail at validation
                 );
                 try {

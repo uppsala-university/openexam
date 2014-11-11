@@ -6,6 +6,7 @@ use OpenExam\Library\Core\Exam\Grades;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Security\Roles;
+use OpenExam\Library\Security\User;
 use Phalcon\DI as PhalconDI;
 use Phalcon\DiInterface;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
@@ -194,6 +195,7 @@ class Exam extends ModelBase
                 $this->decoded = $this->decoded ? 'Y' : 'N';
                 $this->testcase = $this->testcase ? 'Y' : 'N';
                 $this->lockdown = $this->lockdown ? 'Y' : 'N';
+                $this->creator = (new User($this->creator))->getPrincipalName();
         }
 
         /**

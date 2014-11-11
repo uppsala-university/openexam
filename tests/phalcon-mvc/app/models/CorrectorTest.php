@@ -52,7 +52,7 @@ class CorrectorTest extends TestCase
         {
                 $values = array(
                         'question_id' => Question::findFirst()->id,
-                        'user'        => 'user1'
+                        'user'        => 'user1@example.com'
                 );
 
                 try {
@@ -72,7 +72,7 @@ class CorrectorTest extends TestCase
 
                 $values = array(
                         'question_id'  => Question::findFirst()->id,
-                        'user'         => 'user1',
+                        'user'         => 'user1@example.com',
                         'non_existing' => 666   // ignored wihout error
                 );
                 try {

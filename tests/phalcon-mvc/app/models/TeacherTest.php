@@ -27,7 +27,7 @@ class TeacherTest extends TestCase
         public function testProperties()
         {
                 $values = array(
-                        'user' => 'user1'
+                        'user' => 'user1@example.com'
                 );
 
                 try {
@@ -46,7 +46,7 @@ class TeacherTest extends TestCase
                 }
 
                 $values = array(
-                        'user'         => 'user1',
+                        'user'         => 'user1@example.com',
                         'non_existing' => 666
                 );
                 try {
