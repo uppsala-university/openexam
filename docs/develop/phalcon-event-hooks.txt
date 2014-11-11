@@ -1,0 +1,118 @@
+http://forum.phalconphp.com/discussion/1419/attaching-events-component-names-
+
+dispatch:
+    beforeDispatchLoop
+    beforeDispatch
+    beforeNotFoundAction
+    beforeExecuteRoute
+    afterInitialize
+    afterExecuteRoute
+    afterDispatch
+    afterDispatchLoop
+    beforeException
+
+cli:
+    dispatch:beforeException
+
+loader:
+    beforeCheckClass
+    pathFound
+    beforeCheckPath
+    afterCheckClass
+
+acl:
+    beforeCheckAccess
+    afterCheckAccess
+
+console:
+    beforeStartModule
+    afterStartModule
+    beforeHandleTask
+    afterHandleTask
+
+
+db:
+    beforeQuery
+    afterQuery
+    beginTransaction
+    createSavepoint
+    rollbackTransaction
+    rollbackSavepoint
+    commitTransaction
+    releaseSavepoint
+
+application:
+    boot
+    beforeStartModule
+    afterStartModule
+    beforeHandleRequest
+    afterHandleRequest
+    viewRender
+    beforeSendResponse
+
+
+collection:
+    beforeValidation
+    beforeValidationOnCreate
+    beforeValidationOnUpdate
+    validation
+    onValidationFails
+    afterValidationOnCreate
+    afterValidationOnUpdate
+    afterValidation
+    beforeSave
+    beforeUpdate
+    beforeCreate
+    afterUpdate
+    afterCreate
+    afterSave
+    notSave
+    notDeleted
+    notSaved
+
+micro:
+    beforeHandleRoute
+    beforeExecuteRoute
+    afterExecuteRoute
+    beforeNotFound
+    afterHandleRoute
+
+model:
+    notDeleted
+    notSaved
+    onValidationFails
+    beforeValidation
+    beforeValidationOnCreate
+    beforeValidationOnUpdate
+    afterValidationOnCreate
+    afterValidationOnUpdate
+    afterValidation
+    beforeSave
+    beforeUpdate
+    beforeCreate
+    afterUpdate
+    afterCreate
+    afterSave
+    notSave
+    beforeDelete
+    afterDelete
+
+view:
+    beforeRenderView
+    afterRenderView
+    notFoundView
+    beforeRender
+    afterRender
+
+collectionManager:
+    afterInitialize
+
+modelsManager:
+    afterInitialize
+
+volt:
+    compileFunction
+    compileFilter
+    resolveExpression
+    compileStatement
+
