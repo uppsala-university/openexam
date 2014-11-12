@@ -69,11 +69,22 @@ class CoreHandler extends Component
         public function build($name, $data)
         {
                 $class = ModelBase::getRelation($name);
+
                 if (!class_exists($class)) {
                         throw new Exception("Failed map request target.");
                 }
-                $model = new $class();
-                $model->assign($data);
+
+                if (isset($data['id'])) {
+                        $model = $class::findFirstById($data['id']);
+                } else {
+                        $model = new $class();
+                        $model->assign($data);
+                }
+
+                if (!$model) {
+                        throw new Exception("Requested model was not found.");
+                }
+
                 return $model;
         }
 
