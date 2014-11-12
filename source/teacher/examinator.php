@@ -264,8 +264,7 @@ class ExaminatorPage extends TeacherPage
         private function showAddCommon($what)
         {
                 printf("<h3>" . _("Add Students") . "</h3>\n");
-                printf("<p>" . _("You can add students one by one or as a list of codes/student ID pairs. The list should be a newline separated list of username/code pairs where the username and code is separated by tabs.") . "</p>\n");
-                printf("<p>" . _("If the student code is missing, then the system is going to generate a random code.") . "</p>\n");
+                printf("<p>" . _("This page is used for adding students to the examination. Its possible to add students one by one, from a list or by importing students from a file or course code.") . "</p>\n");
 
                 $mode = array(
                         "user"   => _("Single"),
@@ -305,12 +304,17 @@ class ExaminatorPage extends TeacherPage
                         $input->setLabel(_("Code"));
                         $input->setTitle(_("The anonymous code associated with this student logon."));
                         $input = $form->addTextBox("user");
-                        $input->setLabel(_("UU-ID"));
-                        $input->setTitle(_("The student logon username."));
+                        $input->setLabel(_("ID"));
+                        $input->setTitle(_("The student logon username or peronal number."));
                         $form->addSpace();
                         $input = $form->addSubmitButton("submit", _("Submit"));
                         $input->setLabel();
                         $form->output();
+
+                        $msgbox = new MessageBox(MessageBox::information, _("The code is an optional anonymous code. If missing, then the system will generate an anonymous code. ") .
+                            _("The ID is either the username or an personal number. ")
+                        );
+                        $msgbox->display();
                 } elseif ($what == "course") {
                         $form = new Form("examinator.php", "POST");
                         $form->addSectionHeader(_("Import from UPPDOK"));
@@ -338,6 +342,9 @@ class ExaminatorPage extends TeacherPage
                         $input = $form->addSubmitButton("submit", _("Show"));
                         $input->setLabel();
                         $form->output();
+
+                        $msgbox = new MessageBox(MessageBox::information, _("Import students registered on a course by submitting a course code."));
+                        $msgbox->display();
                 } elseif ($what == "file") {
                         $form = new Form("examinator.php", "POST");
                         $form->setEncodingType("multipart/form-data");
@@ -404,8 +411,8 @@ class ExaminatorPage extends TeacherPage
                         $form->output();
 
                         $msgbox = new MessageBox(MessageBox::information, _("This form accepts table data files containing student registrations. ") .
-                            _("Accepted file types are like Excel and plain text formats (TAB- or CSV-separated). ") .
-                            _("Notice that all column numbers are indexed from 0. ")
+                            _("Common file types accepted are Excel or plain text formats (TAB- or CSV-separated). ") .
+                            _("Notice that all column numbers are indexed starting from 0. ")
                         );
                         $msgbox->display();
                 } else {
@@ -415,7 +422,7 @@ class ExaminatorPage extends TeacherPage
                         $form->addHidden("mode", "save");
                         $form->addHidden("what", "users");
                         $form->addHidden("action", "add");
-                        $input = $form->addTextArea("users", "user1\tcode1\nuser2\tcode2\n");
+                        $input = $form->addTextArea("users", "ID1\tcode1\nID2\tcode2\n");
                         $input->setLabel(_("Students"));
                         $input->setTitle(_("Double-click inside the textarea to clear its content."));
                         $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
@@ -424,6 +431,12 @@ class ExaminatorPage extends TeacherPage
                         $input = $form->addSubmitButton("submit", _("Submit"));
                         $input->setLabel();
                         $form->output();
+
+                        $msgbox = new MessageBox(MessageBox::information, _("The list should be newline separated, where the ID and code field are separated by space or tab. ") .
+                            _("The code is an optional anonymous code. If missing, then the system will generate an anonymous code. ") .
+                            _("The ID is either the username or an personal number. ")
+                        );
+                        $msgbox->display();
                 }
         }
 
@@ -432,6 +445,11 @@ class ExaminatorPage extends TeacherPage
         //
         private function saveAddStudent()
         {
+                if (preg_match(self::pattern_persnr, $this->param->user)) {
+                        $this->param->persnr = $this->param->user;
+                        $this->param->user = $this->getUserAttributes($this->param->persnr, 'uid');
+                }
+
                 $handler = new Examinator($this->param->exam);
                 $handler->addStudent($this->param->user, $this->param->code);
                 header(sprintf("location: examinator.php?exam=%d", $this->param->exam));
@@ -451,6 +469,15 @@ class ExaminatorPage extends TeacherPage
                                         $data[$match[1]] = $match[2];
                                 } else {
                                         $data[$line] = null;
+                                }
+                        }
+                }
+
+                foreach ($data as $key => $val) {
+                        if (preg_match(self::pattern_persnr, $key)) {
+                                if (($user = $this->getUserAttributes($key, 'uid'))) {
+                                        $data[$user] = $val;
+                                        unset($data[$key]);
                                 }
                         }
                 }

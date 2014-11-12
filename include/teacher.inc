@@ -449,6 +449,23 @@ class TeacherPage extends BasePage
                 return $user;
         }
 
+        // 
+        // Get user attributes (filter) from personal number. By default,
+        // only the first matching username is returned.
+        // 
+        protected function getUserAttributes($persnr, $filter = 'uid')
+        {
+                $this->useDirectoryService();
+                $this->ldap->setAttributeFilter($filter);
+                $user = $this->ldap->searchPersNr($persnr);
+
+                if ($filter == 'uid') {
+                        return $user->first()->getUid()->current();
+                } else {
+                        return $user;
+                }
+        }
+
         //
         // Similar to getDisplayName(), but returns a formatted 'name (user)' string.
         //

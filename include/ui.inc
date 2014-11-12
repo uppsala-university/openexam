@@ -103,6 +103,7 @@ class BasePage implements TemplatePage
         const pattern_termin = "/^[1-2]$/";                     // semester
         const pattern_name = "/^(\p{L}|\p{N}|\p{Z}|\p{P})+$/u"; // person
         const pattern_score = "/^(\d+([,.]\d+)*|)$/";           // float point or empty
+        const pattern_persnr = "/^\d{6,8}-?(\d{4}|[a-zA-Z]\d{3}|\d{3}[a-zA-Z])$/"; // personal number
         const pattern_empty = "/^$/";
 
         private $title;

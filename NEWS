@@ -25,6 +25,8 @@ Version 1.5.8 (yyyy-mm-dd):
 
         * Fixes in PDF-generation using HTML doc (error code handling).
 
+        * Students can now be imported (single/list) based on personal number.
+
 Version 1.5.7 (2014-01-21):
 
         * Fixed UTF-8 encoding of emails sent by the system.

@@ -489,17 +489,17 @@ class LdapSearch
                         }
                 }
 
-	        // 
-		// Append supplied attribute to attribute filter if set:
-		// 
-	        if (isset($this->attr)) {
-		        if (!is_array($this->attr)) {
-			        $this->attr = array($this->attr);
-			}
-		        if (!in_array($attr, $this->attr)) {
-			        $this->attr[] = $attr;
-			}
-		}
+                // 
+                // Append supplied attribute to attribute filter if set:
+                // 
+                if (isset($this->attr)) {
+                        if (!is_array($this->attr)) {
+                                $this->attr = array($this->attr);
+                        }
+                        if (!in_array($attr, $this->attr)) {
+                                $this->attr[] = $attr;
+                        }
+                }
                 $result = $this->connection->search($filter, $this->attr);
 
                 if (isset($this->cache)) {

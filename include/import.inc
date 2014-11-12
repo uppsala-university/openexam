@@ -885,7 +885,7 @@ class ImportStudents extends ImportBase
         const row = 'row';
 
         private static $pnrhpatt = "/^personnummer|pers.?nr|p.?nr|pnum$/";
-        private static $pnrvpatt = "/^\d{6,8}-?\d{4}|[a-zA-Z]\d{3}|\d{3}[a-zA-Z]$/";
+        private static $pnrvpatt = "/^\d{6,8}-?(\d{4}|[a-zA-Z]\d{3}|\d{3}[a-zA-Z])$/";
         protected $students = array();
         protected $opts;
         protected $reader;
