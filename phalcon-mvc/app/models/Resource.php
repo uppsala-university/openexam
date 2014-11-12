@@ -2,7 +2,7 @@
 
 namespace OpenExam\Models;
 
-use OpenExam\Library\Security\User;
+use OpenExam\Library\Model\Behavior\Ownership;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
 /**
@@ -87,6 +87,17 @@ class Resource extends ModelBase
         {
                 parent::initialize();
                 $this->belongsTo("exam_id", "OpenExam\Models\Exam", "id", array("foreignKey" => true, "alias" => 'exam'));
+
+                $this->addBehavior(new Ownership(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => 'user',
+                                'force' => true
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => 'user',
+                                'force' => true
+                        )
+                )));
         }
 
         /**
@@ -112,14 +123,6 @@ class Resource extends ModelBase
                 if (!isset($this->shared)) {
                         $this->shared = self::SHARED_EXAM;
                 }
-        }
-
-        /**
-         * Called before persisting the model object.
-         */
-        protected function beforeSave()
-        {
-                $this->user = (new User($this->user))->getPrincipalName();
         }
 
         public function getSource()

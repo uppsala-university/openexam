@@ -4,9 +4,9 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Core\Exam\Grades;
 use OpenExam\Library\Core\Exam\State;
+use OpenExam\Library\Model\Behavior\Ownership;
 use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Security\Roles;
-use OpenExam\Library\Security\User;
 use Phalcon\DI as PhalconDI;
 use Phalcon\DiInterface;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
@@ -166,6 +166,17 @@ class Exam extends ModelBase
                                 'format' => 'Y-m-d H:i:s'
                         )
                 )));
+
+                $this->addBehavior(new Ownership(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => 'creator',
+                                'force' => true
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => 'creator',
+                                'force' => true
+                        )
+                )));
         }
 
         /**
@@ -195,7 +206,6 @@ class Exam extends ModelBase
                 $this->decoded = $this->decoded ? 'Y' : 'N';
                 $this->testcase = $this->testcase ? 'Y' : 'N';
                 $this->lockdown = $this->lockdown ? 'Y' : 'N';
-                $this->creator = (new User($this->creator))->getPrincipalName();
         }
 
         /**

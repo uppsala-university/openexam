@@ -2,10 +2,10 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\Ownership;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\DiInterface;
-use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Mvc\Model\Query\Builder;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
@@ -51,6 +51,11 @@ class Question extends ModelBase
          */
         public $topic_id;
         /**
+         * The question publisher.
+         * @var string 
+         */
+        public $user;
+        /**
          * The question score.
          * @var double
          */
@@ -84,10 +89,22 @@ class Question extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
+
                 $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array('alias' => 'answers'));
                 $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array('alias' => 'correctors'));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
                 $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array('foreignKey' => true, 'alias' => 'topic'));
+
+                $this->addBehavior(new Ownership(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => 'user',
+                                'force' => true
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => 'user',
+                                'force' => true
+                        )
+                )));
         }
 
         /**
