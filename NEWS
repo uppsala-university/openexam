@@ -1,4 +1,4 @@
-Version 1.5.8 (yyyy-mm-dd):
+Version 1.5.8 (2014-11-12):
 
         * Major rework in import/export functionality. Added import of students
           from spreadsheet (i.e. Excel, ODF or CSV). Selectable parts of the
