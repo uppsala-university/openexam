@@ -39,7 +39,7 @@ class TeachersMigration_204 extends Migration
             ),
             'options' => array(
                 'TABLE_TYPE' => 'BASE TABLE',
-                'AUTO_INCREMENT' => '462',
+                'AUTO_INCREMENT' => '1',
                 'ENGINE' => 'MyISAM',
                 'TABLE_COLLATION' => 'utf8_general_ci'
             )

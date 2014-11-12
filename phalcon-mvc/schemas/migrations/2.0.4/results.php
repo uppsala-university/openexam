@@ -54,9 +54,9 @@ class ResultsMigration_204 extends Migration
                 new Column(
                     'score',
                     array(
-                        'type' => Column::TYPE_FLOAT,
+                        'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 1,
+                        'size' => 255,
                         'after' => 'correction'
                     )
                 ),
@@ -90,7 +90,7 @@ class ResultsMigration_204 extends Migration
             ),
             'options' => array(
                 'TABLE_TYPE' => 'BASE TABLE',
-                'AUTO_INCREMENT' => '569',
+                'AUTO_INCREMENT' => '1',
                 'ENGINE' => 'InnoDB',
                 'TABLE_COLLATION' => 'utf8_general_ci'
             )
