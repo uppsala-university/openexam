@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
 use Phalcon\Events\Event;
 use Phalcon\Mvc\Model;
@@ -183,6 +184,48 @@ abstract class ObjectAccess extends Plugin
                         ));
                 }
                 return $this->notify($event->getType(), $model, $user);
+        }
+
+        /**
+         * Invoke callback function in trusted context.
+         * 
+         * This methods allowes access control callback (e.g. closures) to be 
+         * executed in a trusted context by temporary disable the access
+         * control during execution of the callback function.
+         * 
+         * The callback can return values or throw exceptions. This method
+         * will restore the original context before returning result from
+         * callback function or re-throwing an catched exception.
+         * 
+         * The callback function will be invoked with the original role as 
+         * its sole argument:
+         * 
+         * <code>
+         * return parent::trustedCall(
+         *      function($role) use($action, $model, $user) { 
+         *              // perform access control... 
+         *      }
+         * );
+         * </code>
+         * 
+         * @param callable $callback The callback function.
+         * @return bool 
+         * @throws \Exception
+         */
+        protected function trustedContextCall($callback)
+        {
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+                $this->logger->auth->debug(print_r($trace, true));
+
+                $role = $this->user->setPrimaryRole(Roles::TRUSTED);
+                try {
+                        $result = $callback($role);
+                        $this->user->setPrimaryRole($role);
+                        return $result;
+                } catch (\Exception $exception) {
+                        $this->user->setPrimaryRole($role);
+                        throw $exception;
+                }
         }
 
 }

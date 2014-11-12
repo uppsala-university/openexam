@@ -44,41 +44,36 @@ class QuestionAccess extends ObjectAccess
                 }
 
                 // 
-                // Temporarily disable access control:
+                // Perform access control in a trusted context:
                 // 
-                $role = $user->setPrimaryRole(Roles::TRUSTED);
+                return $this->trustedContextCall(function($role) use($action, $model, $user) {
+                            // 
+                            // Check role on exam, question or global:
+                            // 
+                            if ($role == Roles::CONTRIBUTOR ||
+                                $role == Roles::CREATOR ||
+                                $role == Roles::DECODER ||
+                                $role == Roles::INVIGILATOR ||
+                                $role == Roles::STUDENT) {
+                                    if ($user->roles->aquire($role, $model->exam_id)) {
+                                            return true;
+                                    }
+                            } elseif ($role == Roles::CORRECTOR) {
+                                    if ($user->roles->aquire($role, $model->id)) {
+                                            return true;
+                                    }
+                            } elseif (isset($role)) {
+                                    if ($user->roles->aquire($role)) {
+                                            return true;
+                                    }
+                            }
 
-                // 
-                // Check role on exam, question or global:
-                // 
-                if ($role == Roles::CONTRIBUTOR ||
-                    $role == Roles::CREATOR ||
-                    $role == Roles::DECODER ||
-                    $role == Roles::INVIGILATOR ||
-                    $role == Roles::STUDENT) {
-                        if ($user->roles->aquire($role, $model->exam_id)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                } elseif ($role == Roles::CORRECTOR) {
-                        if ($user->roles->aquire($role, $model->id)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                } elseif (isset($role)) {
-                        if ($user->roles->aquire($role)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                }
-
-                if (isset($role)) {
-                        $user->setPrimaryRole($role);
-                        throw new Exception('role');
-                } else {
-                        $user->setPrimaryRole($role);
-                        return true;
-                }
+                            if (isset($role)) {
+                                    throw new Exception('role');
+                            } else {
+                                    return true;
+                            }
+                    });
         }
 
         /**
@@ -98,20 +93,32 @@ class QuestionAccess extends ObjectAccess
                 }
 
                 // 
-                // Temporarily disable access control:
+                // Perform access control in a trusted context:
                 // 
-                $role = $user->setPrimaryRole(Roles::TRUSTED);
+                return $this->trustedContextCall(function($role) use($action, $model, $user) {
+                            // 
+                            // Students should not have access to questions before
+                            // the exam starts.
+                            // 
+                            if ($role == Roles::STUDENT) {
+                                    if ($model->exam->getState()->has(State::UPCOMING)) {
+                                            throw new Exception('access');
+                                    }
+                            }
 
-                // 
-                // Students should not have access to questions before
-                // the exam starts.
-                // 
-                if ($role == Roles::STUDENT) {
-                        if($model->exam->getState()->has(State::UPCOMING)) {
-                                $user->setPrimaryRole($role);
-                                throw new Exception('access');
-                        }
-                }
+                            // 
+                            // Only publisher or exam creator should have permission 
+                            // to update or delete this question.
+                            // 
+                            if ($action == self::UPDATE || $action == self::DELETE) {
+                                    if ($role != Roles::CREATOR &&
+                                        $user->getPrincipalName() != $model->user) {
+                                            throw new Exception('action');
+                                    }
+                            }
+
+                            return true;
+                    });
         }
 
 }

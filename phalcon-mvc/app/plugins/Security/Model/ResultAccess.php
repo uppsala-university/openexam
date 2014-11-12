@@ -43,45 +43,39 @@ class ResultAccess extends ObjectAccess
                 }
 
                 // 
-                // Temporarily disable access control:
+                // Perform access control in a trusted context:
                 // 
-                $role = $user->setPrimaryRole(Roles::TRUSTED);
+                return $this->trustedContextCall(function($role) use($action, $model, $user) {
+                            // 
+                            // Check role on exam or question:
+                            // 
+                            if ($role == Roles::CONTRIBUTOR ||
+                                $role == Roles::CREATOR ||
+                                $role == Roles::DECODER ||
+                                $role == Roles::INVIGILATOR) {
+                                    if ($user->roles->aquire($role, $model->answer->question->exam_id)) {
+                                            return true;
+                                    }
+                            } elseif ($role == Roles::STUDENT) {
+                                    if ($user->roles->aquire($role, $model->answer->student->exam_id)) {
+                                            return true;
+                                    }
+                            } elseif ($role == Roles::CORRECTOR) {
+                                    if ($user->roles->aquire($role, $model->answer->question->id)) {
+                                            return true;
+                                    }
+                            } elseif (isset($role)) {
+                                    if ($user->roles->aquire($role)) {
+                                            return true;
+                                    }
+                            }
 
-                // 
-                // Check role on exam or question:
-                // 
-                if ($role == Roles::CONTRIBUTOR ||
-                    $role == Roles::CREATOR ||
-                    $role == Roles::DECODER ||
-                    $role == Roles::INVIGILATOR) {
-                        if ($user->roles->aquire($role, $model->answer->question->exam_id)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                } elseif ($role == Roles::STUDENT) {
-                        if ($user->roles->aquire($role, $model->answer->student->exam_id)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                } elseif ($role == Roles::CORRECTOR) {
-                        if ($user->roles->aquire($role, $model->answer->question->id)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                } elseif (isset($role)) {
-                        if ($user->roles->aquire($role)) {
-                                $user->setPrimaryRole($role);
-                                return true;
-                        }
-                }
-
-                if (isset($role)) {
-                        $user->setPrimaryRole($role);
-                        throw new Exception('role');
-                } else {
-                        $user->setPrimaryRole($role);
-                        return true;
-                }
+                            if (isset($role)) {
+                                    throw new Exception('role');
+                            } else {
+                                    return true;
+                            }
+                    });
         }
 
         /**
@@ -99,23 +93,22 @@ class ResultAccess extends ObjectAccess
                                 "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
                         ));
                 }
+                
+                // 
+                // Perform access control in a trusted context:
+                // 
+                return $this->trustedContextCall(function($role) use($action, $model, $user) {
+                            // 
+                            // Students should only have access to their own results:
+                            // 
+                            if ($role == Roles::STUDENT) {
+                                    if ($model->answer->student->user != $user->getPrincipalName()) {
+                                            throw new Exception('owner');
+                                    }
+                            }
 
-                // 
-                // Temporarily disable access control:
-                // 
-                $role = $user->setPrimaryRole(Roles::TRUSTED);
-
-                // 
-                // Students should only have access to their own results:
-                // 
-                if ($role == Roles::STUDENT) {
-                        if ($model->answer->student->user != $user->getPrincipalName()) {
-                                $user->setPrimaryRole($role);
-                                throw new Exception('owner');
-                        }
-                }
-
-                return true;
+                            return true;
+                    });
         }
 
 }
