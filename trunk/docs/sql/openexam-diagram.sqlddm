@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dm:diagramModel xmlns:dm="http://sqldeveloper.solyp.com/diagram/diagrammodel" xmlns:ddm="http://sqldeveloper.solyp.com/diagram/diagramdatamodel" xmlns:dgm="http://sqldeveloper.solyp.com/diagram/diagramgraphmodel" version="1.2.0">
+<dm:properties creationDate="2010-12-17T13:48:57Z" creator="andlov" modificationDate="2011-06-28T14:59:38Z" modifier="andlov"/>
+<dm:diagramDataModel>
+<ddm:objects/>
+<ddm:tables>
+<ddm:table id="120" name="admins">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="121" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="122" name="user" nullable="false" scale="" size="10" typeName="VARCHAR"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="123" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="121"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="124" name="answers">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="125" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="126" name="question_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="127" name="student_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="N" id="128" name="answered" nullable="true" scale="" size="2" typeName="ENUM"/>
+<ddm:tableColumn defaultValue="" id="129" name="answer" nullable="true" scale="" size="65535" typeName="TEXT"/>
+<ddm:tableColumn defaultValue="" id="130" name="comment" nullable="true" scale="" size="65535" typeName="TEXT"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="131" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="125"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="132" name="computers">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="133" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="0" id="134" name="room_id" nullable="true" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="135" name="hostname" nullable="true" scale="" size="100" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="136" name="ipaddr" nullable="false" scale="" size="45" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="137" name="port" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="138" name="password" nullable="false" scale="" size="32" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="139" name="created" nullable="false" scale="" size="" typeName="DATETIME"/>
+<ddm:tableColumn defaultValue="CURRENT_TIMESTAMP" id="140" name="updated" nullable="false" scale="" size="" typeName="TIMESTAMP"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="141" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="133"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="142" name="contributors">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="143" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="144" name="exam_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="145" name="user" nullable="false" scale="" size="8" typeName="CHAR"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="146" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="143"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="147" name="decoders">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="148" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="149" name="exam_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="150" name="user" nullable="false" scale="" size="8" typeName="CHAR"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="151" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="148"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="152" name="examinators">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="153" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="154" name="exam_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="155" name="user" nullable="false" scale="" size="8" typeName="CHAR"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="156" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="153"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="157" name="exams">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="158" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="159" name="name" nullable="false" scale="" size="200" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="160" name="descr" nullable="true" scale="" size="65535" typeName="TEXT"/>
+<ddm:tableColumn defaultValue="" id="161" name="starttime" nullable="false" scale="" size="" typeName="DATETIME"/>
+<ddm:tableColumn defaultValue="" id="162" name="endtime" nullable="false" scale="" size="" typeName="DATETIME"/>
+<ddm:tableColumn defaultValue="" id="163" name="created" nullable="false" scale="" size="" typeName="DATETIME"/>
+<ddm:tableColumn defaultValue="CURRENT_TIMESTAMP" id="164" name="updated" nullable="false" scale="" size="" typeName="TIMESTAMP"/>
+<ddm:tableColumn defaultValue="" id="165" name="creator" nullable="false" scale="" size="8" typeName="CHAR"/>
+<ddm:tableColumn defaultValue="3" id="166" name="details" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="N" id="167" name="decoded" nullable="false" scale="" size="2" typeName="ENUM"/>
+<ddm:tableColumn defaultValue="" id="168" name="orgunit" nullable="false" scale="" size="150" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="169" name="grades" nullable="false" scale="" size="200" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="N" id="170" name="testcase" nullable="false" scale="" size="2" typeName="ENUM"/>
+<ddm:tableColumn defaultValue="N" id="171" name="lockdown" nullable="true" scale="" size="2" typeName="ENUM"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="172" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="158"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="173" name="locks">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="174" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="175" name="computer_id" nullable="true" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="176" name="exam_id" nullable="true" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="CURRENT_TIMESTAMP" id="177" name="aquired" nullable="false" scale="" size="" typeName="TIMESTAMP"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="178" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="174"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="179" name="questions">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="180" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="181" name="exam_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="182" name="topic_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="183" name="score" nullable="false" scale="" size="12" typeName="FLOAT"/>
+<ddm:tableColumn defaultValue="" id="184" name="name" nullable="false" scale="" size="30" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="185" name="quest" nullable="false" scale="" size="65535" typeName="TEXT"/>
+<ddm:tableColumn defaultValue="" id="186" name="user" nullable="false" scale="" size="8" typeName="CHAR"/>
+<ddm:tableColumn defaultValue="" id="187" name="video" nullable="true" scale="" size="512" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="188" name="image" nullable="true" scale="" size="512" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="189" name="audio" nullable="true" scale="" size="512" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="freetext" id="190" name="type" nullable="false" scale="" size="9" typeName="ENUM"/>
+<ddm:tableColumn defaultValue="active" id="191" name="status" nullable="false" scale="" size="7" typeName="ENUM"/>
+<ddm:tableColumn defaultValue="" id="192" name="comment" nullable="true" scale="" size="65535" typeName="TEXT"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="193" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="180"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="194" name="results">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="195" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="196" name="answer_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="197" name="score" nullable="false" scale="" size="12" typeName="FLOAT"/>
+<ddm:tableColumn defaultValue="" id="198" name="comment" nullable="true" scale="" size="65535" typeName="TEXT"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="199" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="195"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="200" name="rooms">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="201" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="202" name="name" nullable="false" scale="" size="25" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="" id="203" name="description" nullable="true" scale="" size="65535" typeName="TEXT"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="204" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="201"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="205" name="schemainfo">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="0" id="206" name="major" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="0" id="207" name="minor" nullable="false" scale="" size="10" typeName="INT"/>
+</ddm:tableColumns>
+</ddm:table>
+<ddm:table id="208" name="students">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="209" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="210" name="exam_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="211" name="user" nullable="false" scale="" size="8" typeName="CHAR"/>
+<ddm:tableColumn defaultValue="" id="212" name="code" nullable="false" scale="" size="15" typeName="VARCHAR"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="213" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="209"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="214" name="teachers">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="215" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="216" name="user" nullable="false" scale="" size="10" typeName="VARCHAR"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="217" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="215"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+<ddm:table id="218" name="topics">
+<ddm:tableColumns>
+<ddm:tableColumn defaultValue="" id="219" name="id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="220" name="exam_id" nullable="false" scale="" size="10" typeName="INT"/>
+<ddm:tableColumn defaultValue="" id="221" name="name" nullable="false" scale="" size="50" typeName="VARCHAR"/>
+<ddm:tableColumn defaultValue="0" id="222" name="randomize" nullable="false" scale="" size="10" typeName="INT"/>
+</ddm:tableColumns>
+<ddm:primaryKey id="223" name="PRIMARY">
+<ddm:refIds>
+<ddm:refId value="219"/>
+</ddm:refIds>
+</ddm:primaryKey>
+</ddm:table>
+</ddm:tables>
+<ddm:views/>
+<ddm:references>
+<ddm:reference id="234" name="answers_ibfk_1" sourceRefId="124" targetRefId="179">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="126" targetColumnRefId="180"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="232" name="answers_ibfk_2" sourceRefId="124" targetRefId="208">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="127" targetColumnRefId="209"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="233" name="computers_ibfk_1" sourceRefId="132" targetRefId="200">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="134" targetColumnRefId="201"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="225" name="contributors_ibfk_1" sourceRefId="142" targetRefId="157">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="144" targetColumnRefId="158"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="226" name="decoders_ibfk_1" sourceRefId="147" targetRefId="157">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="149" targetColumnRefId="158"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="227" name="examinators_ibfk_1" sourceRefId="152" targetRefId="157">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="154" targetColumnRefId="158"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="235" name="locks_ibfk_1" sourceRefId="173" targetRefId="132">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="175" targetColumnRefId="133"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="228" name="locks_ibfk_2" sourceRefId="173" targetRefId="157">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="176" targetColumnRefId="158"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="229" name="questions_ibfk_1" sourceRefId="179" targetRefId="157">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="181" targetColumnRefId="158"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="231" name="questions_ibfk_2" sourceRefId="179" targetRefId="218">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="182" targetColumnRefId="219"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="224" name="results_ibfk_1" sourceRefId="194" targetRefId="124">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="196" targetColumnRefId="125"/>
+</ddm:referenceJoins>
+</ddm:reference>
+<ddm:reference id="230" name="students_ibfk_1" sourceRefId="208" targetRefId="157">
+<ddm:referenceJoins>
+<ddm:referenceJoin sourceColumnRefId="210" targetColumnRefId="158"/>
+</ddm:referenceJoins>
+</ddm:reference>
+</ddm:references>
+<ddm:dependencies/>
+</dm:diagramDataModel>
+<dm:diagramGraphModel>
+<dgm:tables>
+<dgm:table refId="205">
+<dgm:style backgroundColor="#000066" bounds="629.0 693.0 165.0 68.0" color="#ffffff" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="200">
+<dgm:style backgroundColor="#00ff00" bounds="1.0 704.0 193.0 73.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="142">
+<dgm:style backgroundColor="#ffff00" bounds="648.0 171.0 146.0 73.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="132">
+<dgm:style backgroundColor="#00ff00" bounds="1.0 504.0 193.0 148.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="194">
+<dgm:style backgroundColor="#ffcc00" bounds="1.0 26.0 190.0 88.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="152">
+<dgm:style backgroundColor="#ffff00" bounds="648.0 374.0 146.0 73.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="157">
+<dgm:style backgroundColor="#00ffff" bounds="292.0 306.0 191.0 236.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="218">
+<dgm:style backgroundColor="#00ffff" bounds="603.0 26.0 191.0 88.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="214">
+<dgm:style backgroundColor="#000066" bounds="629.0 612.0 165.0 58.0" color="#ffffff" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="147">
+<dgm:style backgroundColor="#ffff00" bounds="648.0 271.0 146.0 73.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="208">
+<dgm:style backgroundColor="#cc00ff" bounds="1.0 373.0 189.0 90.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="173">
+<dgm:style backgroundColor="#00ff00" bounds="292.0 588.0 183.0 88.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="179">
+<dgm:style backgroundColor="#66ffff" bounds="292.0 26.0 190.0 223.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="124">
+<dgm:style backgroundColor="#00ffff" bounds="1.0 176.0 193.0 133.0" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+<dgm:table refId="120">
+<dgm:style backgroundColor="#000066" bounds="629.0 528.0 165.0 58.0" color="#ffffff" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="false" lineEndShape="0" lineEndSize="10" lineWidth="1.0" opaque="true"/>
+</dgm:table>
+</dgm:tables>
+<dgm:views/>
+<dgm:references>
+<dgm:reference refId="235">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="234">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="233">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="232">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="231">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="230">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="229">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="228">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="227">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="226">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="225">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+<dgm:reference refId="224">
+<dgm:style backgroundColor="#000000" color="#000000" fontFamily="SansSerif" fontSize="12" fontStyle="normal" fontWeight="normal" labelPosition="500.0 0.0" lineBeginFill="false" lineBeginShape="0" lineBeginSize="10" lineColor="#000000" lineEndFill="true" lineEndShape="2" lineEndSize="10" lineWidth="1.0" opaque="false" points="10.0 10.0 20.0 20.0"/>
+</dgm:reference>
+</dgm:references>
+<dgm:dependencies/>
+</dm:diagramGraphModel>
+</dm:diagramModel>

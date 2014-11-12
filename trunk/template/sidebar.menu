@@ -1,0 +1,8 @@
+<div class="boxhdr">XXX</div>
+<div class="box">
+<p>Links related to XXX.</p>
+<ul class="boxlist">
+<li><a href="../subdir1/">Sub item 1</a></li>
+<li><a href="../subdir2/">Sub item 2</a></li>
+</ul>
+</div>

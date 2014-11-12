@@ -1,0 +1,253 @@
+Version 1.5.8 (2014-11-12):
+
+        * Major rework in import/export functionality. Added import of students
+          from spreadsheet (i.e. Excel, ODF or CSV). Selectable parts of the
+          examination can now be exported.
+
+        * Questions that's corrected by other teachers is now hidden during the
+          correction phase. Unattended students are excluded from the result. Can 
+          be enabled in system configuration.
+
+        * The score board are now exposed to creator or decoder during the correction
+          phase, but only if caller is not corrector at the same time.
+
+        * Grades and personal (social) number are now included in the score board
+          when examination is decoded.
+
+        * The personal (social) number of logged on student is now exposed on the
+          question answer page.
+
+        * Logon sessions (for examination) is now handled internal. Authentication
+          is done once to create the initial session.
+
+        * The form on the exam page is now submitted in the background using AJAX
+          request. Enabled by default, but can be disabled in conf/config.inc.
+
+        * Fixes in PDF-generation using HTML doc (error code handling).
+
+        * Students can now be imported (single/list) based on personal number.
+
+Version 1.5.7 (2014-01-21):
+
+        * Fixed UTF-8 encoding of emails sent by the system.
+
+        * Quoted alternatives in single- or multiple choice questions is now 
+          properly encoded as option values. The quoted text has to be escaped
+          when submitted (as in the example question).
+
+        * Multiple choice alternatives (question and answers) are now displayed 
+          as a list on correction page, with correct and wrong answers using
+          icons as bullets.
+
+        * Fixed problem with download of scoreboard on Windows (mostly related to
+          IE 8 trying to download the PHP script instead of the file content). There 
+          still exist a problem with opening CSV-files using Excel.
+
+Version 1.5.6 (2012-03-15):
+
+        * It's now possible to exclude information about correcting person and
+          extended statistics like score distribution from the generated PDF
+          seen by the student (this feature was added as a security measure by
+          request from a teacher).
+
+        * Added proxy script for use with external, unsecured URL's. Use the
+          script as: proxy?url=http://www.example.com/xxx
+
+        * Added admin page for exporting casual information on all examinations.
+
+        * It is now possible to update answer scores after an examination has
+          been decoded. This function is handled by source/admin/adjust.php and
+          is only available for supervisor users.
+
+        * Examinations can be exported from the source/admin/exams.php page by
+          supervisor users.
+
+        * Increased the possible storage size for answers to ~16MB. See
+          docs/README-MYSQL for details.
+
+        * Correction is now supporting float point numbers in locale dependent
+          representation.
+
+Version 1.5.5 (2011-01-12):
+
+        * UPPDOK codes can now be utilized to fetch lists of registered students
+          and add them as participators on an examination.
+
+        * Added an result section from where students can download the result of
+	  completed and all-ready decoded examinations.
+	  
+	* Added transliteration for converting between charsets when generating
+	  PDF-files. This should fix most issues with UTF-8 decoding.
+
+        * Improved user experience by adding confirm() calls on delete.
+
+Version 1.5.4 (2010-12-13):
+
+        * Questions in the exam can now be answered in a 'save' and 'save and
+	  move next' manner.
+	  
+	* Implemented topics for examinations. This allows us to create a set
+	  of questions for each student examination out of a bank of questions.
+	  
+	  Each topic has an associated randomize number dictating how many
+          questions to randomly select from the topic. If its zero, then all
+          questions are used from that particular topic.
+	  
+	* Implemented import of questions banks. Both Ping-Pong and OpenExam
+	  will be supported. MS Excel, plain text and XML is the supported 
+	  formats.
+
+        * OpenExam projects (the complete examination together with questions)
+          can now be imported and exported.
+
+        * Full support for unicode (UTF-8) in user interface, result report
+          and database storage.
+
+        * Added PHP and SQL script for updating the database schema inside the
+          directory admin/sql/upgrade/.
+
+        * Added simple utility that generates MDB2 code creating the database
+          from a MySQL dump.
+
+Version 1.5.3 (2010-08-25):
+
+	* The session length can now be extended (see conf/config.inc) and
+	  the answer form can be automatic posted at regular interval thru 
+	  javascript.
+	  
+	* By user request, the question score and correcting teacher can now 
+	  be modified even after the examination has finished.
+	  
+	* All top level tree listings (on the teacher pages) is now grouping
+	  examinations by their state.
+	  
+	* Added the pseudo role corrector. People get this role by
+	  being assigned as the corrector of answers to one or more
+	  questions (currently, only the exam creator can grant this role).
+	  
+	* Top menus are hidden once an examination gets selected (in
+	  teacher section). New menus bound to selected examination
+	  appears in left side instead.
+	  
+	* Added ability to run the exam in "dry-run" mode (also called
+	  test case). This mode works as a real examination, but using
+	  a copy of the original examination.
+	  
+	* Contributors can now run test case on an exam without being
+	  its creator. This option is configurable (in conf/config.inc) and 
+	  is turned off by default.
+	
+Version 1.5.2 (2010-06-02):
+
+	* Added support for sending the examination result by email. The
+	  emails are multi-part encoded (MIME mail with plain text and HTML
+	  sections). 
+	  
+	* Up to three optional attachments (not counting the result PDF) can
+	  be attached to the message.
+	  
+	* It's now possible to optional append one or more section of text
+	  with headers to the email message.
+	  
+	* The examination grade levels can be defined in any format. The generated 
+	  result PDF is automatic assigned a grade based on this information. 
+	  The grades are dynamic, so changing the grades will affect score
+	  board and result views automatic.
+	  
+	* Added shared score board class. Both the corrector and decoder
+	  page is now rendering the scores using the same data backend class.
+	  
+	* Questions can now be removed/restored after an examination has
+	  taken place. 
+	  
+	  This is not the same as deleting a question, in that all answer and 
+	  comment associated with the question remains in the database. The 
+	  question is just marked as ignored.
+	
+Version 1.5.1 (2010-05-19):
+
+	* Fixed layout of embedded multimedia on question answer page.
+	
+	* Score board data can now be downloaded in XML format.
+	
+	* Student codes are now automatic generated if they are missing at
+	  registration time.
+	
+Version 1.5 (2010-05-18):
+
+	* Result from examination can now be exported as PDF/PS/HTML or generated
+	  as batch jobs using admin/result.pdf. If multiple examinations is
+	  exported, then caller receives them in a zip-file.
+	  
+	* The score board data can be downloaded as CSV/TSV (comma- resp. tab 
+	  separated data) or XML for processing in a spread sheet application.
+	  
+	* Common names for all system users (teachers) and students are now looked
+	  up in the LDAP directory.
+
+Version 1.4 (2010-05-11):
+
+	* It's now possible to utilize and correct answers to multiple and
+	  single choice questions in examinations.
+	
+	* Implemented auto correction answers for multi and single choice
+	  questions, with possibility for the corrector to override the 
+	  calculated score.
+
+	* Multimedia files defined for questions is now shown on the right
+	  hand side, embedded in HTML and using browser plugins (flash,
+	  quicktime, windows media and real player). Supports video, audio 
+	  and images.
+
+	* The VLC media player plugin (see http://www.videolan.org) is now
+	  supported using a javascript controller interface.
+	  
+	* System managers can override the builtin media content hanling to
+	  choose which media player to handle all or specific content types,
+	  see docs/README-MPLAYER for more information.
+
+Version 1.3 (2010-05-05):
+
+	* Added examinator page where the user granted this role can
+	  add/remove users and reschedule the examination.
+	  
+	* Added decoder page where the result from an examination can be
+	  downloaded with the student identities disclosed.
+	  
+Version 1.2 (2010-05-04):
+
+	* This is a maintenance release. The authorization control has been
+	  improved, some bug fixes and code cleanup.
+	  
+Version 1.1 (2010-04-30):
+
+	* Added contributor page where people granted the contribute role
+	  can publish questions for an exam.
+
+Version 1.0 (2010-04-29):
+
+	* The application is now translated to Swedish and English using GNU gettext.
+	
+	* Added authorization checks, we are now verifying integrity between
+	  request parameters (exam and question). We are also checking that
+	  the current examination is withing its start and end bounds.
+	
+	* Added help page to teacher section showing casual system information. 
+	
+	* Added page for managing examinations (at the highest level). Its
+	  possible to assign roles to other people (contribute, examinator
+	  and decoder). An previous examination can be cloned.
+	
+        * Added page for correcting answers to exam. The answers can be
+	  corrected by question (all students answer at once) or by student
+	  (all student answer at once). Its also possible to correct answers
+	  question by question.
+		  
+Version 0.9 (2010-04-21):
+
+	* Initial release. The student can authenticate to CAS and do an
+	  examination online. The examination has to be manual created
+	  direct in the database.
+	  
+        * The admin interface is there, but no modules are yet written.
+

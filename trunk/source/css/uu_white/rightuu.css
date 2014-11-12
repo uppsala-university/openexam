@@ -1,0 +1,102 @@
+
+/* inst�llningar f�r huvudytan */
+#maincontent {
+	/* position: relative;  */
+	background:#fff;
+	margin-left: 180px;
+	width: 800px;
+	height: 400px;
+        padding-top: 10px;
+}
+#maincontent_under {
+	/* position: relative;  */
+	background:#fff;
+	margin-left: 180px;
+	width: 450px;
+}
+#maincontent_internt {
+	/* position: relative;  */
+	background:#fff;
+	margin-left: 180px;
+	width: 580px;
+}
+/* Grundinst�llningar f�r smulraden */
+
+.smulrad {
+	color : black;
+	font-family : Verdana, arial, Sans-serif;
+	font-size: 1.0em;
+}
+
+/* Grundinst�llningar f�r h�gerkolumn  */		
+#rightcolumn {
+	background: transparent;
+	position: absolute;
+	left:580px; top:160px;
+	display:block;
+	float:right;
+	width:400px;
+	padding:0;
+}
+#rightcolumn_under {
+	background: #fff;
+	position: absolute;
+	left:660px; top:160px;
+	display:block;
+	float:right;
+	max-width:300px;
+	padding:0;
+}
+#rightcolumn_alumn {
+	background: #fff;
+	position: absolute;
+	left:740px; top:160px;
+	display:block;
+	float:right;
+	width:240px;
+	padding:0;
+}
+#rightcolumn_internt {
+	background: #fff;
+	position: absolute;
+	left:760px; top:160px;
+	display:block;
+	float:right;
+	max-width:200px;
+	padding:0;
+}
+#lefttop {
+	background: transparent;
+	width:580px;
+	padding:0;
+}
+#leftleft {
+	background: transparent;
+	float:left;
+	width:290px;
+	padding:0;
+	clear:both
+}
+#rightleft {
+	background: transparent;
+	float:left;
+	width:190px;
+	padding:0;
+}
+#rightleftinternt {
+	background: transparent;
+	float:left;
+	width:290px;
+	padding:0;
+}
+#rightright {
+	position: absolute;
+	background: #fff;
+	border: 1px solid #eee;
+	display:block;
+	float:right;
+	width:190px;
+	left: 775px;
+	top: 140px;
+	padding:2px;
+}

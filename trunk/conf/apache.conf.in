@@ -1,0 +1,92 @@
+# -*- sh -*-
+# Apache web server configuration for this web application.
+#
+# File:   conf/apache.conf
+# Author: Anders Lövgren
+# Date:   2010-04-27
+#
+# Note: Make sure to modify pathes, including the custom include path below.
+#
+
+# Direct request for proxy?url=xxx -> media/proxy.php?url=xxx:
+AliasMatch ^/openexam(/.*)?/proxy$ /var/www/localhost/apps/openexam-php/source/media/proxy.php
+
+Alias /openexam/icons/  /var/www/localhost/apps/openexam-php/source/icons/nuvola/
+Alias /openexam/images/ /var/www/localhost/apps/openexam-php/source/images/
+Alias /openexam/css/    /var/www/localhost/apps/openexam-php/source/css/
+Alias /openexam/js/     /var/www/localhost/apps/openexam-php/source/js/
+
+Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
+
+# The application root directory, its safe to keep this public.
+<Directory /var/www/localhost/apps/openexam-php/source/>
+  Order deny,allow
+  Allow from all
+  Options Indexes FollowSymLinks MultiViews
+  
+  # Hide development files:
+  <FilesMatch "\.(inc|bak|svn|.*~)$">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+  
+  # Set custom include path:
+  php_value include_path ".:/var/www/localhost/apps/openexam-php:/usr/share/php"
+  
+</Directory>
+
+# This directory contains the exam, so keep it medium private.
+<Directory /var/www/localhost/apps/openexam-php/source/exam/>
+  Order deny,allow
+  Deny from all
+  Allow from 127.0.0.1 ::1 192.168. 10. 169.254.
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
+</Directory>
+
+# This directory contains the pages used by teachers for managing the exams.
+<Directory /var/www/localhost/apps/openexam-php/source/teacher/>
+  Order deny,allow
+  Deny from all
+  Allow from 127.0.0.1 ::1
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
+</Directory>
+
+# This directory contains admin pages, test scripts and setup, so keep it private:
+<Directory /var/www/localhost/apps/openexam-php/source/admin/>
+  Order deny,allow
+  Deny from all
+  Allow from 127.0.0.1 ::1
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
+</Directory>
+
+# This directory contains supporting media files. Don't enforce HTTPS as it 
+# breaks some media player plugins.
+<Directory /var/www/localhost/apps/openexam-php/source/media/>
+  Order deny,allow
+  Allow from all
+</Directory>
+
+# The directory from where students can download results from their 
+# examinations. This URL should probably be accessable from anywhere.
+<Directory /var/www/localhost/apps/openexam-php/source/result/>
+  Order deny,allow
+  Deny from all
+  Allow from 127.0.0.1 ::1 192.168. 10. 169.254.
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
+</Directory>

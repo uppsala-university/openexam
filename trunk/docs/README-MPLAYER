@@ -1,0 +1,121 @@
+
+   MEDIA PLAYER (MULTIMEDIA) SUPPORT
+   
+** INTRODUCTION:
+
+   OpenExam PHP can use multimedia (video, audio and images) as a question
+   feature. The media players are defined in include/mplayer.inc and
+   configured in conf/config.inc (using the class MediaPlayerConfig).
+   
+** HOW IT WORKS:
+
+   For each question having an video or audio URL, a HTTP HEAD request is
+   sent to determine the content type. The content type is used to decide
+   what media player object to create.
+   
+   The media player object gets called to output HTML code to embed the
+   browser media plugin on the question page.
+   
+   The class MediaPlayerFactory inside include/mplayer.inc is responsible
+   for creating the appropriate media player based on the content type. It
+   uses a builtin map, and if configured, information provided by the system
+   manager to decide the type of media player to create (see section on configure
+   content type handler below).
+   
+** CONFIGURE CONTENT TYPE HANDLERS:
+
+   The system manager can override the media player created by the factory 
+   class by defining the class MediaPlayerConfig in conf/config.inc. 
+   
+   This makes it possible for the system manager to define different policys
+   for media playback depending on the client computers capabilities (in an
+   a situation where the system manager has complete control over the client
+   computers).
+
+   For example, it's possible for the system manager to define that the VLC
+   plugin should handle all media, except for flash that is handled by the
+   native flash plugin.
+
+** THE GENERIC MEDIA PLAYER:
+
+   The application has an "generic" media player that is not associated with
+   any plugin. Instead, it outputs HTML code for embedding a browser plugin on 
+   the page, but leave it to the browser to decide which plugin to actually
+   use.
+
+** EXAMPLES:
+
+   These are example classes for include/config.inc to configure content
+   type handling.
+
+   Example 1. 
+   
+     // 
+     // Use VLC for all media except for flash that is handled by the native
+     // plugin:
+     // 
+     class MediaPlayerConfig
+     {
+         public function getPlayerId($content) 
+         {
+             switch($content) {
+                 case "application/x-shockwave-flash":
+                 case "video/x-flv":
+                     return MEDIA_PLAYER_ADOBE_FLASH;
+             }
+             return MEDIA_PLAYER_VIDEOLAN;
+         }
+     }
+
+   Example 2.
+   
+     // 
+     // Override handling of QuickTime and MPEG-4:
+     // 
+     class MediaPlayerConfig
+     {
+         public function getPlayerId($content) 
+         {
+             switch($content) {
+                 case "video/quicktime":
+                     return MEDIA_PLAYER_VIDEOLAN;
+                 case "audio/mp4":
+                 case "audio/mp4":
+                     return MEDIA_PLAYER_ADOBE_FLASH;
+             }
+
+             // 
+             // Use builtin config for all other content:
+             // 
+             return MEDIA_PLAYER_BUILTIN;
+	 }
+     }
+
+   Example 3.
+   
+     // 
+     // Let the generic media player handle all content:
+     // 
+     class MediaPlayerConfig
+     {
+         public function getPlayerId($content) 
+         {
+             return MEDIA_PLAYER_GENERIC;
+	 }
+     }
+
+   Example 4.
+   
+     // 
+     // Use the VLC plugin for all content:
+     // 
+     class MediaPlayerConfig
+     {
+         public function getPlayerId($content) 
+         {
+	     return MEDIA_PLAYER_VIDEOLAN;
+	 }
+     }
+
+
+// Anders Lövgren, 2010-05-11
