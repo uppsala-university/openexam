@@ -13,7 +13,7 @@
 
 namespace OpenExam\Controllers\Service\Ajax;
 
-use OpenExam\Controllers\ServiceController;
+use OpenExam\Controllers\Service\AjaxController;
 use OpenExam\Library\Catalog\DirectoryManager;
 use OpenExam\Library\Catalog\Principal;
 
@@ -135,7 +135,7 @@ use OpenExam\Library\Catalog\Principal;
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class CatalogController extends ServiceController
+class CatalogController extends AjaxController
 {
 
         /**
@@ -337,17 +337,6 @@ class CatalogController extends ServiceController
                 $result = $this->formatResult($result, $this->params['output']);
 
                 $this->sendResponse(self::SUCCESS, $result);
-        }
-
-        /**
-         * Send result to peer.
-         * @param string $status The status label.
-         * @param mixed $result The operation result.
-         */
-        private function sendResponse($status, $result)
-        {
-                $this->response->setJsonContent(array($status => $result));
-                $this->response->send();
         }
 
         /**

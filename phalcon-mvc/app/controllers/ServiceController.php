@@ -25,7 +25,7 @@ use Phalcon\Mvc\Controller;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class ServiceController extends Controller
+abstract class ServiceController extends Controller
 {
 
         /**

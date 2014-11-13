@@ -13,7 +13,7 @@
 
 namespace OpenExam\Controllers\Service\Ajax;
 
-use OpenExam\Controllers\ServiceController;
+use OpenExam\Controllers\Service\AjaxController;
 use OpenExam\Library\Core\Handler\CoreHandler;
 use OpenExam\Library\Core\Handler\Exception;
 use OpenExam\Library\Security\Capabilities;
@@ -140,7 +140,7 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
  * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class CoreController extends ServiceController
+class CoreController extends AjaxController
 {
 
         /**
@@ -214,17 +214,6 @@ class CoreController extends ServiceController
         public function deleteAction($role, $type)
         {
                 $this->crudAction($role, $type, ObjectAccess::DELETE);
-        }
-
-        /**
-         * Send result to peer.
-         * @param string $status The status label.
-         * @param mixed $result The operation result.
-         */
-        private function sendResponse($status, $result)
-        {
-                $this->response->setJsonContent(array($status => $result));
-                $this->response->send();
         }
 
         /**
