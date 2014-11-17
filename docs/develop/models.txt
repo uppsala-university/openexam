@@ -43,4 +43,8 @@ Phalcon devtools.
    restriction, make sure to persist all models or model cache (pre-save) will
    probably cause problems.
 
+   The special role cacls is intended for internal use only on server side to disable 
+   access control by the model while performing trusted operations, like accessing the 
+   model for checking roles.
+
 // Anders Lövgren, 2014-09-10

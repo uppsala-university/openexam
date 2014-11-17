@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Core\Handler;
 
+use OpenExam\Library\Security\Roles;
 use OpenExam\Models\ModelBase;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use PDO;
@@ -57,6 +58,13 @@ class CoreHandler extends Component
          */
         public function __construct($role)
         {
+                if ($role == Roles::TRUSTED) {
+                        throw new Exception("The trusted role is not permitted here.");
+                }
+                if (!isset($role)) {
+                        throw new Exception("The core API requires an role.");
+                }
+
                 $this->user->setPrimaryRole($role);
         }
 
@@ -267,7 +275,7 @@ class CoreHandler extends Component
                 // Strip relations from model.
                 // 
                 $strip = function($model) {
-                        if (!($model instanceof \Phalcon\Mvc\Model)) {
+                        if (!($model instanceof Model)) {
                                 throw new Exception("Expected model object");
                         }
                         $dump = array();
