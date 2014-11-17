@@ -49,7 +49,7 @@ class ModelBehavior extends Behavior implements BehaviorInterface
                         $dependencyInjector = \Phalcon\DI::getDefault();
                 }
 
-                $this->logger = $dependencyInjector->get('logger');
+                $this->logger = $dependencyInjector->getLogger();
                 $this->user = $dependencyInjector->get('user');
 
                 $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];

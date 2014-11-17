@@ -106,6 +106,7 @@ class UnittestTask extends MainTask
                 }
                 if (!file_exists($this->sample)) {
                         $this->flash->error("Sample data is missing.\n");
+                        return;
                 }
 
                 if ($options['verbose']) {

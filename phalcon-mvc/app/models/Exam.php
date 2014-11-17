@@ -185,7 +185,7 @@ class Exam extends ModelBase
         protected function beforeValidationOnCreate()
         {
                 if (!isset($this->details)) {
-                        $this->details = $this->getDI()->get('config')->result->details;
+                        $this->details = $this->getDI()->getConfig()->result->details;
                 }
                 if (!isset($this->decoded)) {
                         $this->decoded = false;

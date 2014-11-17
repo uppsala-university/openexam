@@ -45,7 +45,7 @@ class Role extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->catalog = $this->getDI()->get('catalog');
+                $this->catalog = $this->getDI()->getCatalog();
         }
 
         /**
