@@ -3,6 +3,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Ownership;
+use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\DiInterface;
@@ -98,13 +99,15 @@ class Question extends ModelBase
                 $this->addBehavior(new Ownership(array(
                         'beforeValidationOnCreate' => array(
                                 'field' => 'user',
-                                'force' => true
+                                'force' => false
                         ),
                         'beforeValidationOnUpdate' => array(
                                 'field' => 'user',
-                                'force' => true
+                                'force' => false
                         )
                 )));
+
+                $this->addBehavior(new QuestionBehavior());
         }
 
         /**
@@ -250,22 +253,26 @@ class Question extends ModelBase
                 if ($role == Roles::CORRECTOR) {
                         $builder
                             ->from(self::getRelation('question'))
-                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id'))
+                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id', 'corrector'))
                             ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
                 } elseif ($role == Roles::CREATOR) {
                         $builder
                             ->from(self::getRelation('question'))
-                            ->join(self::getRelation('exam'), self::getRelation('exam', 'id', 'exam_id'))
+                            ->join(self::getRelation('exam'), self::getRelation('question', 'exam_id', 'id', 'exam'))
                             ->andWhere(sprintf("creator = '%s'", $user->getPrincipalName()));
                 } else {
                         $builder
                             ->from(self::getRelation('question'))
                             ->join(self::getRelation('exam'), self::getRelation('question', 'exam_id', 'id', 'exam'))
-                            ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id', $role))
+                            ->join(self::getRelation($role), self::getRelation($role, 'exam_id', 'id', 'exam'))
                             ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
                 }
 
-                return $builder->getQuery()->execute();
+                if (isset($parameters['bind'])) {
+                        return $builder->getQuery()->execute($parameters['bind']);
+                } else {
+                        return $builder->getQuery()->execute();
+                }
         }
 
 }

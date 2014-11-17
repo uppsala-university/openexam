@@ -217,8 +217,20 @@ abstract class ObjectAccess extends Plugin
                 $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
                 $this->logger->auth->debug(print_r($trace, true));
 
-                $role = $this->user->setPrimaryRole(Roles::TRUSTED);
+                // 
+                // Skip roles check for trusted calls:
+                // 
+                if (($role = $this->user->getPrimaryRole()) == Roles::TRUSTED) {
+                        if ($trace['function'] == 'checkObjectRole') {
+                                return true;
+                        }
+                }
+
+                // 
+                // Invoke callback function in trusted context:
+                // 
                 try {
+                        $this->user->setPrimaryRole(Roles::TRUSTED);
                         $result = $callback($role);
                         $this->user->setPrimaryRole($role);
                         return $result;

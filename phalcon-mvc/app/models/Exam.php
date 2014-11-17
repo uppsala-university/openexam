@@ -170,11 +170,11 @@ class Exam extends ModelBase
                 $this->addBehavior(new Ownership(array(
                         'beforeValidationOnCreate' => array(
                                 'field' => 'creator',
-                                'force' => true
+                                'force' => false
                         ),
                         'beforeValidationOnUpdate' => array(
                                 'field' => 'creator',
-                                'force' => true
+                                'force' => false
                         )
                 )));
         }
@@ -402,7 +402,11 @@ class Exam extends ModelBase
                             ->andWhere(sprintf("user = '%s'", $user->getPrincipalName()));
                 }
 
-                return $builder->getQuery()->execute();
+                if (isset($parameters['bind'])) {
+                        return $builder->getQuery()->execute($parameters['bind']);
+                } else {
+                        return $builder->getQuery()->execute();
+                }
         }
 
 }

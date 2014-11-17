@@ -91,11 +91,11 @@ class Resource extends ModelBase
                 $this->addBehavior(new Ownership(array(
                         'beforeValidationOnCreate' => array(
                                 'field' => 'user',
-                                'force' => true
+                                'force' => false
                         ),
                         'beforeValidationOnUpdate' => array(
                                 'field' => 'user',
-                                'force' => true
+                                'force' => false
                         )
                 )));
         }

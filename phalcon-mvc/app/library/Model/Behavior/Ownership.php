@@ -13,42 +13,61 @@
 
 namespace OpenExam\Library\Model\Behavior;
 
-use Phalcon\Mvc\Model\Behavior;
-use Phalcon\Mvc\Model\BehaviorInterface;
+use Phalcon\Mvc\ModelInterface;
 
 /**
  * Ownership behavior for models.
  * 
+ * This behavior can be used to set an ownership property in the model to
+ * either supplied owner or the current authenticated user if the owner 
+ * option is missing. 
+ * 
+ * The ownership can be enforced by setting the force option, otherwise it 
+ * will only apply if owner property is unset.
+ * 
  * <code>
  * $this->addBehavior(new Ownership(array(
  *      'beforeValidationOnCreate' => array(
- *              'field' => 'user',
- *              'force' => true         // Always set
+ *              'field' => 'user',      // Name of ownership property.
+ *              'force' => true,        // Always overwrite property.
+ *              'owner' => 'username'   // Set owner property to username.
  *      )
  * )));
  * </code>
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Ownership extends Behavior implements BehaviorInterface
+class Ownership extends ModelBehavior
 {
 
         /**
          * Receives notifications from the Models Manager
          *
-         * @param string $eventType
-         * @param Phalcon\Mvc\ModelInterface $model
+         * @param string $type The event type.
+         * @param ModelInterface $model The target model.
          */
         public function notify($type, $model)
         {
                 if (($options = $this->getOptions($type))) {
-                        $user = $model->getDI()->get('user');
-                        $name = $options['field'];
+                        $this->trustedContextCall(function($caller) use($model, $options) {
 
-                        if ($options['force']) {
-                                $model->$name = $user->getPrincipalName();
-                        } elseif (!isset($model->$name)) {
-                                $model->$name = $user->getPrincipalName();
-                        }
+                                $name = $options['field'];
+
+                                if (isset($options['owner'])) {
+                                        $user = $options['owner'];
+                                } else {
+                                        $user = $caller->getPrincipalName();
+                                }
+                                
+                                if (!isset($user)) {
+                                        return false;   // not authenticated
+                                } elseif ($options['force']) {
+                                        $model->$name = $user;
+                                } elseif (!isset($model->$name)) {
+                                        $model->$name = $user;
+                                }
+
+                                return true;
+                        }, $model->getDI());
                 }
         }
 

@@ -7,6 +7,7 @@ namespace OpenExam\Models;
  * 
  * Represents a user having the corrector role on the related questiton.
  * @property Question $question The related question.
+ * @property Result[] $results The related results.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Corrector extends Role
@@ -31,6 +32,7 @@ class Corrector extends Role
         protected function initialize()
         {
                 parent::initialize();
+                $this->hasMany("id", "OpenExam\Models\Result", "result_id", array("alias" => 'results'));
                 $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array('foreignKey' => true, 'alias' => 'question'));
         }
 

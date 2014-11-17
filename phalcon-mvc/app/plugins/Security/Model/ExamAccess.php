@@ -46,6 +46,12 @@ class ExamAccess extends ObjectAccess
                 // Perform access control in a trusted context:
                 // 
                 return $this->trustedContextCall(function($role) use($action, $model, $user) {
+                            if ($this->logger->debug) {
+                                    $this->logger->debug->log(sprintf(
+                                            "%s(role=%s)", __METHOD__, $role
+                                    ));
+                            }
+
                             // 
                             // Check role on exam, question or global:
                             // 

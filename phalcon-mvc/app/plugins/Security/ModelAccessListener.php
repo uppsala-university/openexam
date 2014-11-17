@@ -61,9 +61,9 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
 
         /**
          * Check that caller has access to resource.
-         * @param Event $event
-         * @param Model $model
-         * @param string $action
+         * @param Event $event The event to check.
+         * @param Model $model The model to check.
+         * @param string $action The action to perform.
          * @return boolean
          * @throws Exception message=(acl|user|auth|access|role)
          */
@@ -98,18 +98,18 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // peer is authenticated if primary role is set.
                 // 
                 if ($user->hasPrimaryRole() == false) {
-                        $this->logger->auth->debug(sprintf(
-                                "Granted %s access on %s to user %s (primary role unset) [%s]", $action, $name, $principal, $addr
+                        $this->logger->auth->info(sprintf(
+                                "Granted %s access on %s(id=%d) to user %s (primary role unset) [%s]", $action, $name, $model->id, $principal, $addr
                         ));
                         return true;    // unrestricted access
                 } elseif ($user->getUser() == null) {
                         $this->logger->auth->error(sprintf(
-                                "Denied %s access on %s (unauthenticated user) [%s]", $action, $name, $addr
+                                "Denied %s access on %s(id=%d) (unauthenticated user) [%s]", $action, $name, $model->id, $addr
                         ));
                         throw new Exception('auth');
                 } elseif (($role = $user->getPrimaryRole()) == Roles::TRUSTED) {
-                        $this->logger->auth->debug(sprintf(
-                                "Granted %s access on %s for %s (trusted role) [%s]", $action, $name, $role, $addr
+                        $this->logger->auth->info(sprintf(
+                                "Granted %s access on %s(id=%d) for %s (trusted role) [%s]", $action, $name, $model->id, $role, $addr
                         ));
                         return true;    // Control ACL System
                 }
@@ -119,7 +119,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // 
                 if ($acl->isAllowed($role, $name, $action) == false) {
                         $this->logger->auth->error(sprintf(
-                                "Denied %s access on %s for user %s using role %s (blocked by ACL) [%s]", $action, $name, $principal, $role, $addr
+                                "Denied %s access on %s(id=%d) for user %s using role %s (blocked by ACL) [%s]", $action, $name, $model->id, $principal, $role, $addr
                         ));
                         throw new Exception('access');
                 }
@@ -135,12 +135,17 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                                 ));
                         }
                         $this->logger->auth->error(sprintf(
-                                "Denied %s access on %s for user %s using role %s (failed aquire role) [%s]", $action, $name, $principal, $role, $addr
+                                "Denied %s access on %s(id=%d) for user %s using role %s (failed aquire role) [%s]", $action, $name, $model->id, $principal, $role, $addr
                         ));
                         throw new Exception('role');
+                } elseif ($action == ObjectAccess::CREATE) {
+                        $this->logger->auth->info(sprintf(
+                                "Granted %s access on %s for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr
+                        ));
+                        return true;    // The create action is not connected with an object.
                 } elseif (Roles::isCustom($role)) {
-                        $this->logger->auth->debug(sprintf(
-                                "Granted %s access on %s for user %s using role %s [%s]", $action, $name, $principal, $role, $addr
+                        $this->logger->auth->info(sprintf(
+                                "Granted %s access on %s(id=%d) for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr
                         ));
                         return true;    // Custom roles are global
                 } elseif (($access = $this->getObjectAccess($name))) {
@@ -148,8 +153,8 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                                 "%s(event=%s, model=%s, user=%s) [calling]", get_class($access), $type, $name, $principal
                         ));
                         if ($access->notify($type, $model, $user)) {
-                                $this->logger->auth->debug(sprintf(
-                                        "Granted %s access on %s for user %s using role %s [%s]", $action, $name, $principal, $role, $addr
+                                $this->logger->auth->info(sprintf(
+                                        "Granted %s access on %s(id=%d) for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr
                                 ));
                         }
                 } else {

@@ -3,6 +3,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Filter;
+use OpenExam\Library\Security\Roles;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\Model;
 
