@@ -13,6 +13,8 @@
 
 namespace OpenExam\Console\Tasks;
 
+use OpenExam\Library\Security\User;
+
 /**
  * Unit test task.
  *
@@ -52,6 +54,7 @@ class UnittestTask extends MainTask
                         ),
                         'options'  => array(
                                 '--setup'          => 'Add sample data for running unit tests.',
+                                '--user=name'      => 'Set username for sample data. Defaults to process owner (calling user).',
                                 '--clean[=sample]' => 'Remove sample data (optional specifying sample file).',
                                 '--verbose'        => 'Be more verbose.'
                         ),
@@ -134,37 +137,43 @@ class UnittestTask extends MainTask
         public function setupAction($params = array())
         {
                 $options = array(
-                        'verbose' => false
+                        'verbose' => false,
+                        'user'    => $this->getDI()->getUser()->getPrincipalName()
                 );
 
                 for ($i = 0; $i < count($params); ++$i) {
                         if ($params[$i] == 'verbose') {
                                 $options['verbose'] = true;
                         }
+                        if ($params[$i] == 'user') {
+                                $options['user'] = $params[++$i];
+                        }
                 }
+
+                $this->getDI()->setUser(new User($options['user']));
 
                 $data = array(
                         'exam'        => array(
                                 'name'    => 'Exam 1',
-                                'creator' => 'user1',
+                                'creator' => $options['user'],
                                 'orgunit' => 'orgunit1',
                                 'grades'  => json_encode(array('data' => array('U' => 0, 'G' => 20, 'VG' => 30)))
                         ),
                         'contributor' => array(
                                 'exam_id' => 0,
-                                'user'    => 'user1'
+                                'user'    => $options['user']
                         ),
                         'decoder'     => array(
                                 'exam_id' => 0,
-                                'user'    => 'user1'
+                                'user'    => $options['user']
                         ),
                         'invigilator' => array(
                                 'exam_id' => 0,
-                                'user'    => 'user1'
+                                'user'    => $options['user']
                         ),
                         'student'     => array(
                                 'exam_id' => 0,
-                                'user'    => 'user1',
+                                'user'    => $options['user'],
                                 'code'    => '1234ABCD'
                         ),
                         'resource'    => array(
@@ -173,7 +182,7 @@ class UnittestTask extends MainTask
                                 'path'    => '/tmp/path',
                                 'type'    => 'video',
                                 'subtype' => 'mp4',
-                                'user'    => 'user1'
+                                'user'    => $options['user']
                         ),
                         'room'        => array(
                                 'name' => 'Room 1'
@@ -199,19 +208,20 @@ class UnittestTask extends MainTask
                                 'score'    => 1.0,
                                 'name'     => 'Question 1',
                                 'quest'    => 'Question text',
-                                'user'     => array('user1', 'user2'),
+                                'user'     => $options['user'],
                         ),
                         'corrector'   => array(
                                 'question_id' => 0,
-                                'user'        => 'user1'
+                                'user'        => $options['user']
                         ),
                         'answer'      => array(
                                 'question_id' => 0,
                                 'student_id'  => 0
                         ),
                         'result'      => array(
-                                'answer_id' => 0,
-                                'score'     => 1.5
+                                'answer_id'    => 0,
+                                'corrector_id' => 0,
+                                'score'        => 1.5
                         ),
                         'file'        => array(
                                 'answer_id' => 0,
@@ -221,14 +231,14 @@ class UnittestTask extends MainTask
                                 'subtype'   => 'mp4'
                         ),
                         'admin'       => array(
-                                'user' => 'user1'
+                                'user' => $options['user']
                         ),
                         'teacher'     => array(
-                                'user' => 'user1'
+                                'user' => $options['user']
                         ),
                         'session'     => array(
                                 'session_id' => md5(time()),
-                                'data'       => serialize(array('auth' => array('user' => 'user1', 'type' => 'cas'))),
+                                'data'       => serialize(array('auth' => array('user' => $options['user'], 'type' => 'cas'))),
                                 'created'    => time()
                         )
                 );
@@ -239,13 +249,14 @@ class UnittestTask extends MainTask
                 }
                 foreach ($data as $m => $a) {
                         foreach (array(
-                            'exam'     => 'exam_id',
-                            'room'     => 'room_id',
-                            'computer' => 'computer_id',
-                            'topic'    => 'topic_id',
-                            'question' => 'question_id',
-                            'student'  => 'student_id',
-                            'answer'   => 'answer_id') as $n => $fk)
+                            'exam'      => 'exam_id',
+                            'room'      => 'room_id',
+                            'computer'  => 'computer_id',
+                            'topic'     => 'topic_id',
+                            'question'  => 'question_id',
+                            'student'   => 'student_id',
+                            'answer'    => 'answer_id',
+                            'corrector' => 'corrector_id') as $n => $fk)
                                 if (isset($a[$fk]) && $a[$fk] == 0) {
                                         $a[$fk] = $data[$n]['id'];
                                 }

@@ -37,7 +37,7 @@ $loader->register();
 // 
 $ds = include(CONFIG_SYS . "/services.php");
 $di = new \Phalcon\DI\FactoryDefault\CLI();
-foreach (array('config', 'dbread', 'dbwrite') as $service) {
+foreach (array('config', 'dbread', 'dbwrite', 'catalog', 'logger') as $service) {
         $di->set($service, $ds->get($service));
 }
 
@@ -59,3 +59,15 @@ $di->set('dispatcher', function() use($di) {
 $di->set('flash', function() {
         return new OpenExam\Library\Console\Flash();
 });
+
+// 
+// Set authenticated user to task runner:
+// 
+if (extension_loaded('posix')) {
+        $pwent = posix_getpwuid(posix_geteuid());
+        $di->set('user', new \OpenExam\Library\Security\User($pwent['name'], gethostname()));
+} else {
+        $di->set('user', new \OpenExam\Library\Security\User(get_current_user(), gethostname()));
+}
+
+// Phalcon\DI::setDefault($di);
