@@ -84,6 +84,7 @@ class CoreHandler extends Component
 
                 if (isset($data['id'])) {
                         $model = $class::findFirstById($data['id']);
+                        $model->assign($data);
                 } else {
                         $model = new $class();
                         $model->assign($data);
