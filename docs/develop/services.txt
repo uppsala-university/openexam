@@ -1,0 +1,35 @@
+** Notice about singleton (shared) services:
+
+    A shared service (the singleton object) can not be replace in the service container
+    once if has been set. Calling getShared() will always return the the first object
+    set.
+
+    Example:
+    ---------
+
+        $di->set('title', new Title('title1'));
+        echo $di->get('title')->getTitle() . PHP_EOL;
+        echo $di->getShared('title')->getTitle() . PHP_EOL;
+
+        $di->set('title', new Title('title2'), true);
+        echo $di->get('title')->getTitle() . PHP_EOL;
+        echo $di->getShared('title')->getTitle() . PHP_EOL;
+
+        $di->setShared('title', new Title('title3'));
+        echo $di->get('title')->getTitle() . PHP_EOL;
+        echo $di->getShared('title')->getTitle() . PHP_EOL;
+
+    Output:
+    --------
+
+        title1
+        title1
+        title2
+        title1
+        title3
+        title1
+
+    The behavior is the same no matter how the service was created (shared or not). The
+    singleton object can not be replaced, only modified.
+
+// Anders Lövgren, 2014-11-14
