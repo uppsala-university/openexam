@@ -407,7 +407,13 @@ class RolesTest extends TestCase
                 self::info("[class: '%s', role: '%s']\n", $class, $role);
                 self::info("[roles: '%s']\n", $this->object);
 
-                if ($role != Roles::CREATOR) {
+                // 
+                // The contributor and decoder role are automatic added by
+                // behavior. The creator role is implicit conneted with exam.
+                // 
+                if ($role != Roles::CREATOR &&
+                    $role != Roles::CONTRIBUTOR &&
+                    $role != Roles::DECODER) {
                         self::assertFalse($this->object->aquire($role));
                         self::assertFalse($this->object->aquire($role, 0));
                         self::assertFalse($this->object->aquire($role, $exam->id));
@@ -431,7 +437,7 @@ class RolesTest extends TestCase
                 self::assertFalse($this->object->aquire($role, $exam->id + 1));
                 self::info("[roles: '%s']\n", $this->object);
 
-                if ($role != Roles::CREATOR) {
+                if (isset($model)) {
                         $model->delete();       // cleanup                
                 }
         }
