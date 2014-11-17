@@ -26,10 +26,6 @@ class TopicModel extends Topic
  */
 class TopicTest extends TestCase
 {
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
 
         /**
          * @group model

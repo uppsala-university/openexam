@@ -27,11 +27,6 @@ class ContributorModel extends Contributor
 class ContributorTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */
@@ -51,7 +46,7 @@ class ContributorTest extends TestCase
         {
                 $values = array(
                         'exam_id' => Exam::findFirst()->id,
-                        'user'    => 'user1@example.com'
+                        'user'    => $this->caller
                 );
 
                 try {
@@ -71,7 +66,7 @@ class ContributorTest extends TestCase
 
                 $values = array(
                         'exam_id'      => Exam::findFirst()->id,
-                        'user'         => 'user1@example.com',
+                        'user'         => $this->caller,
                         'non_existing' => 666   // ignored without error
                 );
                 try {

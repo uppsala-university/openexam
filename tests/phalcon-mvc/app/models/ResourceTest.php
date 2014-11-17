@@ -27,11 +27,6 @@ class ResourceModel extends Resource
 class ResourceTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */
@@ -55,7 +50,7 @@ class ResourceTest extends TestCase
                         'path'    => '/tmp/path',
                         'type'    => 'video',
                         'subtype' => 'mp4',
-                        'user'    => 'user1@example.com'
+                        'user'    => $this->caller
                 );
 
                 try {
@@ -83,7 +78,7 @@ class ResourceTest extends TestCase
                         'path'         => '/tmp/path',
                         'type'         => 'video',
                         'subtype'      => 'mp4',
-                        'user'         => 'user1@example.com',
+                        'user'         => $this->caller,
                         'non_existing' => 666   // ignored wihout error
                 );
                 try {
@@ -99,7 +94,7 @@ class ResourceTest extends TestCase
                         'path'    => '/tmp/path',
                         'type'    => 'video',
                         'subtype' => 'mp4',
-                        'user'    => 'user1@example.com',
+                        'user'    => $this->caller,
                         'shared'  => 'unknown' // should fail at validation
                 );
                 try {

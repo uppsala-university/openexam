@@ -13,8 +13,11 @@
 
 namespace OpenExam\Tests\Phalcon;
 
-use Phalcon\DI\InjectionAwareInterface,
-    Phalcon\DI as PhalconDI;
+use OpenExam\Library\Security\User;
+use Phalcon\Config;
+use Phalcon\DI as PhalconDI;
+use Phalcon\DI\InjectionAwareInterface;
+use Phalcon\Logger;
 
 /**
  * Test output handler.
@@ -24,18 +27,18 @@ class TestLogger
 {
 
         /**
-         * @var \Phalcon\Config
+         * @var Config
          */
         private $config;
         /**
-         * @var \Phalcon\Logger
+         * @var Logger
          */
         private $logger;
 
         /**
          * Constructor.
-         * @param \Phalcon\Config $config
-         * @param \Phalcon\Logger $logger
+         * @param Config $config
+         * @param Logger $logger
          */
         public function __construct($config, $logger)
         {
@@ -84,6 +87,67 @@ class TestLogger
 }
 
 /**
+ * Setup test case logging.
+ * 
+ * Setup logging to system logs. This class also setup stdout capture logging,
+ * if configured in the system config.
+ * 
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
+ */
+class TestLogging
+{
+
+        /**
+         * The test case object.
+         * @var TestCase 
+         */
+        private $testcase;
+        /**
+         * @var TestLogger 
+         */
+        private static $testlog;
+        /**
+         * @var Config
+         */
+        private $config;
+        /**
+         * @var Logger 
+         */
+        private $logger;
+
+        /**
+         * Constructor
+         * @param TestCase $testcase The test case object.
+         */
+        public function __construct($testcase)
+        {
+                $this->testcase = $testcase;
+                $this->config = $testcase->config;
+                $this->logger = $testcase->logger;
+        }
+
+        /**
+         * Setup test logging.
+         * @return TestLogger
+         */
+        public function setup()
+        {
+                if (!isset(self::$testlog)) {
+                        self::$testlog = new TestLogger($this->config, $this->logger);
+                }
+
+                if ($this->config->phpunit->logging) {
+                        $this->testcase->setOutputCallback(new LoggingCallback(
+                            $this->config->phpunit->logfile, $this->config->phpunit)
+                        );
+                }
+
+                return self::$testlog;
+        }
+
+}
+
+/**
  * Provides dependency injection and service access for unit tests.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -96,6 +160,11 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
          */
         protected $di;
         /**
+         * The username (principal) of test runner.
+         * @var string 
+         */
+        protected $caller;
+        /**
          * @var TestLogger 
          */
         private static $logger;
@@ -103,22 +172,39 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
         public function __construct($name = NULL, array $data = array(), $dataName = '')
         {
                 parent::__construct($name, $data, $dataName);
+
+                $this->setupContext();
+                $this->setupLogging();
+
+                $this->caller = $this->di->get('user')->getPrincipalName();
+        }
+
+        protected function setUp()
+        {
+                $this->di->set('user', new User($this->caller));
+                $this->di->get('user')->setPrimaryRole(null);
+        }
+
+        /**
+         * Setup test case logging.
+         */
+        private function setupLogging()
+        {
+                $logging = new TestLogging($this);
+                self::$logger = $logging->setup();
+        }
+
+        /**
+         * Setup test case context.
+         */
+        private function setupContext()
+        {
                 $this->setDI(PhalconDI::getDefault());
-
-                if (!isset(self::$logger)) {
-                        self::$logger = new TestLogger($this->config, $this->logger);
-                }
-
-                if ($this->config->phpunit->logging) {
-                        parent::setOutputCallback(new LoggingCallback(
-                            $this->config->phpunit->logfile, $this->config->phpunit)
-                        );
-                }
         }
 
         /**
          * Get dependency injector.
-         * @return Phalcon\DI
+         * @return PhalconDI
          */
         public function getDI()
         {
@@ -127,12 +213,11 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
 
         /**
          * Set dependency injector.
-         * @param Phalcon\DI $dependencyInjector
+         * @param PhalconDI $dependencyInjector
          */
         public function setDI($dependencyInjector)
         {
                 $this->di = $dependencyInjector;
-                PhalconDI::setDefault($dependencyInjector);
         }
 
         public function __get($name)

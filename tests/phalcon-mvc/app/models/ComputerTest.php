@@ -28,11 +28,6 @@ class ComputerModel extends Computer
 class ComputerTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */

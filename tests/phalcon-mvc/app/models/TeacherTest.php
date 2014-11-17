@@ -16,18 +16,13 @@ use OpenExam\Tests\Phalcon\TestModelBasic;
 class TeacherTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */
         public function testProperties()
         {
                 $values = array(
-                        'user' => 'user1@example.com'
+                        'user' => $this->caller
                 );
 
                 try {
@@ -46,7 +41,7 @@ class TeacherTest extends TestCase
                 }
 
                 $values = array(
-                        'user'         => 'user1@example.com',
+                        'user'         => $this->caller,
                         'non_existing' => 666
                 );
                 try {

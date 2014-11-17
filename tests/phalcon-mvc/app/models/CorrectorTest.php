@@ -27,11 +27,6 @@ class CorrectorModel extends Corrector
 class CorrectorTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */
@@ -52,7 +47,7 @@ class CorrectorTest extends TestCase
         {
                 $values = array(
                         'question_id' => Question::findFirst()->id,
-                        'user'        => 'user1@example.com'
+                        'user'        => $this->caller
                 );
 
                 try {
@@ -72,7 +67,7 @@ class CorrectorTest extends TestCase
 
                 $values = array(
                         'question_id'  => Question::findFirst()->id,
-                        'user'         => 'user1@example.com',
+                        'user'         => $this->caller,
                         'non_existing' => 666   // ignored wihout error
                 );
                 try {

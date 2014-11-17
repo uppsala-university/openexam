@@ -36,16 +36,18 @@ class StateTest extends TestCase
          */
         protected function setUp()
         {
+                parent::setUp();
+
                 self::$data = array(
                         'exam'     => array(
                                 'name'    => 'Exam 1',
-                                'creator' => 'user1',
+                                'creator' => $this->caller,
                                 'orgunit' => 'orgunit1',
                                 'grades'  => json_encode(array('data' => array('U' => 0, 'G' => 20, 'VG' => 30)))
                         ),
                         'student'  => array(
                                 'exam_id' => 0,
-                                'user'    => 'user1',
+                                'user'    => $this->caller,
                                 'code'    => '1234ABCD'
                         ),
                         'topic'    => array(
@@ -59,7 +61,7 @@ class StateTest extends TestCase
                                 'score'    => 1.0,
                                 'name'     => 'Question 1',
                                 'quest'    => 'Question text',
-                                'user'     => array('user1', 'user2'),
+                                'user'     => $this->caller,
                         ),
                         'answer'   => array(
                                 'question_id' => 0,
@@ -94,6 +96,7 @@ class StateTest extends TestCase
                 $this->answer->create(self::$data['answer']);
 
                 self::$data['result']['answer_id'] = $this->answer->id;
+                self::$data['result']['corrector_id'] = $this->question->correctors[0]->id;
 
                 $this->state = new State($this->exam);
         }

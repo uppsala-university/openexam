@@ -14,11 +14,6 @@ use OpenExam\Tests\Phalcon\TestModelBasic;
 class SessionTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @covers OpenExam\Models\Session::initialize
          * @group model
@@ -27,7 +22,7 @@ class SessionTest extends TestCase
         {
                 $values = array(
                         'session_id' => md5(time()),
-                        'data'       => serialize(array('auth' => array('user' => 'user1', 'type' => 'cas'))),
+                        'data'       => serialize(array('auth' => array('user' => $this->caller, 'type' => 'cas'))),
                         'created'    => time()
                 );
 
@@ -48,7 +43,7 @@ class SessionTest extends TestCase
 
                 $values = array(
                         'session_id' => md5(time()),
-                        'data'       => serialize(array('auth' => array('user' => 'user1', 'type' => 'cas'))),
+                        'data'       => serialize(array('auth' => array('user' => $this->caller, 'type' => 'cas'))),
                         'created'    => time(),
                         'updated'    => time() + 1
                 );

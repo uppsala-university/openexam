@@ -15,18 +15,13 @@ use OpenExam\Tests\Phalcon\TestModelBasic;
 class AdminTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */
         public function testProperties()
         {
                 $values = array(
-                        'user' => 'user1'
+                        'user' => $this->caller
                 );
 
                 $this->setExpectedException('\Exception');
@@ -42,7 +37,7 @@ class AdminTest extends TestCase
                 }
 
                 $values = array(
-                        'user'         => 'user1',
+                        'user'         => $this->caller,
                         'non_existing' => 666
                 );
                 try {

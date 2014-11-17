@@ -120,6 +120,18 @@ class TestModelAccess extends TestModelBasic
                 $this->object->assign($this->values);
         }
 
+        public static function setUpBeforeClass()
+        {
+                parent::setUpBeforeClass();
+                exec('php phalcon-mvc/script/unittest.php --setup');
+        }
+
+        public static function tearDownAfterClass()
+        {
+                exec('php phalcon-mvc/script/unittest.php --clean');
+                parent::tearDownAfterClass();
+        }
+
         /**
          * Build role -> resource -> actions tree:
          * @param array $system The system configured access list.
@@ -269,14 +281,14 @@ class TestModelAccess extends TestModelBasic
                 // Use sample exam:
                 // 
                 $roles = array();
-                $roles['admin'] = Admin::findFirst($this->sample['admin']['id']);
-                $roles['teacher'] = Teacher::findFirst($this->sample['teacher']['id']);
-                $roles['creator'] = Exam::findFirst($this->sample['exam']['id']);
-                $roles['contributor'] = Contributor::findFirst($this->sample['contributor']['id']);
-                $roles['decoder'] = Decoder::findFirst($this->sample['decoder']['id']);
-                $roles['invigilator'] = Invigilator::findFirst($this->sample['invigilator']['id']);
-                $roles['student'] = Student::findFirst($this->sample['student']['id']);
-                $roles['corrector'] = Corrector::findFirst($this->sample['corrector']['id']);
+                $roles['admin'] = Admin::findFirstById($this->sample['admin']['id']);
+                $roles['teacher'] = Teacher::findFirstById($this->sample['teacher']['id']);
+                $roles['creator'] = Exam::findFirstById($this->sample['exam']['id']);
+                $roles['contributor'] = Contributor::findFirstById($this->sample['contributor']['id']);
+                $roles['decoder'] = Decoder::findFirstById($this->sample['decoder']['id']);
+                $roles['invigilator'] = Invigilator::findFirstById($this->sample['invigilator']['id']);
+                $roles['student'] = Student::findFirstById($this->sample['student']['id']);
+                $roles['corrector'] = Corrector::findFirstById($this->sample['corrector']['id']);
 
                 // 
                 // Inject unauthenticated user:
@@ -288,7 +300,7 @@ class TestModelAccess extends TestModelBasic
                 // Reset roles user:
                 // 
                 $role = $this->user->setPrimaryRole(null);
-                $this->setAllRolesUser($roles, 'user1');
+                $this->setAllRolesUser($roles, $this->caller);
                 $this->user->setPrimaryRole($role);
 
                 foreach ($roles as $role => $object) {

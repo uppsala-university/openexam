@@ -27,11 +27,6 @@ class ResultModel extends Result
 class ResultTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */
@@ -50,8 +45,9 @@ class ResultTest extends TestCase
         public function testProperties()
         {
                 $values = array(
-                        'answer_id' => Answer::findFirst()->id,
-                        'score'     => 3.5
+                        'answer_id'    => Answer::findFirst()->id,
+                        'corrector_id' => Corrector::findFirst()->id,
+                        'score'        => 3.5
                 );
 
                 try {
@@ -70,9 +66,10 @@ class ResultTest extends TestCase
                 }
 
                 $values = array(
-                        'answer_id' => Answer::findFirst()->id,
-                        'score'     => 3.5,
-                        'comment'   => 'Comment1'
+                        'answer_id'    => Answer::findFirst()->id,
+                        'corrector_id' => Corrector::findFirst()->id,
+                        'score'        => 3.5,
+                        'comment'      => 'Comment1'
                 );
                 try {
                         $helper = new TestModelBasic(new Result());
@@ -83,6 +80,7 @@ class ResultTest extends TestCase
 
                 $values = array(
                         'answer_id'    => Answer::findFirst()->id,
+                        'corrector_id' => Corrector::findFirst()->id,
                         'score'        => 3.5,
                         'comment'      => 'Comment1',
                         'non_existing' => 666

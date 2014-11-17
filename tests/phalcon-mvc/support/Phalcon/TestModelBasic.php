@@ -96,7 +96,7 @@ class TestModelBasic extends TestCase
                         $values['created'] = $this->object->created;
                 }
                 foreach ($values as $name => $value) {
-                        self::assertEquals($value, $this->object->$name);
+                        self::assertEquals($value, $this->object->$name, sprintf("name: %s, value: %s, object: %s", $name, $value, $this->object->$name));
                 }
 
                 if ($this->object->update() == false) {

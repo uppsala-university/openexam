@@ -27,11 +27,6 @@ class QuestionModel extends Question
 class QuestionTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */
@@ -69,7 +64,7 @@ class QuestionTest extends TestCase
                         'score'    => 3.5,
                         'name'     => 'name1',
                         'quest'    => 'quest1',
-                        'user'     => 'user1'
+                        'user'     => $this->caller
                 );
 
                 try {
@@ -132,7 +127,7 @@ class QuestionTest extends TestCase
                         'score'    => 3.5,
                         'name'     => 'name1',
                         'quest'    => 'quest1',
-                        'user'     => 'user1',
+                        'user'     => $this->caller,
                         'status'   => 'unknown' // should fail at validation
                 );
                 try {

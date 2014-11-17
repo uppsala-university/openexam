@@ -2,7 +2,6 @@
 
 namespace OpenExam\Library\Security;
 
-use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Question;
 use OpenExam\Models\Topic;
@@ -28,6 +27,7 @@ class RolesTest extends TestCase
          */
         protected function setUp()
         {
+                parent::setUp();
                 $this->object = new Roles();
                 print_r($this->object->user, true);
         }
@@ -295,8 +295,8 @@ class RolesTest extends TestCase
                     Roles::ADMIN,
                     Roles::STUDENT
                 ) as $role) {
-                        self::assertFalse($this->object->aquire($role));
-                        self::assertFalse($this->object->aquire($role, 1));
+                        self::assertFalse($this->object->aquire($role), "role: $role");
+                        self::assertFalse($this->object->aquire($role, 1), "role: $role");
                 }
                 $this->object->clear();
 
@@ -340,6 +340,13 @@ class RolesTest extends TestCase
                 if ($exam->create() === false) {
                         self::error(print_r($exam->getMessages(), true));
                 }
+
+                if ($principal != $exam->creator) {
+                        $principal = $exam->creator;
+                        $this->di->set('user', new User($principal));
+                }
+
+                self::assertEquals($principal, $exam->creator);
 
                 $this->checkAquireExamRole($principal, $exam, Roles::CREATOR, null);
                 $this->checkAquireExamRole($principal, $exam, Roles::CONTRIBUTOR, '\OpenExam\Models\Contributor');
@@ -462,6 +469,7 @@ class RolesTest extends TestCase
                 $qmodel->exam_id = $exam->id;
                 $qmodel->topic_id = $tmodel->id;
                 $qmodel->score = 0.0;
+                $qmodel->user = $user;
                 $qmodel->name = "Question 1";
                 $qmodel->quest = "Body";
                 if ($qmodel->create() == false) {
@@ -469,19 +477,7 @@ class RolesTest extends TestCase
                 }
                 self::dump($qmodel);
 
-                self::assertFalse($this->object->aquire($role));
-                self::assertFalse($this->object->aquire($role, 0));
-                self::assertFalse($this->object->aquire($role, $qmodel->id));
-                self::info("[roles: '%s']\n", $this->object);
-
-                $cmodel = new Corrector();
-                $cmodel->question_id = $qmodel->id;
-                $cmodel->user = $user;
-                if ($cmodel->create() == false) {
-                        self::error(implode("\n", $cmodel->getMessages()));
-                }
-                self::dump($cmodel);
-
+                self::assertEquals($user, $qmodel->user);
                 self::assertTrue($this->object->aquire($role));
                 self::assertTrue($this->object->aquire($role, 0));
                 self::assertTrue($this->object->aquire($role, $qmodel->id));
@@ -490,7 +486,6 @@ class RolesTest extends TestCase
                 self::assertFalse($this->object->aquire($role, $exam->id + 1));
                 self::info("[roles: '%s']\n", $this->object);
 
-                $cmodel->delete();
                 $qmodel->delete();
                 $tmodel->delete();
         }

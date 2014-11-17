@@ -15,7 +15,6 @@ class DecoderModel extends Decoder
 
         public function initialize()
         {
-
                 parent::initialize();
         }
 
@@ -27,11 +26,6 @@ class DecoderModel extends Decoder
  */
 class DecoderTest extends TestCase
 {
-
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
 
         /**
          * @group model
@@ -52,7 +46,7 @@ class DecoderTest extends TestCase
         {
                 $values = array(
                         'exam_id' => Exam::findFirst()->id,
-                        'user'    => 'user1@example.com'
+                        'user'    => $this->caller
                 );
 
                 try {
@@ -72,7 +66,7 @@ class DecoderTest extends TestCase
 
                 $values = array(
                         'exam_id'      => Exam::findFirst()->id,
-                        'user'         => 'user1@example.com',
+                        'user'         => $this->caller,
                         'non_existing' => 666   // ignored wihout error
                 );
                 try {

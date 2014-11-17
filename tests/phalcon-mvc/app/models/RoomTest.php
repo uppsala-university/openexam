@@ -26,11 +26,6 @@ class RoomModel extends Room
 class RoomTest extends TestCase
 {
 
-        protected function setUp()
-        {
-                $this->getDI()->get('user')->setPrimaryRole(null);
-        }
-
         /**
          * @group model
          */
