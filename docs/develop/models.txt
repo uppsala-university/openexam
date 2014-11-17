@@ -47,4 +47,17 @@ Phalcon devtools.
    access control by the model while performing trusted operations, like accessing the 
    model for checking roles.
 
+** Behavior:
+
+   o) Creating an exam triggers these builtin side effects:
+
+        1. The caller (creator) is added as contributor on that exam.
+        2. The caller (creator) is added as decoder on that exam.
+        3. A default topic (named default) gets created.
+
+   o) Creating an question triggers these builtin side effects:
+
+        1. The caller (question publisher) is automatic added as corrector of 
+           that question.
+
 // Anders Lövgren, 2014-09-10

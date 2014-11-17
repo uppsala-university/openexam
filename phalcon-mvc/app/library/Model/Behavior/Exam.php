@@ -42,6 +42,11 @@ class Exam extends ModelBehavior
                                 $role->user = $user->getPrincipalName();
                                 $role->exam_id = $model->id;
                                 $role->save();
+                                
+                                $topic = new \OpenExam\Models\Topic();
+                                $topic->name = 'default';
+                                $topic->exam_id = $model->id;
+                                $topic->save();
                         }, $model->getDI());
                 }
 

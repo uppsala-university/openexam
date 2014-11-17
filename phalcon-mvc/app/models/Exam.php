@@ -4,6 +4,7 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Core\Exam\Grades;
 use OpenExam\Library\Core\Exam\State;
+use OpenExam\Library\Model\Behavior\Exam as ExamBehavior;
 use OpenExam\Library\Model\Behavior\Ownership;
 use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Security\Roles;
@@ -177,6 +178,8 @@ class Exam extends ModelBase
                                 'force' => false
                         )
                 )));
+                
+                $this->addBehavior(new ExamBehavior());
         }
 
         /**
