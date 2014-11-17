@@ -263,6 +263,7 @@ class UnittestTask extends MainTask
                                 }
                         $class = sprintf("OpenExam\Models\%s", ucfirst($m));
                         $model = new $class();
+                        $model->setDI($this->getDI());
                         if (!$model->save($a)) {
                                 $this->flash->error(sprintf("Failed save model for %s", $model->getSource()));
                                 foreach ($model->getMessages() as $message) {

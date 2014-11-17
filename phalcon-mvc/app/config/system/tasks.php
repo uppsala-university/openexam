@@ -64,10 +64,11 @@ $di->set('flash', function() {
 // Set authenticated user to task runner:
 // 
 if (extension_loaded('posix')) {
-        $pwent = posix_getpwuid(posix_geteuid());
-        $di->set('user', new \OpenExam\Library\Security\User($pwent['name'], gethostname()));
+        $di->set('user', new \OpenExam\Library\Security\User(
+            posix_getpwuid(posix_geteuid())['name'], gethostname()
+        ));
 } else {
-        $di->set('user', new \OpenExam\Library\Security\User(get_current_user(), gethostname()));
+        $di->set('user', new \OpenExam\Library\Security\User(
+            get_current_user(), gethostname()
+        ));
 }
-
-// Phalcon\DI::setDefault($di);
