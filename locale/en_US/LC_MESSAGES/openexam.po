@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-11-12 14:50+0100\n"
-"PO-Revision-Date: 2014-11-12 15:00+0100\n"
+"POT-Creation-Date: 2014-11-19 14:51+0100\n"
+"PO-Revision-Date: 2014-11-19 14:52+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -200,8 +200,8 @@ msgstr "System"
 #: source/teacher/decoder.php:216 source/teacher/export.php:251
 #: source/teacher/export.php:255 source/teacher/correct.php:193
 #: source/teacher/correct.php:196 source/teacher/correct.php:362
-#: source/teacher/examinator.php:206 source/teacher/manager.php:649
-#: source/teacher/manager.php:653 source/teacher/template.php:103
+#: source/teacher/examinator.php:206 source/teacher/manager.php:686
+#: source/teacher/manager.php:690 source/teacher/template.php:103
 #: source/media/index.php:454
 msgid "Access denied!"
 msgstr "Access denied!"
@@ -227,7 +227,7 @@ msgid "Page $PAGE of $PAGES"
 msgstr "Page $PAGE of $PAGES"
 
 #: include/pdf.inc:342 source/admin/exams.php:227 source/admin/exams.php:365
-#: source/teacher/manager.php:217 source/teacher/manager.php:289
+#: source/teacher/manager.php:218 source/teacher/manager.php:290
 msgid "Description"
 msgstr "Description"
 
@@ -245,7 +245,7 @@ msgstr "Summary"
 msgid "You scored total %.01f of maximum %.01f points (%.01f%%) on this examination."
 msgstr "You scored total %.01f of maximum %.01f points (%.01f%%) on this examination."
 
-#: include/pdf.inc:363 source/teacher/manager.php:245
+#: include/pdf.inc:363 source/teacher/manager.php:246
 msgid "Graduation"
 msgstr "Graduation"
 
@@ -297,7 +297,7 @@ msgid "Notice"
 msgstr "Notice"
 
 #: include/pdf.inc:383 source/teacher/contribute.php:737
-#: source/teacher/manager.php:534
+#: source/teacher/manager.php:535
 msgid "Removed"
 msgstr "Removed"
 
@@ -495,7 +495,7 @@ msgstr "Properties"
 #: include/teacher.inc:188 include/teacher.inc:698 include/teacher.inc:701
 #: source/teacher/contribute.php:767 source/teacher/contribute.php:784
 #: source/teacher/contribute.php:795 source/teacher/examinator.php:669
-#: source/teacher/manager.php:529 source/teacher/manager.php:556
+#: source/teacher/manager.php:530 source/teacher/manager.php:557
 #: source/media/index.php:251 source/media/index.php:277
 msgid "Delete"
 msgstr "Delete"
@@ -539,7 +539,7 @@ msgstr "Correct answers"
 
 #: include/teacher.inc:246 source/exam/index.php:194
 #: source/teacher/contribute.php:764 source/teacher/export.php:203
-#: source/teacher/manager.php:509
+#: source/teacher/manager.php:510
 msgid "Questions"
 msgstr "Questions"
 
@@ -575,6 +575,7 @@ msgid "Examination"
 msgstr "Examination"
 
 #: include/teacher.inc:294 source/teacher/topmenu.menu:34
+#: source/teacher/manager.php:587
 msgid "Correction"
 msgstr "Correction"
 
@@ -649,8 +650,8 @@ msgstr "State"
 #: source/admin/admin.php:140 source/admin/teacher.php:144
 #: source/admin/exams.php:220 source/admin/exams.php:332
 #: source/teacher/contribute.php:384 source/teacher/contribute.php:662
-#: source/teacher/examinator.php:521 source/teacher/manager.php:211
-#: source/teacher/manager.php:288 source/media/index.php:264
+#: source/teacher/examinator.php:521 source/teacher/manager.php:212
+#: source/teacher/manager.php:289 source/media/index.php:264
 msgid "Name"
 msgstr "Name"
 
@@ -680,7 +681,7 @@ msgstr "Examinations"
 
 #: include/teacher.inc:589 source/teacher/contribute.php:574
 #: source/teacher/contribute.php:768 source/teacher/examinator.php:273
-#: source/teacher/manager.php:441 source/teacher/manager.php:513
+#: source/teacher/manager.php:442 source/teacher/manager.php:514
 msgid "Import"
 msgstr "Import"
 
@@ -691,9 +692,9 @@ msgstr "Creates a new examination by importing an OpenExam project."
 #: include/teacher.inc:590 include/teacher.inc:828 include/teacher.inc:1056
 #: source/teacher/contribute.php:769 source/teacher/contribute.php:785
 #: source/teacher/examinator.php:285 source/teacher/examinator.php:658
-#: source/teacher/manager.php:470 source/teacher/manager.php:485
-#: source/teacher/manager.php:499 source/teacher/manager.php:512
-#: source/teacher/manager.php:550 source/teacher/manager.php:584
+#: source/teacher/manager.php:471 source/teacher/manager.php:486
+#: source/teacher/manager.php:500 source/teacher/manager.php:513
+#: source/teacher/manager.php:551 source/teacher/manager.php:621
 #: source/media/index.php:241 source/media/index.php:245
 #: source/media/index.php:294 source/media/index.php:437
 msgid "Add"
@@ -710,7 +711,7 @@ msgstr "Upcoming"
 
 #: include/teacher.inc:605 include/teacher.inc:749 include/teacher.inc:874
 #: include/teacher.inc:983 source/teacher/contribute.php:736
-#: source/teacher/manager.php:519 source/media/index.php:407
+#: source/teacher/manager.php:520 source/media/index.php:407
 msgid "Active"
 msgstr "Active"
 
@@ -735,7 +736,7 @@ msgstr "Ordered by start time"
 
 #: include/teacher.inc:692 source/admin/exams.php:315
 #: source/admin/exams.php:360 source/teacher/export.php:216
-#: source/teacher/manager.php:460
+#: source/teacher/manager.php:461
 msgid "Export"
 msgstr "Export"
 
@@ -743,21 +744,21 @@ msgstr "Export"
 msgid "Open the page for selecting the export options."
 msgstr "Open the page for selecting the export options."
 
-#: include/teacher.inc:694 source/teacher/manager.php:461
+#: include/teacher.inc:694 source/teacher/manager.php:462
 msgid "Copy"
 msgstr "Copy"
 
-#: include/teacher.inc:694 source/teacher/manager.php:461
+#: include/teacher.inc:694 source/teacher/manager.php:462
 msgid "Create a new examination by using this examination as a template."
 msgstr "Create a new examination by using this examination as a template."
 
 #: include/teacher.inc:695 source/teacher/contribute.php:783
-#: source/teacher/contribute.php:792 source/teacher/manager.php:462
-#: source/teacher/manager.php:526
+#: source/teacher/contribute.php:792 source/teacher/manager.php:463
+#: source/teacher/manager.php:527
 msgid "Edit"
 msgstr "Edit"
 
-#: include/teacher.inc:695 source/teacher/manager.php:462
+#: include/teacher.inc:695 source/teacher/manager.php:463
 msgid "Edit common properties like name, description or grades for this examination."
 msgstr "Edit common properties like name, description or grades for this examination."
 
@@ -1167,7 +1168,7 @@ msgstr "Delete this test case and return to the examination manager."
 msgid "Cancel"
 msgstr "Cancel"
 
-#: source/exam/index.php:183 source/teacher/manager.php:548
+#: source/exam/index.php:183 source/teacher/manager.php:549
 msgid "Resources"
 msgstr "Resources"
 
@@ -1179,8 +1180,8 @@ msgstr "Answered"
 #: source/admin/exams.php:313 source/teacher/contribute.php:751
 #: source/teacher/decoder.php:202 source/teacher/decoder.php:560
 #: source/teacher/export.php:148 source/teacher/correct.php:430
-#: source/teacher/examinator.php:342 source/teacher/manager.php:516
-#: source/teacher/manager.php:555 source/media/index.php:366
+#: source/teacher/examinator.php:342 source/teacher/manager.php:517
+#: source/teacher/manager.php:556 source/media/index.php:366
 msgid "Show"
 msgstr "Show"
 
@@ -1401,7 +1402,7 @@ msgstr "Start"
 
 #: source/exam/topmenu.menu:19 source/result/topmenu.menu:19
 #: source/admin/topmenu.menu:19 source/teacher/decoder.php:193
-#: source/teacher/manager.php:256 source/topmenu.menu:19
+#: source/teacher/manager.php:257 source/topmenu.menu:19
 #: source/media/topmenu.menu:19
 msgid "Result"
 msgstr "Result"
@@ -1645,7 +1646,7 @@ msgstr "Comment"
 #: source/teacher/correct.php:381 source/teacher/correct.php:460
 #: source/teacher/correct.php:507 source/teacher/examinator.php:238
 #: source/teacher/examinator.php:310 source/teacher/examinator.php:409
-#: source/teacher/examinator.php:431 source/teacher/manager.php:273
+#: source/teacher/examinator.php:431 source/teacher/manager.php:274
 msgid "Submit"
 msgstr "Submit"
 
@@ -1871,7 +1872,7 @@ msgstr "Contribute Page"
 
 #: source/teacher/contribute.php:231 source/teacher/decoder.php:216
 #: source/teacher/export.php:251 source/teacher/examinator.php:206
-#: source/teacher/manager.php:649 source/teacher/template.php:103
+#: source/teacher/manager.php:686 source/teacher/template.php:103
 #: source/media/index.php:454
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
@@ -2053,7 +2054,7 @@ msgid "Currently, this is the list of question banks can be imported: "
 msgstr "Currently, this is the list of question banks can be imported: "
 
 #: source/teacher/contribute.php:573 source/teacher/examinator.php:357
-#: source/teacher/manager.php:440
+#: source/teacher/manager.php:441
 msgid "Filename"
 msgstr "Filename"
 
@@ -2562,7 +2563,7 @@ msgstr "Topics"
 msgid "Results"
 msgstr "Results"
 
-#: source/teacher/export.php:255 source/teacher/manager.php:653
+#: source/teacher/export.php:255 source/teacher/manager.php:690
 msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 msgstr "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 
@@ -2710,7 +2711,7 @@ msgid "This page let you reschedule the start and end time of the examination."
 msgstr "This page let you reschedule the start and end time of the examination."
 
 #: source/teacher/examinator.php:229 source/teacher/examinator.php:235
-#: source/teacher/manager.php:232 source/teacher/manager.php:238
+#: source/teacher/manager.php:233 source/teacher/manager.php:239
 msgid "Calendar icon"
 msgstr "Calendar icon"
 
@@ -2926,192 +2927,201 @@ msgstr "Properties:"
 msgid "Click on this link to remove student %s from the exam."
 msgstr "Click on this link to remove student %s from the exam."
 
-#: source/teacher/manager.php:100 source/teacher/manager.php:111
+#: source/teacher/manager.php:101 source/teacher/manager.php:112
 msgid "Examination Management"
 msgstr "Examination Management"
 
-#: source/teacher/manager.php:206
+#: source/teacher/manager.php:207
 msgid "Common Properties"
 msgstr "Common Properties"
 
-#: source/teacher/manager.php:208
+#: source/teacher/manager.php:209
 msgid "Organization"
 msgstr "Organization"
 
-#: source/teacher/manager.php:227
+#: source/teacher/manager.php:228
 msgid "Scheduling"
 msgstr "Scheduling"
 
-#: source/teacher/manager.php:229
+#: source/teacher/manager.php:230
 msgid "Start time"
 msgstr "Start time"
 
-#: source/teacher/manager.php:235
+#: source/teacher/manager.php:236
 msgid "End time"
 msgstr "End time"
 
-#: source/teacher/manager.php:249
+#: source/teacher/manager.php:250
 msgid "Input name:value pairs on separate lines defining the graduation levels on this examination. The first line must be on form name:0, denoting the failed grade."
 msgstr "Input name:value pairs on separate lines defining the graduation levels on this examination. The first line must be on form name:0, denoting the failed grade."
 
-#: source/teacher/manager.php:257
+#: source/teacher/manager.php:258
 msgid "Expose responsible people"
 msgstr "Expose responsible people"
 
-#: source/teacher/manager.php:258
+#: source/teacher/manager.php:259
 msgid "Expose names and contact information for people involved in the creation and correction process in the result PDF seen by the student."
 msgstr "Expose names and contact information for people involved in the creation and correction process in the result PDF seen by the student."
 
-#: source/teacher/manager.php:264
+#: source/teacher/manager.php:265
 msgid "Include other students statistics"
 msgstr "Include other students statistics"
 
-#: source/teacher/manager.php:265
+#: source/teacher/manager.php:266
 msgid "Include statistics like avarage/mean values and score distribution compared to other students in the result PDF seen by the student."
 msgstr "Include statistics like avarage/mean values and score distribution compared to other students in the result PDF seen by the student."
 
-#: source/teacher/manager.php:285
+#: source/teacher/manager.php:286
 #, php-format
 msgid "Define the common properties of the exam. Click on the 'Submit' button to create this exam."
 msgstr "Define the common properties of the exam. Click on the 'Submit' button to create this exam."
 
-#: source/teacher/manager.php:328
+#: source/teacher/manager.php:329
 #, php-format
 msgid "This page let you edit common properties of the exam. Click on the 'Submit' button to save changes."
 msgstr "This page let you edit common properties of the exam. Click on the 'Submit' button to save changes."
 
-#: source/teacher/manager.php:426
+#: source/teacher/manager.php:427
 msgid "Failed Import Examination"
 msgstr "Failed Import Examination"
 
-#: source/teacher/manager.php:431
+#: source/teacher/manager.php:432
 #, php-format
 msgid "This page let you create a new examination from an OpenExam project file exported earlier. "
 msgstr "This page let you create a new examination from an OpenExam project file exported earlier. "
 
-#: source/teacher/manager.php:432
+#: source/teacher/manager.php:433
 #, php-format
 msgid "Browse your local disk to select an file containing the OpenExam project to import. "
 msgstr "Browse your local disk to select an file containing the OpenExam project to import. "
 
-#: source/teacher/manager.php:460
+#: source/teacher/manager.php:461
 msgid "Export this examination including its questions as XML data."
 msgstr "Export this examination including its questions as XML data."
 
-#: source/teacher/manager.php:468
+#: source/teacher/manager.php:469
 msgid "Contributors"
 msgstr "Contributors"
 
-#: source/teacher/manager.php:470
+#: source/teacher/manager.php:471
 msgid "Add a question contributor to this examination."
 msgstr "Add a question contributor to this examination."
 
-#: source/teacher/manager.php:476 source/teacher/manager.php:491
-#: source/teacher/manager.php:503 source/teacher/manager.php:531
+#: source/teacher/manager.php:477 source/teacher/manager.php:492
+#: source/teacher/manager.php:504 source/teacher/manager.php:532
 msgid "Remove"
 msgstr "Remove"
 
-#: source/teacher/manager.php:476
+#: source/teacher/manager.php:477
 #, php-format
 msgid "Remove %s as a question contributor for this examination."
 msgstr "Remove %s as a question contributor for this examination."
 
-#: source/teacher/manager.php:483
+#: source/teacher/manager.php:484
 msgid "Examinators"
 msgstr "Examinators"
 
-#: source/teacher/manager.php:485 source/teacher/manager.php:499
+#: source/teacher/manager.php:486 source/teacher/manager.php:500
 msgid "Add a person with the examinator role."
 msgstr "Add a person with the examinator role."
 
-#: source/teacher/manager.php:491
+#: source/teacher/manager.php:492
 #, php-format
 msgid "Remove %s as an examinator for this examination."
 msgstr "Remove %s as an examinator for this examination."
 
-#: source/teacher/manager.php:498
+#: source/teacher/manager.php:499
 msgid "Decoders"
 msgstr "Decoders"
 
-#: source/teacher/manager.php:503
+#: source/teacher/manager.php:504
 #, php-format
 msgid "Remove %s as a decoder for this examination."
 msgstr "Remove %s as a decoder for this examination."
 
-#: source/teacher/manager.php:512
+#: source/teacher/manager.php:513
 msgid "Add a new question for this examination."
 msgstr "Add a new question for this examination."
 
-#: source/teacher/manager.php:513
+#: source/teacher/manager.php:514
 msgid "Import questions from file on disk."
 msgstr "Import questions from file on disk."
 
-#: source/teacher/manager.php:514
+#: source/teacher/manager.php:515
 msgid "Remove all"
 msgstr "Remove all"
 
-#: source/teacher/manager.php:514
+#: source/teacher/manager.php:515
 msgid "Remove all questions from this examination."
 msgstr "Remove all questions from this examination."
 
-#: source/teacher/manager.php:516
+#: source/teacher/manager.php:517
 msgid "Open the page showing all questions at once, where questions can be edited and previewed."
 msgstr "Open the page showing all questions at once, where questions can be edited and previewed."
 
-#: source/teacher/manager.php:526
+#: source/teacher/manager.php:527
 msgid "Edit properties for this question"
 msgstr "Edit properties for this question"
 
-#: source/teacher/manager.php:529
+#: source/teacher/manager.php:530
 msgid "Permanent delete this question"
 msgstr "Permanent delete this question"
 
-#: source/teacher/manager.php:531
+#: source/teacher/manager.php:532
 msgid "Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."
 msgstr "Flag this question as removed (not deleted permanent). Can later be restored from the removed list below."
 
-#: source/teacher/manager.php:539
+#: source/teacher/manager.php:540
 msgid "Restore"
 msgstr "Restore"
 
-#: source/teacher/manager.php:539
+#: source/teacher/manager.php:540
 msgid "Flag this question as active again"
 msgstr "Flag this question as active again"
 
-#: source/teacher/manager.php:555
+#: source/teacher/manager.php:556
 msgid "Show resource content"
 msgstr "Show resource content"
 
-#: source/teacher/manager.php:561
+#: source/teacher/manager.php:587 source/teacher/manager.php:590
+msgid "completed"
+msgstr "completed"
+
+#: source/teacher/manager.php:592
+#, php-format
+msgid "Remaining: %s"
+msgstr "Remaining: %s"
+
+#: source/teacher/manager.php:598
 #, php-format
 msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
 msgstr "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
 
-#: source/teacher/manager.php:562
+#: source/teacher/manager.php:599
 #, php-format
 msgid "Not all options might be available, i.e. its not possible to add questions to an already started examination."
 msgstr "Not all options might be available, i.e. its not possible to add questions to an already started examination."
 
-#: source/teacher/manager.php:565
+#: source/teacher/manager.php:602
 #, php-format
 msgid "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
 msgstr "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
 
-#: source/teacher/manager.php:583
+#: source/teacher/manager.php:620
 msgid "UU-ID"
 msgstr "UU-ID"
 
-#: source/teacher/manager.php:592
+#: source/teacher/manager.php:629
 #, php-format
 msgid "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
 msgstr "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
 
-#: source/teacher/manager.php:610
+#: source/teacher/manager.php:647
 #, php-format
 msgid "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
 msgstr "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
 
-#: source/teacher/manager.php:628
+#: source/teacher/manager.php:665
 #, php-format
 msgid "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
 msgstr "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
