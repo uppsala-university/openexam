@@ -772,6 +772,27 @@ class Manager
                 return new ResultSet($res);
         }
 
+        // 
+        // Get all evaluations for this exam. If id is set, then this single
+        // evaluation is returned.
+        // 
+        public function getEvaluations($id = 0)
+        {
+                $sql = sprintf("SELECT  id AS EvaluationID,
+                                        exam_id AS ExamID,
+                                        name AS EvaluationName,
+                                        link AS EvaluationLink,
+                                        starttime AS EvaluationStartTime,
+                                        endtime AS EvaluationEndTime
+                                FROM    evaluations
+                                WHERE   exam_id = %d", $this->exam);
+                if ($id != 0) {
+                        $sql .= " AND id = $id";
+                }
+                $res = Database::getConnection()->query($sql);
+                return new ResultSet($res);
+        }
+
         //
         // Get all questions associated with this exam, with optional filtering
         // on status. If status is null, then all question are returned.
@@ -929,6 +950,37 @@ class Manager
         public function deleteDecoder($user)
         {
                 $this->revokeExamRole($user, "decoder");
+        }
+
+        public function addEvaluation($name, $link, $start, $end)
+        {
+                $sql = sprintf("INSERT INTO evaluations(exam_id, name, link, starttime, endtime)
+                                VALUES(%d, '%s', '%s', '%s', '%s')", $this->exam, $name, $link, $start, $end);
+                $sql = str_replace("''", "null", $sql);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+        }
+
+        public function editEvaluation($id, $name, $link, $start, $end)
+        {
+                $sql = sprintf("UPDATE evaluations SET name = '%s', link = '%s', starttime = '%s', endtime = '%s'
+                                WHERE exam_id = %d AND id = %d", $name, $link, $start, $end, $this->exam, $id);
+                $sql = str_replace("''", "null", $sql);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+        }
+
+        public function deleteEvaluation($id)
+        {
+                $sql = sprintf("DELETE FROM evaluations WHERE id = %d AND exam_id = %d", $id, $this->exam);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
         }
 
         //

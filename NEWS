@@ -2,6 +2,10 @@ Version 1.5.9 (2014-11-19):
 
         * Show correction status for finished exams on exam manager page.
 
+        * Adding support for linking an exam to external evaluation tools.
+          Accessed by student from evaluation tab. The evaluation links are managed 
+          by the exam creator.
+
 Version 1.5.8 (2014-11-12):
 
         * Major rework in import/export functionality. Added import of students

@@ -84,6 +84,9 @@ class Exam
                 return new ResultSet($res);
         }
 
+        // 
+        // Get all finished exams where user is a student.
+        // 
         public function getFinishedExams($user)
         {
                 $now = date('Y-m-d H:i:s');
@@ -101,6 +104,33 @@ class Exam
                                 WHERE   s.user = '%s' AND
                                         s.exam_id = e.id AND
                                         '%s' >= e.endtime", $user, $now);
+                $res = Database::getConnection()->query($sql);
+                return new ResultSet($res);
+        }
+
+        // 
+        // Get all exams for student having evaluations.
+        // 
+        public function getEvaluations($user)
+        {
+                $now = date('Y-m-d H:i:s');
+                $sql = sprintf("SELECT  e.id AS EvaluationID,
+                                        x.id AS ExamID,
+                                        s.id AS StudentID,
+                                        e.name AS EvaluationName,
+                                        e.link AS EvaluationLink,
+                                        e.starttime AS EvaluationStartTime,
+                                        e.endtime AS EvaluationEndTime,
+                                        x.name AS ExamName,
+                                        x.starttime AS ExamStartTime,
+                                        x.endtime AS ExamEndTime
+                                FROM    evaluations e, exams x, students s 
+                                WHERE   s.user = '%s' AND
+                                        e.exam_id = x.id AND 
+                                        s.exam_id = x.id AND 
+                                        (e.starttime < '%s' OR e.starttime IS NULL) AND 
+                                        (e.endtime > '%s' OR e.endtime IS NULL)
+                                ORDER BY ExamStartTime", $user, $now, $now);
                 $res = Database::getConnection()->query($sql);
                 return new ResultSet($res);
         }

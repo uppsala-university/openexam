@@ -84,11 +84,13 @@ class ManagerPage extends TeacherPage
                 "action"  => "/^(add|edit|show|copy|test|delete|cancel|finish|export|import)$/",
                 "role"    => "/^(contributor|examinator|decoder)$/",
                 "type"    => "/^(op)$/",
+                "eval"    => parent::pattern_index, // evaluation id
                 "user"    => parent::pattern_index,
                 "uuid"    => parent::pattern_user, // username
                 "name"    => parent::pattern_name, // person name
                 "unit"    => parent::pattern_textline, // organization unit
                 "desc"    => parent::pattern_textarea, // exam description
+                "link"    => parent::pattern_url, // evaluation link
                 "grade"   => parent::pattern_textarea, // grades
                 "details" => parent::pattern_textline,
                 "start"   => parent::pattern_textline, // start date/time
@@ -151,6 +153,14 @@ class ManagerPage extends TeacherPage
                                                 } elseif ($this->param->action == "delete") {
                                                         $this->deleteDecoder();
                                                 }
+                                        }
+                                } elseif (isset($this->param->eval)) {
+                                        if ($this->param->action == "add") {
+                                                $this->addEvaluation(isset($this->param->link));
+                                        } elseif ($this->param->action == "edit") {
+                                                $this->editEvaluation(isset($this->param->link));
+                                        } elseif ($this->param->action == "delete") {
+                                                $this->deleteEvaluation();
                                         }
                                 } else {
                                         if ($this->param->action == "show") {
@@ -559,6 +569,23 @@ class ManagerPage extends TeacherPage
                 }
 
                 // 
+                // Build the evaluations node. This node contains the
+                // evaluations added to this exam.
+                // 
+                $child = $root->addChild(_("Evaluations"));
+                $child->addLink(_("Add"), sprintf("?exam=%d&amp;action=add&amp;eval=1", $data->getExamID()), _("Add an evaluation to this exam."));
+                $evaluations = $this->manager->getEvaluations();
+                foreach ($evaluations as $evaluation) {
+                        if (!$evaluation->hasEvaluationName()) {
+                                $subobj = $child->addChild($evaluation->getEvaluationLink());
+                        } else {
+                                $subobj = $child->addChild($evaluation->getEvaluationName());
+                        }
+                        $subobj->addLink(_("Edit"), sprintf("?exam=%d&amp;action=edit&amp;eval=%d", $evaluation->getExamID(), $evaluation->getEvaluationID()), sprintf(_("Edit this evaluation.")));
+                        $subobj->addLink(_("Remove"), sprintf("?exam=%d&amp;action=delete&amp;eval=%d", $evaluation->getExamID(), $evaluation->getEvaluationID()), sprintf(_("Remove evaluation this examination.")));
+                }
+
+                // 
                 // Build the correction status node. This node contains the
                 // correction status grouped by correctors.
                 // 
@@ -583,7 +610,7 @@ class ManagerPage extends TeacherPage
                                         $status['u'][$entry->getQuestionPublisher()]['u'][$entry->getQuestionID()] = $entry->getQuestionName();
                                 }
                         }
-                        
+
                         $child = $root->addChild(sprintf("%s (%00d%% %s)", _("Correction"), 100 * $status['a']['c'] / $status['a']['t'], _("completed")));
                         foreach ($status['u'] as $user => $s) {
                                 $subobj = $child->addChild($this->getFormatName($user));
@@ -673,6 +700,63 @@ class ManagerPage extends TeacherPage
         private function deleteDecoder()
         {
                 $this->manager->deleteDecoder($this->param->user);
+                header(sprintf("location: manager.php?exam=%d", $this->param->exam));
+        }
+
+        private function showEvaluation($action, $text, $data)
+        {
+                if (isset($data['evaluationstarttime'])) {
+                        $data['evaluationstarttime'] = DataRecord::formatDateTime($data['evaluationstarttime']);
+                }
+                if (isset($data['evaluationendtime'])) {
+                        $data['evaluationendtime'] = DataRecord::formatDateTime($data['evaluationendtime']);
+                }
+                
+                printf("<p>%s %s</p>\n", $text, _("The name, start and end time is optional. "));
+                $form = new Form("manager.php", "GET");
+                $form->addHidden("exam", $this->param->exam);
+                $form->addHidden("eval", $data['evaluationid']);
+                $form->addHidden("action", $action);
+                $input = $form->addTextBox("name", $data['evaluationname']);
+                $input->setLabel(_("Name"));
+                $input = $form->addTextBox("link", $data['evaluationlink']);
+                $input->setLabel(_("Link"));
+                $input = $form->addTextBox("start", $data['evaluationstarttime']);
+                $input->setLabel(_("Starttime"));
+                $input = $form->addTextBox("end", $data['evaluationendtime']);
+                $input->setLabel(_("Endtime"));
+                $form->addSubmitButton("submit", _(ucfirst($action)));
+                $form->output();
+        }
+
+        private function addEvaluation($store)
+        {
+                if (!$store) {
+                        $this->showEvaluation(
+                            "add", _("Add an evaluation to this exam."), array('evaluationid' => 0, 'evaluationname' => null, 'evaluationlink' => 'http://www.example.com', 'evaluationstarttime' => null, 'evaluationendtime' => null)
+                        );
+                } else {
+                        $this->manager->addEvaluation($this->param->name, $this->param->link, $this->param->start, $this->param->end);
+                        header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
+                }
+        }
+
+        private function editEvaluation($store)
+        {
+                if (!$store) {
+                        $data = $this->manager->getEvaluations($this->param->eval)->current()->data();
+                        $this->showEvaluation(
+                            "edit", _("Edit this evaluation."), $data
+                        );
+                } else {
+                        $this->manager->editEvaluation($this->param->eval, $this->param->name, $this->param->link, $this->param->start, $this->param->end);
+                        header(sprintf("location: manager.php?exam=%d&action=show", $this->param->exam));
+                }
+        }
+
+        private function deleteEvaluation()
+        {
+                $this->manager->deleteEvaluation($this->param->eval);
                 header(sprintf("location: manager.php?exam=%d", $this->param->exam));
         }
 

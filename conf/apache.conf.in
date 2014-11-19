@@ -90,3 +90,16 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
   RewriteCond %{HTTPS} off
   RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
 </Directory>
+
+# The directory from where students can connect to external evaluation tools.
+# This URL should probably be accessable from anywhere.
+<Directory /var/www/localhost/apps/openexam-php/source/evaluation/>
+  Order deny,allow
+  Deny from all
+  Allow from 127.0.0.1 ::1 192.168. 10. 169.254.
+
+  # Enforce HTTPS connection:
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI}
+</Directory>

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.70, for pc-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.39, for Linux (x86_64)
 --
--- Host: localhost    Database: openexam
+-- Host: localhost    Database: openexamv1
 -- ------------------------------------------------------
--- Server version	5.1.70-log
+-- Server version	5.5.39-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -104,6 +104,26 @@ CREATE TABLE `decoders` (
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   CONSTRAINT `decoders_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `evaluations`
+--
+
+DROP TABLE IF EXISTS `evaluations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `evaluations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `exam_id` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `link` varchar(255) NOT NULL,
+  `starttime` datetime DEFAULT NULL,
+  `endtime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `exam_id` (`exam_id`),
+  CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -303,4 +323,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-04-02 20:01:59
+-- Dump completed on 2014-11-19 17:35:13
