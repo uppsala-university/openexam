@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-11-19 15:10+0100\n"
+"POT-Creation-Date: 2014-11-19 15:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -201,8 +201,8 @@ msgstr ""
 #: source/teacher/decoder.php:216 source/teacher/export.php:251
 #: source/teacher/export.php:255 source/teacher/correct.php:193
 #: source/teacher/correct.php:196 source/teacher/correct.php:362
-#: source/teacher/examinator.php:206 source/teacher/manager.php:688
-#: source/teacher/manager.php:692 source/teacher/template.php:103
+#: source/teacher/examinator.php:206 source/teacher/manager.php:686
+#: source/teacher/manager.php:690 source/teacher/template.php:103
 #: source/media/index.php:454
 msgid "Access denied!"
 msgstr ""
@@ -576,7 +576,7 @@ msgid "Examination"
 msgstr ""
 
 #: include/teacher.inc:294 source/teacher/topmenu.menu:34
-#: source/teacher/manager.php:589
+#: source/teacher/manager.php:587
 msgid "Correction"
 msgstr ""
 
@@ -689,7 +689,7 @@ msgstr ""
 #: source/teacher/examinator.php:285 source/teacher/examinator.php:658
 #: source/teacher/manager.php:471 source/teacher/manager.php:486
 #: source/teacher/manager.php:500 source/teacher/manager.php:513
-#: source/teacher/manager.php:551 source/teacher/manager.php:623
+#: source/teacher/manager.php:551 source/teacher/manager.php:621
 #: source/media/index.php:241 source/media/index.php:245
 #: source/media/index.php:294 source/media/index.php:437
 msgid "Add"
@@ -1867,7 +1867,7 @@ msgstr ""
 
 #: source/teacher/contribute.php:231 source/teacher/decoder.php:216
 #: source/teacher/export.php:251 source/teacher/examinator.php:206
-#: source/teacher/manager.php:688 source/teacher/template.php:103
+#: source/teacher/manager.php:686 source/teacher/template.php:103
 #: source/media/index.php:454
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
@@ -2537,7 +2537,7 @@ msgstr ""
 msgid "Results"
 msgstr ""
 
-#: source/teacher/export.php:255 source/teacher/manager.php:692
+#: source/teacher/export.php:255 source/teacher/manager.php:690
 msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 msgstr ""
 
@@ -3057,45 +3057,45 @@ msgstr ""
 msgid "Show resource content"
 msgstr ""
 
-#: source/teacher/manager.php:589 source/teacher/manager.php:592
+#: source/teacher/manager.php:587 source/teacher/manager.php:590
 msgid "completed"
 msgstr ""
 
-#: source/teacher/manager.php:594
+#: source/teacher/manager.php:592
 #, php-format
 msgid "Remaining: %s"
 msgstr ""
 
-#: source/teacher/manager.php:600
+#: source/teacher/manager.php:598
 #, php-format
 msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
 msgstr ""
 
-#: source/teacher/manager.php:601
+#: source/teacher/manager.php:599
 #, php-format
 msgid "Not all options might be available, i.e. its not possible to add questions to an already started examination."
 msgstr ""
 
-#: source/teacher/manager.php:604
+#: source/teacher/manager.php:602
 #, php-format
 msgid "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
 msgstr ""
 
-#: source/teacher/manager.php:622
+#: source/teacher/manager.php:620
 msgid "UU-ID"
 msgstr ""
 
-#: source/teacher/manager.php:631
+#: source/teacher/manager.php:629
 #, php-format
 msgid "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
 msgstr ""
 
-#: source/teacher/manager.php:649
+#: source/teacher/manager.php:647
 #, php-format
 msgid "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
 msgstr ""
 
-#: source/teacher/manager.php:667
+#: source/teacher/manager.php:665
 #, php-format
 msgid "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
 msgstr ""

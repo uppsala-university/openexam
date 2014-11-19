@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-11-19 15:10+0100\n"
+"POT-Creation-Date: 2014-11-19 15:12+0100\n"
 "PO-Revision-Date: 2014-11-19 14:52+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
@@ -201,8 +201,8 @@ msgstr "System"
 #: source/teacher/decoder.php:216 source/teacher/export.php:251
 #: source/teacher/export.php:255 source/teacher/correct.php:193
 #: source/teacher/correct.php:196 source/teacher/correct.php:362
-#: source/teacher/examinator.php:206 source/teacher/manager.php:688
-#: source/teacher/manager.php:692 source/teacher/template.php:103
+#: source/teacher/examinator.php:206 source/teacher/manager.php:686
+#: source/teacher/manager.php:690 source/teacher/template.php:103
 #: source/media/index.php:454
 msgid "Access denied!"
 msgstr "Åtkomst nekad!"
@@ -576,7 +576,7 @@ msgid "Examination"
 msgstr "Examination"
 
 #: include/teacher.inc:294 source/teacher/topmenu.menu:34
-#: source/teacher/manager.php:589
+#: source/teacher/manager.php:587
 msgid "Correction"
 msgstr "Rättning"
 
@@ -695,7 +695,7 @@ msgstr "Skapar en ny examination genom att importera en OpenExam-projektfil."
 #: source/teacher/examinator.php:285 source/teacher/examinator.php:658
 #: source/teacher/manager.php:471 source/teacher/manager.php:486
 #: source/teacher/manager.php:500 source/teacher/manager.php:513
-#: source/teacher/manager.php:551 source/teacher/manager.php:623
+#: source/teacher/manager.php:551 source/teacher/manager.php:621
 #: source/media/index.php:241 source/media/index.php:245
 #: source/media/index.php:294 source/media/index.php:437
 msgid "Add"
@@ -1873,7 +1873,7 @@ msgstr "Sida för att bidra"
 
 #: source/teacher/contribute.php:231 source/teacher/decoder.php:216
 #: source/teacher/export.php:251 source/teacher/examinator.php:206
-#: source/teacher/manager.php:688 source/teacher/template.php:103
+#: source/teacher/manager.php:686 source/teacher/template.php:103
 #: source/media/index.php:454
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
@@ -2564,7 +2564,7 @@ msgstr "Ämnen"
 msgid "Results"
 msgstr "Resultat"
 
-#: source/teacher/export.php:255 source/teacher/manager.php:692
+#: source/teacher/export.php:255 source/teacher/manager.php:690
 msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 msgstr "Endast användare som fått rollen 'teacher' tilldelad eller som har rollen 'creator' för åtminstånde en examination har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
 
@@ -3084,45 +3084,45 @@ msgstr "Markera den här frågan som aktiv igen."
 msgid "Show resource content"
 msgstr "Visa resursens innehåll"
 
-#: source/teacher/manager.php:589 source/teacher/manager.php:592
+#: source/teacher/manager.php:587 source/teacher/manager.php:590
 msgid "completed"
 msgstr "färdigt"
 
-#: source/teacher/manager.php:594
+#: source/teacher/manager.php:592
 #, php-format
 msgid "Remaining: %s"
 msgstr "Återstående: %s"
 
-#: source/teacher/manager.php:600
+#: source/teacher/manager.php:598
 #, php-format
 msgid "This page let you add/delete contributors, examinators, decoders and questions from this exam. "
 msgstr "Denna sida låter dig lägg till/ta bort 'contributors', 'decoders', 'examinators' och frågor för denna examination. "
 
-#: source/teacher/manager.php:601
+#: source/teacher/manager.php:599
 #, php-format
 msgid "Not all options might be available, i.e. its not possible to add questions to an already started examination."
 msgstr "Vissa operationer kan saknas, t.ex. det är inte möjligt att lägga till frågor till en examination som redan startat."
 
-#: source/teacher/manager.php:604
+#: source/teacher/manager.php:602
 #, php-format
 msgid "For anonymity integrity reasons, people with the contributor role should not have the examinator role assigned on the same examination."
 msgstr "Av integritetsskäl rörande anonymitet bör inte personer med rollen contributor (bidragare) samtidigt inneha rollen som examinator på en och samma examination."
 
-#: source/teacher/manager.php:622
+#: source/teacher/manager.php:620
 msgid "UU-ID"
 msgstr "UU-ID"
 
-#: source/teacher/manager.php:631
+#: source/teacher/manager.php:629
 #, php-format
 msgid "Allow this user to contribute questions for the examination '%s' by granting he/she the 'contribute' role."
 msgstr "Tillåt denna användare att bidra med frågor till examinationen '%s' genom att tilldela honom/henne 'contribute' rollen."
 
-#: source/teacher/manager.php:649
+#: source/teacher/manager.php:647
 #, php-format
 msgid "Allow this user to add students for the examination '%s' by granting he/she the 'examinator' role."
 msgstr "Tillåt denna användare att lägga till studenter till examinationen '%s' genom att bevilja honom/henne 'examinator' rollen."
 
-#: source/teacher/manager.php:667
+#: source/teacher/manager.php:665
 #, php-format
 msgid "Allow this user to decode the real identity behind the students assigned for the examination '%s' by granting he/she the 'decoder' role."
 msgstr "Tillåt denna användare att avkoda den riktiga identiteten bakom studenter tillagda för examinationen '%s' genom att bevilja honom/henne 'decoder' rollen."

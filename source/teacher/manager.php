@@ -584,8 +584,6 @@ class ManagerPage extends TeacherPage
                                 }
                         }
                         
-                        print_r($status);
-
                         $child = $root->addChild(sprintf("%s (%00d%% %s)", _("Correction"), 100 * $status['a']['c'] / $status['a']['t'], _("completed")));
                         foreach ($status['u'] as $user => $s) {
                                 $subobj = $child->addChild($this->getFormatName($user));
