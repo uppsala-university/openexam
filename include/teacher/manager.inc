@@ -729,6 +729,21 @@ class Manager
                 return new ResultSet($res);
         }
 
+        // 
+        // Get all users granted corrector rights on this exam.
+        // 
+        public function getCorrectors()
+        {
+                $sql = sprintf("SELECT  id AS QuestionID
+                                        exam_id as ExamID
+                                        user AS CorrectorUser
+                                FROM    questions
+                                WHERE   exam_id = %d
+                                GROUP BY CorrectorUser", $this->exam);
+                $res = Database::getConnection()->query($sql);
+                return new ResultSet($res);
+        }
+
         //
         // Get all users granted examinator rights on this exam.
         //

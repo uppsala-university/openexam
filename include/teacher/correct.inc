@@ -182,7 +182,8 @@ class Correct
                                         s.code AS StudentCode,
                                         q.user AS QuestionPublisher, 
                                         q.score AS QuestionScore,
-                                        q.status AS QuestionStatus
+                                        q.status AS QuestionStatus,
+                                        q.name AS QuestionName
                                 FROM students s, questions q, answers a
                                         LEFT JOIN results r ON a.id = r.answer_id
                                 WHERE q.exam_id = %d 

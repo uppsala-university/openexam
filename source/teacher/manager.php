@@ -68,6 +68,7 @@ include "include/ldap.inc";
 include "include/teacher.inc";
 include "include/teacher/manager.inc";
 include "include/teacher/testcase.inc";
+include "include/teacher/correct.inc";
 include "include/export.inc";
 include "include/import.inc";
 include "include/media.inc";
@@ -554,6 +555,42 @@ class ManagerPage extends TeacherPage
                         if (!$info->isFinished()) {
                                 $subobj->addLink(_("Show"), $file->url, _("Show resource content"));
                                 $subobj->addLink(_("Delete"), sprintf("../media/index.php?exam=%d&action=delete&type=resource&file=%s", $this->param->exam, $file->name));
+                        }
+                }
+
+                // 
+                // Build the correction status node. This node contains the
+                // correction status grouped by correctors.
+                // 
+                if ($info->isFinished()) {
+                        $correct = new Correct($this->manager->getExamID());
+                        $scoreboard = $correct->getScoreBoard('active');
+
+                        $status = array('a' => array('u' => 0, 'c' => 0), 'q' => array());
+                        foreach ($scoreboard as $entry) {
+                                if ($entry->getAnswerExist() == 'N') {
+                                        continue;
+                                }
+                                if (!isset($status['u'][$entry->getQuestionPublisher()])) {
+                                        $status['u'][$entry->getQuestionPublisher()] = array('t' => 0, 'c' => 0, 'u' => array());
+                                }
+                                $status['a']['t'] ++;
+                                $status['u'][$entry->getQuestionPublisher()]['t'] ++;
+                                if ($entry->hasResultScore()) {
+                                        $status['u'][$entry->getQuestionPublisher()]['c'] ++;
+                                        $status['a']['c'] ++;
+                                } elseif (!in_array($entry->getQuestionID(), $status['u'][$entry->getQuestionPublisher()]['u'])) {
+                                        $status['u'][$entry->getQuestionPublisher()]['u'][] = $entry->getQuestionName();
+                                }
+                        }
+
+                        $child = $root->addChild(sprintf("%s (%00d%% %s)", _("Correction"), 100 * $status['a']['c'] / $status['a']['t'], _("completed")));
+                        foreach ($status['u'] as $user => $s) {
+                                $subobj = $child->addChild($this->getFormatName($user));
+                                $subobj->addChild(sprintf("%.00d%% %s", 100 * $s['c'] / $s['t'], _("completed")));
+                                if ($s['t'] != $s['c']) {
+                                        $subobj->addChild(sprintf(_("Remaining: %s"), implode(",", $s['u'])));
+                                }
                         }
                 }
 
