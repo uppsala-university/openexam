@@ -579,10 +579,12 @@ class ManagerPage extends TeacherPage
                                 if ($entry->hasResultScore()) {
                                         $status['u'][$entry->getQuestionPublisher()]['c'] ++;
                                         $status['a']['c'] ++;
-                                } elseif (!in_array($entry->getQuestionID(), $status['u'][$entry->getQuestionPublisher()]['u'])) {
-                                        $status['u'][$entry->getQuestionPublisher()]['u'][] = $entry->getQuestionName();
+                                } elseif (!in_array($entry->getQuestionID(), array_keys($status['u'][$entry->getQuestionPublisher()]['u']))) {
+                                        $status['u'][$entry->getQuestionPublisher()]['u'][$entry->getQuestionID()] = $entry->getQuestionName();
                                 }
                         }
+                        
+                        print_r($status);
 
                         $child = $root->addChild(sprintf("%s (%00d%% %s)", _("Correction"), 100 * $status['a']['c'] / $status['a']['t'], _("completed")));
                         foreach ($status['u'] as $user => $s) {
