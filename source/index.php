@@ -55,6 +55,11 @@ include "include/database.inc";
 include "include/locale.inc";
 
 // 
+// Include bussiness logic:
+//
+include "include/exam.inc";
+
+// 
 // This class implements a basic page.
 // 
 class IndexPage extends BasePage

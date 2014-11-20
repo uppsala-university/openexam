@@ -108,6 +108,24 @@ class Exam
                 return new ResultSet($res);
         }
 
+        public function hasEvaluations($user)
+        {
+                $now = date('Y-m-d H:i:s');
+                $sql = sprintf("SELECT  COUNT(e.id) AS num
+                                FROM    evaluations e, exams x, students s 
+                                WHERE   s.user = '%s' AND
+                                        e.exam_id = x.id AND 
+                                        s.exam_id = x.id AND 
+                                        (e.starttime < '%s' OR e.starttime IS NULL) AND 
+                                        (e.endtime > '%s' OR e.endtime IS NULL)", $user, $now, $now);
+                $res = Database::getConnection()->query($sql);
+                if (PEAR::isError($res)) {
+                        throw new DatabaseException($res->getMessage());
+                }
+                $row = $res->fetchRow();
+                return $row['num'] != 0;
+        }
+
         // 
         // Get all exams for student having evaluations.
         // 

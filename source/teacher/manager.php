@@ -711,21 +711,49 @@ class ManagerPage extends TeacherPage
                 if (isset($data['evaluationendtime'])) {
                         $data['evaluationendtime'] = DataRecord::formatDateTime($data['evaluationendtime']);
                 }
-                
+
                 printf("<p>%s %s</p>\n", $text, _("The name, start and end time is optional. "));
                 $form = new Form("manager.php", "GET");
                 $form->addHidden("exam", $this->param->exam);
                 $form->addHidden("eval", $data['evaluationid']);
                 $form->addHidden("action", $action);
+
                 $input = $form->addTextBox("name", $data['evaluationname']);
+                $input->setTitle(_("The name for this evaluation shown to students."));
                 $input->setLabel(_("Name"));
+                $input->setSize(40);
+                $input->setMaxLength(100);
+
                 $input = $form->addTextBox("link", $data['evaluationlink']);
                 $input->setLabel(_("Link"));
+                $input->setSize(40);
+                $input->setMaxLength(255);
+                $input->setTitle(_("Double-click to clear this textbox."));
+                $input->setEvent(EVENT_ON_DOUBLE_CLICK, EVENT_HANDLER_CLEAR_CONTENT);
+                $form->addSpace();
+
                 $input = $form->addTextBox("start", $data['evaluationstarttime']);
+                $input->setid("start");
                 $input->setLabel(_("Starttime"));
+                $input->setSize(40);
+                $input->setTitle(_("This date/time from which this evaluation will be open. If empty, then this evaluation will immediate available to students."));
+                $image = $form->addElement(new Image("../images/datetimepicker/cal.gif", _("Calendar icon")));
+                $image->setEvent(EVENT_ON_CLICK, "javascript:{NewCssCal('start','yyyymmdd','dropdown',true)}");
+
                 $input = $form->addTextBox("end", $data['evaluationendtime']);
+                $input->setid("end");
                 $input->setLabel(_("Endtime"));
-                $form->addSubmitButton("submit", _(ucfirst($action)));
+                $input->setSize(40);
+                $input->setTitle(_("The date/time when this evaluation will be closed. If empty, then this evaluation will be always available to students."));
+                $image = $form->addElement(new Image("../images/datetimepicker/cal.gif", _("Calendar icon")));
+                $image->setEvent(EVENT_ON_CLICK, "javascript:{NewCssCal('end','yyyymmdd','dropdown',true)}");
+                $form->addSpace();
+
+                $input = $form->addSubmitButton("submit", _(ucfirst($action)));
+                $input->setTitle(_("Submit data to server."));
+                $input->setLabel();
+                $input = $form->addResetButton("reset", _("Reset"));
+                $input->setTitle(_("Reset the form values."));
                 $form->output();
         }
 

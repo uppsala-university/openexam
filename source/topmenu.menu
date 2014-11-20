@@ -1,13 +1,12 @@
 <?php
 
-// -*- php -*-
-
 $rootdir = ".";
 switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
         case "admin":
         case "teacher":
         case "exam":
         case "result":
+        case "evaluation":
         case "media":
                 $rootdir = "..";
                 break;
