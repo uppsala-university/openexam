@@ -53,11 +53,14 @@ class Proxy
         {
                 $this->curl = curl_init();
 
+                $cookiejar = sprintf("%s/cookies_%s", sys_get_temp_dir(), $_SERVER['REMOTE_ADDR']);
+
                 curl_setopt($this->curl, CURLOPT_URL, $this->url);
                 curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
                 curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
+                curl_setopt($this->curl, CURLOPT_COOKIEJAR, $cookiejar);
 
                 $content = curl_exec($this->curl);
 
