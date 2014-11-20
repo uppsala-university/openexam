@@ -28,8 +28,6 @@ class Proxy
 {
 
         private $url;
-        private $curl;
-        private $info;
         private $debug = true;
 
         public function __construct($url)
@@ -51,33 +49,39 @@ class Proxy
 
         public function deliver()
         {
-                $this->curl = curl_init();
+                $curl = curl_init();
 
                 $cookiejar = sprintf("%s/cookies_%s", sys_get_temp_dir(), $_SERVER['REMOTE_ADDR']);
 
-                curl_setopt($this->curl, CURLOPT_URL, $this->url);
-                curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-                curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
-                curl_setopt($this->curl, CURLOPT_COOKIESESSION, true);
-                curl_setopt($this->curl, CURLOPT_COOKIEJAR, $cookiejar);
+                curl_setopt($curl, CURLOPT_URL, $this->url);
+                curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLINFO_HEADER_OUT, true);
+                curl_setopt($curl, CURLOPT_COOKIESESSION, true);
+                curl_setopt($curl, CURLOPT_COOKIEJAR, $cookiejar);
 
-                $content = curl_exec($this->curl);
+                $content = curl_exec($curl);
 
-                $this->info = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
-                $this->debug("content: $this->info");
+                $info = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+                $this->debug("content: $info");
 
-                if (preg_match("@(text/html|.*/javascript|text/css).*@", $this->info)) {
+                $redirect = curl_getinfo($curl, CURLINFO_REDIRECT_URL);
+                $this->debug("redirect: $redirect");
+
+                if ($redirect) {
+                        header("Location: $redirect");
+                }
+
+                if (preg_match("@(text/html|.*/javascript|text/css).*@", $info)) {
                         $content = $this->rewrite($content);
                 } else {
                         $this->debug("skipped: $this->url");
                 }
 
-                header(sprintf("Content-Type: %s\n", $this->info));
+                header(sprintf("Content-Type: %s\n", $info));
                 echo $content;
 
-                curl_close($this->curl);
+                curl_close($curl);
         }
 
         private function rewrite($content)
