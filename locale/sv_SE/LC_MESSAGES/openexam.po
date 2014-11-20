@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-11-19 19:41+0100\n"
-"PO-Revision-Date: 2014-11-19 19:49+0100\n"
+"POT-Creation-Date: 2014-11-20 10:21+0100\n"
+"PO-Revision-Date: 2014-11-20 10:27+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -117,7 +117,7 @@ msgstr "Kunde inte skapa symbolisk länk till existerande %s mediasektion"
 
 #: include/media.inc:225 include/media.inc:324 include/media.inc:381
 msgid "Failed create the media directory."
-msgstr "kunde inte skapa mediakatalogen."
+msgstr "Kunde inte skapa mediakatalogen."
 
 #: include/media.inc:242
 #, php-format
@@ -130,7 +130,7 @@ msgstr "Uppladdning av filer är inte tillåten av systemkonfigurationen."
 
 #: include/media.inc:333 include/media.inc:387
 msgid "Failed move uploaded file."
-msgstr "kunde inte flytta den uppladdade filen."
+msgstr "Kunde inte flytta den uppladdade filen."
 
 #: include/media.inc:366
 msgid "Unknown MIME-type of upload file."
@@ -201,8 +201,8 @@ msgstr "System"
 #: source/teacher/decoder.php:216 source/teacher/export.php:251
 #: source/teacher/export.php:255 source/teacher/correct.php:193
 #: source/teacher/correct.php:196 source/teacher/correct.php:362
-#: source/teacher/examinator.php:206 source/teacher/manager.php:770
-#: source/teacher/manager.php:774 source/teacher/template.php:103
+#: source/teacher/examinator.php:206 source/teacher/manager.php:798
+#: source/teacher/manager.php:802 source/teacher/template.php:103
 #: source/media/index.php:454
 msgid "Access denied!"
 msgstr "Åtkomst nekad!"
@@ -568,11 +568,11 @@ msgstr "Projekt"
 msgid "Contribute"
 msgstr "Bidra"
 
-#: include/teacher.inc:287 source/exam/topmenu.menu:18
-#: source/result/topmenu.menu:18 source/evaluation/topmenu.menu:18
-#: source/help.php:54 source/admin/topmenu.menu:18
-#: source/teacher/topmenu.menu:29 source/topmenu.menu:18
-#: source/media/topmenu.menu:18
+#: include/teacher.inc:287 source/exam/topmenu.menu:17
+#: source/result/topmenu.menu:17 source/evaluation/topmenu.menu:17
+#: source/help.php:54 source/admin/topmenu.menu:17
+#: source/teacher/topmenu.menu:29 source/topmenu.menu:17
+#: source/media/topmenu.menu:17
 msgid "Examination"
 msgstr "Examination"
 
@@ -619,7 +619,7 @@ msgid ""
 "Additional status flags:\n"
 "- %s\n"
 msgstr ""
-"Andra statusflaggor:\n"
+"Övriga statusflaggor:\n"
 "- %s\n"
 
 #: include/teacher.inc:409 source/teacher/contribute.php:823
@@ -653,7 +653,7 @@ msgstr "Tillstånd"
 #: source/admin/exams.php:220 source/admin/exams.php:332
 #: source/teacher/contribute.php:384 source/teacher/contribute.php:662
 #: source/teacher/examinator.php:521 source/teacher/manager.php:222
-#: source/teacher/manager.php:299 source/teacher/manager.php:721
+#: source/teacher/manager.php:299 source/teacher/manager.php:723
 #: source/media/index.php:264
 msgid "Name"
 msgstr "Namn"
@@ -1127,7 +1127,7 @@ msgstr "Möjliga"
 
 #: include/scoreboard.inc:1063
 msgid "Avarage:"
-msgstr "Genomsnitt"
+msgstr "Genomsnitt:"
 
 #: include/scoreboard.inc:1079 source/teacher/export.php:206
 msgid "Answers"
@@ -1398,37 +1398,37 @@ msgstr "Var god försök igen då inloggningstjänsten är tillbaka. "
 msgid "Database error"
 msgstr "Databasfel"
 
-#: source/exam/topmenu.menu:17 source/result/topmenu.menu:17
-#: source/evaluation/topmenu.menu:17 source/admin/topmenu.menu:17
+#: source/exam/topmenu.menu:16 source/result/topmenu.menu:16
+#: source/evaluation/topmenu.menu:16 source/admin/topmenu.menu:16
 #: source/admin/exams.php:221 source/admin/exams.php:333
-#: source/topmenu.menu:17 source/media/topmenu.menu:17
+#: source/topmenu.menu:16 source/media/topmenu.menu:16
 msgid "Start"
 msgstr "Start"
 
-#: source/exam/topmenu.menu:19 source/result/topmenu.menu:19
-#: source/evaluation/topmenu.menu:19 source/admin/topmenu.menu:19
+#: source/exam/topmenu.menu:18 source/result/topmenu.menu:18
+#: source/evaluation/topmenu.menu:18 source/admin/topmenu.menu:18
 #: source/teacher/decoder.php:193 source/teacher/manager.php:267
-#: source/topmenu.menu:19 source/media/topmenu.menu:19
+#: source/topmenu.menu:18 source/media/topmenu.menu:18
 msgid "Result"
 msgstr "Resultat"
 
-#: source/exam/topmenu.menu:20 source/result/topmenu.menu:20
-#: source/evaluation/topmenu.menu:20 source/admin/topmenu.menu:20
-#: source/topmenu.menu:20 source/media/topmenu.menu:20
+#: source/exam/topmenu.menu:19 source/result/topmenu.menu:19
+#: source/evaluation/topmenu.menu:19 source/admin/topmenu.menu:19
+#: source/topmenu.menu:19 source/media/topmenu.menu:19
 msgid "Evaluation"
 msgstr "Utvärdering"
 
-#: source/exam/topmenu.menu:21 source/result/topmenu.menu:21
-#: source/evaluation/topmenu.menu:21 source/admin/topmenu.menu:21
-#: source/teacher/topmenu.menu:42 source/topmenu.menu:21
-#: source/media/topmenu.menu:21
+#: source/exam/topmenu.menu:20 source/result/topmenu.menu:20
+#: source/evaluation/topmenu.menu:20 source/admin/topmenu.menu:20
+#: source/teacher/topmenu.menu:42 source/topmenu.menu:20
+#: source/media/topmenu.menu:20
 msgid "Help"
 msgstr "Hjälp"
 
-#: source/exam/topmenu.menu:22 source/result/topmenu.menu:22
-#: source/evaluation/topmenu.menu:22 source/admin/topmenu.menu:22
-#: source/teacher/topmenu.menu:43 source/topmenu.menu:22
-#: source/media/topmenu.menu:22
+#: source/exam/topmenu.menu:21 source/result/topmenu.menu:21
+#: source/evaluation/topmenu.menu:21 source/admin/topmenu.menu:21
+#: source/teacher/topmenu.menu:43 source/topmenu.menu:21
+#: source/media/topmenu.menu:21
 msgid "About"
 msgstr "Om"
 
@@ -1438,12 +1438,12 @@ msgstr "Resultat:"
 
 #: source/result/index.php:120
 msgid "Access to results from your previous completed examinations is not available while another examination is taking place."
-msgstr "Resultat från dina tidigare gjorda examiniationer är inte tillgängliga medans en annan examination fortfarande pågår."
+msgstr "Resultat från dina tidigare gjorda examinationer är inte tillgängliga medans en annan examination fortfarande pågår."
 
 #: source/result/index.php:138
 #, php-format
 msgid "The system could not found any finished examiniations for your logon ID. If you think this is an error, please contact the examinator for further assistance."
-msgstr "Systemet kunde inte hitta några avslutade examinationer för dittinloggnings ID. Om du tror att detta är fel, var god tag kontakt medexaminatorn för ytterligare assistans."
+msgstr "Systemet kunde inte hitta några avslutade examinationer för ditt inloggnings ID. Om du tror att detta är fel, var god tag kontakt med examinatorn för ytterligare assistans."
 
 #: source/result/index.php:152
 #, php-format
@@ -1649,7 +1649,7 @@ msgstr "kontakta:"
 msgid "Send an email to <a href=\"%s\">all teachers</a> that have an email address in the LDAP directory."
 msgstr "Skicka ett e-postmeddelande till <a href=\"%s\">alla lärare</a> som har en e-postadress i LDAP-katalogen"
 
-#: source/admin/index.php:70 source/index.php:98
+#: source/admin/index.php:70 source/index.php:103
 msgid "Admin"
 msgstr "Admin"
 
@@ -1931,7 +1931,7 @@ msgstr "Sida för att bidra"
 
 #: source/teacher/contribute.php:231 source/teacher/decoder.php:216
 #: source/teacher/export.php:251 source/teacher/examinator.php:206
-#: source/teacher/manager.php:770 source/teacher/template.php:103
+#: source/teacher/manager.php:798 source/teacher/template.php:103
 #: source/media/index.php:454
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
@@ -2047,6 +2047,7 @@ msgstr "Ämne"
 
 #: source/teacher/contribute.php:479 source/teacher/contribute.php:547
 #: source/teacher/contribute.php:673 source/teacher/export.php:218
+#: source/teacher/manager.php:755
 msgid "Reset"
 msgstr "Återställ"
 
@@ -2081,7 +2082,7 @@ msgstr "Denna sida låter dig ändra på den existerande frågan i examinationen
 #: source/teacher/contribute.php:529
 #, php-format
 msgid "Remove Question"
-msgstr "Ta bore frågan"
+msgstr "Ta bort frågan"
 
 #: source/teacher/contribute.php:531
 #, php-format
@@ -2622,7 +2623,7 @@ msgstr "Ämnen"
 msgid "Results"
 msgstr "Resultat"
 
-#: source/teacher/export.php:255 source/teacher/manager.php:774
+#: source/teacher/export.php:255 source/teacher/manager.php:802
 msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 msgstr "Endast användare som fått rollen 'teacher' tilldelad eller som har rollen 'creator' för åtminstånde en examination har åtkomst till den här sidan. Exekveringen av skriptet har avbrutits."
 
@@ -2771,6 +2772,7 @@ msgstr "Denna sida låter dig ändra på start- och sluttid för examinationen."
 
 #: source/teacher/examinator.php:229 source/teacher/examinator.php:235
 #: source/teacher/manager.php:243 source/teacher/manager.php:249
+#: source/teacher/manager.php:740 source/teacher/manager.php:748
 msgid "Calendar icon"
 msgstr "Kalenderikon"
 
@@ -3143,11 +3145,11 @@ msgstr "Markera den här frågan som aktiv igen."
 msgid "Show resource content"
 msgstr "Visa resursens innehåll"
 
-#: source/teacher/manager.php:576 source/teacher/manager.php:736
+#: source/teacher/manager.php:576 source/teacher/manager.php:764
 msgid "Add an evaluation to this exam."
 msgstr "Lägg till en utvärdering till denna examination."
 
-#: source/teacher/manager.php:584 source/teacher/manager.php:749
+#: source/teacher/manager.php:584 source/teacher/manager.php:777
 #, php-format
 msgid "Edit this evaluation."
 msgstr "Ändra denna utvärdering."
@@ -3204,49 +3206,73 @@ msgstr "Tillåt denna användare att avkoda den riktiga identiteten bakom studen
 msgid "The name, start and end time is optional. "
 msgstr "Namn, start och sluttid är valfria. "
 
-#: source/teacher/manager.php:723
+#: source/teacher/manager.php:722
+msgid "The name for this evaluation shown to students."
+msgstr "Namnet på denna utvärdering, synlig för studenter."
+
+#: source/teacher/manager.php:728
 msgid "Link"
 msgstr "Länk"
 
-#: source/teacher/manager.php:725
+#: source/teacher/manager.php:731
+msgid "Double-click to clear this textbox."
+msgstr "Dubbel-klicka för att rensa innehållet i denna textbox."
+
+#: source/teacher/manager.php:737
 msgid "Starttime"
 msgstr "Starttid"
 
-#: source/teacher/manager.php:727
+#: source/teacher/manager.php:739
+msgid "This date/time from which this evaluation will be open. If empty, then this evaluation will immediate available to students."
+msgstr "Datum/tid från vilken denna utvärdering ska finnas tillgänglig. Utvärderingen kommer att bli direkt tillgänglig för studenter om denna lämnas tom."
+
+#: source/teacher/manager.php:745
 msgid "Endtime"
 msgstr "Sluttid"
+
+#: source/teacher/manager.php:747
+msgid "The date/time when this evaluation will be closed. If empty, then this evaluation will be always available to students."
+msgstr "Datum/tid då denna utvärdering kommer att stängas. Utvärderingen är alltid tillgänglig om denna lämnas tom."
+
+#: source/teacher/manager.php:753
+msgid "Submit data to server."
+msgstr "Skicka data till servern."
+
+#: source/teacher/manager.php:756
+msgid "Reset the form values."
+msgstr "Återställ formulärets värden."
 
 #: source/teacher/template.php:70
 msgid "Template Page"
 msgstr "Mallsida"
 
-#: source/index.php:68
+#: source/index.php:73
 msgid "Index:"
 msgstr "Index:"
 
-#: source/index.php:78
+#: source/index.php:83
 msgid "Welcome!"
 msgstr "Välkommen!"
 
-#: source/index.php:80
+#: source/index.php:85
 #, php-format
 msgid "This system let you do examination online, see <a href=\"%s\">Help</a> for more information. Remember to <u>save your answer at regular interval</u> to prevent losing data caused by automatic logout!"
 msgstr "Detta system låter dig utföra en examination online, se <a href=\"%s\">Hjälp</a> för mer information. Kom ihåg att <u>spara dina svar regelbundet</u> för att undvika att förlora data orsakad av automatisk utloggning!"
 
-#: source/index.php:83
+#: source/index.php:88
 msgid "Are you ready to begin the examination?"
 msgstr "Är du redo att börja på med examinationen?"
 
-#: source/index.php:85
+#: source/index.php:90
 #, php-format
 msgid "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
 msgstr "Följ länken till <a href=\"%s\">examinationssidan</a> för att starta examinationen. Du kommer att anmodas att logga in med ditt UU-ID/UpUnet-S konto (CAS-inloggning)."
 
-#: source/index.php:95
+#: source/index.php:100
 msgid "Manager"
 msgstr "Förvaltare"
 
-#: source/index.php:97
+#: source/index.php:102
 msgid "Teacher"
 msgstr "Lärare"
 

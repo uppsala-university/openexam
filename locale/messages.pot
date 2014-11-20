@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-11-19 19:41+0100\n"
+"POT-Creation-Date: 2014-11-20 10:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -201,8 +201,8 @@ msgstr ""
 #: source/teacher/decoder.php:216 source/teacher/export.php:251
 #: source/teacher/export.php:255 source/teacher/correct.php:193
 #: source/teacher/correct.php:196 source/teacher/correct.php:362
-#: source/teacher/examinator.php:206 source/teacher/manager.php:770
-#: source/teacher/manager.php:774 source/teacher/template.php:103
+#: source/teacher/examinator.php:206 source/teacher/manager.php:798
+#: source/teacher/manager.php:802 source/teacher/template.php:103
 #: source/media/index.php:454
 msgid "Access denied!"
 msgstr ""
@@ -568,11 +568,11 @@ msgstr ""
 msgid "Contribute"
 msgstr ""
 
-#: include/teacher.inc:287 source/exam/topmenu.menu:18
-#: source/result/topmenu.menu:18 source/evaluation/topmenu.menu:18
-#: source/help.php:54 source/admin/topmenu.menu:18
-#: source/teacher/topmenu.menu:29 source/topmenu.menu:18
-#: source/media/topmenu.menu:18
+#: include/teacher.inc:287 source/exam/topmenu.menu:17
+#: source/result/topmenu.menu:17 source/evaluation/topmenu.menu:17
+#: source/help.php:54 source/admin/topmenu.menu:17
+#: source/teacher/topmenu.menu:29 source/topmenu.menu:17
+#: source/media/topmenu.menu:17
 msgid "Examination"
 msgstr ""
 
@@ -647,7 +647,7 @@ msgstr ""
 #: source/admin/exams.php:220 source/admin/exams.php:332
 #: source/teacher/contribute.php:384 source/teacher/contribute.php:662
 #: source/teacher/examinator.php:521 source/teacher/manager.php:222
-#: source/teacher/manager.php:299 source/teacher/manager.php:721
+#: source/teacher/manager.php:299 source/teacher/manager.php:723
 #: source/media/index.php:264
 msgid "Name"
 msgstr ""
@@ -1392,37 +1392,37 @@ msgstr ""
 msgid "Database error"
 msgstr ""
 
-#: source/exam/topmenu.menu:17 source/result/topmenu.menu:17
-#: source/evaluation/topmenu.menu:17 source/admin/topmenu.menu:17
+#: source/exam/topmenu.menu:16 source/result/topmenu.menu:16
+#: source/evaluation/topmenu.menu:16 source/admin/topmenu.menu:16
 #: source/admin/exams.php:221 source/admin/exams.php:333
-#: source/topmenu.menu:17 source/media/topmenu.menu:17
+#: source/topmenu.menu:16 source/media/topmenu.menu:16
 msgid "Start"
+msgstr ""
+
+#: source/exam/topmenu.menu:18 source/result/topmenu.menu:18
+#: source/evaluation/topmenu.menu:18 source/admin/topmenu.menu:18
+#: source/teacher/decoder.php:193 source/teacher/manager.php:267
+#: source/topmenu.menu:18 source/media/topmenu.menu:18
+msgid "Result"
 msgstr ""
 
 #: source/exam/topmenu.menu:19 source/result/topmenu.menu:19
 #: source/evaluation/topmenu.menu:19 source/admin/topmenu.menu:19
-#: source/teacher/decoder.php:193 source/teacher/manager.php:267
 #: source/topmenu.menu:19 source/media/topmenu.menu:19
-msgid "Result"
+msgid "Evaluation"
 msgstr ""
 
 #: source/exam/topmenu.menu:20 source/result/topmenu.menu:20
 #: source/evaluation/topmenu.menu:20 source/admin/topmenu.menu:20
-#: source/topmenu.menu:20 source/media/topmenu.menu:20
-msgid "Evaluation"
+#: source/teacher/topmenu.menu:42 source/topmenu.menu:20
+#: source/media/topmenu.menu:20
+msgid "Help"
 msgstr ""
 
 #: source/exam/topmenu.menu:21 source/result/topmenu.menu:21
 #: source/evaluation/topmenu.menu:21 source/admin/topmenu.menu:21
-#: source/teacher/topmenu.menu:42 source/topmenu.menu:21
+#: source/teacher/topmenu.menu:43 source/topmenu.menu:21
 #: source/media/topmenu.menu:21
-msgid "Help"
-msgstr ""
-
-#: source/exam/topmenu.menu:22 source/result/topmenu.menu:22
-#: source/evaluation/topmenu.menu:22 source/admin/topmenu.menu:22
-#: source/teacher/topmenu.menu:43 source/topmenu.menu:22
-#: source/media/topmenu.menu:22
 msgid "About"
 msgstr ""
 
@@ -1643,7 +1643,7 @@ msgstr ""
 msgid "Send an email to <a href=\"%s\">all teachers</a> that have an email address in the LDAP directory."
 msgstr ""
 
-#: source/admin/index.php:70 source/index.php:98
+#: source/admin/index.php:70 source/index.php:103
 msgid "Admin"
 msgstr ""
 
@@ -1925,7 +1925,7 @@ msgstr ""
 
 #: source/teacher/contribute.php:231 source/teacher/decoder.php:216
 #: source/teacher/export.php:251 source/teacher/examinator.php:206
-#: source/teacher/manager.php:770 source/teacher/template.php:103
+#: source/teacher/manager.php:798 source/teacher/template.php:103
 #: source/media/index.php:454
 #, php-format
 msgid "Only users granted the %s role on this exam can access this page. The script processing has halted."
@@ -2031,6 +2031,7 @@ msgstr ""
 
 #: source/teacher/contribute.php:479 source/teacher/contribute.php:547
 #: source/teacher/contribute.php:673 source/teacher/export.php:218
+#: source/teacher/manager.php:755
 msgid "Reset"
 msgstr ""
 
@@ -2595,7 +2596,7 @@ msgstr ""
 msgid "Results"
 msgstr ""
 
-#: source/teacher/export.php:255 source/teacher/manager.php:774
+#: source/teacher/export.php:255 source/teacher/manager.php:802
 msgid "Only users granted the teacher role or being the creator on at least one exam can access this page. The script processing has halted."
 msgstr ""
 
@@ -2744,6 +2745,7 @@ msgstr ""
 
 #: source/teacher/examinator.php:229 source/teacher/examinator.php:235
 #: source/teacher/manager.php:243 source/teacher/manager.php:249
+#: source/teacher/manager.php:740 source/teacher/manager.php:748
 msgid "Calendar icon"
 msgstr ""
 
@@ -3116,11 +3118,11 @@ msgstr ""
 msgid "Show resource content"
 msgstr ""
 
-#: source/teacher/manager.php:576 source/teacher/manager.php:736
+#: source/teacher/manager.php:576 source/teacher/manager.php:764
 msgid "Add an evaluation to this exam."
 msgstr ""
 
-#: source/teacher/manager.php:584 source/teacher/manager.php:749
+#: source/teacher/manager.php:584 source/teacher/manager.php:777
 #, php-format
 msgid "Edit this evaluation."
 msgstr ""
@@ -3177,49 +3179,73 @@ msgstr ""
 msgid "The name, start and end time is optional. "
 msgstr ""
 
-#: source/teacher/manager.php:723
+#: source/teacher/manager.php:722
+msgid "The name for this evaluation shown to students."
+msgstr ""
+
+#: source/teacher/manager.php:728
 msgid "Link"
 msgstr ""
 
-#: source/teacher/manager.php:725
+#: source/teacher/manager.php:731
+msgid "Double-click to clear this textbox."
+msgstr ""
+
+#: source/teacher/manager.php:737
 msgid "Starttime"
 msgstr ""
 
-#: source/teacher/manager.php:727
+#: source/teacher/manager.php:739
+msgid "This date/time from which this evaluation will be open. If empty, then this evaluation will immediate available to students."
+msgstr ""
+
+#: source/teacher/manager.php:745
 msgid "Endtime"
+msgstr ""
+
+#: source/teacher/manager.php:747
+msgid "The date/time when this evaluation will be closed. If empty, then this evaluation will be always available to students."
+msgstr ""
+
+#: source/teacher/manager.php:753
+msgid "Submit data to server."
+msgstr ""
+
+#: source/teacher/manager.php:756
+msgid "Reset the form values."
 msgstr ""
 
 #: source/teacher/template.php:70
 msgid "Template Page"
 msgstr ""
 
-#: source/index.php:68
+#: source/index.php:73
 msgid "Index:"
 msgstr ""
 
-#: source/index.php:78
-msgid "Welcome!"
-msgstr ""
-
-#: source/index.php:80
-#, php-format
-msgid "This system let you do examination online, see <a href=\"%s\">Help</a> for more information. Remember to <u>save your answer at regular interval</u> to prevent losing data caused by automatic logout!"
-msgstr ""
-
 #: source/index.php:83
-msgid "Are you ready to begin the examination?"
+msgid "Welcome!"
 msgstr ""
 
 #: source/index.php:85
 #, php-format
+msgid "This system let you do examination online, see <a href=\"%s\">Help</a> for more information. Remember to <u>save your answer at regular interval</u> to prevent losing data caused by automatic logout!"
+msgstr ""
+
+#: source/index.php:88
+msgid "Are you ready to begin the examination?"
+msgstr ""
+
+#: source/index.php:90
+#, php-format
 msgid "Follow the link to the <a href=\"%s\">examination page</a> to begin the examination. You will be prompted to logon using your UU-ID (CAS logon)."
 msgstr ""
 
-#: source/index.php:95
+#: source/index.php:100
 msgid "Manager"
 msgstr ""
 
-#: source/index.php:97
+#: source/index.php:102
 msgid "Teacher"
 msgstr ""
 
