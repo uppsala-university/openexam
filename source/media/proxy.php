@@ -145,6 +145,12 @@ if (count($_REQUEST) == 0) {
 if (!extension_loaded("curl")) {
         die("The cURL extension is not loaded.");
 }
+if (!defined('MEDIA_PROXY_ENABLE')) {
+        die("Please configure if media proxy should be enabled.");
+} elseif (MEDIA_PROXY_ENABLE == false) {
+        die("The media proxy is not enabled.");
+}
+
 
 // 
 // Use the query string from the server:

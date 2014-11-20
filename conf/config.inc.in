@@ -251,6 +251,11 @@ define('RESULT_DETAILS_DEFAULT', RESULT_EXPOSE_EMPLOYEES | RESULT_OTHERS_STATIST
 define('MEDIA_UPLOAD_ENABLE', false);
 define('MEDIA_UPLOAD_DIR', realpath(sprintf("%s/../source/media/files", dirname(__FILE__))));
 define('MEDIA_UPLOAD_MAXSIZE', 4 * 1024 * 1024);
+// 
+// Should the media proxy (source/media/proxy.php) be enabled? Don't enable if 
+// running a local firewall as it can be used for browsing thru the server.
+// 
+define('MEDIA_PROXY_ENABLE', false);
 
 // 
 // Defines whether to show questions assigned to other teachers during the 
