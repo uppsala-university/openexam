@@ -60,6 +60,7 @@ class Proxy
                 curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
+                curl_setopt($this->curl, CURLOPT_COOKIESESSION, true);
                 curl_setopt($this->curl, CURLOPT_COOKIEJAR, $cookiejar);
 
                 $content = curl_exec($this->curl);
@@ -95,9 +96,10 @@ class Proxy
                 // Rewrite absolute URL:s starting with scheme or '/':
                 // 
                 $urlmap = array(
+                        "%s=\"http" => "%s=\"?url=http",
+                        "%s=\"/idp" => "%s=\"https://weblogin.uu.se/idp",
                         "%s=\"//"   => "%s=\"$this->scheme://",
                         "%s=\"/"    => "%s=\"?url=$this->root/",
-                        "%s=\"http" => "%s=\"?url=http",
                         "%s=\"./"   => "%s=\"?url=$this->url",
                 );
 
