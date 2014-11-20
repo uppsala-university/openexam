@@ -29,6 +29,8 @@ class Proxy
 
         private $url;
         private $curl;
+        private $info;
+        private $debug = true;
 
         public function __construct($url)
         {
@@ -57,10 +59,64 @@ class Proxy
                 curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
 
                 $content = curl_exec($this->curl);
-                header(sprintf("Content-Type: %s\n", curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE)));
+
+                $this->info = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
+                $this->debug("content: $this->info");
+
+                if (preg_match("@(text/html|.*/javascript|text/css).*@", $this->info)) {
+                        $content = $this->rewrite($content);
+                } else {
+                        $this->debug("skipped: $this->url");
+                }
+
+                header(sprintf("Content-Type: %s\n", $this->info));
                 echo $content;
 
                 curl_close($this->curl);
+        }
+
+        private function rewrite($content)
+        {
+                if (($parts = parse_url($this->url)) == false) {
+                        return $content;
+                }
+
+                $this->debug("rewrite: $this->url");
+
+                $this->root = $parts['scheme'] . '://' . $parts['host'];
+                $this->scheme = $parts['scheme'];
+                
+                $content = str_replace(
+                    array(
+                        "href=\"//",
+                        "src=\"//",
+                        "href=\"/",
+                        "src=\"/",
+                        "href=\"http",
+                        "src=\"http"
+                    ), array(
+                        "href=\"$this->scheme://",
+                        "src=\"$this->scheme://",
+                        "href=\"?url=$this->root/",
+                        "src=\"?url=$this->root/",
+                        "href=\"?url=http",
+                        "src=\"?url=http"
+                    ), $content
+                );
+
+                if ($this->debug) {
+                        $file = sprintf("%s/%s", sys_get_temp_dir(), urlencode($this->url));
+                        file_put_contents($file, $content);
+                }
+
+                return $content;
+        }
+
+        private function debug($msg)
+        {
+                if ($this->debug) {
+                        error_log($msg);
+                }
         }
 
 }
@@ -89,4 +145,5 @@ if (strncmp("url=", $_SERVER['QUERY_STRING'], 4) == 0) {
 $proxy = new Proxy(urldecode($_REQUEST['url']));
 $proxy->validate();
 $proxy->deliver();
+
 ?>
