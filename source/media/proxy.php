@@ -55,6 +55,7 @@ class Proxy
 
                 curl_setopt($this->curl, CURLOPT_URL, $this->url);
                 curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+                curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
 
@@ -82,27 +83,30 @@ class Proxy
                 }
 
                 $this->debug("rewrite: $this->url");
+                $this->debug(sprintf("parts: %s", print_r($parts, true)));
 
                 $this->root = $parts['scheme'] . '://' . $parts['host'];
                 $this->scheme = $parts['scheme'];
-                
-                $content = str_replace(
-                    array(
-                        "href=\"//",
-                        "src=\"//",
-                        "href=\"/",
-                        "src=\"/",
-                        "href=\"http",
-                        "src=\"http"
-                    ), array(
-                        "href=\"$this->scheme://",
-                        "src=\"$this->scheme://",
-                        "href=\"?url=$this->root/",
-                        "src=\"?url=$this->root/",
-                        "href=\"?url=http",
-                        "src=\"?url=http"
-                    ), $content
+
+                // 
+                // Rewrite absolute URL:s starting with scheme or '/':
+                // 
+                $urlmap = array(
+                        "%s=\"//"   => "%s=\"$this->scheme://",
+                        "%s=\"/"    => "%s=\"?url=$this->root/",
+                        "%s=\"http" => "%s=\"?url=http",
+                        "%s=\"./"   => "%s=\"?url=$this->url",
                 );
+
+                $replace = array('s' => array(), 'r' => array());
+                foreach (array('href', 'src', 'action') as $attr) {
+                        foreach ($urlmap as $s => $r) {
+                                $replace['s'][] = sprintf($s, $attr);
+                                $replace['r'][] = sprintf($r, $attr);
+                        }
+                }
+
+                $content = str_replace($replace['s'], $replace['r'], $content);
 
                 if ($this->debug) {
                         $file = sprintf("%s/%s", sys_get_temp_dir(), urlencode($this->url));
