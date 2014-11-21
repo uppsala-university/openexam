@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-11-20 10:21+0100\n"
+"POT-Creation-Date: 2014-11-21 09:21+0100\n"
 "PO-Revision-Date: 2014-11-20 10:27+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: English\n"
@@ -195,7 +195,7 @@ msgstr "Exams"
 msgid "System"
 msgstr "System"
 
-#: include/admin.inc:131 include/teacher.inc:426 source/result/index.php:120
+#: include/admin.inc:131 include/teacher.inc:431 source/result/index.php:120
 #: source/teacher/contribute.php:231 source/teacher/contribute.php:235
 #: source/teacher/decoder.php:216 source/teacher/export.php:251
 #: source/teacher/export.php:255 source/teacher/correct.php:193
@@ -492,7 +492,7 @@ msgstr "Overview"
 msgid "Properties"
 msgstr "Properties"
 
-#: include/teacher.inc:188 include/teacher.inc:698 include/teacher.inc:701
+#: include/teacher.inc:188 include/teacher.inc:703 include/teacher.inc:706
 #: source/teacher/contribute.php:767 source/teacher/contribute.php:784
 #: source/teacher/contribute.php:795 source/teacher/examinator.php:669
 #: source/teacher/manager.php:540 source/teacher/manager.php:567
@@ -501,7 +501,7 @@ msgid "Delete"
 msgstr "Delete"
 
 #: include/teacher.inc:195 include/teacher.inc:198 include/teacher.inc:201
-#: include/teacher.inc:704 include/teacher.inc:708
+#: include/teacher.inc:709 include/teacher.inc:713
 msgid "Test"
 msgstr "Test"
 
@@ -537,37 +537,42 @@ msgstr "Show all questions"
 msgid "Correct answers"
 msgstr "Correct answers"
 
-#: include/teacher.inc:246 source/exam/index.php:194
+#: include/teacher.inc:248 include/teacher.inc:414
+#: source/teacher/contribute.php:823
+msgid "Status"
+msgstr "Status"
+
+#: include/teacher.inc:251 source/exam/index.php:194
 #: source/teacher/contribute.php:764 source/teacher/export.php:203
 #: source/teacher/manager.php:520
 msgid "Questions"
 msgstr "Questions"
 
-#: include/teacher.inc:258
+#: include/teacher.inc:263
 msgid "Add students"
 msgstr "Add students"
 
-#: include/teacher.inc:260
+#: include/teacher.inc:265
 msgid "Change schedule"
 msgstr "Change schedule"
 
-#: include/teacher.inc:265
+#: include/teacher.inc:270
 msgid "Decode answers"
 msgstr "Decode answers"
 
-#: include/teacher.inc:268
+#: include/teacher.inc:273
 msgid "Tasks"
 msgstr "Tasks"
 
-#: include/teacher.inc:277 source/teacher/topmenu.menu:19
+#: include/teacher.inc:282 source/teacher/topmenu.menu:19
 msgid "Project"
 msgstr "Project"
 
-#: include/teacher.inc:282 source/teacher/topmenu.menu:24
+#: include/teacher.inc:287 source/teacher/topmenu.menu:24
 msgid "Contribute"
 msgstr "Contribute"
 
-#: include/teacher.inc:287 source/exam/topmenu.menu:17
+#: include/teacher.inc:292 source/exam/topmenu.menu:17
 #: source/result/topmenu.menu:17 source/evaluation/topmenu.menu:17
 #: source/help.php:54 source/admin/topmenu.menu:17
 #: source/teacher/topmenu.menu:29 source/topmenu.menu:17
@@ -575,31 +580,31 @@ msgstr "Contribute"
 msgid "Examination"
 msgstr "Examination"
 
-#: include/teacher.inc:294 source/teacher/topmenu.menu:34
+#: include/teacher.inc:299 source/teacher/topmenu.menu:34
 #: source/teacher/manager.php:614
 msgid "Correction"
 msgstr "Correction"
 
-#: include/teacher.inc:299 include/teacher.inc:1169
+#: include/teacher.inc:304 include/teacher.inc:1174
 #: source/teacher/topmenu.menu:39
 msgid "Decode"
 msgstr "Decode"
 
-#: include/teacher.inc:303 source/media/index.php:168
+#: include/teacher.inc:308 source/media/index.php:168
 #: source/media/index.php:348 source/media/index.php:391
 #, php-format
 msgid "Media Library"
 msgstr "Media Library"
 
-#: include/teacher.inc:307
+#: include/teacher.inc:312
 msgid "Views"
 msgstr "Views"
 
-#: include/teacher.inc:310
+#: include/teacher.inc:315
 msgid "This examination"
 msgstr "This examination"
 
-#: include/teacher.inc:402
+#: include/teacher.inc:407
 #, php-format
 msgid ""
 "Primary role: %s\n"
@@ -612,7 +617,7 @@ msgstr ""
 "Supplementary roles:\n"
 "- %s\n"
 
-#: include/teacher.inc:403
+#: include/teacher.inc:408
 #, php-format
 msgid ""
 "Additional status flags:\n"
@@ -621,32 +626,28 @@ msgstr ""
 "Additional status flags:\n"
 "- %s\n"
 
-#: include/teacher.inc:409 source/teacher/contribute.php:823
-msgid "Status"
-msgstr "Status"
-
-#: include/teacher.inc:410 source/admin/admin.php:142
+#: include/teacher.inc:415 source/admin/admin.php:142
 #: source/admin/teacher.php:146
 msgid "Role"
 msgstr "Role"
 
-#: include/teacher.inc:426
+#: include/teacher.inc:431
 msgid "Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."
 msgstr "Only the creator of the examination or users granted the contributor, examinator, decoder or corrector role can access this page. The script processing has halted."
 
-#: include/teacher.inc:488
+#: include/teacher.inc:493
 msgid "Organisation"
 msgstr "Organisation"
 
-#: include/teacher.inc:489
+#: include/teacher.inc:494
 msgid "Department"
 msgstr "Department"
 
-#: include/teacher.inc:559
+#: include/teacher.inc:564
 msgid "State"
 msgstr "State"
 
-#: include/teacher.inc:560 include/scoreboard.inc:561
+#: include/teacher.inc:565 include/scoreboard.inc:561
 #: include/scoreboard.inc:712 include/scoreboard.inc:839
 #: source/admin/admin.php:140 source/admin/teacher.php:144
 #: source/admin/exams.php:220 source/admin/exams.php:332
@@ -657,42 +658,42 @@ msgstr "State"
 msgid "Name"
 msgstr "Name"
 
-#: include/teacher.inc:561
+#: include/teacher.inc:566
 msgid "Date"
 msgstr "Date"
 
-#: include/teacher.inc:573
+#: include/teacher.inc:578
 msgid "Order"
 msgstr "Order"
 
-#: include/teacher.inc:580
+#: include/teacher.inc:585
 #, php-format
 msgid "This page list all your examiniations. "
 msgstr "This page list all your examiniations. "
 
-#: include/teacher.inc:581
+#: include/teacher.inc:586
 #, php-format
 msgid "Select an action to perform (i.e. add, edit, delete or export) using the links. "
 msgstr "Select an action to perform (i.e. add, edit, delete or export) using the links. "
 
-#: include/teacher.inc:586 include/teacher.inc:734 include/teacher.inc:849
-#: include/teacher.inc:971 include/teacher.inc:1075 source/exam/index.php:228
+#: include/teacher.inc:591 include/teacher.inc:739 include/teacher.inc:854
+#: include/teacher.inc:976 include/teacher.inc:1080 source/exam/index.php:228
 #: source/result/index.php:160 source/evaluation/index.php:129
 #: source/media/index.php:394
 msgid "Examinations"
 msgstr "Examinations"
 
-#: include/teacher.inc:589 source/teacher/contribute.php:574
+#: include/teacher.inc:594 source/teacher/contribute.php:574
 #: source/teacher/contribute.php:768 source/teacher/examinator.php:273
 #: source/teacher/manager.php:452 source/teacher/manager.php:524
 msgid "Import"
 msgstr "Import"
 
-#: include/teacher.inc:589
+#: include/teacher.inc:594
 msgid "Creates a new examination by importing an OpenExam project."
 msgstr "Creates a new examination by importing an OpenExam project."
 
-#: include/teacher.inc:590 include/teacher.inc:828 include/teacher.inc:1056
+#: include/teacher.inc:595 include/teacher.inc:833 include/teacher.inc:1061
 #: source/teacher/contribute.php:769 source/teacher/contribute.php:785
 #: source/teacher/examinator.php:285 source/teacher/examinator.php:658
 #: source/teacher/manager.php:481 source/teacher/manager.php:496
@@ -704,209 +705,209 @@ msgstr "Creates a new examination by importing an OpenExam project."
 msgid "Add"
 msgstr "Add"
 
-#: include/teacher.inc:590
+#: include/teacher.inc:595
 msgid "Creates a new examination."
 msgstr "Creates a new examination."
 
-#: include/teacher.inc:600 include/teacher.inc:869 include/teacher.inc:978
+#: include/teacher.inc:605 include/teacher.inc:874 include/teacher.inc:983
 #: source/admin/exams.php:301
 msgid "Upcoming"
 msgstr "Upcoming"
 
-#: include/teacher.inc:605 include/teacher.inc:749 include/teacher.inc:874
-#: include/teacher.inc:983 source/teacher/contribute.php:736
+#: include/teacher.inc:610 include/teacher.inc:754 include/teacher.inc:879
+#: include/teacher.inc:988 source/teacher/contribute.php:736
 #: source/teacher/manager.php:530 source/media/index.php:407
 msgid "Active"
 msgstr "Active"
 
-#: include/teacher.inc:610 include/teacher.inc:754 include/teacher.inc:988
+#: include/teacher.inc:615 include/teacher.inc:759 include/teacher.inc:993
 #: source/result/index.php:175 source/media/index.php:411
 msgid "Finished"
 msgstr "Finished"
 
-#: include/teacher.inc:615
+#: include/teacher.inc:620
 msgid "Testing"
 msgstr "Testing"
 
-#: include/teacher.inc:649 include/teacher.inc:784 include/teacher.inc:908
-#: include/teacher.inc:1015 include/teacher.inc:1125
+#: include/teacher.inc:654 include/teacher.inc:789 include/teacher.inc:913
+#: include/teacher.inc:1020 include/teacher.inc:1130
 msgid "Ordered by name"
 msgstr "Ordered by name"
 
-#: include/teacher.inc:669 include/teacher.inc:804 include/teacher.inc:928
-#: include/teacher.inc:1031 include/teacher.inc:1145
+#: include/teacher.inc:674 include/teacher.inc:809 include/teacher.inc:933
+#: include/teacher.inc:1036 include/teacher.inc:1150
 msgid "Ordered by start time"
 msgstr "Ordered by start time"
 
-#: include/teacher.inc:692 source/admin/exams.php:315
+#: include/teacher.inc:697 source/admin/exams.php:315
 #: source/admin/exams.php:360 source/teacher/export.php:216
 #: source/teacher/manager.php:471
 msgid "Export"
 msgstr "Export"
 
-#: include/teacher.inc:692
+#: include/teacher.inc:697
 msgid "Open the page for selecting the export options."
 msgstr "Open the page for selecting the export options."
 
-#: include/teacher.inc:694 source/teacher/manager.php:472
+#: include/teacher.inc:699 source/teacher/manager.php:472
 msgid "Copy"
 msgstr "Copy"
 
-#: include/teacher.inc:694 source/teacher/manager.php:472
+#: include/teacher.inc:699 source/teacher/manager.php:472
 msgid "Create a new examination by using this examination as a template."
 msgstr "Create a new examination by using this examination as a template."
 
-#: include/teacher.inc:695 source/teacher/contribute.php:783
+#: include/teacher.inc:700 source/teacher/contribute.php:783
 #: source/teacher/contribute.php:792 source/teacher/manager.php:473
 #: source/teacher/manager.php:537 source/teacher/manager.php:584
 msgid "Edit"
 msgstr "Edit"
 
-#: include/teacher.inc:695 source/teacher/manager.php:473
+#: include/teacher.inc:700 source/teacher/manager.php:473
 msgid "Edit common properties like name, description or grades for this examination."
 msgstr "Edit common properties like name, description or grades for this examination."
 
-#: include/teacher.inc:698 include/teacher.inc:701
+#: include/teacher.inc:703 include/teacher.inc:706
 msgid "Deletes the examination along with any questions."
 msgstr "Deletes the examination along with any questions."
 
-#: include/teacher.inc:704
+#: include/teacher.inc:709
 msgid "Test this examination by creating and opening a copy."
 msgstr "Test this examination by creating and opening a copy."
 
-#: include/teacher.inc:708
+#: include/teacher.inc:713
 msgid "Run this test case examination."
 msgstr "Run this test case examination."
 
-#: include/teacher.inc:711 source/admin/exams.php:223
+#: include/teacher.inc:716 source/admin/exams.php:223
 #: source/admin/exams.php:369
 msgid "Created"
 msgstr "Created"
 
-#: include/teacher.inc:715 include/teacher/manager.inc:378
+#: include/teacher.inc:720 include/teacher/manager.inc:378
 msgid "Occasion"
 msgstr "Occasion"
 
-#: include/teacher.inc:717 include/teacher.inc:830 include/teacher.inc:955
-#: include/teacher.inc:1053 include/teacher.inc:1171
+#: include/teacher.inc:722 include/teacher.inc:835 include/teacher.inc:960
+#: include/teacher.inc:1058 include/teacher.inc:1176
 #: include/teacher/manager.inc:380 source/teacher/examinator.php:226
 #: source/teacher/examinator.php:646 source/media/index.php:439
 msgid "Starts"
 msgstr "Starts"
 
-#: include/teacher.inc:718 include/teacher.inc:831 include/teacher.inc:956
-#: include/teacher.inc:1054 include/teacher.inc:1172
+#: include/teacher.inc:723 include/teacher.inc:836 include/teacher.inc:961
+#: include/teacher.inc:1059 include/teacher.inc:1177
 #: include/teacher/manager.inc:381 source/teacher/examinator.php:232
 #: source/teacher/examinator.php:647 source/media/index.php:440
 msgid "Ends"
 msgstr "Ends"
 
-#: include/teacher.inc:729
+#: include/teacher.inc:734
 #, php-format
 msgid "Contribute Questions"
 msgstr "Contribute Questions"
 
-#: include/teacher.inc:730
+#: include/teacher.inc:735
 #, php-format
 msgid "Select the examination you wish to contribute questions for (applies only to contributable examinations)."
 msgstr "Select the examination you wish to contribute questions for (applies only to contributable examinations)."
 
-#: include/teacher.inc:744 source/media/index.php:403
+#: include/teacher.inc:749 source/media/index.php:403
 msgid "Contributable"
 msgstr "Contributable"
 
-#: include/teacher.inc:827
+#: include/teacher.inc:832
 msgid "Click on this link to see all questions in this examination."
 msgstr "Click on this link to see all questions in this examination."
 
-#: include/teacher.inc:828
+#: include/teacher.inc:833
 msgid "Click to add a question to this examination."
 msgstr "Click to add a question to this examination."
 
-#: include/teacher.inc:841 source/teacher/correct.php:525
+#: include/teacher.inc:846 source/teacher/correct.php:525
 #, php-format
 msgid "Correct Answers"
 msgstr "Correct Answers"
 
-#: include/teacher.inc:843
+#: include/teacher.inc:848
 #, php-format
 msgid "Select the examination you wish to correct answers to questions for (applies only to corractable examinations). "
 msgstr "Select the examination you wish to correct answers to questions for (applies only to corractable examinations). "
 
-#: include/teacher.inc:844
+#: include/teacher.inc:849
 #, php-format
 msgid "You can also follow the link to review an already decoded examination."
 msgstr "You can also follow the link to review an already decoded examination."
 
-#: include/teacher.inc:859
+#: include/teacher.inc:864
 msgid "Correctable"
 msgstr "Correctable"
 
-#: include/teacher.inc:864 include/teacher.inc:1090
+#: include/teacher.inc:869 include/teacher.inc:1095
 #: source/result/index.php:164
 msgid "Decoded"
 msgstr "Decoded"
 
-#: include/teacher.inc:951
+#: include/teacher.inc:956
 msgid "Click on this link to open this examination to correct answers."
 msgstr "Click on this link to open this examination to correct answers."
 
-#: include/teacher.inc:953
+#: include/teacher.inc:958
 msgid "Click on this link to review this examination."
 msgstr "Click on this link to review this examination."
 
-#: include/teacher.inc:966
+#: include/teacher.inc:971
 #, php-format
 msgid "Examinator Tasks"
 msgstr "Examinator Tasks"
 
-#: include/teacher.inc:967
+#: include/teacher.inc:972
 #, php-format
 msgid "The tree of examinations shows all examination you can reschedule or add students to."
 msgstr "The tree of examinations shows all examination you can reschedule or add students to."
 
-#: include/teacher.inc:1052
+#: include/teacher.inc:1057
 msgid "Click on this link to view and/or edit this examination"
 msgstr "Click on this link to view and/or edit this examination"
 
-#: include/teacher.inc:1056 source/teacher/examinator.php:658
+#: include/teacher.inc:1061 source/teacher/examinator.php:658
 msgid "Click on this link to add students to this examination"
 msgstr "Click on this link to add students to this examination"
 
-#: include/teacher.inc:1057 include/teacher.inc:1058
+#: include/teacher.inc:1062 include/teacher.inc:1063
 #: source/teacher/examinator.php:652 source/teacher/examinator.php:653
 msgid "Change"
 msgstr "Change"
 
-#: include/teacher.inc:1057 include/teacher.inc:1058
+#: include/teacher.inc:1062 include/teacher.inc:1063
 #: source/teacher/examinator.php:652 source/teacher/examinator.php:653
 msgid "Click on this link to reschedule the examination"
 msgstr "Click on this link to reschedule the examination"
 
-#: include/teacher.inc:1069
+#: include/teacher.inc:1074
 #, php-format
 msgid "Decode Examinations"
 msgstr "Decode Examinations"
 
-#: include/teacher.inc:1070
+#: include/teacher.inc:1075
 #, php-format
 msgid "These are the examinations that you have been granted the decoder role. Click on one of them to decode the examination."
 msgstr "These are the examinations that you have been granted the decoder role. Click on one of them to decode the examination."
 
-#: include/teacher.inc:1071
+#: include/teacher.inc:1076
 #, php-format
 msgid "By decoding an examination it will no longer be possible to correct any answers for it. This is to ensure that the anonymity of each student examination."
 msgstr "By decoding an examination it will no longer be possible to correct any answers for it. This is to ensure that the anonymity of each student examination."
 
-#: include/teacher.inc:1085
+#: include/teacher.inc:1090
 msgid "Decodable"
 msgstr "Decodable"
 
-#: include/teacher.inc:1095
+#: include/teacher.inc:1100
 msgid "Other"
 msgstr "Other"
 
-#: include/teacher.inc:1168 include/teacher.inc:1169
+#: include/teacher.inc:1173 include/teacher.inc:1174
 msgid "Click on this link to decode this examination."
 msgstr "Click on this link to decode this examination."
 

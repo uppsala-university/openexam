@@ -242,6 +242,11 @@ class TeacherPage extends BasePage
                                         $links->questions->link->answers->href = sprintf("correct.php?exam=%d", $this->param->exam);
                                         $links->questions->link->answers->name = _("Correct answers");
                                 }
+                                if ($this->manager->getInfo()->isFinished() &&
+                                    $this->manager->isCreator(phpCAS::getUser())) {
+                                        $links->questions->link->status->href = sprintf("manager.php?exam=5&action=show", $this->param->exam);
+                                        $links->questions->link->status->name = _("Status");
+                                }
                                 if (isset($links->questions)) {
                                         $links->questions->head = _("Questions");
                                 }
