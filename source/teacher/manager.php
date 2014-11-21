@@ -593,7 +593,7 @@ class ManagerPage extends TeacherPage
                         $correct = new Correct($this->manager->getExamID());
                         $scoreboard = $correct->getScoreBoard('active');
 
-                        $status = array('a' => array('u' => 0, 'c' => 0), 'q' => array());
+                        $status = array('a' => array('u' => 0, 'c' => 0, 't' => 0), 'q' => array());
                         foreach ($scoreboard as $entry) {
                                 if ($entry->getAnswerExist() == 'N') {
                                         continue;

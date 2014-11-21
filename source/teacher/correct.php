@@ -69,6 +69,7 @@ include "include/teacher/correct.inc";
 // Support classes:
 // 
 include "include/scoreboard.inc";
+include "include/sendmail.inc";
 
 if (!defined('CORRECT_SHOW_OTHERS')) {
         define('CORRECT_SHOW_OTHERS', false);
@@ -94,7 +95,7 @@ class CorrectionPage extends TeacherPage
                 "score"    => parent::pattern_score,
                 "comment"  => parent::pattern_textarea,
                 "order"    => "/^(state|name|date)$/",
-                "mode"     => "/^(mark|save)$/",
+                "mode"     => "/^(mark|save|status)$/",
                 "sort"     => "/^(tag|name|user|code|persnr|pnr|summary|percent|grade)$/",
                 "desc"     => "/^[0-1]$/"
         );
@@ -120,6 +121,9 @@ class CorrectionPage extends TeacherPage
                 if (!isset($this->param->desc)) {
                         $this->param->desc = true;
                 }
+                if (!isset($this->param->mode)) {
+                        $this->param->mode = 'mark';
+                }
         }
 
         //
@@ -140,7 +144,7 @@ class CorrectionPage extends TeacherPage
                 //
                 if (isset($this->param->exam)) {
                         if (isset($this->param->question)) {
-                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                if ($this->param->mode == "save") {
                                         $this->assert(array(
                                                 'score',
                                                 'comment'));
@@ -149,7 +153,7 @@ class CorrectionPage extends TeacherPage
                                         $this->markQuestionScore();
                                 }
                         } elseif (isset($this->param->student)) {
-                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                if ($this->param->mode == "save") {
                                         $this->assert(array(
                                                 'score',
                                                 'comment'));
@@ -158,7 +162,7 @@ class CorrectionPage extends TeacherPage
                                         $this->markStudentScore();
                                 }
                         } elseif (isset($this->param->answer)) {
-                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                if ($this->param->mode == "save") {
                                         $this->assert(array(
                                                 'score',
                                                 'comment'));
@@ -167,7 +171,9 @@ class CorrectionPage extends TeacherPage
                                         $this->markAnswerScore();
                                 }
                         } else {
-                                if (isset($this->param->mode) && $this->param->mode == "save") {
+                                if ($this->param->mode == "status") {
+                                        $this->showCorrectionStatus();
+                                } elseif ($this->param->mode == "save") {
                                         $this->saveScoreBoard();
                                 } else {
                                         $this->showScoreBoard();
@@ -654,6 +660,68 @@ class CorrectionPage extends TeacherPage
                         printf("\n");
                 }
                 exit(0);
+        }
+
+        // 
+        // Show correction status:
+        // 
+        private function showCorrectionStatus()
+        {
+                $data = $this->manager->getData();
+                $info = $this->manager->getInfo();
+
+                // 
+                // Output view header:
+                // 
+                printf("<h3>" . _("Status") . "</h3>\n");
+                printf("<p>" .
+                    _("This view shows the correction status for the examination '%s'. ") .
+                    "</p>\n", $data->getExamName());
+
+                //
+                // Build the root node:
+                //
+                $tree = new TreeBuilder(_("Status"));
+                $root = $tree->getRoot();
+
+                $correct = new Correct($this->manager->getExamID());
+                $scoreboard = $correct->getScoreBoard('active');
+
+                $status = array('a' => array('u' => 0, 'c' => 0, 't' => 0), 'q' => array());
+                foreach ($scoreboard as $entry) {
+                        if ($entry->getAnswerExist() == 'N') {
+                                continue;
+                        }
+                        if (!isset($status['u'][$entry->getQuestionPublisher()])) {
+                                $status['u'][$entry->getQuestionPublisher()] = array('t' => 0, 'c' => 0, 'u' => array());
+                        }
+                        $status['a']['t'] ++;
+                        $status['u'][$entry->getQuestionPublisher()]['t'] ++;
+                        if ($entry->hasResultScore()) {
+                                $status['u'][$entry->getQuestionPublisher()]['c'] ++;
+                                $status['a']['c'] ++;
+                        } elseif (!in_array($entry->getQuestionID(), array_keys($status['u'][$entry->getQuestionPublisher()]['u']))) {
+                                $status['u'][$entry->getQuestionPublisher()]['u'][$entry->getQuestionID()] = $entry->getQuestionName();
+                        }
+                }
+
+                $child = $root->addChild(sprintf("%s (%00d%% %s)", _("Correction"), 100 * $status['a']['c'] / $status['a']['t'], _("completed")));
+                foreach ($status['u'] as $user => $s) {
+                        $subobj = $child->addChild($this->getFormatName($user));
+                        if (($mail = $this->getMailRecepient($user)) != null) {
+                                $subobj->setLink(sprintf("mailto:%s", $mail->getAddress()));
+                        }
+                        $subobj->addChild(sprintf("%.00d%% %s", 100 * $s['c'] / $s['t'], _("completed")));
+                        if ($s['t'] != $s['c']) {
+                                $remobj = $subobj->addChild(sprintf(_("Remaining: %s"), count($s['u'])));
+                                foreach ($s['u'] as $qid => $qname) {
+                                        $qstobj = $remobj->addChild($qname);
+                                        $qstobj->setLink(sprintf("../exam/index.php?exam=%d&question=%d&preview=1", $this->manager->getExamID(), $qid));
+                                }
+                        }
+                }
+
+                $tree->output();
         }
 
 }

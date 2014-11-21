@@ -225,30 +225,37 @@ class TeacherPage extends BasePage
                         //
                         // Questions sub menu:
                         //
-                        if ($this->manager->isContributor(phpCAS::getUser()) ||
-                            $this->manager->isCorrector(phpCAS::getUser())) {
-                                if ($this->manager->getInfo()->isContributable() &&
-                                    $this->manager->isContributor(phpCAS::getUser())) {
+                        if ($this->manager->isContributor(phpCAS::getUser())) {
+                                if ($this->manager->getInfo()->isContributable()) {
                                         $links->questions->link->qadd->href = sprintf("contribute.php?exam=%d&action=add", $this->param->exam);
                                         $links->questions->link->qadd->name = _("Add question");
                                         $links->questions->link->tadd->href = sprintf("contribute.php?exam=%d&action=add&what=topic", $this->param->exam);
                                         $links->questions->link->tadd->name = _("Add topic");
                                 }
-                                if ($this->manager->isContributor(phpCAS::getUser())) {
-                                        $links->questions->link->qshow->href = sprintf("contribute.php?exam=%d", $this->param->exam);
-                                        $links->questions->link->qshow->name = _("Show all questions");
+                                $links->questions->link->qshow->href = sprintf("contribute.php?exam=%d", $this->param->exam);
+                                $links->questions->link->qshow->name = _("Show all questions");
+                                if (isset($links->questions)) {
+                                        $links->questions->head = _("Questions");
                                 }
-                                if ($this->manager->getInfo()->isCorrectable()) {
-                                        $links->questions->link->answers->href = sprintf("correct.php?exam=%d", $this->param->exam);
-                                        $links->questions->link->answers->name = _("Correct answers");
+                        }
+
+                        // 
+                        // Correction sub menu:
+                        // 
+                        if ($this->manager->isCorrector(phpCAS::getUser()) ||
+                            $this->manager->isCreator(phpCAS::getUser())) {
+                                if ($this->manager->getInfo()->isCorrectable() &&
+                                    $this->manager->isCorrector(phpCAS::getUser())) {
+                                        $links->correction->link->answers->href = sprintf("correct.php?exam=%d", $this->param->exam);
+                                        $links->correction->link->answers->name = _("Correct answers");
                                 }
                                 if ($this->manager->getInfo()->isFinished() &&
                                     $this->manager->isCreator(phpCAS::getUser())) {
-                                        $links->questions->link->status->href = sprintf("manager.php?exam=5&action=show", $this->param->exam);
-                                        $links->questions->link->status->name = _("Status");
+                                        $links->correction->link->status->href = sprintf("correct.php?exam=%d&mode=status", $this->param->exam);
+                                        $links->correction->link->status->name = _("Status");
                                 }
-                                if (isset($links->questions)) {
-                                        $links->questions->head = _("Questions");
+                                if (isset($links->correction)) {
+                                        $links->correction->head = _("Correction");
                                 }
                         }
 
@@ -322,6 +329,9 @@ class TeacherPage extends BasePage
                         }
                         if (isset($links->questions)) {
                                 self::printSubMenu($links->questions);
+                        }
+                        if (isset($links->correction)) {
+                                self::printSubMenu($links->correction);
                         }
                         if (isset($links->tasks)) {
                                 self::printSubMenu($links->tasks);
