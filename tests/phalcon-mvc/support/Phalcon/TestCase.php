@@ -178,13 +178,7 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
 
                 $this->caller = $this->di->get('user')->getPrincipalName();
         }
-
-        protected function setUp()
-        {
-                $this->di->set('user', new User($this->caller));
-                $this->di->get('user')->setPrimaryRole(null);
-        }
-
+        
         /**
          * Setup test case logging.
          */

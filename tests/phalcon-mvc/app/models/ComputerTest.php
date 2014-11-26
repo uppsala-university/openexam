@@ -2,10 +2,9 @@
 
 namespace OpenExam\Models;
 
-use Exception;
-use OpenExam\Tests\Phalcon\TestCase;
-use OpenExam\Tests\Phalcon\TestModelAccess;
-use OpenExam\Tests\Phalcon\TestModelBasic;
+use OpenExam\Library\Security\User;
+use OpenExam\Tests\Phalcon\TestModel;
+use OpenExam\Tests\Phalcon\UniqueUser;
 
 /**
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -25,8 +24,13 @@ class ComputerModel extends Computer
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ComputerTest extends TestCase
+class ComputerTest extends TestModel
 {
+
+        /**
+         * The model resource name.
+         */
+        const MODEL = 'computer';
 
         /**
          * @group model
@@ -44,74 +48,6 @@ class ComputerTest extends TestCase
         }
 
         /**
-         * @group model
-         */
-        public function testProperties()
-        {
-                $values = array(
-                        'room_id'  => Room::findFirst()->id,
-                        'ipaddr'   => '127.0.0.1',
-                        'port'     => 4092,
-                        'password' => 'secret'
-                );
-
-                try {
-                        $helper = new TestModelBasic(new Computer());
-                        $helper->tryPersist();
-                        self::error("Excepted constraint violation exception");
-                } catch (Exception $exception) {
-                        // Expected exception
-                }
-
-                try {
-                        $helper = new TestModelBasic(new Computer());
-                        $helper->tryPersist($values);
-                } catch (Exception $exception) {
-                        self::error($exception);
-                }
-
-                $values = array(
-                        'room_id'  => Room::findFirst()->id,
-                        'created'  => date('Y-m-d H:i:s'),
-                        'updated'  => date('Y-m-d H:i:s'),
-                        'hostname' => 'localhost',
-                        'ipaddr'   => '127.0.0.1',
-                        'port'     => 4092,
-                        'password' => 'secret'
-                );
-                try {
-                        $helper = new TestModelBasic(new Computer());
-                        $helper->tryPersist($values);
-                } catch (Exception $exception) {
-                        self::error($exception);
-                }
-
-                $values = array(
-                        'room_id'      => Room::findFirst()->id,
-                        'created'      => date('Y-m-d H:i:s'),
-                        'updated'      => date('Y-m-d H:i:s'),
-                        'non_existing' => 666
-                );
-                try {
-                        $helper = new TestModelBasic(new Computer());
-                        $helper->tryPersist();
-                        self::error("Excepted constraint violation exception");
-                } catch (Exception $exception) {
-                        // Expected excetion (user required)
-                }
-        }
-
-        /**
-         * @group model
-         * @group security
-         */
-        public function testAccess()
-        {
-                $helper = new TestModelAccess(new Computer());
-                $helper->testModelAccess();
-        }
-
-        /**
          * @covers OpenExam\Models\Computer::getSource
          * @group model
          */
@@ -122,6 +58,249 @@ class ComputerTest extends TestCase
                 $actual = $object->getSource();
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
+        }
+
+        /**
+         * @covers OpenExam\Models\Computer::create
+         * @group model
+         */
+        public function testCreate()
+        {
+                $user = new User();
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ pass: primary role unset");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole(null);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        self::assertTrue($this->create($model, $user, true));
+                        $this->cleanup($model);
+                }
+
+                $user = new User();
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ fail: user not authenticated");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        self::assertTrue($this->create($model, $user, false));
+                        $this->cleanup($model);
+                }
+
+                $user = new User((new UniqueUser())->user);
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ fail: user without roles");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        self::assertTrue($this->create($model, $user, false));
+                        $this->cleanup($model);
+                }
+
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+
+                self::info("rolemap=%s", print_r($roles, true));
+
+                self::info("+++ pass: user has roles");
+                foreach ($roles as $role => $actions) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        if (in_array('create', $actions)) {
+                                self::assertTrue($this->create($model, $user, true));   // action allowed
+                        } else {
+                                self::assertTrue($this->create($model, $user, false));  // action denied
+                        }
+                        $this->cleanup($model);
+                }
+        }
+
+        /**
+         * @covers OpenExam\Models\Computer::update
+         * @group model
+         */
+        public function testUpdate()
+        {
+                $user = new User();
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ pass: primary role unset");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole(null);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL));
+                        self::assertTrue($this->update($model, $user, true));
+                }
+
+                $user = new User();
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ fail: user not authenticated");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL));
+                        self::assertTrue($this->update($model, $user, false));
+                }
+
+                $user = new User((new UniqueUser())->user);
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ fail: user without roles");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL));
+                        self::assertTrue($this->update($model, $user, false));
+                }
+
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+
+                self::info("sample=%s", print_r($this->sample->getSample(self::MODEL), true));
+                self::info("rolemap=%s", print_r($roles, true));
+
+                self::info("+++ pass: user has roles");
+                foreach ($roles as $role => $actions) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL));
+                        if (in_array('update', $actions)) {
+                                self::assertTrue($this->update($model, $user, true));   // action allowed
+                        } else {
+                                self::assertTrue($this->update($model, $user, false));  // action denied
+                        }
+                }
+        }
+
+        /**
+         * @covers OpenExam\Models\Computer::delete
+         * @group model
+         */
+        public function testDelete()
+        {
+                $user = new User();
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ pass: primary role unset");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole(null);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $this->persist($model);
+                        self::assertTrue($this->delete($model, $user, true));
+                        $this->cleanup($model);
+                }
+
+                $user = new User();
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ fail: user not authenticated");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $this->persist($model);
+                        self::assertTrue($this->delete($model, $user, false));
+                        $this->cleanup($model);
+                }
+
+                $user = new User((new UniqueUser())->user);
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ fail: user without roles");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $this->persist($model);
+                        self::assertTrue($this->delete($model, $user, false));
+                        $this->cleanup($model);
+                }
+
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+
+                self::info("sample=%s", print_r($this->sample->getSample(self::MODEL), true));
+                self::info("rolemap=%s", print_r($roles, true));
+
+                self::info("+++ pass: user has roles");
+                foreach ($roles as $role => $actions) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $this->persist($model);
+                        if (in_array('delete', $actions)) {
+                                self::assertTrue($this->delete($model, $user, true));   // action allowed
+                        } else {
+                                self::assertTrue($this->delete($model, $user, false));  // action denied
+                        }
+                        $this->cleanup($model);
+                }
+        }
+
+        /**
+         * @covers OpenExam\Models\Computer::find
+         * @group model
+         */
+        public function testRead()
+        {
+                $user = new User();
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ pass: primary role unset");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole(null);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL));
+                        self::assertTrue($this->read($model, $user, true));
+                }
+
+                $user = new User();
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ fail: user not authenticated");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL));
+                        self::assertTrue($this->read($model, $user, false));
+                }
+
+                $user = new User((new UniqueUser())->user);
+                $roles = $this->capabilities->getRoles();
+
+                self::info("+++ fail: user without roles");
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL));
+                        self::assertTrue($this->read($model, $user, false));
+                }
+
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+
+                self::info("sample=%s", print_r($this->sample->getSample(self::MODEL), true));
+                self::info("rolemap=%s", print_r($roles, true));
+
+                self::info("+++ pass: user has roles");
+                foreach ($roles as $role => $actions) {
+                        $user->setPrimaryRole($role);
+                        $model = new Computer();
+                        $model->assign($this->sample->getSample(self::MODEL));
+                        if (in_array('read', $actions)) {
+                                self::assertTrue($this->read($model, $user, true));   // action allowed
+                        } else {
+                                self::assertTrue($this->read($model, $user, false));  // action denied
+                        }
+                }
         }
 
 }

@@ -22,7 +22,7 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false"
+         stopOnFailure="true"
          syntaxCheck="true"
          strict="true">
     <testsuite name="Phalcon MVC - Testsuite">
