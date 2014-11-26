@@ -152,42 +152,6 @@ class EvaluationPage extends BasePage
                 $tree->output();
         }
 
-        //
-        // Send result to peer as either PDF or HTML.
-        //
-        private function sendExam()
-        {
-                //
-                // Make sure we don't leak information:
-                //
-                if ($this->data->getExamDecoded() != 'Y') {
-                        $this->fatal(_("No access"), _("This examiniation has not yet been decoded."));
-                }
-
-                //
-                // Turn off and clear output buffer. Send data to peer in
-                // the requested format.
-                //
-                ob_end_clean();
-                $pdf = new ResultPDF($this->param->exam);
-                $pdf->setFormat($this->param->format);
-                $pdf->send($this->data->getStudentID());
-                exit(0);
-        }
-
-        //
-        // Show details for this examination.
-        // 
-        private function showExam()
-        {
-                printf("<h3>" . _("Examination details") . "</h3>\n");
-                printf("<p>" . _("Showing description for examiniation <u>%s</u> on <u>%s</u>") . ":</p>\n", $this->data->getExamName(), strftime(DATE_FORMAT, strtotime($this->data->getExamStartTime())));
-                printf("<div class=\"examination\">\n");
-                printf("<div class=\"examhead\">%s</div>\n", $this->data->getExamName());
-                printf("<div class=\"exambody\">%s</div>\n", str_replace("\n", "<br/>", $this->data->getExamDescription()));
-                printf("</div>\n");
-        }
-
 }
 
 // 
