@@ -34,7 +34,7 @@ class Question extends ModelBehavior
                 if ($type == 'afterCreate') {
                         $this->trustedContextCall(function($user) use($model) {
                                 $corrector = new \OpenExam\Models\Corrector();
-                                $corrector->user = $user->getPrincipalName();
+                                $corrector->user = $model->user;
                                 $corrector->question_id = $model->id;
                                 return $corrector->save();
                         }, $model->getDI());
