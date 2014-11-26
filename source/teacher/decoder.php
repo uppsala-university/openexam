@@ -114,7 +114,7 @@ class DecoderPage extends TeacherPage
                         $this->param->order = "state";
                 }
                 if (!isset($this->param->verbose)) {
-                        $this->param->verbose = false;
+                        $this->param->verbose = ScoreBoardPrinter::VERBOSE_REPORT;
                 }
                 if (!isset($this->param->colorize)) {
                         $this->param->colorize = false;
@@ -400,17 +400,26 @@ class DecoderPage extends TeacherPage
                     _("This table shows all answers from students to questions for the examination '%s'. ") .
                     "</p>\n", $data->getExamName());
 
+                $verbosity = array(
+                        _("Summary"),
+                        _("Report"),
+                        _("All")
+                );
+
+                $colorize = array(
+                        _("Standard"),
+                        _("Colorize")
+                );
+
+                $vcurr = $this->param->verbose;
+                $vnext = ($this->param->verbose + 1) % count($verbosity);
+
+                $ccurr = $this->param->colorize;
+                $cnext = ($this->param->colorize + 1) % count($colorize);
+
                 printf("<span class=\"links viewmode\">");
-                if ($this->param->verbose) {
-                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;verbose=0\">%s</a>, ", _("Details"), $this->param->exam, _("Less"));
-                } else {
-                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;verbose=1\">%s</a>, ", _("Details"), $this->param->exam, _("More"));
-                }
-                if ($this->param->colorize) {
-                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=0\">%s</a>", _("Mode"), $this->param->exam, _("Standard"));
-                } else {
-                        printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=1\">%s</a>", _("Mode"), $this->param->exam, _("Colorize"));
-                }
+                printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=%d&amp;verbose=%d\">%s</a>, ", _("Details"), $this->param->exam, $ccurr, $vnext, $verbosity[$vnext]);
+                printf("%s: <a href=\"?exam=%d&amp;action=show&amp;colorize=%d&amp;verbose=%d\">%s</a>", _("Mode"), $this->param->exam, $cnext, $vcurr, $colorize[$cnext]);
                 printf("</span>\n");
 
                 $board = new ScoreBoardPrinter($this->param->exam, $this->filter);

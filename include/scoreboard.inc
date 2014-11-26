@@ -767,9 +767,12 @@ class ScoreBoardWriter extends ScoreBoardOutput
 //
 class ScoreBoardPrinter extends ScoreBoardOutput
 {
+        const VERBOSE_SUMMARY = 0;
+        const VERBOSE_REPORT = 1;
+        const VERBOSE_ALL = 2;
 
         private $decoded;     // Allready decoded
-        private $verbose;     // Be more verbose in output.
+        private $verbose;     // Verbosity in output.
         private $colorize;    // Colorize scores.
         private $show;
         private $ordasc;      // Order ascending.
@@ -779,14 +782,14 @@ class ScoreBoardPrinter extends ScoreBoardOutput
         {
                 parent::__construct($exam, $filter);
                 $this->decoded = $this->board->getExam()->getExamDecoded() == 'Y';
-                $this->verbose = false;
+                $this->verbose = self::VERBOSE_REPORT;
                 $this->colorize = false;
                 $this->show = new stdClass();
         }
 
-        public function setVerbose($bool)
+        public function setVerbose($level)
         {
-                $this->verbose = $bool;
+                $this->verbose = $level;
         }
 
         public function setColorized($bool)
@@ -810,12 +813,12 @@ class ScoreBoardPrinter extends ScoreBoardOutput
                 //
                 // Select which field to output:
                 //
-                $this->show->tag = $this->decoded;
+                $this->show->tag = $this->decoded && $this->verbose >= self::VERBOSE_ALL;
                 $this->show->name = $this->decoded;
-                $this->show->user = $this->decoded && $this->verbose;
-                $this->show->pnr = $this->decoded && $this->verbose;
-                $this->show->code = $this->verbose || !$this->decoded;
-                $this->show->summary = $this->verbose;
+                $this->show->user = $this->decoded && $this->verbose >= self::VERBOSE_ALL;
+                $this->show->pnr = $this->decoded && $this->verbose >= self::VERBOSE_REPORT;
+                $this->show->code = !$this->decoded || $this->verbose >= self::VERBOSE_REPORT;
+                $this->show->summary = $this->verbose >= self::VERBOSE_ALL;
                 $this->show->percent = true;
                 $this->show->avarage = true;
                 $this->show->grade = true;
