@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Render test</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            h1 { text-decoration: underline; color: darkblue }
+        </style>
+        <script>
+            function setTaste(text) {
+                div = document.getElementById('taste');
+                div.innerHTML = "Taste: " + text;
+            }
+        </script>
+    </head>
+    <body onload="setTaste('Sour!')">
+        <h1>Render test</h1>
+        <div>
+            <img src="citrus.jpg">
+            <i>Lemon or Lime?</i>
+        </div>
+        <div id="taste"></div>
+        <hr>
+        <i>Both javascript and CSS should be appied in rendered output.</i>
+    </body>
+</html>
