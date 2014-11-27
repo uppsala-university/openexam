@@ -118,7 +118,7 @@ abstract class ServiceController extends Controller
                         if ($data[0] == null) {
                                 $data = array();
                         }
-                        if (is_string($data[0]) && strpbrk($data[0], '{[') != false) {
+                        if (isset($data[0]) && is_string($data[0]) && strpbrk($data[0], '{[') != false) {
                                 $data = array();
                         }
                 }
