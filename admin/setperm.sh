@@ -17,10 +17,11 @@ root="$(realpath $cwd/../phalcon-mvc)"
 # Web server user:
 user="apache"
 
-# These directories should be writable by the web server:
+# These directories/files should be writable by the web server:
 for d in cache logs schemas/soap; do
   if [ -d $root/$d ]; then
-    setfacl -m u:$user:rwx $root/$d
+    find $root/$d -type d | xargs setfacl -m u:$user:rwx
+    find $root/$d -type f | xargs setfacl -m u:$user:rw
   fi
 done
 
