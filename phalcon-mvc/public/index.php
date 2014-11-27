@@ -8,9 +8,12 @@ try {
         $config = include(CONFIG_PHP);
 
         if ($config->application->release) {
-                error_reporting(E_ALL ^ E_NOTICE);
+                error_reporting(E_ALL ^ E_NOTICE & ~E_DEPRECATED);
+                ini_set('display_errors', 0);
         } else {
-                error_reporting(E_ALL);
+                error_reporting(E_ALL | E_STRICT);
+                ini_set('display_errors', 1);
+                ini_set('display_startup_errors', 1);
         }
 
         include CONFIG_SYS . "/loader.php";
