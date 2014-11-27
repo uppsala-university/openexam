@@ -43,34 +43,31 @@ $di->set('modelsManager', function() use($di) {
         return $modelsManager;
 }, true);
 
-//$di->set('dispatcher', function () {
-//
-//        $dispatcher = new Phalcon\Mvc\Dispatcher();
-//
-//        // $dispatcher->setDefaultNamespace('OpenExam\Controllers\Core');
-//
-//        return $dispatcher;
-//});
-
 /**
- * We register the events manager
+ * Setup meta data cache.
  */
-//$di->set('dispatcher', function() use ($di) {
-//
-//        $eventsManager = $di->getShared('eventsManager');
-//
-//        $security = new Security($di);
-//
-//        /**
-//         * We listen for events in the dispatcher using the Security plugin
-//         */
-//        $eventsManager->attach('dispatch', $security);
-//
-//        $dispatcher = new Phalcon\Mvc\Dispatcher();
-//        $dispatcher->setEventsManager($eventsManager);
-//
-//        return $dispatcher;
-//});
+$di->set('modelsMetadata', function() use($config) {
+        if (!isset($config->application->release)) {
+                return new Phalcon\Mvc\Model\Metadata\Memory();
+        } elseif (!$config->metadata->type) {
+                foreach (array('xcache', 'apc') as $extension) {
+                        if (extension_loaded($extension)) {
+                                $config->metadata->type = $extension;
+                                break;
+                        }
+                }
+        }
+
+        if ($config->application->release == false) {
+                return new Phalcon\Mvc\Model\Metadata\Memory();
+        } elseif ($config->metadata->type == 'xcache' && extension_loaded('xcache')) {
+                return new Phalcon\Mvc\Model\Metadata\Xcache($config->metadata);
+        } elseif ($config->metadata->type == 'apc' && extension_loaded('apc')) {
+                return new Phalcon\Mvc\Model\MetaData\Apc($config->metadata);
+        } else {
+                return new Phalcon\Mvc\Model\Metadata\Memory(); // fallback                
+        }
+}, true);
 
 /**
  * The URL component is used to generate all kind of urls in the application
@@ -114,20 +111,6 @@ $di->set('dbread', function () use ($config) {
 $di->set('dbwrite', function () use ($config) {
         return \OpenExam\Library\Database\Adapter::create($config->dbwrite);
 });
-
-/**
- * For Apc?
- */
-/*
-  $di->set('modelsMetadata', function() use ($config) {
-  if (isset($config->models->metadata)) {
-  $metaDataConfig = $config->models->metadata;
-  $metadataAdapter = 'Phalcon\Mvc\Model\Metadata\\'.$metaDataConfig->adapter;
-  return new $metadataAdapter();
-  }
-  return new Phalcon\Mvc\Model\Metadata\Memory();
-  });
- */
 
 /**
  * Start the session the first time some component request the session service
@@ -244,7 +227,7 @@ $di->set('catalog', function() use($config) {
         }
         $manager->setDefaultDomain($config->user->domain);     // Set default domain.
         return $manager;
-});
+}, true);
 
 /**
  * Phql based model manager

@@ -189,6 +189,14 @@ $config = new \Phalcon\Config(
                         'outline'      => true,
                         'outlineDepth' => 2
                 )
+        ),
+        /**
+         * Models meta data cache. Only activated if application->release is
+         * true. Fallback on default memory cache during development.
+         */
+        'metadata'    => array(
+                'prefix'   => 'openexam',
+                'lifetime' => 86400
         )
     )
 );
