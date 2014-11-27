@@ -57,6 +57,10 @@ return array(
          */
         'application' => array(
                 /**
+                 * Enable/disable development mode.
+                 */
+                'release'  => true,
+                /**
                  * Cache directory.
                  */
                 'cacheDir' => BASE_DIR . '/cache/',
