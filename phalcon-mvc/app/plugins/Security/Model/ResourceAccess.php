@@ -83,7 +83,7 @@ class ResourceAccess extends ObjectAccess
                             }
 
                             if (isset($role)) {
-                                    throw new Exception('role');
+                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }
@@ -169,7 +169,7 @@ class ResourceAccess extends ObjectAccess
                             }
 
                             if (isset($role)) {
-                                    throw new Exception('access');
+                                    throw new Exception(sprintf("You are not allowed to read resource %s", $model->name), Exception::ACCESS);
                             } else {
                                     return true;
                             }

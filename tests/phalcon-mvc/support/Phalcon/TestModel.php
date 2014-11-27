@@ -97,7 +97,7 @@ class TestModel extends TestCase
                         if ($expect) {
                                 self::error($exception);
                         } else {
-                                self::success("Failed as expected: %s", $exception->getMessage());
+                                self::success("Expected failure: %s", $exception->getMessage());
                         }
                 }
 
@@ -128,7 +128,7 @@ class TestModel extends TestCase
                         if ($expect) {
                                 self::error($exception);
                         } else {
-                                self::success("Failed as expected: %s", $exception->getMessage());
+                                self::success("Expected failure: %s", $exception->getMessage());
                         }
                 }
 
@@ -159,7 +159,7 @@ class TestModel extends TestCase
                         if ($expect) {
                                 self::error($exception);
                         } else {
-                                self::success("Failed as expected: %s", $exception->getMessage());
+                                self::success("Expected failure: %s", $exception->getMessage());
                         }
                 }
 
@@ -194,7 +194,7 @@ class TestModel extends TestCase
                         if ($expect) {
                                 self::error($exception);
                         } else {
-                                self::success("Failed as expected: %s", $exception->getMessage());
+                                self::success("Expected failure: %s", $exception->getMessage());
                         }
                 }
 

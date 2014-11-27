@@ -84,11 +84,11 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // 
                 if (($acl = $this->getDI()->get('acl')) == false) {
                         $this->logger->system->critical("The ACL service ('acl') is missing.");
-                        throw new Exception('acl');
+                        throw new Exception("System configuration error", Exception::ACL);
                 }
                 if (($user = $this->getDI()->get('user')) == false) {
                         $this->logger->system->critical("The User service ('user') is missing.");
-                        throw new Exception('user');
+                        throw new Exception("System configuration error", Exception::USER);
                 } else {
                         $principal = $user->getPrincipalName();
                 }
@@ -116,7 +116,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         $this->logger->auth->error(sprintf(
                                 "Denied %s access on %s(id=%d) (unauthenticated user) [%s]", $action, $name, $model->id, $addr
                         ));
-                        throw new Exception('auth');
+                        throw new Exception("Authentication required", Exception::AUTH);
                 }
 
                 // 
@@ -126,7 +126,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         $this->logger->auth->error(sprintf(
                                 "Denied %s access on %s(id=%d) for user %s using role %s (blocked by ACL) [%s]", $action, $name, $model->id, $principal, $role, $addr
                         ));
-                        throw new Exception('access');
+                        throw new Exception("Access denied by ACL", Exception::ACCESS);
                 }
 
                 // 
@@ -137,7 +137,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         $this->logger->auth->error(sprintf(
                                 "Denied %s access on %s(id=%d) for user %s using role %s (failed aquire role) [%s]", $action, $name, $model->id, $principal, $role, $addr
                         ));
-                        throw new Exception('role');
+                        throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
                 } elseif ($action == ObjectAccess::CREATE) {
                         $this->logger->auth->info(sprintf(
                                 "Granted %s access on %s for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr

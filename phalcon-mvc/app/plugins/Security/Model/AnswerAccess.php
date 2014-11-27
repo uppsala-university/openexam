@@ -70,7 +70,7 @@ class AnswerAccess extends ObjectAccess
                             }
 
                             if (isset($role)) {
-                                    throw new Exception('role');
+                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }
@@ -103,7 +103,7 @@ class AnswerAccess extends ObjectAccess
                             if ($role == Roles::STUDENT) {
                                     if ($action != self::CREATE) {
                                             if ($model->student->user != $user->getPrincipalName()) {
-                                                    throw new Exception('owner');
+                                                    throw new Exception("Only the owner can access this object", Exception::OWNER);
                                             }
                                     }
                             }

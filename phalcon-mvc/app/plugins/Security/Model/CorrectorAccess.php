@@ -68,7 +68,7 @@ class CorrectorAccess extends ObjectAccess
                             }
 
                             if (isset($role)) {
-                                    throw new Exception('role');
+                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }

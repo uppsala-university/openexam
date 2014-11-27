@@ -69,7 +69,7 @@ class QuestionAccess extends ObjectAccess
                             }
 
                             if (isset($role)) {
-                                    throw new Exception('role');
+                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }
@@ -102,7 +102,7 @@ class QuestionAccess extends ObjectAccess
                             // 
                             if ($role == Roles::STUDENT) {
                                     if ($model->exam->getState()->has(State::UPCOMING)) {
-                                            throw new Exception('access');
+                                            throw new Exception("Questions are not accessible before the exam starts", Exception::ACCESS);
                                     }
                             }
 
@@ -111,9 +111,8 @@ class QuestionAccess extends ObjectAccess
                             // to update or delete this question.
                             // 
                             if ($action == self::UPDATE || $action == self::DELETE) {
-                                    if ($role != Roles::CREATOR &&
-                                        $user->getPrincipalName() != $model->user) {
-                                            throw new Exception('action');
+                                    if ($role != Roles::CREATOR && $user->getPrincipalName() != $model->user) {
+                                            throw new Exception("Question can only be updated or deleted by the creator", Exception::ACTION);
                                     }
                             }
 

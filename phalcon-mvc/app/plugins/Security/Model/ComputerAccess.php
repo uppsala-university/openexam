@@ -75,14 +75,8 @@ class ComputerAccess extends ObjectAccess
                                     }
                             }
 
-                            if ($this->logger->debug) {
-                                    $this->logger->debug->log(sprintf(
-                                            "%s(role=%s)", __METHOD__, $role
-                                    ));
-                            }
-
                             if (isset($role)) {
-                                    throw new Exception('role');
+                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }
