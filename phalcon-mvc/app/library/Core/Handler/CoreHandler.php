@@ -58,11 +58,11 @@ class CoreHandler extends Component
          */
         public function __construct($role)
         {
-                if ($role == Roles::TRUSTED) {
-                        throw new Exception("The trusted role is not permitted here.");
-                }
                 if (!isset($role)) {
                         throw new Exception("The core API requires an role.");
+                }
+                if ($role == Roles::TRUSTED || $role == Roles::SYSTEM) {
+                        throw new Exception("The trusted role is not permitted here.");
                 }
 
                 $this->user->setPrimaryRole($role);

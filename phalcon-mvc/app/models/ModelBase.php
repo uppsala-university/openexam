@@ -117,4 +117,41 @@ class ModelBase extends Model
                 }
         }
 
+        /**
+         * Saves related records that must be stored prior to save the 
+         * master record.
+         * 
+         * @param \Phalcon\Db\AdapterInterface $connection
+         * @param \Phalcon\Mvc\ModelInterface[] $related
+         * @return bool 
+         */
+        protected function _preSaveRelatedRecords($connection, $related)
+        {
+                // 
+                // Only perform access control on the master record. Bypass
+                // ACL for related records using the system role.
+                // 
+                $user = $this->getDI()->get('user');
+                $role = $user->setPrimaryRole(Roles::SYSTEM);
+
+                $txlevel = $connection->getTransactionLevel();
+
+                try {
+                        $result = parent::_preSaveRelatedRecords($connection, $related);
+                } catch (\Exception $exception) {
+                        while ($connection->getTransactionLevel() > $txlevel) {
+                                try {
+                                        $connection->rollback();
+                                } catch (\PDOException $e) {
+                                        // ignore
+                                }
+                        }
+                        $user->setPrimaryRole($role);
+                        throw $exception;
+                }
+
+                $user->setPrimaryRole($role);
+                return $result;
+        }
+
 }

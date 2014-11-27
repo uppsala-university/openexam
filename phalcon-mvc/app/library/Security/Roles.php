@@ -117,6 +117,10 @@ class Roles extends Component
          * Control ACL system (internal role).
          */
         const TRUSTED = 'cacls';
+        /**
+         * Model cache maintenance (internal role).
+         */
+        const SYSTEM = 'system';
 
         /**
          * @var array 
