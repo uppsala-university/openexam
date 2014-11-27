@@ -49,7 +49,8 @@ $di->set('modelsManager', function() use($di) {
 $di->set('modelsMetadata', function() use($config) {
         if (!isset($config->application->release)) {
                 return new Phalcon\Mvc\Model\Metadata\Memory();
-        } elseif (!$config->metadata->type) {
+        }
+        if (!isset($config->metadata->type)) {
                 foreach (array('xcache', 'apc') as $extension) {
                         if (extension_loaded($extension)) {
                                 $config->metadata->type = $extension;

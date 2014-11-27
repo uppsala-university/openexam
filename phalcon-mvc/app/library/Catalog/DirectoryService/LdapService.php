@@ -480,7 +480,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                                 }
                                         }
                                 }
-                                
+
                                 // 
                                 // Any left over attributes goes in attr member:
                                 // 
@@ -784,7 +784,9 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                         // 
                         // Split on attribute name/extension:
                         // 
-                        list($name, $type) = explode(";", $name);
+                        if (strpos($name, ';')) {
+                                list($name, $type) = explode(";", $name);
+                        }
 
                         // 
                         // Get reverse mapped attribute name:
