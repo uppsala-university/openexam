@@ -87,9 +87,22 @@ abstract class RenderBase
                 $globals = array_merge($globals, $this->globals);
 
                 // 
+                // Render image fail unless the output type is known:
+                // 
+                if (isset($globals['fmt'])) {
+                        $extension = $globals['fmt'];
+                } elseif ($globals['out'] != '-') {
+                        $extension = pathinfo($globals['out'], PATHINFO_EXTENSION);
+                } elseif ($type == 'image') {
+                        $extension = 'png';
+                } elseif ($type == 'pdf') {
+                        $extension = 'pdf';
+                }
+
+                // 
                 // Emulate '-' output option:
                 // 
-                $tmpfile = tempnam(sys_get_temp_dir(), 'wktohtml');
+                $tmpfile = tempnam(sys_get_temp_dir(), 'wktohtml') . ".$extension";
                 $dstfile = $globals['out'];
                 $globals['out'] = $tmpfile;
 
