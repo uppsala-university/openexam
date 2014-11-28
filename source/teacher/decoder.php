@@ -616,11 +616,21 @@ class DecoderPage extends TeacherPage
                 $root->setLink($link);
                 $root->addLink(_("Email"), $link, _("Send email to all students in this list."));
 
-                foreach ($recepients as $addr) {
-                        $link = sprintf("mailto:?to=%s&subject=%s&body=%s", $addr, $subj, $body);
-                        $child = $root->addChild($addr);
-                        $child->setLink($link);
-                        $child->addLink(_("Email"), $link, sprintf(_("Send email to %s."), $addr));
+                // 
+                // GET request limits on Windows force us to group students.
+                // 
+                for ($i = 0; $i < count($recepients); $i += 30) {
+                        $slice = array_slice($recepients, $i, 30);
+                        $link = sprintf("mailto:?bcc=%s&subject=%s&body=%s", implode(",", $slice), $subj, $body);
+                        $group = $root->addChild(_("Group"));
+                        $group->setLink($link);
+                        $group->addLink(_("Email"), $link, _("Send email to all students in this group."));
+                        foreach ($slice as $addr) {
+                                $link = sprintf("mailto:?to=%s&subject=%s&body=%s", $addr, $subj, $body);
+                                $child = $group->addChild($addr);
+                                $child->setLink($link);
+                                $child->addLink(_("Email"), $link, sprintf(_("Send email to %s."), $addr));
+                        }
                 }
 
                 $tree->output();
