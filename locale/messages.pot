@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.0\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-11-26 11:50+0100\n"
+"POT-Creation-Date: 2014-11-28 15:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2273,7 +2273,7 @@ msgstr ""
 msgid "This section lets you download the results for all or individual students in different formats. "
 msgstr ""
 
-#: source/teacher/decoder.php:325 source/teacher/decoder.php:641
+#: source/teacher/decoder.php:325 source/teacher/decoder.php:651
 #, php-format
 msgid "The result contains the complete examination with answers and scores."
 msgstr ""
@@ -2284,19 +2284,19 @@ msgid "Notice that the language used in the generated file will be the same as y
 msgstr ""
 
 #: source/teacher/decoder.php:342 source/teacher/decoder.php:382
-#: source/teacher/decoder.php:663 source/teacher/export.php:190
+#: source/teacher/decoder.php:673 source/teacher/export.php:190
 msgid "Format"
 msgstr ""
 
-#: source/teacher/decoder.php:348 source/teacher/decoder.php:668
+#: source/teacher/decoder.php:348 source/teacher/decoder.php:678
 msgid "Select"
 msgstr ""
 
-#: source/teacher/decoder.php:351 source/teacher/decoder.php:671
+#: source/teacher/decoder.php:351 source/teacher/decoder.php:681
 msgid "All Students"
 msgstr ""
 
-#: source/teacher/decoder.php:360 source/teacher/decoder.php:706
+#: source/teacher/decoder.php:360 source/teacher/decoder.php:716
 msgid "Please note that it might take some time to complete your request, especial if the examination has a lot of students."
 msgstr ""
 
@@ -2449,7 +2449,8 @@ msgstr ""
 msgid "Result available for examination on %s (OpenExam)"
 msgstr ""
 
-#: source/teacher/decoder.php:617 source/teacher/decoder.php:623
+#: source/teacher/decoder.php:617 source/teacher/decoder.php:627
+#: source/teacher/decoder.php:632
 msgid "Email"
 msgstr ""
 
@@ -2457,30 +2458,38 @@ msgstr ""
 msgid "Send email to all students in this list."
 msgstr ""
 
-#: source/teacher/decoder.php:623
+#: source/teacher/decoder.php:625
+msgid "Group"
+msgstr ""
+
+#: source/teacher/decoder.php:627
+msgid "Send email to all students in this group."
+msgstr ""
+
+#: source/teacher/decoder.php:632
 #, php-format
 msgid "Send email to %s."
 msgstr ""
 
-#: source/teacher/decoder.php:640
+#: source/teacher/decoder.php:650
 #, php-format
 msgid "This section lets you send the results to all or individual students in different formats. "
 msgstr ""
 
-#: source/teacher/decoder.php:644
+#: source/teacher/decoder.php:654
 #, php-format
 msgid "Notice that the language used in the outgoing message will be the same as your currently selected language (%s)."
 msgstr ""
 
-#: source/teacher/decoder.php:661
+#: source/teacher/decoder.php:671
 msgid "Send Result"
 msgstr ""
 
-#: source/teacher/decoder.php:682
+#: source/teacher/decoder.php:692
 msgid "Optional Message"
 msgstr ""
 
-#: source/teacher/decoder.php:683
+#: source/teacher/decoder.php:693
 msgid ""
 "Header 1:\n"
 "---\n"
@@ -2495,31 +2504,31 @@ msgid ""
 "...and second block.\n"
 msgstr ""
 
-#: source/teacher/decoder.php:684
+#: source/teacher/decoder.php:694
 msgid "Text"
 msgstr ""
 
-#: source/teacher/decoder.php:686
+#: source/teacher/decoder.php:696
 msgid "Append one or more optional section of text to the message."
 msgstr ""
 
-#: source/teacher/decoder.php:692
+#: source/teacher/decoder.php:702
 msgid "Attachements"
 msgstr ""
 
-#: source/teacher/decoder.php:696
+#: source/teacher/decoder.php:706
 msgid "Attach this file to all outgoing messages."
 msgstr ""
 
-#: source/teacher/decoder.php:700
+#: source/teacher/decoder.php:710
 msgid "Enable mirror mode (dry-run)."
 msgstr ""
 
-#: source/teacher/decoder.php:701
+#: source/teacher/decoder.php:711
 msgid "If checked, then your email address will be used as the receiver, with the student address set as the sender."
 msgstr ""
 
-#: source/teacher/decoder.php:704
+#: source/teacher/decoder.php:714
 msgid "Send"
 msgstr ""
 

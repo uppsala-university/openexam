@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openexam-php 1.5.2\n"
 "Report-Msgid-Bugs-To: anders.lovgren@bmc.uu.se\n"
-"POT-Creation-Date: 2014-11-26 11:50+0100\n"
-"PO-Revision-Date: 2014-11-26 11:51+0100\n"
+"POT-Creation-Date: 2014-11-28 15:20+0100\n"
+"PO-Revision-Date: 2014-11-28 15:21+0100\n"
 "Last-Translator: Anders Lövgren <anders.lovgren@bmc.uu.se>\n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -2289,7 +2289,7 @@ msgstr "Ladda ner resultat"
 msgid "This section lets you download the results for all or individual students in different formats. "
 msgstr "Den här avdelningen låter dig ladda ner resultat i olika format för alla studenter samtidigt eller individuellt per student. "
 
-#: source/teacher/decoder.php:325 source/teacher/decoder.php:641
+#: source/teacher/decoder.php:325 source/teacher/decoder.php:651
 #, php-format
 msgid "The result contains the complete examination with answers and scores."
 msgstr "Resulteten innehåller den kompletta examinationen med svar, kommentarer och poäng."
@@ -2300,19 +2300,19 @@ msgid "Notice that the language used in the generated file will be the same as y
 msgstr "Notera att språket i dom generade filerna kommer att vara detsamma som ditt för närvarande valda språk (%s)."
 
 #: source/teacher/decoder.php:342 source/teacher/decoder.php:382
-#: source/teacher/decoder.php:663 source/teacher/export.php:190
+#: source/teacher/decoder.php:673 source/teacher/export.php:190
 msgid "Format"
 msgstr "Format"
 
-#: source/teacher/decoder.php:348 source/teacher/decoder.php:668
+#: source/teacher/decoder.php:348 source/teacher/decoder.php:678
 msgid "Select"
 msgstr "Välj"
 
-#: source/teacher/decoder.php:351 source/teacher/decoder.php:671
+#: source/teacher/decoder.php:351 source/teacher/decoder.php:681
 msgid "All Students"
 msgstr "Alla studenter"
 
-#: source/teacher/decoder.php:360 source/teacher/decoder.php:706
+#: source/teacher/decoder.php:360 source/teacher/decoder.php:716
 msgid "Please note that it might take some time to complete your request, especial if the examination has a lot of students."
 msgstr "Notera att det kan ta en del tid att behandla din förfrågan, speciellt om examinationen hade många studenter."
 
@@ -2465,7 +2465,8 @@ msgstr "Resultat från examinationen '%s' den %s kan nu laddas ner från %s"
 msgid "Result available for examination on %s (OpenExam)"
 msgstr "Resultat finns tillgängliga för examinationen %s (OpenExam)"
 
-#: source/teacher/decoder.php:617 source/teacher/decoder.php:623
+#: source/teacher/decoder.php:617 source/teacher/decoder.php:627
+#: source/teacher/decoder.php:632
 msgid "Email"
 msgstr "E-post"
 
@@ -2473,30 +2474,38 @@ msgstr "E-post"
 msgid "Send email to all students in this list."
 msgstr "Skicka e-post till alla studenter på denna lista."
 
-#: source/teacher/decoder.php:623
+#: source/teacher/decoder.php:625
+msgid "Group"
+msgstr "Grupp"
+
+#: source/teacher/decoder.php:627
+msgid "Send email to all students in this group."
+msgstr "Skicka e-post till alla studenter i denna grupp."
+
+#: source/teacher/decoder.php:632
 #, php-format
 msgid "Send email to %s."
 msgstr "Skicka e-post till %s."
 
-#: source/teacher/decoder.php:640
+#: source/teacher/decoder.php:650
 #, php-format
 msgid "This section lets you send the results to all or individual students in different formats. "
 msgstr "Den här avdelningen låter dig skicka resultat till alla eller enskilda studenter i olika format. "
 
-#: source/teacher/decoder.php:644
+#: source/teacher/decoder.php:654
 #, php-format
 msgid "Notice that the language used in the outgoing message will be the same as your currently selected language (%s)."
 msgstr "Notera att språket i utgående meddelande kommer att vara detsamma som ditt för närvarande valda språk (%s)."
 
-#: source/teacher/decoder.php:661
+#: source/teacher/decoder.php:671
 msgid "Send Result"
 msgstr "Skicka resultat"
 
-#: source/teacher/decoder.php:682
+#: source/teacher/decoder.php:692
 msgid "Optional Message"
 msgstr "Valfritt meddelande"
 
-#: source/teacher/decoder.php:683
+#: source/teacher/decoder.php:693
 msgid ""
 "Header 1:\n"
 "---\n"
@@ -2522,31 +2531,31 @@ msgstr ""
 "\n"
 "... och andra blocket.\n"
 
-#: source/teacher/decoder.php:684
+#: source/teacher/decoder.php:694
 msgid "Text"
 msgstr "Text"
 
-#: source/teacher/decoder.php:686
+#: source/teacher/decoder.php:696
 msgid "Append one or more optional section of text to the message."
 msgstr "Lägg till en eller flera valfria sektioner av text till meddelandet."
 
-#: source/teacher/decoder.php:692
+#: source/teacher/decoder.php:702
 msgid "Attachements"
 msgstr "Bifoga filer"
 
-#: source/teacher/decoder.php:696
+#: source/teacher/decoder.php:706
 msgid "Attach this file to all outgoing messages."
 msgstr "Bifoga denna fil till alla utgående meddelanden."
 
-#: source/teacher/decoder.php:700
+#: source/teacher/decoder.php:710
 msgid "Enable mirror mode (dry-run)."
 msgstr "Använd spegelläge (torrkörning)."
 
-#: source/teacher/decoder.php:701
+#: source/teacher/decoder.php:711
 msgid "If checked, then your email address will be used as the receiver, with the student address set as the sender."
 msgstr "Om markerad så kommer din e-postadress att användas som mottagare och studentens adress att stå som avsändare."
 
-#: source/teacher/decoder.php:704
+#: source/teacher/decoder.php:714
 msgid "Send"
 msgstr "Skicka"
 
