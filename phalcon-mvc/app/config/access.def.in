@@ -43,7 +43,7 @@ return array(
                         'decoder'     => '*',
                         'invigilator' => '*',
                         'student'     => 'read',
-                        'question'    => 'read',
+                        'question'    => '*',
                         'topic'       => '*',
                         'resource'    => '*'
                 ),
