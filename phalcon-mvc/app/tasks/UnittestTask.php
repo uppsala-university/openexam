@@ -241,6 +241,10 @@ class UnittestTask extends MainTask
                                 'session_id' => md5(time()),
                                 'data'       => serialize(array('auth' => array('user' => $options['user'], 'type' => 'cas'))),
                                 'created'    => time()
+                        ),
+                        'setting'     => array(
+                                'data' => array('key1' => 'val1', 'key2' => array('key3' => 'val3', 'key4' => 'val4')),
+                                'user' => $options['user']
                         )
                 );
 

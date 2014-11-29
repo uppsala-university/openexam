@@ -117,6 +117,16 @@ class Exam extends ModelBase
          */
         public $grades;
         /**
+         * The course code related to this exam.
+         * @var string 
+         */
+        public $course;
+        /**
+         * The unique exam code.
+         * @var string 
+         */
+        public $code;
+        /**
          * Is this exam a testcase?
          * @var bool
          */
