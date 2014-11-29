@@ -271,11 +271,16 @@ class QuestionController extends GuiController
                         
                 } else {
                         // we will show score board
-                        $questData = $this->phql->executeQuery(
+                        if($exam->decoded == 'N') {
+                                $questData = $this->phql->executeQuery(
                                         "select q.* from OpenExam\Models\Question q "
                                         .   "inner join OpenExam\Models\Corrector c "
-                                        .   "where c.user = '".$this->user->getPrincipalName()."'"
+                                        .   "where exam_id = '".$exam->id."' "
+                                        .   "and c.user = '".$this->user->getPrincipalName()."'"
                                 );
+                        } else {
+                                $questData = $exam->getQuestions();
+                        }        
                 }
                 
                 
