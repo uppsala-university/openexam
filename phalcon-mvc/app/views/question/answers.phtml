@@ -112,7 +112,7 @@
                                                                         <?php endforeach;?>
                                                                 </ul>
                                                                 <?php else:?>
-                                                                        <div><i>Student did not answer this question.</i></div>
+                                                                        <span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
                                                                 <?php endif;?>
                                                         </div>
 							<?php if($qPart['ans_area']['type']=='choicebox' && count($correctAnsPart) && $totalCorrect && $totalCorrect != count($correctAnsPart)) :?>
@@ -128,6 +128,9 @@
                                                                 </span>
                                                         </div>
                                                 	<?php endforeach;?>
+							<?php if(!count($qSpecificAns)):?>
+                                                        	<span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
+                                                        <?php endif;?>
 						<?php endif;?>
                                         </div>
                                 </div>
@@ -210,10 +213,14 @@
                                                                 
                                                         </div>
                                                         <?php endforeach;?>
+							<?php if(!count($ansData)):?>
+                                                        	<span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
+                                                        <?php endif;?>
                                                 </div>
                                                 
 						<div>
 	                                        	<input style="text-shadow:none; background-color:#D84B4B; float:right; font-size:11px" type="button" class="save-result" value="Save student's result »">
+                                                        <textarea style="width: 88%;" placeholder="Add your comments here for the student"><?=$result->comment?></textarea>
                                                 </div>
 						<div style="clear:both"></div>                                                
                                           </div>
@@ -222,7 +229,9 @@
                                 <?php else:?>
                                 <div style="padding-top:8px">
                                         <input style="text-shadow:none; background-color:#D84B4B; float:right; font-size:11px" type="button" class="save-result" value="Save student's result »">
+                                        <textarea style="width: 88%;" placeholder="Add your comments here for the student"><?=$result->comment?></textarea>
                                 </div>
+                                
                                 <div style="clear:both"></div>                                                
                                 <?php endif;?>
                         </div>

@@ -39,14 +39,14 @@ $sections = array (
 						)
 					),
 				'manage-exam' => array(
-						'target'=> 'exam/update/{exam-id}',
+						'target'=> 'exam/update/{exam-id}/creator',
 						'show-on-flags' => array (
 							"contributable"
 						)
 					),
 					
 				'view-exam' => array(
-						'target'=> 'exam/update/{exam-id}',
+						'target'=> 'exam/update/{exam-id}/creator',
 						'show-on-flags' => array (
 							"running",
 							"finished"
@@ -58,13 +58,13 @@ $sections = array (
 		'title' => 'Contribute in an exam',
 		'show-options' => array (
 				'add-q' => array(
-						'target'=> 'exam/update/{exam-id}',
+						'target'=> 'exam/update/{exam-id}/contributor/add-q',
 						'show-on-flags' => array (
 							"contributable"
 						)
 					),
 				'view-exam' => array(
-						'target'=> 'exam/{exam-id}/view',
+						'target'=> 'exam/update/{exam-id}/contributor',
 						'show-on-flags' => array (
 							'*'
 						)
@@ -298,6 +298,7 @@ $opButtonsHtml = array(
                                                                                 
                                                                         <?php endforeach;?>
                                                                         </div>
+                                                                        <?php if(!empty($exam->starttime)):?>
                                                                         <div style="padding-top: 5px; float:right; clear:both">
                                                                                 <span class="exam-date" style="padding-right: 5px; font-size: 9px;">
                                                                                         <i class="fa fa-calendar"></i>
@@ -309,6 +310,7 @@ $opButtonsHtml = array(
                                                                                         <span class="exam-ends"><?=date("H:m", strtotime($exam->endtime))?></span>
                                                                                 </span> 
                                                                         </div>
+                                                                        <?php endif;?>
                                                                 </div>
                                                                 <div style="clear:both"></div>
                                                         </li>

@@ -157,6 +157,10 @@ $(document).ready(function () {
 		{style: "drops", tipJoint: "top right", showOn: "click", });
     }
     
+    if(showAddQuestionView && $('.add_new_qs').length) {
+	    loadQuestionDialog(0);
+    }
+    
     //ajx request for searching user
     var userSelected = false;
     $(document).on("keyup.autocomplete", '.uu-user-search', function () {
@@ -196,7 +200,7 @@ $(document).ready(function () {
                     }
                 });*/
             },
-            minLength: 4,
+            //minLength: 4,
             select: function (event, ui) {
 
                 // empty text box
@@ -282,7 +286,6 @@ $(document).ready(function () {
         });
 
     });
-
 
     /*--------------------------------------------------*/
     /*	Editable text - @toDo: clean/replace/delete		*/
@@ -463,32 +466,54 @@ $(document).ready(function () {
     }
     // exam's other setting's update
     $(document).on('click', '.save-exam-settings', function () {
+	
+	//if(jQuery(".exam-settings-box").validationEngine('validate')) {
+		// get data to be saved
+		settingBox = $(this).closest('.exam-settings-box');
+		org = $(settingBox).find('input[name="unit"]').val();
+		start = $(settingBox).find('input[name="start"]').val();
+		end = $(settingBox).find('input[name="end"]').val();
+		grades = $(settingBox).find('textarea[name="grade"]').val();
+		details = 0;
+		$(settingBox).find('input[name="details[]"]:checked').each(function (index, element) {
+		    details += Number($(element).val());
+		});
+		
+		data = {"id": examId, "orgunit": org, "grades": grades, "details": details};
 
-        // get data to be saved
-        settingBox = $(this).closest('.exam-settings-box');
-        org = $(settingBox).find('input[name="unit"]').val();
-        start = $(settingBox).find('input[name="start"]').val();
-        end = $(settingBox).find('input[name="end"]').val();
-        grades = $(settingBox).find('textarea[name="grade"]').val();
-        details = 0;
-        $(settingBox).find('input[name="details[]"]:checked').each(function (index, element) {
-            details += Number($(element).val());
-        });
-
-        ajax(
-                baseURL + 'core/ajax/creator/exam/update',
-                {"id": examId, "orgunit": org, "starttime": start, "endtime": end, "grades": grades, "details": details},
-		function (examData) {
-		    closeTooltips();
+		if(start != '') {
+			data["starttime"] = start;
 		}
-        );
+			
+		if(end != '') {
+			data["endtime"] = end;
+		}
 
+		//
+		ajax(
+			baseURL + 'core/ajax/creator/exam/update',
+			data,
+			function (examData) {
+			    closeTooltips();
+			}
+		);
+	//}
     });
 
     /*----------------------------------------------*/
     /*	Generalized  events 			*/
     /*----------------------------------------------*/
-    $(".datepicker").datepicker();
+    $('body').on("focus", ".datepicker", function () {
+	//$(this).datepicker();
+	$(this).datetimepicker({
+		controlType: 'select',
+		timeFormat: 'HH:mm',
+		dateFormat: 'yy-mm-dd',
+		changeMonth: true,
+		changeYear: true,
+		minDate:0
+	});
+    });
 
 
     /*------------------------------------------------------------------*/
@@ -496,8 +521,8 @@ $(document).ready(function () {
     /*	It loads populated data of question, if question id is passed	*/
     /*------------------------------------------------------------------*/
 
-    var loadQuestionDialog = function (qId) {
-
+    function loadQuestionDialog(qId) 
+    {
         var action = (qId ? 'update' : 'create');
         qDbId = (qId ? qsJson[qId]["questId"] : 0);
 
@@ -514,7 +539,7 @@ $(document).ready(function () {
                 $("#question-form-dialog-wrap").dialog({
                     autoOpen: true,
                     width: "80%",
-                    position: ['center', 10],
+                    /*position: ['center', 10],*/
                     modal: true,
                     buttons: {
                         "Add new question part": function () {
@@ -645,7 +670,8 @@ $(document).ready(function () {
                     qsCorrectorsJson[qIndex] = {};
 
                     $(qCorrectorList).find('.left-col-user').each(function (i, rElem) {
-                        if (!qId) {
+			var correctorUserName = $(rElem).attr('data-user');    
+                        if (!qId && correctorUserName != mngr && user == mngr) {
                             qCorrectorsArr.push({'question_id': qData.id, "user": $(rElem).attr('data-user')});
                         }
 
@@ -653,15 +679,16 @@ $(document).ready(function () {
                         qsCorrectorsJson[qIndex][i] = $(rElem).html();
                     });
 
-                    if (!qId) {
-                        // send ajax request to save correctors for this question
-                        ajax(
-                                baseURL + 'core/ajax/contributor/corrector/create',
-                                JSON.stringify(qCorrectorsArr),
-                                function (userData) {
-                                    //do nothing for now
-                                }
-                        );
+                    if (!qId && qCorrectorsArr.length) {
+			    
+			// send ajax request to save correctors for this question
+			ajax(
+				baseURL + 'core/ajax/creator/corrector/create',
+				JSON.stringify(qCorrectorsArr),
+				function (userData) {
+				    //do nothing for now
+				}
+			);
                     }
 
 
@@ -721,7 +748,7 @@ $(document).ready(function () {
             // clone first line that was kept hidden
             var qLine = $('.qs_area_line:first').clone();
             $(qLine).attr('q-no', qNo).find('.q_no').html('Q' + qNo + ':').end();
-	    if(mngr != user) {
+	    if(!qData["canUpdate"]) {
 		    $(qLine).find('.q_line_op').remove();
 	    }
 
@@ -731,7 +758,7 @@ $(document).ready(function () {
             jQuery.each(qData, function (qPartTitle, qPartData) {
 
                 // skip extra node
-                if (qPartTitle == 'questId') {
+                if (qPartTitle == 'questId' || qPartTitle == 'canUpdate') {
                     return;
                 }
 

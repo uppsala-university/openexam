@@ -107,7 +107,12 @@ td,th {
                                         </div>
                                         <?php if($student):?>
                                         <div style="margin-top:35px">
-                                            <center><h3 style="font-weight:normal; color:#3d749b"><?=$student->code?> (19861211-1234)</h3></center>
+                                            <center>
+                                                <h3>
+                                                    <span style="color:#3d749b"><?=$this->helper->getCatalogAttribute($student->user, 'name')?></span>
+                                                </h3>
+                                                <span style="font-weight:normal"><?=$this->helper->getCatalogAttribute($student->user, 'pnr')?></span>
+                                            </center>
                                         </div>
                                         <?php endif;?>
                                 </div>         
@@ -151,7 +156,7 @@ td,th {
                                                                 with an '-' in the table.
                                                         </div>
                                                         <div>
-                                                                <table cellpadding="5" cellspacing="5" style="border:1px solid #bebebe">
+                                                                <table cellpadding="5" cellspacing="5" style="border:1px solid #bebebe; background-color: #fff">
                                                                 
                                                                 	<tr>
                                                                         	<th>Question</th>
@@ -166,11 +171,12 @@ td,th {
                                                                                 <tr>
                                                                                         <td>
                                                                                         	<?php if($pTitle == 'a'):?>
-	                                                                                      	<span style="color:#990000">Q<?=$question->name?></span>
+	                                                                                      	<span style="color:#990000; font-weight: bold">Q<?=$question->name?></span>
+                                                                                                <?=(count($data['qData'][$question->id]['qParts']) > 1) ? ", ":""; ?>
                                                                                                 <?php endif;?>
                                                                                                 
                                                                                                 <?php if(count($data['qData'][$question->id]['qParts']) > 1):?>
-                                                                                        	, Part <?=$pTitle?>
+                                                                                        	Part <?=$pTitle?>
                                                                                                 <?php endif;?>
                                                                                         </td>        
                                                                                         <td>
@@ -230,12 +236,12 @@ td,th {
                                                                         ?>
                                                                         <div class="resource-wraper">
                                                                         <?php if(stristr($mimeType, "image/")):?>
-                                                                        	<div style="border:1px dashed #dedede">
+                                                                        	<div style="border:1px dashed #dedede;">
                                                                                         <div class="resource-title">
                                                                                         <?=$resTitle?>
                                                                                         </div>
                                                                                         <div class="resource-image">
-                                                                                        <img src="<?=$resUrl?>" style=" background-color:#f9f9f9" width="100%">
+                                                                                        <img src="<?=$resUrl?>" style=" background-color:#f9f9f9; max-width:100%; max-height:100%;">
                                                                                         </div>
                                                                                 </div>
                                                                         <?php else:?>
@@ -246,6 +252,20 @@ td,th {
                                                                 
                                                                 <div style="padding: 20px 0; font-size:14px">
                                                                         <?=$pData['q_text']?>
+									<?php if($pData["ans_area"]["type"] == 'choicebox'):?>
+                                                                        	<?php $correctAnsArr = array();?>
+										<ul>
+										<?php foreach($pData["ans_area"]["data"] as $opt => $isCorrect):?>
+											<li>
+												<?=$opt?>
+                                                                                        	<?php if($isCorrect):?>
+                                                                                                	<span style="color:green"> ✔</span>
+                                                                                                	<?php $correctAnsArr[] = $opt;?>
+                                                                                                <?php endif;?>
+                                                                                        </li>       
+										<?php endforeach;?>
+										</ul>
+									<?php endif;?>
                                                                 </div>
 
 
@@ -254,14 +274,24 @@ td,th {
 
                                                                 	<div>
 									<?php if($pData["ans_area"]["type"] == 'canvas'):?>
-                                                                        	<img src="<?=$data['answers'][$student->id][$question->id][$pTitle]["ans"]["canvasUrl"]?>" style=" background-color:#f9f9f9" width="100%">
+                                                                        	<img src="<?=$data['answers'][$student->id][$question->id][$pTitle]["ans"][0]["canvasUrl"]?>" style=" background-color:#f9f9f9; max-width:100%; max-height:100%" >
                                                                 	<?php else:?>
                                                                         	<?php if(count($data['answers'][$student->id][$question->id][$pTitle]["ans"])):?>
+                                                                                	<?php if($pData["ans_area"]["type"] == 'choicebox'):?>
                                                                                         <ul>
                                                                                         <?php foreach($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans):?>
+                                                                                        	<?php if(count($correctAnsArr)):?>
+                                                                                                <li style="color:<?=in_array($ans, $correctAnsArr) ? 'green': 'red'?>">
+													<?=$ans?>
+                                                                                                </li>
+                                                                                                <?php else:?>
                                                                                                 <li><?=$ans?></li>
+                                                                                                <?php endif;?>
                                                                                         <?php endforeach;?>
                                                                                         </ul>
+                                                                                        <?php else:?>
+                                                                                        	<?=$ans?>
+                                                                                        <?php endif;?>
                                                                                 <?php else:?>
                                                                                 	<em>No answer was provided for this part.</em>
                                                                                 <?php endif;?>
@@ -269,11 +299,10 @@ td,th {
                                                                         </div>
                                                                 </div>
                                                                 
-								<?php if($pData["ans_area"]["type"] == 'choicebox'):?>
+								<?php /*if($pData["ans_area"]["type"] == 'choicebox'):?>
                                                                 <div style="padding-bottom: 20px;">
                                                                         <div class="blue-txt"> Correct answer:</div> 
                                                                         <ul>
-	                                                                        
 										<?php foreach($data['qData'][$question->id]['qParts'][$pTitle]['ans_area']['data'] as $cAnswer => $isCorrect):?>
                                                                                         <?php if($isCorrect):?>
                                                                                         <li><div class="uu-color"><?=$cAnswer?></div></li>
@@ -282,12 +311,14 @@ td,th {
                                                                                 
                                                                         </ul>
                                                                 </div>
-                                                                <?php endif?>
+                                                                <?php endif*/?>
                                                                 
+                                                                <?php if(isset($data['results'][$student->id][$question->id]["comments"])):?>
                                                                 <div style="padding-bottom: 20px;">
                                                                         <div class="blue-txt"> Teacher's comments:</div> 
-                                                                        <div class="uu-color">@ToDO: inline comments</div>
+                                                                        <div class="uu-color"><?=$data['results'][$student->id][$question->id]["comments"]?></div>
                                                                 </div>
+                                                                <?php endif;?>
                                                                 
                                                                 <div style="padding-bottom: 20px;">
                                                                         <div style="font-size:14px"> 

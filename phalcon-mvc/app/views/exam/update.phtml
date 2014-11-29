@@ -1,7 +1,7 @@
 <?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
 <?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.autocomplete.css'); ?>
 <?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.timepicker.css'); ?>
-
+<?= Phalcon\Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
 <?= Phalcon\Tag::stylesheetLink('css/opentip.css'); ?>
 
 <?= Phalcon\Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
@@ -10,54 +10,53 @@
 <?= Phalcon\Tag::javascriptInclude('js/modernizr.js') ?>
 <?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/ckeditor.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js'); ?>
+<?=Phalcon\Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js')?>
+<?=Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js')?>
 
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/create.js'); ?>
 
 <?php use \OpenExam\Library\Security\Roles;?>
 
 <!-- Left Column -->
-<?php $this->partial("exam/shared/left-menu", array('exam' => $exam, 'myRole' => $myRole)) ?>
+<?php $this->partial("exam/shared/left-menu", array('exam' => $exam, 'capabilities' => $capabilities)) ?>
 
 <!-- Main area -->         
+<?php $canUpdateExam = $capabilities->hasCapability($exam, 'update');?>
 <div id="container" class="left_menu_space" style="">
         <div id="breadcrumbsRow">&nbsp;</div>
         <div id="centerColWide">
 
                 <? /* --Exam title and description-- */ ?>
                 <h1>
-                	<?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
+                        <?php if($canUpdateExam):?>
                         <input id="exam-title" class="exam-title" type="text" placeholder="Write exam title here" value="<?=trim($exam->name)?>" />
-                        <?php else:?>
-                        <?=trim($exam->name)?>
-                        <?php endif;?>
-                        
-                        <?php if($myRole == Roles::CREATOR):?>
                         <a href="#" class="prevent">
                                 <i class="fa fa-gear" id="exam-settings"></i>
                         </a>
+                        <?php else:?>
+                        <?=trim($exam->name)?>
                         <?php endif;?>
                 </h1>
                 
-                <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
+                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
                 <textarea id="exam-desc"  style="width:99%;" rows="1" placeholder="Write exam description here"><?= trim($exam->descr) ?></textarea>
                 <?php else:?>
                 <div style="width:99%;"><?=trim($exam->descr)?></div>
                 <?php endif;?>
 
-		<?php if($myRole == Roles::CONTRIBUTOR && in_array("contributable", $exam->flags)):?>
+                <? /* --seprator-- */ ?>
+                <div class="seprator" style=" <?=(in_array("contributable", $exam->flags)) ? "margin-bottom:0px":""?>"></div>
+
+		<?php if($canUpdateExam && in_array("contributable", $exam->flags)):?>
                 <a href="#" style="font-size: 12px; float:right" class="add_new_qs">
                         <div style="display: block; float:right">
-                                <span class="btn btn-success">
-                                        <i class="fa fa-chevron-circle-right"></i>
+                                <span class="btn btn-success" style="padding:2px; font-size:11px">
+                                        <i class="fa fa-plus-circle"></i>
                                         <span>Add a new question</span>
                                 </span>
                         </div>                        
                 </a>
                 <?php endif;?>
-
-                <? /* --seprator-- */ ?>
-                <div class="seprator"></div>
-
 
                 <? /* --Questions area-- */ ?>
                 <div id="qs_area">
@@ -65,7 +64,9 @@
                         <? /* --default message when there are no questions-- */ ?>
                         <div id="default_msg_qs">
                                 There are no questions in this exam yet. <br>
+                                <?php /*if(($myRole == Roles::CONTRIBUTOR || $myRole == Roles::CREATOR) && in_array("editable", $exam->flags)):?>
                                 <a href="#" style="font-size: 12px;" class="add_new_qs"><?= Phalcon\Tag::image("img/plus-button-2.png"); ?> Add a question</a>
+                                <?php endif;*/?>
                         </div>
 
                         <? /* --Question lines-- */ ?>
@@ -76,7 +77,7 @@
                                         <div class="q_score"></div>
                                         <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
                                         <div class="q_line_op">
-                                                <a href="#"><i class="fa fa-pencil edit-q" style="color:#4a7db1"></i></a>
+                                                <a href="#"><i class="fa fa-pencil edit-q" style="color:#004276"></i></a>
                                                 <a href="#"><i class="fa fa-close del-q"></i></a>
                                         </div>
                                         <?php endif;?>
@@ -93,12 +94,12 @@
                         </div>   
                 </div>
                 
-		<?php if( $myRole == Roles::CREATOR && in_array("editable", $exam->flags) ):?>
+		<?php if( $canUpdateExam && in_array("editable", $exam->flags) ):?>
                 <div id="save_exam_btn">
                         <center>
                                 <span class="btn btn-success">
                                         <i class="fa fa-chevron-circle-right"></i>
-                                        <span>Save exam</span>
+                                        <span>Exam is ready, publish this exam</span>
                                 </span>
                         </center>
                 </div>
@@ -119,7 +120,7 @@
 	<div class="exam-settings-box">
         <div class="st-line">
                 <label for="unit"><b>Organization:</b></label>
-                <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
+                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
                 <input type="text" value="<?= $exam->orgunit ?>" name="unit">
                 <?php else:?>
                 <?= $exam->orgunit ?>
@@ -128,8 +129,8 @@
 
         <div class="st-line">
                 <label for="start"><b>Exam Start time:</b></label>
-                <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
-                <input type="text" placeholder="<?=date('Y-m-d', strtotime('now'))?> 09:15" value="<?=$exam->starttime?>" name="start" class="datepicker">
+                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+                <input type="text" placeholder="yyyy-mm-dd hh:mm" value="<?=$exam->starttime?>" name="start" class="datepicker validate[required]">
                 <?php else:?>
                 <?=$exam->starttime?>
 		<?php endif;?>
@@ -137,8 +138,8 @@
 
         <div class="st-line">
                 <label for="end"><b>Exam End time:</b></label>
-                <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
-                <input type="text" placeholder="<?=date('Y-m-d', strtotime('now'))?> 13:30" value="<?=$exam->endtime?>" name="end" class="datepicker">
+                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+                <input type="text" placeholder="yyyy-mm-dd hh:mm" value="<?=$exam->endtime?>" name="end" class="datepicker validate[required]">
                 <?php else:?>
                 <?=$exam->endtime?>
 		<?php endif;?>
@@ -146,15 +147,15 @@
 
         <div class="st-line">
                 <label for="grade"><strong>Grades:</strong></label>
-                <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
-                <textarea title="Input name:value pairs on separate lines defining the Grade levels for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:15", 60, " ") . "VG:20"?>"><?=trim($exam->grades)?></textarea>
+                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+                <textarea title="Input name:value pairs on separate lines defining the Grade levels for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade validate[required]" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:15", 60, " ") . "VG:20"?>"><?=trim($exam->grades)?></textarea>
                 <?php else:?>
                 <?=nl2br(trim($exam->grades))?>
 		<?php endif;?>
         </div>
 
         <div class="st-line">
-		<?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
+		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
                 <input type="checkbox" value="1" title="Expose names and contact information for people involved in the creation and correction process in the result PDF seen by the student." <?=(($exam->details == 1 || $exam->details == 3) ? 'checked="checked"':'')?> name="details[]" >
                 Expose responsible people
                 <?php else:?>
@@ -162,7 +163,7 @@
 		<?php endif;?>
                 <br />
                 
-		<?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
+		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
                 <input type="checkbox" value="2" title="Include statistics like avarage/mean values and score distribution compared to other students in the result PDF seen by the student." <?=(($exam->details == 2 || $exam->details == 3) ? 'checked="checked"':'')?> name="details[]" >
                 Include other students statistics
                 <?php else:?>
@@ -170,18 +171,14 @@
 		<?php endif;?>
                 <br>
         </div>
-        <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
+        <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
 	<div class="st-line">
 	        <center><input class="save-exam-settings" type="button" value="Save exam settings"></center>
         </div>   
         <?php endif;?> 
-<?php 
-		/*<script language="javascript">
-				$(function() {
-					$( ".datepicker" ).datepicker();
-				});
-        </script>*/
-?>
+	<script language="javascript">
+	jQuery(".exam-settings-box").validationEngine();
+        </script>
 	</div>
 </div>
 
@@ -193,6 +190,7 @@
 		// add questId node
 		$qJson = json_decode($qData->quest, true);
 		$qJson['questId'] = $qData->id;
+		$qJson['canUpdate'] = ($capabilities->hasCapability($qData, 'update') && in_array("editable", $exam->flags) ? 1:0);
 		
 		$combinedJson[$qData->name] = $qJson;
 	}
@@ -204,4 +202,5 @@
 	examId 	= <?=$exam->id?>;
 	qsJson 	= <?=$combinedJson?>;
 	qsCorrectorsJson = {};
+	showAddQuestionView = <?=stristr($_SERVER['REQUEST_URI'], 'add-q') ? 'true':'false'?>;
 </script>

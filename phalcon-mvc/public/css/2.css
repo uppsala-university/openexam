@@ -2539,7 +2539,7 @@ tr.uuspCourseEntry td {
        font-family: verdana,arial !important;
 }
 #centerColWide #cse-search-results iframe, iframe{
-       width:714px;
+       width:212px;
        font-family: verdana,arial !important;
 }
 div.uuNodeContainer iframe {
@@ -4981,7 +4981,7 @@ text-decoration:none;
 }
 
 .left-col-user {
-        color:#4a7db1; 
+        color:#004276; /*#4a7db1*/
         font-size:10px;
 	padding-left:5px;
 }
@@ -5348,9 +5348,9 @@ td.no {
     color:#999999 !important;
 }
 td.na {
-    background-color: #f34541;
+    background-color: #e98e8d;
     border: 1px solid #f34541;
-    color:#880000 !important;    
+    color:#D96661 !important; /*#880000*/
 }
 td.nc {
     background-color: #66DA79;
@@ -5422,4 +5422,24 @@ table {
 
 #msg-box {
 	z-index:10000;
+}
+
+.ui-timepicker-select {
+	width:50px !important;
+	height:25px !important;
+}
+
+.ui-datepicker-month {
+	height:25px !important;
+	width:60px !important;
+	padding:0px !important;
+	margin-right:15px !important;
+	font-size:11px !important;
+}
+
+.ui-datepicker-year {
+	height:25px !important;
+	width:60px !important;
+	padding:0px !important;
+	font-size:11px !important;	
 }

@@ -204,7 +204,7 @@ $(document).ready(function () {
             if (qId) {
                 // send ajax request to add selected corrector in question
                 ajax(
-                        baseURL + 'core/ajax/contributor/corrector/add',
+                        baseURL + 'core/ajax/creator/corrector/add',
                         {"question_id": qId, "user": userName},
                 function (status) {
                     $('.q_corrector_list').append(cloned);
@@ -226,7 +226,7 @@ $(document).ready(function () {
             if (qId) {
                 // send ajax request to delete selected corrector
                 ajax(
-                        baseURL + 'core/ajax/contributor/corrector/delete',
+                        baseURL + 'core/ajax/creator/corrector/delete',
                         {"id": $(delCorrector).parent().find('span').attr('data-rec')},
                 function (status) {
                     $(delCorrector).parent().slideUp(500, function () {

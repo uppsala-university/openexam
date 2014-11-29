@@ -16,6 +16,7 @@ namespace OpenExam\Controllers\Gui;
 use  OpenExam\Controllers\GuiController;
 use  OpenExam\Models\Exam;
 use  OpenExam\Models\Student;
+use  OpenExam\Library\Security\Capabilities;
 //use  OpenExam\Library\Globalization\Translate;
 
 /**
@@ -67,7 +68,7 @@ class ExamController extends GuiController
                         $exams['creator'] = $this->phql
                                 ->executeQuery(
                                         "select $colList from OpenExam\Models\Exam e "
-                                        .   "where creator = :user: order by id desc "
+                                        .   "where creator = :user: order by created desc "
                                         //.   "limit " . self::EXAMS_PER_PAGE
                                         , array("user" => $loggedIn)
                         );
@@ -76,7 +77,7 @@ class ExamController extends GuiController
                                 ->executeQuery(
                                         "select $colList from OpenExam\Models\Exam e "
                                         .   "inner join OpenExam\Models\Contributor c "
-                                        .   "where c.user = :user: and e.creator != :user: "
+                                        .   "where c.user = :user: order by created desc "
                                         //.   "limit " . self::EXAMS_PER_PAGE
                                         , array("user" => $loggedIn)
                         );
@@ -85,7 +86,7 @@ class ExamController extends GuiController
                                 ->executeQuery(
                                         "select $colList from OpenExam\Models\Exam e "
                                         .   "inner join OpenExam\Models\Decoder d "
-                                        .   "where d.user = :user: "
+                                        .   "where d.user = :user: order by created desc "
                                         //.   "limit " . self::EXAMS_PER_PAGE
                                         , array("user" => $loggedIn)
                         );
@@ -94,7 +95,7 @@ class ExamController extends GuiController
                                 ->executeQuery(
                                         "select $colList from OpenExam\Models\Exam e "
                                         .   "inner join OpenExam\Models\Invigilator i "
-                                        .   "where i.user = :user: "
+                                        .   "where i.user = :user: order by created desc "
                                         //.   "limit " . self::EXAMS_PER_PAGE
                                         , array("user" => $loggedIn)
                         );
@@ -104,7 +105,7 @@ class ExamController extends GuiController
                                         "select distinct $colList from OpenExam\Models\Exam e "
                                         .   "inner join OpenExam\Models\Question q "
                                         .   "inner join OpenExam\Models\Corrector c on q.id = c.question_id "
-                                        .   "where c.user = :user: "
+                                        .   "where c.user = :user: order by created desc"
                                         //.   "limit " . self::EXAMS_PER_PAGE
                                         , array("user" => $loggedIn)
                         );
@@ -127,43 +128,22 @@ class ExamController extends GuiController
         public function createAction()
         {
                 
-                // Insert a new record in exam table whenever someone tries to create a new exam
-                if (!$this->session->has('draft-exam-id')) {
-                        
-                        // create a new exam
-                        $exam = new \OpenExam\Models\Exam();
-                        $examSaved = $exam->save( array(
-                                'name'    => ' ',
-                                'descr'   => ' ',
-                                'creator' => $this->user->getPrincipalName(),
-                                'orgunit' => $this->catalog->getAttribute($this->user->getPrincipalName(), 'department')[1]['department'][0],
-                                'grades'  => ' '
-                        ));
-                        
-                        if ($examSaved) {
-							
-				// add a default topic for this exam
-				$topic = new \OpenExam\Models\Topic();
-				$topicSaved = $topic->save( array(
-						'exam_id'	=> $exam->id,
-						'name'   	=> 'Default section',
-						'randomize' => '0'
-				));
-							
-                                // save exam id in session for further loads
-                                $this->session->set('draft-exam-id', $exam->id);
-                                
-                        } else {
-                                
-                                $errorMsg = 'Failed to initialize exam';
-                                throw new \Exception($errorMsg);
-                        }
-                } else {
-                        // load and pass the data of draft exam 
-                        $exam = \OpenExam\Models\Exam::findFirst($this->session->get('draft-exam-id'));
-                }
+                // create a new exam
+                $exam = new \OpenExam\Models\Exam();
+                $examSaved = $exam->save( array(
+                        'name'    => ' ',
+                        'descr'   => ' ',
+                        'creator' => $this->user->getPrincipalName(),
+                        'orgunit' => $this->catalog->getAttribute($this->user->getPrincipalName(), 'department')[1]['department'][0],
+                        'grades'  => 'U:0&#13;&#10;G:15&#13;&#10;VG:20'
+                ));
 
-                $this->view->setVar("exam", Exam::findFirst($exam->id));
+                if (!$examSaved) {
+                        $errorMsg = 'Failed to initialize exam';
+                        throw new \Exception($errorMsg);
+                }
+                
+                return $this->response->redirect('exam/update/' . $exam->id);
         }
         
 	/**
@@ -172,7 +152,7 @@ class ExamController extends GuiController
 	 */
         public function updateAction($examId)
         {
-                //@ToDO: get roles from access.def
+/*                //@ToDO: get roles from access.def
                 //someone will be able to access this action when he is permitted 
                 //to be here
                 // allowed roles for a user to be in this action
@@ -181,15 +161,28 @@ class ExamController extends GuiController
                 // get the role because of which this looged in person has got 
                 // permissions to be in current controller/action
                 $role = $this->user->aquire($allowedRoleList, $examId, false)[0];
-
+*/
                 // sanitize
                 $examId = $this->filter->sanitize($examId, "int");
+                $capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
+
+                // check if role has been passed
+                $params = $this->dispatcher->getParams();
+                if(isset($params[1]) && in_array($params[1], $capabilities->getRoles())) {
+                        $this->user->setPrimaryRole($params[1]);
+                } else {
+                        throw new \Exception("Invalid URL.");
+                }
                 
                 // fetch data
                 $exam = Exam::findFirst($examId);
                 
                 // pass data to view
-		$this->view->setVars(array('exam'=>$exam, 'myRole' => $role));
+		$this->view->setVars(array(
+                        'exam'=>$exam, 
+                        //'myRole' => $role,
+                        'capabilities' => $capabilities
+                    ));
          }
 
          

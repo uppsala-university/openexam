@@ -42,7 +42,7 @@ class ResultController extends GuiController
          * Otherwise dump results of all students in this exam in one view. 
          * (result of all students in 1 pdf)
          * 
-         * result/view/{exam_id}
+         * result/{exam_id}/view
          */
         public function viewAction()
         {
@@ -52,7 +52,7 @@ class ResultController extends GuiController
                 // sanitize
                 $examId = $this->filter->sanitize($this->dispatcher->getParam('examId'), 'int');
                 
-                
+
                 ## get exam data 
                 $exam   = Exam::findFirst($examId);
                 
@@ -68,7 +68,7 @@ class ResultController extends GuiController
                             ));
                 //@ToDO: As this person was not a student in this exam,
                 //Find if this logged in person is allowed to view result
-                if (!$student) {
+                if (!is_object($student)) {
                         die("you are not allowed!");
                         
                         // check if student id is set so show result against that student
@@ -124,6 +124,9 @@ class ResultController extends GuiController
 
                                                 $data['results'][$student->id][$question->id] 
                                                     = $qPartsResult;
+                                                
+                                                $data['results'][$student->id][$question->id]["comments"]
+                                                    = $result->comment;    
                                         }
 
                                         foreach($qPartsResult as $part => $score) {
@@ -177,10 +180,12 @@ class ResultController extends GuiController
         /**
          * Download exam result
          * 
-         * result/download/{exam_id}
+         * result/{exam_id}/download
          */
         public function downloadAction($examId)
         {
+                $this->view->disable();
+                
                 // sanitize 
                 $examId = $this->filter->sanitize($this->dispatcher->getParam('examId'), 'int');
                 
@@ -189,9 +194,10 @@ class ResultController extends GuiController
                 //$studentId = $this->filter->sanitize($this->dispatcher->getParam('studentId'), 'int');
                 
                 // download pdf
+                //@ToDo: replace static url (added for testing) in $pages array ('page' index) with proper
                 $pages = array(
                       array(
-                            'page'              => $this->url->get("result/".$examId."/view/".$studentId)//"https://www.bmcmediatek.uu.se/openexam-svn/result/view/1",
+                            'page'              => "https://www.bmcmediatek.uu.se/openexam-svn/result/".$examId."/view",
                             //'footer.right'      => date("Y-m-d H:i"),
                             //'pagesCount'        => TRUE,
                             //'pageOffset'        => 1,
@@ -203,6 +209,7 @@ class ResultController extends GuiController
                 );
                 $render = $this->render->getRender(Renderer::FORMAT_PDF);
                 $render->send('file.pdf', $pages);
+                //$this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
         }
 
         /**

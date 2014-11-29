@@ -31,14 +31,16 @@
                     // check response status
                     if (typeof response.failed != "undefined") {
 
-                            showMessage(response.failed, 'error');
+                            showMessage(response.failed.return, 'error');
                     } else if (typeof response.success != "undefined") {
 
-                            callback(response.success);
-
-                            // show message if defined
-                            if (typeof response.message != "undefined") {
-                                    showMessage(response.message, 'success');
+                            callback(response.success.return);
+                            if (response.success.action == 'create') {
+                                showMessage("Data has been inserted.", 'success');
+                            } else if(response.success.action == 'update') {
+                                showMessage("Updated successfully.", 'success');
+                            } else if (response.success.action == 'delete') {
+                                showMessage("Record has been successfully deleted.", 'success');
                             }
                     } else {
                         showMessage( 'Request failed. Please contact system administrators.', 'error');
@@ -61,12 +63,19 @@ var showMessage = function ( message, type ) {
     
         type = typeof type !== 'undefined' ? type : 'info';
         
-        $('#msg-box')
-                .attr('class', 'alert alert-' + type)
-                .html( message )
-                .slideDown(300)
-                .delay(3000)
-                .slideUp(300);
+        if(type == 'success') {
+            $('#msg-box')
+                    .attr('class', 'alert alert-' + type)
+                    .html( message )
+                    .slideDown(300)
+                    .delay(3000)
+                    .slideUp(300);
+        } else {
+            $('#msg-box')
+                    .attr('class', 'alert alert-' + type)
+                    .html( message )
+                    .slideDown(300)
+        }
 }
 
 /**

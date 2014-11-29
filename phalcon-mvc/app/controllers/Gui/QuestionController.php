@@ -54,10 +54,14 @@ class QuestionController extends GuiController
 
                         // fetch data
                         $question = Question::findFirst($quesId);
-
+                        $exam = Exam::findFirst($question->exam_id);
+                            
                         //load question form with preloaded data and layout disabled
                         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
-                        $this->view->setVar('question', $question);
+                        $this->view->setVars(array(
+                                'question' => $question,
+                                'exam'     => $exam
+                        ));
                         $this->view->pick("question/form");
                 } else {
 
@@ -209,7 +213,12 @@ class QuestionController extends GuiController
                                 case 'student':
                                         
                                         // show all answers for a specific student
-                                        $questData = $exam->getQuestions();
+                                        $questData = $this->phql->executeQuery(
+                                                        "select q.* from OpenExam\Models\Question q "
+                                                        .   "inner join OpenExam\Models\Corrector c "
+                                                        .   "inner join OpenExam\Models\Answer a "
+                                                        .   "where c.user = '".$this->user->getPrincipalName()."'"
+                                                );
                                         $stData = Student::findFirst($loadBy[2]);
                                         $ansData = Answer::find('student_id = '.$loadBy[2]);
                                         $heading = 'Student (code: '.$stData->code.')';
@@ -219,7 +228,12 @@ class QuestionController extends GuiController
                                 case 'question':
                                         
                                         // show student answers for a specific question
-                                        $questData = Question::find('id = ' . $loadBy[2]);
+                                        $questData = $this->phql->executeQuery(
+                                                        "select q.* from OpenExam\Models\Question q "
+                                                        .   "inner join OpenExam\Models\Corrector c "
+                                                        .   "where q.id = ".$loadBy[2]
+                                                        .   " and c.user = '".$this->user->getPrincipalName()."'"
+                                                );
                                         $ansData = Answer::find('question_id = '.$loadBy[2]);
                                         $heading = 'Question no. '.$questData[0]->name;
                                         break;
@@ -229,8 +243,10 @@ class QuestionController extends GuiController
                                         // show a specific answer
                                         $questData = $this->phql->executeQuery(
                                                         "select q.* from OpenExam\Models\Question q "
+                                                        .   "inner join OpenExam\Models\Corrector c "
                                                         .   "inner join OpenExam\Models\Answer a "
                                                         .   "where a.id = ".$loadBy[2]
+                                                        .   " and c.user = '".$this->user->getPrincipalName()."'"
                                                 );
                                         $ansData = Answer::find('id = ' . $loadBy[2]);
                                         $stData  = Student::findFirst($ansData->student_id);
@@ -246,11 +262,8 @@ class QuestionController extends GuiController
                         
                         $this->view->setVars(array(
                                 'loadBy'        => $loadBy[1],
-                                'exam'          => $exam,
-                                'questions'     => $questData,
                                 'answers'       => $ansData,
                                 'heading'       => $heading
-                            
                         ));
                         
                         $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
@@ -258,12 +271,18 @@ class QuestionController extends GuiController
                         
                 } else {
                         // we will show score board
-                        
-                        
+                        $questData = $this->phql->executeQuery(
+                                        "select q.* from OpenExam\Models\Question q "
+                                        .   "inner join OpenExam\Models\Corrector c "
+                                        .   "where c.user = '".$this->user->getPrincipalName()."'"
+                                );
                 }
                 
                 
-                $this->view->setVar('exam', $exam);
+                $this->view->setVars(array(
+                        'exam' => $exam,
+                        'questions' => $questData
+                    ));
         }
         
 }
