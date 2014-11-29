@@ -60,4 +60,13 @@ Phalcon devtools.
         1. The caller (question publisher) is automatic added as corrector of 
            that question.
 
+** Filter:
+
+   A model that has virtual properties (e.g. state and flags in Exam), can support 
+   filtering on these properties in addition to ordinary table properties by overriding 
+   the getFilter() method.
+
+   The OpenExam\Library\Model\Filter can also be used as a callback (functional) object
+   for the Phalcon result set filter() method.
+
 // Anders Lövgren, 2014-09-10
