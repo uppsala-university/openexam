@@ -19,7 +19,7 @@ class SettingTest extends TestModel
         const MODEL = 'setting';
 
         /**
-         * @covers OpenExamModels\Settings::set
+         * @covers OpenExam\Models\Setting::set
          * @group model
          */
         public function testSet()
@@ -59,7 +59,7 @@ class SettingTest extends TestModel
         }
 
         /**
-         * @covers OpenExamModels\Settings::get
+         * @covers OpenExam\Models\Setting::get
          * @group model
          */
         public function testGet()
@@ -94,7 +94,7 @@ class SettingTest extends TestModel
         }
 
         /**
-         * @covers OpenExamModels\Settings::getSource
+         * @covers OpenExam\Models\Setting::getSource
          * @group model
          */
         public function testGetSource()
@@ -107,7 +107,7 @@ class SettingTest extends TestModel
         }
 
         /**
-         * @covers OpenExamModels\Settings::columnMap
+         * @covers OpenExam\Models\Setting::columnMap
          * @group model
          */
         public function testColumnMap()
