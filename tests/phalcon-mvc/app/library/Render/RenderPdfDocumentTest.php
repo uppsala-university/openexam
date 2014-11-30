@@ -17,7 +17,9 @@ class RenderPdfDocumentTest extends TestCase
         private static $output = array(
                 'pdf'    => array(
                         'md5'  => '17ee1ebfdc59a27e6c0d2c21c8626cca',
-                        'size' => 28840
+                        'size' => 28840,
+                        'mime' => 'application/pdf',
+                        'type' => 'PDF document, version 1.4'
                 ),
                 'unlink' => false,
                 'check'  => false

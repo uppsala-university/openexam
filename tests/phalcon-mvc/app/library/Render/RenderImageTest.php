@@ -17,19 +17,27 @@ class RenderImageTest extends TestCase
         private static $output = array(
                 'png'    => array(
                         'md5'  => 'b1242ce26730c72c91725e06adeb6cdc',
-                        'size' => 1863147
+                        'size' => 1863147,
+                        'mime' => 'image/png',
+                        'type' => 'PNG image data, 1024 x 454, 8-bit/color RGBA, non-interlaced'
                 ),
                 'jpeg'   => array(
                         'md5'  => 'ed78c0ca0257a6a64c51c6b6e2ba7e5d',
-                        'size' => 44197
+                        'size' => 44197,
+                        'mime' => 'image/jpeg',
+                        'type' => 'JPEG image data, JFIF standard 1.01'
                 ),
                 'bmp'    => array(
                         'md5'  => 'ef46e21c679eb9d63d62368f13eae714',
-                        'size' => 1394742
+                        'size' => 1394742,
+                        'mime' => 'image/x-ms-bmp',
+                        'type' => 'PC bitmap, Windows 3.x format, 1024 x 454 x 24'
                 ),
                 'svg'    => array(
                         'md5'  => '153131d44c1e4aaa94801bce150ff2ab',
-                        'size' => 117052
+                        'size' => 117052,
+                        'mime' => 'image/svg+xml',
+                        'type' => 'SVG Scalable Vector Graphics image'
                 ),
                 'unlink' => false,
                 'check'  => false
