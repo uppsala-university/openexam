@@ -69,7 +69,7 @@ class ModelBase extends Model
                 // Handle e.g. "id = ?0 AND name = ?1" bind conditions:
                 // 
                 if (isset($parameters['conditions'])) {
-                        $parameters['conditions'] = preg_replace('|(\w+) = (\?\d)|', "${class}.$1 = $2", $parameters['conditions']);
+                        $parameters['conditions'] = preg_replace("/([a-z\\\\]+\.)?(\w+?) = (\?\d+)/i", "${class}.$2 = $3", $parameters['conditions']);
                 }
                 // 
                 // Handle e.g. "id = :id: AND name = :name:" in bind:
@@ -77,7 +77,7 @@ class ModelBase extends Model
                 if (isset($parameters['bind'])) {
                         foreach ($parameters as $index => $value) {
                                 if (is_numeric($index)) {
-                                        $parameters[$index] = preg_replace('|(\w+) = :(\w+):|', "${class}.$1 = :$2:", $parameters[$index]);
+                                        $parameters[$index] = preg_replace("/([a-z\\\\]+\.)?(\w+?) = :(\w+):/i", "${class}.$2 = :$3:", $parameters[$index]);
                                 }
                         }
                 }
