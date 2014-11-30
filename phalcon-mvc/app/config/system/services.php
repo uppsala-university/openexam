@@ -48,7 +48,7 @@ $di->set('modelsManager', function() use($di) {
  */
 $di->set('modelsMetadata', function() use($config) {
         if (!isset($config->application->release)) {
-                return new Phalcon\Mvc\Model\Metadata\Memory();
+                $config->application->release = false;
         }
         if (!isset($config->metadata->type)) {
                 foreach (array('xcache', 'apc') as $extension) {
@@ -58,15 +58,14 @@ $di->set('modelsMetadata', function() use($config) {
                         }
                 }
         }
-
-        if ($config->application->release == false) {
+        if (!isset($config->metadata->type)) {
                 return new Phalcon\Mvc\Model\Metadata\Memory();
-        } elseif ($config->metadata->type == 'xcache' && extension_loaded('xcache')) {
+        } elseif ($config->application->release == false) {
+                return new Phalcon\Mvc\Model\Metadata\Memory();
+        } elseif ($config->metadata->type == 'xcache') {
                 return new Phalcon\Mvc\Model\Metadata\Xcache($config->metadata);
-        } elseif ($config->metadata->type == 'apc' && extension_loaded('apc')) {
+        } elseif ($config->metadata->type == 'apc') {
                 return new Phalcon\Mvc\Model\MetaData\Apc($config->metadata);
-        } else {
-                return new Phalcon\Mvc\Model\Metadata\Memory(); // fallback                
         }
 }, true);
 
