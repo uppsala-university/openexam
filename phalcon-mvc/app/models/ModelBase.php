@@ -53,6 +53,50 @@ class ModelBase extends Model
         }
 
         /**
+         * Prepare query parameters. 
+         * 
+         * We have to support parameters as passed to both query builder and 
+         * find. To add complexity, sometimes a comma separated list defines
+         * them and sometimes it uses an array.
+         * 
+         * @param string $class The name of the model class.
+         * @param array $parameters The query parameters.
+         * @return array
+         */
+        protected static function getParameters($class, $parameters)
+        {
+                // 
+                // Handle e.g. "id = ?0 AND name = ?1" bind conditions:
+                // 
+                if (isset($parameters['conditions'])) {
+                        $parameters['conditions'] = preg_replace('|(\w+) = (\?\d)|', "${class}.$1 = $2", $parameters['conditions']);
+                }
+                // 
+                // Handle e.g. "id = :id: AND name = :name:" in bind:
+                // 
+                if (isset($parameters['bind'])) {
+                        foreach ($parameters as $index => $value) {
+                                if (is_numeric($index)) {
+                                        $parameters[$index] = preg_replace('|(\w+) = :(\w+):|', "${class}.$1 = :$2:", $parameters[$index]);
+                                }
+                        }
+                }
+                // 
+                // Handle order conditions:
+                // 
+                if (isset($parameters['order'])) {
+                        if (is_string($parameters['order'])) {
+                                $parameters['order'] = explode(",", $parameters['order']);
+                        }
+                        foreach ($parameters['order'] as $index => $value) {
+                                $parameters['order'][$index] = $class . '.' . $parameters['order'][$index];
+                        }
+                }
+
+                return $parameters;
+        }
+
+        /**
          * Get model access control object.
          * @return ObjectAccess
          */

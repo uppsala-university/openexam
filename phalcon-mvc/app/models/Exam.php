@@ -393,6 +393,11 @@ class Exam extends ModelBase
                 }
 
                 // 
+                // Qualify bind and order parameters:
+                // 
+                $parameters = self::getParameters(self::getRelation('exam'), $parameters);
+                
+                // 
                 // Create the builder using supplied options (conditions,
                 // order, limit, ...):
                 // 

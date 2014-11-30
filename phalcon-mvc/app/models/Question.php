@@ -244,11 +244,11 @@ class Question extends ModelBase
                         return parent::find($parameters);
                 }
 
-                if (isset($parameters['bind'])) {
-                        foreach ($parameters['bind'] as $index => $value) {
-                                $parameters[$index] = self::getRelation('question') . '.' . $parameters[$index];
-                        }
-                }
+                // 
+                // Qualify bind and order parameters:
+                // 
+                $parameters = self::getParameters(self::getRelation('question'), $parameters);
+
                 // 
                 // Create the builder using supplied options (conditions,
                 // order, limit, ...):
