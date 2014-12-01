@@ -55,6 +55,7 @@ class UnittestTask extends MainTask
                         'options'  => array(
                                 '--setup'          => 'Add sample data for running unit tests.',
                                 '--user=name'      => 'Set username for sample data. Defaults to process owner (calling user).',
+                                '--count=num'      => 'Number of samples to add.',
                                 '--clean[=sample]' => 'Remove sample data (optional specifying sample file).',
                                 '--verbose'        => 'Be more verbose.'
                         ),
@@ -139,7 +140,8 @@ class UnittestTask extends MainTask
         {
                 $options = array(
                         'verbose' => false,
-                        'user'    => $this->getDI()->getUser()->getPrincipalName()
+                        'user'    => $this->getDI()->getUser()->getPrincipalName(),
+                        'count'   => 1
                 );
 
                 for ($i = 0; $i < count($params); ++$i) {
@@ -149,137 +151,146 @@ class UnittestTask extends MainTask
                         if ($params[$i] == 'user') {
                                 $options['user'] = $params[++$i];
                         }
+                        if ($params[$i] == 'count') {
+                                $options['count'] = $params[++$i];
+                        }
                 }
 
                 $this->getDI()->setUser(new User($options['user']));
-
-                $data = array(
-                        'exam'        => array(
-                                'name'    => 'Exam 1',
-                                'creator' => $options['user'],
-                                'orgunit' => 'orgunit1',
-                                'grades'  => json_encode(array('data' => array('U' => 0, 'G' => 20, 'VG' => 30)))
-                        ),
-                        'contributor' => array(
-                                'exam_id' => 0,
-                                'user'    => $options['user']
-                        ),
-                        'decoder'     => array(
-                                'exam_id' => 0,
-                                'user'    => $options['user']
-                        ),
-                        'invigilator' => array(
-                                'exam_id' => 0,
-                                'user'    => $options['user']
-                        ),
-                        'student'     => array(
-                                'exam_id' => 0,
-                                'user'    => $options['user'],
-                                'code'    => '1234ABCD'
-                        ),
-                        'resource'    => array(
-                                'exam_id' => 0,
-                                'name'    => 'Name1',
-                                'path'    => '/tmp/path',
-                                'type'    => 'video',
-                                'subtype' => 'mp4',
-                                'user'    => $options['user']
-                        ),
-                        'room'        => array(
-                                'name' => 'Room 1'
-                        ),
-                        'computer'    => array(
-                                'room_id'  => 0,
-                                'ipaddr'   => '127.0.0.1',
-                                'port'     => 666,
-                                'password' => 'password1',
-                        ),
-                        'lock'        => array(
-                                'computer_id' => 0,
-                                'exam_id'     => 0
-                        ),
-                        'topic'       => array(
-                                'exam_id'   => 0,
-                                'name'      => 'Topic 1',
-                                'randomize' => 0
-                        ),
-                        'question'    => array(
-                                'exam_id'  => 0,
-                                'topic_id' => 0,
-                                'score'    => 1.0,
-                                'name'     => 'Question 1',
-                                'quest'    => 'Question text',
-                                'user'     => $options['user'],
-                        ),
-                        'corrector'   => array(
-                                'question_id' => 0,
-                                'user'        => $options['user']
-                        ),
-                        'answer'      => array(
-                                'question_id' => 0,
-                                'student_id'  => 0
-                        ),
-                        'result'      => array(
-                                'answer_id'    => 0,
-                                'corrector_id' => 0,
-                                'score'        => 1.5
-                        ),
-                        'file'        => array(
-                                'answer_id' => 0,
-                                'name'      => 'Name1',
-                                'path'      => '/tmp/path',
-                                'type'      => 'video',
-                                'subtype'   => 'mp4'
-                        ),
-                        'admin'       => array(
-                                'user' => $options['user']
-                        ),
-                        'teacher'     => array(
-                                'user' => $options['user']
-                        ),
-                        'session'     => array(
-                                'session_id' => md5(time()),
-                                'data'       => serialize(array('auth' => array('user' => $options['user'], 'type' => 'cas'))),
-                                'created'    => time()
-                        ),
-                        'setting'     => array(
-                                'data' => array('key1' => 'val1', 'key2' => array('key3' => 'val3', 'key4' => 'val4')),
-                                'user' => $options['user']
-                        )
-                );
 
                 if ($options['verbose']) {
                         $this->flash->notice("Adding sample data in database:");
                         $this->flash->notice("-------------------------------");
                 }
-                foreach ($data as $m => $a) {
-                        foreach (array(
-                            'exam'      => 'exam_id',
-                            'room'      => 'room_id',
-                            'computer'  => 'computer_id',
-                            'topic'     => 'topic_id',
-                            'question'  => 'question_id',
-                            'student'   => 'student_id',
-                            'answer'    => 'answer_id',
-                            'corrector' => 'corrector_id') as $n => $fk)
-                                if (isset($a[$fk]) && $a[$fk] == 0) {
-                                        $a[$fk] = $data[$n]['id'];
+                for ($i = 0; $i < $options['count']; ++$i) {
+                        $data = array(
+                                'exam'        => array(
+                                        'name'    => 'Exam 1',
+                                        'creator' => $options['user'],
+                                        'orgunit' => 'orgunit1',
+                                        'grades'  => json_encode(array('data' => array('U' => 0, 'G' => 20, 'VG' => 30)))
+                                ),
+                                'contributor' => array(
+                                        'exam_id' => 0,
+                                        'user'    => $options['user']
+                                ),
+                                'decoder'     => array(
+                                        'exam_id' => 0,
+                                        'user'    => $options['user']
+                                ),
+                                'invigilator' => array(
+                                        'exam_id' => 0,
+                                        'user'    => $options['user']
+                                ),
+                                'student'     => array(
+                                        'exam_id' => 0,
+                                        'user'    => $options['user'],
+                                        'code'    => '1234ABCD'
+                                ),
+                                'resource'    => array(
+                                        'exam_id' => 0,
+                                        'name'    => 'Name1',
+                                        'path'    => '/tmp/path',
+                                        'type'    => 'video',
+                                        'subtype' => 'mp4',
+                                        'user'    => $options['user']
+                                ),
+                                'room'        => array(
+                                        'name' => 'Room 1'
+                                ),
+                                'computer'    => array(
+                                        'room_id'  => 0,
+                                        'ipaddr'   => '127.0.0.1',
+                                        'port'     => 666,
+                                        'password' => 'password1',
+                                ),
+                                'lock'        => array(
+                                        'computer_id' => 0,
+                                        'exam_id'     => 0
+                                ),
+                                'topic'       => array(
+                                        'exam_id'   => 0,
+                                        'name'      => 'Topic 1',
+                                        'randomize' => 0
+                                ),
+                                'question'    => array(
+                                        'exam_id'  => 0,
+                                        'topic_id' => 0,
+                                        'score'    => 1.0,
+                                        'name'     => 'Question 1',
+                                        'quest'    => 'Question text',
+                                        'user'     => $options['user'],
+                                ),
+                                'corrector'   => array(
+                                        'question_id' => 0,
+                                        'user'        => $options['user']
+                                ),
+                                'answer'      => array(
+                                        'question_id' => 0,
+                                        'student_id'  => 0
+                                ),
+                                'result'      => array(
+                                        'answer_id'    => 0,
+                                        'corrector_id' => 0,
+                                        'score'        => 1.5
+                                ),
+                                'file'        => array(
+                                        'answer_id' => 0,
+                                        'name'      => 'Name1',
+                                        'path'      => '/tmp/path',
+                                        'type'      => 'video',
+                                        'subtype'   => 'mp4'
+                                ),
+                                'admin'       => array(
+                                        'user' => $options['user']
+                                ),
+                                'teacher'     => array(
+                                        'user' => $options['user']
+                                ),
+                                'session'     => array(
+                                        'session_id' => md5(time()),
+                                        'data'       => serialize(array('auth' => array('user' => $options['user'], 'type' => 'cas'))),
+                                        'created'    => time()
+                                ),
+                                'setting'     => array(
+                                        'data' => array('key1' => 'val1', 'key2' => array('key3' => 'val3', 'key4' => 'val4')),
+                                        'user' => $options['user']
+                                )
+                        );
+
+                        foreach ($data as $m => $a) {
+                                foreach (array(
+                                    'exam'      => 'exam_id',
+                                    'room'      => 'room_id',
+                                    'computer'  => 'computer_id',
+                                    'topic'     => 'topic_id',
+                                    'question'  => 'question_id',
+                                    'student'   => 'student_id',
+                                    'answer'    => 'answer_id',
+                                    'corrector' => 'corrector_id') as $n => $fk)
+                                        if (isset($a[$fk]) && $a[$fk] == 0) {
+                                                $a[$fk] = $data[$n]['id'];
+                                        }
+                                $class = sprintf("OpenExam\Models\%s", ucfirst($m));
+                                $model = new $class();
+                                $model->setDI($this->getDI());
+                                if (!$model->save($a)) {
+                                        $this->flash->error(sprintf("Failed save model for %s", $model->getSource()));
+                                        foreach ($model->getMessages() as $message) {
+                                                $this->flash->error($message);
+                                        }
+                                        return false;
                                 }
-                        $class = sprintf("OpenExam\Models\%s", ucfirst($m));
-                        $model = new $class();
-                        $model->setDI($this->getDI());
-                        if (!$model->save($a)) {
-                                $this->flash->error(sprintf("Failed save model for %s", $model->getSource()));
-                                foreach ($model->getMessages() as $message) {
-                                        $this->flash->error($message);
+                                $data[$m] = $model->dump();
+                                if ($options['verbose']) {
+                                        $this->flash->notice(sprintf("Model %s:\n", $class));
+                                        $this->flash->notice(print_r($data[$m], true));
+                                        $this->flash->write();
                                 }
-                                return false;
                         }
-                        $data[$m] = $model->dump();
-                        if ($options['verbose']) {
-                                $this->flash->notice(sprintf("Model %s:\n", $class));
-                                $this->flash->notice(print_r($data[$m], true));
-                                $this->flash->write();
+
+                        if ($options['count'] != 1) {
+                                $this->flash->notice("Created exam (id=" . $data['exam']['id'] . ") [" . 100 * $i / $options['count'] . "%]");
                         }
                 }
 
