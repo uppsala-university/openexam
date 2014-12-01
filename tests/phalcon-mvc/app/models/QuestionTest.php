@@ -313,4 +313,251 @@ class QuestionTest extends TestModel
                 }
         }
 
+        /**
+         * Specific test of Question::query()
+         * @covers OpenExam\Models\Question::query
+         * @group model
+         */
+        public function testQuery()
+        {
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = array_merge(array(null), array_keys($roles));
+
+                $sample = $this->sample->getSample(self::MODEL);
+
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+
+                        $criteria = Question::query();
+                        $result = $criteria->execute();
+                        self::assertNotNull($result);
+                        foreach ($result as $model) {
+                                self::assertNotNull($model);
+                        }
+
+                        $criteria = Question::query();
+                        $criteria
+                            ->andWhere("name = :name: AND status = :status:", array(
+                                    'name'   => $sample['name'],
+                                    'status' => $sample['status']
+                            ))
+                            ->inWhere("id", array(1, $sample['id']))
+                            ->orderBy("name desc, status");
+                        $result = $criteria->execute();
+                        self::assertNotNull($result);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $criteria = Question::query();
+                        $criteria
+                            ->andWhere("name = ?0 AND status = ?1", array(
+                                    $sample['name'],
+                                    $sample['status']
+                            ))
+                            ->inWhere("id", array(1, $sample['id']))
+                            ->orderBy("name desc, status");
+                        $result = $criteria->execute();
+                        self::assertNotNull($result);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+                }
+        }
+
+        /**
+         * Specific test of Question::findFirst()
+         * @covers OpenExam\Models\Question::findFirst
+         * @group model
+         */
+        public function testFindFirst()
+        {
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = array_merge(array(null), array_keys($roles));
+
+                $sample = $this->sample->getSample(self::MODEL);
+
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+
+                        $model = Question::findFirst();
+                        self::assertNotNull($model);
+
+                        $model = Question::findFirstById($sample['id']);
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $model = Question::findFirst(array(
+                                    "conditions" => "name = :name:",
+                                    "bind"       => array(
+                                            'name' => $sample['name'])
+                        ));
+                        self::assertNotNull($model);
+                        self::assertTrue($model->name == $sample['name']);
+                }
+        }
+
+        /**
+         * Specific test of Question::find()
+         * @group model
+         */
+        public function testFind()
+        {
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = array_merge(array(null), array_keys($roles));
+
+                $sample = $this->sample->getSample(self::MODEL);
+
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+
+                        $result = Question::find();
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        foreach ($result as $model) {
+                                self::assertNotNull($model);
+                        }
+
+                        $result = Question::find(sprintf("id = %d", $sample['id']));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $result = Question::find(sprintf("id = %d AND name = '%s'", $sample['id'], $sample['name']));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $result = Question::find(array(
+                                    "conditions" => "id = ?0 AND name = ?1",
+                                    "bind"       => array($sample['id'], $sample['name'])
+                        ));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $result = Question::find(array(
+                                    "conditions" => "id = :id: AND name = :name:",
+                                    "bind"       => array(
+                                            'id'   => $sample['id'],
+                                            'name' => $sample['name'])
+                        ));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+                }
+        }
+
+        /**
+         * Specific test of PHQL over the Question model.
+         * @group model
+         */
+        public function testPhql()
+        {
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = array_merge(array(null), array_keys($roles));                
+
+                $sample = $this->sample->getSample(self::MODEL);
+                $modman = $this->getDI()->get('modelsManager');
+
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+
+                        // 
+                        // Equivalent to Question::find():
+                        // 
+                        $result = $modman->executeQuery(
+                            Question::getQuery("SELECT Question.* FROM Question")
+                        );
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        foreach ($result as $model) {
+                                self::assertNotNull($model);
+                        }
+
+                        // 
+                        // Equivalent to Question::findFirst():
+                        // 
+                        $result = $modman->executeQuery(
+                            Question::getQuery("SELECT Question.* FROM Question LIMIT 1")
+                        );
+                        $model = $result->getFirst();
+                        self::assertNotNull($model);
+
+                        // 
+                        // Equivalent to Question::findFirstById($sample['id']):
+                        // 
+                        $result = $modman->executeQuery(
+                            Question::getQuery("SELECT Question.* FROM Question WHERE Question.id = " . $sample['id'])
+                        );
+                        $model = $result->getFirst();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        // 
+                        // Equivalent to Question::find(sprintf("id = %d AND name = '%s'", $sample['id'], $sample['name'])):
+                        // 
+                        $result = $modman->executeQuery(
+                            Question::getQuery(sprintf(
+                                    "SELECT Question.* FROM Question WHERE Question.id = %d AND Question.name = '%s'", $sample['id'], $sample['name']
+                                )
+                        ));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        // 
+                        // Equivalent to:
+                        // 
+                        // Question::find(array(
+                        //      "conditions" => "id = ?0 AND name = ?1",
+                        //      "bind"       => array($sample['id'], $sample['name'])
+                        // );
+                        $result = $modman->executeQuery(
+                            Question::getQuery(
+                                "SELECT Question.* FROM Question WHERE Question.id = ?0 AND Question.name = ?1"
+                            ), array($sample['id'], $sample['name'])
+                        );
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        // 
+                        // Equivalent to:
+                        // 
+                        // Question::find(array(
+                        //      "conditions" => "id = :id: AND name = :name:",
+                        //      "bind"       => array(
+                        //              'id' => $sample['id'], 'name' => $sample['name']
+                        //      )
+                        // );
+                        $result = $modman->executeQuery(
+                            Question::getQuery(
+                                "SELECT Question.* FROM Question WHERE Question.id = :id: AND Question.name = :name:"
+                            ), array('id' => $sample['id'], 'name' => $sample['name'])
+                        );
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+                }
+        }
+
 }

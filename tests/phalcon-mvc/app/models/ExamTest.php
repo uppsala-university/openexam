@@ -342,4 +342,275 @@ class ExamTest extends TestModel
                 }
         }
 
+        /**
+         * Specific test of Exam::query()
+         * @covers OpenExam\Models\Exam::query
+         * @group model
+         */
+        public function testQuery()
+        {
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = array_merge(array(null), array_keys($roles));
+
+                $sample = $this->sample->getSample(self::MODEL);
+
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+
+                        $criteria = Exam::query();
+                        $result = $criteria->execute();
+                        self::assertNotNull($result);
+                        foreach ($result as $model) {
+                                self::assertNotNull($model);
+                        }
+
+                        $criteria = Exam::query();
+                        $criteria
+                            ->andWhere("name = :name: AND details = :details:", array(
+                                    'name'    => $sample['name'],
+                                    'details' => $sample['details']
+                            ))
+                            ->betweenWhere("created", "2014-01-01", "2015-12-31")
+                            ->inWhere("id", array(1, $sample['id']))
+                            ->orderBy("name desc, details");
+                        $result = $criteria->execute();
+                        self::assertNotNull($result);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $criteria = Exam::query();
+                        $criteria
+                            ->andWhere("name = ?0 AND details = ?1", array(
+                                    $sample['name'],
+                                    $sample['details']
+                            ))
+                            ->betweenWhere("created", "2014-01-01", "2020-01-01")
+                            ->inWhere("id", array(1, $sample['id']))
+                            ->orderBy("name desc, details");
+                        $result = $criteria->execute();
+                        self::assertNotNull($result);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+                }
+        }
+
+        /**
+         * Specific test of Exam::findFirst()
+         * @covers OpenExam\Models\Exam::findFirst
+         * @group model
+         */
+        public function testFindFirst()
+        {
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = array_merge(array(null), array_keys($roles));
+
+                $sample = $this->sample->getSample(self::MODEL);
+
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+
+                        $model = Exam::findFirst();
+                        self::assertNotNull($model);
+
+                        $model = Exam::findFirstById($sample['id']);
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $model = Exam::findFirst(array(
+                                    "conditions" => "name = :name:",
+                                    "bind"       => array(
+                                            'name' => $sample['name'])
+                        ));
+                        self::assertNotNull($model);
+                        self::assertTrue($model->name == $sample['name']);
+                }
+        }
+
+        /**
+         * Specific test of Exam::find()
+         * @group model
+         */
+        public function testFind()
+        {
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = array_merge(array(null), array_keys($roles));
+
+                $sample = $this->sample->getSample(self::MODEL);
+
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+
+                        $result = Exam::find();
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        foreach ($result as $model) {
+                                self::assertNotNull($model);
+                        }
+
+                        $result = Exam::find(sprintf("id = %d", $sample['id']));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $result = Exam::find(sprintf("id = %d AND name = '%s'", $sample['id'], $sample['name']));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $result = Exam::find(array(
+                                    "conditions" => "id = ?0 AND name = ?1",
+                                    "bind"       => array($sample['id'], $sample['name'])
+                        ));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        $result = Exam::find(array(
+                                    "conditions" => "id = :id: AND name = :name:",
+                                    "bind"       => array(
+                                            'id'   => $sample['id'],
+                                            'name' => $sample['name'])
+                        ));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+                }
+        }
+
+        /**
+         * Specific test of PHQL over the Exam model.
+         * @group model
+         */
+        public function testPhql()
+        {
+                $user = $this->getDI()->get('user');
+                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = array_merge(array(null), array_keys($roles));
+
+                $sample = $this->sample->getSample(self::MODEL);
+                $modman = $this->getDI()->get('modelsManager');
+
+                foreach ($roles as $role) {
+                        $user->setPrimaryRole($role);
+
+                        // 
+                        // Equivalent to Exam::find():
+                        // 
+                        $result = $modman->executeQuery(
+                            Exam::getQuery("SELECT Exam.* FROM Exam")
+                        );
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        foreach ($result as $model) {
+                                self::assertNotNull($model);
+                        }
+
+                        // 
+                        // Equivalent to Exam::findFirst():
+                        // 
+                        $result = $modman->executeQuery(
+                            Exam::getQuery("SELECT Exam.* FROM Exam LIMIT 1")
+                        );
+                        $model = $result->getFirst();
+                        self::assertNotNull($model);
+
+                        // 
+                        // Equivalent to Exam::findFirstById($sample['id']):
+                        // 
+                        $result = $modman->executeQuery(
+                            Exam::getQuery("SELECT Exam.* FROM Exam WHERE Exam.id = " . $sample['id'])
+                        );
+                        $model = $result->getFirst();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        // 
+                        // Equivalent to Exam::find(sprintf("id = %d AND name = '%s'", $sample['id'], $sample['name'])):
+                        // 
+                        $result = $modman->executeQuery(
+                            Exam::getQuery(sprintf(
+                                    "SELECT Exam.* FROM Exam WHERE Exam.id = %d AND Exam.name = '%s'", $sample['id'], $sample['name']
+                                )
+                        ));
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        // 
+                        // Equivalent to:
+                        // 
+                        // Exam::find(array(
+                        //      "conditions" => "id = ?0 AND name = ?1",
+                        //      "bind"       => array($sample['id'], $sample['name'])
+                        // );
+                        $result = $modman->executeQuery(
+                            Exam::getQuery(
+                                "SELECT Exam.* FROM Exam WHERE Exam.id = ?0 AND Exam.name = ?1"
+                            ), array($sample['id'], $sample['name'])
+                        );
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        // 
+                        // Equivalent to:
+                        // 
+                        // Exam::find(array(
+                        //      "conditions" => "id = :id: AND name = :name:",
+                        //      "bind"       => array(
+                        //              'id' => $sample['id'], 'name' => $sample['name']
+                        //      )
+                        // );
+                        $result = $modman->executeQuery(
+                            Exam::getQuery(
+                                "SELECT Exam.* FROM Exam WHERE Exam.id = :id: AND Exam.name = :name:"
+                            ), array('id' => $sample['id'], 'name' => $sample['name'])
+                        );
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+
+                        // 
+                        // Equivalent to:
+                        // 
+                        // Exam::find(array(
+                        //      "conditions" => "name = :name: AND created BETWEEN :start: AND :end:",
+                        //      "bind"       => array(
+                        //              'name'  => $sample['name'],
+                        //              'start' => '2014-01-01', 
+                        //              'end'   => '2020-01-01'
+                        //      )
+                        // );
+                        $result = $modman->executeQuery(
+                            Exam::getQuery(
+                                "SELECT Exam.* FROM Exam WHERE Exam.name = :name: AND created BETWEEN :start: AND :end:"
+                            ), array('name' => $sample['name'], 'start' => '2014-01-01', 'end' => '2020-01-01')
+                        );
+                        self::assertNotNull($result);
+                        self::assertTrue(count($result) > 0);
+                        $model = $result->getLast();
+                        self::assertNotNull($model);
+                        self::assertTrue($model->name == $sample['name']);
+                }
+        }
+
 }

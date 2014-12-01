@@ -47,6 +47,24 @@ Phalcon devtools.
    access control by the model while performing trusted operations, like accessing the 
    model for checking roles.
 
+** Convenience:
+
+   The static function find() and findFirst() is overrided by the Exam and Question model
+   to provide automatic filtered access based on primary role set on the user object that
+   represent the current authenticated user.
+
+   Use getQuery() to get the same functionality for PHQL:
+
+        $result = $this->modelsManager->executeQuery(
+            Exam::getQuery(
+                "SELECT Exam.* FROM Exam WHERE Exam.name LIKE 'Name%'
+            )
+        );
+
+   Using this convenience prevents accidential access to database objects that can't be
+   read by the current user (e.g. not having required role). This functionality is not
+   directly related to security, the normal access control is still applied.
+
 ** Behavior:
 
    o) Creating an exam triggers these builtin side effects:

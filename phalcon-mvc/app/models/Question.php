@@ -6,8 +6,7 @@ use OpenExam\Library\Model\Behavior\Ownership;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
-use Phalcon\DiInterface;
-use Phalcon\Mvc\Model\Criteria;
+use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Query\Builder;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
@@ -141,51 +140,27 @@ class Question extends ModelBase
         }
 
         /**
-         * Specialization of the query() function for the question model.
+         * Specialization of findFirst() for the question model.
          * 
-         * This function provides role based access to the question model. If 
-         * the primary role is set, then the returned criteria is prepared with
-         * inner joins against resp. role table.
+         * @param array $parameters The query parameters.
+         * @return Model
+         * @uses Question::find()
          * 
-         * The critera should ensure that only questions related to caller and
-         * requested role is returned.
-         * 
-         * @param DiInterface $dependencyInjector
-         * @return Criteria  
+         * @see http://docs.phalconphp.com/en/latest/reference/models.html#finding-records
+         * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
          */
-        public static function query($dependencyInjector = null)
+        public static function findFirst($parameters = null)
         {
-                if (!isset($dependencyInjector)) {
-                        $dependencyInjector = PhalconDI::getDefault();
+                if (!isset($parameters)) {
+                        $parameters = array('limit' => 1);
                 }
-
-                $user = $dependencyInjector->get('user');
-                $role = $user->getPrimaryRole();
-
-                if ($user->getUser() == null) {
-                        return parent::query($dependencyInjector);
+                if (is_string($parameters)) {
+                        $parameters = array('conditions' => $parameters, 'limit' => 1);
                 }
-                if ($user->hasPrimaryRole() == false || Roles::isGlobal($role)) {
-                        return parent::query($dependencyInjector);
+                if (!isset($parameters['limit'])) {
+                        $parameters['limit'] = 1;
                 }
-
-                $criteria = parent::query($dependencyInjector);
-                if ($role == Roles::CORRECTOR) {
-                        $criteria
-                            ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id', 'corrector'))
-                            ->where(sprintf("%s.user = '%s'", self::getRelation('corrector'), $user->getPrincipalName()));
-                } elseif ($role == Roles::CREATOR) {
-                        $criteria
-                            ->join(self::getRelation('exam'), self::getRelation('question', 'exam_id', 'id', 'exam'))
-                            ->andWhere(sprintf("%s.creator = '%s'", self::getRelation('exam'), $user->getPrincipalName()));
-                } else {
-                        $criteria
-                            ->join(self::getRelation('exam'), self::getRelation('question', 'exam_id', 'id', 'exam'))
-                            ->join(self::getRelation($role), self::getRelation($role, 'exam_id', 'id', 'exam'))
-                            ->andWhere(sprintf("%s.user = '%s'", self::getRelation($role), $user->getPrincipalName()));
-                }
-
-                return $criteria;
+                return self::find($parameters)->getFirst();
         }
 
         /**
@@ -198,8 +173,10 @@ class Question extends ModelBase
          * 
          * @param array $parameters The query parameters.
          * @return mixed
-         * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
          * @uses Model::find()
+         * 
+         * @see http://docs.phalconphp.com/en/latest/reference/models.html#finding-records
+         * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
          */
         public static function find($parameters = null)
         {
@@ -278,6 +255,124 @@ class Question extends ModelBase
                 } else {
                         return $builder->getQuery()->execute();
                 }
+        }
+
+        /**
+         * Returns PHQL prepared with joins against role models. 
+         * 
+         * When used in a query, it will ensure that only exams where caller 
+         * has the primary role is returned. Notice that the joins includes
+         * a WHERE clause.
+         * 
+         * <code>
+         * $result = $this->modelsManager->executeQuery(
+         *      "SELECT Question.* FROM " . Question::getRelations() . " AND Question.name LIKE '%test%'"
+         * );
+         * </code>
+         * 
+         * @return string
+         * @see getQuery
+         */
+        private static function getRelations()
+        {
+                $dependencyInjector = PhalconDI::getDefault();
+
+                $user = $dependencyInjector->get('user');
+                $role = $user->getPrimaryRole();
+
+                $builder = new Builder();
+
+                if ($user->hasPrimaryRole() == false || Roles::isGlobal($role)) {
+                        $builder
+                            ->addFrom(self::getRelation('question'), 'Question');
+                } elseif ($role == Roles::CORRECTOR) {
+                        $builder
+                            ->addFrom(self::getRelation('question'), 'Question')
+                            ->join(self::getRelation('corrector'), 'Question.id = Corrector.question_id', 'Corrector')
+                            ->andWhere(sprintf("Corrector.user = '%s'", $user->getPrincipalName()));
+                } elseif ($role == Roles::CREATOR) {
+                        $builder
+                            ->addFrom(self::getRelation('question'), 'Question')
+                            ->join(self::getRelation('exam'), 'Exam.id = Question.exam_id', 'Exam')
+                            ->andWhere(sprintf("Exam.creator = '%s'", $user->getPrincipalName()));
+                } else {
+                        $builder
+                            ->addFrom(self::getRelation('question'), 'Question')
+                            ->join(self::getRelation('exam'), 'Exam.id = Question.exam_id', 'Exam')
+                            ->join(self::getRelation($role), sprintf("%s.exam_id = Exam.id", ucfirst($role)), ucfirst($role))
+                            ->andWhere(sprintf("%s.user = '%s'", ucfirst($role), $user->getPrincipalName()));
+                }
+
+                $query = $builder->getPhql();
+                return substr($query, strpos($query, "FROM") + 5);
+        }
+
+        /**
+         * Get joined PHQL query.
+         * 
+         * <code>
+         * // 
+         * // Simple queries:
+         * // 
+         * $query = "SELECT Question.* FROM Question";
+         * $query = "SELECT Question.* FROM Question LIMIT 1";
+         * $query = "SELECT Question.* FROM Question LIMIT 3, OFFSET 6";
+         * $query = "SELECT Question.* FROM Question WHERE Question.name LIKE '%test%'";
+         * $query = "SELECT Question.* FROM Question WHERE Question.id IN (3,5,14)";
+         * $query = "SELECT Question.* FROM Question WHERE Question.id = 10 AND Question.name = 'Name'";
+         * $query = "SELECT Question.* FROM Question WHERE Exam.id = 123";
+         * 
+         * $result = $this->modelsManager->executeQuery(
+         *      Question::getQuery($query)
+         * );
+         * </code>
+         * 
+         * <code>
+         * // 
+         * // Using bind parameters:
+         * // 
+         * $query = "SELECT Question.* FROM Question WHERE Question.id = ?0 AND Question.name = ?1";
+         * $result = $this->modelsManager->executeQuery(
+         *      Question::getQuery($query), array(10, 'Name')
+         * );
+         * 
+         * $query = "SELECT Question.* FROM Question WHERE Question.id = :id: AND Question.name = :name:";
+         * $result = $this->modelsManager->executeQuery(
+         *      Question::getQuery($query), array('id' => 10, 'name' => 'Name')
+         * );
+         * </code>
+         * 
+         * Implicit joined models can be part of the where clause. This example
+         * shows this when primary role is set to student:
+         * <code>
+         * $query = "SELECT Question.* FROM Question WHERE Student.tag LIKE '3FM%'";
+         * 
+         * $result = $this->modelsManager->executeQuery(
+         *      Question::getQuery($query)
+         * );
+         * </code>
+         * 
+         * @param string $query The query string.
+         * @return string
+         */
+        public static function getQuery($query)
+        {
+                $relations = self::getRelations();
+
+                list($qs, $qe) = explode(" Question ", $query . ' ');
+
+                $qs = trim($qs);
+                $qe = trim($qe);
+
+                if (strlen($qe) == 0) {
+                        $result = sprintf("%s %s", $qs, $relations);
+                } elseif (strpos($qe, "WHERE") !== false && strpos($relations, "WHERE") !== false) {
+                        $result = sprintf("%s %s AND %s", $qs, $relations, substr($qe, 6));
+                } else {
+                        $result = sprintf("%s %s %s", $qs, $relations, $qe);
+                }
+
+                return $result;
         }
 
 }
