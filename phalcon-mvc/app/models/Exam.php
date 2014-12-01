@@ -304,6 +304,9 @@ class Exam extends ModelBase
                 if (!isset($parameters)) {
                         $parameters = array('limit' => 1);
                 }
+                if (is_numeric($parameters)) {
+                        $parameters = "id = $parameters";
+                }
                 if (is_string($parameters)) {
                         $parameters = array('conditions' => $parameters, 'limit' => 1);
                 }

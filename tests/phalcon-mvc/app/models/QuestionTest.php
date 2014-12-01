@@ -385,6 +385,10 @@ class QuestionTest extends TestModel
                         $model = Question::findFirst();
                         self::assertNotNull($model);
 
+                        $model = Question::findFirst($sample['id']);
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+                        
                         $model = Question::findFirstById($sample['id']);
                         self::assertNotNull($model);
                         self::assertTrue($model->id == $sample['id']);

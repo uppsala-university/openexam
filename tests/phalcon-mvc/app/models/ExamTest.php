@@ -416,6 +416,10 @@ class ExamTest extends TestModel
                         $model = Exam::findFirst();
                         self::assertNotNull($model);
 
+                        $model = Exam::findFirst($sample['id']);
+                        self::assertNotNull($model);
+                        self::assertTrue($model->id == $sample['id']);
+                        
                         $model = Exam::findFirstById($sample['id']);
                         self::assertNotNull($model);
                         self::assertTrue($model->id == $sample['id']);
