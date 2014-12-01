@@ -66,21 +66,25 @@ class ModelBase extends Model
         protected static function getParameters($class, $parameters)
         {
                 // 
-                // Handle e.g. "id = ?0 AND name = ?1" bind conditions:
+                // Handle conditions (e.g. name = ?0 or name = :name:):
                 // 
                 if (isset($parameters['conditions'])) {
-                        $parameters['conditions'] = preg_replace("/([a-z\\\\]+\.)?(\w+?) = (\?\d+)/i", "${class}.$2 = $3", $parameters['conditions']);
-                }
-                // 
-                // Handle e.g. "id = :id: AND name = :name:" in bind:
-                // 
-                if (isset($parameters['bind'])) {
-                        foreach ($parameters as $index => $value) {
-                                if (is_numeric($index)) {
-                                        $parameters[$index] = preg_replace("/([a-z\\\\]+\.)?(\w+?) = :(\w+):/i", "${class}.$2 = :$3:", $parameters[$index]);
-                                }
+                        if (is_string($parameters['conditions'])) {
+                                $parameters['conditions'] = preg_replace("/([a-z\\\\]+\.)?(\w+?) (=|between|in)/i", "${class}.$2 $3", $parameters['conditions']);
+                        } else {
+                                
                         }
                 }
+
+                // 
+                // Handle e.g. findFirst() arguments:
+                // 
+                foreach (array_keys($parameters) as $index) {
+                        if (is_numeric($index)) {
+                                $parameters[$index] = preg_replace("/([a-z\\\\]+\.)?(\w+?) (=|between|in)/i", "${class}.$2 $3", $parameters[$index]);
+                        }
+                }
+
                 // 
                 // Handle order conditions:
                 // 
@@ -89,6 +93,9 @@ class ModelBase extends Model
                                 $parameters['order'] = explode(",", $parameters['order']);
                         }
                         foreach ($parameters['order'] as $index => $value) {
+                                if (strpos($value, '.')) {
+                                        continue;
+                                }
                                 $parameters['order'][$index] = $class . '.' . $parameters['order'][$index];
                         }
                 }
