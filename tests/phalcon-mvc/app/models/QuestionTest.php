@@ -71,6 +71,116 @@ class QuestionTest extends TestModel
         }
 
         /**
+         * Test model behavior.
+         * @group model
+         */
+        public function testBehavior()
+        {
+                $user = $this->getDI()->get('user');
+
+                /**
+                 * Test ownership:
+                 */
+                // 
+                // Test caller on create:
+                // 
+                $expect = $user->getPrincipalName();
+                $object = new Question();
+                $object->assign($this->sample->getSample('question', false));
+                $object->user = null;
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->user);
+                self::assertTrue(is_string($object->user));
+
+                $actual = $object->user;
+                self::assertEquals($expect, $actual);
+
+                $object->delete();
+
+                // 
+                // Test custom user on create:
+                //                 
+                $expect = 'user@example.com';
+                $object = new Question();
+                $object->assign($this->sample->getSample('question', false));
+                $object->user = $expect;
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->user);
+                self::assertTrue(is_string($object->user));
+
+                $actual = $object->user;
+                self::assertEquals($expect, $actual);
+
+                // 
+                // Test caller on update:
+                // 
+                $expect = $user->getPrincipalName();
+                $object->user = $user->getPrincipalName();
+
+                self::assertTrue($object->update());
+                self::assertNotNull($object->user);
+                self::assertTrue(is_string($object->user));
+
+                $actual = $object->user;
+                self::assertEquals($expect, $actual);
+
+                // 
+                // Test custom user on update:
+                // 
+                $expect = 'user@example.com';
+                $object->user = $expect;
+
+                self::assertTrue($object->update());
+                self::assertNotNull($object->user);
+                self::assertTrue(is_string($object->user));
+
+                $actual = $object->user;
+                self::assertEquals($expect, $actual);
+
+                $object->delete();
+
+                /**
+                 * Test UUID:
+                 */
+                $object = new Question();
+                $object->assign($this->sample->getSample('question', false));
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->uuid);
+                self::assertTrue(is_string($object->uuid));
+
+                $object->uuid = null;
+                $object->update();
+                self::assertNotNull($object->uuid);
+
+                $expect = 'qtest123-1670-59b3-1ede-efb502ed';
+                $object->uuid = $expect;
+                $object->update();
+                $actual = $object->uuid;
+                self::assertEquals($actual, $expect);
+
+                $object->delete();
+
+                /**
+                 * Test caller added as corrector:
+                 */
+                $expect = $user->getPrincipalName();
+                $object = new Question();
+                $object->assign($this->sample->getSample('question', false));
+                $object->user = $expect;
+
+                self::assertTrue($object->create());
+                self::assertTrue($object->correctors->count() != 0);
+                $corrector = $object->correctors[0];
+                self::assertNotNull($corrector);
+                self::assertEquals($expect, $corrector->user);
+
+                $object->delete();
+        }
+
+        /**
          * @covers OpenExam\Models\Question::create
          * @group model
          */
@@ -388,7 +498,7 @@ class QuestionTest extends TestModel
                         $model = Question::findFirst($sample['id']);
                         self::assertNotNull($model);
                         self::assertTrue($model->id == $sample['id']);
-                        
+
                         $model = Question::findFirstById($sample['id']);
                         self::assertNotNull($model);
                         self::assertTrue($model->id == $sample['id']);
@@ -471,7 +581,7 @@ class QuestionTest extends TestModel
         {
                 $user = $this->getDI()->get('user');
                 $roles = $this->capabilities->getRoles(self::MODEL);
-                $roles = array_merge(array(null), array_keys($roles));                
+                $roles = array_merge(array(null), array_keys($roles));
 
                 $sample = $this->sample->getSample(self::MODEL);
                 $modman = $this->getDI()->get('modelsManager');

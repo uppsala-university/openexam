@@ -106,6 +106,11 @@ class Exam extends ModelBase
          */
         public $decoded;
         /**
+         * Is this exam published?
+         * @var bool
+         */
+        public $published;
+        /**
          * The organization unit.
          * @var string
          */
@@ -202,6 +207,9 @@ class Exam extends ModelBase
                 if (!isset($this->decoded)) {
                         $this->decoded = false;
                 }
+                if (!isset($this->published)) {
+                        $this->published = false;
+                }
                 if (!isset($this->testcase)) {
                         $this->testcase = false;
                 }
@@ -216,6 +224,7 @@ class Exam extends ModelBase
         protected function beforeSave()
         {
                 $this->decoded = $this->decoded ? 'Y' : 'N';
+                $this->published = $this->published ? 'Y' : 'N';
                 $this->testcase = $this->testcase ? 'Y' : 'N';
                 $this->lockdown = $this->lockdown ? 'Y' : 'N';
         }
@@ -226,6 +235,7 @@ class Exam extends ModelBase
         protected function afterSave()
         {
                 $this->decoded = $this->decoded == 'Y';
+                $this->published = $this->published == 'Y';
                 $this->testcase = $this->testcase == 'Y';
                 $this->lockdown = $this->lockdown == 'Y';
         }
@@ -236,6 +246,7 @@ class Exam extends ModelBase
         protected function afterFetch()
         {
                 $this->decoded = $this->decoded == 'Y';
+                $this->published = $this->published == 'Y';
                 $this->testcase = $this->testcase == 'Y';
                 $this->lockdown = $this->lockdown == 'Y';
                 $state = new State($this);

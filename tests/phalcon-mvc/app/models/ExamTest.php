@@ -100,6 +100,78 @@ class ExamTest extends TestModel
         }
 
         /**
+         * Test model behavior.
+         * @group model
+         */
+        public function testBehavior()
+        {
+                $user = $this->getDI()->get('user');
+
+                /**
+                 * Test ownership:
+                 */
+                // 
+                // Test caller on create:
+                // 
+                $expect = $user->getPrincipalName();
+                $object = new Exam();
+                $object->assign($this->sample->getSample('exam', false));
+                $object->creator = null;
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->creator);
+                self::assertTrue(is_string($object->creator));
+
+                $actual = $object->creator;
+                self::assertEquals($expect, $actual);
+
+                $object->delete();
+
+                // 
+                // Test custom user on create:
+                //                 
+                $expect = 'user@example.com';
+                $object = new Exam();
+                $object->assign($this->sample->getSample('exam', false));
+                $object->creator = $expect;
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->creator);
+                self::assertTrue(is_string($object->creator));
+
+                $actual = $object->creator;
+                self::assertEquals($expect, $actual);
+
+                // 
+                // Test caller on update:
+                // 
+                $expect = $user->getPrincipalName();
+                $object->creator = $user->getPrincipalName();
+
+                self::assertTrue($object->update());
+                self::assertNotNull($object->creator);
+                self::assertTrue(is_string($object->creator));
+
+                $actual = $object->creator;
+                self::assertEquals($expect, $actual);
+
+                // 
+                // Test custom user on update:
+                // 
+                $expect = 'user@example.com';
+                $object->creator = $expect;
+
+                self::assertTrue($object->update());
+                self::assertNotNull($object->creator);
+                self::assertTrue(is_string($object->creator));
+
+                $actual = $object->creator;
+                self::assertEquals($expect, $actual);
+
+                $object->delete();
+        }
+        
+        /**
          * @covers OpenExam\Models\Exam::create
          * @group model
          */

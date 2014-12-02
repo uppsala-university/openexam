@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\UUID;
+
 /**
  * Question topic.
  * 
@@ -38,6 +40,17 @@ class Topic extends ModelBase
          */
         public $exam_id;
         /**
+         * The slot (ordering) of this object.
+         * @var integer 
+         */
+        public $slot;
+        /**
+         * The UUID for this object.
+         * @see http://en.wikipedia.org/wiki/Universally_unique_identifier
+         * @var string 
+         */
+        public $uuid;
+        /**
          * The topic name.
          * @var string
          */
@@ -61,8 +74,20 @@ class Topic extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
+
                 $this->hasMany('id', 'OpenExam\Models\Question', 'topic_id', array('alias' => 'questions'));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
+
+                $this->addBehavior(new UUID(array(
+                        'beforeCreate' => array(
+                                'field' => 'uuid',
+                                'force' => true
+                        ),
+                        'beforeUpdate' => array(
+                                'field' => 'uuid',
+                                'force' => false
+                        )
+                )));
         }
 
         /**

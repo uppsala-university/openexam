@@ -63,6 +63,35 @@ class TopicTest extends TestModel
         }
 
         /**
+         * Test model behavior.
+         * @group model
+         */
+        public function testBehavior()
+        {
+                /**
+                 * Test UUID:
+                 */
+                $object = new Topic();
+                $object->assign($this->sample->getSample('topic', false));
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->uuid);
+                self::assertTrue(is_string($object->uuid));
+
+                $object->uuid = null;
+                $object->update();
+                self::assertNotNull($object->uuid);
+
+                $expect = 'ttest123-48cb-ec67-dde0-02928512';
+                $object->uuid = $expect;
+                $object->update();
+                $actual = $object->uuid;
+                self::assertEquals($actual, $expect);
+
+                $object->delete();
+        }
+
+        /**
          * @covers OpenExam\Models\Topic::create
          * @group model
          */

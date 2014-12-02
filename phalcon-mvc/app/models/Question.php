@@ -4,6 +4,7 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Ownership;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
+use OpenExam\Library\Model\Behavior\UUID;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
@@ -50,6 +51,17 @@ class Question extends ModelBase
          * @var integer
          */
         public $topic_id;
+        /**
+         * The slot (ordering) of this object.
+         * @var integer 
+         */
+        public $slot;
+        /**
+         * The UUID for this object.
+         * @see http://en.wikipedia.org/wiki/Universally_unique_identifier
+         * @var string 
+         */
+        public $uuid;
         /**
          * The question publisher.
          * @var string 
@@ -102,6 +114,16 @@ class Question extends ModelBase
                         ),
                         'beforeValidationOnUpdate' => array(
                                 'field' => 'user',
+                                'force' => false
+                        )
+                )));
+                $this->addBehavior(new UUID(array(
+                        'beforeCreate' => array(
+                                'field' => 'uuid',
+                                'force' => true
+                        ),
+                        'beforeUpdate' => array(
+                                'field' => 'uuid',
                                 'force' => false
                         )
                 )));
