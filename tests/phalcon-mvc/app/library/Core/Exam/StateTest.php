@@ -226,6 +226,24 @@ class StateTest extends TestCase
                 self::assertTrue(($this->state->getState() & State::FINISHED) != 0);
                 self::assertTrue(($this->state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->state->getState() & State::UPCOMING) == 0);
+
+                // 
+                // Test custom state:
+                // 
+                self::assertTrue(($this->state->getState() & State::TESTCASE) == 0);
+                self::assertTrue(($this->state->getState() & State::LOCKDOWN) == 0);
+                self::assertTrue(($this->state->getState() & State::PUBLISHED) == 0);
+
+                $this->exam->testcase = true;
+                $this->exam->lockdown = true;
+                $this->exam->published = true;
+
+                $this->exam->update();
+                $this->state->refresh();
+
+                self::assertTrue(($this->state->getState() & State::TESTCASE) != 0);
+                self::assertTrue(($this->state->getState() & State::LOCKDOWN) != 0);
+                self::assertTrue(($this->state->getState() & State::PUBLISHED) != 0);
         }
 
         /**
@@ -327,6 +345,24 @@ class StateTest extends TestCase
                 self::assertTrue($this->state->has(State::FINISHED));
                 self::assertFalse($this->state->has(State::RUNNING));
                 self::assertFalse($this->state->has(State::UPCOMING));
+
+                // 
+                // Test custom state:
+                // 
+                self::assertFalse($this->state->has(State::TESTCASE));
+                self::assertFalse($this->state->has(State::LOCKDOWN));
+                self::assertFalse($this->state->has(State::PUBLISHED));
+
+                $this->exam->testcase = true;
+                $this->exam->lockdown = true;
+                $this->exam->published = true;
+
+                $this->exam->update();
+                $this->state->refresh();
+
+                self::assertTrue($this->state->has(State::TESTCASE));
+                self::assertTrue($this->state->has(State::LOCKDOWN));
+                self::assertTrue($this->state->has(State::PUBLISHED));
         }
 
         /**
@@ -448,6 +484,27 @@ class StateTest extends TestCase
                 self::assertTrue(in_array('finished', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
+
+                // 
+                // Test custom state:
+                // 
+                self::assertFalse(in_array('testcase', $flags));
+                self::assertFalse(in_array('lockdown', $flags));
+                self::assertFalse(in_array('published', $flags));
+
+                $this->exam->testcase = true;
+                $this->exam->lockdown = true;
+                $this->exam->published = true;
+
+                $this->exam->update();
+                $this->state->refresh();
+                $flags = $this->state->getFlags();
+                printf("Custom state (e.g. published):\n");
+                print_r($flags);
+
+                self::assertTrue(in_array('testcase', $flags));
+                self::assertTrue(in_array('lockdown', $flags));
+                self::assertTrue(in_array('published', $flags));
         }
 
 }

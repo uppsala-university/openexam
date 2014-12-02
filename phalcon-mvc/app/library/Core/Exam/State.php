@@ -87,6 +87,10 @@ class State
          * Examination is a draft (not yet scheduled).
          */
         const DRAFT = 2048;
+        /**
+         * Examination has been published.
+         */
+        const PUBLISHED = 4096;
 
         /**
          * @var Exam 
@@ -158,6 +162,9 @@ class State
                 }
                 if ($this->exam->lockdown) {
                         $this->state |= self::LOCKDOWN;
+                }
+                if ($this->exam->published) {
+                        $this->state |= self::PUBLISHED;
                 }
         }
 
