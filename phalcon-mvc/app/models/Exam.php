@@ -54,6 +54,10 @@ class Exam extends ModelBase
          * Include statistics of all students.
          */
         const RESULT_OTHERS_STATISTICS = 2;
+        /**
+         * Expose student grade and percentage during correction phase.
+         */
+        const EXPOSE_GRADES_DURING_CORRECTION = 4;
 
         /**
          * This object ID.
