@@ -1,0 +1,115 @@
+
+    ********************************************
+     MySQL 5.5. performance notes
+    ********************************************
+
+MySQL 5.5 with InnoDB performs really bad on some hardware/software configurations. The problem 
+comes from ACID-compliance demanding sync after each transaction. 
+
+This is not an problem when running on hardware RAID with cached controller. On desktop and 
+virtual servers, the performance can be really bad as seen below (~18 insert/sec).
+
+The solution is to run on real servers or accept possible data loss (on second). In some 
+cases, setting disk flush to O_DIRECT is the cure.
+
+    # Flush transaction each second (approximately):
+    innodb_flush_log_at_trx_commit  = 0
+
+    # Configure disk flush method (fsync being default):
+    innodb_flush_method             = O_DIRECT
+
+Other performance improvements includes pitching up log and buffer sizes:
+
+    innodb_buffer_pool_size         = 512M
+    innodb_log_file_size            = 128M
+
+** Benchmark test:
+
+   o) The first one with innodb_flush_log_at_trx_commit = 1 (default setting):
+
+    bash> sysbench --num-threads=16 --max-requests=10000 --test=oltp --oltp-table-size=500000 --oltp-test-mode=complex --mysql-db=dbtest --mysql-user=dbtest --mysql-password=dbtest run
+    sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+    No DB drivers specified, using mysql
+    Running the test with following options:
+    Number of threads: 16
+
+    Doing OLTP test.
+    Running mixed OLTP test
+    Using Special distribution (12 iterations,  1 pct of values are returned in 75 pct cases)
+    Using "BEGIN" for starting transactions
+    Using auto_inc on the id column
+    Maximum number of requests for OLTP test is limited to 10000
+    Threads started!
+    Done.
+
+    OLTP test statistics:
+        queries performed:
+            read:                            140014
+            write:                           50005
+            other:                           20002
+            total:                           210021
+        transactions:                        10001  (17.79 per sec.)
+        deadlocks:                           0      (0.00 per sec.)
+        read/write requests:                 190019 (337.93 per sec.)
+        other operations:                    20002  (35.57 per sec.)
+
+    Test execution summary:
+        total time:                          562.2973s
+        total number of events:              10001
+        total time taken by event execution: 8992.4807
+        per-request statistics:
+             min:                                111.64ms
+             avg:                                899.16ms
+             max:                               3981.26ms
+             approx.  95 percentile:            1367.64ms
+
+    Threads fairness:
+        events (avg/stddev):           625.0625/5.45
+        execution time (avg/stddev):   562.0300/0.21
+
+   o) Same test, now with innodb_flush_log_at_trx_commit = 0:
+
+    bash> sysbench --num-threads=16 --max-requests=10000 --test=oltp --oltp-table-size=500000 --oltp-test-mode=complex --mysql-db=dbtest --mysql-user=dbtest --mysql-password=dbtest run
+    sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+    No DB drivers specified, using mysql
+    Running the test with following options:
+    Number of threads: 16
+
+    Doing OLTP test.
+    Running mixed OLTP test
+    Using Special distribution (12 iterations,  1 pct of values are returned in 75 pct cases)
+    Using "BEGIN" for starting transactions
+    Using auto_inc on the id column
+    Maximum number of requests for OLTP test is limited to 10000
+    Threads started!
+    Done.
+
+    OLTP test statistics:
+        queries performed:
+            read:                            140000
+            write:                           50000
+            other:                           20000
+            total:                           210000
+        transactions:                        10000  (1347.70 per sec.)
+        deadlocks:                           0      (0.00 per sec.)
+        read/write requests:                 190000 (25606.37 per sec.)
+        other operations:                    20000  (2695.41 per sec.)
+
+    Test execution summary:
+        total time:                          7.4200s
+        total number of events:              10000
+        total time taken by event execution: 118.6064
+        per-request statistics:
+             min:                                  1.71ms
+             avg:                                 11.86ms
+             max:                                 95.99ms
+             approx.  95 percentile:              24.22ms
+
+    Threads fairness:
+        events (avg/stddev):           625.0000/11.82
+        execution time (avg/stddev):   7.4129/0.00
+
+
+// Anders Lövgren, 2014-12-03
