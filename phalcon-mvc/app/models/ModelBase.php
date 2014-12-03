@@ -70,18 +70,16 @@ class ModelBase extends Model
                 // 
                 if (isset($parameters['conditions'])) {
                         if (is_string($parameters['conditions'])) {
-                                $parameters['conditions'] = preg_replace("/([a-z\\\\]+\.)?(\w+?) (=|between|in)/i", "${class}.$2 $3", $parameters['conditions']);
-                        } else {
-                                
+                                $parameters['conditions'] = preg_replace("/(\[?[a-z\\\\]+\]?\.)?(\[?\w+?\]?) (=|between|in)/i", "${class}.$2 $3", $parameters['conditions']);
                         }
                 }
 
                 // 
-                // Handle e.g. findFirst() arguments:
+                // Handle e.g. findFirst() or relational arguments:
                 // 
                 foreach (array_keys($parameters) as $index) {
-                        if (is_numeric($index)) {
-                                $parameters[$index] = preg_replace("/([a-z\\\\]+\.)?(\w+?) (=|between|in)/i", "${class}.$2 $3", $parameters[$index]);
+                        if (is_int($index)) {
+                                $parameters[$index] = preg_replace("/(\[?[a-z\\\\]+\]?\.)?(\[?\w+?\]?) (=|between|in)/i", "${class}.$2 $3", $parameters[$index]);
                         }
                 }
 
