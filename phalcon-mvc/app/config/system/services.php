@@ -230,6 +230,15 @@ $di->set('catalog', function() use($config) {
 }, true);
 
 /**
+ * Capabilities service.
+ */
+$di->set('capabilities', function() {
+        return new \OpenExam\Library\Security\Capabilities(
+            require CONFIG_DIR . '/access.def'
+        );
+});
+
+/**
  * Phql based model manager
  */
 $di->set('phql', function() {
