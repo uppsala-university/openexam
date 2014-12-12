@@ -39,29 +39,29 @@ return array(
                 ),
                 'creator'     => array(
                         'exam'        => 'manage',
-                        'resource'    => '*'
+                        'resource'    => '*',
                         'topic'       => '*',
                         'question'    => '*',
                         'contributor' => '*',
                         'decoder'     => '*',
                         'invigilator' => '*',
                         'corrector'   => '*',
-                        'student'     => 'read',
+                        'student'     => 'read'
                 ),
                 'contributor' => array(
                         'exam'        => 'read',
-                        'resource'    => '*'
+                        'resource'    => '*',
                         'topic'       => 'read',
                         'question'    => '*',
-                        'corrector'   => 'read',
+                        'corrector'   => 'read'
                 ),
                 'invigilator' => array(
                         'exam'        => 'modify',
                         'computer'    => 'read',
                         'lock'        => '*',
-                        'room'        => 'read'
+                        'room'        => 'read',
                         'invigilator' => 'read',
-                        'student'     => '*',
+                        'student'     => '*'
                 ),
                 'decoder'     => array(
                         'exam'        => 'modify',
@@ -70,17 +70,17 @@ return array(
                         'question'    => 'read',
                         'answer'      => 'read',
                         'result'      => 'read',
-                        'file'        => 'read'                        
-                        'student'     => 'read',
+                        'file'        => 'read',                        
+                        'student'     => 'read'
                 ),
                 'corrector'   => array(
                         'exam'        => 'read',
                         'topic'       => 'read',
                         'question'    => 'read',
                         'answer'      => 'read',
-                        'result'      => '*'
+                        'result'      => '*',
                         'student'     => 'read',
-                        'corrector'   => 'read',
+                        'corrector'   => 'read'
                 ),
                 'student'     => array(
                         'exam'        => 'read',
