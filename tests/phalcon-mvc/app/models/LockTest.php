@@ -36,14 +36,14 @@ class LockTest extends TestModel
          */
         public function testRelations()
         {
-                $lock = Lock::findFirst();
-                self::assertNotNull($lock);
+                $object = Lock::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $lock->exam->count());
-                self::assertNotEquals(0, $lock->computer->count());
+                self::assertNotEquals(0, $object->exam->count());
+                self::assertTrue(count($object->exam) == 1);
 
-                self::assertTrue(count($lock->exam) == 1);
-                self::assertTrue(count($lock->computer) == 1);
+                self::assertNotEquals(0, $object->computer->count());
+                self::assertTrue(count($object->computer) == 1);
         }
 
         /**

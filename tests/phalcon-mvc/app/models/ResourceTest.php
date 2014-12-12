@@ -36,11 +36,11 @@ class ResourceTest extends TestModel
          */
         public function testRelations()
         {
-                $resource = Resource::findFirst();
-                self::assertNotNull($resource);
+                $object = Resource::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $resource->exam->count());
-                self::assertTrue(count($resource->exam) == 1);
+                self::assertNotEquals(0, $object->exam->count());
+                self::assertTrue(count($object->exam) == 1);
         }
 
         /**

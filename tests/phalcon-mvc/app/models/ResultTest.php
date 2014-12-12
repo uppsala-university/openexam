@@ -36,11 +36,14 @@ class ResultTest extends TestModel
          */
         public function testRelations()
         {
-                $result = Result::findFirst();
-                self::assertNotNull($result);
+                $object = Result::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $result->answer->count());
-                self::assertTrue(count($result->answer) == 1);
+                self::assertNotEquals(0, $object->answer->count());
+                self::assertTrue(count($object->answer) == 1);
+
+                self::assertNotEquals(0, $object->corrector->count());
+                self::assertTrue(count($object->corrector) == 1);
         }
 
         /**

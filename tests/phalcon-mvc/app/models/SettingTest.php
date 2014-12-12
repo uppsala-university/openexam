@@ -65,7 +65,7 @@ class SettingTest extends TestModel
         public function testGet()
         {
                 $object = new Setting();
-                
+
                 // 
                 // Assert empty array in new model object:
                 // 
@@ -82,7 +82,7 @@ class SettingTest extends TestModel
                 self::assertFalse(empty($object->data));
                 $actual = $object->data;
                 self::assertEquals($actual, $expect);
-                
+
                 // 
                 // Make sure serialize/unserialize works:
                 // 

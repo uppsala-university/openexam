@@ -36,11 +36,11 @@ class DecoderTest extends TestModel
          */
         public function testRelations()
         {
-                $decoder = Decoder::findFirst();
-                self::assertNotNull($decoder);
+                $object = Decoder::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $decoder->exam->count());
-                self::assertTrue(count($decoder->exam) == 1);
+                self::assertNotEquals(0, $object->exam->count());
+                self::assertTrue(count($object->exam) == 1);
         }
 
         /**

@@ -36,11 +36,11 @@ class InvigilatorTest extends TestModel
          */
         public function testRelations()
         {
-                $invigilator = Invigilator::findFirst();
-                self::assertNotNull($invigilator);
+                $object = Invigilator::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $invigilator->exam->count());
-                self::assertTrue(count($invigilator->exam) == 1);
+                self::assertNotEquals(0, $object->exam->count());
+                self::assertTrue(count($object->exam) == 1);
         }
 
         /**

@@ -36,11 +36,11 @@ class ContributorTest extends TestModel
          */
         public function testRelations()
         {
-                $contributor = Contributor::findFirst();
-                self::assertNotNull($contributor);
+                $object = Contributor::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $contributor->exam->count());
-                self::assertTrue(count($contributor->exam) == 1);
+                self::assertNotEquals(0, $object->exam->count());
+                self::assertTrue(count($object->exam) == 1);
         }
 
         /**

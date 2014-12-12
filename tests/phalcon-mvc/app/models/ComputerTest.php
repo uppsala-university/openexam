@@ -37,14 +37,14 @@ class ComputerTest extends TestModel
          */
         public function testRelations()
         {
-                $computer = Computer::findFirst();
-                self::assertNotNull($computer);
+                $object = Computer::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $computer->locks->count());
-                self::assertNotEquals(0, $computer->room->count());
+                self::assertNotEquals(0, $object->locks->count());
+                self::assertTrue(count($object->locks) > 0);
 
-                self::assertTrue(count($computer->locks) > 0);
-                self::assertTrue(count($computer->room) == 1);
+                self::assertNotEquals(0, $object->room->count());
+                self::assertTrue(count($object->room) == 1);
         }
 
         /**

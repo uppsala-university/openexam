@@ -36,25 +36,20 @@ class QuestionTest extends TestModel
          */
         public function testRelations()
         {
-                $question = Question::findFirst();
-                self::assertNotNull($question);
+                $object = Question::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $question->exam->count());
-                self::assertNotEquals(0, $question->topic->count());
-                self::assertTrue(count($question->exam) == 1);
-                self::assertTrue(count($question->topic) == 1);
+                self::assertNotEquals(0, $object->answers->count());
+                self::assertTrue(count($object->answers) > 0);
 
-                $question = Answer::findFirst()->question;
-                self::assertNotNull($question);
+                self::assertNotEquals(0, $object->correctors->count());
+                self::assertTrue(count($object->correctors) > 0);
 
-                self::assertNotEquals(0, $question->answers->count());
-                self::assertTrue(count($question->answers) > 0);
+                self::assertNotEquals(0, $object->exam->count());
+                self::assertTrue(count($object->exam) == 1);
 
-                $question = Corrector::findFirst()->question;
-                self::assertNotNull($question);
-
-                self::assertNotEquals(0, $question->correctors->count());
-                self::assertTrue(count($question->correctors) > 0);
+                self::assertNotEquals(0, $object->topic->count());
+                self::assertTrue(count($object->topic) == 1);
         }
 
         /**

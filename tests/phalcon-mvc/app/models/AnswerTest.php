@@ -37,20 +37,20 @@ class AnswerTest extends TestModel
          */
         public function testRelations()
         {
-                $answer = Result::findFirst()->answer;
-                self::assertNotNull($answer);
+                $object = Answer::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $answer->question->count());
-                self::assertNotEquals(0, $answer->result->count());
-                self::assertNotEquals(0, $answer->student->count());
+                self::assertNotEquals(0, $object->question->count());
+                self::assertTrue(count($object->question) == 1);
 
-                self::assertEquals(1, count($answer->question));
-                self::assertEquals(1, count($answer->result));
-                self::assertEquals(1, count($answer->student));
+                self::assertNotEquals(0, $object->result->count());
+                self::assertTrue(count($object->result) == 1);
 
-                $answer = File::findFirst()->answer;
-                self::assertNotEquals(0, $answer->files->count());
-                self::assertTrue(count($answer->files) > 0);
+                self::assertNotEquals(0, $object->student->count());
+                self::assertTrue(count($object->student) == 1);
+
+                self::assertNotEquals(0, $object->files->count());
+                self::assertTrue(count($object->files) > 0);
         }
 
         /**

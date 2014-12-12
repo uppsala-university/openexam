@@ -37,53 +37,32 @@ class ExamTest extends TestModel
          */
         public function testRelations()
         {
-                $exam = Contributor::findFirst()->exam;
-                self::assertNotNull($exam);
+                $object = Exam::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $exam->contributors->count());
-                self::assertTrue(count($exam->contributors) > 0);
+                self::assertNotEquals(0, $object->contributors->count());
+                self::assertTrue(count($object->contributors) > 0);
 
-                $exam = Decoder::findFirst()->exam;
-                self::assertNotNull($exam);
+                self::assertTrue(count($object->decoders) > 0);
+                self::assertNotEquals(0, $object->decoders->count());
 
-                self::assertTrue(count($exam->decoders) > 0);
-                self::assertNotEquals(0, $exam->decoders->count());
+                self::assertNotEquals(0, $object->invigilators->count());
+                self::assertTrue(count($object->invigilators) > 0);
 
-                $exam = Invigilator::findFirst()->exam;
-                self::assertNotNull($exam);
+                self::assertNotEquals(0, $object->questions->count());
+                self::assertTrue(count($object->questions) > 0);
 
-                self::assertNotEquals(0, $exam->invigilators->count());
-                self::assertTrue(count($exam->invigilators) > 0);
+                self::assertNotEquals(0, $object->students->count());
+                self::assertTrue(count($object->students) > 0);
 
-                $exam = Question::findFirst()->exam;
-                self::assertNotNull($exam);
+                self::assertNotEquals(0, $object->topics->count());
+                self::assertTrue(count($object->topics) > 0);
 
-                self::assertNotEquals(0, $exam->questions->count());
-                self::assertTrue(count($exam->questions) > 0);
+                self::assertNotEquals(0, $object->locks->count());
+                self::assertTrue(count($object->locks) > 0);
 
-                $exam = Student::findFirst()->exam;
-                self::assertNotNull($exam);
-
-                self::assertNotEquals(0, $exam->students->count());
-                self::assertTrue(count($exam->students) > 0);
-
-                $exam = Topic::findFirst()->exam;
-                self::assertNotNull($exam);
-
-                self::assertNotEquals(0, $exam->topics->count());
-                self::assertTrue(count($exam->topics) > 0);
-
-                $exam = Lock::findFirst()->exam;
-                self::assertNotNull($exam);
-
-                self::assertNotEquals(0, $exam->locks->count());
-                self::assertTrue(count($exam->locks) > 0);
-
-                $exam = Resource::findFirst()->exam;
-                self::assertNotNull($exam);
-
-                self::assertNotEquals(0, $exam->resources->count());
-                self::assertTrue(count($exam->resources) > 0);
+                self::assertNotEquals(0, $object->resources->count());
+                self::assertTrue(count($object->resources) > 0);
         }
 
         /**
@@ -170,7 +149,7 @@ class ExamTest extends TestModel
 
                 $object->delete();
         }
-        
+
         /**
          * @covers OpenExam\Models\Exam::create
          * @group model
@@ -491,7 +470,7 @@ class ExamTest extends TestModel
                         $model = Exam::findFirst($sample['id']);
                         self::assertNotNull($model);
                         self::assertTrue($model->id == $sample['id']);
-                        
+
                         $model = Exam::findFirstById($sample['id']);
                         self::assertNotNull($model);
                         self::assertTrue($model->id == $sample['id']);

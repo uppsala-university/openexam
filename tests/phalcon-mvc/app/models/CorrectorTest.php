@@ -36,11 +36,14 @@ class CorrectorTest extends TestModel
          */
         public function testRelations()
         {
-                $corrector = Corrector::findFirst();
-                self::assertNotNull($corrector);
+                $object = Corrector::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $corrector->question->count());
-                self::assertTrue(count($corrector->question) == 1);
+                self::assertNotEquals(1, $object->question->count());
+                self::assertTrue(count($object->question) == 1);
+
+                self::assertNotEquals(0, $object->results->count());
+                self::assertTrue(count($object->results) > 0);
         }
 
         /**

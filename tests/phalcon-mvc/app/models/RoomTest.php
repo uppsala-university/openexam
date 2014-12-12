@@ -35,11 +35,11 @@ class RoomTest extends TestModel
          */
         public function testRelations()
         {
-                $room = Computer::findFirst()->room;
-                self::assertNotNull($room);
+                $object = Room::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $room->computers->count());
-                self::assertTrue(count($room->computers) > 0);
+                self::assertNotEquals(0, $object->computers->count());
+                self::assertTrue(count($object->computers) > 0);
         }
 
         /**

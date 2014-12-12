@@ -36,11 +36,11 @@ class FileTest extends TestModel
          */
         public function testRelations()
         {
-                $file = File::findFirst();
-                self::assertNotNull($file);
+                $object = File::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $file->answer->count());
-                self::assertTrue(count($file->answer) == 1);
+                self::assertNotEquals(0, $object->answer->count());
+                self::assertTrue(count($object->answer) == 1);
         }
 
         /**

@@ -33,7 +33,7 @@ class TeacherTest extends TestModel
                 self::assertEquals($expect, $actual);
         }
 
-       /**
+        /**
          * @covers OpenExam\Models\Teacher::create
          * @group model
          */
@@ -275,4 +275,5 @@ class TeacherTest extends TestModel
                         }
                 }
         }
+
 }

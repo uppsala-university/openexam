@@ -36,17 +36,14 @@ class TopicTest extends TestModel
          */
         public function testRelations()
         {
-                $topic = Topic::findFirst();
-                self::assertNotNull($topic);
+                $object = Topic::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $topic->exam->count());
-                self::assertTrue(count($topic->exam) == 1);
+                self::assertNotEquals(0, $object->exam->count());
+                self::assertTrue(count($object->exam) == 1);
 
-                $topic = Question::findFirst()->topic;
-                self::assertNotNull($topic);
-
-                self::assertNotEquals(0, $topic->questions->count());
-                self::assertTrue(count($topic->questions) >= 0);
+                self::assertNotEquals(0, $object->questions->count());
+                self::assertTrue(count($object->questions) > 0);
         }
 
         /**

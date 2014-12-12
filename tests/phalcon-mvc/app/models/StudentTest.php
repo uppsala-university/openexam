@@ -36,17 +36,14 @@ class StudentTest extends TestModel
          */
         public function testRelations()
         {
-                $student = Student::findFirst();
-                self::assertNotNull($student);
+                $object = Student::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                self::assertNotNull($object);
 
-                self::assertNotEquals(0, $student->exam->count());
-                self::assertTrue(count($student->exam) == 1);
+                self::assertNotEquals(0, $object->exam->count());
+                self::assertTrue(count($object->exam) == 1);
 
-                $student = Answer::findFirst()->student;
-                self::assertNotNull($student);
-
-                self::assertNotEquals(0, $student->answers->count());
-                self::assertTrue(count($student->answers) >= 0);
+                self::assertNotEquals(0, $object->answers->count());
+                self::assertTrue(count($object->answers) > 0);
         }
 
         /**
