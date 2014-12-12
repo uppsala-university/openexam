@@ -236,7 +236,7 @@ $di->set('capabilities', function() {
         return new \OpenExam\Library\Security\Capabilities(
             require CONFIG_DIR . '/access.def'
         );
-});
+}, true);
 
 /**
  * Phql based model manager
