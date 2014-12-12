@@ -15,6 +15,9 @@ cases, setting disk flush to O_DIRECT is the cure.
     # Flush transaction each second (approximately):
     innodb_flush_log_at_trx_commit  = 0
 
+    # For master/slave setup, write log file but don't sync to disk:
+    innodb_flush_log_at_trx_commit  = 2
+
     # Configure disk flush method (fsync being default):
     innodb_flush_method             = O_DIRECT
 
@@ -110,6 +113,49 @@ Other performance improvements includes pitching up log and buffer sizes:
     Threads fairness:
         events (avg/stddev):           625.0000/11.82
         execution time (avg/stddev):   7.4129/0.00
+
+   o) Same test, now with innodb_flush_log_at_trx_commit = 2:
+
+    bash> sysbench --num-threads=16 --max-requests=10000 --test=oltp --oltp-table-size=500000 --oltp-test-mode=complex --mysql-db=dbtest --mysql-user=dbtest --mysql-password=dbtest run
+    sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+    No DB drivers specified, using mysql
+    Running the test with following options:
+    Number of threads: 16
+
+    Doing OLTP test.
+    Running mixed OLTP test
+    Using Special distribution (12 iterations,  1 pct of values are returned in 75 pct cases)
+    Using "BEGIN" for starting transactions
+    Using auto_inc on the id column
+    Maximum number of requests for OLTP test is limited to 10000
+    Threads started!
+    Done.
+
+    OLTP test statistics:
+        queries performed:
+            read:                            140000
+            write:                           50000
+            other:                           20000
+            total:                           210000
+        transactions:                        10000  (994.08 per sec.)
+        deadlocks:                           0      (0.00 per sec.)
+        read/write requests:                 190000 (18887.53 per sec.)
+        other operations:                    20000  (1988.16 per sec.)
+
+    Test execution summary:
+        total time:                          10.0595s
+        total number of events:              10000
+        total time taken by event execution: 160.8421
+        per-request statistics:
+             min:                                  1.94ms
+             avg:                                 16.08ms
+             max:                                367.02ms
+             approx.  95 percentile:              42.19ms
+
+    Threads fairness:
+        events (avg/stddev):           625.0000/16.02
+        execution time (avg/stddev):   10.0526/0.00
 
 
 // Anders Lövgren, 2014-12-03
