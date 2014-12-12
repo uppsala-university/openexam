@@ -39,54 +39,57 @@ return array(
                 ),
                 'creator'     => array(
                         'exam'        => 'manage',
+                        'resource'    => '*'
+                        'topic'       => '*',
+                        'question'    => '*',
                         'contributor' => '*',
                         'decoder'     => '*',
                         'invigilator' => '*',
+                        'corrector'   => '*',
                         'student'     => 'read',
-                        'question'    => '*',
-                        'topic'       => '*',
-                        'resource'    => '*'
                 ),
                 'contributor' => array(
-                        'exam'     => 'read',
-                        'question' => '*',
-                        'topic'    => 'read',
-                        'resource' => '*'
+                        'exam'        => 'read',
+                        'resource'    => '*'
+                        'topic'       => 'read',
+                        'question'    => '*',
+                        'corrector'   => 'read',
                 ),
                 'invigilator' => array(
                         'exam'        => 'modify',
-                        'invigilator' => 'read',
-                        'student'     => '*',
                         'computer'    => 'read',
                         'lock'        => '*',
                         'room'        => 'read'
+                        'invigilator' => 'read',
+                        'student'     => '*',
                 ),
                 'decoder'     => array(
-                        'exam'     => 'modify',
-                        'student'  => 'read',
-                        'answer'   => 'read',
-                        'result'   => 'read',
-                        'question' => 'read',
-                        'topic'    => 'read',
-                        'resource' => 'read',
-                        'file'     => 'read'                        
+                        'exam'        => 'modify',
+                        'resource'    => 'read',
+                        'topic'       => 'read',
+                        'question'    => 'read',
+                        'answer'      => 'read',
+                        'result'      => 'read',
+                        'file'        => 'read'                        
+                        'student'     => 'read',
                 ),
                 'corrector'   => array(
-                        'exam'     => 'read',
-                        'question' => 'read',
-                        'topic'    => 'read',
-                        'student'  => 'read',
-                        'answer'   => 'read',
-                        'result'   => '*'
+                        'exam'        => 'read',
+                        'topic'       => 'read',
+                        'question'    => 'read',
+                        'answer'      => 'read',
+                        'result'      => '*'
+                        'student'     => 'read',
+                        'corrector'   => 'read',
                 ),
                 'student'     => array(
-                        'exam'      => 'read',
-                        'question'  => 'read',
-                        'topic'     => 'read',
-                        'answer'    => '*',
-                        'resource'  => 'read',
-                        'file'      => '*',
-                        'corrector' => 'read'
+                        'exam'        => 'read',
+                        'topic'       => 'read',
+                        'question'    => 'read',
+                        'answer'      => '*',
+                        'resource'    => 'read',
+                        'file'        => '*',
+                        'corrector'   => 'read'
                 )
         )
 );
