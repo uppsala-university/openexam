@@ -83,6 +83,12 @@ class Question extends ModelBase
          */
         public $quest;
         /**
+         * The pre-defined answer. Intended for exams where the answer is shown
+         * to students in response to saving the answer (bläddertentor).
+         * @var string 
+         */
+        public $answer;
+        /**
          * The question status (see STATUS_XXX).
          * @var string
          */
