@@ -275,6 +275,9 @@ class DirectoryManager extends Component implements DirectoryService
                 if (!isset($options['domain'])) {
                         $options['domain'] = $this->domain;
                 }
+                if (!is_array($options['attr'])) {
+                        $options['attr'] = array($options['attr']);
+                }
 
                 $result = array();
 
