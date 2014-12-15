@@ -140,7 +140,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
                 } elseif ($action == ObjectAccess::CREATE) {
                         $this->logger->auth->info(sprintf(
-                                "Granted %s access on %s for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr
+                                "Granted %s access on %s(id=%d) for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr
                         ));
                         return true;    // The create action is not connected with an object.
                 } elseif (Roles::isCustom($role)) {

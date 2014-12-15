@@ -195,6 +195,11 @@ class UnittestTask extends MainTask
                                         'subtype' => 'mp4',
                                         'user'    => $options['user']
                                 ),
+                                'access'      => array(
+                                        'exam_id' => 0,
+                                        'name'    => 'BMC;CBE;A3:234a',
+                                        'addr'    => '10.5.6.0/22'
+                                ),
                                 'room'        => array(
                                         'name' => 'Room 1'
                                 ),
@@ -205,6 +210,7 @@ class UnittestTask extends MainTask
                                         'password' => 'password1',
                                 ),
                                 'lock'        => array(
+                                        'student_id'  => 0,
                                         'computer_id' => 0,
                                         'exam_id'     => 0
                                 ),

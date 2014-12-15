@@ -40,6 +40,7 @@ use Phalcon\Mvc\Model\Query\Builder;
  * @property Question[] $questions The questions that belongs to this exam.
  * @property Student[] $students The students assigned to this exam.
  * @property Topic[] $topics The topics associated with this exam.
+ * @property Access[] $access The access definitions associated with this exam.
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -167,6 +168,7 @@ class Exam extends ModelBase
                 $this->hasMany("id", "OpenExam\Models\Resource", "exam_id", array("alias" => 'resources'));
                 $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'students'));
                 $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array('alias' => 'topics'));
+                $this->hasMany('id', 'OpenExam\Models\Access', 'exam_id', array('alias' => 'accesses'));
 
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(

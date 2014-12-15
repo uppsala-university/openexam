@@ -63,6 +63,9 @@ class ExamTest extends TestModel
 
                 self::assertNotEquals(0, $object->resources->count());
                 self::assertTrue(count($object->resources) > 0);
+                
+                self::assertNotEquals(0, $object->access->count());
+                self::assertTrue(count($object->access) > 0);
         }
 
         /**

@@ -46,7 +46,8 @@ return array(
                         'decoder'     => '*',
                         'invigilator' => '*',
                         'corrector'   => '*',
-                        'student'     => 'read'
+                        'student'     => 'read',
+                        'access'      => '*'
                 ),
                 'contributor' => array(
                         'exam'        => 'read',
@@ -61,7 +62,8 @@ return array(
                         'lock'        => '*',
                         'room'        => 'read',
                         'invigilator' => 'read',
-                        'student'     => '*'
+                        'student'     => '*',
+                        'access'      => 'modify'
                 ),
                 'decoder'     => array(
                         'exam'        => 'modify',
