@@ -44,6 +44,9 @@ class StudentTest extends TestModel
 
                 self::assertNotEquals(0, $object->answers->count());
                 self::assertTrue(count($object->answers) > 0);
+                
+                self::assertNotEquals(0, $object->locks->count());
+                self::assertTrue(count($object->locks) > 0);
         }
 
         /**

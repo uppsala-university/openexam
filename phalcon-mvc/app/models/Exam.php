@@ -168,7 +168,7 @@ class Exam extends ModelBase
                 $this->hasMany("id", "OpenExam\Models\Resource", "exam_id", array("alias" => 'resources'));
                 $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array('alias' => 'students'));
                 $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array('alias' => 'topics'));
-                $this->hasMany('id', 'OpenExam\Models\Access', 'exam_id', array('alias' => 'accesses'));
+                $this->hasMany('id', 'OpenExam\Models\Access', 'exam_id', array('alias' => 'access'));
 
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(

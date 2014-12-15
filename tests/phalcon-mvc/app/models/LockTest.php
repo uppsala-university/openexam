@@ -44,6 +44,9 @@ class LockTest extends TestModel
 
                 self::assertNotEquals(0, $object->computer->count());
                 self::assertTrue(count($object->computer) == 1);
+                
+                self::assertNotEquals(0, $object->student->count());
+                self::assertTrue(count($object->student) == 1);
         }
 
         /**
