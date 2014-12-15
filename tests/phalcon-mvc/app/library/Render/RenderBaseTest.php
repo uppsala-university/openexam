@@ -145,10 +145,15 @@ class RenderBaseTest extends TestCase
                 foreach (array('png', 'jpeg', 'svg', 'bmp') as $type) {
                         $globals['out'] = sprintf("%s/render-base-test.%s", sys_get_temp_dir(), $type);
 
+                        $stime = microtime(true);
                         self::assertTrue($this->object->render('image', $globals));
+                        $etime = microtime(true);
+                        
                         self::assertTrue(file_exists($globals['out']));
                         self::assertTrue(filesize($globals['out']) != 0);
 
+                        self::info("%s: %.04f sec", basename($globals['out']), $etime - $stime);
+                        
                         self::assertEquals(self::$output[$type]['mime'], finfo_file($finfo, $globals['out'], FILEINFO_MIME_TYPE));
                         self::assertEquals(self::$output[$type]['type'], finfo_file($finfo, $globals['out'], FILEINFO_RAW));
 
@@ -174,10 +179,15 @@ class RenderBaseTest extends TestCase
                 foreach (array('pdf') as $type) {
                         $globals['out'] = sprintf("%s/render-base-test.%s", sys_get_temp_dir(), $type);
 
+                        $stime = microtime(true);
                         self::assertTrue($this->object->render('pdf', $globals, $objects));
+                        $etime = microtime(true);
+                        
                         self::assertTrue(file_exists($globals['out']));
                         self::assertTrue(filesize($globals['out']) != 0);
 
+                        self::info("%s: %.04f sec", basename($globals['out']), $etime - $stime);
+                        
                         self::assertEquals(self::$output[$type]['mime'], finfo_file($finfo, $globals['out'], FILEINFO_MIME_TYPE));
                         self::assertEquals(self::$output[$type]['type'], finfo_file($finfo, $globals['out'], FILEINFO_RAW));
 
