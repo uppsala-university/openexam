@@ -46,6 +46,7 @@ class AccessMigration_207 extends Migration
                     'addr',
                     array(
                         'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
                         'size' => 46,
                         'after' => 'name'
                     )
