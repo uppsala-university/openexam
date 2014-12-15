@@ -152,5 +152,12 @@ return array(
                         'facility' => LOG_AUTH,
                         'level'    => LOG_INFO
                 )
+        ),
+        /**
+         * Static data for unit test.
+         */
+        'phpunit' => array(
+                'username' => null,
+                'persnr'   => null
         )
 );

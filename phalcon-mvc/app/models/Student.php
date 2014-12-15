@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
+
 /**
  * The student model.
  * 
@@ -45,8 +47,16 @@ class Student extends Role
         protected function initialize()
         {
                 parent::initialize();
+
                 $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array('alias' => 'answers'));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
+
+                $this->addBehavior(new StudentBehavior(array(
+                        'beforeValidationOnCreate' => array(
+                                'code' => true,
+                                'user' => true
+                        )
+                )));
         }
 
         public function getSource()

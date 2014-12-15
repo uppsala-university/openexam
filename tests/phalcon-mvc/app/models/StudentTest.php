@@ -60,6 +60,54 @@ class StudentTest extends TestModel
         }
 
         /**
+         * Test model behavior.
+         * @group model
+         */
+        public function testBehavior()
+        {
+                $user = $this->getDI()->get('user');
+
+                /**
+                 * Test anonymous code generation:
+                 */
+                $object = new Student();
+                $object->assign($this->sample->getSample('student', false));
+                $object->code = null;
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->code);
+                self::assertTrue(is_string($object->code));
+
+                $object->delete();
+
+                /**
+                 * Test user principal lookup:
+                 */
+                if (!isset($this->config->phpunit->username)) {
+                        return;
+                }
+                
+                // 
+                // Requires configured data for LDAP lookup:
+                // 
+                $expect = $this->config->phpunit->username;
+                $persnr = $this->config->phpunit->persnr;
+
+                $object = new Student();
+                $object->assign($this->sample->getSample('student', false));
+                $object->user = $persnr;
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->user);
+                self::assertTrue(is_string($object->user));
+
+                $actual = $object->user;
+                self::assertEquals($expect, $actual);
+
+                $object->delete();
+        }
+
+        /**
          * @covers OpenExam\Models\Student::create
          * @group model
          */
