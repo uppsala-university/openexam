@@ -45,8 +45,8 @@ return array(
                         'contributor' => '*',
                         'decoder'     => '*',
                         'invigilator' => '*',
-                        'corrector'   => '*',
                         'student'     => 'read',
+                        'corrector'   => '*',
                         'access'      => '*'
                 ),
                 'contributor' => array(
@@ -54,6 +54,9 @@ return array(
                         'resource'    => '*',
                         'topic'       => 'read',
                         'question'    => '*',
+                        'contributor' => 'read',
+                        'decoder'     => 'read',
+                        'invigilator' => 'read',
                         'corrector'   => 'read'
                 ),
                 'invigilator' => array(
@@ -61,6 +64,8 @@ return array(
                         'computer'    => 'read',
                         'lock'        => '*',
                         'room'        => 'read',
+                        'contributor' => 'read',
+                        'decoder'     => 'read',
                         'invigilator' => 'read',
                         'student'     => '*',
                         'access'      => 'modify'
@@ -72,7 +77,10 @@ return array(
                         'question'    => 'read',
                         'answer'      => 'read',
                         'result'      => 'read',
-                        'file'        => 'read',                        
+                        'file'        => 'read',
+                        'contributor' => 'read',
+                        'decoder'     => 'read',
+                        'invigilator' => 'read',
                         'student'     => 'read'
                 ),
                 'corrector'   => array(
