@@ -39,6 +39,13 @@ class Exam extends ModelBehavior
                                 if ($contributor->save() == false) {
                                         throw new \OpenExam\Library\Model\Exception("Failed add contributor by behavior (" . $contributor->getMessages()[0] . ")");
                                 }
+                                
+                                $invigilator = new \OpenExam\Models\Invigilator();
+                                $invigilator->user = $model->creator;
+                                $invigilator->exam_id = $model->id;
+                                if ($invigilator->save() == false) {
+                                        throw new \OpenExam\Library\Model\Exception("Failed add contributor by behavior (" . $contributor->getMessages()[0] . ")");
+                                }
 
                                 $decoder = new \OpenExam\Models\Decoder();
                                 $decoder->user = $model->creator;
