@@ -116,6 +116,15 @@ class QuestionAccess extends ObjectAccess
                                     }
                             }
 
+                            // 
+                            // Questions can't be added or modified in an published exam.
+                            // 
+                            if ($action != self::READ) {
+                                    if ($model->exam->getState()->has(State::PUBLISHED)) {
+                                            throw new Exception("Questions can't be modified in an published exam", Exception::ACTION);
+                                    }
+                            }
+
                             return true;
                     });
         }

@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
 use OpenExam\Models\Topic;
@@ -73,6 +74,39 @@ class TopicAccess extends ObjectAccess
                             } else {
                                     return true;
                             }
+                    });
+        }
+
+        /**
+         * Check object action.
+         * 
+         * @param string $action The model action.
+         * @param Topic $model The model object.
+         * @param User $user The peer object.
+         * @return boolean
+         */
+        public function checkObjectAction($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                // 
+                // Perform access control in a trusted context:
+                // 
+                return $this->trustedContextCall(function($role) use($action, $model, $user) {
+                            // 
+                            // Topics can't be added or modified in an published exam.
+                            // 
+                            if ($action != self::READ) {
+                                    if ($model->exam->getState()->has(State::PUBLISHED)) {
+                                            throw new Exception("Topics can't be modified in an published exam", Exception::ACTION);
+                                    }
+                            }
+
+                            return true;
                     });
         }
 

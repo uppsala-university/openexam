@@ -109,7 +109,7 @@ class ExamAccess extends ObjectAccess
                             // Refuse to delete a non-deletable exam:
                             // 
                             if ($action == self::DELETE && $model->getState()->has(State::DELETABLE) == false) {
-                                    throw new Exception("It's not allowed to delete this exam");
+                                    throw new Exception("It's not allowed to delete this exam", Exception::ACTION);
                             }
 
                             return true;
