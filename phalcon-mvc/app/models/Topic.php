@@ -3,6 +3,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\UUID;
+use Phalcon\Mvc\Model\Relation;
 
 /**
  * Question topic.
@@ -75,8 +76,13 @@ class Topic extends ModelBase
         {
                 parent::initialize();
 
-                $this->hasMany('id', 'OpenExam\Models\Question', 'topic_id', array('alias' => 'questions'));
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
+                $this->hasMany('id', 'OpenExam\Models\Question', 'topic_id', array(
+                        'alias' => 'questions'
+                ));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'exam'
+                ));
 
                 $this->addBehavior(new UUID(array(
                         'beforeCreate' => array(

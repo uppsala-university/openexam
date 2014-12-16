@@ -3,6 +3,7 @@
 namespace OpenExam\Models;
 
 use Phalcon\Mvc\Model\Behavior\Timestampable;
+use Phalcon\Mvc\Model\Relation;
 
 /**
  * The computer model.
@@ -61,8 +62,13 @@ class Computer extends ModelBase
         {
                 parent::initialize();
 
-                $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array('alias' => 'locks'));
-                $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array('foreignKey' => true, 'alias' => 'room'));
+                $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array(
+                        'alias' => 'locks'
+                ));
+                $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'room'
+                ));
 
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(

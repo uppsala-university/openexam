@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Relation;
+
 /**
  * The corrector model.
  * 
@@ -32,8 +34,14 @@ class Corrector extends Role
         protected function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "OpenExam\Models\Result", "corrector_id", array("alias" => 'results'));
-                $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array('foreignKey' => true, 'alias' => 'question'));
+
+                $this->hasMany("id", "OpenExam\Models\Result", "corrector_id", array(
+                        'alias' => 'results'
+                ));
+                $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'question'
+                ));
         }
 
         public function getSource()

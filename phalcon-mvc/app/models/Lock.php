@@ -62,9 +62,18 @@ class Lock extends ModelBase
         {
                 parent::initialize();
 
-                $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array('foreignKey' => true, 'alias' => 'student'));
-                $this->belongsTo('computer_id', 'OpenExam\Models\Computer', 'id', array('foreignKey' => true, 'alias' => 'computer'));
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
+                $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'student'
+                ));
+                $this->belongsTo('computer_id', 'OpenExam\Models\Computer', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'computer'
+                ));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'exam'
+                ));
 
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(

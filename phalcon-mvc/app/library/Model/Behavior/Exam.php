@@ -29,7 +29,7 @@ class Exam extends ModelBehavior
         public function notify($type, $model)
         {
                 // 
-                // Delegate contributor and decoder roles:
+                // Delegate contributor, invigilator and decoder roles:
                 // 
                 if ($type == 'afterCreate') {
                         $this->trustedContextCall(function($user) use($model) {
@@ -39,12 +39,12 @@ class Exam extends ModelBehavior
                                 if ($contributor->save() == false) {
                                         throw new \OpenExam\Library\Model\Exception("Failed add contributor by behavior (" . $contributor->getMessages()[0] . ")");
                                 }
-                                
+
                                 $invigilator = new \OpenExam\Models\Invigilator();
                                 $invigilator->user = $model->creator;
                                 $invigilator->exam_id = $model->id;
                                 if ($invigilator->save() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed add contributor by behavior (" . $contributor->getMessages()[0] . ")");
+                                        throw new \OpenExam\Library\Model\Exception("Failed add invigilator by behavior (" . $contributor->getMessages()[0] . ")");
                                 }
 
                                 $decoder = new \OpenExam\Models\Decoder();
@@ -59,38 +59,6 @@ class Exam extends ModelBehavior
                                 $topic->exam_id = $model->id;
                                 if ($topic->save() == false) {
                                         throw new \OpenExam\Library\Model\Exception("Failed add default topic by behavior (" . $topic->getMessages()[0] . ")");
-                                }
-                        }, $model->getDI());
-                }
-
-                // 
-                // Delete roles when exam is deleted:
-                // 
-                if ($type == 'beforeDelete') {
-                        $this->trustedContextCall(function($user) use($model) {
-                                if ($model->students->delete() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed delete students by behavior (" . $model->getMessages()[0] . ")");
-                                }
-                                if ($model->contributors->delete() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed delete contributors by behavior (" . $model->getMessages()[0] . ")");
-                                }
-                                if ($model->decoders->delete() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed delete decoders by behavior (" . $model->getMessages()[0] . ")");
-                                }
-                                if ($model->invigilators->delete() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed delete invigilators by behavior (" . $model->getMessages()[0] . ")");
-                                }
-                                if ($model->resources->delete() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed delete resources by behavior (" . $model->getMessages()[0] . ")");
-                                }
-                                if ($model->questions->delete() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed delete questions by behavior (" . $model->getMessages()[0] . ")");
-                                }
-                                if ($model->topics->delete() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed delete topics by behavior (" . $model->getMessages()[0] . ")");
-                                }
-                                if ($model->locks->delete() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed delete exam locks by behavior (" . $model->getMessages()[0] . ")");
                                 }
                         }, $model->getDI());
                 }

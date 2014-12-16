@@ -408,11 +408,13 @@ class RolesTest extends TestCase
                 self::info("[roles: '%s']\n", $this->object);
 
                 // 
-                // The contributor and decoder role are automatic added by
-                // behavior. The creator role is implicit conneted with exam.
+                // The contributor, invigilator and decoder role are automatic 
+                // granted creator by behavior. The creator role is implicit 
+                // conneted with exam.
                 // 
                 if ($role != Roles::CREATOR &&
                     $role != Roles::CONTRIBUTOR &&
+                    $role != Roles::INVIGILATOR &&
                     $role != Roles::DECODER) {
                         self::assertFalse($this->object->aquire($role));
                         self::assertFalse($this->object->aquire($role, 0));

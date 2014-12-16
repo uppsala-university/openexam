@@ -86,7 +86,11 @@ class Resource extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->belongsTo("exam_id", "OpenExam\Models\Exam", "id", array("foreignKey" => true, "alias" => 'exam'));
+
+                $this->belongsTo("exam_id", "OpenExam\Models\Exam", "id", array(
+                        "foreignKey" => true,
+                        "alias"      => 'exam'
+                ));
 
                 $this->addBehavior(new Ownership(array(
                         'beforeValidationOnCreate' => array(

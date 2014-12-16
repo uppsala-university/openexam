@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Relation;
+
 /**
  * The answer model.
  * 
@@ -49,10 +51,21 @@ class Answer extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->hasMany("id", "OpenExam\Models\File", "answer_id", array("alias" => 'files'));
-                $this->hasOne('id', 'OpenExam\Models\Result', 'answer_id', array('alias' => 'result'));
-                $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array('foreignKey' => true, 'alias' => 'question'));
-                $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array('foreignKey' => true, 'alias' => 'student'));
+
+                $this->hasMany("id", "OpenExam\Models\File", "answer_id", array(
+                        'alias' => 'files'
+                ));
+                $this->hasOne('id', 'OpenExam\Models\Result', 'answer_id', array(
+                        'alias' => 'result'
+                ));
+                $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'question'
+                ));
+                $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'student'
+                ));
         }
 
         /**

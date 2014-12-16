@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Relation;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
 
 /**
@@ -64,9 +65,16 @@ class Student extends Role
         {
                 parent::initialize();
 
-                $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array('alias' => 'answers'));
-                $this->hasMany('id', 'OpenExam\Models\Lock', 'student_id', array('alias' => 'locks'));
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
+                $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array(
+                        'alias' => 'answers'
+                ));
+                $this->hasMany('id', 'OpenExam\Models\Lock', 'student_id', array(
+                        'alias' => 'locks'
+                ));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'exam'
+                ));
 
                 $this->addBehavior(new StudentBehavior(array(
                         'beforeValidationOnCreate' => array(

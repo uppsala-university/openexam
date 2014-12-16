@@ -107,21 +107,6 @@ class StateTest extends TestCase
          */
         protected function tearDown()
         {
-                if (isset($this->result)) {
-                        $this->result->delete();
-                }
-                if (isset($this->answer)) {
-                        $this->answer->delete();
-                }
-                if (isset($this->question)) {
-                        $this->question->delete();
-                }
-                if (isset($this->topic)) {
-                        $this->topic->delete();
-                }
-                if (isset($this->student)) {
-                        $this->student->delete();
-                }
                 if (isset($this->exam)) {
                         $this->exam->delete();
                 }

@@ -29,7 +29,7 @@ CREATE TABLE `access` (
   `addr` varchar(46) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
-  CONSTRAINT `access_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
+  CONSTRAINT `access_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -64,8 +64,8 @@ CREATE TABLE `answers` (
   PRIMARY KEY (`id`),
   KEY `question_id` (`question_id`),
   KEY `student_id` (`student_id`),
-  CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`),
-  CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`)
+  CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -87,7 +87,7 @@ CREATE TABLE `computers` (
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `computers_ibfk_1` (`room_id`),
-  CONSTRAINT `computers_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`)
+  CONSTRAINT `computers_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -104,7 +104,7 @@ CREATE TABLE `contributors` (
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
-  CONSTRAINT `contributors_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
+  CONSTRAINT `contributors_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -121,7 +121,7 @@ CREATE TABLE `correctors` (
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `question_id` (`question_id`),
-  CONSTRAINT `correctors_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
+  CONSTRAINT `correctors_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -138,7 +138,7 @@ CREATE TABLE `decoders` (
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
-  CONSTRAINT `decoders_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
+  CONSTRAINT `decoders_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -187,7 +187,7 @@ CREATE TABLE `files` (
   `subtype` varchar(25) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
-  CONSTRAINT `files_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`)
+  CONSTRAINT `files_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -204,7 +204,7 @@ CREATE TABLE `invigilators` (
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
-  CONSTRAINT `invigilators_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
+  CONSTRAINT `invigilators_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -226,9 +226,9 @@ CREATE TABLE `locks` (
   KEY `locks_ibfk_1` (`computer_id`),
   KEY `locks_ibfk_2` (`exam_id`),
   KEY `student_id` (`student_id`),
-  CONSTRAINT `locks_ibfk_1` FOREIGN KEY (`computer_id`) REFERENCES `computers` (`id`),
-  CONSTRAINT `locks_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`),
-  CONSTRAINT `locks_ibfk_3` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`)
+  CONSTRAINT `locks_ibfk_1` FOREIGN KEY (`computer_id`) REFERENCES `computers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `locks_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `locks_ibfk_3` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -256,8 +256,8 @@ CREATE TABLE `questions` (
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   KEY `questions_ibfk_2` (`topic_id`),
-  CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`),
-  CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`)
+  CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -280,7 +280,7 @@ CREATE TABLE `resources` (
   `shared` enum('private','exam','group','global') DEFAULT 'exam',
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
-  CONSTRAINT `resources_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
+  CONSTRAINT `resources_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -301,8 +301,8 @@ CREATE TABLE `results` (
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
   KEY `corrector_id` (`corrector_id`),
-  CONSTRAINT `results_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`),
-  CONSTRAINT `results_ibfk_2` FOREIGN KEY (`corrector_id`) REFERENCES `correctors` (`id`)
+  CONSTRAINT `results_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `results_ibfk_2` FOREIGN KEY (`corrector_id`) REFERENCES `correctors` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -372,7 +372,7 @@ CREATE TABLE `students` (
   `finished` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
-  CONSTRAINT `students_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`)
+  CONSTRAINT `students_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

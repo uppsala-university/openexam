@@ -39,15 +39,6 @@ class Question extends ModelBehavior
                                 return $corrector->save();
                         }, $model->getDI());
                 }
-
-                // 
-                // Delete correctors when question is deleted:
-                // 
-                if ($type == 'beforeDelete') {
-                        $this->trustedContextCall(function($user) use($model) {
-                                return $model->correctors->delete();
-                        }, $model->getDI());
-                }
         }
 
 }

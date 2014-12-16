@@ -47,7 +47,11 @@ class File extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->belongsTo("answer_id", "OpenExam\Models\Answer", "id", array("foreignKey" => true, "alias" => 'answer'));
+
+                $this->belongsTo("answer_id", "OpenExam\Models\Answer", "id", array(
+                        "foreignKey" => true,
+                        "alias"      => 'answer'
+                ));
         }
 
         public function getSource()

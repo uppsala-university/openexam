@@ -9,6 +9,7 @@ use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Query\Builder;
+use Phalcon\Mvc\Model\Relation;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
 /**
@@ -108,10 +109,20 @@ class Question extends ModelBase
         {
                 parent::initialize();
 
-                $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array('alias' => 'answers'));
-                $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array('alias' => 'correctors'));
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
-                $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array('foreignKey' => true, 'alias' => 'topic'));
+                $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array(
+                        'alias' => 'answers'
+                ));
+                $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array(
+                        'alias' => 'correctors'
+                ));
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'exam'
+                ));
+                $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'topic'
+                ));
 
                 $this->addBehavior(new Ownership(array(
                         'beforeValidationOnCreate' => array(

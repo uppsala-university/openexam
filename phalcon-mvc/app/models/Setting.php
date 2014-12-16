@@ -3,7 +3,6 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Ownership;
-use OpenExam\Models\ModelBase;
 
 /**
  * User settings.

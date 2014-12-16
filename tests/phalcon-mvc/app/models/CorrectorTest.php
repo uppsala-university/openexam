@@ -39,7 +39,7 @@ class CorrectorTest extends TestModel
                 $object = Corrector::findFirstById($this->sample->getSample(self::MODEL)['id']);
                 self::assertNotNull($object);
 
-                self::assertNotEquals(1, $object->question->count());
+                self::assertNotEquals(0, $object->question->count());
                 self::assertTrue(count($object->question) == 1);
 
                 self::assertNotEquals(0, $object->results->count());

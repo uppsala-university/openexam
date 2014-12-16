@@ -13,7 +13,6 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
-use OpenExam\Library\Security\Exception;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
 use OpenExam\Models\Topic;

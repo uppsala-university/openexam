@@ -35,7 +35,11 @@ class Decoder extends Role
         protected function initialize()
         {
                 parent::initialize();
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array('foreignKey' => true, 'alias' => 'exam'));
+
+                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'exam'
+                ));
         }
 
         public function getSource()
