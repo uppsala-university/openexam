@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Security\Exception;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
@@ -80,6 +81,38 @@ class ExamAccess extends ObjectAccess
                             } else {
                                     return true;
                             }
+                    });
+        }
+
+        /**
+         * Check object action.
+         * 
+         * @param string $action The model action.
+         * @param Exam $model The model object.
+         * @param User $user The peer object.
+         * @return boolean
+         */
+        public function checkObjectAction($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                // 
+                // Perform access control in a trusted context:
+                // 
+                return $this->trustedContextCall(function($role) use($action, $model, $user) {
+
+                            // 
+                            // Refuse to delete a non-deletable exam:
+                            // 
+                            if ($action == self::DELETE && $model->getState()->has(State::DELETABLE) == false) {
+                                    throw new Exception("It's not allowed to delete this exam");
+                            }
+
+                            return true;
                     });
         }
 
