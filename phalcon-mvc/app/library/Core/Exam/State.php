@@ -42,55 +42,63 @@ class State
         /**
          * Still possible to contribute questions.
          */
-        const CONTRIBUTABLE = 1;
+        const CONTRIBUTABLE = 0x0001;
         /**
          * Examination started. New students can still be added.
          */
-        const EXAMINATABLE = 2;
+        const EXAMINATABLE = 0x0002;
         /**
          * Examination finished. Not yet decoded.
          */
-        const CORRECTABLE = 4;
+        const CORRECTABLE = 0x0004;
         /**
          * Examination can be decoded.
          */
-        const DECODABLE = 8;
+        const DECODABLE = 0x0008;
         /**
          * Examination has been decoded.
          */
-        const DECODED = 16;
+        const DECODED = 0x0010;
         /**
          * Examination is still fully editable.
          */
-        const EDITABLE = 32;
+        const EDITABLE = 0x0020;
+        /**
+         * This examination can be deleted (e.g. no answers).
+         */
+        const DELETABLE = 0x0040;
+        /**
+         * This examination can be reused (not seen yet).
+         */
+        const REUSABLE = 0x0080;
         /**
          * This examination has not yet started.
          */
-        const UPCOMING = 64;
+        const UPCOMING = 0x0100;
         /**
          * The examination is ongoing.
          */
-        const RUNNING = 128;
+        const RUNNING = 0x0200;
         /**
          * The examination has finished.
          */
-        const FINISHED = 256;
+        const FINISHED = 0x0400;
         /**
          * This examination is a testcase.
          */
-        const TESTCASE = 512;
+        const TESTCASE = 0x0800;
         /**
          * This examination requires lockdown.
          */
-        const LOCKDOWN = 1024;
+        const LOCKDOWN = 0x1000;
         /**
          * Examination is a draft (not yet scheduled).
          */
-        const DRAFT = 2048;
+        const DRAFT = 0x2000;
         /**
          * Examination has been published.
          */
-        const PUBLISHED = 4096;
+        const PUBLISHED = 0x4000;
 
         /**
          * @var Exam 
@@ -151,6 +159,8 @@ class State
                                 $this->state = self::EXAMINATABLE | self::RUNNING;
                         } elseif ($ctime < $etime) {            // After exam begin, but before its finished
                                 $this->state = self::EXAMINATABLE | self::RUNNING;
+                        } elseif (!$this->hasAnswers()) {       // Unseen exam can be reused
+                                $this->state = self::REUSABLE | self::DELETABLE | self::FINISHED;
                         } elseif ($this->isCorrected()) {       // After exam has finished
                                 $this->state = self::CORRECTABLE | self::FINISHED | self::DECODABLE;
                         } else {
@@ -158,13 +168,19 @@ class State
                         }
                 }
                 if ($this->exam->testcase) {
-                        $this->state |= self::TESTCASE;
+                        $this->state |= self::TESTCASE | self::DELETABLE;
                 }
                 if ($this->exam->lockdown) {
                         $this->state |= self::LOCKDOWN;
                 }
                 if ($this->exam->published) {
                         $this->state |= self::PUBLISHED;
+                } else {
+                        $this->state |= self::DELETABLE;
+                }
+
+                if ($this->hasAnswers() == false) {     // Contributable until first seen
+                        $this->state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE;
                 }
         }
 
@@ -204,6 +220,24 @@ class State
                         a.answered = 'Y' AND
                         r.id IS NULL", array('examid' => $this->exam->id));
                 return $resultset->numRows() == 0;
+        }
+
+        /**
+         * Returns true if examination has answers.
+         */
+        private function hasAnswers()
+        {
+                $connection = $this->exam->getReadConnection();
+                $resultset = $connection->query("
+                SELECT  a.id
+                FROM    questions q, students s, answers a
+                        LEFT JOIN results r ON a.id = r.answer_id
+                WHERE   s.exam_id = :examid AND
+                        s.id = a.student_id AND
+                        q.id = a.question_id AND 
+                        q.status != 'removed' AND 
+                        a.answered = 'Y'", array('examid' => $this->exam->id));
+                return $resultset->numRows() != 0;
         }
 
         /**
