@@ -63,7 +63,9 @@ class Role extends ModelBase
          */
         protected function beforeSave()
         {
-                $this->user = (new User($this->user))->getPrincipalName();
+                if (!is_numeric($this->user[0])) {
+                        $this->user = (new User($this->user))->getPrincipalName();
+                }
         }
 
         private function getAttribute($name)

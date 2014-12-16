@@ -81,7 +81,7 @@ class Pattern
         /**
          * Personal number (including foreign with leading or trailing letter).
          */
-        const PERSNR = "/^\d{6,8}-?(\d{4}|[a-zA-Z]\d{3}|\d{3}[a-zA-Z])$/";
+        const PERSNR = "/^(\d{6,8})-?(\d{4}|[a-zA-Z]\d{3}|\d{3}[a-zA-Z])$/";
         // 
         // Course:
         // 

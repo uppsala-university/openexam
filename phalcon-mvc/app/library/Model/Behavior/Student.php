@@ -45,8 +45,9 @@ class Student extends ModelBehavior
                         // Lookup username from personal number:
                         // 
                         if ($options['user']) {
-                                if (preg_match(Pattern::PERSNR, $model->user)) {
-                                        $model->user = $this->getUser($model->user, $model->getDI());
+                                if (preg_match(Pattern::PERSNR, $model->user, $matched)) {
+                                        $persnr = sprintf("%s%s", $matched[1], $matched[2]);
+                                        $model->user = $this->getUser($model->user, $persnr, $model->getDI());
                                 }
                         }
                 }
@@ -57,10 +58,10 @@ class Student extends ModelBehavior
                 return strtoupper(substr(md5(sprintf("%s%d", $user, time())), 0, 8));
         }
 
-        private function getUser($user, $di)
+        private function getUser($user, $persnr, $di)
         {
                 $result = $di->get('catalog')->getPrincipal(
-                    $user, Principal::ATTR_PNR, array('attr' => Principal::ATTR_PN)
+                    $persnr, Principal::ATTR_PNR, array('attr' => Principal::ATTR_PN)
                 );
 
                 if (count($result) != 0) {
