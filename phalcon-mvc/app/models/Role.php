@@ -58,6 +58,13 @@ class Role extends ModelBase
                                 "message" => "This role has already been granted"
                             )
                         ));
+                } elseif (property_exists($this, 'question_id')) {
+                        $this->validate(new Uniqueness(
+                            array(
+                                "field"   => array("user", "question_id"),
+                                "message" => "This role has already been granted"
+                            )
+                        ));
                 } else {
                         $this->validate(new Uniqueness(
                             array(
