@@ -17,37 +17,30 @@
 
 <?php use \OpenExam\Library\Security\Roles;?>
 
+<?php $examQs = $exam->getQuestions(array("order" => "slot"));?>
+
 <!-- Left Column -->
-<?php $this->partial("exam/shared/left-menu", array('exam' => $exam, 'capabilities' => $capabilities)) ?>
+<?php $this->partial("exam/shared/left-menu", array('exam' => $exam)) ?> 
 
 <!-- Main area -->         
-<?php $canUpdateExam = $capabilities->hasCapability($exam, 'update');?>
+<?php $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');?>
 <div id="container" class="left_menu_space" style="">
-        <div id="breadcrumbsRow">&nbsp;</div>
+	<?php if($exam->published):?>
+        <div id="breadcrumbsRow">
+		<img style="z-index: 0; height: 65px; position: relative; float: right; top: -9px;" src="/openexam-svn/img/published.gif">
+	</div>
+        <?php endif;?>
         <div id="centerColWide">
 
                 <? /* --Exam title and description-- */ ?>
                 <h1>
-                        <?php if($canUpdateExam):?>
-                        <input id="exam-title" class="exam-title" type="text" placeholder="Write exam title here" value="<?=trim($exam->name)?>" />
-                        <a href="#" class="prevent">
-                                <i class="fa fa-gear" id="exam-settings"></i>
+                        <?=trim($exam->name)!=''?$exam->name:'Untitled exam'?>
+                        <a href="#" class="prevent exam-settings">
+                                <i class="fa fa-gear" id="exam-settings" style="float:right"></i>
                         </a>
-                        <?php else:?>
-                        <?=trim($exam->name)?>
-                        <?php endif;?>
                 </h1>
                 
-                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-                <textarea id="exam-desc"  style="width:99%;" rows="1" placeholder="Write exam description here"><?= trim($exam->descr) ?></textarea>
-                <?php else:?>
-                <div style="width:99%;"><?=trim($exam->descr)?></div>
-                <?php endif;?>
-
-                <? /* --seprator-- */ ?>
-                <div class="seprator" style=" <?=(in_array("contributable", $exam->flags)) ? "margin-bottom:0px":""?>"></div>
-
-		<?php if($canUpdateExam && in_array("contributable", $exam->flags)):?>
+		<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("contributable", $exam->flags)):?>
                 <a href="#" style="font-size: 12px; float:right" class="add_new_qs">
                         <div style="display: block; float:right">
                                 <span class="btn btn-success" style="padding:2px; font-size:11px">
@@ -57,6 +50,9 @@
                         </div>                        
                 </a>
                 <?php endif;?>
+
+                <? /* --seprator-- */ ?>
+                <div class="seprator" style="border-bottom:0px"></div>
 
                 <? /* --Questions area-- */ ?>
                 <div id="qs_area">
@@ -71,11 +67,11 @@
 
                         <? /* --Question lines-- */ ?>
                         <!-- question line template -->
-                        <div class="qs_area_line" q-no="" style="display:none">
+                        <div class="qs_area_line" q-id="" q-no="" style="display:none">
                                 <div class="qs_area_line_q_no">
                                         <div class="q_no"></div>
                                         <div class="q_score"></div>
-                                        <?php if($myRole == Roles::CREATOR && in_array("editable", $exam->flags)):?>
+                                        <?php if(/*$myRole == Roles::CREATOR && */in_array("editable", $exam->flags)):?>
                                         <div class="q_line_op">
                                                 <a href="#"><i class="fa fa-pencil edit-q" style="color:#004276"></i></a>
                                                 <a href="#"><i class="fa fa-close del-q"></i></a>
@@ -94,15 +90,36 @@
                         </div>   
                 </div>
                 
-		<?php if( $canUpdateExam && in_array("editable", $exam->flags) ):?>
-                <div id="save_exam_btn">
+		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+                        <div id="exam_op_btns" style="padding:15px; <?=!count($examQs)?'display:none':''?>">
+                                <center>
+                                        <a href="<?=$this->url->get('exam/'.$exam->id)?>">
+					<span class="btn btn-default" style="font-size:11px; color:#333333">
+                                                <i class="fa fa-chevron-circle-right"></i>
+                                                <span>Preview student view</span>
+                                        </span>
+					</a>
+					&nbsp;
+					<?php if(!$exam->published):?>
+					<span class="btn btn-default exam-settings" style="font-size:11px; color:#333333">
+						<i class="fa fa-gear"></i>
+						<span>Check settings if exam is ready to be used</span>
+					</span>
+		                        <?php endif;?>
+                                </center>
+                        </div>
+
+                <?php elseif($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("editable", $exam->flags)):?>
+                <a href="<?=$this->url->get('exam/index');?>">
+                <div id="">
                         <center>
                                 <span class="btn btn-success">
                                         <i class="fa fa-chevron-circle-right"></i>
-                                        <span>Exam is ready, publish this exam</span>
+                                        <span>I am done with my questions, Notify exam creator.</span>
                                 </span>
                         </center>
                 </div>
+                </a>
 		<?php endif;?>
 
                 <!-- centerColWide --> 
@@ -115,92 +132,33 @@
 <!-- Add / Edit question form that appears in light box -->
 <div id="question-form-dialog-wrap" q-no="" style="display:none" title=""></div>
 
+<!-- Student management form -->
+<div id="mng-students" title="Manage students for exam" style="display:none"></div>
+
 <!-- Exam settings -->
-<div id="exam-settings-box" style="display:none">
-	<div class="exam-settings-box">
-        <div class="st-line">
-                <label for="unit"><b>Organization:</b></label>
-                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-                <input type="text" value="<?= $exam->orgunit ?>" name="unit">
-                <?php else:?>
-                <?= $exam->orgunit ?>
-		<?php endif;?>
-        </div>
-
-        <div class="st-line">
-                <label for="start"><b>Exam Start time:</b></label>
-                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-                <input type="text" placeholder="yyyy-mm-dd hh:mm" value="<?=$exam->starttime?>" name="start" class="datepicker validate[required]">
-                <?php else:?>
-                <?=$exam->starttime?>
-		<?php endif;?>
-        </div>
-
-        <div class="st-line">
-                <label for="end"><b>Exam End time:</b></label>
-                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-                <input type="text" placeholder="yyyy-mm-dd hh:mm" value="<?=$exam->endtime?>" name="end" class="datepicker validate[required]">
-                <?php else:?>
-                <?=$exam->endtime?>
-		<?php endif;?>
-        </div>
-
-        <div class="st-line">
-                <label for="grade"><strong>Grades:</strong></label>
-                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-                <textarea title="Input name:value pairs on separate lines defining the Grade levels for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade validate[required]" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:15", 60, " ") . "VG:20"?>"><?=trim($exam->grades)?></textarea>
-                <?php else:?>
-                <?=nl2br(trim($exam->grades))?>
-		<?php endif;?>
-        </div>
-
-        <div class="st-line">
-		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-                <input type="checkbox" value="1" title="Expose names and contact information for people involved in the creation and correction process in the result PDF seen by the student." <?=(($exam->details == 1 || $exam->details == 3) ? 'checked="checked"':'')?> name="details[]" >
-                Expose responsible people
-                <?php else:?>
-                <?=$exam->details == 1 || $exam->details == 3 ? '&#10004; Expose responsible people' : ''?>
-		<?php endif;?>
-                <br />
-                
-		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-                <input type="checkbox" value="2" title="Include statistics like avarage/mean values and score distribution compared to other students in the result PDF seen by the student." <?=(($exam->details == 2 || $exam->details == 3) ? 'checked="checked"':'')?> name="details[]" >
-                Include other students statistics
-                <?php else:?>
-                <?=$exam->details == 2 || $exam->details == 3 ? '&#10004; Include other students statistics' : ''?>
-		<?php endif;?>
-                <br>
-        </div>
-        <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-	<div class="st-line">
-	        <center><input class="save-exam-settings" type="button" value="Save exam settings"></center>
-        </div>   
-        <?php endif;?> 
-	<script language="javascript">
-	jQuery(".exam-settings-box").validationEngine();
-        </script>
-	</div>
-</div>
+<div id="exam-settings-box" style="display:none" title="Exam settings" ></div>
 
 <?php 
 	// combine question json to initialize exam
 	$combinedJson = array();
-	foreach($exam->getQuestions() as $qData) {
+	$questionNo = 1;
+	foreach($examQs as $qData) {
 		
 		// add questId node
 		$qJson = json_decode($qData->quest, true);
 		$qJson['questId'] = $qData->id;
-		$qJson['canUpdate'] = ($capabilities->hasCapability($qData, 'update') && in_array("editable", $exam->flags) ? 1:0);
+		$qJson['canUpdate'] = ($this->capabilities->hasCapability($qData, 'update') && in_array("editable", $exam->flags) ? 1:0);
 		
-		$combinedJson[$qData->name] = $qJson;
+		$combinedJson[$questionNo++] = $qJson;
 	}
 	$combinedJson = (!count($combinedJson) ? "JSON.parse('{}')" : json_encode($combinedJson));
 ?>
 <script language="javascript">
-	mngr	= '<?=$exam->creator?>';
-	user	= '<?=$this->user->getPrincipalName()?>';
-	examId 	= <?=$exam->id?>;
-	qsJson 	= <?=$combinedJson?>;
-	qsCorrectorsJson = {};
-	showAddQuestionView = <?=stristr($_SERVER['REQUEST_URI'], 'add-q') ? 'true':'false'?>;
+	var mngr	= '<?=$exam->creator?>';
+	var user	= '<?=$this->user->getPrincipalName()?>';
+	var examId 	= <?=$exam->id?>;
+	var qsJson 	= <?=$combinedJson?>;
+	var qsCorrectorsJson = {};
+	var showAddQuestionView = <?=stristr($_SERVER['REQUEST_URI'], 'add-q') ? 'true':'false'?>;
+	var isNewExam = <?=stristr($_SERVER['REQUEST_URI'], 'new-exam') ? 'true':'false'?>;
 </script>

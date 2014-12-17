@@ -4,7 +4,7 @@
 
 	/*======== var initialization ==========*/
 	var dirtybit 	= 0;
-	var syncEvery	= 30000; //30 seconds
+	var syncEvery	= 3000; //30 seconds
 	var ansJson	= {};
 	var totalSyncs	= 0;
 	var canvasData	= [];
@@ -21,7 +21,7 @@
 		}
 	}, syncEvery);
 	// autosave sync function
-	var syncAnswers = function (async) {
+	function syncAnswers(async) {
 		
 		var failed = false;
 		if(ansId === 'None!')
@@ -72,8 +72,35 @@
 //		if(!failed) {
 			$('.ans-sync-msg').show();
 			
+			try {
+				$.ajax({
+					type: 	"POST",
+					url: 	baseURL + 'core/ajax/student/answer/update',
+					data: 	{"id":ansId, "answer":JSON.stringify(ansJson), "answered":1}, 
+					async: 	async,
+					dataType: "json"
+				})
+				.done(function( respJson ) {
+					
+					if (typeof respJson.success == "undefined") {
+						failMsg = "Failed to save your answer! \r\n \
+						Please report this issue to the exam invigilator immediately. \r\n \
+						Please DO NOT refresh/close this web page otherwise we may loose your answer.";
+						if(async) {
+							alert(failMsg);
+						} else {
+							return failMsg;
+						}
+					} else {
+						totalSyncs++;
+						$('.ans-sync-msg').hide();
+					}
+				});			
+			} catch(err) {
+				
+			}
 			// send ajax request to sync answers
-			ajax(
+			/*ajax(
 				baseURL + 'core/ajax/student/answer/update',
 				{"id":ansId, "answer":JSON.stringify(ansJson), "answered":"Y"}, 
 				function(qData) {
@@ -82,7 +109,7 @@
 				},
 				'POST',
 				async
-			);
+			);*/
 			
 /*		} else {
 			alert("Unable to save your answer. \r\n \
@@ -142,8 +169,9 @@
 			CKEDITOR.instances[i].on('change', function() {dirtybit = 1;});
 		}
 		
-		$(window).bind('beforeunload', function(){
-		  	syncAnswers(false);
+		$(window).bind('beforeunload', function(event){
+		  	//event.preventDefault();
+			return syncAnswers(false);
 			//return 'Are you sure you want to leave?';
 		});		
 

@@ -9,6 +9,7 @@ var qsIdJson = {};
 var qJson = {};
 var exam = exam || {};
 var formJs = '';
+var stEvents = '';
 
 /*------------------------------*/
 /*	Open tip template	*/
@@ -41,26 +42,6 @@ Opentip.styles.drops = {
 $(document).ready(function () {
 
     /*------------------------------------------*/
-    /*	Initializing CkEditor 			*/
-    /*------------------------------------------*/
-    if($('#exam-desc').length) {
-	    CKEDITOR.replace('exam-desc', {
-		height: '100px',
-		extraPlugins: 'mathjax,specialchar,link',
-		toolbar: [
-		    ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
-			'Undo', 'Redo', 'Outdent', 'Indent', '-',
-			'Bold', 'Italic', 'Underline', '-',
-			'NumberedList', 'BulletedList', '-',
-			'Link', 'Unlink', '-',
-			'Mathjax', 'Specialchar'
-		    ]
-		]
-	
-	    });
-    }
-
-    /*------------------------------------------*/
     /*	Sortable questions related				*/
     /*------------------------------------------*/
     makeQsSortable = function () {
@@ -70,11 +51,11 @@ $(document).ready(function () {
             },
             stop: function (event, ui) {
 
-                oldQNo = $(ui.item).find('.q').attr('q-no');
-                topicId = $(ui.item).parent().parent().find('.topic-name').attr('data-id');
-
+                //oldQNo = $(ui.item).find('.q').attr('q-no');
+                //topicId = $(ui.item).parent().parent().find('.topic-name').attr('data-id');
+		sortQuestions();
                 // send ajax requedt to update question's topic
-                ajax (
+                /*ajax (
 			baseURL + 'core/ajax/creator/question/update',
 			{"id": qsJson[oldQNo]["questId"], "topic_id": topicId},
 			function (qData) {
@@ -82,7 +63,7 @@ $(document).ready(function () {
 			    // sort questions in new order and update in db and on page json object
 			    sortQuestions();
 			}
-                );
+                );*/
 
             },
             connectWith: ".sortable-qs",
@@ -93,14 +74,42 @@ $(document).ready(function () {
 
         $(".sortable-qs").disableSelection();
 
-        $(".sortable-q-topic").sortable({opacity: 0.5, cursor: "move"});
+        $(".sortable-q-topic").sortable({
+            over: function (event, ui) {
+                $(ui.placeholder).closest('ul').parent().find('.section-default-msg').hide();
+            },
+            stop: function (event, ui) {
+
+                //oldQNo = $(ui.item).find('.q').attr('q-no');
+                //topicId = $(ui.item).parent().parent().find('.topic-name').attr('data-id');
+		var topicArr = [];
+		$('.sortable-q-topic > li').each(function(i, topicItem) {
+			topicArr.push({"id":$(topicItem).find('.topic-name').attr('data-id'), "slot":i+1});
+		});
+
+                // send ajax requedt to update question's topic
+                ajax (
+			baseURL + 'core/ajax/creator/topic/update',
+			JSON.stringify(topicArr),
+			function (qData) {
+	
+			    // sort questions in new order and update in db and on page json object
+			    sortQuestions();
+			}
+                );
+
+            },
+            forcePlaceholderSize: true,
+            opacity: 0.5,
+            placeholder: "sortable-placeholder"
+        });
 
     };
     makeQsSortable();
 
     // sort questions; save in db, json; update both in main area and in left menu
     var sortQuestions = function () {
-
+	    
         cntr = 1;
         tmpJson = {};
         tmpJson = JSON.parse(JSON.stringify(qsJson));
@@ -114,15 +123,17 @@ $(document).ready(function () {
             }
 
             $(element).find('.q').each(function (i, qNo) {
+		
                 if ($(qNo).parent().is(':visible')) {
+		    //console.log(qsJson[$(qNo).attr('q-no')]["questId"]+"---"+$(qNo).parent().attr('q-id')+"---->"+$(this).parent().find('.q-txt').html());
                     tmpJson[cntr] = qsJson[$(qNo).attr('q-no')];
-                    qArr.push({'id': qsJson[$(qNo).attr('q-no')]["questId"], "name": (cntr)});
+                    qArr.push({'id': qsJson[$(qNo).attr('q-no')]["questId"], "slot": (cntr), "topic_id": $(qNo).closest('.sortable-qs').attr('topic-id')});
                     $(qNo).html("Q" + (cntr) + ":").attr('q-no', (cntr));
                     cntr++;
                 }
             });
         });
-
+	
         // send ajax request to update question's names as per new sorting order
         ajax(
                 baseURL + 'core/ajax/creator/question/update',
@@ -132,18 +143,19 @@ $(document).ready(function () {
                     refreshQs();
                 }
         );
-
+	
     }
 
-    /*				$(document).on('click', '.prevent', function(event) {
-     event.preventDefault();
-     });
+    $('body').on('click', "#publish_exam", function () {
+		ajax(
+			baseURL + 'core/ajax/creator/exam/update',
+			{"id": examId, "published" : 1}, 
+			function (json) {
+			    location.href = baseURL + "exam/index";
+			}
+		);
+    });
      
-     $('#save_exam_btn').click(function() {
-     
-     });*/
-
-
     //initliaze tooltips in left menu
     $('.search-ldap').each(function(index, element) {
 	    new Opentip(element,
@@ -151,11 +163,11 @@ $(document).ready(function () {
 		    {style: "drops", tipJoint: "top left"});
     });
     
-    if($('#exam-settings').length) {
+    /*if($('#exam-settings').length) {
 	    new Opentip('#exam-settings',
 		$('#exam-settings-box').html(),
 		{style: "drops", tipJoint: "top right", showOn: "click", });
-    }
+    }*/
     
     if(showAddQuestionView && $('.add_new_qs').length) {
 	    loadQuestionDialog(0);
@@ -345,20 +357,30 @@ $(document).ready(function () {
 
 
     /*------------------------------------------*/
-    /*		Left menu related					*/
+    /*		Left menu related		*/
     /*------------------------------------------*/
-    $('body').on('click', '.bullet-open', function () {
-
-        $(this).parent().parent().find('.menuLevel1').slideToggle(500);
-        $(this).removeClass('bullet-open').addClass('bullet-closed').attr('src', '../img/closedopt.png');
+    $('body').on('click', '.bullet-closed', function () {
+	/*
+	var t = 1;
+	var bullet = $(this);
+	$('.menuLevel1').slideUp(300, function() {
+		if(t++ == $('.menuLevel1').length) {
+			$(bullet).parent().find('.menuLevel1').toggle();
+			$(bullet).find('img').attr('src', baseURL+'img/closedopt.png');
+		}
+	});*/
+	
+        $(this).parent().find('.'+$(this).attr('rel')).slideDown(500);
+        $(this).removeClass('bullet-closed').addClass('bullet-open').find('img').attr('src', baseURL + 'img/openeopt.png');
+	
         return false;
 
     });
 
-    $('body').on('click', '.bullet-closed', function () {
+    $('body').on('click', '.bullet-open', function () {
 
-        $(this).parent().parent().find('.menuLevel1').slideToggle(500);
-        $(this).removeClass('bullet-closed').addClass('bullet-open').attr('src', '../img/openeopt.png');
+        $(this).parent().find('.'+$(this).attr('rel')).slideUp(500);
+        $(this).removeClass('bullet-open').addClass('bullet-closed').find('img').attr('src', baseURL + 'img/closedopt.png');
         return false;
 
     });
@@ -394,11 +416,14 @@ $(document).ready(function () {
 
             // delete from database and then from json
             ajax(
-                    baseURL + 'core/ajax/creator/question/delete',
+                    baseURL + 'core/ajax/contributor/question/delete',
                     {"id": qsJson[qNo]["questId"]},
 		    function (status) {
-	
-			delete qsJson[qNo];
+			
+			location.reload();
+			$(qAreaLine).slideUp('500');
+			
+			/*delete qsJson[qNo];
 	
 			i = 1;
 			jQuery.each(qsJson, function (newQNo, qData) {
@@ -412,7 +437,7 @@ $(document).ready(function () {
 			    $('.sortable-qs').find('span[q-no="' + qNo + '"]').parent().remove();
 	
 			    sortQuestions();
-			});
+			});*/
 	
 		    }
             );
@@ -429,7 +454,7 @@ $(document).ready(function () {
     /*	Exam settings related events 				*/
     /*----------------------------------------------*/
     // exam title update
-    $('.exam-title').blur(function () {
+    /*$('.exam-title').blur(function () {
 
         oldVal = $(this).attr('old-value');
         newVal = $(this).val();
@@ -444,7 +469,43 @@ $(document).ready(function () {
             );
         }
 
+    });*/
+    
+    $('.exam-settings').click(function() {
+				       
+	$.ajax({
+		type: "POST",
+		data: {'exam_id': examId },
+		url: baseURL + 'exam/settings/',
+		success: function(content) {
+			$("#exam-settings-box").html(content);
+			$("#exam-settings-box").dialog({
+				autoOpen: true,
+				width: "50%",
+				modal: true,
+				/*						buttons: {
+					"Save": function() {
+					},
+					"btn ": function() {
+					},
+					Cancel: function() {
+						$(this).dialog('destroy');
+					}
+				},*/
+				close: function() {
+					$(this).dialog('destroy');
+				}
+			});
+		}
+	});
+	
     });
+
+    if(isNewExam) {
+	$('.exam-settings').first().trigger('click');
+    }
+    
+/*   
     if($('#exam-desc').length) {
 	    // exam description update
 	    CKEDITOR.instances['exam-desc'].on('blur', function (event) {
@@ -464,22 +525,28 @@ $(document).ready(function () {
 	
 	    });
     }
+*/    
+    // @ToDO: move this even handler to settings.phtml 	
     // exam's other setting's update
     $(document).on('click', '.save-exam-settings', function () {
 	
-	//if(jQuery(".exam-settings-box").validationEngine('validate')) {
+	//if(jQuery("#exam-settings-box").validationEngine('validate')) {
 		// get data to be saved
 		settingBox = $(this).closest('.exam-settings-box');
+		examTitle = $(settingBox).find('input[name="exam-title"]').val();
+		examDesc = CKEDITOR.instances['exam-desc'].getData();
 		org = $(settingBox).find('input[name="unit"]').val();
 		start = $(settingBox).find('input[name="start"]').val();
 		end = $(settingBox).find('input[name="end"]').val();
 		grades = $(settingBox).find('textarea[name="grade"]').val();
+		code = $(settingBox).find('input[name="exam-code"]').val();
+		course = $(settingBox).find('input[name="exam-course-code"]').val();
 		details = 0;
 		$(settingBox).find('input[name="details[]"]:checked').each(function (index, element) {
 		    details += Number($(element).val());
 		});
 		
-		data = {"id": examId, "orgunit": org, "grades": grades, "details": details};
+		data = {"id": examId, "name":examTitle, "descr":examDesc, "orgunit": org, "grades": grades, "details": details, "course":course, "code":code};
 
 		if(start != '') {
 			data["starttime"] = start;
@@ -497,8 +564,55 @@ $(document).ready(function () {
 			    closeTooltips();
 			}
 		);
+	//} else {
+	//	alert(jQuery("#exam-settings-box").validationEngine('validate'));
 	//}
     });
+
+
+    /*----------------------------------------------*/
+    /*	Manage exam students related events    	    */
+    /*----------------------------------------------*/
+	$(document).on('click', '.manage-students', function() {
+		
+		$.ajax({
+			type: "POST",
+			data: {'exam_id': examId },
+			url: baseURL + 'exam/students/',
+			success: function(content) {
+				$("#mng-students").html(content);
+				$("#mng-students").dialog({
+					autoOpen: true,
+					width: "50%",
+					position:  ['center',20],
+					modal: true,
+/*						buttons: {
+						"Save": function() {
+						},
+						"btn ": function() {
+						},
+						Cancel: function() {
+							$(this).dialog('destroy');
+						}
+					},*/
+					close: function() {
+						$(this).dialog('destroy');
+						location.reload();
+					},
+					show: {
+						effect: "blind",
+						duration: 5
+					},
+					hide: {
+						effect: "blind",
+						duration: 5
+					}
+				});
+			}
+		});
+	});
+
+
 
     /*----------------------------------------------*/
     /*	Generalized  events 			*/
@@ -528,7 +642,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "POST",
-            data: {'q_id': qDbId},
+            data: {'q_id': qDbId, 'exam_id': examId},
             url: baseURL + 'question/' + action,
             success: function (content) {
 
@@ -600,7 +714,7 @@ $(document).ready(function () {
             qPartTitle = String.fromCharCode(96 + (index + 1));
 
             // initiate js object that will populate later on
-            qJson[qPartTitle] = {};
+	    qJson[qPartTitle] = {};
             qJson[qPartTitle]["ans_area"] = {};
             qJson[qPartTitle]["resources"] = {};
 
@@ -645,8 +759,8 @@ $(document).ready(function () {
         /////////// Send ajax request to add/update this question in database ///////////////////
         //	prepare exam data and send request. Add/update qJson to global qsJson if successful
         /////////////////////////////////////////////////////////////////////////////////////////
-	if($('.sortable-q-topic').length) {
-	        topicId = $('.sortable-q-topic > li:last').find('.topic-name').attr('data-id');
+	if($('#q-topic-sel').length) {
+	        topicId = $('#q-topic-sel').val();
 	} else {
 		topicId = $('#default_topic_id').val();
 	}
@@ -693,6 +807,7 @@ $(document).ready(function () {
 
 
                     // finally, add this question to qsJson
+		    qJson["canUpdate"] = 1;
                     qsJson[qIndex] = qJson;
 
                     // refresh main question area
@@ -736,10 +851,10 @@ $(document).ready(function () {
         totalQs = objectLength(qsJson);
         if (totalQs) {
             $('#default_msg_qs').hide();
-            $('#save_exam_btn').show();
+            $('#exam_op_btns').show();
         } else {
             $('#default_msg_qs').show();
-            $('#save_exam_btn').hide();
+            $('#exam_op_btns').hide();
         }
 
         // get data of each question part
@@ -748,18 +863,24 @@ $(document).ready(function () {
             // clone first line that was kept hidden
             var qLine = $('.qs_area_line:first').clone();
             $(qLine).attr('q-no', qNo).find('.q_no').html('Q' + qNo + ':').end();
+	    
 	    if(!qData["canUpdate"]) {
+		    console.log(qData["canUpdate"]);
 		    $(qLine).find('.q_line_op').remove();
 	    }
 
             var totalScore = 0;
             var firstPartQText = '';
-            var totalQParts = objectLength(qData) - 1;
+            var totalQParts = objectLength(qData) - 2; //we have 2 extra nodes in qParts json (on page, not in db): questId,canUpdate
+	    
             jQuery.each(qData, function (qPartTitle, qPartData) {
 
                 // skip extra node
                 if (qPartTitle == 'questId' || qPartTitle == 'canUpdate') {
-                    return;
+                    if(qPartTitle == 'questId') {
+			$(qLine).attr('q-id', qPartData);
+		    }
+		    return;
                 }
 
                 //get question text (html)

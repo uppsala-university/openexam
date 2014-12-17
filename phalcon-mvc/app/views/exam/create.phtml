@@ -1,6 +1,7 @@
 <?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
 <?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.autocomplete.css'); ?>
 <?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.timepicker.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
 
 <?= Phalcon\Tag::stylesheetLink('css/opentip.css'); ?>
 
@@ -10,6 +11,8 @@
 <?= Phalcon\Tag::javascriptInclude('js/modernizr.js') ?>
 <?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/ckeditor.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js'); ?>
+<?=Phalcon\Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js')?>
+<?=Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js')?>
 
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/create.js'); ?>
 <!-- Left Column -->
@@ -52,7 +55,7 @@
                                         <div class="q_no"></div>
                                         <div class="q_score"></div>
                                         <div class="q_line_op">
-                                                <a href="#"><i class="fa fa-pencil edit-q" style="color:#4a7db1"></i></a>
+                                                <a href="#"><i class="fa fa-pencil edit-q" style="color:#004276"></i></a>
                                                 <a href="#"><i class="fa fa-close del-q"></i></a>
                                         </div>
                                 </div>
@@ -97,17 +100,18 @@
 
         <div class="st-line">
                 <label for="start"><b>Exam Start time:</b></label>
-                <input type="text" placeholder="<?=date('Y-m-d', strtotime('now'))?> 09:15" value="<?=$exam->starttime?>" name="start" class="datepicker">
+                <input type="text" placeholder="<?=date('Y-m-d', strtotime('now'))?> 09:15" value="<?=$exam->starttime?>" name="start" class="datepicker validate[required]">
         </div>
 
         <div class="st-line">
                 <label for="end"><b>Exam End time:</b></label>
-                <input type="text" placeholder="<?=date('Y-m-d', strtotime('now'))?> 13:30" value="<?=$exam->endtime?>" name="end" class="datepicker">
+                <input type="text" placeholder="<?=date('Y-m-d', strtotime('now'))?> 13:30" value="<?=$exam->endtime?>" name="end" class="datepicker validate[required]">
         </div>
 
         <div class="st-line">
                 <label for="grade"><strong>Grades:</strong></label>
-                <textarea title="Input name:value pairs on separate lines defining the Grade levels for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:15", 60, " ") . "VG:20"?>"><?=trim($exam->grades)?></textarea>
+                <?php $examGrades = trim($exam->grades);?>
+                <textarea title="Input name:value pairs on separate lines defining the Grade levels for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade validate[required]" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:15", 60, " ") . "VG:20"?>"><?=(!empty($examGrades) ? $examGrades : "U:0&#13;&#10;G:15&#13;&#10;VG:20")?></textarea>
         </div>
 
         <div class="st-line">
@@ -123,13 +127,9 @@
 		<div class="st-line">
 	        <center><input class="save-exam-settings" type="button" value="Save exam settings"></center>
         </div>    
-<?php 
-		/*<script language="javascript">
-				$(function() {
-					$( ".datepicker" ).datepicker();
-				});
-        </script>*/
-?>
+	<script language="javascript">
+	jQuery(".exam-settings-box").validationEngine();
+        </script>
 
 	</div>
     

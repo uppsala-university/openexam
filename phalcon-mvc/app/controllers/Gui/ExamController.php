@@ -17,6 +17,7 @@ use  OpenExam\Controllers\GuiController;
 use  OpenExam\Models\Exam;
 use  OpenExam\Models\Student;
 use  OpenExam\Library\Security\Capabilities;
+use  OpenExam\Library\Security\Roles;
 //use  OpenExam\Library\Globalization\Translate;
 
 /**
@@ -39,32 +40,44 @@ class ExamController extends GuiController
         {
                 // initializations
                 $loggedIn = $this->user->getPrincipalName();
-                // check if this person exists in students table
-                $isStudent = Student::findFirst("user = '".$loggedIn."'");
-                if($isStudent) {
-                        $baseRole = 'student';
-                        $exams['student-upcoming'] = $this->phql
-                                ->executeQuery(
-                                        "select e.* from OpenExam\Models\Exam e "
-                                        .   "inner join OpenExam\Models\Student s "
-                                        .   "where s.user = :user: and endtime >= NOW() order by endtime desc "
-                                        //.   "limit " . self::EXAMS_PER_PAGE
-                                        , array("user" => $loggedIn)
-                        );
+                $colList = "e.*";
+                
+                #------------ Upcoming student exam --------#
+                $exams['student-upcoming'] = $this->phql
+                        ->executeQuery(
+                                "select $colList from OpenExam\Models\Exam e "
+                                .   "inner join OpenExam\Models\Student s "
+                                .   "where "
+                                        . "s.user = :user: and "
+                                        . "e.endtime >= NOW() and "
+                                        . "e.published = 'Y' "
+                                .   "order by e.starttime desc "
+                                , array("user" => $loggedIn)
+                );
+                $stExamsToday = $exams['student-upcoming']->filter(function($resource){
+                        if (date("Y-m-d", strtotime($resource->starttime)) == date('Y-m-d')) {
+                                return $resource;
+                        }
+                });
+                if(count($stExamsToday)) {
+                        return $this->response->redirect('exam/'.$stExamsToday[0]->id);
+                }
 
-                        $exams['student-finished'] = $this->phql
-                                ->executeQuery(
-                                        "select e.* from OpenExam\Models\Exam e "
-                                        .   "inner join OpenExam\Models\Student s "
-                                        .   "where s.user = :user: and endtime < NOW() order by endtime desc "
-                                        //.   "limit " . self::EXAMS_PER_PAGE
-                                        , array("user" => $loggedIn)
-                        );
-                        
-                } else {
-                        $baseRole = 'staff';
-                        
-                        $colList = "e.*";
+                #------------ Finished student exam --------#                
+                $exams['student-finished'] = $this->phql
+                        ->executeQuery(
+                                "select $colList from OpenExam\Models\Exam e "
+                                .   "inner join OpenExam\Models\Student s "
+                                .   "where "
+                                        . "s.user = :user: and "
+                                        . "e.endtime < NOW() and "
+                                        . "e.published = 'Y' "
+                                .   "order by e.endtime desc "
+                                , array("user" => $loggedIn)
+                );
+
+                #------------ Exam creator --------#
+                if($this->user->aquire(array(Roles::TEACHER))) {
                         $exams['creator'] = $this->phql
                                 ->executeQuery(
                                         "select $colList from OpenExam\Models\Exam e "
@@ -72,45 +85,48 @@ class ExamController extends GuiController
                                         //.   "limit " . self::EXAMS_PER_PAGE
                                         , array("user" => $loggedIn)
                         );
-
-                        $exams['contributor'] = $this->phql
-                                ->executeQuery(
-                                        "select $colList from OpenExam\Models\Exam e "
-                                        .   "inner join OpenExam\Models\Contributor c "
-                                        .   "where c.user = :user: order by created desc "
-                                        //.   "limit " . self::EXAMS_PER_PAGE
-                                        , array("user" => $loggedIn)
-                        );
-
-                        $exams['decoder'] = $this->phql
-                                ->executeQuery(
-                                        "select $colList from OpenExam\Models\Exam e "
-                                        .   "inner join OpenExam\Models\Decoder d "
-                                        .   "where d.user = :user: order by created desc "
-                                        //.   "limit " . self::EXAMS_PER_PAGE
-                                        , array("user" => $loggedIn)
-                        );
-
-                        $exams['invigilator'] = $this->phql
-                                ->executeQuery(
-                                        "select $colList from OpenExam\Models\Exam e "
-                                        .   "inner join OpenExam\Models\Invigilator i "
-                                        .   "where i.user = :user: order by created desc "
-                                        //.   "limit " . self::EXAMS_PER_PAGE
-                                        , array("user" => $loggedIn)
-                        );
-
-                        $exams['corrector'] = $this->phql
-                                ->executeQuery(
-                                        "select distinct $colList from OpenExam\Models\Exam e "
-                                        .   "inner join OpenExam\Models\Question q "
-                                        .   "inner join OpenExam\Models\Corrector c on q.id = c.question_id "
-                                        .   "where c.user = :user: order by created desc"
-                                        //.   "limit " . self::EXAMS_PER_PAGE
-                                        , array("user" => $loggedIn)
-                        );
+                }        
                         
-                }
+                #------------ Exam contributor --------#
+                $exams['contributor'] = $this->phql
+                        ->executeQuery(
+                                "select $colList from OpenExam\Models\Exam e "
+                                .   "inner join OpenExam\Models\Contributor c "
+                                .   "where c.user = :user: order by created desc "
+                                //.   "limit " . self::EXAMS_PER_PAGE
+                                , array("user" => $loggedIn)
+                );
+
+                #------------ Exam invigilator --------#
+                $exams['invigilator'] = $this->phql
+                        ->executeQuery(
+                                "select $colList from OpenExam\Models\Exam e "
+                                .   "inner join OpenExam\Models\Invigilator i "
+                                .   "where i.user = :user: order by created desc "
+                                //.   "limit " . self::EXAMS_PER_PAGE
+                                , array("user" => $loggedIn)
+                );
+                
+                #------------ Question corrector --------#
+                $exams['corrector'] = $this->phql
+                        ->executeQuery(
+                                "select distinct $colList from OpenExam\Models\Exam e "
+                                .   "inner join OpenExam\Models\Question q "
+                                .   "inner join OpenExam\Models\Corrector c on q.id = c.question_id "
+                                .   "where c.user = :user: order by created desc"
+                                //.   "limit " . self::EXAMS_PER_PAGE
+                                , array("user" => $loggedIn)
+                );
+
+                #------------ Exam decoder --------#
+                $exams['decoder'] = $this->phql
+                        ->executeQuery(
+                                "select $colList from OpenExam\Models\Exam e "
+                                .   "inner join OpenExam\Models\Decoder d "
+                                .   "where d.user = :user: order by created desc "
+                                //.   "limit " . self::EXAMS_PER_PAGE
+                                , array("user" => $loggedIn)
+                );
                 
                 // pass data to view
                 $this->view->setVars(array(
@@ -135,7 +151,8 @@ class ExamController extends GuiController
                         'descr'   => ' ',
                         'creator' => $this->user->getPrincipalName(),
                         'orgunit' => $this->catalog->getAttribute($this->user->getPrincipalName(), 'department')[1]['department'][0],
-                        'grades'  => 'U:0&#13;&#10;G:15&#13;&#10;VG:20'
+                        'grades'  => 'U:0&#13;&#10;G:15&#13;&#10;VG:20',
+                        'details' => 7
                 ));
 
                 if (!$examSaved) {
@@ -143,7 +160,7 @@ class ExamController extends GuiController
                         throw new \Exception($errorMsg);
                 }
                 
-                return $this->response->redirect('exam/update/' . $exam->id);
+                return $this->response->redirect('exam/update/' . $exam->id . '/creator/new-exam');
         }
         
 	/**
@@ -164,11 +181,10 @@ class ExamController extends GuiController
 */
                 // sanitize
                 $examId = $this->filter->sanitize($examId, "int");
-                $capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
 
                 // check if role has been passed
                 $params = $this->dispatcher->getParams();
-                if(isset($params[1]) && in_array($params[1], $capabilities->getRoles())) {
+                if(isset($params[1]) && in_array($params[1], $this->capabilities->getRoles())) {
                         $this->user->setPrimaryRole($params[1]);
                 } else {
                         throw new \Exception("Invalid URL.");
@@ -181,7 +197,6 @@ class ExamController extends GuiController
 		$this->view->setVars(array(
                         'exam'=>$exam, 
                         //'myRole' => $role,
-                        'capabilities' => $capabilities
                     ));
          }
 
@@ -209,8 +224,8 @@ class ExamController extends GuiController
                         $examSaved = $newExam->save(array(
                                 "name" => $exam->name,
                                 "descr" => $exam->descr,
-                                "starttime" => $exam->starttime,
-                                "endtime" => $exam->endtime,
+                                //"starttime" => $exam->starttime,
+                                //"endtime" => $exam->endtime,
                                 "creator" => $exam->creator,
                                 "details" => $exam->details,
                                 "orgunit" => $exam->orgunit,
@@ -266,6 +281,11 @@ class ExamController extends GuiController
                                                         $correctors = $quest->getCorrectors();
                                                         if(is_object($correctors) && $correctors->count()) {
                                                                 foreach($correctors as $corrector) {
+                                                                        
+                                                                        if($corrector->user == $loggedIn) {
+                                                                                continue;
+                                                                        }
+                                                                        
                                                                         $newCorrector = new \OpenExam\Models\Corrector();
                                                                         $newCorrector->save(array(
                                                                                 "question_id" => $newQuest->id,
@@ -295,6 +315,13 @@ class ExamController extends GuiController
                                                 $roleUsers = $exam->$role;
                                                 if(is_object($roleUsers) && $roleUsers->count()) {
                                                         foreach($roleUsers as $roleUser) {
+
+                                                                // skip creator to be added 
+                                                                // (exam model insert creator for all roles)
+                                                                if($roleUser->user == $loggedIn) {
+                                                                        continue;
+                                                                }
+                                                                
                                                                 $newRoleUser = new $roleClass();
                                                                 $newRoleUser->save(array(
                                                                         "exam_id" => $newExam->id,
@@ -327,7 +354,7 @@ class ExamController extends GuiController
                 $examId = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
                 
                 // fetch exam data if it has not been finished yet
-                $exam = Exam::findFirst("id = " . $examId . " and endtime > NOW()");
+                $exam = Exam::findFirst("id = " . $examId . " and (endtime IS NULL or endtime > NOW())");
                 if(!$exam) {
                         return $this->response->redirect('exam/index');
                 }
@@ -351,7 +378,7 @@ class ExamController extends GuiController
                 if($examId) {
                         
                         // load exam data if exam time has not been finished
-                        $exam = Exam::findFirst("id = " . $examId . " and endtime > NOW()");
+                        $exam = Exam::findFirst("id = " . $examId . " and (endtime IS NULL or endtime > NOW())");
                         if(!$exam) {
                                 throw new \Exception("Sorry! "
                                     . "Exam time has been finished. <br>"
@@ -364,5 +391,27 @@ class ExamController extends GuiController
                 
                 $this->view->setVar("exam", $exam);
         }
-        
+
+        /**
+         * Load popup for exam settings
+	 * exam/settings
+	 */
+        public function settingsAction()
+        {
+                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                
+                // sanitize
+                $examId = $this->filter->sanitize($this->request->getPost("exam_id"), "int");
+                if($examId) {
+                        
+                        // load exam data if exam time has not been finished
+                        $exam = Exam::findFirst($examId);
+                        if(!$exam) {
+                                throw new \Exception("Unable to load exam settings.");
+                        }
+                        
+                }
+                
+                $this->view->setVar("exam", $exam);
+        }
 }

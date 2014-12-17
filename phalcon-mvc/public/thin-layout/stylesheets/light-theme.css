@@ -5445,3 +5445,25 @@ pre {
 	width: 100%;
 	height: 100%;
 }
+
+#exam-start-wait {  
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        z-index:10000000;
+        /*background-color:grey;
+        opacity: .8;*/
+        /*display:none;*/
+}
+
+.exam-start-wait {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -32px; /* -1 * image width / 2 */
+        margin-top: -32px;  /* -1 * image height / 2 */
+        display: block;     
+}
+

@@ -51,7 +51,7 @@ class ResultController extends GuiController
                 
                 // sanitize
                 $examId = $this->filter->sanitize($this->dispatcher->getParam('examId'), 'int');
-                
+                $studentId = $this->filter->sanitize($this->dispatcher->getParam('studentId'), 'int');
 
                 ## get exam data 
                 $exam   = Exam::findFirst($examId);
@@ -60,10 +60,11 @@ class ResultController extends GuiController
                 ## get exam student's data (if studnet requested himself)
                 //$student = $exam->getStudents("user = '".$this->user->getPrincipalName()."'");
                 $student= Student::findFirst(array(
-                                "conditions" => "exam_id = ?1 and user = ?2",
+                                "conditions" => "exam_id = ?1 and id = ?2",//user = ?2
                                 "bind"       => array(
                                                 1 => $examId,
-                                                2 => $this->user->getPrincipalName()
+                                                //2 => $this->user->getPrincipalName()
+                                                2 => $studentId
                                         )
                             ));
                 //@ToDO: As this person was not a student in this exam,
@@ -155,7 +156,7 @@ class ResultController extends GuiController
                         
                         foreach($data['examGrades'] as $grade => $limit) {
 
-                                if($score >= $limit) {
+                                if((($score/$data['examScore'])*100) >= $limit) {
                                         
                                         $data['studentGrade'][$studId] = $grade;
                                         if(isset($data['studentGrade'][$grade])) {
@@ -178,26 +179,172 @@ class ResultController extends GuiController
         }
 
         /**
-         * Download exam result
+         * Generate and save student result in pdf format
          * 
-         * result/{exam_id}/download
+         * @param int $examId
+         * @param int $studentId
+         * 
+         * result/{exam_id}/generate/{student_id}
          */
-        public function downloadAction($examId)
+        public function generateAction($examId, $studentId)
         {
                 $this->view->disable();
                 
-                // sanitize 
-                $examId = $this->filter->sanitize($this->dispatcher->getParam('examId'), 'int');
+                // get exam data 
+                $examId = $this->filter->sanitize($examId, 'int');
+                $exam = Exam::findFirst($examId);
+
+                // get student's data
+                $student = Student::findFirst(array(
+                                "conditions" => "exam_id = ?1 and id = ?2",
+                                "bind"       => array(
+                                                1 => $examId,
+                                                2 => $this->filter->sanitize($studentId, 'int')
+                                        )
+                            ));
                 
-                ################# Who can download the results???????? ##########
-                # If studente Id has been provided then it mea
-                //$studentId = $this->filter->sanitize($this->dispatcher->getParam('studentId'), 'int');
+                // save result in pdf format
+                $this->_generateResultPdf($exam, $student);
+                return $this->response->setJsonContent(array("stId" => $student->id));
+        }
+
+        
+        /**
+         * Genrate zip file, contaning result of single or all students, in pdf format
+         * 
+         * result/{exam_id}/download
+         */
+        public function downloadAction($examId, $studentId = NULL)
+        {
                 
-                // download pdf
+                $this->view->disable();
+                
+                // get exam data 
+                $examId = $this->filter->sanitize($examId, 'int');
+                $exam = Exam::findFirst($examId);
+                
+                // generate, save result in pdf and download that pdf if it is for a student
+                $student = Student::findFirst(array(
+                        "conditions" => "exam_id = ?1 and user = ?2",
+                        "bind"       => array(
+                                        1 => $examId,
+                                        2 => $this->user->getPrincipalName()
+                                )
+                    ));
+                
+                if($student) {
+                        
+                        // get student's data
+/*                        $student = Student::findFirst(array(
+                                "conditions" => "exam_id = ?1 and id = ?2",
+                                "bind"       => array(
+                                                1 => $examId,
+                                                2 => $this->filter->sanitize($studentId, 'int')
+                                        )
+                            ));
+ */
+                        // generate pdf file and download
+                        $this->_generateResultPdf($exam, $student, TRUE);
+                        
+                } else {
+                        // restrict 
+                        
+                        //if request was not to download result of a specific student, 
+                        //we will generate zip file with all files located under results directory 
+                        //for this exam
+                        $cleanExamName = str_replace(" ", "-", $this->filter->sanitize($exam->name, 'string'));
+                        $resultsDir = $this->config->application->cacheDir . 'results/';
+                        $zipPath = $resultsDir.$cleanExamName.'.zip';
+                        $filesToZipLocation = $resultsDir . $cleanExamName . '-' . $exam->id;
+                        
+                        if(is_dir($filesToZipLocation)) {
+
+                                //generate zip file if it don't exist
+                                if(!file_exists($zipPath)) {
+                                        
+                                        $zip = new \ZipArchive;
+                                        if($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
+                                                
+                                                if ($handle = opendir($filesToZipLocation)) {
+                                                        while (false !== ($entry = readdir($handle))) {
+                                                                if ($entry != "." && $entry != ".." && strstr($entry,'.pdf')) {
+                                                                        $zip->addFile($filesToZipLocation.'/'.$entry, $entry);
+                                                                }
+                                                        }
+                                                        closedir($handle);
+                                                }
+
+                                                if(!$zip->close()) {
+                                                        throw new \Exception("Failed to zip files");
+                                                }
+                                                
+                                        } else {
+                                                throw new \Exception("Failed to create zip file");
+                                        }        
+                                }
+                                
+                                header('Content-Type: application/zip');
+                                header("Content-Disposition: attachment; filename=$cleanExamName.zip");
+                                header("Accept-Ranges: bytes");
+                                header('Content-Length: ' . filesize($zipPath));
+                                
+                                print readfile($zipPath);
+                                
+                        } else {
+                                throw new Exception("Unable to download result");
+                        }
+                }
+        }
+        
+        /**
+         * Generate exam summary to show to teachers
+         * 
+         * result/summary/{exam_id}
+         */
+        public function summaryAction()
+        {
+        }
+        
+        /**
+         * Generates Pdf file for a student and save it under results directory
+         * 
+         * @param model object $exam 
+         * @param model object $student
+         * @param BOOL $download if True, will download file
+         */
+        private function _generateResultPdf($exam, $student, $download = FALSE)
+        {
+
+                // where to generate file?
+                $cleanExamName = str_replace(" ", "-", $this->filter->sanitize($exam->name, 'string'));
+                $generateFileUnder = $this->config->application->cacheDir . 
+                                'results/' . $cleanExamName . '-' . $exam->id;
+                
+                
+                // create directories if don't exist
+                if(!is_dir($generateFileUnder)) {
+                        mkdir($generateFileUnder, 0775, TRUE);
+                }
+                
+                // return true if file already exists
+                $filePath = $generateFileUnder .'/'. $student->code . '.pdf';
+                if(file_exists($filePath)) {
+                        if($download) {
+                                header('Content-Type: application/pdf');
+                                header("Content-Disposition: attachment; filename=".$student->code.".pdf");
+                                header("Accept-Ranges: bytes");
+                                header('Content-Length: ' . filesize($filePath));
+                                print readfile($filePath);
+                        } else {
+                                return TRUE;
+                        }
+                }
+                
+                // generate pdf file
                 //@ToDo: replace static url (added for testing) in $pages array ('page' index) with proper
                 $pages = array(
                       array(
-                            'page'              => "https://www.bmcmediatek.uu.se/openexam-svn/result/".$examId."/view",
+                            'page'              => "https://www.bmcmediatek.uu.se/openexam-svn/result/".$exam->id."/view/".$student->id,
                             //'footer.right'      => date("Y-m-d H:i"),
                             //'pagesCount'        => TRUE,
                             //'pageOffset'        => 1,
@@ -208,26 +355,11 @@ class ResultController extends GuiController
                       )
                 );
                 $render = $this->render->getRender(Renderer::FORMAT_PDF);
-                $render->send('file.pdf', $pages);
-                //$this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
-        }
-
-        /**
-         * Decode result of the exam
-         * 
-         * result/decode/{exam_id}
-         */
-        public function decodeAction()
-        {
-        }
-
-        /**
-         * Generate exam summary to show to teachers
-         * 
-         * result/summary/{exam_id}
-         */
-        public function summaryAction()
-        {
+                if($download) {
+                        $render->send($filePath, $pages);
+                } else {
+                        $render->save($filePath, $pages);
+                }
         }
         
 }

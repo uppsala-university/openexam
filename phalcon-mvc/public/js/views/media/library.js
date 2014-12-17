@@ -121,6 +121,7 @@
 							</div>\
 							<br />\
 							<span class="btn btn-success update-lib-item-details" media-id="'+mediaId+'"> Save</span>\
+							<span class="btn btn-danger del-lib-item-details" media-id="'+mediaId+'"> Delete it!</span>\
 						</div>',
 						{style: "drops", tipJoint: "top left"});
 			});
@@ -188,6 +189,27 @@
 			);
 			
 		});
+
+		$(document).on('click', '.del-lib-item-details', function() {
+			// grab data
+			var mediaId 	= $(this).attr('media-id');
+			
+			if(confirm('Are you sure you want to delete this library file?')) {
+				// send ajax request to save data
+				ajax (
+					baseURL + 'core/ajax/contributor/resource/delete',
+					{"id":mediaId},
+					function (rData) {
+						// update dom as per the changes
+						$('#lib-item-'+mediaId).remove();
+						$('#lib-items-added > ul').find('li[media-id="lib-item-'+mediaId+'"]').remove();
+						// close tooltip
+						close_tooltips();
+					}
+				);
+			}
+		});
+		
 		
 		$(document).on('click', '#selected-lib-img li i', function() {
 			$('#'+$(this).parent().attr('media-id'))

@@ -142,7 +142,7 @@ class AuthController extends \OpenExam\Controllers\GuiController
                 // store user data in session
                 $this->session->start();
                 $this->session->set('authenticated', array(
-                        'user'          => $this->auth->getSubject(), 
+                        'user'          => strtolower($this->auth->getSubject()), 
                         'authenticator' => $authMethod
                 ));
 

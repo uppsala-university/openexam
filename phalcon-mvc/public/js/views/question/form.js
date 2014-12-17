@@ -39,14 +39,7 @@ var libJs = '';
         $('#' + id).find('.ans_type').hide();
         $('#' + id).find('#cke_q_text1').remove();
         CKEDITOR.replace('q_text' + tabId, {
-            height: '100px',
-            toolbar: [
-                ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
-                    'Undo', 'Redo', 'Outdent', 'Indent', '-',
-                    'Bold', 'Italic', 'Underline', '-',
-                    'NumberedList', 'BulletedList'
-                ]
-            ]
+            height: '100px'
         } /*{
          height: '100px'}*/);
     }
@@ -66,14 +59,14 @@ $(document).ready(function () {
 
         for (var i = 1; i < tabCounter; i++) {
             CKEDITOR.replace('q_text' + i, {
-                height: '100px',
+                height: '100px'/*,
                 toolbar: [
                     ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
                         'Undo', 'Redo', 'Outdent', 'Indent', '-',
                         'Bold', 'Italic', 'Underline', '-',
                         'NumberedList', 'BulletedList'
                     ]
-                ]
+                ]*/
             });
 
         };
@@ -85,7 +78,7 @@ $(document).ready(function () {
     // prepare list
     var tmp = '<option value="">Choose a corrector for question</option>';
     $('.left-col-user').each(function (index, element) {
-        if ($(element).html() != '' && tmp.indexOf($(element).html()) < 0) {
+        if ($(element).html().replace(/\s/g, '') != '' && tmp.replace(/\s/g, '').indexOf($(element).html().replace(/\s/g, '')) < 0) {
             tmp += '<option value="' + $(element).attr('data-user') + '">' + $(element).html() + '</option>';
         }
     });
@@ -204,7 +197,7 @@ $(document).ready(function () {
             if (qId) {
                 // send ajax request to add selected corrector in question
                 ajax(
-                        baseURL + 'core/ajax/creator/corrector/add',
+                        baseURL + 'core/ajax/creator/corrector/create',
                         {"question_id": qId, "user": userName},
                 function (status) {
                     $('.q_corrector_list').append(cloned);

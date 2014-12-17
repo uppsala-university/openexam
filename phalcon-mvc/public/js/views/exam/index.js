@@ -64,7 +64,7 @@ $(document).ready(function() {
 						success: function(response) {
 							resp = jQuery.parseJSON(response);
 							if(resp.status == 'success') {
-								location.href = baseURL + 'exam/update/' + resp.exam_id;
+								location.href = baseURL + 'exam/update/' + resp.exam_id + '/creator';
 							}
 						}
 					});
@@ -85,15 +85,20 @@ $(document).ready(function() {
 		var examId = $(examLine).attr('data-id');
 		var examName = $(examLine).find('.exam-name').html();
 		
-		if(confirm("Are you sure you want to delete this Exam: '"+examName+"'")) {
+		if(confirm("Are you sure you want to delete this Exam: '"+jQuery.trim(examName)+"'")) {
+			
 			ajax(
 				baseURL + 'core/ajax/creator/exam/delete',
 				{"id": examId},
 				function (examData) {
 					$(examLine).slideUp(500, function() {
 						$(this).remove();
+						location.reload();
 					});
-				}
+				},
+				"POST",
+				true,
+				false
 			);
 			
 		}
@@ -219,7 +224,7 @@ $(document).ready(function() {
 		var examSortOrder = $(section).find('.exam-sort-order').attr('order');
 		var searchKey = $(section).find('.exam-search-box').val();
 		if(searchKey) {
-			var cond = ["name like :key:", {"key":"%"+searchKey+"%"}];
+			var cond = ["name like :key: or code like :key:", {"key":"%"+searchKey+"%"}];
 		} else {
 			var cond = [];
 		}
@@ -233,7 +238,7 @@ $(document).ready(function() {
 				"role":role,
 				"conditions":[cond],
 				"order":examSortBy+" "+examSortOrder,
-				"limit": offset ? 3 : 100000,
+				"limit": offset ? examPerPage : 100000,
 				"offset":offset
 				}
 			};
@@ -257,7 +262,7 @@ $(document).ready(function() {
 	var populateExamGrid = function (examData, section, populateInSearchGrid) {
 		
 		var populatePages = false;
-		var examRole = $(section).attr('exam-role');
+		var examRole = $(section).attr('exam-role')!=$(section).attr('section-role')?$(section).attr('section-role'):$(section).attr('exam-role');
 		
 		// grid that appears when someone searches for exam
 		if(populateInSearchGrid) { 
@@ -275,15 +280,26 @@ $(document).ready(function() {
 		$.each(examData, function(i, exam) {
 			start = exam.starttime ? exam.starttime.split(" ") : ["0000:00:00", "00:00"];
 			ends  = exam.endtime ? exam.endtime.split(" ") : ["0000:00:00", "00:00"];
-			
+			examName = exam.name == ''||exam.name == ' '?'Untitled exam':exam.name;
 			var examItem = $(examListingArea).find('.exam-list').find('li').not(':first').first().clone();
-			
-			$(examItem).find('.exam-name').html(exam.name);
-			$(examItem).find('.exam-descr').html(exam.descr.replace(/(<([^>]+)>)/ig, "").substring(0, 120)+" ...");
+			$(examItem).attr('data-id', exam.id);
+			$(examItem).find('.exam-name').html(examName + (exam.code!=''&&exam.code!=null ? " ("+exam.code+")" : ""));
+			/*$(examItem).find('.exam-descr').html(exam.descr.replace(/(<([^>]+)>)/ig, "").substring(0, 120)+" ...");*/
 			$(examItem).find('.exam-date').html(start[0]);
 			$(examItem).find('.exam-starts').html(start[1]);
 			$(examItem).find('.exam-ends').html(ends[1]);				
-			
+			if(exam.published) {
+				$(examItem).find('.published-exam').show();
+				$(examItem).find('.draft-exam').hide();
+				if(examRole == 'creator') {
+					$(examItem).css('background-color','#FEFFD5');
+				}
+			} else {
+				$(examItem).find('.published-exam').hide();
+				$(examItem).find('.draft-exam').show();
+				$(examItem).css('background-color','#fff');
+			}
+				
 			//list operational buttons as per the exam role and status
 			$(examItem).find('.exam-show-options').empty();
 			$.each(examSections[examRole]["show-options"], function(btnKey, btnProp) {
@@ -312,19 +328,19 @@ $(document).ready(function() {
 			
 			$(examListingArea).find('.exam-list').append(examItem);
 		
-			if(i == '2') {
+			if(i == examPerPage-1) {
 				return false;
 			} 
 		});
 		
 		if(populatePages) {
-			var totalPgs = Math.ceil(examData.length/3);
+			var totalPgs = Math.ceil(examData.length/examPerPage);
 			var pagination = $(examListingArea).find('.pagination');
 			$(pagination).find('li').not(':first').remove();
 			for(i=1; i<=totalPgs; i++) {
 				pageItem = $(pagination).find('li').first().removeClass('active').clone();
 				$(pageItem).find('a').html(i);
-				$(pageItem).attr('offset', ((i-1) * 3));
+				$(pageItem).attr('offset', ((i-1) * examPerPage));
 				if(i == 1) {
 					$(pageItem).addClass('active');
 				}

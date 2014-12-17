@@ -47,5 +47,26 @@ class Helper extends Component
                 
                 return $firstOnly ? $data[0] : $data;
         }
-        
+       
+        /**
+         * Get question number by question id
+         *
+         * @param array $questions
+         * @return array
+         
+        public function getQuestionNumber($questions)
+        {
+                $data = array();
+                
+                //search for info from all services
+                foreach($questions as $index => $question) {
+                        $data = $userData[0][$attribute];
+                        if(count($data)) {
+                                break;
+                        }
+                }
+                
+                return $firstOnly ? $data[0] : $data;
+        }*/
+       
 }

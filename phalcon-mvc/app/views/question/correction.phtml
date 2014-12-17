@@ -4,6 +4,7 @@ $overallQuestScore = array();
 $totalExamScore = $totalStudentScore = 0;
 
 $students  = $exam->getStudents();
+$studentIds = array();
 
 $grades = preg_split('/[\r\n]+/', $exam->grades);
 $examGrades = array();
@@ -14,35 +15,62 @@ foreach ($grades as $grade) :
 endforeach;
 arsort($examGrades);
 
+// if exam has been decoded or not
+$decoded = $exam->decoded;
+
 ?>
 
 <!-- Main area -->
 <div id="container" class="left_menu_space" style="width:100%">
         <div id="centerColWide" style="width:95%">
                 <div id="mainview">
-                        <h3>Answer correction</h3>
-                        <p>This table shows all answers from students to questions for the examination <strong>"<?=$exam->name?>"</strong>. </p>
+                        <?php if(!$decoded):?>
+                        <h3>Exam correction</h3>
+                        <p>Following table shows all answers from students to questions for the examination <strong>"<?=$exam->name?>"</strong>. </p>
                         <p>Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.</p>
+                        <?php else:?>
+                        <h3>Exam score board</h3>
+                        <p>Following table shows the final result of all students for the examination <strong>"<?=$exam->name?>"</strong>. </p>
+                        <p>You can view the student's answers by student (rows), by question (column) or individual (by index). As this exam has been decoded, it is no more possible to change student results.</p>
+                        <?php endif;?>
+                        
+                        <?php if($decoded):?>
+                                <center>
+                                <button id="downloadButton">
+                                	<h5 style="font-style:normal; font-size:12px" >
+                                        	<i class="fa fa-download" style="color:green"></i>
+                                        	<span class="download-msg">Download result of all students</span>
+                                        </h5>
+                                </button>
+                                </center>
+                        <?php endif;?>
+                        
 			<div style="margin:25px">
                                 <table class="tablesorter">
                                         <tbody>
                                                 <tr>
-                                                        <th>Code </th>
+                                                        <th><?=$decoded ? 'Name': 'Code'?></th>
                                                         <?php foreach($questions as $question):?>
                                                                 <th style="width:55px; text-align:center; ">
                                                                   <div style="text-align: center">
-                                                                  	<a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->name?></a>
+                                                                        <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->name?></a>
                                                                   </div>
                                                                   <div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>
                                                                 </th>
                                                                 <?php $totalExamScore += $question->score;?>
                                                         <?php endforeach;?>
                                                         <th>Percent </th>
+                                                        <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
                                                         <th>Grade </th>
+                                                        <?php endif;?>
                                                 </tr>
 						<?php foreach($students as $student):?>
                                                 <tr>
-                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD"><a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>"><?=$student->code?></a></td>
+                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD">
+                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+									<?= (!$decoded) ? $student->code : $this->helper->getCatalogAttribute($student->user, 'name')?>
+                                                                </a>
+                                                        </td>
 							<?php $totalStudentScore = 0;?>
 							<?php foreach($questions as $question):
                                                         
@@ -64,6 +92,12 @@ arsort($examGrades);
                                                                         endif;	
                                                                         
                                                                 endif;
+								
+								// get corrector list
+								$qCorrectorList = array();
+								foreach($question->getCorrectors() as $qCorrector) :
+									$qCorrectorList[] = $qCorrector->user;
+								endforeach;
                                                                 ?>
                                                                 <?php //$ansResult = count($answers) ? $answers[0]->getResult() : array()?>
                                                                 
@@ -80,6 +114,8 @@ arsort($examGrades);
                                                                         $cLink = false;
                                                                 elseif(is_object($result) && $result->count())  :
                                                                         $cc = 'ac';
+                                                                elseif(!in_array($this->user->getPrincipalName(), $qCorrectorList))  :
+                                                                        $cc = 'no';
                                                                 else :
                                                                         $cc = 'nc';
                                                                 endif;
@@ -105,9 +141,10 @@ arsort($examGrades);
 								endif;	
 								?>
                                                         </td>
+                                                        <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
                                                         <?php 
                                                         foreach($examGrades as $grade => $limit) :
-                                                                if($totalStudentScore >= $limit) :
+                                                                if((($totalStudentScore/$totalExamScore)*100) >= $limit) :
 									end($examGrades);
 									if(key($examGrades) == $grade):
 										$colorScheme = 'background-color:#FF6B4F; color:#FFFFCC';
@@ -122,8 +159,12 @@ arsort($examGrades);
                                                         <td class="gru" style="border-bottom:1px #dedede solid; text-align:center; font-weight:bold; <?=$colorScheme?>">
 								<?=$grade?>
                                                         </td>
+                                                        <?php endif;?>
                                                 </tr>
-						<?php endforeach;?>
+                                                <?php 
+						$studentIds[] = $student->id;
+						endforeach;
+						?>
                                                 <tr class="avarage">
                                                         <th align="right" style="vertical-align:top">Avarage:</th>
                                                         <?php foreach($questions as $q):?>
@@ -136,16 +177,30 @@ arsort($examGrades);
                                                         <td class="cc aa">
 								<?=sprintf("%1.1f", array_sum($avgPercentage)/count($avgPercentage))?>%
                                                         </td>
-                                                        <td title="Answers: 1 Percent: 500%" class="cc aa" style="text-align:right; margin:0; padding:0">
+                                                        <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
+                                                        <td class="cc aa" style="text-align:right; margin:0; padding:0">
                                                           <?php foreach($examGrades as $grade => $limit):?>
                                                           	<div style="padding:1px; "><b><?=$grade?></b>: <?=$avgGrades[$grade]?></div>
                                                           <?php endforeach;?>
                                                         </td>
-                                                        
+                                                        <?php endif;?>
                                                 </tr>
                                         </tbody>
                                 </table>
-                        </div>        
+                        </div>  
+                        
+                        <?php 
+			if(!$decoded && $this->user->aquire(array('decoder'), $exam->id)!==false && in_array('decodable', $exam->flags)):?>
+                                <center>
+                                <button id="decode-exam">
+                                  <h5 style="font-style:normal; font-size:12px">
+                                  	<i class="fa fa-check-circle" style="color:green"></i> 
+                                  	I am satisfied with exam correction, Decode this exam.
+                                  </h5>
+                                </button>
+                                </center>
+                        <?php endif;?>
+                              
                         <h5>Color Codes</h5>
                         <p>Following are the color codes used in the score board:</p>
                         <table style="margin:0">
@@ -154,12 +209,12 @@ arsort($examGrades);
                                                 <td class="cc ac">&nbsp;</td>
                                                 <td>Answer has been corrected.</td>
                                         </tr>
-                                        <!--
+                                        <?php if(!$decoded && $this->user->getPrincipalName() == $exam->creator):?>
                                         <tr class="colorcode">
                                                 <td class="cc no">&nbsp;</td>
                                                 <td>This answer should be corrected by another person.</td>
                                         </tr>
-                                        -->
+                                        <?php endif;?>                                        
                                         <tr class="colorcode">
                                                 <td class="cc na">&nbsp;</td>
                                                 <td>No answer was given for this question.</td>
@@ -180,6 +235,7 @@ arsort($examGrades);
                                         -->
                                 </tbody>
                         </table>
+                        <br />
                         <!--
                         <h5>Download Scoreboard</h5>
                         <p>Click <a href="?exam=711&amp;mode=save">here</a> to download the score board.</p>-->
@@ -189,12 +245,32 @@ arsort($examGrades);
         <!-- container --> 
 </div>
 
-<!--------------- Hidden Divs -----------------> 
-<? //=Phalcon\Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
-<? //=Phalcon\Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js')?>
-<? //=Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js')?>
+<!-------------- Hidden Divs --------------->
+<div id="dialog" title="Generating exam result">
+          <div class="progress-label">Starting...</div>
+          <div id="progressbar"></div>
+</div>
+
+<?=Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
+<?=Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+  <style>
+#progressbar {
+	margin-top: 20px;
+}
+.progress-label {
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #fff;
+}
+.ui-dialog-titlebar-close {
+	display: none;
+}
+</style>
 
 <script language="javascript">
+var examId 	= <?=$exam->id?>;
+var stIds = <?=json_encode($studentIds)?>;
+var completedRequests = {};
+
 $(document).ready(function () {
         $('.fb').fancybox({
                         'width': "100%", 
@@ -212,6 +288,7 @@ $(document).ready(function () {
 		
 		var saveResultBtn = $(this);
 		var correctorComents = $(saveResultBtn).parent().find('textarea').val();
+		var correctorId = $(saveResultBtn).attr('corrector-id');
 		var resultJson = {};
 		var resId = ansId = 0;
 		$(this).closest('.q-body').find('.q-points').each(function(index, element) {
@@ -222,10 +299,10 @@ $(document).ready(function () {
 
 		// send ajax requedt to update student's socre
 		if(resId != 0) {
-			param = {id:resId, "score":JSON.stringify(resultJson), "comment":correctorComents};
+			param = {id:resId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"};
 			action= 'update';
 		} else {
-			param = {"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents};
+			param = {"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"};
 			action= 'create';
 		}
 		
@@ -238,19 +315,113 @@ $(document).ready(function () {
 		);
 	});
 	
+	$(document).on('click', '#decode-exam', function() {
+		
+		var msg = "Please note that once an exam gets decoded, it will not be possible to change student score any more. \r\n Are you sure you want to decode this exam?";
+		if(confirm(msg)) {
+			// decode exam
+			ajax(
+				baseURL + 'core/ajax/creator/exam/update',
+				{"id": examId, "decoded": "Y"},
+				function (status) {
+				    location.reload();
+				}
+			);
+		}
+	});
+	
 });	
 </script>
-
-<!--
 <script>
-	jQuery(document).ready(function(){
-		// binds form submission and fields to the validation engine
-		jQuery("#q-part-student-score").validationEngine();
-		$(".saved-result").click(function(){
-			alert("dd");
-			jQuery("#q-part-student-score").validationEngine('validate');
-		})
+$(function() {
+	var progressTimer,
+	progressbar = $( "#progressbar" ),
+	progressLabel = $( ".progress-label" ),
+	dialogButtons = [{
+		text: "Cancel Download",
+		click: closeDownload
+	}],
+	dialog = $( "#dialog" ).dialog({
+		autoOpen: false,
+		closeOnEscape: false,
+		resizable: false,
+		modal: true,
+		buttons: dialogButtons,
+		open: function() {
+			progressTimer = setTimeout( progress, 0 );
+		},
+		beforeClose: function() {
+			downloadButton.button( "option", {
+				disabled: false
+			});
+			downloadButton.find('.download-msg').html('Download result of all students');
+		}
+	}),
+	downloadButton = $( "#downloadButton" )
+			.button()
+			.on( "click", function() {
+				
+				//send ajax requests to generate results
+				$.each(stIds, function(i, stId) {
+					
+					$.ajax({
+						type: "POST",
+						url: baseURL + 'result/'+examId+'/generate/'+stId,
+						data: {stId:stId}
+					})
+					.done(function( resp ) {
+						resp = jQuery.parseJSON(resp);
+						completedRequests[resp.stId] = 1;
+					});
+					
+				});
+				$( this ).button( "option", {
+					disabled: true
+				});
+				$(this).find('.download-msg').html('Generating result ...');
+				dialog.dialog( "open" );
+			});
+	
+	progressbar.progressbar({
+		value: false,
+		change: function() {
+			progressLabel.text( "Current Progress: " + progressbar.progressbar( "value" ) + "%" );
+		},
+		complete: function() {
+			closeDownload();
+			location.href = baseURL + 'result/'+examId+'/download';
+		}
 	});
-
+	
+	function progress() {
+		
+		$('#ajax_loader').hide();
+		
+		//console.log((objectLength(completedRequests)/objectLength(stIds)) *100);
+		var val = ( (objectLength(completedRequests)/objectLength(stIds) ) * 100 ) || 0;
+		
+		progressbar.progressbar( "value", Math.round(val) );
+		
+		if ( val <= 99 ) {
+			progressTimer = setTimeout( progress, 50 );
+		}
+	}
+	
+	function closeDownload() {
+		clearTimeout( progressTimer );
+		dialog
+			.dialog( "option", "buttons", dialogButtons )
+			.dialog( "close" );
+			
+		progressbar.progressbar( "value", false );
+		
+		progressLabel
+			.text( "Starting download..." );
+			
+		downloadButton.focus();
+	}
+	<?php if(stristr($_SERVER['REQUEST_URI'], 'download-result')):?>
+	$( "#downloadButton" ).trigger('click');
+	<?php endif;?>
+});
 </script>
--->

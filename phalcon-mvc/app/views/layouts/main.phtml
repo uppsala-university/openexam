@@ -52,13 +52,10 @@
                                         <?=Phalcon\Tag::linkTo('', 'Home')?>
                                 </li>
                                 <?php if($this->user->getUser()):?>
-                                <li class="<?=($controllerName == 'exam' ? 'selected' : '')?>">
+                                <li class="<?=($controllerName == 'exam' && $actionName == 'index' ? 'selected' : '')?>">
                                         <?=Phalcon\Tag::linkTo('exam/index', 'My Exams')?>
                                 </li>
                                 <?php endif;?>
-                                <li>
-                                        <?=Phalcon\Tag::linkTo('help', 'Help')?>
-                                </li>
                                 <li>
                                         <?=Phalcon\Tag::linkTo('about', 'About')?>
                                 </li>

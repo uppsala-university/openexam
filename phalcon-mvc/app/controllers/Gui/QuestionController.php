@@ -33,6 +33,11 @@ class QuestionController extends GuiController
          */
         public function createAction()
         {
+                // sanitize
+                $examId = $this->filter->sanitize($this->request->getPost('exam_id'), "int");
+
+                $this->view->setVar('exam', Exam::findFirst($examId));
+                
                 //disable main layout
                 $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
 
@@ -108,40 +113,38 @@ class QuestionController extends GuiController
                 }        
                 
                 ## load all questions in this exam for highlighting questions
-                $allQs = $exam->getQuestions();
+                $allQs = $exam->getQuestions(array('order'=>'slot'));
+                $firtstQ = $allQs->getFirst();
                 
                 ## check if needed to load a specific question
                 if($questId) {
                         $viewMode = 'single';
                         
                         ## load question data
-                        $quest = Question::findFirst("name = '" . $questId ."' and exam_id=" . $examId);
-                        if(!$quest) {
-                                // load first question if requested question don't exist
-                                $quest = Question::findFirst(array(
-                                        'exam_id=' . $examId,
-                                        'order' => 'name asc'
-                                ));
-                        }
+                        $quest = $allQs->filter(function($qObj) use ($questId) {
+                            if ($qObj->id == $questId) {
+                                    return $qObj;
+                            }
+                        });
+                        
                         // to array, doing so to keeps things clean in view
-                        $questData[0] = $quest;
-
+                        $questData[0] = (!$quest ? $firtstQ : $quest[0]);
+                        
                         ## pick up answer data if student has answered
                         ## otherwise, create an entry in answer table for this question against this student
                         if(!$testMode) {
-                                
-                                $ans = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $quest->id);
+                                $ans = Answer::findFirst("student_id = " . $student->id ." and question_id = " . $questData[0]->id);
                                 if(!$ans) {
                                         //lets add answer record in database now
                                         $ans = new Answer();
                                         $ans->save(array(
                                                 'student_id' => $student->id,
-                                                'question_id'=> $quest->id,
-                                                'answered'   => 'N'
+                                                'question_id'=> $questData[0]->id,
+                                                'answered'   => 0
                                         ));
                                 }
                                 // to array, doing so to keeps things clean in view
-                                $ansData[$quest->id]   = $ans;                                
+                                $ansData[$questData[0]->id]   = $ans;                                
                         }
                         
                 } else {
@@ -214,10 +217,12 @@ class QuestionController extends GuiController
                                         
                                         // show all answers for a specific student
                                         $questData = $this->phql->executeQuery(
-                                                        "select q.* from OpenExam\Models\Question q "
+                                                        "select distinct q.* from OpenExam\Models\Question q "
                                                         .   "inner join OpenExam\Models\Corrector c "
-                                                        .   "inner join OpenExam\Models\Answer a "
-                                                        .   "where c.user = '".$this->user->getPrincipalName()."'"
+                                                        .   "where  exam_id = '".$exam->id."' "
+                                                        .   (($exam->creator != $this->user->getPrincipalName()) ? 
+                                                                "and c.user = '".$this->user->getPrincipalName()."' " : " ")
+                                                        .   "order by q.name asc"
                                                 );
                                         $stData = Student::findFirst($loadBy[2]);
                                         $ansData = Answer::find('student_id = '.$loadBy[2]);
@@ -232,7 +237,8 @@ class QuestionController extends GuiController
                                                         "select q.* from OpenExam\Models\Question q "
                                                         .   "inner join OpenExam\Models\Corrector c "
                                                         .   "where q.id = ".$loadBy[2]
-                                                        .   " and c.user = '".$this->user->getPrincipalName()."'"
+                                                        .   (($exam->creator != $this->user->getPrincipalName()) ? 
+                                                                "and c.user = '".$this->user->getPrincipalName()."' " : " ")
                                                 );
                                         $ansData = Answer::find('question_id = '.$loadBy[2]);
                                         $heading = 'Question no. '.$questData[0]->name;
@@ -246,7 +252,8 @@ class QuestionController extends GuiController
                                                         .   "inner join OpenExam\Models\Corrector c "
                                                         .   "inner join OpenExam\Models\Answer a "
                                                         .   "where a.id = ".$loadBy[2]
-                                                        .   " and c.user = '".$this->user->getPrincipalName()."'"
+                                                        .   (($exam->creator != $this->user->getPrincipalName()) ? 
+                                                                "and c.user = '".$this->user->getPrincipalName()."' " : " ")
                                                 );
                                         $ansData = Answer::find('id = ' . $loadBy[2]);
                                         $stData  = Student::findFirst($ansData->student_id);
@@ -271,15 +278,17 @@ class QuestionController extends GuiController
                         
                 } else {
                         // we will show score board
-                        if($exam->decoded == 'N') {
+                        if(!$exam->decoded) {
                                 $questData = $this->phql->executeQuery(
-                                        "select q.* from OpenExam\Models\Question q "
+                                        "select distinct q.* from OpenExam\Models\Question q "
                                         .   "inner join OpenExam\Models\Corrector c "
                                         .   "where exam_id = '".$exam->id."' "
-                                        .   "and c.user = '".$this->user->getPrincipalName()."'"
+                                        .   (($exam->creator != $this->user->getPrincipalName()) ? 
+                                               "and c.user = '".$this->user->getPrincipalName()."' " : " ")
+                                        .   "order by q.name asc"
                                 );
                         } else {
-                                $questData = $exam->getQuestions();
+                                $questData = $exam->getQuestions(array('order'=>'name asc'));
                         }        
                 }
                 

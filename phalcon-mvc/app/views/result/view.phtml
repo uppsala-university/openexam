@@ -359,7 +359,7 @@ td,th {
                                                         <?php foreach($data['examGrades'] as $grade => $threshold):?>
                                                         <tr>
                                                         	<td><?=$grade?></td>
-                                                                <td class="uu-color"><?=sprintf("%1.1f", $threshold)?></td>
+                                                                <td class="uu-color"><?=sprintf("%1.1f", $threshold)?>%</td>
                                                                 <td class="uu-color"><?=$data['studentGrade'][$grade]?></td>
                                                                 <td class="uu-color"><?=sprintf("%1.1f", ($data['studentGrade'][$grade]/$allStudents->count())*100)?>%</td>
                                                         </tr>
@@ -369,9 +369,10 @@ td,th {
                                                         	<td>Summary:</td>
                                                                 <td>---</td>
                                                                 <td><?=$allStudents->count()?></td>
-                                                                <td>@ToDo:Ask Anders!</td>
+                                                                <td>-----</td>
                                                         </tr>
                                                 </table>
+                                                <!--
                                                 <div>
                                                 	This table shows the distribution of scores by student on this examination.
                                                 </div>
@@ -403,8 +404,9 @@ td,th {
                                                 <div>
                                                 The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. The other<br>
                                                 values are calculated by first removing the highest and lowest scores.
-                                                </div>
+                                                </div>-->
                                         </div>
+                                        <!--
                                         <div style="padding-left:35px">
                                                 <h2>Ranges</h2>
                                                 <div>
@@ -435,6 +437,7 @@ td,th {
                                                         </table>
                                                	</div>
                                         </div>
+                                        -->
                                 </div>         
                         </div></div>   
                 <!-- Reference page -->

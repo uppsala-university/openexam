@@ -29,19 +29,19 @@
                         </li>
                 </ul>
         </div>
+
         <div id="lib-items-addables">
                 <div class="libheader" >
-                        <div>
-                                <h1 style="font-size:1.5em">Upload files from your computer ...</h1>
-                        </div>
-                        <div style="text-align:right"> <span class="btn btn-success fileinput-button"> <i class="fa fa-plus-square"></i> <span>Click here to select files</span> 
+                        <div style="text-align:right"> 
+                        	<span class="btn btn-success fileinput-button"> <i class="fa fa-plus-square"></i> <span>Click here to upload files from your computer</span> 
                                 <!-- The file input field used as target for the file upload widget -->
                                 <input type="file" multiple="" name="files[]" id="fileupload">
-                                </span> </div>
+                                </span> 
+                        </div>
                 </div>
                 <div class="libheader" style="padding-top:25px">
                         <div>
-                                <h1 style="font-size:1.5em">Select files from your old uploads ...</h1>
+                                <h1 style="font-size:1.5em">Your previous uploads.</h1>
                         </div>
                         <div style="text-align:right"> </div>
                 </div>
@@ -79,7 +79,7 @@
 					<?php foreach($resource as $rData):?>
                                                 <div class="lib-item" id="lib-item-<?=$rData->id?>"> 
                                                 	<a class="select-lib-img darken" href="#"> 
-                                                        	<img src="<?=$type == 'images' ? $rData->path : $this->url->get('img/file-icon.png')?>" file-path="<?=$rData->path?>" class="lib-img"> 
+                                                        	<img src="<?=$type == 'images' ? $rData->path : $this->url->get('img/file-icon.png')?>" file-path="<?=$rData->path?>" class="lib-img" style="background-color:#fff"> 
                                                                 <span>Click to select</span> 
                                                         </a>
                                                         <div class="title-box">

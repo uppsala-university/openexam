@@ -17,8 +17,8 @@ use  OpenExam\Library\Security\Roles;
  * @ToDO: move to config file
  */
 $sections = array (
-	'creator' => array (
-		'title' => 'Manage your exams',
+	Roles::CREATOR => array (
+		'title' => 'Creator - create and manage an exam',
 		'show-options' => array (
 				'del-exam' => array(
 						'target'=> 'del-exam',
@@ -54,8 +54,8 @@ $sections = array (
 					),
 		)
 	),
-	'contributor' 	=> array (
-		'title' => 'Contribute in an exam',
+	Roles::CONTRIBUTOR => array (
+		'title' => 'Contributor - add questions to an exam',
 		'show-options' => array (
 				'add-q' => array(
 						'target'=> 'exam/update/{exam-id}/contributor/add-q',
@@ -78,69 +78,8 @@ $sections = array (
 					),
 		)
 	),
-	'corrector' 	=> array (
-		'title' => 'Correct an exam',
-		'show-options' => array (
-				'download-result' => array(
-						'target'=> 'exam/{exam-id}/result/download',
-						'show-on-flags' => array (
-							"decoded"
-						)
-					),
-				'view-results' => array(
-						'target'=> 'exam/{exam-id}/result/view',
-						'show-on-flags' => array (
-							"decoded"
-						)
-					),
-				'ans-correction' => array(
-						'target'=> 'exam/{exam-id}/correction',
-						'show-on-flags' => array (
-							"correctable"
-						)
-					),
-				'exam-not-finished' => array(
-						'target'=> '#',
-						'show-on-flags' => array (
-							"upcoming",
-							"running",
-						)
-					),
-		)
-	),
-	'decoder' 	=> array (
-		'title' => 'Decode an exam',
-		'show-options' => array (
-				'download-result' => array(
-						'target'=> 'exam/{exam-id}/result/download',
-						'show-on-flags' => array (
-							"decoded"
-						)
-					),
-				'view-results' => array(
-						'target'=> 'exam/{exam-id}/result/view',
-						'show-on-flags' => array (
-							"decoded"
-						)
-					),
-				'decode-exam' => array(
-						'target'=> 'exam/{exam-id}/decode',
-						'show-on-flags' => array (
-							"decodeable"
-						)
-					),
-				'decode-closed' => array(
-						'target'=> '#',
-						'show-on-flags' => array (
-							"contributable",
-							"running",
-							"correctable"
-						)
-					),
-		)
-	),
-	'invigilator' 	=> array (
-		'title' => 'Invigilate an exam',
+	Roles::INVIGILATOR => array (
+		'title' => 'Invigilator',
 		'show-options' => array (
 				'change-time' => array(
 						'target'=> 'change-time',
@@ -162,7 +101,68 @@ $sections = array (
 					)
 		)
 	),
-	'student-upcoming' => array (
+	Roles::CORRECTOR => array (
+		'title' => 'Corrector - correct the student\'s answers',
+		'show-options' => array (
+				'download-result' => array(
+						'target'=> 'exam/{exam-id}/correction/download-result',
+						'show-on-flags' => array (
+							"decoded"
+						)
+					),
+				'view-results' => array(
+						'target'=> 'exam/{exam-id}/correction',
+						'show-on-flags' => array (
+							"decoded"
+						)
+					),
+				'ans-correction' => array(
+						'target'=> 'exam/{exam-id}/correction',
+						'show-on-flags' => array (
+							"correctable"
+						)
+					),
+				'exam-not-finished' => array(
+						'target'=> '#',
+						'show-on-flags' => array (
+							"upcoming",
+							"running",
+						)
+					),
+		)
+	),
+	Roles::DECODER	=> array (
+		'title' => 'Decoder - view and decode results',
+		'show-options' => array (
+				'download-result' => array(
+						'target'=> 'exam/{exam-id}/correction/download-results',
+						'show-on-flags' => array (
+							"decoded"
+						)
+					),
+				'view-results' => array(
+						'target'=> 'exam/{exam-id}/correction',
+						'show-on-flags' => array (
+							"decoded"
+						)
+					),
+				'decode-exam' => array(
+						'target'=> 'exam/{exam-id}/decode',
+						'show-on-flags' => array (
+							"decodeable"
+						)
+					),
+				'decode-closed' => array(
+						'target'=> '#',
+						'show-on-flags' => array (
+							"contributable",
+							"running",
+							"correctable"
+						)
+					),
+		)
+	),
+	Roles::STUDENT.'-upcoming' => array (
 		'title' => 'Your upcoming/ongoing exams',
 		'show-options' => array (
 				'st-exam-page' => array(
@@ -174,21 +174,27 @@ $sections = array (
 				)
 		)
 	),
-	'student-finished' => array (
+	Roles::STUDENT.'-finished' => array (
 		'title' => 'Your finished exams',
 		'show-options' => array (
 				'download-result' => array(
-						'target'=> 'exam/{exam-id}/result/download',
+						'target'=> 'result/{exam-id}/download',
 						'show-on-flags' => array (
 							"decoded"
 						)
 					),
-				'st-view-exam' => array(
+				'st-exam-correction'	 => array(
+						'target'=> '#',
+						'show-on-flags' => array (
+							"correctable"
+						)
+					)
+				/*'st-view-exam' => array(
 						'target'=> 'exam/{exam-id}/result/view',
 						'show-on-flags' => array (
 							"decoded"
 						)
-					)
+					)*/
 		)
 	),
 );
@@ -211,33 +217,32 @@ $opButtonsHtml = array(
 	'manage-student'=> '<span class="label label-green"><i class="fa fa-user"></i> Manage students</span>',
 	'change-time'	=> '<span class="label label-blue"><i class="fa fa-clock-o"></i> Change schedule</span>',
 	'st-exam-page'	=> '<span class="label label-green"><i class="fa fa-gear"></i> Go to exam page</span>',
-	'st-view-exam'	=> '<span class="label label-green"><i class="fa fa-gear"></i> View exam</span>',	
+	'st-view-exam'	=> '<span class="label label-green"><i class="fa fa-gear"></i> View exam</span>',
+	'st-exam-correction'	=> '<span class="label label-primary"><i class="fa fa-times"></i> Exam correction going on</span>',	
 );
+
+$examsPerPage = 5;
 ?>
 
-<div id="container" class="left_menu_space" class="container" style="width:100%">
+<div id="container" class="left_menu_space container" style="width:100%">
 
 	<div class="hero-unit" style="margin:15px">
-        	<h1>Welcome!</h1>
-		<?php if($baseRole == Roles::STUDENT):?>
-                <h3>Information for students.</h3>
-                <p>
-                	Something important for students
-                </p>
-                <?php else:?>
-                <h3>Information for teachers.</h3>
-                <p>
-                	The teacher section is for teachers or other people that has been granted the teacher, contributor, examinator or decoder role. 
-	                It allows people manage examinations and result from online exams.</p>
-                <p>
-                        If you wish to create your own online exam, contact <a href="mailto:anders.lovgren@bmc.uu.se">Anders Lövgren</a> to gain access to the system. 
-                        General and getting started information can be found on the <a href="help.php">Help</a> page.
-                </p>
-                <?php endif;?>
+        <h1>Hej <?=explode(" ", $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name'))[0]?>!</h1>
+		<div style="padding:10px 0px">
+            The content of this page depends on your level of access (‘role’) in OpenExam. 
+            Information about the different roles (creator, contributor, corrector, invigilator, student) can be found <a href="#">here</a>.  
+		</div>
+		<div style="padding-bottom:5px">
+            If you do not yet have full access, but would like to create your own online exam, <a href="#">contact us</a>.
+		</div>
+		<div>
+            Consult <a href="#">Help</a> for information on how to use OpenExam.
+		</div>
 	</div>
         <section class="ac-container">
-                <?php $sectId = 1;?>
-                <?php foreach($roleBasedExamList as $role => $exams) : ?>
+		<?php $sectId = 1;?>
+		<?php foreach($roleBasedExamList as $role => $exams) : ?>
+		<?php if($role != Roles::CREATOR && !count($exams))continue;?>
                 <div>
                         <input id="ac-<?=$sectId?>" name="accordion-1" type="radio" <?=$sectId == 1 ? "checked" : ""?> />
                         <label for="ac-<?=$sectId?>">
@@ -250,99 +255,124 @@ $opButtonsHtml = array(
                                 <?php endif;?>
                         </label>
                         <?php $title =str_replace(" ", "_", $sections[$role]['title']);?>
-                        <article class="ac-large exam-listing-wrapper" data-id="<?=$title?>" exam-role="<?=($baseRole == Roles::STUDENT ? Roles::STUDENT : $role)?>">
+                        <article class="ac-large exam-listing-wrapper" data-id="<?=$title?>" exam-role="<?=(stristr($role, Roles::STUDENT) ? Roles::STUDENT : $role)?>" section-role="<?=$role?>">
                                 <?php $totalExams = count($exams);?>
                                 <?php if($totalExams):?>
-					<?php if($totalExams > 3):?>
+					<?php if($totalExams > $examsPerPage):?>
                                         <div style="float:right; padding:5px;">
-                                                <input type="text" class="exam-search-box" placeholder="Quick search for exams as exam <?=($baseRole == Roles::STUDENT ? Roles::STUDENT : $role)?>">
+                                                <input type="text" class="exam-search-box" placeholder="Quick search for exams as exam <?=(stristr($role, Roles::STUDENT) ? Roles::STUDENT : $role)?>">
                                                 <span class="label label-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
                                         </div>
                                         <?php endif;?>
-                                <div>
-                                        <div class="exam-listing-area" style="min-height:400px">
-                                                <ul class="list-group exam-list">
-                                                	<?php //if($totalExams > 3):?>
-                                                        <li class="list-group-item" style="background-color: rgb(245, 245, 245); padding: 5px; font-size: 11px;">
-                                                                <span style="font-size:9px">Sort by: </span>
-                                                                <select class="exam-sort-by" style="font-size: 9px; height: 20px; width: 95px;">
-                                                                        <option value="created">Date created</option>
-                                                                        <option value="name">Exam title</option>
-                                                                        <option value="starttime">Exam starts</option>                                                        
-                                                                </select>
-                                                                <i class="fa fa-arrow-circle-down fa-lg exam-sort-order" order="desc" style="color: rgb(193, 0, 43);"></i>
-                                                        </li>
-                                                        <?php //endif;?>
-                                                        <?php $count = 1;?>
-                                                        <?php foreach($exams as $exam):?>
-                                                        <li class="list-group-item" data-id="<?=$exam->id?>">
-                                                                <div style="float:left"> <i class="fa fa-graduation-cap"></i> 
-                                                                        <a href="#" class="exam-name prevent"><?=$exam->name?></a>
-                                                                        <div class="exam-descr" style="color: grey; font-size: 9px;">
-                                                                                <?=substr(strip_tags($exam->descr), 0, 120)." ...";?>
-                                                                        </div>
-                                                                </div>
-                                                                <div style="float:right">
-                                                                        <div class="exam-show-options">
-                                                                        <?php foreach($sections[$role]['show-options'] as $op => $opData):?>
-        
-                                                                                <?php $isUrl = preg_match('/.*\/.*/', $opData['target']);?>
-                                                                                <?php if($opData['show-on-flags'][0] == '*' || count(array_diff($opData['show-on-flags'], $exam->flags)) != count($opData['show-on-flags'])) :?>
-                                                                                        <?php $href = ($isUrl ? str_replace("{exam-id}", $exam->id, $opData['target']) : '#');?>
-                                                                                        <a data-id="<?=$exam->id?>" 
-                                                                                        href="<?=$this->url->get($href)?>" 
-                                                                                        class="<?=($isUrl ? '' : $opData['target'].' prevent')?>">
-                                                                                                <?=$opButtonsHtml[$op]?>
-                                                                                        </a>
+                                        <div>
+                                                <div class="exam-listing-area" style="min-height:400px">
+                                                        <ul class="list-group exam-list">
+                                                                <?php //if($totalExams > $examsPerPage):?>
+                                                                <li class="list-group-item" style="background-color: rgb(245, 245, 245); padding: 5px; font-size: 11px;">
+                                                                        <span style="font-size:9px">Sort by: </span>
+                                                                        <select class="exam-sort-by" style="font-size: 9px; height: 20px; width: 95px;">
+                                                                                <option value="created">Date created</option>
+                                                                                <option value="name">Exam title</option>
+                                                                                <option value="code">Exam code</option>
+                                                                                <option value="starttime">Exam starts</option>                                                        
+                                                                        </select>
+                                                                        <i class="fa fa-arrow-circle-down fa-lg exam-sort-order" order="desc" style="color: rgb(193, 0, 43);"></i>
+                                                                </li>
+                                                                <?php //endif;?>
+                                                                <?php $count = 1;?>
+                                                                <?php foreach($exams as $exam):?>
+                                                                <li class="list-group-item" data-id="<?=$exam->id?>" style=" <?=$exam->published&&$role == Roles::CREATOR?'background-color:#FEFFD5':''?>">
+                                                                        <div style="float:left"> 
+                                                                                <span class="exam-status">
+                                                                                        <?php if($role != Roles::CREATOR):?>
+                                                                                        <i class="fa fa-graduation-cap"></i>
+                                                                                        <?php else:?>
+                                                                                        <i class="fa fa-check-square-o published-exam" style="color:green; <?=!$exam->published?'display:none':''?>"></i>
+                                                                                        <i class="fa fa-pencil-square-o draft-exam" style="color:#666666; <?=$exam->published?'display:none':''?>"></i>
+                                                                                        <?php endif;?>
+                                                                                </span>	
+                                                                                <a href="#" class="exam-name prevent" style="cursor:default">
+                                                                                        <?=trim($exam->name) != "" ? $exam->name : 'Untitled exam'?>
+                                                                                        <?=!empty($exam->code) ? " (".$exam->code.") " :""?>
+                                                                                </a>
+                                                                                <?php if(!empty($exam->starttime)):?>
+                                                                                <span style="font-size:10px; padding-left:15px">
+                                                                                        <i class="fa fa-clock-o"></i>
+                                                                                        <span class="exam-date">
+                                                                                                <span><?=date("Y-m-d", strtotime($exam->starttime));?></span>
+                                                                                        </span>
+                                                                                        <span class="exam-starts"><?=date("H:i", strtotime($exam->starttime))?></span>
+                                                                                        &#8594;
+                                                                                        <span class="exam-ends"><?=!empty($exam->endtime) ? date("H:i", strtotime($exam->endtime)) : ''?></span>
+                                                                                </span>
                                                                                 <?php endif;?>
                                                                                 
-                                                                        <?php endforeach;?>
+                                                                                
+                                                                                <?php /*
+                                                                                <div class="exam-descr" style="color: grey; font-size: 9px;">
+                                                                                        <?=substr(strip_tags($exam->descr), 0, 120)." ...";?>
+                                                                                </div>
+                                                                                */?>
                                                                         </div>
-                                                                        <?php if(!empty($exam->starttime)):?>
-                                                                        <div style="padding-top: 5px; float:right; clear:both">
-                                                                                <span class="exam-date" style="padding-right: 5px; font-size: 9px;">
-                                                                                        <i class="fa fa-calendar"></i>
-                                                                                        <span><?=date("Y-m-d", strtotime($exam->starttime))?></span>
-                                                                                </span> 
-                                                                                <span style="font-size: 9px;"> <i class="fa fa-clock-o"></i>
-                                                                                        <span class="exam-starts"><?=date("H:m", strtotime($exam->starttime))?></span>
-                                                                                        &mdash;
-                                                                                        <span class="exam-ends"><?=date("H:m", strtotime($exam->endtime))?></span>
-                                                                                </span> 
+                                                                        <div style="float:right">
+                                                                                <div class="exam-show-options">
+                                                                                <?php foreach($sections[$role]['show-options'] as $op => $opData):?>
+                
+                                                                                        <?php $isUrl = preg_match('/.*\/.*/', $opData['target']);?>
+                                                                                        <?php if($opData['show-on-flags'][0] == '*' || count(array_diff($opData['show-on-flags'], $exam->flags)) != count($opData['show-on-flags'])) :?>
+                                                                                                <?php $href = ($isUrl ? str_replace("{exam-id}", $exam->id, $opData['target']) : '#');?>
+                                                                                                <a data-id="<?=$exam->id?>" 
+                                                                                                href="<?=$this->url->get($href)?>" 
+                                                                                                class="<?=($isUrl ? '' : $opData['target'].' prevent')?>">
+                                                                                                        <?=$opButtonsHtml[$op]?>
+                                                                                                </a>
+                                                                                        <?php endif;?>
+                                                                                        
+                                                                                <?php endforeach;?>
+                                                                                </div>
+                                                                                <div style="padding-top: 5px; float:right; clear:both; display:none">
+                                                                                        <span class="exam-date" style="padding-right: 5px; font-size: 9px;">
+                                                                                                <i class="fa fa-calendar"></i>
+                                                                                                <span><?=date("Y-m-d", strtotime($exam->starttime))?></span>
+                                                                                        </span> 
+                                                                                        <span style="font-size: 9px;"> <i class="fa fa-clock-o"></i>
+                                                                                                <span class="exam-starts"><?=date("H:i", strtotime($exam->starttime))?></span>
+                                                                                                &mdash;
+                                                                                                <span class="exam-ends"><?=date("H:i", strtotime($exam->endtime))?></span>
+                                                                                        </span> 
+                                                                                </div>
                                                                         </div>
-                                                                        <?php endif;?>
-                                                                </div>
-                                                                <div style="clear:both"></div>
-                                                        </li>
-                                                        <?php if($count == 3) break;?>
-                                                        <?php $count++;?>
-                                                        <?php endforeach;?>
-                                                </ul>
-                                                <?php
-                                                $totalPages = ceil($totalExams/3);
-                                                if($totalPages > 1):
-                                                ?>
-                                                <div style=" float: right; left: -50%; margin-bottom: 2em; position: relative; text-align: left;">
-                                                        <ul class="pagination" style="left: 50%; list-style: none outside none; margin: 0; padding: 0; position: relative;">
-                                                                <!--<li class="disabled"><a href="#">«</a></li>-->
-                                                                <?php for($i=1; $i<=$totalPages; $i++):?>
-                                                                <li class="<?=($i == 1) ? 'active':''?>" offset="<?=(($i-1) * 3)?>">
-                                                                	<a href="#"><?=$i?><span class="sr-only">(current)</span></a> 
+                                                                        <div style="clear:both"></div>
                                                                 </li>
-                                                                <?php endfor;?>
+                                                                <?php if($count == $examsPerPage) break;?>
+                                                                <?php $count++;?>
+                                                                <?php endforeach;?>
                                                         </ul>
+                                                        <?php
+                                                        $totalPages = ceil($totalExams/$examsPerPage);
+                                                        if($totalPages > 1):
+                                                        ?>
+                                                        <div style=" float: right; left: -50%; margin-bottom: 2em; position: relative; text-align: left;">
+                                                                <ul class="pagination" style="left: 50%; list-style: none outside none; margin: 0; padding: 0; position: relative;">
+                                                                        <!--<li class="disabled"><a href="#">«</a></li>-->
+                                                                        <?php for($i=1; $i<=$totalPages; $i++):?>
+                                                                        <li class="<?=($i == 1) ? 'active':''?>" offset="<?=(($i-1) * $examsPerPage)?>">
+                                                                                <a href="#" style="padding:0px 9px"><?=$i?><span class="sr-only">(current)</span></a> 
+                                                                        </li>
+                                                                        <?php endfor;?>
+                                                                </ul>
+                                                        </div>
+                                                        <?php endif;?>
                                                 </div>
+                                        </div>       
+                                        <?php else:?>
+                                        <div class="exam-listing-default-msg"> 
+                                                <?php if(stristr($role, Roles::STUDENT)):?>
+                                                <i class="fa fa-info-circle"></i> Currently you don't have any <?=str_replace("student-", "",$role)?> exams.
+                                                <?php else:?>
+                                                <i class="fa fa-info-circle"></i> Currently you don't have any exams as <?=$role?>.
                                                 <?php endif;?>
                                         </div>
-                                </div>       
-                                <?php else:?>
-                                <div class="exam-listing-default-msg"> 
-                                	<?php if($baseRole == Roles::STUDENT):?>
-                                        <i class="fa fa-info-circle"></i> Currently you don't have any <?=str_replace("student-", "",$role)?> exams.
-                                        <?php else:?>
-                                        <i class="fa fa-info-circle"></i> Currently you don't have any exams as <?=$role?>.
-                                        <?php endif;?>
-                                </div>
                                 <?php endif;?>
                         </article>
                         <?php $examData = array();?>
@@ -383,7 +413,7 @@ $opButtonsHtml = array(
                 	<div>
                                 Examination date:
                                 <div> 
-                                <input type="text" class="datepicker" id="exam-date" value="" style="height:15px;" />
+                                <input type="text" class="datepicker" id="exam-date" value="" style="height:15px; display:none" />
                                 </div>
                         </div>
                 </div>         
@@ -399,5 +429,6 @@ $(function() {
 	$('.datepicker').datepicker({"dateFormat": "yy-mm-dd"});
 	$('.timepicker').timepicker();
 });
-var examSections = <?=json_encode($sections);?>
+var examSections = <?=json_encode($sections);?>;
+var examPerPage = <?=$examsPerPage?>;
 </script>

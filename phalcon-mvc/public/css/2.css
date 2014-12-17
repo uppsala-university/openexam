@@ -5313,14 +5313,14 @@ a.selected-lib-img .lib-img {
 
 #lib-items-added {
         clear:both; 
-        float:left; 
+        float:right; 
         width:55%;
 }
 
 #lib-items-addables {
-        float:right; 
+        float:left; 
         width: 40%; 
-        border-left:5px #999999 solid; 
+        border-right:5px #999999 solid; 
         height:100%; 
         min-height:200px; 
         padding:5px		
@@ -5359,6 +5359,9 @@ td.nc {
 }
 td.nc a{
 	color:#41612c;
+}
+td.no a{
+    color:#606060;
 }
 td.ac {
     background-color: #ffffff;
@@ -5443,3 +5446,4 @@ table {
 	padding:0px !important;
 	font-size:11px !important;	
 }
+

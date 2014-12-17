@@ -13,10 +13,11 @@
  * @param {string} target [e.g: undefined, 'return', '#id-of-element', '.class-name']
  * @param {type} type [POST, GET]
  */ 
-    var ajax = function (url, data, callback, type, async) {
+    var ajax = function (url, data, callback, type, async, showSuccessMsg) {
 
             type  = typeof type !== 'undefined' ? type : 'POST';
 	    async = typeof async !== 'undefined' ? async : true;
+	    showSuccessMsg = typeof showSuccessMsg !== 'undefined' ? showSuccessMsg : true;
 
             var request = $.ajax({
                     url: url,
@@ -35,13 +36,16 @@
                     } else if (typeof response.success != "undefined") {
 
                             callback(response.success.return);
-                            if (response.success.action == 'create') {
-                                showMessage("Data has been inserted.", 'success');
-                            } else if(response.success.action == 'update') {
-                                showMessage("Updated successfully.", 'success');
-                            } else if (response.success.action == 'delete') {
-                                showMessage("Record has been successfully deleted.", 'success');
-                            }
+			    
+			    if(showSuccessMsg) {
+				    if (response.success.action == 'create') {
+					showMessage("Data has been inserted.", 'success');
+				    } else if(response.success.action == 'update') {
+					showMessage("Updated successfully.", 'success');
+				    } else if (response.success.action == 'delete') {
+					showMessage("Record has been successfully deleted.", 'success');
+				    }
+			    }
                     } else {
                         showMessage( 'Request failed. Please contact system administrators.', 'error');
                     }

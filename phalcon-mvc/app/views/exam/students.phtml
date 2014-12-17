@@ -15,22 +15,24 @@ endforeach;
         	<h3><?=$exam->name?></h3>
         </div>
         <div class="tabs">
-                <ul>
+		<ul>
                         <li><a href="#tabs-1">Add new students</a></li>
                         <li><a href="#tabs-2">Manage existing students</a></li>
                 </ul>
                 <div id="tabs-1">
 
                         <div class="accordion">
-                            <h3>Add single or multiple students</h3>
+			    <h3>Add single or multiple students</h3>
                             <div>
                                 <p>
-                                    Write usernames and exam code of single or multiple students. Username and exam code should be space seprated.
-                                    To add multiple students, data of students should be comma seprated.
+                                    Write usernames and exam code (optional) of single or multiple students. Username and exam code should be space seprated.
+                                    To add multiple students, data of students should be new line seprated.
                                     <br />
                                     <small>
                                     Format to add single student: <strong>username code</strong><br />
-                                    Format to add multiple student: <strong>username1 code1, username2 code2</strong><br />
+                                    Format to add multiple student: <br />
+                                    <strong>username1 code1</strong><br />
+                                    <strong>username2 code2</strong>
                                     </small>
                                 </p>
                                 <textarea id="student_list" placeholder="username code" style="height:100px; width:480px"></textarea>
@@ -42,7 +44,8 @@ endforeach;
                                         </span>
                                 </div>                                
                             </div>
-                            <h3>Import from file</h3>
+                            <?php if($this->user->getPrincipalName() == $exam->creator):?>
+			    <h3>Import from file</h3>
                             <div>
                                 <p>
                                         Instructions about the file to be imported.
@@ -73,6 +76,7 @@ endforeach;
                                         </span>
                                 </div>                                
                             </div>
+			    <?php endif;?>
                         </div>
                 </div>
                 <div id="tabs-2">
@@ -86,6 +90,9 @@ endforeach;
                        	<!--
                         <a href="#" id="lsit-all-students" class="prevent" style="color:#CC0066"> View list of all students</a><br />
                         -->
+			<div id="no-student-msg" style=" <?=(count($students)?'display:none':'')?>">
+				<em>No students have been added to the exam yet.</em>
+			</div>
 			<ul class="student-list" style="list-style:none; max-height:500px; overflow:auto; margin-left:0px" >
                                 <li style="float: left; background-color: #FEFF99; border: 1px solid rgb(222, 222, 222); padding: 5px; margin:2px; display:none">
                                         <a href="#" class="prevent del-student" data-id=""><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
@@ -109,6 +116,7 @@ var studentList = <?=json_encode($stList)?>;
 $(function() {
 
 	$('.tabs').tabs();
+	
 	$( ".accordion" ).accordion({
       		heightStyle: "content"
 	});
@@ -174,7 +182,11 @@ $(function() {
 						// hide
 						$(this).remove();
 					});
-		
+					
+					if($('.total-exam-students')) {
+						$('.total-exam-students').html($('.student-list').find('li').length-1);
+					}
+					
 				}
 			);
 		}
@@ -185,14 +197,16 @@ $(function() {
 		stData = [];
 		examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
 		if(examId) {
-			stList = jQuery.trim($('#student_list').val()).split(',');
+			stList = jQuery.trim($('#student_list').val()).split("\n");
 			
 			//prepare data object
-                        var totalStudents = 0;
+            var totalStudents = 0;
 			$.each(stList, function(i, val) {
-				st = jQuery.trim(val).split(/\s/g);
-				stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
-                                totalStudents++;
+				if(jQuery.trim(val)!='') {
+					st = jQuery.trim(val).split(/\s/g);
+					stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
+					totalStudents++;
+				}
 			});
 
 			// send ajax request to add these students to the exam
@@ -216,7 +230,14 @@ $(function() {
                                                         .find('span').html(userData.user+" - "+userData.code).end()
                                                         .show();
                                                 $('.student-list').prepend($(newItem));
-                                        }        
+                                        }
+					$(".tabs").tabs("option", "active", 1);
+
+					if($('.total-exam-students')) {
+						$('.total-exam-students').html($('.student-list').find('li').length-1);
+					}
+					
+					$('#no-student-msg').hide();
 				}
 			);
 		}

@@ -5,8 +5,7 @@ use \OpenExam\Library\Security\Roles;
 $oBullet = Phalcon\Tag::image(array("img/openeopt.png", "class" => "bullet-opened")); 
 $userRoles = array('contributor' => 'Contributors', 'decoder' => 'Decoders', 'invigilator' => 'Invigilators');
 $i = 1;
-$canUpdateExam = $capabilities->hasCapability($exam, 'update');
-
+$canUpdateExam = $this->capabilities->hasCapability($exam, 'update'); 
 ?>
 <!-- Left Column -->
 
@@ -15,19 +14,17 @@ $canUpdateExam = $capabilities->hasCapability($exam, 'update');
                 <ul class="menuLevel0">
                         <?php foreach($userRoles as $model => $role):?>
                         <li> 
-                                <a href="#" class="prevent" data-model="<?=$model?>" id="uu-id<?=$i++?>">
-                                <?=$oBullet?>
-                                &nbsp;
-                                <?=$role?>
-                                <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
-                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "search-ldap")); ?>
-                                <?php endif;?>
+				<?php $roleData =  $exam->$role;?>
+                                <a href="#" class="bullet-open" rel="menuLevel1" data-model="<?=$model?>" id="uu-id<?=$i++?>">
+					<?=$oBullet?> &nbsp; <?=$role?>
                                 </a>
+				
+				<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)):?>
+				<?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "search-ldap", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+				<?php endif;?>
                                 
-                                
-                                <?php $roleData =  $exam->$role;?>
                                 <ul class="menuLevel1">
-                                        <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+                                        <?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'delete') && in_array("editable", $exam->flags)):?>
                                         <li style="display:none">
                                                 <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> "")); ?>
                                                 <a href="#" class="prevent"><span class="left-col-user" data-user=""></span></a> 
@@ -40,7 +37,7 @@ $canUpdateExam = $capabilities->hasCapability($exam, 'update');
                                         
                                         <?php foreach( $roleData as $data ):?>
                                         <li>
-                                        	<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+                                        	<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'delete') && in_array("editable", $exam->flags)):?>
                                                 <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> $data->id)); ?>
                                                 <?php endif;?>
                                                 
@@ -57,29 +54,51 @@ $canUpdateExam = $capabilities->hasCapability($exam, 'update');
                         </li>
                         <?php endforeach;?>
                         
-                        <!-- question listing section -->
-                        <?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+			<!-- students listing section -->
+			<?php if($this->user->getPrimaryRole()==Roles::CREATOR):?>
                         <li> 
-                        	<a href="#" class="prevent">
+                        	<a href="#" class="bullet-open manage-students">
+                                <?=Phalcon\Tag::image(array("img/closedopt.png"))?>
+				&nbsp;Students (<span class="total-exam-students"><?=count($exam->getStudents())?></span>)
+                                </a>
+				
+				<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)):?>
+					<?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "manage-students", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+				<?php endif;?>
+                        </li>
+			<?php endif;?>
+			
+                        <!-- question listing section -->
+                        <?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'topic', 'update') && in_array("editable", $exam->flags)):?>
+                        <li> 
+                        	<a href="#" class="bullet-open" rel="menuLevel1">
                                 <?=$oBullet?>
                                 &nbsp;Questions &nbsp;
-                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "add_new_qs")); ?>
                                 </a>
-                                
-                                <?php $topics = $exam->getTopics();?>
+				
+				
+				<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)):?>
+				<?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "add_new_qs", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+				<?php endif;?>
+				
+
+				<a href="#" class="prevent add-q-topic" style="margin: 0px; padding:0px 30px"> 
+					<span style="color:#99001d; font-size:9px;">
+						<?=Phalcon\Tag::image(array("img/plus-circle.png", "height" => "10"))?>
+						Add new question section 
+					</span> 
+				</a> 
+                                <?php $questionNo = 1;?>
+                                <?php $topics = $exam->getTopics(array("order" => "slot"));?>
                                 <ul class="menuLevel1 sortable-q-topic">
-                                        <li> 
-                                        	<a href="#" class="prevent add-q-topic" style="padding-bottom: 15px"> <span style="color:#99001d; font-size:9px;">
-							<?=Phalcon\Tag::image(array("img/plus-circle.png", "height" => "10"))?>
-                                                        Add a question section </span> 
-  	                                        </a> 
-                                        </li>
                                         <?php foreach($topics as $key => $topic):?>
-                                        <?php $topicQs = $topic->getQuestions(array("order" => "name"));?>
+                                        <?php $topicQs = $topic->getQuestions(array("order" => "slot"));?>
                                         <li> 
+						<span class="bullet-open" rel="menuLevel2" style="cursor:pointer">
+							<?=Phalcon\Tag::image(array("img/openeopt.png", "class" => "bullet-opened", "style" => "float:left; margin-left: 25px; margin-top:3px"))?>
+						</span>
                                         	<a href="#" class="topic-line prevent" style=" <?=(count($topics) == 1 ? 'display:none': '')?>">
                                                         <div>
-                                                                <?=$oBullet?>
                                                                 &nbsp; 
                                                                 <span style="color:#004276" class="topic-name" data-id="<?=$topic->id?>"><?=$topic->name?></span> 
                                                                 <i class="fa fa-gear topic-settings" data-randomize="<?=$topic->randomize?>"></i> 
@@ -94,10 +113,11 @@ $canUpdateExam = $capabilities->hasCapability($exam, 'update');
                                                 <ul class="menuLevel2 sortable-qs" topic-id="<?=$topic->id?>">
                                                         <?php foreach($topicQs as $key => $question):?>
                                                         <?php $questArr = json_decode($question->quest, true);?>
-                                                        <li> 
-                                                        	<span class="q" q-no="<?=$question->name?>">Q<?=$question->name?>:</span> 
+                                                        <li q-id="<?=$question->id?>"> 
+                                                        	<span class="q" q-no="<?=$questionNo?>">Q<?=$questionNo?>:</span> 
                                                                 <span class="q-txt"><?=substr(strip_tags($questArr['a']['q_text']), 0, 75)?></span> 
                                                         </li>
+							<?php $questionNo++?>
                                                         <?php endforeach;?>
 							<li style="display:none"> <span class="q" q-no=""></span> <span class="q-txt"></span> </li>                                                </ul>
                                         </li>
@@ -113,7 +133,7 @@ $canUpdateExam = $capabilities->hasCapability($exam, 'update');
 </div>
 
 <!--------------- Hidden Divs -----------------> 
-<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'topic', 'update') && in_array("editable", $exam->flags)):?>
 <!-- Question topic settings -->
 <div style="display:none" id="question-topic-settings-box">
         <div style="font-size:8px"> If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. This value is used for duggor, leave it as zero for ordinary examinations (use all questions). </div>
@@ -265,6 +285,7 @@ $canUpdateExam = $capabilities->hasCapability($exam, 'update');
 			
 			closeTooltips();
 		});
+		
 		
 	});
 </script> 

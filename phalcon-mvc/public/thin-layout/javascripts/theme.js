@@ -47,6 +47,9 @@
       });
     }
     nav_toggler.on(click_event, function() {
+      if ($(this).hasClass('url')) {
+	  return true;    
+      }
       if (nav_open()) {
         $(document).trigger("nav-close");
         $.cookie('qs-menu', 'nav-close');

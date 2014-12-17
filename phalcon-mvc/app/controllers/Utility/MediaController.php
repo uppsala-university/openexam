@@ -126,7 +126,7 @@ class MediaController extends ControllerBase
                         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                         header('Content-Type: ' . $contentType . '; charset=utf-8');
                         header('Content-Length: ' . $size);
-                        header('Content-Disposition: attachment; filename="' . basename($path) . '"');
+                        header('Content-Disposition: inline; filename="' . basename($path) . '"');//attachment
                         header('Content-Transfer-Encoding: binary');
 
                         for ($i = 0; $i <= $size; $i = $i + $speed) {

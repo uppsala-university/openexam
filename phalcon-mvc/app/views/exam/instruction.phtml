@@ -30,7 +30,7 @@
                 <center>
                 <input onClick="javascript:location.href='<?=$this->url->get('exam/'.$exam->id.'/question/1')?>';" class="btn btn-success btn-lg" value="I am ready, start the exam <?=$testMode?'in test mode':''?>" type="button" style=" <?=(strtotime($exam->starttime) <= strtotime("now")) ? '':'display:none'?>">
                 <?php if(strtotime($exam->starttime) > strtotime("now")):?>
-                <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam <?=$testMode?'testing':''?> starts in: " type="button" disabled="disabled">
+                <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam <?=$testMode?'testing':''?> starts in: " type="button" disabled="disabled" style="font-size:45px; margin:14% 0px">
                 <?php endif;?>
                 </center>
         </div>        
@@ -42,7 +42,9 @@ $('#main-nav-bg').remove();
 $('#content').css("margin-left", "0px");
 $('.toggle-nav').remove();
 <?php if(strtotime($exam->starttime) > strtotime("now")):?>
-var examStartCount = <?=(strtotime(!$testMode ? $exam->starttime : "+10 seconds") - strtotime("now"))?>;
+$('.exam-descr').hide();
+$('.alert').hide();
+var examStartCount = <?=(strtotime(!$testMode ? $exam->starttime : "+4 seconds") - strtotime("now"))?>;
 var examStartCountDown = setInterval(function() {
 	examStartCount--;
 	if (examStartCount <= 0)
@@ -50,11 +52,13 @@ var examStartCountDown = setInterval(function() {
 		$('#countdown-btn').hide();
 		$('.btn-success').show(500);
 		clearInterval(examStartCountDown);
-		
+		$('.exam-descr').show();
+		$('.alert').show();
 		return;
 	}
 	$("#countdown-btn").val("Exam <?=$testMode?'testing':''?> starts in: " + toHHMMSS(examStartCount));
-
+	$('.exam-descr').hide();
+	$('.alert').hide();
 }, 1000); 
 <?php endif;?>
 

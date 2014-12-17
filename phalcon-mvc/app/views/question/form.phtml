@@ -136,10 +136,17 @@
                 </div>
         </div>
         <br style="clear:both" />
-        <?php //if($this->user->getPrincipalName() == $exam->creator):?>
-        <div style="margin:25px 10px" id="q_correctors">
+	<?php 
+	$showCorrectors = $this->user->getPrincipalName() == $exam->creator || $this->user->aquire(array(OpenExam\Library\Security\Roles::ADMIN)) ? true : false;
+	/*if(is_object($question)):
+		$showCorrectors = $this->capabilities->hasCapability($question, 'update');
+	else:
+		$showCorrectors = $this->user->getPrincipalName() == $exam->creator;
+	endif;*/
+	?>
+        <div style="margin:25px 10px; <?=(!$showCorrectors ? "display:none":"")?>" id="q_correctors">
                 <article class="ac-large">
-                        <?php $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')." [".$this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'uid')."]");?>
+                        <?php $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')." [".$this->user->getUser()."]");?>
                         <div style="font-weight:bold"> Question Correctors: <a href="#" onClick="return false;">
                                 <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "id" => "uu-id4")); ?>
                                 </a> <br>
@@ -150,7 +157,9 @@
                                                         <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class"=>'del-corrector')); ?>
                                                         <?php if(is_object($corrector)):?>
                                                         <span data-user="<?=$corrector->user?>" data-rec="<?=$corrector->id?>" class="left-col-user" style="font-size:11px">
-                                                        <?=$corrector->user?>
+                                                        <?=$this->helper->getCatalogAttribute($corrector->user, 'name').
+							" [".$this->helper->getCatalogAttribute($corrector->user, 'uid')."]"
+							?>
                                                         </span>
                                                         <?php else:?>
                                                         <span data-user="<?=$k?>" class="left-col-user" style="font-size:11px">
@@ -164,7 +173,19 @@
                         </div>
                 </article>
         </div>
-        <?php //endif;?>
+        <?php $topics = $exam->getTopics();?>
+        <div style="margin:25px 10px; <?=(count($topics) <= 1 ? "display:none":"")?>" id="q_topic">
+                <article class="ac-large">
+                        <div style="font-weight:bold"> 
+                                Question section: <br />
+                                <select id="q-topic-sel">
+                                        <?php foreach($topics as $topic):?>
+                                                <option value="<?=$topic->id?>" <?=($question->topic_id == $topic->id)?'selected':''?>><?=$topic->name?></option>
+                                        <?php endforeach;?>
+                                </select>
+                        </div>
+                </article>
+        </div>
 </div>
 
 <!-- dialog for resource selection from Library -->

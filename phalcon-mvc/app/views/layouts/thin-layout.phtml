@@ -54,6 +54,14 @@
         <a class='toggle-nav btn pull-left' href='#'>
           <i class='icon-reorder'></i>
         </a>
+        <?php if($testMode):?>
+	<a href="<?=$this->url->get('exam/index')?>" class="toggle-nav btn url">
+          <i class="icon-ok-circle" style="color:#F4E374"> 
+          	<span style='color:#fff; font-family:"open sans","Lucida Grande",Lucida,Verdana,Helvetica,sans-serif'>Finish Test mode and return back</span>
+          </i>
+        </a>
+        <?php endif;?>
+        
         <ul class='nav'>
 <li class='dropdown light only-icon'>
             <a class='dropdown-toggle' data-toggle='dropdown' href='#'>
@@ -72,8 +80,10 @@
           
 	  <li class="dropdown dark user-menu">
             <a class='dropdown-toggle' data-toggle='dropdown' href="#">
-              <span class="user-name"><?=$this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')?> &nbsp;<span style="color:#f9c271"><?=$this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'pnr')?></span><!--#FFFF66--></span>
-              <b class='caret'></b>
+              <span class="user-name"><?=$this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')?> &nbsp;
+                  <span style="color:#f9c271"><?=$this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'pnr')?></span><!--#FFFF66--></span>
+                <span><?=$this->user->getPrincipalName()?></span>
+                <b class='caret'></b>
             </a>
 	    <ul class='dropdown-menu' style="width:275px">
               <!--<li class='divider'></li>-->
@@ -99,7 +109,7 @@
 
     
     <!-- page wrapper -->
-    <?php $allQs = $exam->getQuestions();?>
+    <?php $allQs = $exam->getQuestions(array("order" => "slot"));?>
     <div id='wrapper'>
       <?php if(isset($viewMode)):?>
       <div id='main-nav-bg'></div>
@@ -113,12 +123,12 @@
                                 <div style="float:left; width:80%"><span>Exam Instructions</span></div>
                               </a>
                     </li>
-        	    <?php foreach($allQs as $question):?>
+        	    <?php foreach($allQs as $qNo => $question):?>
                     <?php $questionData = json_decode($question->quest);?>
 
-                    <li class='<?=($viewMode == 'single' && $question->name == $quest[0]->name ? 'active' : '')?>' id="q<?=$question->name?>_short">
-                              <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.$question->name)?>" style=" <?=(in_array($question->id, $highlightedQs) === TRUE ? 'background-color: #FEFF99;':'')?>"><!--#FBC676-->
-                                      <div style="float:left; width:20%"><i class="icon-q<?=$question->name?>" ></i></div>
+                    <li class='<?=($viewMode == 'single' && $question->id == $quest[0]->id ? 'active' : '')?>' id="q<?=$qNo+1?>_short">
+                              <a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.$question->id)?>" style=" <?=(in_array($question->id, $highlightedQs) === TRUE ? 'background-color: #FEFF99;':'')?>"><!--#FBC676-->
+                                      <div style="float:left; width:20%"><i class="icon-q<?=$qNo+1?>" ></i></div>
                                       <div style="float:left; width:80%; max-height:27px"><span><?=substr(strip_tags($questionData->a->q_text), 0, 65)?></span></div>
                               </a>
                     </li>
@@ -205,34 +215,34 @@
 	/*----------------------------------------------------------*/ 
 	/*	Count down timer related functions for exam	    */
 	/*----------------------------------------------------------*/
-	
-	<?php if(strtotime($exam->starttime) <= strtotime("now")):?>
-	var count 	= <?=$secDiff?>;
-	var counter	= setInterval(timer, 1000); 
-	<?php endif;?>
-	
-	function timer () {
-		count=count-1;
-		if (count <= 0)
-		{
-			syncAnswers(true);
-			alert("Exam time has been finished");
-			clearInterval(counter);
-			return;
+	<?php if(!$testMode):?>
+		<?php if(strtotime($exam->starttime) <= strtotime("now")):?>
+		var count 	= <?=$secDiff?>;
+		var counter	= setInterval(timer, 1000); 
+		<?php endif;?>
+		
+		function timer () {
+			count=count-1;
+			if (count <= 0)
+			{
+				syncAnswers(true);
+				alert("Exam time has been finished");
+				clearInterval(counter);
+				return;
+			}
+			$("#timer").html(toHHMMSS(count));
 		}
-		$("#timer").html(toHHMMSS(count));
-	}
-	function toHHMMSS (sec) {
-		var sec_num = parseInt(sec, 10);
-		var hours   = Math.floor(sec_num / 3600);
-		var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-		var seconds = sec_num - (hours * 3600) - (minutes * 60);
-	
-		if (hours   < 10) {hours   = "0"+hours;}
-		if (minutes < 10) {minutes = "0"+minutes;}
-		if (seconds < 10) {seconds = "0"+seconds;}
-		var time    = hours+':'+minutes+':'+seconds;
-		return time;
-	}
-	
+		function toHHMMSS (sec) {
+			var sec_num = parseInt(sec, 10);
+			var hours   = Math.floor(sec_num / 3600);
+			var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+			var seconds = sec_num - (hours * 3600) - (minutes * 60);
+		
+			if (hours   < 10) {hours   = "0"+hours;}
+			if (minutes < 10) {minutes = "0"+minutes;}
+			if (seconds < 10) {seconds = "0"+seconds;}
+			var time    = hours+':'+minutes+':'+seconds;
+			return time;
+		}
+	<?php endif;?>	
     </script>
