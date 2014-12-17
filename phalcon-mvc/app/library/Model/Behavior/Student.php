@@ -46,6 +46,13 @@ class Student extends ModelBehavior
                         // 
                         if ($options['user']) {
                                 if (preg_match(Pattern::PERSNR, $model->user, $matched)) {
+                                        if (strlen($matched[1]) == 6) {   // short year
+                                                if (date('y') < substr($matched[1], 0, 2)) {
+                                                        $matched[1] = 19 . $matched[1];
+                                                } else {
+                                                        $matched[1] = 20 . $matched[1];
+                                                }
+                                        }
                                         $persnr = sprintf("%s%s", $matched[1], $matched[2]);
                                         $model->user = $this->getUser($model->user, $persnr, $model->getDI());
                                 }
