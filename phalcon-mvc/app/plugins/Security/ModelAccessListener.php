@@ -71,7 +71,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
         {
                 $type = $event->getType();
                 $name = $model->getResourceName();
-                $addr = $this->request->getClientAddress();
+                $addr = $this->request->getClientAddress(true);
 
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
