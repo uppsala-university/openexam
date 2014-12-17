@@ -125,6 +125,13 @@ class QuestionAccess extends ObjectAccess
                                     }
                             }
 
+                            // 
+                            // Deny delete question if answers exist.
+                            // 
+                            if ($action == self::DELETE && $model->answers->count() > 0) {
+                                    throw new Exception("Question with answers can't be deleted", Exception::ACTION);
+                            }
+
                             return true;
                     });
         }

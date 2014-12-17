@@ -108,6 +108,13 @@ class AnswerAccess extends ObjectAccess
                                     }
                             }
 
+                            // 
+                            // Don't allow real answers to be deleted.
+                            // 
+                            if ($action == self::DELETE && $model->answered) {
+                                    throw new Exception("Deleting answer is not allowed", Exception::ACTION);
+                            }
+
                             return true;
                     });
         }
