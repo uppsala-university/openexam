@@ -3,7 +3,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\UUID;
-use Phalcon\Mvc\Model\Relation;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * Question topic.
@@ -94,6 +94,17 @@ class Topic extends ModelBase
                                 'force' => false
                         )
                 )));
+        }
+
+        public function validation()
+        {
+                $this->validate(new Uniqueness(
+                    array(
+                        "field"   => array("name", "exam_id"),
+                        "message" => "This topic has already been added"
+                    )
+                ));
+                return $this->validationHasFailed() != true;
         }
 
         /**

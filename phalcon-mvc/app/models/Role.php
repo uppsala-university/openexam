@@ -17,6 +17,7 @@ use OpenExam\Library\Catalog\DirectoryManager;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Security\User;
 use OpenExam\Models\ModelBase;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * Base class for all role models.
@@ -46,6 +47,26 @@ class Role extends ModelBase
         {
                 parent::initialize();
                 $this->catalog = $this->getDI()->getCatalog();
+        }
+
+        public function validation()
+        {
+                if (property_exists($this, 'exam_id')) {
+                        $this->validate(new Uniqueness(
+                            array(
+                                "field"   => array("user", "exam_id"),
+                                "message" => "This role has already been granted"
+                            )
+                        ));
+                } else {
+                        $this->validate(new Uniqueness(
+                            array(
+                                "field"   => "user",
+                                "message" => "This role has already been granted"
+                            )
+                        ));
+                }
+                return $this->validationHasFailed() != true;
         }
 
         /**
