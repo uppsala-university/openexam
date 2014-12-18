@@ -323,7 +323,8 @@ $examsPerPage = 5;
                                                                                                 <?php $href = ($isUrl ? str_replace("{exam-id}", $exam->id, $opData['target']) : '#');?>
                                                                                                 <a data-id="<?=$exam->id?>" 
                                                                                                 href="<?=$this->url->get($href)?>" 
-                                                                                                class="<?=($isUrl ? '' : $opData['target'].' prevent')?>">
+                                                                                                class="<?=($isUrl ? '' : $opData['target'].' prevent')?>"
+												<?php (stristr($role, Roles::STUDENT))?'target="_blank"':''?>>
                                                                                                         <?=$opButtonsHtml[$op]?>
                                                                                                 </a>
                                                                                         <?php endif;?>
