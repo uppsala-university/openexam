@@ -12,7 +12,6 @@ use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Query\Builder;
-use Phalcon\Mvc\Model\Relation;
 
 /**
  * The exam model.
@@ -277,6 +276,8 @@ class Exam extends ModelBase
                 $state = new State($this);
                 $this->state = $state->getState();
                 $this->flags = $state->getFlags();
+                $this->setStudentDatetime();
+
                 parent::afterFetch();
         }
 
@@ -560,6 +561,35 @@ class Exam extends ModelBase
                 }
 
                 return $result;
+        }
+
+        private function setStudentDatetime()
+        {
+                // 
+                // Adjust start/endtime per student:
+                // 
+                $user = $this->getDI()->get('user');
+                $role = $user->setPrimaryRole(Roles::SYSTEM);
+
+                if ($role == Roles::STUDENT) {
+                        if (($student = Student::findFirst(array(
+                                    'conditions' => 'user = :user: AND exam_id = :exam:',
+                                    'bind'       => array(
+                                            'user' => $user->getprincipalName(),
+                                            'exam' => $this->id
+                                )))) == false) {
+                                $user->setPrimaryRole($role);
+                                throw new \OpenExam\Library\Model\Exception("Failed lookup student by behavior");
+                        }
+
+                        if (isset($student->starttime)) {
+                                $this->starttime = $student->starttime;
+                        }
+                        if (isset($student->endtime)) {
+                                $this->endtime = $student->endtime;
+                        }
+                }
+                $user->setPrimaryRole($role);
         }
 
 }
