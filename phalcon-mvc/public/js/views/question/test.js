@@ -20,6 +20,17 @@
 			}
 		} else {
 			insertHTML();
+			if(testCounter == 1) {
+				$('input[type="checkbox"]').prop('checked', true);
+				/*vat t =0;
+				$('input[type="checkbox"]').each(function(i, e) {
+					if(!(i%2)) {
+						$(e).prop('checked', true);
+					}
+				});*/
+				
+				$('input[type="text"]').val('i am a textbox and i am supposed to hold just small text but interesting part is that sometimes i can hold long text as well. Was that long enough? i do not think that .. Thanks for reading this useless line that i wrote to just test the text box limit. How was that?? Good bye! Have a good night! Sweet Dreaams ...');
+			}
 		}
 
 	}, 2500);

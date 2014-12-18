@@ -59,7 +59,7 @@ class ExamController extends GuiController
                                 return $resource;
                         }
                 });
-                if(count($stExamsToday)) {
+                if(count($stExamsToday) == 1) {
                         return $this->response->redirect('exam/'.$stExamsToday[0]->id);
                 }
 
