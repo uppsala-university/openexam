@@ -10,7 +10,7 @@
 Alias /phalcon-mvc /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/public
 
 <Directory /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/public>
-    Order deny,allow
+    Order allow,deny
     Allow from ::1 127.0.0.1
 
     # Handle non-static content from index.php:
