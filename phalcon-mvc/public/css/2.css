@@ -4871,6 +4871,10 @@ text-decoration:none;
         min-height:85px;
 }
 
+.qs_area_line_q p {
+		word-wrap: break-word !important;
+}
+
 .qs_area_line_q .q_head {
         padding-bottom:8px;
 }

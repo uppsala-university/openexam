@@ -21,101 +21,108 @@
 		}
 	}, syncEvery);
 	// autosave sync function
-	function syncAnswers(async) {
-		
-		var failed = false;
-		if(ansId === 'None!')
-			return;
-		
-		$('.q-part').each(function(index, qPart) {
-			var qPartName = $(qPart).attr('data-id');
-                        var ansType = $(qPart).find('.q-part-ans-type').attr('data-id');
-			var answers = $(qPart).find('.q-part-ans-type').find('.changeable');
-			
-			// initialize json obj attr
-			ansJson[qPartName] = {};
-			ansJson[qPartName]["type"] = ansType;
-			ansJson[qPartName]["ans"] = [];
-			
-			// make json as per ansType
-			if(ansType == 'textbox') {
-				
-				ansJson[qPartName]["ans"].push($(answers).val());
-				
-			} else if(ansType == 'textarea') {
-				
-				ansJson[qPartName]["ans"].push(CKEDITOR.instances[$(answers).attr('id')].getData());
-				
-			} else if(ansType == 'choicebox') {
-				
-				$(answers).each(function(index, opt) {
-					if($(opt).is(':checked')) {
-	                                        ansJson[qPartName]["ans"].push($(opt).val());
-					}
-                                });
-				
-			} else if(ansType == 'canvas') {
-				
-				var canvasId = $(answers).attr('id');
-				var canvasJson = canvasData[canvasId];
-				var canvasUrl = canvasElem[canvasId].getImage().toDataURL();
-				ansJson[qPartName]["ans"].push({"canvasJson":canvasJson, "canvasUrl": canvasUrl});
-				
-			} else {
-				ansJson[qPartName]["ans"].push(CKEDITOR.instances[$(answers).attr('id')].getData());
+	function syncAnswers(async) 
+	{
+		try {
+			var failed = false;
+			if(ansId === 'None!') {
+				if(!async) {
+					return;
+				} else {
+					return "test-mode";
+				}
 			}
-			
-                });
-		
-		ansJson["highlight-q"] = $('#highlight_q').is(':checked') ? 'yes' : 'no';
-		
-//		if(!failed) {
-			$('.ans-sync-msg').show();
-			
-			try {
-				$.ajax({
-					type: 	"POST",
-					url: 	baseURL + 'core/ajax/student/answer/update',
-					data: 	{"id":ansId, "answer":JSON.stringify(ansJson), "answered":1}, 
-					async: 	async,
-					dataType: "json"
-				})
-				.done(function( respJson ) {
+			$('.q-part').each(function(index, qPart) {
+				var qPartName = $(qPart).attr('data-id');
+				var ansType = $(qPart).find('.q-part-ans-type').attr('data-id');
+				var answers = $(qPart).find('.q-part-ans-type').find('.changeable');
+				
+				// initialize json obj attr
+				ansJson[qPartName] = {};
+				ansJson[qPartName]["type"] = ansType;
+				ansJson[qPartName]["ans"] = [];
+				
+				// make json as per ansType
+				if(ansType == 'textbox') {
 					
-					if (typeof respJson.success == "undefined") {
-						failMsg = "Failed to save your answer! \r\n \
-						Please report this issue to the exam invigilator immediately. \r\n \
-						Please DO NOT refresh/close this web page otherwise we may loose your answer.";
-						if(async) {
-							alert(failMsg);
-						} else {
-							return failMsg;
+					ansJson[qPartName]["ans"].push($(answers).val());
+					
+				} else if(ansType == 'textarea') {
+					
+					ansJson[qPartName]["ans"].push(CKEDITOR.instances[$(answers).attr('id')].getData());
+					
+				} else if(ansType == 'choicebox') {
+					
+					$(answers).each(function(index, opt) {
+						if($(opt).is(':checked')) {
+							ansJson[qPartName]["ans"].push($(opt).val());
 						}
-					} else {
+					});
+					
+				} else if(ansType == 'canvas') {
+					
+					var canvasId = $(answers).attr('id');
+					var canvasJson = canvasData[canvasId];
+					var canvasUrl = canvasElem[canvasId].getImage().toDataURL();
+					ansJson[qPartName]["ans"].push({"canvasJson":canvasJson, "canvasUrl": canvasUrl});
+					
+				} else {
+					ansJson[qPartName]["ans"].push(CKEDITOR.instances[$(answers).attr('id')].getData());
+				}
+				
+			});
+			
+			ansJson["highlight-q"] = $('#highlight_q').is(':checked') ? 'yes' : 'no';
+			
+	//		if(!failed) {
+				$('.ans-sync-msg').show();
+				
+					$.ajax({
+						type: 	"POST",
+						url: 	baseURL + 'core/ajax/student/answer/update',
+						data: 	{"id":ansId, "answer":JSON.stringify(ansJson), "answered":1}, 
+						async: 	async,
+						dataType: "json"
+					})
+					.done(function( respJson ) {
+						
+						if (typeof respJson.success == "undefined") {
+							failMsg = "Failed to save your answer! \r\n \
+							Please report this issue to the exam invigilator immediately. \r\n \
+							Please DO NOT refresh/close this web page otherwise we may loose your answer.";
+							if(async) {
+								alert(failMsg);
+								return false;
+							} else {
+								return failMsg;
+							}
+						} else {
+							totalSyncs++;
+							$('.ans-sync-msg').hide();
+							return true;
+						}
+					});			
+				// send ajax request to sync answers
+				/*ajax(
+					baseURL + 'core/ajax/student/answer/update',
+					{"id":ansId, "answer":JSON.stringify(ansJson), "answered":"Y"}, 
+					function(qData) {
 						totalSyncs++;
 						$('.ans-sync-msg').hide();
-					}
-				});			
-			} catch(err) {
+					},
+					'POST',
+					async
+				);*/
 				
-			}
-			// send ajax request to sync answers
-			/*ajax(
-				baseURL + 'core/ajax/student/answer/update',
-				{"id":ansId, "answer":JSON.stringify(ansJson), "answered":"Y"}, 
-				function(qData) {
-					totalSyncs++;
-					$('.ans-sync-msg').hide();
-				},
-				'POST',
-				async
-			);*/
-			
-/*		} else {
-			alert("Unable to save your answer. \r\n \
-			Please DO NOT refresh the page or close your browser otherwise your answer may lost. \r\n \
-			Please report this issue to the exam invigilator immediately.");
-		}*/
+	/*		} else {
+				alert("Unable to save your answer. \r\n \
+				Please DO NOT refresh the page or close your browser otherwise your answer may lost. \r\n \
+				Please report this issue to the exam invigilator immediately.");
+			}*/
+		} catch(err) {
+			console.log(err);
+			alert("Something went wrong in system. Please don't refresh/close web page window and contact your invigilator immediately.");
+		}
 	}
 
 	/*----------------------------------------------------------*/ 
@@ -158,6 +165,17 @@
 		$(document).on('change', '.changeable', function() {
 			dirtybit = 1;
 		});
+		
+		$(document).on('click', '.sync-answer', function() {
+			var syncSuccess = syncAnswers(true);
+			console.log(syncSuccess);
+			if(syncSuccess === true || syncSuccess === "test-mode") {
+				console.log($(this).attr('hlink'));
+				location.href = $(this).attr('hlink');
+			}
+			return false;
+		});
+		
 		
 		CKEDITOR.config.removeButtons = 'Link,Unlink';
                 $('.ckeditor').each(function(index, element) {

@@ -73,7 +73,7 @@
 		
 			<div class="col-sm-12">
 				<div class="box bordered-box blue-border">
-					<div class="box-content box-double-padding" style="font-family:verdana; <?=$viewMode == 'all' ? 'border-bottom: 10px solid #F34541':''?>">
+					<div class="box-content box-double-padding" style="font-family:verdana; <?=$viewMode == 'all' ? 'border-bottom: 10px solid #BE2435':''?>">
 						<i class="q-no icon-q<?=$questionNo?> text-contrast">:</i>
 						<?php $partCount = 1;?>
 						<?php foreach($qParts as $qPart => $qPartData):?>
@@ -197,18 +197,33 @@
 										 <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
 										 </label>
 									</div>
+									<!--
+									<div style="padding-bottom:25px">
+										<label style="font-weight:normal">
+										<input type="radio" value="g" checked="checked" class="highlight_q" />
+										<input type="checkbox" id="highlight_q" value="1" class="changeable" <?=$answerData['highlight-q'] == 'yes' ? 'checked':''?> <?=$testMode ? 'disabled':''?>>
+										 <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
+										 </label>
+										 <label>
+											<input type="radio" value="y" />
+										 </label>
+										 <label>
+											<input type="radio" value="r" />
+										 </label>
+									</div>
+									-->
 									<?php if($prevQuestId && $prevQuestId != $qObj->id):?>
-									<a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.($prevQuestId))?>">
+									<a class="sync-answer" href="#" hlink="<?=$this->url->get('exam/'.$exam->id.'/question/'.($prevQuestId))?>">
 										<button class="btn btn-xs btn-prev"><i class="icon-arrow-left"></i> Prev. Question </button>
 									</a>
 									<?php endif;?>
 									
 									<?php if($nextQuestId):?>
-									<a href="<?=$this->url->get('exam/'.$exam->id.'/question/'.($nextQuestId))?>">
+									<a class="sync-answer" href="#" hlink="<?=$this->url->get('exam/'.$exam->id.'/question/'.($nextQuestId))?>">
 										<button class="btn btn-xs btn-success btn-next"> Next Question <i class="icon-arrow-right"></i></button>
 									</a>
 									<?php else:?>
-									<a href="<?=$this->url->get('exam/'.$exam->id.'/question/all')?>">
+									<a class="sync-answer" href="#" hlink="<?=$this->url->get('exam/'.$exam->id.'/question/all')?>">
 										<button class="btn btn-xs btn-success btn-next"><i class="icon-list"></i> Preview your answers for all questions</button>
 									</a>
 									<?php endif;?>
@@ -233,6 +248,30 @@
         	<span style="color: #c2100c">Exam instructions: <?=$exam->name?></span>
         </div>
         <?=$exam->descr?>
+</div>
+<div id="general-instructions" class="hero-unit" style="min-width:800px; display:none; font-family:Verdana, Geneva, sans-serif;">
+        <div class="head"><?=Phalcon\Tag::image(array("img/uu_logo.svg", "height"=>"55px", "style"=>"padding-right:20px"));?>
+        	<span style="color: #c2100c">General exam instructions: <?=$exam->name?></span>
+        </div>
+	<div>
+		<div style="padding-bottom:10px">
+			Use the buttons in the heading to minimize the left pane or increase the text size 
+			Under Exam info. You may again read the instructions, access a preview of all your answers and log out when you are done. 
+			<!--If you find it helpful, you can mark all questions as completed (green), in need of revision  (yellow) or will not be answered (red). -->
+			You can hover over images (in supplementary material) to zoom. You can see full size image by clicking on it.
+		</div>
+		<div style="padding-bottom:10px">
+			<br />
+			<strong>Important to know:</strong><br />
+			<ul>
+				<li>All your answers are automatically saved, every 10 seconds.</li>
+				<li>It is highly recomended that you <u>don't</u> use "back" and "forward" buttons of web browser to go from one question to another. Always click on <button class="btn btn-xs btn-success" disabled="disabled"> Next Question <i class="icon-arrow-right"></i></button> and <button class="btn btn-xs" disabled="disabled"><i class="icon-arrow-left"></i> Prev. Question </button> buttons. To open a specific question, you can always click on desired question number appearing in left side menu.</li>
+				<li>Please report to invigilator immediately if any button or link do not work. In such a case, please don't close/refresh web browser otherwise we may loose your answer. If you see any error message from system, it is highly important that you <u>don't</u> refresh/close the web page before you report. </li>
+				<li>Flip down the screen if you go away for a biological break.</li>
+				<li>If you have drawing canvas in a quesiton, don't try to write text in canvas by drawing.</li>
+			</ul>
+		</div>
+        </div>
 </div>
 
 <?=Phalcon\Tag::javascriptInclude('js/jquery.media.js'); ?>
