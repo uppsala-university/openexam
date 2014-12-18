@@ -563,6 +563,16 @@ class Exam extends ModelBase
                 return $result;
         }
 
+        /**
+         * Modify start and/or end time.
+         * 
+         * Dynamic patch the starttime and/or endtime "on the fly" if called
+         * having the student role. The datetime is taken from the student
+         * table allowing to have per student (individual) start/end different
+         * than the exam default.
+         * 
+         * @throws \OpenExam\Library\Model\Exception
+         */
         private function setStudentDatetime()
         {
                 // 
