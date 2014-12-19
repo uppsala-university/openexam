@@ -9,7 +9,9 @@
 img {
     border: 0px;
     float:left;
+    display: block;
     padding-right: 10px;
+    padding-bottom: 5px;
 }
 
 label
@@ -121,10 +123,10 @@ td.removed {
     border: 2px solid red;
 }
 li.ansc {       /* correct answer */
-        list-style-image: url('/openexam/icons/ok.png');
+    list-style-image: url('/openexam/icons/ok.png');
 }
 li.answ {       /* wrong answer */
-        list-style-image: url('/openexam/icons/error.png');
+    list-style-image: url('/openexam/icons/error.png');
 }
 
 /*
@@ -256,6 +258,8 @@ td.s100 {
  *  Decorate content on question answer page.
 */
 div.question {
+    display: inline-block;
+    padding: 0;
     padding-bottom: 10px;
 }
 div.answer {
