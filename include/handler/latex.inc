@@ -1,7 +1,7 @@
 <?php
 
 //
-// Copyright (C) 2011 Computing Department BMC,
+// Copyright (C) 2011, 2014 Computing Department BMC,
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   include/handler/latex.inc
@@ -19,6 +19,7 @@ class LatexHandler implements HandlerType
 
         public function process($data, $path)
         {
+                $files = new stdClass();
                 $dir = getcwd();
                 chdir(dirname($path));
 
@@ -27,24 +28,35 @@ class LatexHandler implements HandlerType
                 $files->log = sprintf("%s.log", $path);
                 $files->aux = sprintf("%s.aux", $path);
 
+                // 
+                // Check tool chain:
+                // 
+                foreach (array("/usr/bin/latex", "/usr/bin/dvipng") as $prog) {
+                        if (!file_exists($prog)) {
+                                chdir($dir);
+                                $message = sprintf("Program %s is missing", $prog);
+                                throw new HandlerException($message);
+                        }
+                }
+
                 //
                 // Write the LaTeX input file.
                 //
                 if (($handle = fopen($files->tex, "w"))) {
-                        fprintf($handle, "\documentclass[10pt]{article}\n");
+                        fprintf($handle, "\\documentclass[10pt]{article}\n");
 
                         fprintf($handle, "%% add additional packages here\n");
-                        fprintf($handle, "\usepackage[utf8]{inputenc}\n");
-                        fprintf($handle, "\usepackage{amsmath}\n");
-                        fprintf($handle, "\usepackage{amsfonts}\n");
-                        fprintf($handle, "\usepackage{amssymb}\n");
-                        fprintf($handle, "\usepackage{pst-plot}\n");
-                        fprintf($handle, "\usepackage{color}\n");
+                        fprintf($handle, "\\usepackage[utf8]{inputenc}\n");
+                        fprintf($handle, "\\usepackage{amsmath}\n");
+                        fprintf($handle, "\\usepackage{amsfonts}\n");
+                        fprintf($handle, "\\usepackage{amssymb}\n");
+                        fprintf($handle, "\\usepackage{pst-plot}\n");
+                        fprintf($handle, "\\usepackage{color}\n");
 
-                        fprintf($handle, "\pagestyle{empty}\n");        // no page number
-                        fprintf($handle, "\begin{document}\n");
-                        fprintf($handle, "%s\n", $data);
-                        fprintf($handle, "\end{document}\n");
+                        fprintf($handle, "\\pagestyle{empty}\n");        // no page number
+                        fprintf($handle, "\\begin{document}\n");
+                        fprintf($handle, "%s\n", trim($data));
+                        fprintf($handle, "\\end{document}\n");
                         fclose($handle);
                 } else {
                         chdir($dir);

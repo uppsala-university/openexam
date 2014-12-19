@@ -1,7 +1,7 @@
 <?php
 
 //
-// Copyright (C) 2011 Computing Department BMC,
+// Copyright (C) 2011, 2014 Computing Department BMC,
 // Uppsala Biomedical Centre, Uppsala University.
 //
 // File:   source/images/handler.php
@@ -64,6 +64,8 @@ try {
         }
         $cached->send($handler->mime());
 } catch (HandlerException $exception) {
+        error_log($exception);
         die($exception->getMessage());
 }
+
 ?>
