@@ -37,8 +37,16 @@
     
     
     <?php
-	$start 	= date_create(strtotime($exam->starttime) > strtotime("now") ? $exam->starttime : "now");
-	$end 	= date_create($exam->endtime);
+    	if(is_object($student)):
+    		$examStartsAt 	= !is_null($student->starttime) ? $student->starttime : $exam->starttime;
+		$examEndsAt 	= !is_null($student->endtime) ? $student->endtime : $exam->endtime;
+	else:
+    		$examStartsAt 	= $exam->starttime;
+		$examEndsAt 	= $exam->endtime;
+	endif;
+	
+	$start 	= date_create(strtotime($examStartsAt) > strtotime("now") ? $examStartsAt : "now");
+	$end 	= date_create($examEndsAt);
 	
 	$timeLeft = $start->diff($end);
 	$secDiff = (int)$end->format('U') - (int)$start->format('U');
@@ -49,7 +57,7 @@
 
     <header>
       <nav class='navbar navbar-default navbar-fixed-top'>
-        <a class='navbar-brand' href='<?=$this->url->get('exam/'.$exam->id)?>'>
+        <a class='navbar-brand' href='<?=$this->url->get('exam/index')?>'>
           <?= Phalcon\Tag::image("thin-layout/images/logo.png"); ?>
         </a>
         <a class='toggle-nav btn pull-left' href='#'>
@@ -114,7 +122,7 @@
       <?php if(isset($viewMode)):?>
       <div id='main-nav-bg'></div>
       <!-- main navigation -->
-      <nav id='main-nav' class='<?=is_object($allQs) && $allQs->count() <= 10 ? 'main-nav-fixed' : ''?>'> <!--class='main-nav-fixed'-->
+      <nav id='main-nav' class='<?=is_object($allQs) && $allQs->count() <= 8 ? 'main-nav-fixed' : ''?>'> <!--class='main-nav-fixed'-->
         <div class='navigation'>
           <ul class='nav nav-stacked'>
                     <li class=''>
@@ -164,7 +172,7 @@
                     <li class='<?=($viewMode == 'single' && $question->id == $quest[0]->id ? 'active' : '')?>' id="q<?=$qNo+1?>_short">
                               <a class="sync-answer" href="#" hlink="<?=$this->url->get('exam/'.$exam->id.'/question/'.$question->id)?>" style=" <?=(in_array($question->id, $highlightedQs) === TRUE ? 'background-color: #FEFF99;':'')?>"><!--#FBC676-->
                                       <div style="float:left; width:20%"><i class="icon-q<?=$qNo+1?>" ></i></div>
-                                      <div style="float:left; width:80%; max-height:27px"><span><?=substr(strip_tags($questionData->a->q_text), 0, 65)?></span></div>
+                                      <div style="float:left; width:80%; max-height:27px"><span><?=substr(strip_tags($questionData->a->q_text), 0, 62)?></span></div>
                               </a>
                     </li>
                     <?php endforeach;?>
@@ -245,7 +253,7 @@
 	/*	Count down timer related functions for exam	    */
 	/*----------------------------------------------------------*/
 	<?php if(!$testMode):?>
-		<?php if(strtotime($exam->starttime) <= strtotime("now")):?>
+		<?php if(strtotime($examStartsAt) <= strtotime("now")):?>
 		var count 	= <?=$secDiff?>;
 		var counter	= setInterval(timer, 1000); 
 		<?php endif;?>
@@ -254,10 +262,12 @@
 			count=count-1;
 			if (count <= 0)
 			{
-				syncAnswers(true);
-				alert("Exam time has been finished");
+				syncAnswers(true, '<?=$this->url->get('exam/index');?>');
+				alert("Thank you for taking exam with OpenExam! Exam time has been finished. Please logout and close all browser windows. We wish you good luck!");
 				clearInterval(counter);
 				return;
+			} else if (count == 300) {
+				alert("Now remaining time for this exam is 5 minutes.");
 			}
 			$("#timer").html(toHHMMSS(count));
 		}

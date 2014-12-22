@@ -350,16 +350,42 @@ class ExamController extends GuiController
 	 */
         public function instructionAction($examId)
         {
+                $loggedIn = $this->user->getPrincipalName();
+                    
                 // sanitize
                 $examId = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
                 
                 // fetch exam data if it has not been finished yet
-                $exam = Exam::findFirst("id = " . $examId . " and (endtime IS NULL or endtime > NOW())");
+                $exam = Exam::findFirst($examId);
                 if(!$exam) {
                         return $this->response->redirect('exam/index');
                 }
+
+                if($exam->creator == $loggedIn) {
+                        $testMode = TRUE;
+                } else {
+                        
+                        ## find student id of this logged in person for this exam
+                        $student = Student::findFirst("user = '" . $loggedIn ."' and exam_id = " . $examId);
+                        if(!$student) {
+                                throw new \Exception("You are not authorized to access this exam");
+                        }
+
+                        $examStartsAt 	= !is_null($student->starttime) ? $student->starttime : $exam->starttime;
+                        $examEndsAt 	= !is_null($student->endtime) ? $student->endtime : $exam->endtime;
+                        
+                        ## load exam with time checking
+                        if (strtotime($examEndsAt) < strtotime("now")) {
+                                return $this->response->redirect('exam/index');
+                        }
+                        
+                }        
                 
-                $this->view->setVar("exam", $exam);
+                $this->view->setVars(array(
+                        "exam" => $exam, 
+                        "student" => $student
+                    ));
+                
                // $this->view->setVar("tr", new Translate('admin'));
                 $this->view->setLayout('thin-layout');
         }

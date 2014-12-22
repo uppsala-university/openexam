@@ -147,7 +147,7 @@
 		// add questId node
 		$qJson = json_decode($qData->quest, true);
 		$qJson['questId'] = $qData->id;
-		$qJson['canUpdate'] = ($this->capabilities->hasCapability($qData, 'update') && in_array("editable", $exam->flags) ? 1:0);
+		$qJson['canUpdate'] = 1;//($this->capabilities->hasCapability($qData, 'update') && in_array("editable", $exam->flags) ? 1:0);
 		
 		$combinedJson[$questionNo++] = $qJson;
 	}

@@ -4,7 +4,7 @@
 
 	/*======== var initialization ==========*/
 	var dirtybit 	= 0;
-	var syncEvery	= 3000; //30 seconds
+	var syncEvery	= 10000; //30 seconds
 	var ansJson	= {};
 	var totalSyncs	= 0;
 	var canvasData	= [];
@@ -21,15 +21,23 @@
 		}
 	}, syncEvery);
 	// autosave sync function
-	function syncAnswers(async) 
+	function syncAnswers(async, redirectToAfterSync) 
 	{
+		redirectToAfterSync = typeof redirectToAfterSync !== 'undefined' ? redirectToAfterSync : false;
+		if(redirectToAfterSync && !dirtybit) {
+			location.href=redirectToAfterSync;
+			return;
+		}
+		
 		try {
 			var failed = false;
 			if(ansId === 'None!') {
 				if(!async) {
 					return;
 				} else {
-					return "test-mode";
+					if(redirectToAfterSync) {
+						location.href = redirectToAfterSync;
+					}
 				}
 			}
 			$('.q-part').each(function(index, qPart) {
@@ -92,14 +100,15 @@
 							Please DO NOT refresh/close this web page otherwise we may loose your answer.";
 							if(async) {
 								alert(failMsg);
-								return false;
 							} else {
 								return failMsg;
 							}
 						} else {
 							totalSyncs++;
 							$('.ans-sync-msg').hide();
-							return true;
+							if(redirectToAfterSync) {
+								location.href = redirectToAfterSync;
+							}
 						}
 					});			
 				// send ajax request to sync answers
@@ -120,7 +129,7 @@
 				Please report this issue to the exam invigilator immediately.");
 			}*/
 		} catch(err) {
-			console.log(err);
+			alert(err.message);
 			alert("Something went wrong in system. Please don't refresh/close web page window and contact your invigilator immediately.");
 		}
 	}
@@ -167,12 +176,12 @@
 		});
 		
 		$(document).on('click', '.sync-answer', function() {
-			var syncSuccess = syncAnswers(true);
-			console.log(syncSuccess);
+			syncAnswers(true, $(this).attr('hlink'));
+			/*console.log(syncSuccess);
 			if(syncSuccess === true || syncSuccess === "test-mode") {
 				console.log($(this).attr('hlink'));
 				location.href = $(this).attr('hlink');
-			}
+			}*/
 			return false;
 		});
 		

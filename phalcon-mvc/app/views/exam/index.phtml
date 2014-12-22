@@ -110,7 +110,7 @@ $sections = array (
 							"decoded"
 						)
 					),
-				'view-results' => array(
+				'view-scoreboard' => array(
 						'target'=> 'exam/{exam-id}/correction',
 						'show-on-flags' => array (
 							"decoded"
@@ -140,10 +140,12 @@ $sections = array (
 							"decoded"
 						)
 					),
-				'view-results' => array(
+				'view-scoreboard' => array(
 						'target'=> 'exam/{exam-id}/correction',
 						'show-on-flags' => array (
-							"decoded"
+							"correctable",
+							"decodeable",
+							"decoded"							
 						)
 					),
 				'decode-exam' => array(
@@ -210,6 +212,7 @@ $opButtonsHtml = array(
 	'ans-correction'=> '<span class="label label-green"><i class="fa fa-check-square-o"></i> Answer correction</span>',
 	'exam-not-finished'=> '<span class="label label-primary"><i class="fa fa-times"></i> Exam not finished yet</span>',
 	'view-results'	=> '<span class="label label-warning"><i class="fa fa-line-chart"></i> View results</span>',
+	'view-scoreboard'=> '<span class="label label-warning"><i class="fa fa-trophy"></i> View Score board</span>',
 	'download-result'=> '<span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>',
 	'decode-exam'	=> '<span class="label label-green"><i class="fa fa-code"></i> Decode this exam</span>',
 	'decode-closed'	=> '<span class="label label-primary"><i class="fa fa-times"></i> Not open for decoding yet</span>',
@@ -295,8 +298,7 @@ $examsPerPage = 5;
                                                                                         <?=trim($exam->name) != "" ? $exam->name : 'Untitled exam'?>
                                                                                         <?=!empty($exam->code) ? " (".$exam->code.") " :""?>
                                                                                 </a>
-                                                                                <?php if(!empty($exam->starttime)):?>
-                                                                                <span style="font-size:10px; padding-left:15px">
+                                                                                <span class="exam-date-time" style="font-size:10px; padding-left:15px; <?=(empty($exam->starttime)?'display:none':'')?>">
                                                                                         <i class="fa fa-clock-o"></i>
                                                                                         <span class="exam-date">
                                                                                                 <span><?=date("Y-m-d", strtotime($exam->starttime));?></span>
@@ -305,7 +307,6 @@ $examsPerPage = 5;
                                                                                         &#8594;
                                                                                         <span class="exam-ends"><?=!empty($exam->endtime) ? date("H:i", strtotime($exam->endtime)) : ''?></span>
                                                                                 </span>
-                                                                                <?php endif;?>
                                                                                 
                                                                                 
                                                                                 <?php /*
@@ -324,7 +325,7 @@ $examsPerPage = 5;
                                                                                                 <a data-id="<?=$exam->id?>" 
                                                                                                 href="<?=$this->url->get($href)?>" 
                                                                                                 class="<?=($isUrl ? '' : $opData['target'].' prevent')?>"
-												<?php (stristr($role, Roles::STUDENT))?'target="_blank"':''?>>
+												 <?=(stristr($role, Roles::STUDENT))?'target="_blank"':''?>>
                                                                                                         <?=$opButtonsHtml[$op]?>
                                                                                                 </a>
                                                                                         <?php endif;?>

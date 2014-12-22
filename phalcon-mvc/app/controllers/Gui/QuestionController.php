@@ -85,6 +85,7 @@ class QuestionController extends GuiController
         {
                 //initializations
                 $questData = $ansData = array();
+                $student = NULL;
                 $loggedIn = $this->user->getPrincipalName();
                 
                 ## sanitize
@@ -105,9 +106,12 @@ class QuestionController extends GuiController
                         if(!$student) {
                                 throw new \Exception("You are not authorized to access this question");
                         }
+
+                        $examStartsAt 	= !is_null($student->starttime) ? $student->starttime : $exam->starttime;
+                        $examEndsAt 	= !is_null($student->endtime) ? $student->endtime : $exam->endtime;
                         
                         ## load exam with time checking
-                        if (strtotime($exam->starttime) > strtotime("now") || strtotime($exam->endtime) < strtotime("now")) {
+                        if (strtotime($examStartsAt) > strtotime("now") || strtotime($examEndsAt) < strtotime("now")) {
                                 return $this->response->redirect('exam/index');
                         }
                 }        
@@ -185,7 +189,8 @@ class QuestionController extends GuiController
                         'answer'        => $ansData,
                         'highlightedQs' => $highlightedQuestList,
                         'viewMode'      => $viewMode,
-                        'testMode'      => $testMode
+                        'testMode'      => $testMode,
+                        'student'       => $student
                 ));
                 $this->view->setLayout('thin-layout');
         }
@@ -222,7 +227,7 @@ class QuestionController extends GuiController
                                                         .   "where  exam_id = '".$exam->id."' "
                                                         .   (($exam->creator != $this->user->getPrincipalName()) ? 
                                                                 "and c.user = '".$this->user->getPrincipalName()."' " : " ")
-                                                        .   "order by q.name asc"
+                                                        .   "order by q.slot asc"
                                                 );
                                         $stData = Student::findFirst($loadBy[2]);
                                         $ansData = Answer::find('student_id = '.$loadBy[2]);
@@ -234,7 +239,7 @@ class QuestionController extends GuiController
                                         
                                         // show student answers for a specific question
                                         $questData = $this->phql->executeQuery(
-                                                        "select q.* from OpenExam\Models\Question q "
+                                                        "select distinct q.* from OpenExam\Models\Question q "
                                                         .   "inner join OpenExam\Models\Corrector c "
                                                         .   "where q.id = ".$loadBy[2]
                                                         .   (($exam->creator != $this->user->getPrincipalName()) ? 
@@ -248,7 +253,7 @@ class QuestionController extends GuiController
                                         
                                         // show a specific answer
                                         $questData = $this->phql->executeQuery(
-                                                        "select q.* from OpenExam\Models\Question q "
+                                                        "select distinct q.* from OpenExam\Models\Question q "
                                                         .   "inner join OpenExam\Models\Corrector c "
                                                         .   "inner join OpenExam\Models\Answer a "
                                                         .   "where a.id = ".$loadBy[2]
@@ -256,7 +261,7 @@ class QuestionController extends GuiController
                                                                 "and c.user = '".$this->user->getPrincipalName()."' " : " ")
                                                 );
                                         $ansData = Answer::find('id = ' . $loadBy[2]);
-                                        $stData  = Student::findFirst($ansData->student_id);
+                                        $stData  = Student::findFirst($ansData[0]->student_id);
                                         $heading = 'Question no. '. $questData[0]->name .', '
                                             . ' answered by Student (code: '.$stData->code.')';
                                         
@@ -285,7 +290,7 @@ class QuestionController extends GuiController
                                         .   "where exam_id = '".$exam->id."' "
                                         .   (($exam->creator != $this->user->getPrincipalName()) ? 
                                                "and c.user = '".$this->user->getPrincipalName()."' " : " ")
-                                        .   "order by q.name asc"
+                                        .   "order by q.slot asc"
                                 );
                         } else {
                                 $questData = $exam->getQuestions(array('order'=>'name asc'));

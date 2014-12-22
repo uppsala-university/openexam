@@ -285,9 +285,14 @@ $(document).ready(function() {
 			$(examItem).attr('data-id', exam.id);
 			$(examItem).find('.exam-name').html(examName + (exam.code!=''&&exam.code!=null ? " ("+exam.code+")" : ""));
 			/*$(examItem).find('.exam-descr').html(exam.descr.replace(/(<([^>]+)>)/ig, "").substring(0, 120)+" ...");*/
-			$(examItem).find('.exam-date').html(start[0]);
-			$(examItem).find('.exam-starts').html(start[1]);
-			$(examItem).find('.exam-ends').html(ends[1]);				
+			if(exam.starttime) {
+				$(examItem).find('.exam-date-time').show();
+				$(examItem).find('.exam-date').html(start[0]);
+				$(examItem).find('.exam-starts').html(start[1]);
+				$(examItem).find('.exam-ends').html(ends[1]);				
+			} else {
+				$(examItem).find('.exam-date-time').hide();
+			}
 			if(exam.published) {
 				$(examItem).find('.published-exam').show();
 				$(examItem).find('.draft-exam').hide();

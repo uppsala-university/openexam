@@ -1,6 +1,9 @@
 <!-- BISMILLAH-->
 
-<?php $testMode = $exam->creator == $this->user->getPrincipalName() ? TRUE : FALSE;?>
+<?php 
+$testMode 	= $exam->creator == $this->user->getPrincipalName() ? TRUE : FALSE;
+$examStartsAt 	= is_object($student) && !is_null($student->starttime) ? $student->starttime : $exam->starttime;
+?>
 
 <div class='col-xs-12' style="padding:0px 35px">
         <div class='row'>
@@ -39,8 +42,8 @@ Under Exam info. You may again read the instructions, access a preview of all yo
         
         <div class="exam-status-area">
                 <center>
-                <input onClick="javascript:location.href='<?=$this->url->get('exam/'.$exam->id.'/question/1')?>';" class="btn btn-success btn-lg" value="I am ready, start the exam <?=$testMode?'in test mode':''?>" type="button" style=" <?=((strtotime($exam->starttime) <= strtotime("now"))|| $testMode) ? '':'display:none'?>">
-                <?php if(strtotime($exam->starttime) > strtotime("now")):?>
+                <input onClick="javascript:location.href='<?=$this->url->get('exam/'.$exam->id.'/question/1')?>';" class="btn btn-success btn-lg" value="I am ready, start the exam <?=$testMode?'in test mode':''?>" type="button" style=" <?=((strtotime($examStartsAt) <= strtotime("now"))|| $testMode) ? '':'display:none'?>">
+                <?php if(strtotime($examStartsAt) > strtotime("now")):?>
                 <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam <?=$testMode?'testing':''?> starts in: " type="button" disabled="disabled" style="font-size:45px; margin:14% 0px; <?=($testMode) ? 'display:none':''?>">
                 <?php endif;?>
                 </center>
@@ -56,12 +59,12 @@ $('.toggle-nav').each(function(i, elem) {
 		$(elem).remove();
 	}
 });
-<?php if(strtotime($exam->starttime) > strtotime("now")):?>
+<?php if(strtotime($examStartsAt) > strtotime("now")):?>
 <?php if(!$testMode):?>
 $('.exam-descr').hide();
 $('.alert').hide();
 <?php endif;?>
-var examStartCount = <?=(strtotime(!$testMode ? $exam->starttime : "+0 seconds") - strtotime("now"))?>;
+var examStartCount = <?=(strtotime(!$testMode ? $examStartsAt : "+0 seconds") - strtotime("now"))?>;
 var examStartCountDown = setInterval(function() {
 	examStartCount--;
 	if (examStartCount <= 0)

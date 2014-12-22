@@ -290,4 +290,7 @@
 	var ansId   = 'None!';
 	<?php endif;?>
 	var count = <?=(strtotime($exam->starttime) - strtotime("now"))?>;
+	setInterval(function() {
+		$('.cke_button__maximize').hide();
+	}, 350);
 </script> 

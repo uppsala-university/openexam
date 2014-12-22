@@ -45,17 +45,17 @@ $decoded = $exam->decoded;
                                 </center>
                         <?php endif;?>
                         
-			<div style="margin:25px">
+			<div style="overflow:scroll">
                                 <table class="tablesorter">
                                         <tbody>
                                                 <tr>
-                                                        <th><?=$decoded ? 'Name': 'Code'?></th>
+                                                        <th style="position:absolute; background-color:#EAEAEA; width:62px"><?=$decoded ? 'Name': 'Code'?></th>
                                                         <?php foreach($questions as $question):?>
                                                                 <th style="width:55px; text-align:center; ">
                                                                   <div style="text-align: center">
                                                                         <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->name?></a>
                                                                   </div>
-                                                                  <div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>
+                                                                  <!--<div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>-->
                                                                 </th>
                                                                 <?php $totalExamScore += $question->score;?>
                                                         <?php endforeach;?>
@@ -66,7 +66,7 @@ $decoded = $exam->decoded;
                                                 </tr>
 						<?php foreach($students as $student):?>
                                                 <tr>
-                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD">
+                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; position:absolute; background-color:#FFFFFF; width:62px">
                                                                 <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
 									<?= (!$decoded) ? $student->code : $this->helper->getCatalogAttribute($student->user, 'name')?>
                                                                 </a>
@@ -166,7 +166,7 @@ $decoded = $exam->decoded;
 						endforeach;
 						?>
                                                 <tr class="avarage">
-                                                        <th align="right" style="vertical-align:top">Avarage:</th>
+                                                        <th align="right" style="vertical-align:top;">Avarage:</th>
                                                         <?php foreach($questions as $q):?>
                                                         	<?php $avg = sprintf("%1.1f", array_sum($overallQuestScore[$q->id])/count($overallQuestScore[$q->id]));?>
                                                         	<td title="Answers: <?=count($overallQuestScore[$q->id])?> Percent: <?=(count($students)/count($overallQuestScore[$q->id]))*100?>%" class="cc aa">
@@ -270,7 +270,7 @@ $decoded = $exam->decoded;
 var examId 	= <?=$exam->id?>;
 var stIds = <?=json_encode($studentIds)?>;
 var completedRequests = {};
-
+var resyncableResults = [];
 $(document).ready(function () {
         $('.fb').fancybox({
                         'width': "100%", 
@@ -280,39 +280,15 @@ $(document).ready(function () {
                             overlay : {closeClick: false}
                         },
                         afterClose: function() {
-                                location.reload();
+                                //location.reload();
+				resyncableResults = [];
                         }
         });
 	
 	$(document).on('click', '.save-result', function() {
-		
-		var saveResultBtn = $(this);
-		var correctorComents = $(saveResultBtn).parent().find('textarea').val();
-		var correctorId = $(saveResultBtn).attr('corrector-id');
-		var resultJson = {};
-		var resId = ansId = 0;
-		$(this).closest('.q-body').find('.q-points').each(function(index, element) {
-			resultJson[$(element).attr('q-part')] = $.isNumeric($(element).val()) ? $(element).val() : 0;
-                        ansId = $(element).attr('ans-id');
-			resId = $(element).attr('res-id');
-                });
-
-		// send ajax requedt to update student's socre
-		if(resId != 0) {
-			param = {id:resId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"};
-			action= 'update';
-		} else {
-			param = {"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"};
-			action= 'create';
-		}
-		
-		ajax (
-			baseURL + 'core/ajax/corrector/result/' + action,
-			param,
-			function(rData) {
-				$(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
-			}
-		);
+		var tmp = [];
+		tmp.push($(this).attr('ans-id'));
+		saveResults(tmp);
 	});
 	
 	$(document).on('click', '#decode-exam', function() {
@@ -329,7 +305,84 @@ $(document).ready(function () {
 			);
 		}
 	});
+
+	$(document).on('change', '.changeable', function() {
+		if(resyncableResults.indexOf($(this).attr('ans-id'))<0) {
+			resyncableResults.push($(this).attr('ans-id'));
+			console.log(resyncableResults);
+		}
+	});
+
+	$(document).on('click', '.save-all-result', function() {
+		saveResults(resyncableResults);
+	});
 	
+	$(document).on('blur', '.q-points', function() {
+		if($(this).val()!='' && !$.isNumeric($(this).val())) {
+			alert("Error: Question points must be numeric");
+			$(this).val(0);
+		}
+	});
+	
+	$('#containerflarp').css('width','92%');
+	
+	var saveResults = function (ansIds) {
+		var resultsCreate = [];
+		var resultsUpdate = [];
+		$.each(ansIds, function(i, ansId) {
+			var saveResultBtn = $('.ans-id'+ansId);
+			var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
+			var correctorId = $(saveResultBtn).attr('corrector-id');
+			var resultJson = {};
+			var resId = ansId = 0;
+			$(saveResultBtn).closest('.q-body').find('.q-points').each(function(index, element) {
+				resultJson[$(element).attr('q-part')] = $.isNumeric($(element).val()) ? $(element).val() : 0;
+				ansId = $(element).attr('ans-id');
+				resId = $(element).attr('res-id');
+			});
+	
+			// send ajax requedt to update student's socre
+			if(resId != 0) {
+				resultsUpdate.push({id:resId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
+			} else {
+				resultsCreate.push({"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
+			}
+			
+			$(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
+			$(saveResultBtn).closest('.q-body').css('background-color', '#fff');
+			$(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
+		});
+		
+		if(resultsCreate.length) {
+			ajax (
+				baseURL + 'core/ajax/corrector/result/create',
+				JSON.stringify(resultsCreate),
+				function(rData) {
+				}
+			);
+		}
+
+		if(resultsUpdate.length) {
+			ajax (
+				baseURL + 'core/ajax/corrector/result/update',
+				JSON.stringify(resultsUpdate),
+				function(rData) {
+				}
+			);
+		}
+
+		/*
+		ajax (
+			baseURL + 'core/ajax/corrector/result/' + action,
+			param,
+			function(rData) {
+				$(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
+				$(saveResultBtn).closest('.q-body').css('background-color', '#fff');
+				$(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
+			}
+		);*/
+	
+	}
 });	
 </script>
 <script>
