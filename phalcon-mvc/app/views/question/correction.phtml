@@ -321,7 +321,15 @@ $(document).ready(function () {
 		if($(this).val()!='' && !$.isNumeric($(this).val())) {
 			alert("Error: Question points must be numeric");
 			$(this).val(0);
+			return false;
 		}
+		
+		if(Number($(this).val()) > Number($(this).attr('max-pt'))) {
+			alert("Error: Maximum points for this part are:"+$(this).attr('max-pt'));
+			$(this).val('');
+			return false;
+		}
+		
 	});
 	
 	$('#containerflarp').css('width','92%');

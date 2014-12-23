@@ -150,7 +150,7 @@ $decoded = $exam->decoded;
 										Points:<br />
 										<span style="margin-left: 15px">
 											<?php if(!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-												<input placeholder="0" type="text" class="q-points changeable" ans-id="<?=$qSpecAns->id?>" res-id="<?=count($scoreData)?$result->id:0?>" q-part="<?=$qPartTitle?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['ans_area']['type']=='choicebox'?$perOptPoints*$totalCorrect:'')?>">								
+												<input placeholder="0" type="text" class="q-points changeable" ans-id="<?=$qSpecAns->id?>" res-id="<?=count($scoreData)?$result->id:0?>" q-part="<?=$qPartTitle?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['ans_area']['type']=='choicebox'?$perOptPoints*$totalCorrect:'')?>" max-pt="<?=$qPart['q_points']?>">								
 											<?php else:?>
 												<?=sprintf("%1.1f", $scoreData[$qPartTitle])?>
 											<?php endif;?>	
@@ -218,10 +218,11 @@ $decoded = $exam->decoded;
                                                   <?php if(!$decoded && !count($scoreData)):?>
                                                   <?=Phalcon\Tag::image(array("img/not-corrected.gif", "style"=>"position: absolute; right: 40px; width: 5%;", "class"=>"not-corrected"));?>
                                                   <?php endif;?>
+						  <?php $student = \OpenExam\Models\Student::findFirst($answer->student_id);?>
                                                   <div class="st-ans-box-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #999999">
                                                         <span style="color:#514E4E; font-weight:normal">
                                                                 <i class="fa fa-user"></i>
-                                                                Student <?=$k+1?>'s answer for this question
+                                                                <?=$student->code?>'s answer for this question
                                                         </span>
                                                   </div>
                                                   <?php 
@@ -274,7 +275,7 @@ $decoded = $exam->decoded;
                                                                                 <span style="color:#000;">
                                                                                         Points:<br />
                                                                                         <?php if(!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)):?>
-                                                                                                <input type="text" placeholder="0" class="q-points changeable" ans-id="<?=$answer->id?>" res-id="<?=count($scoreData) ?$result->id : 0?>" q-part="<?=$qPartTitle?>" style="height:12px; border-radius:0px; width:50px; margin-left:15px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['ans_area']['type']=='choicebox'?$perOptPoints*$totalCorrect:'')?>">
+                                                                                                <input type="text" placeholder="0" class="q-points changeable" ans-id="<?=$answer->id?>" res-id="<?=count($scoreData) ?$result->id : 0?>" q-part="<?=$qPartTitle?>" style="height:12px; border-radius:0px; width:50px; margin-left:15px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['type']=='choicebox'?$perOptPoints*$totalCorrect:'')?>"  max-pt="<?=$questParts[$qPartTitle]['q_points']?>">
                                                                                         <?php else:?>
                                                                                                 <?=sprintf("%1.1f", $scoreData[$qPartTitle])?>
                                                                                         <?php endif;?>
