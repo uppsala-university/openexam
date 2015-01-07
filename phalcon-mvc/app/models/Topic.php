@@ -98,6 +98,10 @@ class Topic extends ModelBase
 
         public function validation()
         {
+                if (defined('VALIDATION_SKIP_UNIQUENESS_CHECK')) {
+                        return true;
+                }
+                
                 $this->validate(new Uniqueness(
                     array(
                         "field"   => array("name", "exam_id"),

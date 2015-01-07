@@ -51,6 +51,10 @@ class Role extends ModelBase
 
         public function validation()
         {
+                if (defined('VALIDATION_SKIP_UNIQUENESS_CHECK')) {
+                        return true;
+                }
+
                 if (property_exists($this, 'exam_id')) {
                         $this->validate(new Uniqueness(
                             array(

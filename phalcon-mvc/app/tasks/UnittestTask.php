@@ -15,6 +15,11 @@ namespace OpenExam\Console\Tasks;
 
 use OpenExam\Library\Security\User;
 
+// 
+// Bypass uniqueness validation checking for unit test:
+// 
+define('VALIDATION_SKIP_UNIQUENESS_CHECK', true);
+
 /**
  * Unit test task.
  *
@@ -273,10 +278,11 @@ class UnittestTask extends MainTask
                                     'question'  => 'question_id',
                                     'student'   => 'student_id',
                                     'answer'    => 'answer_id',
-                                    'corrector' => 'corrector_id') as $n => $fk)
+                                    'corrector' => 'corrector_id') as $n => $fk) {
                                         if (isset($a[$fk]) && $a[$fk] == 0) {
                                                 $a[$fk] = $data[$n]['id'];
                                         }
+                                }
                                 $class = sprintf("OpenExam\Models\%s", ucfirst($m));
                                 $model = new $class();
                                 $model->setDI($this->getDI());

@@ -24,9 +24,14 @@ ini_set("memory_limit", "1024M");
 error_reporting(E_ALL);
 
 // 
+// Configure for running unit test:
+// 
+define('VALIDATION_SKIP_UNIQUENESS_CHECK', true);
+define('CONFIG_PHP', __DIR__ . '/../../phalcon-mvc/app/config/system/config.php');
+
+// 
 // Include the standard system configuration:
 // 
-define('CONFIG_PHP', __DIR__ . '/../../phalcon-mvc/app/config/system/config.php');
 $config = include(CONFIG_PHP);
 
 include CONFIG_SYS . "/loader.php";
@@ -50,3 +55,4 @@ if (extension_loaded('posix')) {
             get_current_user(), gethostname()
         ));
 }
+
