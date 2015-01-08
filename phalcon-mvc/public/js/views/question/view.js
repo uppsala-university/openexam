@@ -85,32 +85,41 @@
 	//		if(!failed) {
 				$('.ans-sync-msg').show();
 				
-					$.ajax({
-						type: 	"POST",
-						url: 	baseURL + 'core/ajax/student/answer/update',
-						data: 	{"id":ansId, "answer":JSON.stringify(ansJson), "answered":1}, 
-						async: 	async,
-						dataType: "json"
-					})
-					.done(function( respJson ) {
-						
-						if (typeof respJson.success == "undefined") {
-							failMsg = "Failed to save your answer! \r\n \
-							Please report this issue to the exam invigilator immediately. \r\n \
-							Please DO NOT refresh/close this web page otherwise we may loose your answer.";
-							if(async) {
-								alert(failMsg);
-							} else {
-								return failMsg;
-							}
+				failMsg = "Failed to save your answer! \r\n \
+				Please report this issue to the exam invigilator immediately. \r\n \
+				Please DO NOT refresh/close this web page otherwise we may loose your answer.";
+				
+				$.ajax({
+					type: 	"POST",
+					url: 	baseURL + 'core/ajax/student/answer/update',
+					data: 	{"id":ansId, "answer":JSON.stringify(ansJson), "answered":1}, 
+					async: 	async,
+					dataType: "json",
+					timeout: 5000,
+					error: function(x, t, m) {
+						if(t==="timeout") {
+							alert("Seems like you lost your internet connection. Please make sure that internet cable is properly connected with computer. \r\n" + failMsg);
 						} else {
-							totalSyncs++;
-							$('.ans-sync-msg').hide();
-							if(redirectToAfterSync) {
-								location.href = redirectToAfterSync;
-							}
+							alert("Error occured!" + failMsg +"\r\n"+ t);
 						}
-					});			
+					}
+				})
+				.done(function( respJson ) {
+					
+					if (typeof respJson.success == "undefined") {
+						if(async) {
+							alert(failMsg);
+						} else {
+							return failMsg;
+						}
+					} else {
+						totalSyncs++;
+						$('.ans-sync-msg').hide();
+						if(redirectToAfterSync) {
+							location.href = redirectToAfterSync;
+						}
+					}
+				});			
 				// send ajax request to sync answers
 				/*ajax(
 					baseURL + 'core/ajax/student/answer/update',
