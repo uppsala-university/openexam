@@ -27,7 +27,7 @@
 <div id="container" class="left_menu_space" style="">
 	<?php if($exam->published):?>
         <div id="breadcrumbsRow">
-		<img style="z-index: 0; height: 65px; position: relative; float: right; top: -9px;" src="<?=Phalcon\Tag::image("img/published.gif");?>">
+                <?= Phalcon\Tag::image(array("img/published.gif", "style" => "z-index: 0; height: 65px; position: relative; float: right; top: -9px;")); ?>
 	</div>
         <?php endif;?>
         <div id="centerColWide">
