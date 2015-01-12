@@ -315,6 +315,7 @@ $(document).ready(function () {
 
 	$(document).on('click', '.save-all-result', function() {
 		saveResults(resyncableResults);
+		resyncableResults = [];
 	});
 	
 	$(document).on('blur', '.q-points', function() {
@@ -337,6 +338,7 @@ $(document).ready(function () {
 	var saveResults = function (ansIds) {
 		var resultsCreate = [];
 		var resultsUpdate = [];
+		var totalCreated = 0;
 		$.each(ansIds, function(i, ansId) {
 			var saveResultBtn = $('.ans-id'+ansId);
 			var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
@@ -354,6 +356,7 @@ $(document).ready(function () {
 				resultsUpdate.push({id:resId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
 			} else {
 				resultsCreate.push({"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
+				totalCreated++;
 			}
 			
 			$(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
@@ -366,6 +369,18 @@ $(document).ready(function () {
 				baseURL + 'core/ajax/corrector/result/create',
 				JSON.stringify(resultsCreate),
 				function(rData) {
+					if(totalCreated > 1) {
+						jQuery.each(rData, function(i, e) {
+							$('input[ans-id="'+e.answer_id+'"]').attr('res-id', e.id);
+						})
+					} else {
+						$('input[ans-id="'+rData.answer_id+'"]').attr('res-id', rData.id);
+						
+						resyncableResults = jQuery.grep(resyncableResults, function(value) {
+							return value != rData.answer_id;
+						});
+						console.log(resyncableResults);
+					}
 				}
 			);
 		}
@@ -375,6 +390,10 @@ $(document).ready(function () {
 				baseURL + 'core/ajax/corrector/result/update',
 				JSON.stringify(resultsUpdate),
 				function(rData) {
+					resyncableResults = jQuery.grep(resyncableResults, function(value) {
+						return value != rData.answer_id;
+					});
+					console.log(resyncableResults);
 				}
 			);
 		}
