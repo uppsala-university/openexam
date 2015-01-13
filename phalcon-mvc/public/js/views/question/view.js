@@ -184,6 +184,13 @@
 			dirtybit = 1;
 		});
 		
+		$(document).on('click', '.logout-me', function() {
+			if(confirm("Are you sure you want to logout from OpenExam?")) {
+				syncAnswers(true, $(this).attr('hlink'));
+			}
+			return false;
+		});
+		
 		$(document).on('click', '.sync-answer', function() {
 			syncAnswers(true, $(this).attr('hlink'));
 			/*console.log(syncSuccess);

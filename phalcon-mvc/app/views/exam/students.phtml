@@ -204,11 +204,23 @@ $(function() {
 			$.each(stList, function(i, val) {
 				if(jQuery.trim(val)!='') {
 					st = jQuery.trim(val).split(/\s/g);
+					if(st.length > 2) {
+						var tmp = '';
+						jQuery.each(st, function(i, e){
+							if(i) {
+								tmp = tmp+" "+e;
+							}
+						});
+						st[1] = jQuery.trim(tmp);
+					}	
+
 					stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
 					totalStudents++;
 				}
 			});
-
+			
+			console.log(stData);
+			
 			// send ajax request to add these students to the exam
 			ajax(
 				baseURL + 'core/ajax/invigilator/student/create',
