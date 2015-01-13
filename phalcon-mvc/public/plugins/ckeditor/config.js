@@ -50,7 +50,7 @@ CKEDITOR.config.toolbar = [
 	// Make dialogs simpler.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 	
-	config.removePlugins = 'elementspath, texzilla, image ,save,font, pastefromword, sourcearea';
+	config.removePlugins = 'elementspath, texzilla, image ,save,font, pastefromword, sourcearea, eqneditor';
 	
 	config.ToolbarStartExpanded = false;
 	
