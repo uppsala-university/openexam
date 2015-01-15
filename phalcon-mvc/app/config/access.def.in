@@ -125,8 +125,25 @@ return array(
                 'soap'   => array('*')
         ),
         'private' => array(
+                'exam' => array(
+                        'index' => array('*'),
+                        'create' => array('teacher'),
+                        'update' => array('creator', 'contributor'),
+                        'replicate' => array('creator'),
+                        'instruction' => array('creator', 'student'),
+                        'students' => array('invigilator'),
+                        'settings' => array('creator') 
+                ),
+                'question' => array(
+                        'create' => array('creator', 'contributor'),
+                        'update' => array('creator', 'contributor'),
+                        'view' => array('creator', 'student'),
+                        'correction' => array('corrector', 'creator', 'decoder')
+                ),
                 'result' => array(
-                        '*' => array('decoder', 'student')
+                        'view' => array('decoder', 'student'),
+                        'generate' => array('decoder'),
+                        'download' => array('corrector', 'decoder', 'student')
                 )
         )
 );
