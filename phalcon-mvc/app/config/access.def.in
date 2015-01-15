@@ -30,7 +30,11 @@ return array(
                 'full'   => array('create', 'read', 'update', 'delete')
         ),
         // 
-        // Define role map:
+        // Model access map. 
+        // 
+        // Defines which role are allowed to perform an CRUD operation on an 
+        // model. The data structure format are role -> model -> action, where 
+        // the model or action might use '*' to mean all access.
         // 
         'roles'       => array(
                 'admin'       => '*',
@@ -100,6 +104,29 @@ return array(
                         'resource'    => 'read',
                         'file'        => '*',
                         'corrector'   => 'read'
+                )
+        ),
+        // 
+        // Controller access map.
+        // 
+        // Defines which roles are allowed to execute action on a controller.        
+        // The data structure are protection -> controller -> actions -> roles,
+        // where actions or roles uses '*' to denote all access. 
+        // 
+        // The protection is either public, protected or private. Using 
+        // protected means that authentication is required, but might be
+        // handled internal by the controller/action.
+        // 
+        'public' => array(
+                'public' => array('*'),
+                'auth'   => array('*')
+        ),
+        'protected'      => array(
+                'soap'   => array('*')
+        ),
+        'private' => array(
+                'result' => array(
+                        '*' => array('decoder', 'student')
                 )
         )
 );
