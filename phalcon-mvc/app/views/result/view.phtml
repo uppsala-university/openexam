@@ -461,7 +461,7 @@ td,th {
                                                         	This section lists those people who have been involved in this examination.<br>
                                                             <div style="margin-top:15px">
                                                                 <span style="font-size:15px; color:#3d749b">Responsable for examination:</span><br>
-                                                                <span class="uu-color">Main responsible person for the examination is <a href="#" style="color:#990000; text-decoration:none"><?=$exam->creator?></a></span><br>
+                                                                <span class="uu-color">Main responsible person for the examination is <a href="mailto:<?=$this->helper->getCatalogAttribute($exam->creator, 'mail', true)?>" style="color:#990000; text-decoration:none"><?=$this->helper->getCatalogAttribute($exam->creator, 'name')?></a></span><br>
                                                             </div>
 
                                                             <div style="margin-top:15px">

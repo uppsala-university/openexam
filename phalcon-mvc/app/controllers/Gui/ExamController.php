@@ -140,6 +140,7 @@ class ExamController extends GuiController
 	 * On exam create request, new records are inserted 
          * exam/create
          * 
+         * Allowed to Roles: teacher
 	 */
         public function createAction()
         {
@@ -166,6 +167,8 @@ class ExamController extends GuiController
 	/**
          * Update view for exam
 	 * exam/update/{exam-id}
+         * 
+         * Allowed to Roles: creator, contributor
 	 */
         public function updateAction($examId)
         {
@@ -205,6 +208,7 @@ class ExamController extends GuiController
          * Allows exam creator to replicate his exam
          * 
          * exam/replicate/{exam-id}
+         * Allowed to Roles: teacher
 	 */
         public function replicateAction($examId)
         {
@@ -347,6 +351,8 @@ class ExamController extends GuiController
         /**
          * Shows exam instructions for student and for test exam
 	 * exam/{exam_id}
+         * 
+         * Allowed to Roles: student
 	 */
         public function instructionAction($examId)
         {
@@ -393,6 +399,8 @@ class ExamController extends GuiController
         /**
          * Load popup for student management under the exam
 	 * exam/students
+         * 
+         * Allowed to Roles: invigilator
 	 */
         public function studentsAction()
         {
@@ -421,6 +429,8 @@ class ExamController extends GuiController
         /**
          * Load popup for exam settings
 	 * exam/settings
+         * 
+         * Allowed to Roles: creator
 	 */
         public function settingsAction()
         {
