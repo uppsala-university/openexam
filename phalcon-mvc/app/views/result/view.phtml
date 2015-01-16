@@ -136,7 +136,7 @@ td,th {
                 <!-- Examination Result page -->     
                 <div class="page">
                         <div class="body" >
-                                <div class="body-content" style="height:950px">
+                                <div class="body-content">
                                         <h1>Examination result</h1>
                                         <div>
                                         	<h2>Summary</h2>
@@ -218,7 +218,7 @@ td,th {
                         <div class="body" >
                                 <div class="body-content">
                                         <div class="quest">
-	                                        <h1>Question <?=$question->name?></h1>
+	                                        <h1 class="q-<?=$question->id?>">Question <?=$question->name?> </h1>
                                                 
                                                 <?php foreach($data['qData'][$question->id]['qParts'] as $pTitle => $pData):?>
                                         	<div class="quest-part">
@@ -241,7 +241,11 @@ td,th {
                                                                                         <?=$resTitle?>
                                                                                         </div>
                                                                                         <div class="resource-image">
-                                                                                        <img src="<?=$resUrl?>" style=" background-color:#f9f9f9; max-width:100%; max-height:100%;">
+											<?php if(stristr($resUrl, "openexam-svn")):?>
+                                                                                        <img src="<?=$this->url->get(str_replace("/openexam-svn/","", $resUrl))?>" style=" background-color:#f9f9f9; max-width:100%; max-height:100%;">
+											<?php else:?>
+											<img src="<?=$resUrl?>" style=" background-color:#f9f9f9; max-width:100%; max-height:100%;">
+											<?php endif;?>
                                                                                         </div>
                                                                                 </div>
                                                                         <?php else:?>
@@ -290,7 +294,9 @@ td,th {
                                                                                         <?php endforeach;?>
                                                                                         </ul>
                                                                                         <?php else:?>
-                                                                                        	<?=$ans?>
+												<?php foreach($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans):?>
+													<?=$ans?>
+												<?php endforeach;?>
                                                                                         <?php endif;?>
                                                                                 <?php else:?>
                                                                                 	<em>No answer was provided for this part.</em>
@@ -313,10 +319,10 @@ td,th {
                                                                 </div>
                                                                 <?php endif*/?>
                                                                 
-                                                                <?php if(isset($data['results'][$student->id][$question->id]["comments"])):?>
+                                                                <?php if(isset($data['results'][$student->id][$question->id]["comments"]) && !empty($data['results'][$student->id][$question->id]["comments"])):?>
                                                                 <div style="padding-bottom: 20px;">
                                                                         <div class="blue-txt"> Teacher's comments:</div> 
-                                                                        <div class="uu-color"><?=$data['results'][$student->id][$question->id]["comments"]?></div>
+                                                                        <div class="uu-color"><?=nl2br($data['results'][$student->id][$question->id]["comments"])?></div>
                                                                 </div>
                                                                 <?php endif;?>
                                                                 

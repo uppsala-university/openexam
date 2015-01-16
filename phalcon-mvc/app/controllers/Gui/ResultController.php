@@ -43,6 +43,8 @@ class ResultController extends GuiController
          * (result of all students in 1 pdf)
          * 
          * result/{exam_id}/view
+         * 
+         * Allowed to Roles: creator
          */
         public function viewAction()
         {
@@ -59,17 +61,11 @@ class ResultController extends GuiController
                 
                 ## get exam student's data (if studnet requested himself)
                 //$student = $exam->getStudents("user = '".$this->user->getPrincipalName()."'");
-                $student= Student::findFirst(array(
-                                "conditions" => "exam_id = ?1 and id = ?2",//user = ?2
-                                "bind"       => array(
-                                                1 => $examId,
-                                                //2 => $this->user->getPrincipalName()
-                                                2 => $studentId
-                                        )
-                            ));
+                $student= Student::findFirst($studentId);
+                
                 //@ToDO: As this person was not a student in this exam,
                 //Find if this logged in person is allowed to view result
-                if (!is_object($student)) {
+                if ($student->exam_id != $examId || !is_object($student)) {
                         die("you are not allowed!");
                         
                         // check if student id is set so show result against that student
@@ -84,7 +80,7 @@ class ResultController extends GuiController
                 
                 ## Fetch question data
                 $data['examScore'] = 0;
-                $questions = $exam->getQuestions(array("order" => "name"));
+                $questions = $exam->getQuestions(array("order" => "slot"));
                 foreach($questions as $question) {
                         
                         $qScore = 0;
@@ -213,6 +209,8 @@ class ResultController extends GuiController
          * Genrate zip file, contaning result of single or all students, in pdf format
          * 
          * result/{exam_id}/download
+         * 
+         * Allowed to Roles: contributor, 
          */
         public function downloadAction($examId, $studentId = NULL)
         {
