@@ -30,6 +30,8 @@ class QuestionController extends GuiController
         /**
          * Add question view
          * question/create
+         * 
+         * Allowed to Roles: creator, contributor
          */
         public function createAction()
         {
@@ -48,6 +50,8 @@ class QuestionController extends GuiController
         /**
          * Update question view
          * question/update
+         * 
+         * Allowed to Roles: creator, contributor
          */
         public function updateAction()
         {
@@ -80,6 +84,8 @@ class QuestionController extends GuiController
          * For students and for exam manager
          * 
          * exam/{exam_id}/question/{question_id}?
+         * 
+         * Allowed to Roles: creator, students
          */
         public function viewAction()
         {
@@ -200,6 +206,8 @@ class QuestionController extends GuiController
          * Allows correctors to check student answers in exam
          * 
          * exam/{exam_id}/correction/{correction-by}/{question_id}
+         * 
+         * Allowed to Roles: correctors, decoder
          */
         public function correctionAction($examId, $loadAnswersBy = NULL)
         {

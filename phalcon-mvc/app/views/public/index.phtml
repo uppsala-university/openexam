@@ -63,3 +63,12 @@ Students can also log in and get access to their completed exams and find inform
 	</div>
     </div>
 </div>
+
+<script language="javascript">
+	url = window.location.toString();
+	$(function() {
+		if(url.indexOf('#login-me') >= 0) {
+			$('.login-me').trigger('click');
+		}
+	});	
+</script>

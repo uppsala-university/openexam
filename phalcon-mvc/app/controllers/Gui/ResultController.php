@@ -95,7 +95,8 @@ class ResultController extends GuiController
                         
                         // question correctors data
                         foreach($question->getCorrectors() as $corrector) {
-                                $data['qCorrectors'][$corrector][] = $question->name;
+                                $data['qCorrectors'][$corrector->user][] = $question->name;
+                                
                         }
                         
                         //$data['qData'][$question->id]['qScore'] = $qScore;
@@ -342,7 +343,7 @@ class ResultController extends GuiController
                 //@ToDo: replace static url (added for testing) in $pages array ('page' index) with proper
                 $pages = array(
                       array(
-                            'page'              => "https://www.bmcmediatek.uu.se/openexam-svn/result/".$exam->id."/view/".$student->id,
+                            'page'              => "https://".$this->request->getServerName().$this->url->get("result/".$exam->id."/view/".$student->id),
                             //'footer.right'      => date("Y-m-d H:i"),
                             //'pagesCount'        => TRUE,
                             //'pageOffset'        => 1,
