@@ -49,19 +49,22 @@ $decoded = $exam->decoded;
                                 <table class="tablesorter">
                                         <tbody>
                                                 <tr>
-                                                        <th style="position:absolute; background-color:#EAEAEA; width:62px"><?=$decoded ? 'Name': 'Code'?></th>
+                                                        <th style="position:absolute; background-color:#EAEAEA; width:62px" class="sortable"><?=$decoded ? 'Name': 'Code'?><i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+</th>
                                                         <?php foreach($questions as $question):?>
-                                                                <th style="width:55px; text-align:center; ">
+                                                                <th style="width:55px; text-align:center; " class="sortable">
                                                                   <div style="text-align: center">
                                                                         <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->name?></a>
+                                                                        <i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
                                                                   </div>
                                                                   <!--<div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>-->
+
                                                                 </th>
                                                                 <?php $totalExamScore += $question->score;?>
                                                         <?php endforeach;?>
-                                                        <th>Percent </th>
+                                                        <th class="sortable" style="width:65px">Percent<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
-                                                        <th>Grade </th>
+                                                        <th class="sortable" style="width:55px">Grade<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
                                                         <?php endif;?>
                                                 </tr>
 						<?php foreach($students as $student):?>
@@ -134,7 +137,7 @@ $decoded = $exam->decoded;
 
                                                         <?php endforeach;?>
                                                         <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
-								<?=sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100)?>%
+								<?=sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100)?>
                                                                 <?php
 								if($answerd):
 									$avgPercentage[] = sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100); 
@@ -253,6 +256,7 @@ $decoded = $exam->decoded;
 
 <?=Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
 <?=Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<?=Phalcon\Tag::javascriptInclude('js/jquery.sortElements.js'); ?>
   <style>
 #progressbar {
 	margin-top: 20px;
@@ -263,6 +267,9 @@ $decoded = $exam->decoded;
 }
 .ui-dialog-titlebar-close {
 	display: none;
+}
+.sortme {
+	cursor:pointer !important;
 }
 </style>
 
@@ -284,6 +291,42 @@ $(document).ready(function () {
                                 location.reload();
                         }
         });
+
+    	var table = $('.tablesorter');
+    
+    	$('.sortable')
+        .wrapInner('<span title="sort this column"/>')
+        .each(function(){
+            
+            var th = $(this),
+                thIndex = th.index(),
+                inverse = false;
+            
+            th.find('.sortme').click(function(){
+                
+                table.find('td').filter(function(){
+                    
+                    return $(this).index() === thIndex && !($(this).closest('tr').hasClass('avarage'));
+                    
+                }).sortElements(function(a, b){
+                    
+                    return $.text([a]) > $.text([b]) ?
+                        inverse ? -1 : 1
+                        : inverse ? 1 : -1;
+                    
+                }, function(){
+                    
+                    // parentNode is the element we want to move
+                    return this.parentNode; 
+                    
+                });
+                
+                inverse = !inverse;
+                    
+            });
+                
+        });
+
 	
 	$(document).on('click', '.save-result', function() {
 		var tmp = [];
@@ -500,6 +543,7 @@ $(function() {
 			
 		downloadButton.focus();
 	}
+	
 	<?php if(stristr($_SERVER['REQUEST_URI'], 'download-result')):?>
 	$( "#downloadButton" ).trigger('click');
 	<?php endif;?>
