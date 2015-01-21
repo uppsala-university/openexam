@@ -248,13 +248,17 @@ class ExamController extends GuiController
                                         if(is_object($topics) && $topics->count()) {
                                                 foreach($topics as $topic) {
                                                         $newTopic = new \OpenExam\Models\Topic();
-                                                        $newTopic->save(array(
+                                                        $topicSaved = $newTopic->save(array(
                                                               "exam_id" => $newExam->id,
                                                               "name" => $topic->name,
                                                               "randomize" => $topic->randomize,
                                                               "grades" => $topic->grades,
                                                               "depend" => $topic->depend
                                                         ));
+                                                        
+                                                        if(!$topicSaved) {
+                                                                $newTopic = \OpenExam\Models\Topic::findFirst('exam_id = '.$newExam->id);
+                                                        }
                                                         $topicMap[$newTopic->id] = $topic->id;
                                               }
                                         }
