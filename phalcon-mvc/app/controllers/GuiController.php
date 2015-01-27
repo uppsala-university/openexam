@@ -32,7 +32,7 @@ class GuiController extends \Phalcon\Mvc\Controller
                 $access = new \Phalcon\Config(require CONFIG_DIR . '/access.def');
 
                 // if it is a private page
-                if($access->private->$controller->$action && count($access->private->$controller->$action->toArray())) {
+                if($controller != 'result' && $action != 'download' && $access->private->$controller->$action && count($access->private->$controller->$action->toArray())) {
 
                         $allowedRoles = $access->private->$controller->$action->toArray();
 
