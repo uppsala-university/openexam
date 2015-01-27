@@ -282,13 +282,10 @@ class ResultController extends GuiController
                                         }        
                                 }
                                 
-                                header('Content-Type: application/zip');
-                                header("Content-Disposition: attachment; filename=$cleanExamName.zip");
-                                header("Accept-Ranges: bytes");
-                                header('Content-Length: ' . filesize($zipPath));
-                                
-                                print readfile($zipPath);
-                                
+                                $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $zipPath);
+                                $this->response->setHeader("Content-Type", $mimetype);
+                                $this->response->setHeader("Content-Disposition", 'attachment; filename="' . basename($zipPath) . '"');
+                                readfile($zipPath);
                         } else {
                                 throw new Exception("Unable to download result");
                         }
@@ -305,6 +302,51 @@ class ResultController extends GuiController
         }
         
         /**
+         * Downloads score board in excel sheet format
+         * -- ajax action
+         */
+        public function exportScoreBoardAction($examId, $downloadFile = 0)
+        {
+                
+                $this->view->disable();
+                
+                $examId = $this->filter->sanitize($examId, "int");
+                
+                // load exam data
+                $exam = Exam::findFirst($examId);
+                if(!$exam) {
+                        throw new \Exception("Sorry! Couldn't find this exam.");
+                }
+                
+                $cleanExamName = str_replace(" ", "-", $this->filter->sanitize($exam->name, 'string'));
+                $generateFilePath = $this->config->application->cacheDir . 
+                    'results/' . $cleanExamName . '-scoreboard.xls';
+
+                if(!$downloadFile) {
+                        
+                        $scoreBoardHtml = $this->request->getPost('score_board');
+                        if(!empty($scoreBoardHtml)) {
+
+                                $handle = fopen($generateFilePath, "w");
+                                fwrite($handle, $scoreBoardHtml);
+                                fclose($handle);
+                                print "exported";
+                        } else {
+                                throw new \Exception("Failed to generate excel sheet.");
+                        }
+                        
+                } else {
+                        
+                        if(file_exists($generateFilePath)) {
+                                $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $generateFilePath);
+                                $this->response->setHeader("Content-Type", $mimetype);
+                                $this->response->setHeader("Content-Disposition", 'attachment; filename="' . basename($generateFilePath) . '"');
+                                readfile($generateFilePath);
+                        }
+                }
+        }
+
+        /**
          * Generates Pdf file for a student and save it under results directory
          * 
          * @param model object $exam 
@@ -313,7 +355,7 @@ class ResultController extends GuiController
          */
         private function _generateResultPdf($exam, $student, $download = FALSE)
         {
-
+                
                 // where to generate file?
                 $cleanExamName = str_replace(" ", "-", $this->filter->sanitize($exam->name, 'string'));
                 $generateFileUnder = $this->config->application->cacheDir . 
@@ -329,11 +371,10 @@ class ResultController extends GuiController
                 $filePath = $generateFileUnder .'/'. $student->code . '.pdf';
                 if(file_exists($filePath)) {
                         if($download) {
-                                header('Content-Type: application/pdf');
-                                header("Content-Disposition: attachment; filename=".$student->code.".pdf");
-                                header("Accept-Ranges: bytes");
-                                header('Content-Length: ' . filesize($filePath));
-                                print readfile($filePath);
+                                $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filePath);
+                                $this->response->setHeader("Content-Type", $mimetype);
+                                $this->response->setHeader("Content-Disposition", 'attachment; filename="' . basename($filePath) . '"');
+                                readfile($filePath);
                         } else {
                                 return TRUE;
                         }

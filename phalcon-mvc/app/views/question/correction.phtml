@@ -3,7 +3,7 @@
 $overallQuestScore = array();
 $totalExamScore = $totalStudentScore = 0;
 
-$students  = $exam->getStudents();
+$students  = $exam->getStudents(array('order'=>'code asc'));
 $studentIds = array();
 
 $grades = preg_split('/[\r\n]+/', $exam->grades);
@@ -34,27 +34,39 @@ $decoded = $exam->decoded;
                         <p>You can view the student's answers by student (rows), by question (column) or individual (by index). As this exam has been decoded, it is no more possible to change student results.</p>
                         <?php endif;?>
                         
-                        <?php if($decoded):?>
-                                <center>
-                                <button id="downloadButton">
-                                	<h5 style="font-style:normal; font-size:12px" >
-                                        	<i class="fa fa-download" style="color:green"></i>
-                                        	<span class="download-msg">Download result of all students</span>
-                                        </h5>
-                                </button>
-                                </center>
-                        <?php endif;?>
                         
-			<div style="overflow:scroll">
+			<div style="padding-bottom:15px;">
+				<center>
+					<?php if($this->user->aquire(array('decoder'), $exam->id)!==false && ($decoded || in_array('decodable', $exam->flags))):?>
+					<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+					<button id="download-scoreboard" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding:5px 15px">
+						<h5 style="font-style:normal; font-size:12px" >
+							<i class="fa fa-file-excel-o" style="color:#1D9D73"></i>
+							<span class="download-msg"> Download score board (xls)</span>
+						</h5>
+					</button>
+					<?php endif;?>
+				
+					<?php if($decoded):?>
+					<button id="downloadButton">
+						<h5 style="font-style:normal; font-size:12px" >
+							<i class="fa fa-file-pdf-o" style="color:red"></i>
+							<span class="download-msg"> Download all student's answers (pdf)</span>
+						</h5>
+					</button>
+					<?php endif;?>
+				</center>
+			</div>	
+			
+                        
+			<div style="overflow:scroll" id="scoreboard-wrapper">
                                 <table class="tablesorter">
                                         <tbody>
                                                 <tr>
-                                                        <th style="position:absolute; background-color:#EAEAEA; width:62px" class="sortable"><?=$decoded ? 'Name': 'Code'?><i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
-</th>
-                                                        <?php foreach($questions as $question):?>
+                                                        <?php foreach($questions as $qNo => $question):?>
                                                                 <th style="width:55px; text-align:center; " class="sortable">
                                                                   <div style="text-align: center">
-                                                                        <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->name?></a>
+                                                                        <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$qNo+1?></a>
                                                                         <i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
                                                                   </div>
                                                                   <!--<div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>-->
@@ -62,18 +74,16 @@ $decoded = $exam->decoded;
                                                                 </th>
                                                                 <?php $totalExamScore += $question->score;?>
                                                         <?php endforeach;?>
-                                                        <th class="sortable" style="width:65px">Percent<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
+                                                        <th style="background-color:#EAEAEA; width:62px" class="sortable"><?=$decoded ? 'Name': 'Code'?><i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+</th>
+                                                        <th class="sortable" style="width:65px">%<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
                                                         <th class="sortable" style="width:55px">Grade<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
                                                         <?php endif;?>
                                                 </tr>
 						<?php foreach($students as $student):?>
                                                 <tr>
-                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; position:absolute; background-color:#FFFFFF; width:62px">
-                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
-									<?= (!$decoded) ? $student->code : $this->helper->getCatalogAttribute($student->user, 'name')?>
-                                                                </a>
-                                                        </td>
+							<?php $wasAbsent = false;?>
 							<?php $totalStudentScore = 0;?>
 							<?php foreach($questions as $question):
                                                         
@@ -93,7 +103,9 @@ $decoded = $exam->decoded;
                                                                                 $totalStudentScore+=$qScore;
                                                                                 $overallQuestScore[$question->id][] = $qScore;
                                                                         endif;	
-                                                                        
+                                                                else:
+									$wasAbsent = true;
+									break;
                                                                 endif;
 								
 								// get corrector list
@@ -136,8 +148,14 @@ $decoded = $exam->decoded;
                                                                 </td>
 
                                                         <?php endforeach;?>
+							<?php if($wasAbsent) continue;?>
+                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+									<?= (!$decoded) ? $student->code : $this->helper->getCatalogAttribute($student->user, 'name')?>
+                                                                </a>
+                                                        </td>
                                                         <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
-								<?=sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100)?>
+								<?=sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100)?>%
                                                                 <?php
 								if($answerd):
 									$avgPercentage[] = sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100); 
@@ -169,7 +187,6 @@ $decoded = $exam->decoded;
 						endforeach;
 						?>
                                                 <tr class="avarage">
-                                                        <th align="right" style="vertical-align:top;">Avarage:</th>
                                                         <?php foreach($questions as $q):?>
                                                         	<?php $avg = sprintf("%1.1f", array_sum($overallQuestScore[$q->id])/count($overallQuestScore[$q->id]));?>
                                                         	<td title="Answers: <?=count($overallQuestScore[$q->id])?> Percent: <?=(count($students)/count($overallQuestScore[$q->id]))*100?>%" class="cc aa">
@@ -177,6 +194,7 @@ $decoded = $exam->decoded;
                                                                 </td>
                                                         <?php endforeach;?>
                                                         
+							<th align="right" style="vertical-align:top;">Avarage:</th>
                                                         <td class="cc aa">
 								<?=sprintf("%1.1f", array_sum($avgPercentage)/count($avgPercentage))?>%
                                                         </td>
@@ -326,7 +344,17 @@ $(document).ready(function () {
             });
                 
         });
-
+	
+	// keep column order
+        jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function() { 
+		if(($(this).children().length)) {
+			$(this).children(":first").before($(this).children(":last"));
+			$(this).children(":first").before($(this).children(":last"));
+			$(this).children(":first").before($(this).children(":last"));
+		} else {
+			$(this).remove();
+		}
+        });
 	
 	$(document).on('click', '.save-result', function() {
 		var tmp = [];
@@ -375,6 +403,25 @@ $(document).ready(function () {
 		}
 		
 	});
+
+	$(document).on('click', '#download-scoreboard', function() {
+	
+		var source = $('#scoreboard-wrapper').find('table').clone();
+		$(source).find("a").contents().unwrap();
+	
+		$.ajax({
+			type: "POST",
+			url: baseURL + 'result/exportScoreBoard/'+examId,
+			data: {score_board:'<table border="1">'+$(source).html()+'</table>'}
+		})
+		.done(function( resp ) {
+			if(resp == 'exported') {
+				location.href=baseURL + 'result/exportScoreBoard/'+examId+"/1";
+			}
+		});
+		
+	});
+	
 	
 	$('#containerflarp').css('width','92%');
 	

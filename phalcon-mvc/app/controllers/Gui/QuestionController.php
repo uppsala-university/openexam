@@ -301,7 +301,7 @@ class QuestionController extends GuiController
                                         .   "order by q.slot asc"
                                 );
                         } else {
-                                $questData = $exam->getQuestions(array('order'=>'name asc'));
+                                $questData = $exam->getQuestions(array('order'=>'slot asc'));
                         }        
                 }
                 
