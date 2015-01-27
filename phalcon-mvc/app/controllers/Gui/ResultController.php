@@ -267,7 +267,7 @@ class ResultController extends GuiController
                         $filesToZipLocation = $resultsDir . $cleanExamName . '-' . $exam->id;
                         
                         if(is_dir($filesToZipLocation)) {
-
+                                
                                 //generate zip file if it don't exist
                                 if(!file_exists($zipPath)) {
                                         
@@ -292,10 +292,8 @@ class ResultController extends GuiController
                                         }        
                                 }
                                 
-                                $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $zipPath);
-                                $this->response->setHeader("Content-Type", $mimetype);
-                                $this->response->setHeader("Content-Disposition", 'attachment; filename="' . basename($zipPath) . '"');
-                                readfile($zipPath);
+                                $this->helper->downloadFile($zipPath);
+                                
                         } else {
                                 throw new \Exception("Unable to download result");
                         }
@@ -348,10 +346,7 @@ class ResultController extends GuiController
                 } else {
                         
                         if(file_exists($generateFilePath)) {
-                                $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $generateFilePath);
-                                $this->response->setHeader("Content-Type", $mimetype);
-                                $this->response->setHeader("Content-Disposition", 'attachment; filename="' . basename($generateFilePath) . '"');
-                                readfile($generateFilePath);
+                                $this->helper->downloadFile($generateFilePath);
                         }
                 }
         }
@@ -380,14 +375,12 @@ class ResultController extends GuiController
                 // return true if file already exists
                 $filePath = $generateFileUnder .'/'. $student->code . '.pdf';
                 if(file_exists($filePath)) {
+                        
                         if($download) {
-                                $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filePath);
-                                $this->response->setHeader("Content-Type", $mimetype);
-                                $this->response->setHeader("Content-Disposition", 'attachment; filename="' . basename($filePath) . '"');
-                                readfile($filePath);
-                        } else {
-                                return TRUE;
+                                $this->helper->downloadFile($filePath);
                         }
+                        
+                        return TRUE;
                 }
                 
                 // generate pdf file

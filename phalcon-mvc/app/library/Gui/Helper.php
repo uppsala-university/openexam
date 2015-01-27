@@ -47,7 +47,85 @@ class Helper extends Component
                 
                 return $firstOnly ? $data[0] : $data;
         }
-       
+        
+        /**
+         * Progresively download a large file
+         * 
+         * @param string $filePath
+         * @param string $mimeType
+         */
+        public function downloadFile($filePath, $mimeType) 
+        {     
+            if(!empty($filePath)) 
+            { 
+                $fileInfo = pathinfo($filePath); 
+                $fileName  = $fileInfo['basename']; 
+                $fileExtnesion   = $fileInfo['extension']; 
+                $contentType =  finfo_file(finfo_open(FILEINFO_MIME_TYPE), $zipPath); 
+                if(file_exists($filePath)) 
+                { 
+                    $size = filesize($filePath); 
+                    $offset = 0; 
+                    $length = $size; 
+                    
+                    //headers for partial download
+                    if(isset($_SERVER['HTTP_RANGE'])) 
+                    { 
+                        preg_match('/bytes=(\d+)-(\d+)?/', $_SERVER['HTTP_RANGE'], $matches); 
+                        $offset = intval($matches[1]); 
+                        $length = intval($matches[2]) - $offset; 
+                        $fhandle = fopen($filePath, 'r'); 
+                        fseek($fhandle, $offset); // seek to the requested offset, this is 0 if it's not a partial content request 
+                        $data = fread($fhandle, $length); 
+                        fclose($fhandle); 
+                        header('HTTP/1.1 206 Partial Content'); 
+                        header('Content-Range: bytes ' . $offset . '-' . ($offset + $length) . '/' . $size); 
+                    }
+                    
+                    header("Content-Disposition: attachment;filename=".$fileName); 
+                    header('Content-Type: '.$contentType); 
+                    header("Accept-Ranges: bytes"); 
+                    header("Pragma: public"); 
+                    header("Expires: -1"); 
+                    header("Cache-Control: no-cache"); 
+                    header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0"); 
+                    header("Content-Length: ".filesize($filePath)); 
+                    $chunksize = 8 * (1024 * 1024); //8MB (highest possible fread length) 
+                    if ($size > $chunksize) 
+                    { 
+                      $handle = fopen($filePath, 'rb'); 
+                      $buffer = ''; 
+                      while (!feof($handle) && (connection_status() === CONNECTION_NORMAL))  
+                      { 
+                        $buffer = fread($handle, $chunksize); 
+                        print $buffer; 
+                        ob_flush(); 
+                        flush(); 
+                      } 
+                      if(connection_status() !== CONNECTION_NORMAL) 
+                      { 
+                        echo "Connection aborted"; 
+                      } 
+                      fclose($handle); 
+                    } 
+                    else  
+                    { 
+                      ob_clean(); 
+                      flush(); 
+                      readfile($filePath); 
+                    } 
+                 } 
+                 else 
+                 { 
+                   echo 'File does not exist!'; 
+                 } 
+            } 
+            else 
+            { 
+                echo 'There is no file to download!'; 
+            } 
+        }         
+        
         /**
          * Get question number by question id
          *
