@@ -165,13 +165,13 @@ $decoded = $exam->decoded;
 
                                                         <?php endforeach;?>
 							<?php if($wasAbsent) continue;?>
-                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                        <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                                 <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
 									<?= (!$decoded) ? $student->code : $this->helper->getCatalogAttribute($student->user, 'name')?>
                                                                 </a>
                                                         </td>
 							<?php if($decoded):?>
-                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                        <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                                 <?=substr_replace($this->helper->getCatalogAttribute($student->user, 'pnr'), "-", 8, 0);?>
                                                         </td>
 							<?php endif;?>
@@ -216,6 +216,7 @@ $decoded = $exam->decoded;
                                                         <?php endforeach;?>
                                                         
 							<th align="right" style="vertical-align:top;">Avarage:</th>
+							<th align="right" style="vertical-align:top;"></th>
                                                         <td class="cc aa">
 								<?=sprintf("%1.1f", array_sum($avgPercentage)/count($avgPercentage))?>%
                                                         </td>
@@ -377,7 +378,7 @@ $(document).ready(function () {
 		if(confirm(msg)) {
 			// decode exam
 			ajax(
-				baseURL + 'core/ajax/creator/exam/update',
+				baseURL + 'core/ajax/decoder/exam/update',
 				{"id": examId, "decoded": "Y"},
 				function (status) {
 				    location.reload();
@@ -417,6 +418,7 @@ $(document).ready(function () {
 	
 		var source = $('#scoreboard-wrapper').find('table').clone();
 		$(source).find("a").contents().unwrap();
+		$(source).find(".adjustable").css('width', '150px');
 	
 		$.ajax({
 			type: "POST",
