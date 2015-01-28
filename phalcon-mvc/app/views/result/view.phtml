@@ -242,9 +242,9 @@ td,th {
                                                                                         </div>
                                                                                         <div class="resource-image">
 											<?php if(stristr($resUrl, "openexam-svn")):?>
-                                                                                        <img src="<?=$this->url->get(str_replace("/openexam-svn/","", $resUrl))?>" style=" background-color:#f9f9f9; max-width:100%; max-height:100%;">
+                                                                                        <img src="<?=$this->url->get(str_replace("/openexam-svn/","", $resUrl))?>" style=" background-color:#f9f9f9; max-width:100%;">
 											<?php else:?>
-											<img src="<?=$resUrl?>" style=" background-color:#f9f9f9; max-width:100%; max-height:100%;">
+											<img src="<?=$resUrl?>" style=" background-color:#f9f9f9; max-width:100%;">
 											<?php endif;?>
                                                                                         </div>
                                                                                 </div>
@@ -278,7 +278,7 @@ td,th {
 
                                                                 	<div>
 									<?php if($pData["ans_area"]["type"] == 'canvas'):?>
-                                                                        	<img src="<?=$data['answers'][$student->id][$question->id][$pTitle]["ans"][0]["canvasUrl"]?>" style=" background-color:#f9f9f9; max-width:100%; max-height:100%" >
+                                                                        	<img src="<?=$data['answers'][$student->id][$question->id][$pTitle]["ans"][0]["canvasUrl"]?>" style=" background-color:#f9f9f9; max-width:100%;" >
                                                                 	<?php else:?>
                                                                         	<?php if(count($data['answers'][$student->id][$question->id][$pTitle]["ans"])):?>
                                                                                 	<?php if($pData["ans_area"]["type"] == 'choicebox'):?>
