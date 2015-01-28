@@ -166,12 +166,12 @@ td,th {
                                                                                 <th>Notice</th>
                                                                         </tr>
                                                                         
-                                                                        <?php foreach($data['questions'] as $question):?>
+                                                                        <?php foreach($data['questions'] as $qNo => $question):?>
                                                                         	<?php foreach($data['qData'][$question->id]['qParts'] as $pTitle => $pData):?>
                                                                                 <tr>
                                                                                         <td>
                                                                                         	<?php if($pTitle == 'a'):?>
-	                                                                                      	<span style="color:#990000; font-weight: bold">Q<?=$question->name?></span>
+	                                                                                      	<span style="color:#990000; font-weight: bold">Q<?=$qNo+1?></span>
                                                                                                 <?=(count($data['qData'][$question->id]['qParts']) > 1) ? ", ":""; ?>
                                                                                                 <?php endif;?>
                                                                                                 
@@ -213,12 +213,12 @@ td,th {
                 </div>
                 
                 <!-- Questions and Answers pages -->
-		<?php foreach($data['questions'] as $question):?>
+		<?php foreach($data['questions'] as $questNo => $question):?>
                 <div class="page">
                         <div class="body" >
                                 <div class="body-content">
                                         <div class="quest">
-	                                        <h1 class="q-<?=$question->id?>">Question <?=$question->name?> </h1>
+	                                        <h1 class="q-<?=$question->id?>">Question <?=$questNo+1?> </h1>
                                                 
                                                 <?php foreach($data['qData'][$question->id]['qParts'] as $pTitle => $pData):?>
                                         	<div class="quest-part">
@@ -226,7 +226,7 @@ td,th {
                                                         <h2>Part <?=$pTitle?></h2>
                                                         <?php endif;?>
                                                         <div style="padding: 10px 20px 0px 20px;">
-
+								
                                                                 <!-- resources -->
                                                                 <?php foreach($pData['resources'] as $resTitle => $resUrl):?>
 									<?php 
@@ -249,7 +249,7 @@ td,th {
                                                                                         </div>
                                                                                 </div>
                                                                         <?php else:?>
-                                                                        	<a href="<?=$resUrl?>" target="_blank"><?=$resTitle?></a>
+                                                                        	<a href="<?="https://".$this->request->getServerName().$resUrl?>" target="_blank"><?=$resTitle?></a>
                                                                         <?php endif;?>
                                                                         </div>
                                                                 <?php endforeach;?>

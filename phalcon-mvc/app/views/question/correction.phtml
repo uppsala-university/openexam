@@ -37,6 +37,16 @@ $decoded = $exam->decoded;
                         
 			<div style="padding-bottom:15px;">
 				<center>
+					<?php 
+					if(!$decoded && $this->user->aquire(array('decoder'), $exam->id)!==false && in_array('decodable', $exam->flags)):?>
+						<button id="decode-exam" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding:5px 15px">
+						  <h5 style="font-style:normal; font-size:12px">
+							<i class="fa fa-check-circle" style="color:green"></i> 
+							I am satisfied with exam correction, Decode this exam.
+						  </h5>
+						</button>
+					<?php endif;?>
+				
 					<?php if($this->user->aquire(array('decoder'), $exam->id)!==false && ($decoded || in_array('decodable', $exam->flags))):?>
 					<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 					<button id="download-scoreboard" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding:5px 15px">
@@ -74,8 +84,14 @@ $decoded = $exam->decoded;
                                                                 </th>
                                                                 <?php $totalExamScore += $question->score;?>
                                                         <?php endforeach;?>
-                                                        <th style="background-color:#EAEAEA; width:62px" class="sortable"><?=$decoded ? 'Name': 'Code'?><i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
-</th>
+                                                        <th style="background-color:#EAEAEA; width:62px" class="sortable">
+								<?=$decoded ? 'Name': 'Code'?><i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+							</th>
+							<?php if($decoded):?>
+							<th style="background-color:#EAEAEA; width:62px" class="sortable">
+								Person No.<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+							</th>
+							<?php endif;?>
                                                         <th class="sortable" style="width:65px">%<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
                                                         <th class="sortable" style="width:55px">Grade<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
@@ -154,6 +170,11 @@ $decoded = $exam->decoded;
 									<?= (!$decoded) ? $student->code : $this->helper->getCatalogAttribute($student->user, 'name')?>
                                                                 </a>
                                                         </td>
+							<?php if($decoded):?>
+                                                        <td style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                                <?=substr_replace($this->helper->getCatalogAttribute($student->user, 'pnr'), "-", 8, 0);?>
+                                                        </td>
+							<?php endif;?>
                                                         <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
 								<?=sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100)?>%
                                                                 <?php
@@ -210,18 +231,6 @@ $decoded = $exam->decoded;
                                 </table>
                         </div>  
                         
-                        <?php 
-			if(!$decoded && $this->user->aquire(array('decoder'), $exam->id)!==false && in_array('decodable', $exam->flags)):?>
-                                <center>
-                                <button id="decode-exam">
-                                  <h5 style="font-style:normal; font-size:12px">
-                                  	<i class="fa fa-check-circle" style="color:green"></i> 
-                                  	I am satisfied with exam correction, Decode this exam.
-                                  </h5>
-                                </button>
-                                </center>
-                        <?php endif;?>
-                              
                         <h5>Color Codes</h5>
                         <p>Following are the color codes used in the score board:</p>
                         <table style="margin:0">
@@ -348,9 +357,9 @@ $(document).ready(function () {
 	// keep column order
         jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function() { 
 		if(($(this).children().length)) {
-			$(this).children(":first").before($(this).children(":last"));
-			$(this).children(":first").before($(this).children(":last"));
-			$(this).children(":first").before($(this).children(":last"));
+			for(i=0; i<<?=$decoded ? "4" : "3"?>; i++) {
+				$(this).children(":first").before($(this).children(":last"));
+			}
 		} else {
 			$(this).remove();
 		}
