@@ -216,7 +216,9 @@ $decoded = $exam->decoded;
                                                         <?php endforeach;?>
                                                         
 							<th align="right" style="vertical-align:top;">Avarage:</th>
+							<?php if($decoded):?>
 							<th align="right" style="vertical-align:top;"></th>
+							<?php endif;?>
                                                         <td class="cc aa">
 								<?=sprintf("%1.1f", array_sum($avgPercentage)/count($avgPercentage))?>%
                                                         </td>
