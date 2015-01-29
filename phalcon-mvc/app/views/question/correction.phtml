@@ -71,10 +71,10 @@ $decoded = $exam->decoded;
                         
 			<div style="overflow:scroll" id="scoreboard-wrapper">
                                 <table class="tablesorter">
-                                        <tbody>
+                                        <thead>
                                                 <tr>
                                                         <?php foreach($questions as $qNo => $question):?>
-                                                                <th style="width:55px; text-align:center; " class="sortable">
+                                                                <th style="width:35px; text-align:center; " class="sortable">
                                                                   <div style="text-align: center">
                                                                         <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$qNo+1?></a>
                                                                         <i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
@@ -85,11 +85,17 @@ $decoded = $exam->decoded;
                                                                 <?php $totalExamScore += $question->score;?>
                                                         <?php endforeach;?>
                                                         <th style="background-color:#EAEAEA; width:62px" class="sortable">
-								<?=$decoded ? 'Name': 'Code'?><i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+								Code<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
 							</th>
 							<?php if($decoded):?>
+                                                        <th style="background-color:#EAEAEA; width:62px" class="sortable">
+								F. name<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+							</th>
+                                                        <th style="background-color:#EAEAEA; width:62px" class="sortable">
+								L. name<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+							</th>
 							<th style="background-color:#EAEAEA; width:62px" class="sortable">
-								Person No.<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+								P No.<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
 							</th>
 							<?php endif;?>
                                                         <th class="sortable" style="width:65px">%<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
@@ -97,6 +103,8 @@ $decoded = $exam->decoded;
                                                         <th class="sortable" style="width:55px">Grade<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
                                                         <?php endif;?>
                                                 </tr>
+					</thead>	
+					<tbody>
 						<?php foreach($students as $student):?>
                                                 <tr>
 							<?php $wasAbsent = false;?>
@@ -167,12 +175,23 @@ $decoded = $exam->decoded;
 							<?php if($wasAbsent) continue;?>
                                                         <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                                 <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
-									<?= (!$decoded) ? $student->code : $this->helper->getCatalogAttribute($student->user, 'name')?>
+									<?=$student->code?>
                                                                 </a>
                                                         </td>
 							<?php if($decoded):?>
+							<?php $stName = explode(' ', $this->helper->getCatalogAttribute($student->user, 'name'), 2);?>
                                                         <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                                <?=substr_replace($this->helper->getCatalogAttribute($student->user, 'pnr'), "-", 8, 0);?>
+                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+									<?=$stName[0]?>
+                                                                </a>
+                                                        </td>
+                                                        <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+									<?=$stName[1]?>
+                                                                </a>
+                                                        </td>
+                                                        <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                                <?=substr(substr_replace($this->helper->getCatalogAttribute($student->user, 'pnr'), "-", 8, 0), 2);?>
                                                         </td>
 							<?php endif;?>
                                                         <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
@@ -207,6 +226,8 @@ $decoded = $exam->decoded;
 						$studentIds[] = $student->id;
 						endforeach;
 						?>
+					</tbody>	
+					<tfoot>
                                                 <tr class="avarage">
                                                         <?php foreach($questions as $q):?>
                                                         	<?php $avg = sprintf("%1.1f", array_sum($overallQuestScore[$q->id])/count($overallQuestScore[$q->id]));?>
@@ -217,6 +238,8 @@ $decoded = $exam->decoded;
                                                         
 							<th align="right" style="vertical-align:top;">Avarage:</th>
 							<?php if($decoded):?>
+							<th align="right" style="vertical-align:top;"></th>
+							<th align="right" style="vertical-align:top;"></th>
 							<th align="right" style="vertical-align:top;"></th>
 							<?php endif;?>
                                                         <td class="cc aa">
@@ -230,7 +253,7 @@ $decoded = $exam->decoded;
                                                         </td>
                                                         <?php endif;?>
                                                 </tr>
-                                        </tbody>
+                                        </tfoot>
                                 </table>
                         </div>  
                         
@@ -286,7 +309,7 @@ $decoded = $exam->decoded;
 
 <?=Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
 <?=Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
-<?=Phalcon\Tag::javascriptInclude('js/jquery.sortElements.js'); ?>
+<?=Phalcon\Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
   <style>
 #progressbar {
 	margin-top: 20px;
@@ -309,6 +332,18 @@ var stIds = <?=json_encode($studentIds)?>;
 var completedRequests = {};
 var resyncableResults = [];
 $(document).ready(function () {
+
+	// keep column order
+        jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function() { 
+		if(($(this).children().length)) {
+			for(i=0; i<<?=$decoded ? "6" : "3"?>; i++) {
+				$(this).children(":first").before($(this).children(":last"));
+			}
+		} else {
+			$(this).remove();
+		}
+        });
+
         $('.fb').fancybox({
                         'width': "100%", 
                         'height': "95%", 
@@ -321,52 +356,12 @@ $(document).ready(function () {
                                 location.reload();
                         }
         });
-
-    	var table = $('.tablesorter');
-    
-    	$('.sortable')
-        .wrapInner('<span title="sort this column"/>')
-        .each(function(){
-            
-            var th = $(this),
-                thIndex = th.index(),
-                inverse = false;
-            
-            th.find('.sortme').click(function(){
-                
-                table.find('td').filter(function(){
-                    
-                    return $(this).index() === thIndex && !($(this).closest('tr').hasClass('avarage'));
-                    
-                }).sortElements(function(a, b){
-                    
-                    return $.text([a]) > $.text([b]) ?
-                        inverse ? -1 : 1
-                        : inverse ? 1 : -1;
-                    
-                }, function(){
-                    
-                    // parentNode is the element we want to move
-                    return this.parentNode; 
-                    
-                });
-                
-                inverse = !inverse;
-                    
-            });
-                
-        });
 	
-	// keep column order
-        jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function() { 
-		if(($(this).children().length)) {
-			for(i=0; i<<?=$decoded ? "4" : "3"?>; i++) {
-				$(this).children(":first").before($(this).children(":last"));
-			}
-		} else {
-			$(this).remove();
-		}
-        });
+	
+	$('.tablesorter').tablesorter({ 
+        	// sort on the first column and third column, order asc 
+	        sortList: [[0,0]] 
+    	});
 	
 	$(document).on('click', '.save-result', function() {
 		var tmp = [];
