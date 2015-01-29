@@ -74,7 +74,7 @@ $decoded = $exam->decoded;
                                         <thead>
                                                 <tr>
                                                         <?php foreach($questions as $qNo => $question):?>
-                                                                <th style="width:35px; text-align:center; " class="sorter-false">
+                                                                <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
                                                                   <div style="text-align: center">
                                                                         <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$qNo+1?></a>
                                                                   </div>
@@ -98,9 +98,9 @@ $decoded = $exam->decoded;
 								P No.
 							</th>
 							<?php endif;?>
-                                                        <th class="sortable" style="background-color:#EAEAEA; width:65px">%</th>
+                                                        <th class="sortable" style="background-color:#EAEAEA; width:35px">%</th>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
-                                                        <th class="sortable" style="background-color:#EAEAEA; width:55px">Grade</th>
+                                                        <th class="sortable" style="background-color:#EAEAEA; width:35px">Grade</th>
                                                         <?php endif;?>
                                                 </tr>
 					</thead>	
