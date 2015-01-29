@@ -74,33 +74,33 @@ $decoded = $exam->decoded;
                                         <thead>
                                                 <tr>
                                                         <?php foreach($questions as $qNo => $question):?>
-                                                                <th style="width:35px; text-align:center; " class="sortable">
+                                                                <th style="width:35px; text-align:center; " class="sorter-false">
                                                                   <div style="text-align: center">
                                                                         <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$qNo+1?></a>
-                                                                        <i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
                                                                   </div>
                                                                   <!--<div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>-->
 
                                                                 </th>
                                                                 <?php $totalExamScore += $question->score;?>
                                                         <?php endforeach;?>
+
                                                         <th style="background-color:#EAEAEA; width:62px" class="sortable">
-								Code<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+								Code
 							</th>
 							<?php if($decoded):?>
                                                         <th style="background-color:#EAEAEA; width:62px" class="sortable">
-								F. name<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+								F. name
 							</th>
                                                         <th style="background-color:#EAEAEA; width:62px" class="sortable">
-								L. name<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+								L. name
 							</th>
 							<th style="background-color:#EAEAEA; width:62px" class="sortable">
-								P No.<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i>
+								P No.
 							</th>
 							<?php endif;?>
-                                                        <th class="sortable" style="width:65px">%<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
+                                                        <th class="sortable" style="background-color:#EAEAEA; width:65px">%</th>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
-                                                        <th class="sortable" style="width:55px">Grade<i class="fa fa-sort sortme" style="float: right; margin-top: 3px"></i></th>
+                                                        <th class="sortable" style="background-color:#EAEAEA; width:55px">Grade</th>
                                                         <?php endif;?>
                                                 </tr>
 					</thead>	
@@ -308,6 +308,7 @@ $decoded = $exam->decoded;
 </div>
 
 <?=Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
+<?=Phalcon\Tag::stylesheetLink('css/tablesorter.default.css'); ?>
 <?=Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
 <?=Phalcon\Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
   <style>
@@ -358,10 +359,14 @@ $(document).ready(function () {
         });
 	
 	
-	$('.tablesorter').tablesorter({ 
-        	// sort on the first column and third column, order asc 
-	        sortList: [[0,0]] 
-    	});
+	$('.tablesorter').tablesorter({
+		widgets        : ['zebra', 'columns'],
+		usNumberFormat : false,
+		sortReset      : true,
+		sortRestart    : true,
+		sortList: [[0,0]] 
+	});	
+	
 	
 	$(document).on('click', '.save-result', function() {
 		var tmp = [];
