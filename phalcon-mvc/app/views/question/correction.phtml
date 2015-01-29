@@ -98,7 +98,7 @@ $decoded = $exam->decoded;
 								P No.
 							</th>
 							<?php endif;?>
-                                                        <th class="sortable" style="background-color:#EAEAEA; width:35px">%</th>
+                                                        <th class="sortable" style="background-color:#EAEAEA; width:45px">%</th>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
                                                         <th class="sortable" style="background-color:#EAEAEA; width:35px">Grade</th>
                                                         <?php endif;?>
