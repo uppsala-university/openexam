@@ -222,36 +222,17 @@ class ResultController extends GuiController
                 $examId = $this->filter->sanitize($examId, 'int');
                 $exam = Exam::findFirst($examId);
                 
-                //@ToDO-:- 
-                //This is just a temporay fix because pdf rendering service is not 
-                //able to keep sessions
                 // generate, save result in pdf and download that pdf if it is for a student
-                /*$student = Student::findFirst(array(
+                $student = Student::findFirst(array(
                         "conditions" => "exam_id = ?1 and user = ?2",
                         "bind"       => array(
                                         1 => $examId,
                                         2 => $this->user->getPrincipalName()
                                 )
-                    ));*/
-                $student = Student::findFirst(array(
-                        "conditions" => "exam_id = ?1 and id = ?2",
-                        "bind"       => array(
-                                        1 => $examId,
-                                        2 => $studentId
-                                )
                     ));
                 
                 if($student) {
                         
-                        // get student's data
-/*                        $student = Student::findFirst(array(
-                                "conditions" => "exam_id = ?1 and id = ?2",
-                                "bind"       => array(
-                                                1 => $examId,
-                                                2 => $this->filter->sanitize($studentId, 'int')
-                                        )
-                            ));
- */
                         // generate pdf file and download
                         $this->_generateResultPdf($exam, $student, TRUE);
                         

@@ -35,7 +35,7 @@ $decoded = $exam->decoded;
                         <?php endif;?>
                         
                         
-			<div style="padding-bottom:15px;">
+			<div>
 				<center>
 					<?php 
 					if(!$decoded && $this->user->aquire(array('decoder'), $exam->id)!==false && in_array('decodable', $exam->flags)):?>
@@ -421,7 +421,7 @@ $(document).ready(function () {
 		var source = $('#scoreboard-wrapper').find('table').clone();
 		$(source).find("a").contents().unwrap();
 		$(source).find(".adjustable").css('width', '150px');
-	
+		$(source).find(".cc").css('width', '80px');
 		$.ajax({
 			type: "POST",
 			url: baseURL + 'result/exportScoreBoard/'+examId,
