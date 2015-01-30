@@ -345,6 +345,7 @@ td,th {
                 <?php endforeach;?>
                 
                 <!-- Statistics page -->
+		<?php if(($exam->details & 2) == 2):?>
                 <div class="page">
                         <div class="body" >
                                 <div class="body-content" style="height:950px">
@@ -449,7 +450,10 @@ td,th {
                                         </div>
                                         -->
                                 </div>         
-                        </div></div>   
+                        </div>
+		</div>
+		<?php endif;?>
+		   
                 <!-- Reference page -->
                 <div class="page">
                         <div class="body" >
@@ -467,7 +471,8 @@ td,th {
                                                                 <span style="font-size:15px; color:#3d749b">Responsable for examination:</span><br>
                                                                 <span class="uu-color">Main responsible person for the examination is <a href="mailto:<?=$this->helper->getCatalogAttribute($exam->creator, 'mail', true)?>" style="color:#990000; text-decoration:none"><?=$this->helper->getCatalogAttribute($exam->creator, 'name')?></a></span><br>
                                                             </div>
-
+							    
+							    <?php if(($exam->details & 1) == 1):?>
                                                             <div style="margin-top:15px">
                                                                 <span style="font-size:15px; color:#3d749b">Correction of answers:</span><br>
                                                                 <span class="uu-color">Following persons have contributed in this exam and have corrected answers:</span>
@@ -486,6 +491,7 @@ td,th {
                                                                         <?php endforeach;?>
                                                                 </ul>        
                                                             </div>
+							    <?php endif;?>
                                                         </div>	
                                                 </div>
                                                 <!--
