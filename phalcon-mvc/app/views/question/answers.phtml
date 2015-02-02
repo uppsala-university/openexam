@@ -62,7 +62,17 @@ $decoded = $exam->decoded;
 							
                                                         <div class="q-part-resources">
                                                                 <?php foreach($qPart['resources'] as $resName => $resPath):?>
-									<img src="<?=$resPath?>" style="max-width:100%" />
+									<?php 
+									$mimeType = finfo_file(
+										finfo_open(FILEINFO_MIME_TYPE), 
+										$this->config->application->mediaDir.basename(dirname($resPath)).'s'.DIRECTORY_SEPARATOR.basename(urldecode($resPath))
+									);
+									?>
+									<?php if(stristr($mimeType, "image")):?>
+										<img src="<?=$resPath?>" style="max-width:100%" />
+                                                                        <?php else:?>
+                                                                        	<a href="<?="https://".$this->request->getServerName().$resPath?>" target="_blank"><?=$resName?></a>
+                                                                        <?php endif;?>
 								<?php endforeach;?>
                                                         </div>
                                                         
