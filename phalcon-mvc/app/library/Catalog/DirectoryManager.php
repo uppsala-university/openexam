@@ -353,7 +353,10 @@ class DirectoryManager extends Component implements DirectoryService
                     print_r(array(
                         'Exception' => get_class($exception),
                         'Message'   => $exception->getMessage(),
-                        'Service'   => get_class($service) . ' [' . $name . ']'
+                        'Service'   => get_class($service) . ' [' . $name . ']',
+                        'File'      => $exception->getFile(),
+                        'Line'      => $exception->getLine(),
+                        'Code'      => $exception->getCode()
                         ), true
                     )
                 );

@@ -606,7 +606,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                                 }
                         }
 
-                        if (ldap_bind($this->ldap, $this->user, $this->pass) == false) {
+                        if (@ldap_bind($this->ldap, $this->user, $this->pass) == false) {
                                 throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
                         }
                 }
