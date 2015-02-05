@@ -911,9 +911,9 @@ $(document).ready(function () {
                                        </div>';
                     });
                 } else if (ansType == 'canvas') {
-                    ansTypeHtml = '<img width="70%" src="' + baseURL + 'img/canvas.png">';
+                    ansTypeHtml = '<img width="100%" src="' + baseURL + 'img/canvas.png">';
                 } else {
-                    ansTypeHtml = '<img width="70%" src="' + baseURL + 'img/ckeditor.png">';
+                    ansTypeHtml = '<img width="100%" src="' + baseURL + 'img/ckeditor.png">';
                 }
 
                 $(qPartLine)
@@ -921,7 +921,8 @@ $(document).ready(function () {
                         .find('.q_fields').html(ansTypeHtml);
 
                 if (totalQParts > 1) {
-                    $(qPartLine).find('.q_part_no').html(qPartTitle + '.&nbsp;');
+                    $(qPartLine).find('.q_part_no').html(qPartTitle + '.');
+		    $(qPartLine).find('.q_part_pt').html("("+qPartData.q_points+' pt.)');
                 }
 
 
@@ -933,7 +934,7 @@ $(document).ready(function () {
 
             });
 
-            $(qLine).find('.qs_area_line_q:last').css('border-bottom', '1px dashed #dedede');
+            $(qLine).find('.qs_area_line_q:last').css('border-bottom', '2px solid #fbeed5');
             $(qLine).find('.q_score').html('[' + totalScore + ' pt.]');
 
             $('#qs_area').append($(qLine).show());
