@@ -4865,7 +4865,7 @@ text-decoration:none;
 
 .qs_area_line_q {
         padding-bottom:15px;
-        border-left: 1px dashed #DEDEDE; 
+        border-left: 2px solid #fbeed5; 
         margin-left:55px; 
         padding-left:10px;
         min-height:85px;
@@ -4897,12 +4897,13 @@ text-decoration:none;
 .qs_area_line_q_no{
         float:left; 
         color:  #333333; /*#999999; */
-        font-size: 22px; 
+        font-size: 16px; 
         padding: 0 15px 15px 0;
-        background-color: #f6f6f6 /*#FFFFD9*/; 
+        background-color: #fcf8e3 /*#FFFFD9*/; 
         border-radius: 5px; 
-        border: 1px dashed rgb(222, 222, 222); 
+        border: 2px solid #fbeed5; 
         padding: 5px 8px 5px 5px;		
+	min-width:40px
 }
 
 .qs_area_line_q_no .q_score{
