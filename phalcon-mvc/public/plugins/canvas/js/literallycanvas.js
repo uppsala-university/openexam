@@ -518,6 +518,9 @@ module.exports = LiterallyCanvas = (function() {
     }
     if (!(opts.rect.width && opts.rect.height)) {
       return;
+    } else {
+	opts.rect.y -= 15;
+	opts.rect.height += 15;
     }
     if (opts.scale == null) {
       opts.scale = 1;
