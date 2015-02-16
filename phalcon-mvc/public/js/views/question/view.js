@@ -4,7 +4,7 @@
 
 	/*======== var initialization ==========*/
 	var dirtybit 	= 0;
-	var syncEvery	= 10000; //10 seconds
+	var syncEvery	= 10000; //10 seconds 
 	var ansJson	= {};
 	var totalSyncs	= 0;
 	var canvasData	= [];
