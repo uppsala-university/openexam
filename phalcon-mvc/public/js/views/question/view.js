@@ -53,25 +53,31 @@
 				// make json as per ansType
 				if(ansType == 'textbox') {
 					
+					console.log("saving text box data");
+					
 					ansData = $(answers).val();
-					ansJson[qPartName]["ans"].push(ansData);
-					/*if(ansData.trim()) {
+					//ansJson[qPartName]["ans"].push(ansData);
+					if(ansData.trim()) {
+						console.log("not empty:"+ansData);
 						ansJson[qPartName]["ans"].push(ansData);
 						$('#ansBkp'+qPartName).val(ansData);
 					} else {
+						console.log("its empty .. so sending old value:"+$('#ansBkp'+qPartName).val());
 						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).val());
-					}*/
+					}
 					
 				} else if(ansType == 'textarea') {
-					
+					console.log("saving text area data");
 					ansData = CKEDITOR.instances[$(answers).attr('id')].getData();
-					ansJson[qPartName]["ans"].push(ansData);
-					/*if(ansData.trim()) {
+					//ansJson[qPartName]["ans"].push(ansData);
+					if(ansData.trim()) {
+						console.log("not empty:"+ansData);
 						ansJson[qPartName]["ans"].push(ansData);
 						$('#ansBkp'+qPartName).val(ansData);
 					} else {
+						console.log("its empty .. so sending old value:"+$('#ansBkp'+qPartName).val());
 						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).val());
-					}*/
+					}
 					
 				} else if(ansType == 'choicebox') {
 					
