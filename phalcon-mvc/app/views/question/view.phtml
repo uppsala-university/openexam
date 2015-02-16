@@ -137,7 +137,8 @@
 									<?php else:?>
 										<div class="form-group q-part-ans-type" data-id="<?=$qPartData['ans_area']['type']?>">
 										<?php if($qPartData['ans_area']['type'] == 'textbox'):?>
-											<input type="text" style="font-size:11px" class="form-control changeable" value="<?=$answerData[$qPart]['ans'][0]?>" placeholder="Write your answer here ..." />
+                                                                                	<input type="hidden" id="ansBkp<?=$qPart?>" value="<?=htmlentities($answerData[$qPart]['ans'][0])?>" />
+											<input type="text" style="font-size:11px" class="form-control changeable" value="<?=htmlentities($answerData[$qPart]['ans'][0])?>" placeholder="Write your answer here ..." />
 										<?php elseif($qPartData['ans_area']['type'] == 'canvas'):?>
 											<div id="q<?=$qObj->id?>p<?=$qPart?>" class="literally changeable"></div>
 											<button class="fullscreen" isfor="q<?=$qObj->id?>p<?=$qPart?>">Fullscreen</button>    
@@ -156,6 +157,7 @@
 												<?php endforeach;?>
 											</div>                                                                        
 										<?php else:?>
+                                                                                	<input type="hidden" id="ansBkp<?=$qPart?>" value="<?=$answerData[$qPart]['ans'][0]?>" />
 											<textarea id="q-<?=$questionNo?>_part-<?=$qPart?>" class="form-control changeable ckeditor"><?=$answerData[$qPart]['ans'][0]?></textarea>
 										<?php endif;?>
 										</div>
