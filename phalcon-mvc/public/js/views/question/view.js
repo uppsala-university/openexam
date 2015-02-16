@@ -4,7 +4,7 @@
 
 	/*======== var initialization ==========*/
 	var dirtybit 	= 0;
-	var syncEvery	= 10000; //30 seconds
+	var syncEvery	= 10000; //10 seconds
 	var ansJson	= {};
 	var totalSyncs	= 0;
 	var canvasData	= [];
@@ -53,11 +53,25 @@
 				// make json as per ansType
 				if(ansType == 'textbox') {
 					
-					ansJson[qPartName]["ans"].push($(answers).val());
+					ansData = $(answers).val();
+					ansJson[qPartName]["ans"].push(ansData);
+					/*if(ansData.trim()) {
+						ansJson[qPartName]["ans"].push(ansData);
+						$('#ansBkp'+qPartName).val(ansData);
+					} else {
+						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).val());
+					}*/
 					
 				} else if(ansType == 'textarea') {
 					
-					ansJson[qPartName]["ans"].push(CKEDITOR.instances[$(answers).attr('id')].getData());
+					ansData = CKEDITOR.instances[$(answers).attr('id')].getData();
+					ansJson[qPartName]["ans"].push(ansData);
+					/*if(ansData.trim()) {
+						ansJson[qPartName]["ans"].push(ansData);
+						$('#ansBkp'+qPartName).val(ansData);
+					} else {
+						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).val());
+					}*/
 					
 				} else if(ansType == 'choicebox') {
 					
@@ -71,11 +85,39 @@
 					
 					var canvasId = $(answers).attr('id');
 					var canvasJson = canvasData[canvasId];
-					var canvasUrl = canvasElem[canvasId].getImage().toDataURL();
-					ansJson[qPartName]["ans"].push({"canvasJson":canvasJson, "canvasUrl": canvasUrl});
+					
+					if(typeof(canvasElem[canvasId]) != 'undefined' && canvasElem[canvasId].getImage()) {
+						
+						var canvasUrl = canvasElem[canvasId].getImage().toDataURL();
+						ansJson[qPartName]["ans"].push({"canvasJson":canvasJson, "canvasUrl": canvasUrl});
+						
+/*						if(canvasUrl.trim()) {
+							
+							$('#ansBkp'+qPartName+'_json').val(canvasJson);
+							$('#ansBkp'+qPartName+'_url').val(canvasUrl);
+						} else {
+							ansJson[qPartName]["ans"].push({"canvasJson":$('#ansBkp'+qPartName+'_json').val(), "canvasUrl": $('#ansBkp'+qPartName+'_url').val()});
+						}*/
+						
+					} /*else {
+						if (localStorage.getItem(elementId)) {
+							lc.loadSnapshotJSON(localStorage.getItem(elementId));
+							canvasData[elementId] = localStorage.getItem(elementId);
+						}
+						
+						ansJson[qPartName]["ans"].push({"canvasJson":$('#ansBkp'+qPartName+'_json').val(), "canvasUrl": $('#ansBkp'+qPartName+'_url').val()});
+
+					}*/
 					
 				} else {
-					ansJson[qPartName]["ans"].push(CKEDITOR.instances[$(answers).attr('id')].getData());
+					ansData = CKEDITOR.instances[$(answers).attr('id')].getData();
+					ansJson[qPartName]["ans"].push(ansData);
+					/*if(ansData.trim()) {
+						ansJson[qPartName]["ans"].push(ansData);
+						$('#ansBkp'+qPartName).val(ansData);
+					} else {
+						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).val());
+					}*/
 				}
 				
 			});
@@ -98,9 +140,9 @@
 					timeout: 5000,
 					error: function(x, t, m) {
 						if(t==="timeout") {
-							alert("Seems like you lost your internet connection. Please make sure that internet cable is properly connected with computer. \r\n" + failMsg);
+							alert("Seems like you lost your internet connection. Please make sure that internet cable is properly connected with computer. \r\n");
 						} else {
-							alert("Error occured!" + failMsg +"\r\n"+ t);
+							alert("Error occured!" + failMsg +"\r\n"+ m);
 						}
 					}
 				})
@@ -152,14 +194,20 @@
 				
 				canvasElem[elementId] = lc;
 				
-				if(canvasJson != '') {
-					lc.loadSnapshotJSON(canvasJson);
-					canvasData[elementId] = canvasJson;
+				if (localStorage.getItem(elementId)) {
+				      	lc.loadSnapshotJSON(localStorage.getItem(elementId));
+					canvasData[elementId] = localStorage.getItem(elementId);
+				}
+				
+				if(localStorage.getItem(elementId) != canvasJson) {
+					alert("Seems like your drawing is not being saved properly in database. Please contact your invigilator immediately and don't refresh/close this browser window.");
+					console.log(localStorage.getItem(elementId) +"-------------------------------------------------"+ canvasJson);
 				}
 				
 				lc.on('drawingChange', function() {
 					dirtybit = 1;
 					canvasData[elementId] = lc.getSnapshotJSON();
+					localStorage.setItem(elementId, lc.getSnapshotJSON());
 				})
 			},
 			imageURLPrefix: baseURL + 'plugins/canvas/img', imageSize: {width: null, height: null}
