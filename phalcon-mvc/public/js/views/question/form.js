@@ -37,6 +37,7 @@ var libJs = '';
         //enable CkEditor
         $('#' + id).find('.write_q_ckeditor').attr('id', 'q_text' + tabId).val('');
         $('#' + id).find('.ans_type').hide();
+	$('#' + id).find('.lib_resources_list').empty();
         $('#' + id).find('#cke_q_text1').remove();
         CKEDITOR.replace('q_text' + tabId, {
             height: '100px'

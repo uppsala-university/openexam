@@ -40,7 +40,7 @@
                                                                                 <?php foreach($qParts[$qPartTitle]['resources'] as $rTitle => $rLink):?>
                                                                                 <li> 
                                                                                         <i class="fa fa-close"></i> 
-                                                                                        <a target="_blank" file-path="<?=$rLink?>" href="#"><?=$rTitle?></a> 
+                                                                                        <a target="_blank" href="<?=$rLink?>"><?=empty($rTitle)?urldecode(basename($rLink)):$rTitle?></a> 
                                                                                         </i> 
                                                                                 </li>
                                                                                 <?php endforeach;?>
