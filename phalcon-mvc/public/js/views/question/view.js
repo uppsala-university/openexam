@@ -148,7 +148,7 @@
 						if(t==="timeout") {
 							alert("Seems like you lost your internet connection. Please make sure that internet cable is properly connected with computer. \r\n");
 						} else {
-							alert("Error occured!" + failMsg +"\r\n"+ m);
+							alert("Error occured!" + failMsg +"\r\n\r\n >>>"+ JSON.stringify(x)+"--"+t+"--"+m);
 						}
 					}
 				})
