@@ -904,12 +904,23 @@ $(document).ready(function () {
                     ansTypeHtml = '<input disabled type="text" style="width:350px">';
 
                 } else if (ansType == 'choicebox') {
+		    var totalCorrect = 0;
                     jQuery.each(qPartData.ans_area["data"], function (optTitle, optionStatus) {
-                        ansTypeHtml += '<div style="padding-top:5px">\
-                                            <input type="checkbox" ' + (optionStatus ? 'checked' : '') + ' disabled> \
+                        ansTypeHtml += '<div style="padding-top:5px; ' + (optionStatus ? 'color: green; ' : '') + '">\
+                                           '+ (optionStatus ? '<i class="fa fa-check-circle fa-lg"></i>' : '<input type="checkbox" ' + (optionStatus ? 'checked' : '') + ' disabled>') +'\
                                             <span>' + optTitle + '</span>\
                                        </div>';
+				       
+				       
+
+			if(optionStatus) {
+				totalCorrect++;
+			}
                     });
+		    
+		    if(totalCorrect == 1) {
+			ansTypeHtml = ansTypeHtml.replace(new RegExp(/type=\"checkbox\"/g), 'type=\"radio\"');
+		    }
                 } else if (ansType == 'canvas') {
                     ansTypeHtml = '<img width="100%" src="' + baseURL + 'img/canvas.png">';
                 } else {

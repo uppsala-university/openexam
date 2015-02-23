@@ -144,7 +144,7 @@
 											<button class="fullscreen" isfor="q<?=$qObj->id?>p<?=$qPart?>">Fullscreen</button>    
 											<script language="javascript">initCanvas('q<?=$qObj->id?>p<?=$qPart?>', '<?=trim(json_encode($answerData[$qPart]['ans'][0]['canvasJson']), '"');?>');</script>
 										<?php elseif($qPartData['ans_area']['type'] == 'choicebox'):?>
-                                                                                	<?php $type = (count(array_filter($qPartData['ans_area']['data']))>1)?'checkbox':'radio';?>
+                                                                                	<?php $type = (count(array_filter($qPartData['ans_area']['data']))==1)?'radio':'checkbox';?>
 											<div class="col-md-10">
 												<?php $i = 0;?>
 												<?php foreach($qPartData['ans_area']['data'] as $qPartOpt => $ans):?>
