@@ -197,6 +197,14 @@ $config = new \Phalcon\Config(
         'metadata'    => array(
                 'prefix'   => 'openexam',
                 'lifetime' => 86400
+        ),
+        /**
+         * Session configuration.
+         */
+        'session'     => array(
+                'expires'   => 7200,            // Expires after (seconds)
+                'refresh'   => 1800,            // Refresh threshold (seconds)
+                'startPage' => 'exam/index'     // Start page (user initiated)
         )
     )
 );

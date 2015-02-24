@@ -159,5 +159,13 @@ return array(
         'phpunit' => array(
                 'username' => null,
                 'persnr'   => null
+        ),
+        /**
+         * Session configuration.
+         */
+        'session'     => array(
+                'expires'   => 7200,            // Expires after (seconds)
+                'refresh'   => 1800,            // Refresh threshold (seconds)
+                'startPage' => 'exam/index'     // Start page (user initiated)
         )
 );

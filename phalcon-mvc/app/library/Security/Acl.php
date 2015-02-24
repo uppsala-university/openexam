@@ -65,6 +65,40 @@ class Acl extends Component
                 return $this->getAcl()->isAllowed($role, $resource, $action);
         }
 
+        /**
+         * Get controller access.
+         * 
+         * Returns a string describing the protection level for this 
+         * controller/action:
+         * 
+         * <code>
+         * <ul>private:   Enforce authentication.</ul>
+         * <ul>protected: Advisory authentication.</ul>
+         * <ul>public:    No authentication required.</ul>
+         * </code>
+         * 
+         * @param string $controller The controller.
+         * @param string $action The action. 
+         * @return string 
+         */
+        public function getAccess($controller, $action)
+        {
+                foreach (array('public', 'protected') as $protection) {
+                        if (isset($this->access[$protection][$controller])) {
+                                if (is_string($this->access[$protection][$controller])) {
+                                        $this->access[$protection][$controller] = array($this->access[$protection][$controller]);
+                                }
+                                if (in_array($action, $this->access[$protection][$controller])) {
+                                        return $protection;
+                                } elseif ($this->access[$protection][$controller][0] == "*") {
+                                        return $protection;
+                                }
+                        }
+                }
+
+                return 'private';
+        }
+
         private function rebuild()
         {
                 $acl = new AclAdapter();

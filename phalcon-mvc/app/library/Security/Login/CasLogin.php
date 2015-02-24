@@ -13,22 +13,29 @@
 
 namespace OpenExam\Library\Security\Login;
 
-use OpenExam\Library\Security\Login\Base\LoginTrait;
 use OpenExam\Library\Security\Login\Base\RemoteLogin;
 use UUP\Authentication\Authenticator\CasAuthenticator;
 
 /**
+ * CAS Login.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class CasLogin extends CasAuthenticator implements RemoteLogin
 {
 
-        use LoginTrait;
-
-        public function __construct($desc, $host, $port = 443, $path = '/cas')
+        /**
+         * Constructor.
+         * @param Config $config System configuration.
+         * @param string $host The CAS server name (FQHN).
+         * @param int $port The CAS server port.
+         * @param string $path The CAS service path (relative to host).
+         */
+        public function __construct($config, $host, $port = 443, $path = '/cas')
         {
                 parent::__construct($host, $port, $path);
-                $this->initialize(Base\LoginHandler::form, $desc, 'cas');
+                parent::control(self::sufficient);
+                parent::visible(true);
+                $this->return = $config->application->baseUri . "auth/logout";
         }
 
 }

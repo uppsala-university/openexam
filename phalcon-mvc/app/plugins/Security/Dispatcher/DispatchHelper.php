@@ -5,18 +5,25 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    FormLogin.php
-// Created: 2014-09-10 15:33:27
+// File:    DispatchHelper.php
+// Created: 2015-02-17 10:38:55
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Security\Login\Base;
+namespace OpenExam\Plugins\Security\Dispatcher;
 
 /**
+ * Interface for dispatch helper classes.
+ * @access private
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-interface FormLogin extends LoginHandler
+interface DispatchHelper
 {
-        
+
+        /**
+         * Get handler data.
+         * @return array 
+         */
+        function getData();
 }

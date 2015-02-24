@@ -99,24 +99,21 @@ $router->add(
         "namespace"  => "OpenExam\Controllers\Utility"
     )
 );
+
 $router->mount(
     new PrefixRoute(array(
         "prefix"    => "/",
         "namespace" => "OpenExam\Controllers\Gui"
     ))
 );
-$router->mount(
-    new PrefixRoute(array(
-        "prefix"    => "/test",
-        "namespace" => "OpenExam\Controllers\Test"
-    ))
-);
+
 $router->mount(
     new PrefixRoute(array(
         "prefix"    => "/utility",
         "namespace" => "OpenExam\Controllers\Utility"
     ))
 );
+
 $router->add(
     "/exam/:int", array(
         "controller" => "exam",
@@ -165,18 +162,6 @@ $router->add(
 );
 
 /**
- * Route Authentication pages (e.g. "/auth/*")
- */
-$router->add(
-    "/auth/:action/?(.*)?", array(
-        "controller" => "auth",
-        "action"     => 1,
-        "authMethod" => 2,
-        "namespace"  => "OpenExam\Controllers\Gui"
-    )
-);
-
-/**
  * Route SOAP and WSDL requests:
  */
 $router->mount(
@@ -187,7 +172,7 @@ $router->mount(
 );
 
 /**
- * Route AJAX requests (e.g. "/core/ajax/student/exam/read").
+ * Route AJAX requests (e.g. "/ajax/core/student/exam/read").
  */
 $group = $router->mount(
     new PrefixRoute(array(

@@ -1,154 +1,194 @@
 <?php
 
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    DispatchListener.php
+// Created: 2014-11-07 00:48:02
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
 namespace OpenExam\Plugins\Security;
 
-use Phalcon\Acl;
-use Phalcon\Acl\Adapter\Memory as AclAdapter;
-use Phalcon\Acl\Role;
 use Phalcon\Events\Event;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\User\Plugin;
+use OpenExam\Plugins\Security\Dispatcher\DispatchHandler;
 
 /**
- * Security
- *
- * This is the security plugin which controls that users only have access to the modules they're assigned to
+ * Listen for dispatch events.
+ * 
+ * This class listen for dispatch event from the event manager and uses ACL
+ * to enforce authentication for non-public controller/actions.
+ * 
+ * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class DispatchListener extends Plugin
 {
 
         /**
-         * Access list configuration.
-         * @var array 
+         * The dispatch handler.
+         * @var DispatchHandler 
          */
-        private $access;
-        /**
-         * The ACL object.
-         * @var AclAdapter 
-         */
-        private $acl;
+        private $_dispatcher;
 
         /**
-         * Constructor.
-         * @param array $access Access list configuration.
-         */
-        public function __construct($access = array())
-        {
-                $this->access = $access;
-        }
-
-        /**
-         * Get ACL object.
-         * @return AclAdapter
-         */
-        public function getAcl()
-        {
-                if (!isset($this->acl)) {
-                        if ($this->persistent->has('acl')) {
-                                $this->acl = $this->persistent->get('acl');
-                        } else {
-                                $this->acl = $this->rebuild();
-                                $this->persistent->set('acl', $this->acl);
-                        }
-                }
-                return $this->acl;
-        }
-
-        /**
-         * This action is executed before execute any action in the application
+         * Dispatch event listener.
+         * 
+         * Called before execute any action in the application. From here we 
+         * handle these duties:
+         * 
+         * <ol>
+         * <li>Restrict access to all actions/controllers.</li>
+         * <li>Handle authentication (on demand or by user request).</li>
+         * <li>Inject user object.</li>
+         * <li>Perform additional task, like impersonation.</li>
+         * </ol>
+         * 
+         * @param Event $event The dispatch event.
+         * @param Dispatcher $dispatcher The dispatcher object.
          */
         public function beforeDispatch(Event $event, Dispatcher $dispatcher)
         {
-                $auth = $this->session->get('auth');
-                if (!$auth) {
-                        $role = 'Guests';
-                } else {
-                        $role = 'Admin';
-                }
+                try {
+                        if ($dispatcher->wasForwarded()) {
+                                // 
+                                // Bypass access control if called in a chain:
+                                //                 
+                                $target = $dispatcher->getPreviousControllerName();
+                                $action = $dispatcher->getPreviousActionName();
 
-                $controller = $dispatcher->getControllerName();
-                $action = $dispatcher->getActionName();
-
-                $acl = $this->getAcl();
-
-                $allowed = $acl->isAllowed($role, $controller, $action);
-                if ($allowed != DispatchListener::ALLOW) {
-                        $this->flash->error("You don't have access to this module");
-                        $dispatcher->forward(
-                            array(
-                                    'controller' => 'index',
-                                    'action'     => 'index'
-                            )
-                        );
-                        return false;
+                                $this->logger->auth->debug(sprintf(
+                                        "Bypass acccess control for forward dispatch (%s -> %s)", $target, $action
+                                ));
+                                return true;
+                        } else {
+                                // 
+                                // Handle dispatch:
+                                // 
+                                $this->_dispatcher = new DispatchHandler($this, $dispatcher);
+                                $result = $this->_dispatcher->process();
+                                $this->report();
+                                return $result;
+                        }
+                } catch (\Exception $exception) {
+                        $this->report(null, null, $exception);
                 }
         }
 
         /**
-         * Returns true if role is permitted to call action on resource.
-         * 
-         * @param string $role
-         * @param string $resource
-         * @param string $action
-         * @return bool
+         * Report dispatch issues, exceptions or state.
+         * @param string $message The reason.
+         * @param array|object $data The associated data, e.g. the session data.
+         * @param \Exception $exception The exception to report.
          */
-        public function isAllowed($role, $resource, $action)
+        public function report($message = null, $data = null, $exception = null)
         {
-                return $this->getAcl()->isAllowed($role, $resource, $action);
+                // 
+                // Log message:
+                // 
+                if (isset($message)) {
+                        $this->logger->auth->begin();
+                        $this->logger->auth->alert(
+                            print_r(array(
+                                'Message' => 'Possible breakin attempt',
+                                'Reason'  => $message,
+                                'Data'    => print_r($data, true),
+                                'From'    => $this->request->getClientAddress(true)
+                                ), true
+                            )
+                        );
+                        $this->logger->auth->commit();
+                }
+
+                // 
+                // Log this dispatcher:
+                // 
+                if (isset($this->_dispatcher)) {
+                        $this->logger->auth->begin();
+                        $this->logger->auth->debug(
+                            print_r($this->_dispatcher->getData(), true)
+                        );
+                        $this->logger->auth->commit();
+                }
+
+                // 
+                // Log exception:
+                // 
+                if (isset($exception)) {
+                        $request = $this->request->get();
+                        $request['pass'] = "*****";
+
+                        $this->logger->system->begin();
+                        $this->logger->system->error(print_r(array(
+                                'Exception' => array(
+                                        'Type'    => get_class($exception),
+                                        'Message' => $exception->getMessage(),
+                                        'File'    => $exception->getFile(),
+                                        'Line'    => $exception->getLine(),
+                                        'Code'    => $exception->getCode()
+                                ),
+                                'Request'   => array(
+                                        'Server' => sprintf("%s (%s)", $this->request->getServerName(), $this->request->getServerAddress()),
+                                        'Method' => $this->request->getMethod(),
+                                        'Query'  => print_r($request, true)
+                                ),
+                                'Source'    => array(
+                                        'User'   => $this->user->getPrincipalName(),
+                                        'Role'   => $this->user->getPrimaryRole(),
+                                        'Remote' => $this->request->getClientAddress(true)
+                                )
+                                ), true));
+                        $this->logger->system->commit();
+                }
         }
 
-        private function rebuild()
+        /**
+         * Handle dispatch exceptions.
+         * @param Event $event The dispatch event.
+         * @param Dispatcher $dispatcher The dispatcher object.
+         * @param \Exception $exception
+         */
+        public function beforeException($event, $dispatcher, $exception)
         {
-                $acl = new AclAdapter();
-                $acl->setDefaultAction(Acl::DENY);
+                // 
+                // Log exception:
+                // 
+                $error = array(
+                        'method'    => __METHOD__,
+                        'exception' => get_class($exception),
+                        'message'   => $exception->getMessage()
+                );
+                $this->logger->system->error(print_r($error, true));
 
                 // 
-                // Use roles map:
+                // Forward to error reporting page:
                 // 
-                $roles = $this->access['roles'];
-
-                // 
-                // Use permissions map:
-                // 
-                $permissions = $this->access['permissions'];
-
-                // 
-                // Add roles:
-                // 
-                foreach (array_keys($roles) as $role) {
-                        $acl->addRole(new Role($role));
-                }
-
-                // 
-                // Add resources:
-                // 
-                $resources = array();
-                foreach ($roles as $role => $rules) {
-                        if (is_array($rules)) {
-                                foreach (array_keys($rules) as $resource) {
-                                        $resources[] = $resource;
-                                }
+                if ($this->_dispatcher->service == "web") {
+                        switch ($exception->getCode()) {
+                                case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                                case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                                        $dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'show404',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('exception' => $exception)
+                                        ));
+                                        break;
+                                default:
+                                        $dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'show503',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('exception' => $exception)
+                                        ));
+                                        break;
                         }
+                        return false;
                 }
-                $resources = array_unique($resources);
-                foreach ($resources as $resource) {
-                        $acl->addResource($resource, $permissions['full']);
-                }
-
-                // 
-                // Add rules:
-                // 
-                foreach ($roles as $role => $resources) {
-                        if (is_string($resources)) {
-                                $acl->allow($role, '*', $permissions[$resources]);
-                                continue;
-                        }
-                        foreach ($resources as $resource => $permission) {
-                                $acl->allow($role, $resource, $permissions[$permission]);
-                        }
-                }
-
-                return $acl;
         }
 
 }

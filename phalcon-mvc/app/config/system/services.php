@@ -70,6 +70,19 @@ $di->set('modelsMetadata', function() use($config) {
 }, true);
 
 /**
+ * The custom dispatcher enforcing auhentication.
+ * See http://docs.phalconphp.com/en/latest/reference/tutorial-invo.html#events-management
+ */
+$di->set('dispatcher', function() use ($di) {
+        $eventsManager = $di->getShared('eventsManager');
+        $security = new OpenExam\Plugins\Security\DispatchListener();
+        $eventsManager->attach('dispatch', $security);
+        $dispatcher = new Phalcon\Mvc\Dispatcher();
+        $dispatcher->setEventsManager($eventsManager);
+        return $dispatcher;
+});
+
+/**
  * The URL component is used to generate all kind of urls in the application
  */
 $di->set('url', function() use ($config) {
@@ -150,7 +163,7 @@ $di->set('acl', function() {
         );
 });
 
-$di->set('auth', function() {
+$di->set('auth', function() use($config) {
         return new \OpenExam\Library\Security\Authentication(
             require CONFIG_DIR . '/auth.def'
         );

@@ -11,46 +11,82 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-use UUP\Authentication\Validator\LdapBindValidator,
-    OpenExam\Library\Security\Authenticator\RemoteLogins\CasLogin,
-    OpenExam\Library\Security\Authenticator\Formlogins\MsadLogin;
+use OpenExam\Library\Security\Login\ActiveDirectoryLogin;
+use OpenExam\Library\Security\Login\CasLogin;
+use UUP\Authentication\Authenticator\Authenticator;
+use UUP\Authentication\Restrictor\AddressRestrictor;
 
 // 
-// The chain of authenticator plugins for various services:
+// The chain of authenticator plugins for various services. 
+// 
+// The allowed authentication methods can be configured for each service or 
+// for all using the authentication '*' group.
+// 
+// It's also possible to add login restrictions. E.g. date/time restriction 
+// can be added by inserting an plugin based on DateTimeRestrictor.
 // 
 return array(
-        // 
-        // SOAP service authentication:
-        // 
-        'soap' => array(
-        ),
-        // 
-        // REST service authrntication:
-        // 
-        'rest' => array(
-        ),
         // 
         // Web/AJAX service authentication:
         // 
         'web'  => array(
-                'cas'  => (new CasAuthenticator(
-                    'cas.example.com', 443, '/cas'
-                    ))
-                    ->visible(true)
-                    ->description('CAS Login')
-                    ->name('cas'),
-                'msad' => (new FormAuthenticator(
-                    new LdapBindValidator('https://ldap.example.com', 636), array(
-                        'login' => '/login/msad',
-                        'name'  => 'auth')
-                    ))
-                    ->visible(true)
-                    ->description('Active Directory')
-                    ->name('msad')
+                // 
+                // Enable CAS login, but only for web:
+                // 
+                'cas'  => array(
+                        'method' => function() {
+                                return new CasLogin(
+                                        $config, 'cas.example.com', 443, '/cas'
+                                        );
+                        },
+                        'desc' => 'CAS Login'
+                )
+        ),
+        // 
+        // REST service authentication:
+        // 
+        'rest' => array(),
+        // 
+        // SOAP service authentication:
+        // 
+        'soap' => array(
+                // 
+                // Example on connection restrictions. In this case, we want
+                // to limit SOAP access to subnet 192.168.34.0/24.
+                // 
+                'from' => array(
+                        'method' => function() {
+                                $restriction = new AddressRestrictor('192.168.34.0/24');
+                                $restriction->control(Authenticator::required);
+                                $restriction->visible(false);
+                                return $restriction;
+                        },
+                        'desc' => null
+                )                
         ),
         // 
         // Common authentication plugins or restrictions:
         // 
-        '*'    => array(
+        '*' => array(
+                // 
+                // Enable MSAD login globally (web, rest and soap). The options
+                // array is required when serving multiple forests:
+                // 
+                'msad1' => array(
+                        'method' => function() use($config) {
+                                return new ActiveDirectoryLogin(
+                                        $config, 'dc.example1.com', 636, array('form' => array('name' => 'msad1'))
+                                        );
+                        },
+                        'desc' => 'Active Directory (AD1)'
+                ),
+                'msad2' => array(
+                        'method' => function() use($config) {
+                                return new ActiveDirectoryLogin(
+                                        $config, 'dc.example2.com', 636, array('form' => array('name' => 'msad2'))
+                                        );
+                        },
+                        'desc' => 'Active Directory (AD2)'
+                )                
         )
 );

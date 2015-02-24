@@ -6,148 +6,146 @@
 // unless otherwise explicit stated elsewhere.
 // 
 // File:    AuthController.php
-// Created: 2014-08-28 09:18:12
+// Created: 2015-02-16 11:12:06
 // 
-// Author:  Ahsan Shahzad (MedfarmDoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
 namespace OpenExam\Controllers\Gui;
 
-use OpenExam\Library\Security;
+use OpenExam\Controllers\GuiController;
+use OpenExam\Library\Form\LoginForm;
+use OpenExam\Library\Form\LoginSelect;
+use OpenExam\Library\Security\Login\Base\FormLogin;
+use OpenExam\Library\Security\Login\Base\RemoteLogin;
+use Phalcon\Mvc\View;
+use UUP\Authentication\Stack\AuthenticatorChain;
 
 /**
- * Controller for handling authentication requests through authenticators (e.g CAS)
- *
- * @author Ahsan Shahzad (MedfarmDoIT)
+ * Authentication user interaction controller.
+ * 
+ * Authentication is handled upstream. This controller handles user interaction
+ * like displaying forms and reacting to login/logout events in a better and 
+ * clean way.
+ * 
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AuthController extends \OpenExam\Controllers\GuiController
+class AuthController extends GuiController
 {
-
-        /**
-         * Redirection URLs after Authentication
-         */
-        CONST LOGIN_SUCCESS_URL = "exam/index";
-        CONST LOGIN_FAILURE_URL = "";
 
         public function initialize()
         {
-                // disable layout for the views
-                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
-
                 parent::initialize();
-        }
-
-        /**
-         * Index action
-         */
-        public function indexAction()
-        {
-                
-        }
-
-        /**
-         * Login Action 
-         */
-        public function loginAction()
-        {
-
-                // redirect if already logged in
-                if ($this->user->getUser())
-                        return $this->response->redirect($loginSuccessUrl);
-
-                // if authentication method is set, activate it and authenticate
-                $authMethod = $this->dispatcher->getParam("authMethod");
-                if (!empty($authMethod)) {
-
-                        $this->auth->activate($authMethod, 'web');
-                        if ($this->auth->accepted()) {
-
-                                $this->_registerUserSession($authMethod);
-                        } else {
-
-                                $this->auth->login();
-
-                                // If it is formbased (ajax) authenticator and control 
-                                // reaches to this point, it means authentication
-                                // has been failed because of wrong username or
-                                // password.
-                                // In case of urlbased auth, control will never 
-                                // reach here as in that case, it redirects to 
-                                // login page .
-                                // Disable view and send json response.
-                                $this->view->disable();
-                                return $this->response->setJsonContent(array(
-                                            "status" => "failed"
-                                ));
-                        }
+                if ($this->request->get('embed', 'int', 0) == 1) {
+                        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                 } else {
-
-                        // fetch the list of authentication methods from auth.php
-                        $authMethods = $this->auth->getAuthChain("web");
-
-                        // format data to be sent to view
-                        $authMethodsData = array();
-                        foreach ($authMethods as $authMethodCode => $authMethodObj) {
-                                if ($authMethodObj->visible) {
-                                        $authMethodsData[] = array(
-                                                "code" => $authMethodCode,
-                                                "name" => $authMethodObj->description,
-                                                "type" => $authMethodObj->type
-                                        );
-                                }
-                        }
-
-                        // pick view and send data
-                        $this->view->setVar("authMethods", $authMethodsData);
-                        $this->view->pick("auth/authenticators");
+                        $this->view->setLayout('main');
                 }
         }
 
         /**
-         * Logs out the active session redirecting to the index
-         *
-         * @return unknown
+         * Index action.
          */
-        public function logoutAction()
+        public function indexAction()
         {
-                // get the method used to check authentication while user logged in
-                $authData = $this->session->get('authenticated');
-
-                // unset session data
-                $this->session->destroy();
-
-                // logout
-                $this->auth->activate($authData['authenticator'], 'web')
-                    ->logout();
-
-                // send back message
-                $this->flash->success('You have been successfully logged out.');
-                return $this->response->redirect('/index');
-
-                /* return $this->dispatcher->forward( array(
-                  'controller' => 'index',
-                  'action' => 'index'
-                  )); */
+                $this->dispatcher->forward(array('action' => 'select'));
         }
 
         /**
-         * Register authenticated user into session
-         * Authentication service will call this function.
+         * Login form action.
          * 
-         * @param User   $user The serialized user object
-         * @param String $authMethod Name of authentication method used to login
+         * This action gets called to display a form for form based login
+         * using the requested authenticator.
+         * 
+         * @param string $name The authentication handler name.
+         * @param string $service The service type (e.g. web).
          */
-        private function _registerUserSession($authMethod)
-        {		
-                // store user data in session
-                $this->session->start();
-                $this->session->set('authenticated', array(
-                        'user'          => strtolower($this->auth->getSubject()), //susti394
-                        'authenticator' => $authMethod
+        public function formAction($name = null, $service = "web")
+        {
+                $this->auth->activate($name, $service);
+                $this->view->setVar("form", new LoginForm(
+                    $this->auth->getAuthenticator()
                 ));
+        }
 
-                // redirect to LOGIN_SUCCESS_URL
-                return $this->response->redirect(self::LOGIN_SUCCESS_URL);
+        /**
+         * Select login method action.
+         * 
+         * This action gets called to display a form from where the end user
+         * can selected prefered authentication method.
+         * 
+         * @param string $service The service type (e.g. web).
+         */
+        public function selectAction($service = "web")
+        {
+                $this->view->setVar("form", new LoginSelect(
+                    new AuthenticatorChain($this->auth->getChain($service))
+                ));
+        }
+
+        /**
+         * User login action.
+         * 
+         * Called upon successful login using any of the available auth
+         * methods. The auth service can be used to get a handle on the 
+         * active authenticator:
+         * 
+         * <code>
+         * $auth = $this->auth->getAuthenticator();
+         * </code>
+         */
+        public function loginAction()
+        {
+                $auth = $this->auth->getAuthenticator();
+                if ($auth->accepted()) {
+                        $this->response->redirect($this->config->session->startPage);
+                }
+        }
+
+        /**
+         * User logout action.
+         * 
+         * Called upon successful logout using the current activated login 
+         * methods. The auth service can be used to get a handle on the 
+         * active authenticator:
+         * 
+         * <code>
+         * $auth = $this->auth->getAuthenticator();
+         * </code>
+         */
+        public function logoutAction()
+        {
+                $auth = $this->auth->getAuthenticator();
+                $this->view->setVar('auth', $auth);
+        }
+
+        /**
+         * Login method discover action.
+         * @param string $service The service type (e.g. web).
+         */
+        public function discoverAction($service = "web")
+        {
+                $this->view->disable();
+
+                $result = array();
+                $chain = $this->auth->getChain($service);
+
+                foreach ($chain as $name => $plugin) {
+                        $auth = $plugin['method']();
+                        if ($auth instanceof RemoteLogin) {
+                                $result[$name] = $chain[$name];
+                                $result[$name]['method'] = "remote";
+                                $result[$name]['login'] = $this->url->get(sprintf('/auth/login/%s', $name));
+                        }
+                        if ($auth instanceof FormLogin) {
+                                $result[$name] = $chain[$name];
+                                $result[$name]['method'] = "form";
+                                $result[$name]['login'] = $this->url->get(sprintf('/auth/login/%s', $name));
+                        }
+                }
+
+                $this->response->setJsonContent($result);
+                $this->response->send();
         }
 
 }
