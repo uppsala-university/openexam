@@ -1,0 +1,112 @@
+--- vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php.orig	2014-10-31 11:05:23.000000000 +0100
++++ vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php	2014-10-31 11:01:28.000000000 +0100
+@@ -1,7 +1,31 @@
+ <?php 
+ 
+-namespace Phalcon\DI {
++namespace OpenExam\Library\DI {
++        
++     class Logger 
++     {
++             /**
++              * The system log.
++              * @var \Phalcon\Logger\AdapterInterface 
++              */
++             public $system;
++
++             /**
++              * The authentication log.
++              * @var \Phalcon\Logger\AdapterInterface
++              */
++             public $auth;
++             
++             /**
++              * The debug log.
++              * @var \Phalcon\Logger\AdapterInterface
++              */
++             public $debug;
++     }
++}
+ 
++namespace Phalcon\DI {
++        
+     /**
+      * Phalcon\DI\Injectable
+      *
+@@ -180,5 +204,76 @@
+         {
+         }
+ 
++        // 
++        // OpenExam specific services:
++        // 
++                
++        /**
++         * The access control (ACL) service.
++         * @var \OpenExam\Library\Security\Acl
++         */
++        public $acl;
++        
++        /**
++         * The user authentication service.
++         * @var \OpenExam\Library\Security\Authentication
++         */
++        public $auth;
++        
++        /**
++         * The catalog (directory information) service.
++         * @var \OpenExam\Library\Catalog\DirectoryManager
++         */
++        public $catalog;
++        
++        /**
++         * Database connection object (for read only).
++         * @var \Phalcon\Db\Adapter\Pdo 
++         */
++        public $dbread;
++        
++        /**
++         * Database connection object (for read/write).
++         * @var \Phalcon\Db\Adapter\Pdo 
++         */
++        public $dbwrite;
++        
++        /**
++         * The locale service.
++         * @var \OpenExam\Library\Globalization\Locale\Locale
++         */
++        public $locale;
++        
++        /**
++         * The logging service.
++         * 
++         * <code>
++         * $this->logger->system->error($message);                      // Write error to system log
++         * $this->logger->auth->info($message);                         // Log authentication event
++         * $this->logger->auth->log($message, LOGGER::INFO);            // Log authentication event
++         * $this->logger->debug->log(__METHOD__ . ': ' . $message);     // Using the debug log
++         * </code>
++         * @var \OpenExam\Library\DI\Logger
++         */
++        public $logger;
++        
++        /**
++         * The render service.
++         * @var \OpenExam\Library\Render\RenderService
++         */
++        public $render;
++        
++        /**
++         * The translation service.
++         * @var \OpenExam\Library\Globalization\Translate\Translate
++         */
++        public $tr;
++        
++        /**
++         * The authenticated user.
++         * @var \OpenExam\Library\Security\User 
++         */
++        public $user;
++        
+     }
+ }
