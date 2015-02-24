@@ -54,7 +54,7 @@ h1 {
 	margin:1px 0 10px;
 	padding: 0px 0 0;
         font-family:Arial,verdana,sans-serif;
-	Border-bottom: 1px solid #999;
+	border-bottom: 1px solid #999;
 	color:#444;
 	text-transform:none
 }
@@ -1795,7 +1795,7 @@ border-bottom: 5px solid #ffcc66;
  .admin_area .systemInfo {
     float: left;
     width:700px;
-    position:absolut;
+    position:absolute;
     z-index:55;
     padding:0 5px;
     background: #fff;
@@ -3026,7 +3026,7 @@ a.addevent {
     /***** minikalender *****/
 #igcalendar {
          width: 173px;
-         aheight: 160px;
+         height: 160px;
          border-width: 0px 0px 0px 0px;
          border-spacing: 0px;
          border-style: none none none none;
@@ -4192,7 +4192,7 @@ cursor: text; }
 }
 .employeePublications #employeePublicationsSelection  ul .author, .employeePublications #employeePublicationsLatest ul .author, .employeePublications #employeePublicationsAll ul .author{
     display:inline;
-    padding-right:10px;s
+    padding-right:10px;
     font-weight:700;
 }
 .employeePublications #employeePublicationsSelection  ul .divaInfo, .employeePublications #employeePublicationsLatest ul .divaInfo, .employeePublications #employeePublicationsAll ul .divaInfo, .employeePublications .divaFulltext {
@@ -4902,8 +4902,8 @@ text-decoration:none;
         background-color: #fcf8e3 /*#FFFFD9*/; 
         border-radius: 5px; 
         border: 2px solid #fbeed5; 
-        padding: 5px 8px 5px 5px;		
-	min-width:40px
+        padding: 5px 8px 5px 5px;
+        min-width:40px;
 }
 
 .qs_area_line_q_no .q_score{
