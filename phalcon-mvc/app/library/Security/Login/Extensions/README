@@ -1,0 +1,5 @@
+Place custom login plugins or specializations of the stock supplied plugins in 
+this directory. This will protect local modifications from being accidential 
+overwritten.
+
+// Anders L, 2015-02-11
