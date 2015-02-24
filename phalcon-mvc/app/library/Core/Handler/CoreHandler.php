@@ -15,6 +15,7 @@ namespace OpenExam\Library\Core\Handler;
 
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\ModelBase;
+use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use PDO;
 use Phalcon\Mvc\Model;
@@ -58,11 +59,14 @@ class CoreHandler extends Component
          */
         public function __construct($role)
         {
+                if ($this->user->getUser() == null) {
+                        throw new SecurityException("Authentication is required.", SecurityException::AUTH);
+                }
                 if (!isset($role)) {
-                        throw new Exception("The core API requires an role.");
+                        throw new SecurityException("The core API requires an role.", SecurityException::ROLE);
                 }
                 if ($role == Roles::TRUSTED || $role == Roles::SYSTEM) {
-                        throw new Exception("The trusted role is not permitted here.");
+                        throw new SecurityException("The trusted role is not permitted here.", SecurityException::ACTION);
                 }
 
                 $this->user->setPrimaryRole($role);
@@ -84,6 +88,9 @@ class CoreHandler extends Component
 
                 if (isset($data['id'])) {
                         $model = $class::findFirstById($data['id']);
+                        if ($model == false) {
+                                throw new Exception("Failed find target $name");
+                        }
                         $model->assign($data);
                 } else {
                         $model = new $class();

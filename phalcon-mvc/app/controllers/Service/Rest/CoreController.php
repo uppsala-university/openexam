@@ -13,119 +13,13 @@
 
 namespace OpenExam\Controllers\Service\Rest;
 
-use Exception;
-use OpenExam\Controllers\ServiceController;
-use OpenExam\Library\Core\Handler\CoreHandler;
-use OpenExam\Library\Security\Exception as SecurityException;
+use OpenExam\Controllers\Service\RestController;
+use OpenExam\Library\WebService\Common\Exception as ServiceException;
+use OpenExam\Library\WebService\Common\ServiceHandler;
+use OpenExam\Library\WebService\Common\ServiceRequest;
+use OpenExam\Library\WebService\Common\ServiceResponse;
+use OpenExam\Library\WebService\Handler\CoreHandler;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
-
-/**
- * REST request helper class.
- */
-class RestRequest
-{
-
-        /**
-         * The target collection.
-         * @var string 
-         */
-        public $target;
-        /**
-         * The HTTP method.
-         * @var string 
-         */
-        public $method;
-        /**
-         * The target action (e.g. create).
-         * @var string 
-         */
-        public $action;
-        /**
-         * The action resource (e.g. exam or answer).
-         * @var string 
-         */
-        public $model;
-        /**
-         * The invocation primary role.
-         * @var string 
-         */
-        public $role;
-        /**
-         * Data for core action.
-         * @var array 
-         */
-        public $data = array();
-        /**
-         * Params for core action.
-         * @var array 
-         */
-        public $params = array();
-
-        /**
-         * Constructor.
-         * @param string $method The HTTP method.
-         * @param array $params The target collection and role.
-         * @param array $payload The request payload (for POST/PUT only).
-         */
-        public function __construct($method, $params, $payload)
-        {
-                if (isset($params['role'])) {
-                        $this->role = $params['role'];
-                        unset($params['role']);
-                }
-                if (isset($params['target'])) {
-                        $this->target = $params['target'];
-                        unset($params['target']);
-                }
-
-                $this->method = $method;
-                $this->action = $this->getAction();
-
-                if ($this->method == 'POST' || $this->method == 'PUT') {
-                        $this->data = $payload[0];
-                        $this->params = $payload[1];
-                }
-                if ($this->method == 'GET' || $this->method == 'DELETE') {
-                        $this->data = array();
-                }
-
-                array_unshift($params, $this->target);
-                $params = array_reverse($params);
-
-                // 
-                // Map params onto model, primary and foreign keys:
-                // 
-                if (is_numeric($params[0])) {
-                        $this->model = substr($params[1], 0, -1);
-                        $this->data['id'] = $params[0];
-                } else {
-                        $this->model = substr($params[0], 0, -1);
-                        if (isset($params[2])) {
-                                $foreign = sprintf("%s_id", substr($params[2], 0, -1));
-                                $this->data[$foreign] = $params[1];
-                        }
-                }
-        }
-
-        /**
-         * Get action from HTTP method.
-         * @return string
-         */
-        private function getAction()
-        {
-                switch ($this->method) {
-                        case 'GET':
-                                return 'read';
-                        case 'POST':
-                                return 'create';
-                        case 'PUT':
-                                return 'update';
-                        case 'DELETE':
-                                return 'delete';
-                }
-        }
-
-}
 
 /**
  * REST controller for core service.
@@ -206,21 +100,51 @@ class RestRequest
  * </code>
  * 
  * // Search for all questions containing 'tricky':
- * curl -XPOST ${BASEURL}/rest/core/creator/search/questions -d \
- *      '{"data":{"name":"tricky"}'
+ * curl -XPOST ${BASEURL}/rest/core/creator/questions/search -d \
+ *      '{"data":{"name":"tricky"}}'
  * 
  * // The number of items in response can be inlined:
- * curl -XPOST ${BASEURL}/rest/core/creator/search/questions -d \
+ * curl -XPOST ${BASEURL}/rest/core/creator/questions/search -d \
  *      '{"data":{"name":"tricky"},"params":{"count":"inline"}}'
  * 
  * // Searching for upcoming exams in model attributes:
- * curl -XPOST ${BASEURL}/rest/core/creator/search/exams -d \
+ * curl -XPOST ${BASEURL}/rest/core/creator/exams/search -d \
  *      '{"params":{"flags":["upcoming"]}}'
+ * 
+ * Capabilities (static rules):
+ * -----------------------------------------------------
+ * 
+ * Static capability maps can be queried by passing zero or more of the 
+ * requested checks (role, resource and action):
+ * 
+ * // Get resources accessable by student role:
+ * curl -XPOST ${BASEURL}/rest/core/creator/capability -d {"params":{"role":"student"}}
+ * 
+ * // Get roles with access to exam resource:
+ * curl -XPOST ${BASEURL}/rest/core/creator/capability -d {"params":{"resource":"exam"}}
+ * 
+ * // Check if action is static allowed:
+ * curl -XPOST ${BASEURL}/rest/core/creator/capability -d {"params":{"role":"student","resource":"exam","action":"read"}}
+ * 
+ * // Get all capabilities grouped by role (same):
+ * curl -XPOST ${BASEURL}/rest/core/creator/capability -d {"params":{}}
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class CoreController extends ServiceController
+class CoreController extends RestController
 {
+
+        /**
+         * @var CoreHandler
+         */
+        protected $handler;
+
+        public function initialize()
+        {
+                $this->getDI()->set('user', new \OpenExam\Library\Security\User('andlov@jailbreak'));
+                parent::initialize();
+                $this->handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
+        }
 
         public function apiAction()
         {
@@ -230,7 +154,7 @@ class CoreController extends ServiceController
                         "usage"   => array(
                                 "/core/rest/{role}/{target}"        => array("GET", "POST"),
                                 "/core/rest/{role}/{target}/{id}"   => array("PUT", "DELETE"),
-                                "/core/rest/{role}/search/{target}" => "POST"
+                                "/core/rest/{role}/{target}/search" => "POST"
                         ),
                         "example" => array(
                                 "/core/rest/student/exams/44/questions/22/answers",
@@ -238,149 +162,140 @@ class CoreController extends ServiceController
                                 "/core/rest/student/admins",
                                 "/core/rest/student/teachers",
                                 "/core/rest/student/rooms",
-                                "/core/rest/student/search/exams"
+                                "/core/rest/student/exams/search"
                         )
                 );
 
-                $this->response->setJsonContent($content);
-                $this->response->send();
-        }
-
-        public function indexAction()
-        {
-                $request = $this->getRestRequest();
-                $this->handle($request);
-        }
-
-        public function searchAction()
-        {
-                $request = $this->getRestRequest();
-                $request->action = ObjectAccess::READ;
-                $this->handle($request);
+                $this->sendResponse(new ServiceResponse($this->handler, ServiceHandler::SUCCESS, $content));
         }
 
         /**
-         * Get REST request object.
-         * @return RestRequest
+         * Handle core operations and search.
+         * @param string $role The request role.
+         * @param string $target The target resource.
          */
-        private function getRestRequest()
+        public function indexAction($role = null, $target = null)
         {
+                if (!isset($role)) {
+                        throw new ServiceException("Invalid request (missing role)");
+                }
+                if (!isset($target)) {
+                        throw new ServiceException("Invalid request (missing target)");
+                }
+                
+                $request = $this->handler->getRequest();
+
+                switch ($request->action) {
+                        case ObjectAccess::CREATE:
+                                $this->sendResponse($this->handler->create($request->role, $request->model));
+                                break;
+                        case ObjectAccess::READ:
+                                $this->sendResponse($this->handler->read($request->role, $request->model));
+                                break;
+                        case ObjectAccess::UPDATE:
+                                $this->sendResponse($this->handler->update($request->role, $request->model));
+                                break;
+                        case ObjectAccess::DELETE:
+                                $this->sendResponse($this->handler->delete($request->role, $request->model));
+                                break;
+                }
+        }
+
+        /**
+         * Handle static capability checks.
+         */
+        public function capabilityAction()
+        {
+                $response = $this->handler->capability();
+                $this->sendResponse($response);
+        }
+
+        /**
+         * Get service request.
+         * 
+         * Specialized request mapper for core service. We need this because
+         * this service is far more complex than other REST services in that
+         * we support search functionality too.
+         * 
+         * @param callable $remapper
+         * @return ServiceRequest
+         */
+        protected function getRequest($remapper = null)
+        {
+                $request = parent::getRequest();
+                $params = $this->dispatcher->getParams();
+
+                if(count($params) == 0) {
+                        return $request;
+                }
+
                 // 
-                // Read POST/PUT payload:
+                // Map request method onto handler methods:
                 // 
-                if ($this->request->isPost() || $this->request->isPut()) {
-                        $input = $this->getInput();
+                switch ($this->request->getMethod()) {
+                        case 'POST':
+                                $request->action = ObjectAccess::CREATE;
+                                break;
+                        case 'GET':
+                                $request->action = ObjectAccess::READ;
+                                break;
+                        case 'PUT':
+                                $request->action = ObjectAccess::UPDATE;
+                                break;
+                        case 'DELETE':
+                                $request->action = ObjectAccess::DELETE;
+                                break;
+                }
+
+                // 
+                // Special handling for search request:
+                // 
+                if (isset($params[0]) && $params[0] == "search") {
+                        $request->action = ObjectAccess::READ;
+                        array_shift($params);
+                        unset($request->data['search']);
+                }
+
+                // 
+                // Cleanup named parameters:
+                // 
+                foreach (array('role', 'target') as $name) {
+                        if (isset($params[$name])) {
+                                if (isset($request->data[$params[$name]])) {
+                                        unset($request->data[$params[$name]]);
+                                }
+                                $request->$name = $params[$name];
+                                unset($params[$name]);
+                        }
+                }
+
+                array_unshift($params, $request->target);
+                $params = array_reverse($params);
+
+                // 
+                // Map params onto model, primary and foreign keys:
+                // 
+                if (is_numeric($params[0])) {
+                        $request->model = substr($params[1], 0, -1);
+                        $request->data['id'] = $params[0];
                 } else {
-                        $input = array(array(), array());
+                        $request->model = substr($params[0], 0, -1);
+                        if (isset($params[2])) {
+                                $foreign = sprintf("%s_id", substr($params[2], 0, -1));
+                                $request->data[$foreign] = $params[1];
+                        }
                 }
 
                 // 
-                // Return the REST request:
+                // Remove numerical keys from input data:
                 // 
-                return new RestRequest(
-                    $this->request->getMethod(), $this->dispatcher->getParams(), $input
-                );
-        }
-
-        /**
-         * Handle the REST request.
-         * @param RestRequest $request The REST request object.
-         * @throws SecurityException
-         */
-        private function handle($request)
-        {
-                $models = array();
-
-                try {
-                        // 
-                        // Missing target collection for search:
-                        // 
-                        if ($request->target == "search") {
-                                throw new SecurityException("invoke");
-                        }
-
-                        // 
-                        // Check that call is allowed:
-                        // 
-                        if ($this->capabilities->hasPermission($request->role, $request->model, $request->action) == false) {
-                                throw new SecurityException("access");
-                        }
-
-                        $handler = new CoreHandler($request->role);
-
-                        // 
-                        // Handle single or multiple models:
-                        // 
-                        if (is_numeric(key($request->data))) {
-                                foreach ($request->data as $d) {
-                                        $models[] = $handler->build($request->model, (array) $d);
-                                }
-                        } else {
-                                $models[] = $handler->build($request->model, $request->data);
-                        }
-
-                        // 
-                        // Pass request down to core handler:
-                        // 
-                        $result = $handler->action($models, $request->action, $request->params);
-
-                        // 
-                        // Send JSON encoded response:
-                        // 
-                        $this->response->setJsonContent($result);
-                        $this->response->send();
-                } catch (Exception $exception) {
-                        // 
-                        // Log request data:
-                        // 
-                        $this->report($exception, $request);
-
-                        // 
-                        // Send HTTP error status to peer:
-                        // 
-                        if ($exception instanceof SecurityException) {
-                                switch ($exception->getMessage()) {
-                                        case 'auth':
-                                                $this->response->setStatusCode(401, 'Unauthorized');
-                                                $this->response->send();
-                                                break;
-                                        case 'access':
-                                                $this->response->setStatusCode(405, 'Method Not Allowed');
-                                                $this->response->send();
-                                                break;
-                                        case 'role':
-                                                $this->response->setStatusCode(403, 'Forbidden');
-                                                $this->response->send();
-                                                break;
-                                        default :
-                                                $this->response->setStatusCode(412, 'Precondition Failed');
-                                                $this->response->send();
-                                                break;
-                                }
-                        } else {
-                                $this->response->setStatusCode(500, 'Internal Server Error');
-                                $this->response->send();
+                foreach (array_keys($request->data) as $id) {
+                        if (is_numeric($id)) {
+                                unset($request->data[$id]);
                         }
                 }
-        }
 
-        /**
-         * Report exception.
-         * @param Exception $exception The exception to report.
-         * @param RestRequest $request The REST request object.
-         */
-        private function report($exception, $request)
-        {
-                $this->logger->system->begin();
-                $this->logger->system->error(
-                    print_r(array(
-                        'Exception' => get_class($exception),
-                        'Message'   => $exception->getMessage(),
-                        'Request'   => print_r($request, true)
-                        ), true
-                    )
-                );
-                $this->logger->system->commit();
+                return $request;
         }
 
 }

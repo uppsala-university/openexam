@@ -139,14 +139,6 @@ class CatalogController extends AjaxController
 {
 
         /**
-         * Success response tag.
-         */
-        const SUCCESS = 'success';
-        /**
-         * failure response tag.
-         */
-        const FAILURE = 'failed';
-        /**
          * Output as obejct.
          */
         const OUTPUT_OBJECT = 'object';

@@ -14,10 +14,9 @@
 namespace OpenExam\Controllers\Service\Ajax;
 
 use OpenExam\Controllers\Service\AjaxController;
-use OpenExam\Library\Core\Handler\CoreHandler;
-use OpenExam\Library\Core\Handler\Exception;
-use OpenExam\Library\Security\Capabilities;
-use OpenExam\Plugins\Security\Model\ObjectAccess;
+use OpenExam\Library\WebService\Common\ServiceHandler;
+use OpenExam\Library\WebService\Common\ServiceResponse;
+use OpenExam\Library\WebService\Handler\CoreHandler;
 
 /**
  * AJAX controller for core service.
@@ -144,13 +143,68 @@ class CoreController extends AjaxController
 {
 
         /**
-         * Success response tag.
+         * @var CoreHandler 
          */
-        const SUCCESS = 'success';
+        protected $handler;
+
+        public function initialize()
+        {
+                parent::initialize();
+                $this->handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
+        }
+
         /**
-         * failure response tag.
+         * Perform create operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
          */
-        const FAILURE = 'failed';
+        public function createAction($role, $type)
+        {
+                $response = $this->handler->create($role, $type);
+                $this->sendResponse($response);
+        }
+
+        /**
+         * Perform read operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         */
+        public function readAction($role, $type)
+        {
+                $response = $this->handler->read($role, $type);
+                $this->sendResponse($response);
+        }
+
+        /**
+         * Perform update operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         */
+        public function updateAction($role, $type)
+        {
+                $response = $this->handler->update($role, $type);
+                $this->sendResponse($response);
+        }
+
+        /**
+         * Perform delete operation.
+         * @param string $role The requested role.
+         * @param string $type The requested model.
+         */
+        public function deleteAction($role, $type)
+        {
+                $response = $this->handler->delete($role, $type);
+                $this->sendResponse($response);
+        }
+
+        /**
+         * Handle static capability checks.
+         */
+        public function capabilityAction()
+        {
+                $response = $this->handler->capability();
+                $this->sendResponse($response);
+        }
 
         /**
          * Display documentation of the AJAX service API.
@@ -161,154 +215,18 @@ class CoreController extends AjaxController
 
                 $content = array(
                         "usage"   => array(
-                                "/core/ajax/{role}/{model}/{action}" => "POST"
+                                "/ajax/core/{role}/{model}/{action}" => "POST"
                         ),
                         "example" => array(
-                                "/core/ajax/student/exam/create"     => "Create exam",
-                                "/core/ajax/student/exam/read"       => "Read exam",
-                                "/core/ajax/student/exam/update"     => "Update exam",
-                                "/core/ajax/student/exam/delete"     => "Delete exam",
-                                "/core/ajax/student/exam/capability" => "Get static capabilities"
+                                "/ajax/core/teacher/exam/create"     => "Create exam",
+                                "/ajax/core/student/exam/read"       => "Read exam",
+                                "/ajax/core/creator/exam/update"     => "Update exam",
+                                "/ajax/core/creator/exam/delete"     => "Delete exam",
+                                "/ajax/core/student/question/capability" => "Get static capabilities"
                         )
                 );
 
-                $this->response->setJsonContent($content);
-                $this->response->send();
+                $this->sendResponse(new ServiceResponse($this->handler, ServiceHandler::SUCCESS, $content));
         }
-
-        /**
-         * Perform create operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         */
-        public function createAction($role, $type)
-        {
-                $this->crudAction($role, $type, ObjectAccess::CREATE);
-        }
-
-        /**
-         * Perform read operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         */
-        public function readAction($role, $type)
-        {
-                $this->crudAction($role, $type, ObjectAccess::READ);
-        }
-
-        /**
-         * Perform update operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         */
-        public function updateAction($role, $type)
-        {
-                $this->crudAction($role, $type, ObjectAccess::UPDATE);
-        }
-
-        /**
-         * Perform delete operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         */
-        public function deleteAction($role, $type)
-        {
-                $this->crudAction($role, $type, ObjectAccess::DELETE);
-        }
-
-        /**
-         * Perform CRUD operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         * @param string $action The requested action.
-         * @throws Exception
-         */
-        private function crudAction($role, $type, $action)
-        {
-                $result = array();
-                $models = array();
-
-                try {
-                        // 
-                        // Get request input:
-                        // 
-                        list($data, $params) = $this->getInput();
-
-                        // 
-                        // Static check if capabilities allow this action:
-                        // 
-                        if (!isset($params['capability'])) {
-                                if ($this->capabilities->hasPermission($role, $type, $action) == false) {
-                                        return $this->sendResponse(self::FAILURE, $this->tr->_("You don't have permissions to perform this action."));
-                                }
-                        }
-
-                        // 
-                        // Handler request thru core handler:
-                        // 
-                        $handler = new CoreHandler($role);
-
-                        // 
-                        // Handle single or multiple models:
-                        // 
-                        if (is_numeric(key($data))) {
-                                foreach ($data as $d) {
-                                        $models[] = $handler->build($type, (array) $d);
-                                }
-                        } else {
-                                $models[] = $handler->build($type, $data);
-                        }
-
-                        // 
-                        // Handle dynamic capability checks:
-                        // 
-                        if (isset($params['capability'])) {
-                                $filter = Capabilities::getFilter($params['capability']);
-                                foreach ($models as $model) {
-                                        if (($result = $this->capabilities->hasCapability($model, $action, $filter)) == false) {
-                                                break;
-                                        }
-                                }
-                                return $this->sendResponse(self::SUCCESS, $result);
-                        }
-
-                        // 
-                        // Perform action on model(s):
-                        // 
-                        $this->sendResponse(self::SUCCESS, $handler->action($models, $action, $params));
-                } catch (\Exception $exception) {
-                        error_log($exception);
-                        $this->sendResponse(self::FAILURE, $exception->getMessage());
-                }
-        }
-
-        /**
-         * Handle static capability checks.
-         */
-        public function capabilityAction()
-        {
-                list($data, $params) = $this->getInput();
-                $filter = array(
-                        'role'     => false,
-                        'resource' => false,
-                        'action'   => false
-                );
-                $filter = array_merge($filter, $params);
-
-                if ($filter['role'] && $filter['resource'] && $filter['action']) {
-                        $result = $this->capabilities->hasPermission($filter['role'], $filter['resource'], $filter['action']);
-                } elseif ($filter['role'] && $filter['resource']) {
-                        $result = $this->capabilities->getPermissions($filter['role'], $filter['resource']);
-                } elseif ($filter['role']) {
-                        $result = $this->capabilities->getResources($filter['role']);
-                } elseif ($filter['resource']) {
-                        $result = $this->capabilities->getRoles($filter['resource']);
-                } else {
-                        $result = $this->capabilities->getCapabilities();
-                }
-
-
-                $this->sendResponse(self::SUCCESS, $result);
-        }
-
+        
 }
