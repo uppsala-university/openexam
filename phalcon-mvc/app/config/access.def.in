@@ -119,10 +119,11 @@ return array(
         // 
         'public' => array(
                 'public' => array('*'),
-                'auth'   => array('*')
+                'error'  => array('*'),
         ),
         'protected'      => array(
-                'soap'   => array('*')
+                'soap'   => array('*'),
+                'auth'   => array('*')
         ),
         'private' => array(
                 'exam' => array(
