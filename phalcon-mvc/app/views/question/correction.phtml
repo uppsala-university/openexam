@@ -76,7 +76,7 @@ $decoded = $exam->decoded;
                                                         <?php foreach($questions as $qNo => $question):?>
                                                                 <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
                                                                   <div style="text-align: center">
-                                                                        <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$qNo+1?></a>
+                                                                        <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->slot?$question->slot:$question->name?><br>Max. <?=$question->score?></a>
                                                                   </div>
                                                                   <!--<div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>-->
 
@@ -98,9 +98,9 @@ $decoded = $exam->decoded;
 								P No.
 							</th>
 							<?php endif;?>
-                                                        <th class="sortable" style="background-color:#EAEAEA; width:65px">%</th>
+                                                        <th class="sortable" style="background-color:#EAEAEA; max-width:65px; text-align:center">%</th>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
-                                                        <th class="sortable" style="background-color:#EAEAEA; width:35px">Grade</th>
+                                                        <th class="sortable" style="background-color:#EAEAEA; width:35px;  text-align:center">Grade</th>
                                                         <?php endif;?>
                                                 </tr>
 					</thead>	
@@ -232,7 +232,7 @@ $decoded = $exam->decoded;
                                                         <?php foreach($questions as $q):?>
                                                         	<?php $avg = sprintf("%1.1f", array_sum($overallQuestScore[$q->id])/count($overallQuestScore[$q->id]));?>
                                                         	<td title="Answers: <?=count($overallQuestScore[$q->id])?> Percent: <?=(count($students)/count($overallQuestScore[$q->id]))*100?>%" class="cc aa">
-									<?=$avg?>
+									<?=$avg?>/<?=$q->score?>
                                                                 </td>
                                                         <?php endforeach;?>
                                                         

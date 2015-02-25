@@ -5358,8 +5358,8 @@ td.na {
     color:#D96661 !important; /*#880000*/
 }
 td.nc {
-    background-color: #66DA79;
-    border: 1px solid #65d02c;
+    background-color: #A2FDB1 !important;
+    border: 1px solid #65d02c !important;
     color:#65d02c !important;        
 }
 td.nc a{
