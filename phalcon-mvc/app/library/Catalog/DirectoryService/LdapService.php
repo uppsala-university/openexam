@@ -279,7 +279,13 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         $result->setName($this->name);
                         $result->insert($search['entries']);
 
-                        return $result->getResult();
+                        // 
+                        // Filter out related entries not containing the
+                        // requested attribute:
+                        // 
+                        return array_filter($result->getResult(), function($entry) use($attribute) {
+                                return isset($entry[$attribute]);
+                        });
                 }
 
                 /**
