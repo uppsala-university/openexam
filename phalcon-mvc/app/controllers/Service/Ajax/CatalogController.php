@@ -171,47 +171,47 @@ class CatalogController extends AjaxController
                 parent::initialize();
 
                 if ($this->request->isPost()) {
-                        list($data, $params) = $this->getInput();
+                        $request = $this->getRequest();
                 }
 
                 if ($this->dispatcher->getActionName() == "groups") {
-                        if (!isset($data['attributes'])) {
-                                $data['attributes'] = array(Principal::ATTR_NAME);
+                        if (!isset($request->data['attributes'])) {
+                                $request->data['attributes'] = array(Principal::ATTR_NAME);
                         }
                 }
 
                 if ($this->dispatcher->getActionName() == "members") {
-                        if (!isset($data['attributes'])) {
-                                $data['attributes'] = DirectoryManager::$DEFAULT_ATTR;
+                        if (!isset($request->data['attributes'])) {
+                                $request->data['attributes'] = DirectoryManager::$DEFAULT_ATTR;
                         }
-                        if (!isset($data['domain'])) {
-                                $data['domain'] = null;
+                        if (!isset($request->data['domain'])) {
+                                $request->data['domain'] = null;
                         }
                 }
 
                 if ($this->dispatcher->getActionName() == "attribute" ||
                     $this->dispatcher->getActionName() == "name" ||
                     $this->dispatcher->getActionName() == "mail") {
-                        if (!isset($params['svcref'])) {
-                                $params['svcref'] = false;
+                        if (!isset($request->params['svcref'])) {
+                                $request->params['svcref'] = false;
                         }
-                        if (!isset($params['output'])) {
-                                $params['output'] = self::OUTPUT_COMPACT;
+                        if (!isset($request->params['output'])) {
+                                $request->params['output'] = self::OUTPUT_COMPACT;
                         }
                 }
 
-                if (!isset($data['principal'])) {
-                        $data['principal'] = $this->user->getPrincipalName();
+                if (!isset($request->data['principal'])) {
+                        $request->data['principal'] = $this->user->getPrincipalName();
                 }
-                if (!isset($params['output'])) {
-                        $params['output'] = self::OUTPUT_OBJECT;
+                if (!isset($request->params['output'])) {
+                        $request->params['output'] = self::OUTPUT_OBJECT;
                 }
-                if (!isset($params['svcref'])) {
-                        $params['svcref'] = true;
+                if (!isset($request->params['svcref'])) {
+                        $request->params['svcref'] = true;
                 }
 
-                $this->data = $data;
-                $this->params = $params;
+                $this->data = $request->data;
+                $this->params = $request->params;
         }
 
         /**
