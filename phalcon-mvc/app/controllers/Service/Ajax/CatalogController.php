@@ -253,7 +253,7 @@ class CatalogController extends AjaxController
          */
         public function domainsAction()
         {
-                $this->sendResponse(self::SUCCESS, $this->catalog->getDomains());
+                $this->send(self::SUCCESS, $this->catalog->getDomains());
         }
 
         /**
@@ -263,7 +263,7 @@ class CatalogController extends AjaxController
         {
                 $result = $this->catalog->getName($this->data['principal']);
                 $result = $this->formatResult($result, $this->params['output']);
-                $this->sendResponse(self::SUCCESS, $result);
+                $this->send(self::SUCCESS, $result);
         }
 
         /**
@@ -273,7 +273,7 @@ class CatalogController extends AjaxController
         {
                 $result = $this->catalog->getMail($this->data['principal']);
                 $result = $this->formatResult($result, $this->params['output']);
-                $this->sendResponse(self::SUCCESS, $result);
+                $this->send(self::SUCCESS, $result);
         }
 
         /**
@@ -283,7 +283,7 @@ class CatalogController extends AjaxController
         {
                 $result = $this->catalog->getAttribute($this->data['principal'], $this->data['attribute']);
                 $result = $this->formatResult($result, $this->params['output']);
-                $this->sendResponse(self::SUCCESS, $result);
+                $this->send(self::SUCCESS, $result);
         }
 
         /**
@@ -300,7 +300,7 @@ class CatalogController extends AjaxController
 
                 $result = $this->catalog->getGroups($this->data['principal'], $this->data['attributes']);
                 $result = $this->formatResult($result, $this->params['output']);
-                $this->sendResponse(self::SUCCESS, $result);
+                $this->send(self::SUCCESS, $result);
         }
 
         /**
@@ -317,7 +317,7 @@ class CatalogController extends AjaxController
 
                 $result = $this->catalog->getMembers($this->data['group'], $this->data['domain'], $this->data['attributes']);
                 $result = $this->formatResult($result, $this->params['output']);
-                $this->sendResponse(self::SUCCESS, $result);
+                $this->send(self::SUCCESS, $result);
         }
 
         /**
@@ -328,7 +328,11 @@ class CatalogController extends AjaxController
                 $result = $this->catalog->getPrincipal(current($this->data), key($this->data), $this->params);
                 $result = $this->formatResult($result, $this->params['output']);
 
-                $this->sendResponse(self::SUCCESS, $result);
+                error_log(print_r(__METHOD__ . ':' . __LINE__ . PHP_EOL, true));
+                error_log(print_r($result, true));
+                error_log(print_r(__METHOD__ . ':' . __LINE__ . PHP_EOL, true));
+
+                $this->send(self::SUCCESS, $result);
         }
 
         /**
@@ -391,4 +395,22 @@ class CatalogController extends AjaxController
                 }
         }
 
+        /**
+         * Send service response.
+         * @param ServiceResponse $response The service response.
+         */
+        protected function send($status, $result)
+        {
+                $action = $this->dispatcher->getActionName();
+                $target = $this->dispatcher->getControllerName();
+
+                $this->response->setJsonContent(array(
+                        $status => array(
+                                'target' => $target,
+                                'action' => $action,
+                                'return' => $result
+                )));
+                $this->response->send();
+        }
+        
 }
