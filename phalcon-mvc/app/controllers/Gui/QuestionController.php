@@ -236,7 +236,7 @@ class QuestionController extends GuiController
                                                         "select distinct q.* from OpenExam\Models\Question q "
                                                         .   "inner join OpenExam\Models\Corrector c "
                                                         .   "where  exam_id = '".$exam->id."' "
-                                                        .   ((!$isDecoder) ? //$exam->creator != $this->user->getPrincipalName()
+                                                        .   ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ? 
                                                                 "and c.user = '".$this->user->getPrincipalName()."' " : " ")
                                                         .   "order by q.slot asc"
                                                 );
@@ -253,7 +253,7 @@ class QuestionController extends GuiController
                                                         "select distinct q.* from OpenExam\Models\Question q "
                                                         .   "inner join OpenExam\Models\Corrector c "
                                                         .   "where q.id = ".$loadBy[2]
-                                                        .   ((!$isDecoder) ? //$exam->creator != $this->user->getPrincipalName()
+                                                        .   ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ? 
                                                                 "and c.user = '".$this->user->getPrincipalName()."' " : " ")
                                                 );
                                         $ansData = Answer::find('question_id = '.$loadBy[2]);
@@ -268,7 +268,7 @@ class QuestionController extends GuiController
                                                         .   "inner join OpenExam\Models\Corrector c "
                                                         .   "inner join OpenExam\Models\Answer a "
                                                         .   "where a.id = ".$loadBy[2]
-                                                        .   ((!$isDecoder) ? //$exam->creator != $this->user->getPrincipalName()
+                                                        .   ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ? 
                                                                 "and c.user = '".$this->user->getPrincipalName()."' " : " ")
                                                 );
                                         $ansData = Answer::find('id = ' . $loadBy[2]);
@@ -302,7 +302,7 @@ class QuestionController extends GuiController
                                         "select distinct q.* from OpenExam\Models\Question q "
                                         .   "inner join OpenExam\Models\Corrector c "
                                         .   "where exam_id = '".$exam->id."' "
-                                        .   ((!$isDecoder) ? //$exam->creator != $this->user->getPrincipalName()
+                                        .   ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
                                                "and c.user = '".$this->user->getPrincipalName()."' " : " ")
                                         .   "order by q.slot asc"
                                 );

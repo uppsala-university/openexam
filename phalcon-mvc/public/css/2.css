@@ -5348,13 +5348,13 @@ td.cc {
     width: 25px;
 }
 td.no {
-    background-color: #dddddd;
-    border: 1px solid #999999;
+    background-color: #dddddd !important;
+    border: 1px solid #999999 !important;
     color:#999999 !important;
 }
 td.na {
-    background-color: #e98e8d;
-    border: 1px solid #f34541;
+    background-color: #e98e8d !important;
+    border: 1px solid #f34541 !important;
     color:#D96661 !important; /*#880000*/
 }
 td.nc {
@@ -5369,23 +5369,27 @@ td.no a{
     color:#606060;
 }
 td.ac {
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
+    background-color: #ffffff !important;
+    border: 1px solid #cccccc !important;
     color:#cccccc !important;            
 }
 td.qu {
-    background-color: #666666;
-    border: 1px solid #333333;
+    background-color: #666666 !important;
+    border: 1px solid #333333 !important;
     color:#333333 !important;                
 }
 td.qr {
-    background-color: #6ebadc;
-    border: 1px solid #4285f4;
+    background-color: #6ebadc !important;
+    border: 1px solid #4285f4 !important;
     color:#4285f4 !important;                    
 }
 td.aa {
-    background-color: #eeeeee;
-    border: 1px solid #dddddd;
+    background-color: #eeeeee !important;
+    border: 1px solid #dddddd !important;
+}
+td.gm {
+    background-color: #4285F4 !important;
+    border: 1px solid #dddddd !important;
 }
 tr.avarage, tr.colorcode {
     background-color: #ffffff;

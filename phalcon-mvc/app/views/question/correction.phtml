@@ -8,10 +8,14 @@ $studentIds = array();
 
 $grades = preg_split('/[\r\n]+/', $exam->grades);
 $examGrades = array();
-foreach ($grades as $grade) :
+$passAt = 1000;
+foreach ($grades as $k => $grade) :
 	$t = explode(":", $grade);
 	$examGrades[$t[0]] =  $t[1];
 	$avgGrades[$t[0]] = 0;
+	if($k == 1) :
+		$passAt = $t[1];
+	endif;
 endforeach;
 arsort($examGrades);
 
@@ -98,6 +102,12 @@ $decoded = $exam->decoded;
 								P No.
 							</th>
 							<?php endif;?>
+                                                        <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sortable">
+                                                          <div style="text-align: center">
+                                                                Total score
+                                                                <div>Max. <?=$totalExamScore?></div>
+                                                          </div>
+                                                        </th>
                                                         <th class="sortable" style="background-color:#EAEAEA; max-width:65px; text-align:center">%</th>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
                                                         <th class="sortable" style="background-color:#EAEAEA; width:35px;  text-align:center">Grade</th>
@@ -195,6 +205,14 @@ $decoded = $exam->decoded;
                                                         </td>
 							<?php endif;?>
                                                         <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
+                                                                <?=$totalStudentScore?>
+                                                                <?php
+								if($answerd):
+									$avgScore[] = $totalStudentScore; 
+								endif;	
+								?>                                                                
+                                                        </td>
+                                                        <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
 								<?=sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100)?>%
                                                                 <?php
 								if($answerd):
@@ -203,12 +221,19 @@ $decoded = $exam->decoded;
 								?>
                                                         </td>
                                                         <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
-                                                        <?php 
+                                                        <?php
+							$needGraceMarks = false; 
                                                         foreach($examGrades as $grade => $limit) :
                                                                 if((($totalStudentScore/$totalExamScore)*100) >= $limit) :
 									end($examGrades);
 									if(key($examGrades) == $grade):
-										$colorScheme = 'background-color:#FF6B4F; color:#FFFFCC';
+										if($passAt - (($totalStudentScore/$totalExamScore)*100) <= 5) {
+											$colorScheme = 'background-color:#4285F4; color:#FFFFCC';
+											$needGraceMarks = true;
+										} else {
+											$colorScheme = 'background-color:#FF6B4F; color:#FFFFCC';
+										}
+										
 									else:
                                                                         	$colorScheme = 'background-color:#8BC540; color:#41612c';
 									endif;
@@ -218,7 +243,7 @@ $decoded = $exam->decoded;
 							$avgGrades[$grade]++; 
                                                         ?>
                                                         <td class="gru" style="border-bottom:1px #dedede solid; text-align:center; font-weight:bold; <?=$colorScheme?>">
-								<?=$grade?>
+								<?=$grade?> <?=($needGraceMarks) ? "(".sprintf("%1.1f", (($passAt/100)*$totalExamScore) - $totalStudentScore)." pt. less)" : ''?>
                                                         </td>
                                                         <?php endif;?>
                                                 </tr>
@@ -236,12 +261,15 @@ $decoded = $exam->decoded;
                                                                 </td>
                                                         <?php endforeach;?>
                                                         
-							<th align="right" style="vertical-align:top;">Avarage:</th>
+							<th  class="cc aa" align="right" style="vertical-align:top;">Avarage:</th>
 							<?php if($decoded):?>
 							<th align="right" style="vertical-align:top;"></th>
 							<th align="right" style="vertical-align:top;"></th>
 							<th align="right" style="vertical-align:top;"></th>
 							<?php endif;?>
+                                                        <td class="cc aa">
+								<?=sprintf("%1.1f", array_sum($avgScore)/count($avgScore))?>/<?=$totalExamScore?>
+                                                        </td>
                                                         <td class="cc aa">
 								<?=sprintf("%1.1f", array_sum($avgPercentage)/count($avgPercentage))?>%
                                                         </td>
@@ -278,6 +306,10 @@ $decoded = $exam->decoded;
                                         <tr class="colorcode">
                                                 <td class="cc nc">&nbsp;</td>
                                                 <td>The answer has not yet been corrected.</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc gm">&nbsp;</td>
+                                                <td>Student can pass with some grace marks.</td>
                                         </tr>
                                         <!--
                                         <tr class="colorcode">
@@ -337,7 +369,7 @@ $(document).ready(function () {
 	// keep column order
         jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function() { 
 		if(($(this).children().length)) {
-			for(i=0; i<<?=$decoded ? "6" : "3"?>; i++) {
+			for(i=0; i<<?=$decoded ? "7" : "4"?>; i++) {
 				$(this).children(":first").before($(this).children(":last"));
 			}
 		} else {
