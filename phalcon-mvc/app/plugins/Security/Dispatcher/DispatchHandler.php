@@ -150,6 +150,15 @@ class DispatchHandler extends Component implements DispatchHelper
                 // Inject authenticated user:
                 // 
                 $this->getDI()->set('user', new User($this->_session->get("user")));
+
+                // 
+                // Handle impersonation:
+                // 
+                if ($this->request->has('impersonate')) {
+                        if (!$this->user->impersonate($this->request->get('impersonate', "string"))) {
+                                $this->_listener->report('Failed impersonate', $this->getData());
+                        }
+                }
         }
 
         /**
@@ -242,7 +251,7 @@ class DispatchHandler extends Component implements DispatchHelper
                                     "namespace"  => "OpenExam\Controllers\Gui"
                         ));
                 } else {
-                        $this->report('Failed login', $this);
+                        $this->_listener->report('Failed login', $this->getData());
                         return false;
                 }
         }

@@ -117,8 +117,6 @@ class SessionHandler extends Component implements DispatchHelper
          */
         public function register()
         {
-                error_log("EXPIRES: " . $this->_expires);
-                
                 $this->set('expire', time() + $this->_expires);
                 $this->set('remote', $this->_remote);
 

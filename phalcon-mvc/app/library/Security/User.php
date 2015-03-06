@@ -26,9 +26,11 @@ use Phalcon\Mvc\User\Component;
  * 
  * The "act-as" pattern is supported by passing an array of roles to
  * the constructor or by setting the roles property. Use this feature 
- * with *caution* as it is effectivelly user impersonation.
+ * with *caution* as it is effectivelly user impersonation. True user
+ * impersonation is supported by the impersonate() method.
  * 
  * @property Roles $roles The roles associated with this user.
+ * @property Impersonation $impersonation The current impersonation.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -62,14 +64,6 @@ class User extends Component
         {
                 $this->_role = $role;
 
-                // @ToDO: move this sessions based user object initialzation to dispatcher
-                if (!isset($user)) {
-                        if ($this->session->has('authenticated')) {
-                                $loggedIn = $this->session->get('authenticated');
-                                $user = $loggedIn['user'];
-                        }
-                }
-
                 if (isset($user)) {
                         if (isset($domain)) {
                                 $this->_user = $user;
@@ -81,9 +75,8 @@ class User extends Component
                                 $this->_user = $user;
                         }
 
-                        if (($pos = strpos($this->_user, '@'))) {
-                                $this->_domain = substr($this->_user, $pos + 1);
-                                $this->_user = substr($this->_user, 0, $pos);
+                        if (strpos($this->_user, '@')) {
+                                $this->setPrincipalName($this->_user);
                         }
 
                         if (!isset($this->_domain)) {
@@ -96,6 +89,11 @@ class User extends Component
                                 $this->roles = new Roles($this->config->user->roles);
                         } else {
                                 $this->roles = new Roles();
+                        }
+
+                        $this->impersonation = new Impersonation();
+                        if ($this->impersonation->active) {
+                                $this->setPrincipalName($this->impersonation->impersonated);
                         }
                 }
         }
@@ -113,6 +111,18 @@ class User extends Component
         {
                 if (isset($this->_user)) {
                         return sprintf("%s@%s", $this->_user, $this->_domain);
+                }
+        }
+
+        /**
+         * Set user principal name.
+         * @param string $user The user principal string.
+         */
+        private function setPrincipalName($user)
+        {
+                if (($pos = strpos($user, '@'))) {
+                        $this->_domain = substr($user, $pos + 1);
+                        $this->_user = substr($user, 0, $pos);
                 }
         }
 
@@ -196,6 +206,43 @@ class User extends Component
                 }
 
                 return count($aquired) != 0 ? $aquired : $default;
+        }
+
+        /**
+         * Enable impersonation as $user.
+         * 
+         * If user is set, then impersonation is enabled as user if caller
+         * is admin. The current username (in this object) is replaced with
+         * the user argument.
+         * 
+         * If user is unset, then the current impersonation is breaked and
+         * original user (from actor) is restored as current username in this
+         * user object.
+         * 
+         * @param string $user The user to impersonate.
+         * @return boolean 
+         */
+        public function impersonate($user)
+        {
+                if (isset($user) && !empty($user)) {
+                        if (!$this->impersonation->enable($user)) {
+                                return false;
+                        } elseif (!(strpos($user, '@'))) {
+                                return false;
+                        } else {
+                                $this->setPrincipalName($user);
+                                $this->roles = new Roles();
+                                return true;
+                        }
+                } else {
+                        if (!$this->impersonation->active) {
+                                return false;
+                        } else {
+                                $this->setPrincipalName($this->impersonation->actor);
+                                $this->impersonation->disable();
+                                return true;
+                        }
+                }
         }
 
 }
