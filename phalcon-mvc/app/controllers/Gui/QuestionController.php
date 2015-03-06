@@ -257,7 +257,7 @@ class QuestionController extends GuiController
                                                                 "and c.user = '".$this->user->getPrincipalName()."' " : " ")
                                                 );
                                         $ansData = Answer::find('question_id = '.$loadBy[2]);
-                                        $heading = 'Question no. '.$questData[0]->name;
+                                        $heading = 'Question no. '.$questData[0]->slot?$questData[0]->slot:$questData[0]->name;
                                         break;
                                 
                                 case 'answer':
@@ -273,7 +273,7 @@ class QuestionController extends GuiController
                                                 );
                                         $ansData = Answer::find('id = ' . $loadBy[2]);
                                         $stData  = Student::findFirst($ansData[0]->student_id);
-                                        $heading = 'Question no. '. $questData[0]->name .', '
+                                        $heading = 'Question no. '. $questData[0]->slot?$questData[0]->slot:$questData[0]->name .', '
                                             . ' answered by Student (code: '.$stData->code.')';
                                         
                                         break;
@@ -309,6 +309,19 @@ class QuestionController extends GuiController
                         } else {
                                 $questData = $exam->getQuestions(array('order'=>'slot asc'));
                         }        
+                        
+                        
+                        $studentData = $this->phql->executeQuery(
+                                "select distinct s.* from OpenExam\Models\Student s "
+                                .   "inner join OpenExam\Models\Answer a on a.student_id = s.id "
+                                .   "where s.exam_id = '".$exam->id."'"
+                                .   "order by s.code asc"
+                        );
+                        
+                        $this->view->setVars(array(
+                                'students' => $studentData
+                            ));
+                        
                 }
                 
                 

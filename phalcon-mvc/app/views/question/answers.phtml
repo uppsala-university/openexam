@@ -34,7 +34,7 @@ $decoded = $exam->decoded;
                                 <?=Phalcon\Tag::image(array("img/not-corrected.gif", "style"=>"position: absolute; right: 15px; width: 5%;", "id"=>$question->id."-corrected", "class"=>"not-corrected"));?>
                                 <?php endif;?>
                                 <div class="q-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #D84B4B">
-                                        <span style="color:#990000; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?=$question->name?></span>
+                                        <span style="color:#990000; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?=$question->slot?$question->slot:$question->name?></span>
                                 </div>
                                 
                                 <?php 

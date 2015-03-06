@@ -3,7 +3,11 @@
 $overallQuestScore = array();
 $totalExamScore = $totalStudentScore = 0;
 
-$students  = $exam->getStudents(array('order'=>'code asc'));
+if(!count($studentData)) {
+	$students  = $exam->getStudents(array('order'=>'code asc'));
+} else {
+	$students = $studentData;
+}
 $studentIds = array();
 
 $grades = preg_split('/[\r\n]+/', $exam->grades);
@@ -117,7 +121,8 @@ $decoded = $exam->decoded;
 					<tbody>
 						<?php foreach($students as $student):?>
                                                 <tr>
-							<?php $wasAbsent = false;?>
+							<?php if(!$student->getAnswers()->count()) continue;?>
+                                                        
 							<?php $totalStudentScore = 0;?>
 							<?php foreach($questions as $question):
                                                         
@@ -137,9 +142,9 @@ $decoded = $exam->decoded;
                                                                                 $totalStudentScore+=$qScore;
                                                                                 $overallQuestScore[$question->id][] = $qScore;
                                                                         endif;	
-                                                                else:
-									$wasAbsent = true;
-									break;
+                                                                //else:
+								//	$wasAbsent = true;
+								//	break;
                                                                 endif;
 								
 								// get corrector list
@@ -171,18 +176,17 @@ $decoded = $exam->decoded;
                                                                 ?>
                                                                 <td class="cc <?=$cc?>">
                                                                         <?php if($cLink):?>
-                                                                        <a class="fb fancybox.ajax" 
+                                                                        <a class="fb fancybox.ajax" ans-id="<?=$answer->getFirst()->id?>" 
                                                                         href="<?=$this->url->get('exam/'.$exam->id.'/correction/answer/'.$answer->getFirst()->id)?>">
                                                                                 <?=(is_object($result) && $result->count())?sprintf("%1.1f", $qScore):'<i class="fa fa-check-square-o"></i>'?>
                                                                         </a>
-                                                                        
                                                                         <?php else:?>
                                                                         <i class="fa fa-ban"></i>
                                                                         <?php endif;?>
                                                                 </td>
 
                                                         <?php endforeach;?>
-							<?php if($wasAbsent) continue;?>
+							<?php //if($wasAbsent) continue;?>
                                                         <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                                 <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
 									<?=$student->code?>
@@ -386,7 +390,7 @@ $(document).ready(function () {
                         },
                         afterClose: function() {
 				resyncableResults = [];
-                                location.reload();
+                                //location.reload();
                         }
         });
 	
@@ -488,7 +492,7 @@ $(document).ready(function () {
 	
 			// send ajax requedt to update student's socre
 			if(resId != 0) {
-				resultsUpdate.push({id:resId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
+				resultsUpdate.push({id:resId, "answer_id":ansId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
 			} else {
 				resultsCreate.push({"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
 				totalCreated++;
@@ -506,10 +510,28 @@ $(document).ready(function () {
 				function(rData) {
 					if(totalCreated > 1) {
 						jQuery.each(rData, function(i, e) {
+							
 							$('input[ans-id="'+e.answer_id+'"]').attr('res-id', e.id);
+							
+							var tScore = 0;
+							$.each(jQuery.parseJSON(e.score), function(j, sc) {
+								tScore = tScore+parseFloat(sc);
+							});
+							
+							$('a[ans-id="'+e.answer_id+'"]').parent().removeClass('nc').addClass('ac');
+							$('a[ans-id="'+e.answer_id+'"]').html(tScore);
+							
 						})
 					} else {
 						$('input[ans-id="'+rData.answer_id+'"]').attr('res-id', rData.id);
+						
+						var tScore = 0;
+						$.each(jQuery.parseJSON(rData.score), function(j, sc) {
+							tScore = tScore+parseFloat(sc);
+						});
+						
+						$('a[ans-id="'+rData.answer_id+'"]').parent().removeClass('nc').addClass('ac');
+						$('a[ans-id="'+rData.answer_id+'"]').html(tScore);
 						
 						resyncableResults = jQuery.grep(resyncableResults, function(value) {
 							return value != rData.answer_id;
@@ -528,6 +550,17 @@ $(document).ready(function () {
 					resyncableResults = jQuery.grep(resyncableResults, function(value) {
 						return value != rData.answer_id;
 					});
+					
+					$.each(resultsUpdate, function(i, rec) {
+						
+						var tScore = 0;
+						$.each(jQuery.parseJSON(rec.score), function(j, sc) {
+							tScore = tScore+parseFloat(sc);
+						});
+						
+						$('a[ans-id="'+rec.answer_id+'"]').html(tScore);
+					});
+					
 					console.log(resyncableResults);
 				}
 			);
