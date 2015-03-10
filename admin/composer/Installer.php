@@ -13,7 +13,7 @@
 
 namespace OpenExam\Composer;
 
-use Composer\Script\Event;
+use Composer\Installer\PackageEvent;
 
 /**
  * Handles install/update hooks for Composer.
@@ -35,7 +35,7 @@ class Installer
          * Package install hook.
          * @param \Composer\Script\Event $event
          */
-        public static function postPackageInstall(Event $event)
+        public static function postPackageInstall(PackageEvent $event)
         {
                 $package = $event->getOperation()->getPackage();
 
@@ -50,7 +50,7 @@ class Installer
          * Package update hook.
          * @param \Composer\Script\Event $event
          */
-        public static function postPackageUpdate(Event $event)
+        public static function postPackageUpdate(PackageEvent $event)
         {
                 $package = $event->getOperation()->getInitialPackage();
 
