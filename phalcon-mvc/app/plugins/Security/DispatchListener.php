@@ -193,7 +193,7 @@ class DispatchListener extends Plugin
                                         ));
                                         break;
                         }
-                        return false;
+                        return true;
                 }
         }
 
