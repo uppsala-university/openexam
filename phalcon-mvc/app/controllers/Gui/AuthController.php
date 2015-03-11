@@ -117,6 +117,7 @@ class AuthController extends GuiController
         {
                 $auth = $this->auth->getAuthenticator();
                 $this->view->setVar('auth', $auth);
+                $this->view->setVar('icon', $this->url->get("/img/tick-circle.png"));
         }
 
         /**
