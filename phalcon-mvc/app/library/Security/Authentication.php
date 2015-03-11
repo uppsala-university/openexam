@@ -13,7 +13,6 @@
 
 namespace OpenExam\Library\Security;
 
-use Phalcon\Mvc\User\Component;
 use UUP\Authentication\Authenticator\Authenticator;
 use UUP\Authentication\Authenticator\NullAuthenticator;
 use UUP\Authentication\Library\Authenticator\AuthenticatorBase;

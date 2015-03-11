@@ -70,12 +70,12 @@ class DispatchListener extends Plugin
                                 // Handle dispatch:
                                 // 
                                 $this->_dispatcher = new DispatchHandler($this, $dispatcher);
-                                $result = $this->_dispatcher->process();
-                                $this->report();
-                                return $result;
+                                return $this->_dispatcher->process();
                         }
                 } catch (\Exception $exception) {
+                        $event->stop();
                         $this->report(null, null, $exception);
+                        $this->beforeException(null, $dispatcher, $exception);
                 }
         }
 
@@ -157,12 +157,14 @@ class DispatchListener extends Plugin
                 // 
                 // Log exception:
                 // 
-                $error = array(
-                        'method'    => __METHOD__,
-                        'exception' => get_class($exception),
-                        'message'   => $exception->getMessage()
-                );
-                $this->logger->system->error(print_r($error, true));
+                $this->report(null, null, $exception);
+
+                // 
+                // Stop event propagation:
+                // 
+                if (!$event->isStopped()) {
+                        $event->stop();
+                }
 
                 // 
                 // Forward to error reporting page:

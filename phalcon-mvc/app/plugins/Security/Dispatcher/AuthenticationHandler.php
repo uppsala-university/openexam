@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Dispatcher;
 
+use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Plugins\Security\Dispatcher\DispatchHelper;
 use OpenExam\Plugins\Security\DispatchListener;
 use Phalcon\Mvc\User\Component;
@@ -62,8 +63,9 @@ class AuthenticationHandler extends Component implements DispatchHelper
                 if ($property == 'type') {
                         return $this->auth->getAuthenticator()->name;
                 } elseif ($property == 'user') {
-                        $this->auth->accepted();        // Required by CAS
-                        return $this->auth->getSubject();
+                        if ($this->auth->accepted($this->_service)) {        // Required by CAS
+                                return $this->auth->getSubject();
+                        }
                 } else {
                         return parent::__get($property);
                 }
@@ -71,6 +73,7 @@ class AuthenticationHandler extends Component implements DispatchHelper
 
         /**
          * Check authentication.
+         * @param string $method Select specific authentication method.
          * @return boolean Return true if caller is authenticated.
          */
         public function check($method = null)
@@ -85,17 +88,14 @@ class AuthenticationHandler extends Component implements DispatchHelper
                         return false;
                 } else {
                         $this->logger->auth->notice(sprintf(
-                                "User login by %s from %s [%s -> %s]", $this->user, $this->_remote, $this->_service, $method
+                                "User login by %s from %s [%s -> %s]", $this->user, $this->_remote, $this->_service, $this->auth->getAuthenticator()->name
                         ));
-                        $this->redirect();
                         return true;
                 }
         }
 
         /**
          * Handle user initiated login request.
-         * @param string $service The sub system (e.g. web).
-         * @return boolean
          */
         public function login()
         {
@@ -106,9 +106,6 @@ class AuthenticationHandler extends Component implements DispatchHelper
                         $this->logger->auth->debug(sprintf(
                                 "User initiated login using method %s -> %s (direct)", $this->_service, $method
                         ));
-                        if (!$this->session->has('return')) {
-                                $this->session->set('return', $this->url->get("auth/login"));
-                        }
                 } elseif (($method = $this->request->get("auth", "string"))) {
                         // 
                         // Handle auth/select response:
@@ -123,20 +120,13 @@ class AuthenticationHandler extends Component implements DispatchHelper
                         $this->logger->auth->debug(sprintf(
                                 "User initiated login using method %s -> %s (return)", $this->_service, $method
                         ));
-                } else {
-                        $this->logger->auth->debug(sprintf(
-                                "Invalid login request for service %s", $this->_service
-                        ));
-                        return false;
                 }
 
-                // 
-                // Keep redirect URL:
-                // 
-                if (!$this->session->has('return')) {
-                        $this->session->set('return', $this->request->getHTTPReferer());
-                }
-                if (!$this->session->has('method')) {
+                if (!isset($method)) {
+                        throw new SecurityException(sprintf(
+                            "Invalid login request for service %s", $this->_service
+                        ));
+                } else {
                         $this->session->set('method', $method);
                 }
 
@@ -145,42 +135,16 @@ class AuthenticationHandler extends Component implements DispatchHelper
                 // 
                 $this->auth->activate($method, $this->_service);
                 $this->auth->login();
-                return false;
         }
 
         /**
          * Handle logout request.
-         * @param string $service The sub system (e.g. web).
-         * @return boolean
+         * @param string $method The authentication method.
          */
         public function logout($method)
         {
                 $this->auth->activate($method, $this->_service);
                 $this->auth->logout();
-
-                return true;
-        }
-
-        /**
-         * Redirect caller to target URL.
-         */
-        private function redirect()
-        {
-                if ($this->_service == "web") {
-                        if (($method = $this->session->get('method'))) {
-                                $this->session->remove('method');
-                        }
-                        if (($return = $this->session->get('return'))) {
-                                $this->logger->auth->debug(sprintf(
-                                        "Redirect browser to %s", $return
-                                ));
-                                $this->session->remove('return');
-                                header(sprintf("Location: %s", $return));
-                                $this->logger->auth->debug(sprintf(
-                                        "Session: %s", print_r($_SESSION, true)
-                                ));
-                        }
-                }
         }
 
         public function getData()

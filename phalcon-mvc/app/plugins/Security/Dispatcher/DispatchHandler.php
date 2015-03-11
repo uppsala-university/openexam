@@ -113,7 +113,27 @@ class DispatchHandler extends Component implements DispatchHelper
         }
 
         /**
+         * Redirect caller to target URL.
+         */
+        private function redirect()
+        {
+                $return = $this->session->get('return');
+                
+                $this->session->remove('return');
+                $this->session->remove('method');
+
+                $this->logger->auth->debug(sprintf(
+                        "Redirect browser to %s", $return
+                ));
+                
+                $this->response->redirect($return);
+        }
+
+        /**
          * Setup user session.
+         * 
+         * Return true if dispatched route should be allowed to continue or not.
+         * @return boolean 
          */
         private function setup()
         {
@@ -129,7 +149,7 @@ class DispatchHandler extends Component implements DispatchHelper
                 // Return if authenticated user is missing:
                 // 
                 if (($this->_session->get('user')) == false) {
-                        return;
+                        return false;
                 }
 
                 // 
@@ -158,6 +178,17 @@ class DispatchHandler extends Component implements DispatchHelper
                         if (!$this->user->impersonate($this->request->get('impersonate', "string"))) {
                                 $this->_listener->report('Failed impersonate', $this->getData());
                         }
+                }
+
+                // 
+                // If returning from authentication, redirect browser and 
+                // cancel target dispatch, otherwise permit dispatch.
+                // 
+                if ($this->session->has('return')) {
+                        $this->redirect();
+                        return false;
+                } else {
+                        return true;
                 }
         }
 
@@ -192,28 +223,24 @@ class DispatchHandler extends Component implements DispatchHelper
                 // Handle user initiated login request:
                 // 
                 if ($this->_target == "auth" && $this->_action == "login") {
-                        if ($this->_auth->login()) {
-                                $this->setup();
-                                return true;    // pass thru controller -> action
-                        }
+                        $this->_auth->login();
+                        return $this->setup();  // pass thru controller -> action
                 }
 
                 // 
                 // Handle logout request:
                 // 
                 if ($this->_target == "auth" && $this->_action == "logout") {
-                        if ($this->_auth->logout($this->_session->get('type'))) {
-                                $this->_session->remove();
-                                return true;    // pass thru controller -> action
-                        }
+                        $this->_auth->logout($this->_session->get('type'));
+                        $this->_session->remove();
+                        return true;            // pass thru controller -> action
                 }
 
                 // 
                 // Check session:
                 // 
                 if ($this->_session->validate()) {
-                        $this->setup();
-                        return true;
+                        return $this->setup();
                 } elseif ($this->_session->expired()) {
                         $this->_session->remove();
                 }
@@ -222,8 +249,9 @@ class DispatchHandler extends Component implements DispatchHelper
                 // Check authentication:
                 // 
                 if ($this->_auth->check()) {
-                        $this->setup();
-                        return true;
+                        return $this->setup();
+                } else {
+                        $this->session->start();
                 }
 
                 // 
@@ -237,12 +265,16 @@ class DispatchHandler extends Component implements DispatchHelper
                 }
 
                 // 
-                // Redirect web request to login page, nuke other.
+                // Redirect web request to login page, nuke other. Keep track
+                // of requested URL.
                 // 
                 if ($this->_subsys == 'web' && $this->request->isAjax() == false) {
                         $this->logger->auth->debug(sprintf(
                                 "Forwarding %s to login page (auth -> select)", $this->_remote
                         ));
+                        if (!$this->session->has('return')) {
+                                $this->session->set('return', $this->request->get('_url'));
+                        }
                         $this->dispatcher->forward(
                             array(
                                     "controller" => "auth",
@@ -250,6 +282,7 @@ class DispatchHandler extends Component implements DispatchHelper
                                     "params"     => array("service" => $this->_subsys),
                                     "namespace"  => "OpenExam\Controllers\Gui"
                         ));
+                        return false;
                 } else {
                         $this->_listener->report('Failed login', $this->getData());
                         return false;
