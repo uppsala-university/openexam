@@ -12,6 +12,7 @@
 // 
 
 use OpenExam\Library\Security\Login\ActiveDirectoryLogin;
+use OpenExam\Library\Security\Login\ActiveDirectorySession;
 use OpenExam\Library\Security\Login\CasLogin;
 use UUP\Authentication\Authenticator\Authenticator;
 use UUP\Authentication\Restrictor\AddressRestrictor;
@@ -80,9 +81,13 @@ return array(
                         },
                         'desc' => 'Active Directory (AD1)'
                 ),
+                // 
+                // Equivalent to the ordinary active directory login, but 
+                // session aware. Use this if in doubt.
+                // 
                 'msad2' => array(
                         'method' => function() use($config) {
-                                return new ActiveDirectoryLogin(
+                                return new ActiveDirectorySession(
                                         $config, 'dc.example2.com', 636, array('form' => array('name' => 'msad2'))
                                         );
                         },
