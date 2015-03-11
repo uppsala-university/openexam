@@ -58,11 +58,14 @@ class DispatchListener extends Plugin
                                 // 
                                 // Bypass access control if called in a chain:
                                 //                 
-                                $target = $dispatcher->getPreviousControllerName();
-                                $action = $dispatcher->getPreviousActionName();
+                                $ptarget = $dispatcher->getPreviousControllerName();
+                                $paction = $dispatcher->getPreviousActionName();
+                                
+                                $ctarget = $dispatcher->getControllerName();
+                                $caction = $dispatcher->getActionName();
 
                                 $this->logger->auth->debug(sprintf(
-                                        "Bypass acccess control for forward dispatch (%s -> %s)", $target, $action
+                                        "Bypass acccess control in forward dispatch %s -> %s (%s -> %s)", $ctarget, $caction, $ptarget, $paction
                                 ));
                                 return true;
                         } else {
@@ -74,8 +77,8 @@ class DispatchListener extends Plugin
                         }
                 } catch (\Exception $exception) {
                         $event->stop();
-                        $this->report(null, null, $exception);
                         $this->beforeException(null, $dispatcher, $exception);
+                        return false;
                 }
         }
 
@@ -162,14 +165,15 @@ class DispatchListener extends Plugin
                 // 
                 // Stop event propagation:
                 // 
-                if (!$event->isStopped()) {
+                if (isset($event) && $event->isStopped() == false) {
                         $event->stop();
                 }
 
                 // 
                 // Forward to error reporting page:
                 // 
-                if ($this->_dispatcher->service == "web") {
+                if ($this->_dispatcher->service == "web" ||
+                    $this->_dispatcher->service == "") {
                         switch ($exception->getCode()) {
                                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
                                 case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
