@@ -15,6 +15,7 @@ namespace OpenExam\Plugins\Security;
 
 use Phalcon\Events\Event;
 use Phalcon\Mvc\Dispatcher;
+use Phalcon\Mvc\Dispatcher\Exception as DispatcherException;
 use Phalcon\Mvc\User\Plugin;
 use OpenExam\Plugins\Security\Dispatcher\DispatchHandler;
 
@@ -52,7 +53,7 @@ class DispatchListener extends Plugin
          * @param Dispatcher $dispatcher The dispatcher object.
          */
         public function beforeDispatch(Event $event, Dispatcher $dispatcher)
-        {
+        {                
                 try {
                         if ($dispatcher->wasForwarded()) {
                                 // 
@@ -60,7 +61,7 @@ class DispatchListener extends Plugin
                                 //                 
                                 $ptarget = $dispatcher->getPreviousControllerName();
                                 $paction = $dispatcher->getPreviousActionName();
-                                
+
                                 $ctarget = $dispatcher->getControllerName();
                                 $caction = $dispatcher->getActionName();
 
@@ -70,9 +71,14 @@ class DispatchListener extends Plugin
                                 return true;
                         } else {
                                 // 
+                                // Get target information:
+                                // 
+                                $target = self::getTarget($dispatcher);
+                                
+                                // 
                                 // Handle dispatch:
                                 // 
-                                $this->_dispatcher = new DispatchHandler($this, $dispatcher);
+                                $this->_dispatcher = new DispatchHandler($this, $dispatcher, $target['service']);
                                 return $this->_dispatcher->process();
                         }
                 } catch (\Exception $exception) {
@@ -123,7 +129,6 @@ class DispatchListener extends Plugin
                 // 
                 if (isset($exception)) {
                         $request = $this->request->get();
-                        $request['pass'] = "*****";
 
                         $this->logger->system->begin();
                         $this->logger->system->error(print_r(array(
@@ -137,7 +142,7 @@ class DispatchListener extends Plugin
                                 'Request'   => array(
                                         'Server' => sprintf("%s (%s)", $this->request->getServerName(), $this->request->getServerAddress()),
                                         'Method' => $this->request->getMethod(),
-                                        'Query'  => print_r($request, true)
+                                        'Query'  => $request
                                 ),
                                 'Source'    => array(
                                         'User'   => $this->user->getPrincipalName(),
@@ -158,6 +163,11 @@ class DispatchListener extends Plugin
         public function beforeException($event, $dispatcher, $exception)
         {
                 // 
+                // Get target information:
+                // 
+                $target = self::getTarget($dispatcher);
+
+                // 
                 // Log exception:
                 // 
                 $this->report(null, null, $exception);
@@ -172,8 +182,7 @@ class DispatchListener extends Plugin
                 // 
                 // Forward to error reporting page:
                 // 
-                if ($this->_dispatcher->service == "web" ||
-                    $this->_dispatcher->service == "") {
+                if ($target['type'] == 'gui') {
                         switch ($exception->getCode()) {
                                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
                                 case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
@@ -193,7 +202,44 @@ class DispatchListener extends Plugin
                                         ));
                                         break;
                         }
+                }
+
+                // 
+                // Return false if target is GUI.
+                // 
+                if ($target['type'] == 'gui') {
+                        return false;
+                } else {
                         return true;
+                }
+        }
+
+        /**
+         * Get dispatch target information.
+         * 
+         * <code>
+         * array(
+         *      'service' => web|rest|soap,
+         *      'type'    => service|gui
+         * )
+         * </code>
+         * 
+         * @param Dispatcher $dispatcher The dispatcher object.
+         */
+        private static function getTarget($dispatcher)
+        {
+                $target = explode("\\", strtolower($dispatcher->getControllerClass()));
+
+                if ($target[2] == "gui") {
+                        return array(
+                                'service' => 'web',
+                                'type'    => 'gui'
+                        );
+                } elseif ($target[2] == "service") {
+                        return array(
+                                'service' => $target[3],
+                                'type'    => 'service'
+                        );
                 }
         }
 

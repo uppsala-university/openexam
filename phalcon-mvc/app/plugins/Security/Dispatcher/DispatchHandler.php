@@ -56,7 +56,7 @@ class DispatchHandler extends Component implements DispatchHelper
          * The target sub system (e.g. web).
          * @var type 
          */
-        private $_subsys;
+        private $_service;
         /**
          * The target controller.
          * @var string 
@@ -88,14 +88,14 @@ class DispatchHandler extends Component implements DispatchHelper
          * @param DispatchListener $listener
          * @param Dispatcher $dispatcher
          */
-        public function __construct($listener, $dispatcher)
+        public function __construct($listener, $dispatcher, $service)
         {
                 $this->_listener = $listener;
                 $this->_dispatcher = $dispatcher;
 
                 $this->_target = $dispatcher->getControllerName();
                 $this->_action = $dispatcher->getActionName();
-                $this->_subsys = self::getServiceType(strtolower($this->_target));
+                $this->_service = $service;
 
                 $this->_remote = $this->request->getClientAddress(true);
                 $this->_protection = $this->acl->getAccess($this->_target, $this->_action);
@@ -106,7 +106,7 @@ class DispatchHandler extends Component implements DispatchHelper
         public function __get($property)
         {
                 if ($property == 'service') {
-                        return $this->_subsys;
+                        return $this->_service;
                 } else {
                         return parent::__get($property);
                 }
@@ -118,14 +118,14 @@ class DispatchHandler extends Component implements DispatchHelper
         private function redirect()
         {
                 $return = $this->session->get('return');
-                
+
                 $this->session->remove('return');
                 $this->session->remove('method');
 
                 $this->logger->auth->debug(sprintf(
                         "Redirect browser to %s", $return
                 ));
-                
+
                 $this->response->redirect($return);
         }
 
@@ -163,7 +163,7 @@ class DispatchHandler extends Component implements DispatchHelper
                 // Select authenticator:
                 // 
                 if ($this->_target == "auth") {
-                        $this->auth->activate($this->_session->get('type'), $this->_subsys);
+                        $this->auth->activate($this->_session->get('type'), $this->_service);
                 }
 
                 // 
@@ -199,14 +199,14 @@ class DispatchHandler extends Component implements DispatchHelper
         public function process()
         {
                 $this->logger->auth->debug(sprintf(
-                        "Handling %s -> %s [subsys: %s, protection: %s]", $this->_target, $this->_action, $this->_subsys, $this->_protection
+                        "Handling %s -> %s [subsys: %s, protection: %s]", $this->_target, $this->_action, $this->_service, $this->_protection
                 ));
 
                 // 
                 // Begin authentication and session handling:
                 // 
-                $this->_auth = new AuthenticationHandler($this->_listener, $this->_subsys);
-                $this->_session = new SessionHandler($this->_listener, $this->_subsys);
+                $this->_auth = new AuthenticationHandler($this->_listener, $this->_service);
+                $this->_session = new SessionHandler($this->_listener, $this->_service);
 
                 // 
                 // Handle public action:
@@ -268,7 +268,7 @@ class DispatchHandler extends Component implements DispatchHelper
                 // Redirect web request to login page, nuke other. Keep track
                 // of requested URL.
                 // 
-                if ($this->_subsys == 'web' && $this->request->isAjax() == false) {
+                if ($this->_service == 'web' && $this->request->isAjax() == false) {
                         $this->logger->auth->debug(sprintf(
                                 "Forwarding %s to login page (auth -> select)", $this->_remote
                         ));
@@ -279,7 +279,7 @@ class DispatchHandler extends Component implements DispatchHelper
                             array(
                                     "controller" => "auth",
                                     "action"     => "select",
-                                    "params"     => array("service" => $this->_subsys),
+                                    "params"     => array("service" => $this->_service),
                                     "namespace"  => "OpenExam\Controllers\Gui"
                         ));
                         return false;
@@ -292,7 +292,7 @@ class DispatchHandler extends Component implements DispatchHelper
         public function getData()
         {
                 return array(
-                        'subsys'     => $this->_subsys,
+                        'subsys'     => $this->_service,
                         'target'     => $this->_target,
                         'action'     => $this->_action,
                         'protection' => $this->_protection,
@@ -306,23 +306,6 @@ class DispatchHandler extends Component implements DispatchHelper
         public function __toString()
         {
                 return print_r($this->getData(), true);
-        }
-
-        /**
-         * Detect the called subsystem (WWW, REST or SOAP).
-         * @param string $target The dispatched controller class.
-         */
-        private static function getServiceType($target)
-        {
-                if (strpos($target, '\\soap\\')) {
-                        return 'soap';
-                } elseif (strpos($target, '\\rest\\')) {
-                        return 'rest';
-                } elseif (strpos($target, '\\ajax\\')) {
-                        return 'web';
-                } else {
-                        return 'web';
-                }
         }
 
 }
