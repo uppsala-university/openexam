@@ -23,7 +23,7 @@ use OpenExam\Library\WebService\Common\ServiceResponse;
  * Common base class for AJAX controllers.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-abstract class AjaxController extends ServiceController
+class AjaxController extends ServiceController
 {
 
         /**
@@ -45,7 +45,7 @@ abstract class AjaxController extends ServiceController
 
         public function initialize()
         {
-                set_exception_handler(array($this, 'exception_handler'));
+                set_exception_handler(array($this, 'exceptionAction'));
                 parent::initialize();
         }
 
@@ -53,7 +53,7 @@ abstract class AjaxController extends ServiceController
          * The exception handler.
          * @param \Exception $exception
          */
-        public function exception_handler($exception)
+        public function exceptionAction($exception)
         {
                 $this->report($exception);
                 $this->sendResponse(new ServiceResponse(null, ServiceHandler::ERROR, $exception->getMessage()));

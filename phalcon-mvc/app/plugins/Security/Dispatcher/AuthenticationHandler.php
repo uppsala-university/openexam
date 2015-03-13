@@ -54,7 +54,7 @@ class AuthenticationHandler extends Component implements DispatchHelper
         public function __construct($listener, $service)
         {
                 $this->_listener = $listener;
-                $this->_service = $service;
+                $this->_service = $service == "ajax" ? "web" : $service;
                 $this->_remote = $this->request->getClientAddress(true);
         }
 

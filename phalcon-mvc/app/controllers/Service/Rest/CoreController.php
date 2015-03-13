@@ -141,7 +141,6 @@ class CoreController extends RestController
 
         public function initialize()
         {
-                $this->getDI()->set('user', new \OpenExam\Library\Security\User('andlov@jailbreak'));
                 parent::initialize();
                 $this->handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
         }

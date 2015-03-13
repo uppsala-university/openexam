@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Dispatcher;
 
+use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\User;
 use OpenExam\Plugins\Security\Dispatcher\AuthenticationHandler;
 use OpenExam\Plugins\Security\Dispatcher\DispatchHelper;
@@ -265,10 +266,13 @@ class DispatchHandler extends Component implements DispatchHelper
                 }
 
                 // 
-                // Redirect web request to login page, nuke other. Keep track
-                // of requested URL.
+                // Unauthenticated request for private resource:
                 // 
-                if ($this->_service == 'web' && $this->request->isAjax() == false) {
+                if ($this->_service == 'web') {
+                        // 
+                        // Redirect web request to login page. Keep track of
+                        // requested URL for redirect on authenticated.
+                        // 
                         $this->logger->auth->debug(sprintf(
                                 "Forwarding %s to login page (auth -> select)", $this->_remote
                         ));
@@ -284,7 +288,18 @@ class DispatchHandler extends Component implements DispatchHelper
                         ));
                         return false;
                 } else {
+                        // 
+                        // Forward exception to requested service for proper
+                        // error reporting back to client.
+                        // 
                         $this->_listener->report('Failed login', $this->getData());
+                        $this->dispatcher->forward(
+                            array(
+                                    "controller" => $this->_service,
+                                    "action"     => "exception",
+                                    "params"     => array(new SecurityException("Authentication required", SecurityException::AUTH)),
+                                    "namespace"  => "OpenExam\Controllers\Service"
+                        ));
                         return false;
                 }
         }

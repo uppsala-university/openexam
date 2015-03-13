@@ -13,7 +13,7 @@
 
 namespace OpenExam\Controllers\Service\Soap;
 
-use OpenExam\Controllers\ServiceController;
+use OpenExam\Controllers\Service\SoapController;
 use OpenExam\Library\WebService\Soap\Service\AdminService;
 use OpenExam\Library\WebService\Soap\Service\ContributorService;
 use OpenExam\Library\WebService\Soap\Service\CoreService;
@@ -32,7 +32,7 @@ use OpenExam\Library\WebService\Soap\Wrapper\DocumentLiteral as DocumentLiteralW
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class CoreController extends ServiceController
+class CoreController extends SoapController
 {
 
         /**

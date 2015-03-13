@@ -13,11 +13,10 @@
 
 namespace OpenExam\Plugins\Security;
 
+use OpenExam\Plugins\Security\Dispatcher\DispatchHandler;
 use Phalcon\Events\Event;
 use Phalcon\Mvc\Dispatcher;
-use Phalcon\Mvc\Dispatcher\Exception as DispatcherException;
 use Phalcon\Mvc\User\Plugin;
-use OpenExam\Plugins\Security\Dispatcher\DispatchHandler;
 
 /**
  * Listen for dispatch events.
@@ -53,7 +52,7 @@ class DispatchListener extends Plugin
          * @param Dispatcher $dispatcher The dispatcher object.
          */
         public function beforeDispatch(Event $event, Dispatcher $dispatcher)
-        {                
+        {
                 try {
                         if ($dispatcher->wasForwarded()) {
                                 // 
@@ -74,7 +73,7 @@ class DispatchListener extends Plugin
                                 // Get target information:
                                 // 
                                 $target = self::getTarget($dispatcher);
-                                
+
                                 // 
                                 // Handle dispatch:
                                 // 
@@ -84,6 +83,67 @@ class DispatchListener extends Plugin
                 } catch (\Exception $exception) {
                         $event->stop();
                         $this->beforeException(null, $dispatcher, $exception);
+                        return false;
+                }
+        }
+
+        /**
+         * Handle dispatch exceptions.
+         * @param Event $event The dispatch event.
+         * @param Dispatcher $dispatcher The dispatcher object.
+         * @param \Exception $exception
+         */
+        public function beforeException($event, $dispatcher, $exception)
+        {
+                // 
+                // Get target information:
+                // 
+                $target = self::getTarget($dispatcher);
+
+                // 
+                // Log exception:
+                // 
+                $this->report(null, null, $exception);
+
+                // 
+                // Stop event propagation:
+                // 
+                if (isset($event) && $event->isStopped() == false) {
+                        $event->stop();
+                }
+
+                // 
+                // Forward to error reporting page:
+                // 
+                if ($target['type'] == 'gui') {
+                        switch ($exception->getCode()) {
+                                case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                                case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                                        $dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'show404',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('exception' => $exception)
+                                        ));
+                                        break;
+                                default:
+                                        $dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'show503',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('exception' => $exception)
+                                        ));
+                                        break;
+                        }
+                        return false;
+                } else {
+                        $this->dispatcher->forward(
+                            array(
+                                    "controller" => $this->_dispatcher->service,
+                                    "action"     => "exception",
+                                    "params"     => array($exception),
+                                    "namespace"  => "OpenExam\Controllers\Service"
+                        ));
                         return false;
                 }
         }
@@ -155,66 +215,6 @@ class DispatchListener extends Plugin
         }
 
         /**
-         * Handle dispatch exceptions.
-         * @param Event $event The dispatch event.
-         * @param Dispatcher $dispatcher The dispatcher object.
-         * @param \Exception $exception
-         */
-        public function beforeException($event, $dispatcher, $exception)
-        {
-                // 
-                // Get target information:
-                // 
-                $target = self::getTarget($dispatcher);
-
-                // 
-                // Log exception:
-                // 
-                $this->report(null, null, $exception);
-
-                // 
-                // Stop event propagation:
-                // 
-                if (isset($event) && $event->isStopped() == false) {
-                        $event->stop();
-                }
-
-                // 
-                // Forward to error reporting page:
-                // 
-                if ($target['type'] == 'gui') {
-                        switch ($exception->getCode()) {
-                                case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
-                                case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
-                                        $dispatcher->forward(array(
-                                                'controller' => 'error',
-                                                'action'     => 'show404',
-                                                'namespace'  => 'OpenExam\Controllers\Gui',
-                                                'params'     => array('exception' => $exception)
-                                        ));
-                                        break;
-                                default:
-                                        $dispatcher->forward(array(
-                                                'controller' => 'error',
-                                                'action'     => 'show503',
-                                                'namespace'  => 'OpenExam\Controllers\Gui',
-                                                'params'     => array('exception' => $exception)
-                                        ));
-                                        break;
-                        }
-                }
-
-                // 
-                // Return false if target is GUI.
-                // 
-                if ($target['type'] == 'gui') {
-                        return false;
-                } else {
-                        return true;
-                }
-        }
-
-        /**
          * Get dispatch target information.
          * 
          * <code>
@@ -235,7 +235,7 @@ class DispatchListener extends Plugin
                                 'service' => 'web',
                                 'type'    => 'gui'
                         );
-                } elseif ($target[2] == "service") {
+                } else {
                         return array(
                                 'service' => $target[3],
                                 'type'    => 'service'

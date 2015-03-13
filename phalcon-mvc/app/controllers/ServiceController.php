@@ -91,6 +91,11 @@ abstract class ServiceController extends Controller
          * @param ServiceResponse $response The service response.
          */
         protected abstract function sendResponse($response);
+        
+        /**
+         * Exception handler action.
+         */
+        public abstract function exceptionAction($exception);
 
         /**
          * Get input (model) data and params from request.

@@ -29,7 +29,7 @@ class RestController extends ServiceController
 
         public function initialize()
         {
-                set_exception_handler(array($this, 'exception_handler'));
+                set_exception_handler(array($this, 'exceptionAction'));
                 parent::initialize();
         }
 
@@ -37,7 +37,7 @@ class RestController extends ServiceController
          * The exception handler.
          * @param \Exception $exception
          */
-        public function exception_handler($exception)
+        public function exceptionAction($exception)
         {
                 $this->report($exception);
 
