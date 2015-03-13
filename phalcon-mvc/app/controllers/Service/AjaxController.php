@@ -43,12 +43,6 @@ class AjaxController extends ServiceController
          */
         const FAILURE = 'failed';
 
-        public function initialize()
-        {
-                set_exception_handler(array($this, 'exceptionAction'));
-                parent::initialize();
-        }
-
         /**
          * The exception handler.
          * @param \Exception $exception

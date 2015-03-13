@@ -101,11 +101,6 @@ class DispatchListener extends Plugin
                 $target = self::getTarget($dispatcher);
 
                 // 
-                // Log exception:
-                // 
-                $this->report(null, null, $exception);
-
-                // 
                 // Stop event propagation:
                 // 
                 if (isset($event) && $event->isStopped() == false) {
@@ -154,7 +149,7 @@ class DispatchListener extends Plugin
          * @param array|object $data The associated data, e.g. the session data.
          * @param \Exception $exception The exception to report.
          */
-        public function report($message = null, $data = null, $exception = null)
+        public function report($message = null, $data = null)
         {
                 // 
                 // Log message:
@@ -165,52 +160,26 @@ class DispatchListener extends Plugin
                             print_r(array(
                                 'Message' => 'Possible breakin attempt',
                                 'Reason'  => $message,
-                                'Data'    => print_r($data, true),
+                                'Data'    => $data,
                                 'From'    => $this->request->getClientAddress(true)
                                 ), true
                             )
                         );
                         $this->logger->auth->commit();
                 }
-
+                
                 // 
                 // Log this dispatcher:
                 // 
                 if (isset($this->_dispatcher)) {
                         $this->logger->auth->begin();
                         $this->logger->auth->debug(
-                            print_r($this->_dispatcher->getData(), true)
+                            print_r(array(
+                                'Dispatcher' => $this->_dispatcher->getData()
+                                ), true
+                            )
                         );
                         $this->logger->auth->commit();
-                }
-
-                // 
-                // Log exception:
-                // 
-                if (isset($exception)) {
-                        $request = $this->request->get();
-
-                        $this->logger->system->begin();
-                        $this->logger->system->error(print_r(array(
-                                'Exception' => array(
-                                        'Type'    => get_class($exception),
-                                        'Message' => $exception->getMessage(),
-                                        'File'    => $exception->getFile(),
-                                        'Line'    => $exception->getLine(),
-                                        'Code'    => $exception->getCode()
-                                ),
-                                'Request'   => array(
-                                        'Server' => sprintf("%s (%s)", $this->request->getServerName(), $this->request->getServerAddress()),
-                                        'Method' => $this->request->getMethod(),
-                                        'Query'  => $request
-                                ),
-                                'Source'    => array(
-                                        'User'   => $this->user->getPrincipalName(),
-                                        'Role'   => $this->user->getPrimaryRole(),
-                                        'Remote' => $this->request->getClientAddress(true)
-                                )
-                                ), true));
-                        $this->logger->system->commit();
                 }
         }
 

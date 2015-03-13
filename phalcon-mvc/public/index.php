@@ -1,8 +1,8 @@
 <?php
 
-//BISMILLAH
-
-set_exception_handler('exception_handler');
+/**
+ * The bootstrap script called by Phalcon.
+ */
 
 define('CONFIG_PHP', __DIR__ . '/../app/config/system/config.php');
 
@@ -22,8 +22,3 @@ include CONFIG_SYS . "/services.php";
 
 $application = new \Phalcon\Mvc\Application($di);
 echo $application->handle()->getContent();
-
-function exception_handler($exception)
-{
-        error_log($exception->getMessage());
-}

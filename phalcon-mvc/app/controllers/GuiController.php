@@ -21,15 +21,13 @@ namespace OpenExam\Controllers;
  *  
  * @author Ahsan Shahzad (MedfarmDoIT)
  */
-class GuiController extends \Phalcon\Mvc\Controller
+class GuiController extends ControllerBase
 {
 
         public function initialize()
         {
-                $errormask = (E_COMPILE_ERROR | E_CORE_ERROR | E_ERROR | E_RECOVERABLE_ERROR | E_USER_ERROR);
-                set_exception_handler(array($this, 'exception_handler'));
-                set_error_handler(array($this, 'error_handler'), $errormask);
-                
+                parent::initialize();
+
                 $controller = $this->dispatcher->getControllerName();
                 $action = $this->dispatcher->getActionName();
 
@@ -74,72 +72,6 @@ class GuiController extends \Phalcon\Mvc\Controller
 
                 $this->view->setVar("authenticators", $this->auth->getChain("web"));
                 $this->view->setLayout('main');
-        }
-
-        /**
-         * Log error and throw exception.
-         * @param int $code The error level (severity).
-         * @param string $message The error message.
-         * @param string $file The error file.
-         * @param string $line The error line.
-         * @throws \ErrorException
-         */
-        public function error_handler($code, $message, $file, $line)
-        {
-                // 
-                // Log triggered error:
-                // 
-                $this->logger->system->log($code, sprintf("%s in %s on line %d", $message, $file, $line, $code));
-
-                // 
-                // Throw exception for errors above threshold:
-                // 
-                throw new \ErrorException($message, 0, $code, $file, $line);
-        }
-
-        /**
-         * The exception handler.
-         * @param \Exception $exception
-         */
-        public function exception_handler($exception)
-        {
-                $this->report($exception);
-                $this->dispatcher->forward(array(
-                        'controller' => 'error',
-                        'action'     => 'show503',
-                        'namespace'  => 'OpenExam\Controllers\Gui',
-                        'params'     => array('exception' => $exception)
-                ));
-        }
-
-        /**
-         * Report service exception.
-         * @param \Exception $exception The exception to report.
-         * @param ServiceRequest $request The REST request object.
-         */
-        protected function report($exception)
-        {
-                $this->logger->system->begin();
-                $this->logger->system->error(print_r(array(
-                        'Exception' => array(
-                                'Type'    => get_class($exception),
-                                'Message' => $exception->getMessage(),
-                                'File'    => $exception->getFile(),
-                                'Line'    => $exception->getLine(),
-                                'Code'    => $exception->getCode()
-                        ),
-                        'Request'   => array(
-                                'Server' => sprintf("%s (%s)", $this->request->getServerName(), $this->request->getServerAddress()),
-                                'Method' => $this->request->getMethod(),
-                                'Query'  => print_r($this->request->get(), true)
-                        ),
-                        'Source'    => array(
-                                'User'   => $this->user->getPrincipalName(),
-                                'Role'   => $this->user->getPrimaryRole(),
-                                'Remote' => $this->request->getClientAddress(true)
-                        )
-                        ), true));
-                $this->logger->system->commit();
         }
 
 }

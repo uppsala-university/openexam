@@ -16,7 +16,6 @@ namespace OpenExam\Controllers;
 use OpenExam\Library\WebService\Common\Exception as ServiceException;
 use OpenExam\Library\WebService\Common\ServiceRequest;
 use OpenExam\Library\WebService\Common\ServiceResponse;
-use Phalcon\Mvc\Controller;
 
 /**
  * Base class for data service controllers.
@@ -25,23 +24,12 @@ use Phalcon\Mvc\Controller;
  * providing SOAP, REST or AJAX response as opposite to producing
  * HTML output.
  * 
- * Error and exception handling:
- * ------------------------------
+ * The deriving class should implement exceptionAction() to send error
+ * response to client in service dependent encoding format.
  * 
- * The deriving class should install an exception handler that logs the
- * exception (thru report()) and forward a suitable message to peer.
- * 
- * // In the initialize() method of deriving class:
- * set_exception_handler(array($this, 'exception_handler'));
- * 
- * This class uses set_error_handler() to transform all triggered errors 
- * with sufficient high severity into exception that deriving class is
- * trapping and reporting thru its exception handler. The throwed exception
- * has type ErrorException
- *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-abstract class ServiceController extends Controller
+abstract class ServiceController extends ControllerBase
 {
 
         /**
@@ -52,31 +40,9 @@ abstract class ServiceController extends Controller
 
         public function initialize()
         {
-                $errormask = (E_COMPILE_ERROR | E_CORE_ERROR | E_ERROR | E_RECOVERABLE_ERROR | E_USER_ERROR);
-
+                parent::initialize();
+                set_exception_handler(array($this, 'exceptionAction'));
                 $this->view->disable();
-                set_error_handler(array($this, 'error_handler'), $errormask);
-        }
-
-        /**
-         * Log error and throw exception.
-         * @param int $code The error level (severity).
-         * @param string $message The error message.
-         * @param string $file The error file.
-         * @param string $line The error line.
-         * @throws \ErrorException
-         */
-        public function error_handler($code, $message, $file, $line)
-        {
-                // 
-                // Log triggered error:
-                // 
-                $this->logger->system->log($code, sprintf("%s in %s on line %d", $message, $file, $line, $code));
-
-                // 
-                // Throw exception for errors above threshold:
-                // 
-                throw new \ErrorException($message, 500, $code, $file, $line);
         }
 
         /**
@@ -91,7 +57,7 @@ abstract class ServiceController extends Controller
          * @param ServiceResponse $response The service response.
          */
         protected abstract function sendResponse($response);
-        
+
         /**
          * Exception handler action.
          */
@@ -137,10 +103,6 @@ abstract class ServiceController extends Controller
                                 throw new ServiceException("Unhandled content type");
                         }
                 }
-
-//                if (!isset($input)) {
-//                        throw new ServiceException("Input data is missing");
-//                }
 
                 // 
                 // Currently, we are only handling array data;
@@ -189,37 +151,6 @@ abstract class ServiceController extends Controller
 
                 $this->payload = array($data, $params);
                 return $this->payload;
-        }
-
-        /**
-         * Report service exception.
-         * @param \Exception $exception The exception to report.
-         * @param ServiceRequest $request The REST request object.
-         */
-        protected function report($exception)
-        {
-                $this->logger->system->begin();
-                $this->logger->system->error(print_r(array(
-                        'Exception' => array(
-                                'Type'    => get_class($exception),
-                                'Message' => $exception->getMessage(),
-                                'File'    => $exception->getFile(),
-                                'Line'    => $exception->getLine(),
-                                'Code'    => $exception->getCode()
-                        ),
-                        'Request'   => array(
-                                'Server'  => sprintf("%s (%s)", $this->request->getServerName(), $this->request->getServerAddress()),
-                                'Method'  => $this->request->getMethod(),
-                                'Payload' => $this->payload,
-                                'Query'   => print_r($this->request->get(), true)
-                        ),
-                        'Source'    => array(
-                                'User'   => $this->user->getPrincipalName(),
-                                'Role'   => $this->user->getPrimaryRole(),
-                                'Remote' => $this->request->getClientAddress(true)
-                        )
-                        ), true));
-                $this->logger->system->commit();
         }
 
 }

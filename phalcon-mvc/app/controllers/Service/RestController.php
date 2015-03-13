@@ -27,12 +27,6 @@ use OpenExam\Library\WebService\Common\ServiceResponse;
 class RestController extends ServiceController
 {
 
-        public function initialize()
-        {
-                set_exception_handler(array($this, 'exceptionAction'));
-                parent::initialize();
-        }
-
         /**
          * The exception handler.
          * @param \Exception $exception

@@ -181,7 +181,7 @@ class CoreController extends RestController
                 if (!isset($target)) {
                         throw new ServiceException("Invalid request (missing target)");
                 }
-                
+                                
                 $request = $this->handler->getRequest();
 
                 switch ($request->action) {
