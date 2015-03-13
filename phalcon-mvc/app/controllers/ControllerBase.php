@@ -28,15 +28,21 @@ use Phalcon\Mvc\Controller;
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  * @author Ahsan Shahzad (MedfarmDoIT)
  */
-class ControllerBase extends Controller
+abstract class ControllerBase extends Controller
 {
 
         protected function initialize()
         {
                 $errormask = (E_COMPILE_ERROR | E_CORE_ERROR | E_ERROR | E_RECOVERABLE_ERROR | E_USER_ERROR);
                 set_error_handler(array($this, 'error_handler'), $errormask);
+                set_exception_handler(array($this, 'exceptionAction'));
         }
 
+        /**
+         * Exception handler action.
+         */
+        public abstract function exceptionAction($exception);
+        
         /**
          * Log error and throw exception.
          * @param int $code The error level (severity).

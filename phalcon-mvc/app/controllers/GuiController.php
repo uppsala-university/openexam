@@ -13,6 +13,10 @@
 
 namespace OpenExam\Controllers;
 
+use Phalcon\Config;
+use Phalcon\Mvc\Dispatcher;
+use Phalcon\Mvc\Dispatcher\Exception as DispatcherException;
+
 /**
  * Base class for gui controllers.
  * 
@@ -31,7 +35,7 @@ class GuiController extends ControllerBase
                 $controller = $this->dispatcher->getControllerName();
                 $action = $this->dispatcher->getActionName();
 
-                $access = new \Phalcon\Config(require CONFIG_DIR . '/access.def');
+                $access = new Config(require CONFIG_DIR . '/access.def');
 
                 // if it is a private page
                 if ($controller != 'result' && $action != 'download' && $access->private->$controller->$action && count($access->private->$controller->$action->toArray())) {
@@ -72,6 +76,36 @@ class GuiController extends ControllerBase
 
                 $this->view->setVar("authenticators", $this->auth->getChain("web"));
                 $this->view->setLayout('main');
+        }
+
+        /**
+         * The exception handler.
+         * @param \Exception $exception
+         */
+        public function exceptionAction($exception)
+        {
+                if ($exception instanceof DispatcherException) {
+                        switch ($exception->getCode()) {
+                                case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                                case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                                        $this->dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'show404',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('exception' => $exception)
+                                        ));
+                                        return false;
+                        }
+                }
+
+                $this->report($exception);
+                $this->dispatcher->forward(array(
+                        'controller' => 'error',
+                        'action'     => 'show503',
+                        'namespace'  => 'OpenExam\Controllers\Gui',
+                        'params'     => array('exception' => $exception)
+                ));
+                return false;
         }
 
 }

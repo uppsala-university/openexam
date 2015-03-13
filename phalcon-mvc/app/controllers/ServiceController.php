@@ -41,7 +41,6 @@ abstract class ServiceController extends ControllerBase
         public function initialize()
         {
                 parent::initialize();
-                set_exception_handler(array($this, 'exceptionAction'));
                 $this->view->disable();
         }
 
@@ -57,11 +56,6 @@ abstract class ServiceController extends ControllerBase
          * @param ServiceResponse $response The service response.
          */
         protected abstract function sendResponse($response);
-
-        /**
-         * Exception handler action.
-         */
-        public abstract function exceptionAction($exception);
 
         /**
          * Get input (model) data and params from request.

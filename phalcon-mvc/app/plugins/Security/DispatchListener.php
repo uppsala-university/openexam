@@ -111,25 +111,13 @@ class DispatchListener extends Plugin
                 // Forward to error reporting page:
                 // 
                 if ($target['type'] == 'gui') {
-                        switch ($exception->getCode()) {
-                                case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
-                                case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
-                                        $dispatcher->forward(array(
-                                                'controller' => 'error',
-                                                'action'     => 'show404',
-                                                'namespace'  => 'OpenExam\Controllers\Gui',
-                                                'params'     => array('exception' => $exception)
-                                        ));
-                                        break;
-                                default:
-                                        $dispatcher->forward(array(
-                                                'controller' => 'error',
-                                                'action'     => 'show503',
-                                                'namespace'  => 'OpenExam\Controllers\Gui',
-                                                'params'     => array('exception' => $exception)
-                                        ));
-                                        break;
-                        }
+                        $this->dispatcher->forward(
+                            array(
+                                    "controller" => "gui",
+                                    "action"     => "exception",
+                                    "params"     => array($exception),
+                                    "namespace"  => "OpenExam\Controllers"
+                        ));
                         return false;
                 } else {
                         $this->dispatcher->forward(
@@ -144,10 +132,9 @@ class DispatchListener extends Plugin
         }
 
         /**
-         * Report dispatch issues, exceptions or state.
+         * Report dispatch issues and/or state.
          * @param string $message The reason.
          * @param array|object $data The associated data, e.g. the session data.
-         * @param \Exception $exception The exception to report.
          */
         public function report($message = null, $data = null)
         {
