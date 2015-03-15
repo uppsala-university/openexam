@@ -93,11 +93,11 @@
 						<span class="q-part-title"><?=$qPart?>.</span>                                        	
 						<?php endif;?>
 						
-						<span class="q-part-pts" style=" <?=$qPart=='a' ? 'border-radius: 0 0 5px' : ''?>"><?=sprintf("%02d", $qPartData['q_points'])?> pt.</span>
+						<span class="q-part-pts" style="font-weight:bold; <?=$qPart=='a' ? 'border-radius: 0 0 5px' : ''?>"><?=sprintf("%02d", $qPartData['q_points'])?> pt.</span>
 						
 						<div style="margin-bottom: 0;" class="form q-part" data-id="<?=$qPart?>" >
 							<fieldset>
-								<div class="q-part-ans-area col-sm-7 col-sm-offset-1">
+								<div class="q-part-ans-area col-sm-7 col-sm-offset-1" <?=!count($qPartData['resources'])?'style="width:100%"':''?>>
 									<div class="q-part-text" style="padding-bottom:10px">
 										<label><?=$qPartData['q_text']?></label>
 									</div>
@@ -140,9 +140,10 @@
                                                                                 	<input type="hidden" id="ansBkp<?=$qPart?>" value="<?=htmlentities($answerData[$qPart]['ans'][0])?>" />
 											<input type="text" style="font-size:11px" class="form-control changeable" value="<?=htmlentities($answerData[$qPart]['ans'][0])?>" placeholder="Write your answer here ..." />
 										<?php elseif($qPartData['ans_area']['type'] == 'canvas'):?>
-											<div id="q<?=$qObj->id?>p<?=$qPart?>" class="literally changeable"></div>
-											<button class="fullscreen" isfor="q<?=$qObj->id?>p<?=$qPart?>">Fullscreen</button>    
-											<script language="javascript">initCanvas('q<?=$qObj->id?>p<?=$qPart?>', '<?=trim(json_encode($answerData[$qPart]['ans'][0]['canvasJson']), '"');?>');</script>
+                                                                                	<?php $drawingJson = trim(json_encode($answerData[$qPart]['ans'][0]['canvasJson']), '"');?>
+											<div id="s<?=$student->id?>q<?=$qObj->id?>p<?=$qPart?>" class="literally changeable"></div>
+											<button class="fullscreen" isfor="s<?=$student->id?>q<?=$qObj->id?>p<?=$qPart?>">Fullscreen</button>    
+											<script language="javascript">initCanvas('s<?=$student->id?>q<?=$qObj->id?>p<?=$qPart?>', <?=$drawingJson!='null'?"'".$drawingJson."'":'null'?>);</script>
 										<?php elseif($qPartData['ans_area']['type'] == 'choicebox'):?>
                                                                                 	<?php $type = (count(array_filter($qPartData['ans_area']['data']))==1)?'radio':'checkbox';?>
 											<div class="col-md-10">
