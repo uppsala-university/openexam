@@ -95,8 +95,21 @@ class Role extends ModelBase
          */
         protected function beforeSave()
         {
-                if (!is_numeric($this->user[0])) {
-                        $this->user = (new User($this->user))->getPrincipalName();
+                while ($this->user[0] == '@') {         // Someones gonna try...
+                        $this->user = substr($this->user, 1);
+                }
+
+                if (is_numeric($this->user[0])) {
+                        return;
+                } elseif (strpos($this->user, '@') > 0) {
+                        return;
+                }
+
+                if (($config = $this->getDI()->getConfig()) == false) {
+                        $domain = $this->getDI()->getUser()->getDomain();
+                        $this->user = sprintf("%s@%s", $this->user, $domain);
+                } elseif (($domain = $config->user->domain) != false) {
+                        $this->user = sprintf("%s@%s", $this->user, $domain);
                 }
         }
 
