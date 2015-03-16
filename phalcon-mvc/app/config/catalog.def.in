@@ -13,6 +13,7 @@
 
 
 use OpenExam\Library\Catalog\DirectoryService\LdapService;
+use OpenExam\Library\Catalog\Affiliation;
 use OpenExam\Library\Catalog\Group;
 use OpenExam\Library\Catalog\Principal;
 
@@ -69,6 +70,27 @@ return array(
                                         Principal::ATTR_UID  => 'sAMAccountName',
                                         Principal::ATTR_NAME => 'displayName'
                                 )
+                        ));
+                        // 
+                        // Set user affiliation using callback:
+                        // 
+                        $service->setAffiliationCallback(function($attrs) {
+                                foreach($attrs as $index => $value) {
+                                        if($value == 'CN=Employee,DC=users,DC=example,DC=com') {
+                                                $attrs[$index] = Affiliation::EMPLOYEE;
+                                        }
+                                        if($value == 'CN=Student,DC=users,DC=example,DC=com') {
+                                                $attrs[$index] = Affiliation::STUDENT;
+                                        }
+                                }
+                                return $attrs;
+                        });
+                        // 
+                        // Set user affiliation using attribute map:
+                        // 
+                        $service->setAffiliationMap(array(
+                                Affiliation::EMPLOYEE => 'CN=Employee,DC=users,DC=example,DC=com',
+                                Affiliation::STUDENT  => 'CN=Student,DC=users,DC=example,DC=com'
                         ));
                         $service->setBase('dc=users,dc=example,dc=com');
                         return $service;

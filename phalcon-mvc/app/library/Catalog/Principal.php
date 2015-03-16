@@ -25,6 +25,10 @@ class Principal
          */
         const ATTR_PN = 'principal';
         /**
+         * The user affiliation attribute.
+         */
+        const ATTR_AFFIL = 'affiliation';
+        /**
          * The UID attribute.
          */
         const ATTR_UID = 'uid';
@@ -72,6 +76,11 @@ class Principal
          * @var string 
          */
         public $principal;
+        /**
+         * The user affiliations.
+         * @var array 
+         */
+        public $affiliation = array();
         /**
          * The UID.
          * @var string 

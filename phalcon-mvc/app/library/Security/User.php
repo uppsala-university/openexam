@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Security;
 
+use OpenExam\Library\Catalog\Affiliation;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -29,8 +30,13 @@ use Phalcon\Mvc\User\Component;
  * with *caution* as it is effectivelly user impersonation. True user
  * impersonation is supported by the impersonate() method.
  * 
+ * The affiliation is working on the effective user, not the real user. 
+ * This means that if impersonation is active, then affiliation is done
+ * using the impersonated user, not the actor (real user).
+ * 
  * @property Roles $roles The roles associated with this user.
- * @property Impersonation $impersonation The current impersonation.
+ * @property-read Impersonation $impersonation The current impersonation.
+ * @property-read Affiliation $affiliation The user affiliation.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -95,6 +101,9 @@ class User extends Component
                         if ($this->impersonation->active) {
                                 $this->setPrincipalName($this->impersonation->impersonated);
                         }
+                        
+                        $this->affiliation = new Affiliation($this->getPrincipalName());
+                        $this->affiliation->isStudent();
                 }
         }
 

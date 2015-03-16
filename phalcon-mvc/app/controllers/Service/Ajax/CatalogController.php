@@ -76,6 +76,9 @@ use OpenExam\Library\Catalog\Principal;
  * // Get complete principal objects including extended data:
  * input: '{"data":{"uid":"test*"},"params":{"attr":["*"],"domain":"example.com","data":true}}'
  * 
+ * // Get principal objects including the user affiliation:
+ * input: '{"data":{"uid":"test*"},"params":{"attr":["principal","affiliation"]}}'
+ * 
  * Reading groups (/ajax/catalog/groups):
  * ---------------------------------------------
  * 
@@ -327,11 +330,6 @@ class CatalogController extends AjaxController
         {
                 $result = $this->catalog->getPrincipal(current($this->data), key($this->data), $this->params);
                 $result = $this->formatResult($result, $this->params['output']);
-
-                error_log(print_r(__METHOD__ . ':' . __LINE__ . PHP_EOL, true));
-                error_log(print_r($result, true));
-                error_log(print_r(__METHOD__ . ':' . __LINE__ . PHP_EOL, true));
-
                 $this->send(self::SUCCESS, $result);
         }
 

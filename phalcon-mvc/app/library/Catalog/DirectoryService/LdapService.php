@@ -42,14 +42,15 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 private $attrmap = array(
                         'person' => array(
-                                Principal::ATTR_UID  => 'uid',
-                                Principal::ATTR_SN   => 'sn',
-                                Principal::ATTR_NAME => 'cn',
-                                Principal::ATTR_GN   => 'givenName',
-                                Principal::ATTR_MAIL => 'mail',
-                                Principal::ATTR_PNR  => 'norEduPersonNIN',
-                                Principal::ATTR_PN   => 'eduPersonPrincipalName',
-                                Principal::ATTR_ALL  => '*'
+                                Principal::ATTR_UID   => 'uid',
+                                Principal::ATTR_SN    => 'sn',
+                                Principal::ATTR_NAME  => 'cn',
+                                Principal::ATTR_GN    => 'givenName',
+                                Principal::ATTR_MAIL  => 'mail',
+                                Principal::ATTR_PNR   => 'norEduPersonNIN',
+                                Principal::ATTR_PN    => 'eduPersonPrincipalName',
+                                Principal::ATTR_AFFIL => 'eduPersonAffiliation',
+                                Principal::ATTR_ALL   => '*'
                         ),
                         'group'  => array(
                                 Group::ATTR_NAME   => 'name',
@@ -63,6 +64,11 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  * @var string 
                  */
                 private $basedn;
+                /**
+                 * The affiliation callback.
+                 * @var closure 
+                 */
+                private $affiliation;
 
                 /**
                  * Constructor.
@@ -76,6 +82,9 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                 {
                         $this->ldap = new LdapConnection($host, $port, $user, $pass, $options);
                         $this->type = 'ldap';
+                        $this->affiliation = function($attrs) {
+                                return $attrs;
+                        };
                 }
 
                 /**
@@ -120,6 +129,43 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                 public function getAttributeMap()
                 {
                         return $this->attrmap;
+                }
+
+                /**
+                 * Set user affiliation callback.
+                 * @param callable $callback The callback function.
+                 */
+                public function setAffiliationCallback($callback)
+                {
+                        $this->affiliation = $callback;
+                }
+
+                /**
+                 * Set user affiliation map.
+                 * 
+                 * Calling this method replaces the current set callback.
+                 * 
+                 * <code>
+                 * $service->setAffiliationMap(array(
+                 *      Affiliation::EMPLOYEE => 'employee',
+                 *      Affiliation::STUDENT  => 'student'
+                 * ));
+                 * </code>
+                 * 
+                 * @param array $affiliation The affiliation map.
+                 */
+                public function setAffiliationMap($map)
+                {
+                        $this->affiliation = function($attrs) use($map) {
+                                foreach ($map as $key => $val) {
+                                        foreach ($attrs as $index => $attr) {
+                                                if ($attr == $val) {
+                                                        $attrs[$index] = $key;
+                                                }
+                                        }
+                                }
+                                return $attrs;
+                        };
                 }
 
                 /**
@@ -279,11 +325,19 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         $result->setName($this->name);
                         $result->insert($search['entries']);
 
+                        $output = $result->getResult();
+                        if ($attribute == Principal::ATTR_AFFIL) {
+                                $affilation = $this->affiliation;
+                                foreach ($output as $index => $array) {
+                                        $output[$index][$attribute] = $affilation($array[$attribute]);
+                                }
+                        }
+
                         // 
                         // Filter out related entries not containing the
                         // requested attribute:
                         // 
-                        return array_filter($result->getResult(), function($entry) use($attribute) {
+                        return array_filter($output, function($entry) use($attribute) {
                                 return isset($entry[$attribute]);
                         });
                 }
@@ -391,6 +445,10 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                         if (property_exists($principal, $attr)) {
                                                 if ($attr == Principal::ATTR_MAIL) {
                                                         $principal->mail = $attrs;
+                                                        unset($d[$attr]);
+                                                } elseif ($attr == Principal::ATTR_AFFIL) {
+                                                        $affilation = $this->affiliation;
+                                                        $principal->affiliation = $affilation($attrs);
                                                         unset($d[$attr]);
                                                 } else {
                                                         $principal->$attr = $attrs[0];
