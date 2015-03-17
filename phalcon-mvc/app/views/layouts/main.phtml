@@ -82,12 +82,14 @@ $actionName = $this->dispatcher->getActionName();
                     if (!$this->user->getUser()) {
                             printf("<ul class=\"login-menu\" style=\"visibility:hidden;\">\n");
                             foreach ($authenticators as $name => $auth) {
-                                    print Phalcon\Tag::tagHtml("li");
-                                    print Phalcon\Tag::linkTo(array(
-                                                sprintf("auth/login/%s", $name),
-                                                sprintf("<i class=\"fa\"></i> %s", $auth['desc'])
-                                    ));
-                                    print Phalcon\Tag::tagHtmlClose("li");
+                                    if ($auth->visible) {
+                                            print Phalcon\Tag::tagHtml("li");
+                                            print Phalcon\Tag::linkTo(array(
+                                                        sprintf("auth/login/%s", $name),
+                                                        sprintf("<i class=\"fa\"></i> %s", $auth['desc'])
+                                            ));
+                                            print Phalcon\Tag::tagHtmlClose("li");
+                                    }
                             }
                             printf("</ul>\n");
                     }

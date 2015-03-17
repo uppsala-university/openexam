@@ -182,13 +182,20 @@ $config = new \Phalcon\Config(
         'render'      => array(
                 'image' => array(
                         'fmt'          => 'png',
-                        'imageQuality' => 95
+                        'imageQuality' => 95,
+                        'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                 ),
                 'pdf'   => array(
                         'produceForms' => false,
                         'outline'      => true,
-                        'outlineDepth' => 2
-                )
+                        'outlineDepth' => 2,
+                        'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
+                ),
+                // 
+                // Security token, an absolute file path or string:
+                // 
+                'token' => BASE_DIR . '/cache/render.sec'
+
         ),
         /**
          * Models meta data cache. Only activated if application->release is

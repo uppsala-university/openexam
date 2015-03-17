@@ -42,11 +42,6 @@ class GuiController extends ControllerBase
 
                         $allowedRoles = $access->private->$controller->$action->toArray();
 
-                        // check if person is logged in, if not redirect him to login page
-                        if (!$this->session->has('authenticated')) {
-                                header('Location: ' . $this->url->get('#login-me'));
-                        }
-
                         # if this page is not accessable for all logged in persons, 
                         # check if logged in person has appropriate role to access
                         # this page

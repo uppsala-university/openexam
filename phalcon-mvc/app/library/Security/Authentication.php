@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Security;
 
+use Phalcon\Config;
 use UUP\Authentication\Authenticator\Authenticator;
 use UUP\Authentication\Authenticator\NullAuthenticator;
 use UUP\Authentication\Library\Authenticator\AuthenticatorBase;
@@ -104,7 +105,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function getChain($service = "*")
         {
-                return array_merge($this->chains[$service], $this->chains['*']);
+                return new Config(array_merge($this->chains[$service], $this->chains['*']));
         }
 
         /**
@@ -189,11 +190,9 @@ class Authentication implements Authenticator, Restrictor
          */
         public function accepted($service = null)
         {
-                if ($this->authenticator instanceof NullAuthenticator) {
-                        if (!$this->authenticator->accepted()) {
-                                $this->authenticate('*');
-                                $this->authenticate($service);
-                        }
+                if (!$this->authenticator->accepted()) {
+                        $this->authenticate('*');
+                        $this->authenticate($service);
                 }
 
                 return $this->authenticator->accepted();
@@ -209,18 +208,17 @@ class Authentication implements Authenticator, Restrictor
                 if (isset($this->chains[$service])) {
                         foreach ($this->chains[$service] as $name => $plugin) {
                                 $authenticator = $plugin['method']($this->config);
+                                $authenticator->name($name);
                                 if ($authenticator->control === Authenticator::required) {
                                         if (!$authenticator->accepted()) {
                                                 throw new AuthenticatorRequiredException($authenticator->authenticator);
                                         }
                                 }
-                        }
-                        foreach ($this->chains[$service] as $name => $plugin) {
-                                $authenticator = $plugin['method']($this->config);
-                                if ($authenticator->control === Authenticator::sufficient &&
-                                    $authenticator->accepted()) {
-                                        $this->activate($name, $service);
-                                        break;
+                                if ($authenticator->control === Authenticator::sufficient) {
+                                        if ($authenticator->accepted() &&
+                                            $this->authenticator instanceof NullAuthenticator) {
+                                                $this->activate($name, $service);
+                                        }
                                 }
                         }
                 }

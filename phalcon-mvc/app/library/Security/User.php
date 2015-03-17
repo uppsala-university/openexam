@@ -103,7 +103,6 @@ class User extends Component
                         }
                         
                         $this->affiliation = new Affiliation($this->getPrincipalName());
-                        $this->affiliation->isStudent();
                 }
         }
 

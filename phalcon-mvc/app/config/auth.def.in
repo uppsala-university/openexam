@@ -40,7 +40,8 @@ return array(
                                         $config, 'cas.example.com', 443, '/cas'
                                         );
                         },
-                        'desc' => 'CAS Login'
+                        'desc' => 'CAS Login',
+                        'visible' => true
                 )
         ),
         // 
@@ -79,7 +80,8 @@ return array(
                                         $config, 'dc.example1.com', 636, array('form' => array('name' => 'msad1'))
                                         );
                         },
-                        'desc' => 'Active Directory (AD1)'
+                        'desc' => 'Active Directory (AD1)',
+                        'visible' => true
                 ),
                 // 
                 // Equivalent to the ordinary active directory login, but 
@@ -91,7 +93,20 @@ return array(
                                         $config, 'dc.example2.com', 636, array('form' => array('name' => 'msad2'))
                                         );
                         },
-                        'desc' => 'Active Directory (AD2)'
-                )                
+                        'desc' => 'Active Directory (AD2)',
+                        'visible' => true
+                ),
+                // 
+                // System login for the render service. This authenticator 
+                // is required by the rendering service.
+                'render' => array(
+                        'method' => function() use($config) {
+                                return new SystemLogin(
+                                        $config->render->token
+                                    );
+                        },
+                        'desc' => 'Render Service',
+                        'visible' => false
+                )                            
         )
 );

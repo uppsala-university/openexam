@@ -384,12 +384,21 @@ class ResultController extends GuiController
                         
                         return TRUE;
                 }
+
+                // 
+                // Get authentication token for system local service:
+                // 
+                if (file_exists($this->config->render->token)) {
+                        $token = file_get_contents($this->config->render->token);
+                } else {
+                        $token = $this->config->render->token;
+                }
                 
                 // generate pdf file
                 //@ToDo: replace static url (added for testing) in $pages array ('page' index) with proper
                 $pages = array(
                       array(
-                            'page'              => "https://".$this->request->getServerName().$this->url->get("result/".$exam->id."/view/".$student->id),
+                            'page'              => "https://".$this->request->getServerName().$this->url->get("result/".$exam->id."/view/".$student->id."?token=".$token."&user=".$student->user),
                             //'footer.right'      => date("Y-m-d H:i"),
                             //'pagesCount'        => TRUE,
                             //'pageOffset'        => 1,
