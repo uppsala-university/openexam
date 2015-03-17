@@ -398,7 +398,7 @@ class ResultController extends GuiController
                 //@ToDo: replace static url (added for testing) in $pages array ('page' index) with proper
                 $pages = array(
                       array(
-                            'page'              => "https://".$this->request->getServerName().$this->url->get("result/".$exam->id."/view/".$student->id."?token=".$token."&user=".$student->user),
+                            'page'              => "http://localhost".$this->url->get("result/".$exam->id."/view/".$student->id."?token=".$token."&user=".$student->user),
                             //'footer.right'      => date("Y-m-d H:i"),
                             //'pagesCount'        => TRUE,
                             //'pageOffset'        => 1,
@@ -408,12 +408,12 @@ class ResultController extends GuiController
                               
                       )
                 );
+
                 $render = $this->render->getRender(Renderer::FORMAT_PDF);
+                $render->save($filePath, $pages);
+                
                 if($download) {
-                        $render->save($filePath, $pages);
                         $this->helper->downloadFile($filePath);
-                } else {
-                        $render->save($filePath, $pages);
                 }
         }
         
