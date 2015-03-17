@@ -183,13 +183,13 @@ $config = new \Phalcon\Config(
                 'image' => array(
                         'fmt'          => 'png',
                         'imageQuality' => 95,
-                        'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
+                        // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                 ),
                 'pdf'   => array(
                         'produceForms' => false,
                         'outline'      => true,
                         'outlineDepth' => 2,
-                        'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
+                        // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                 ),
                 // 
                 // Security token, an absolute file path or string:
