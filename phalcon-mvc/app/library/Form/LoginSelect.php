@@ -34,9 +34,11 @@ class LoginSelect extends Form
         {
                 $options = array();
                 foreach ($authenticators as $name => $plugin) {
-                        $options[$name] = $plugin->get('desc');
+                        if ($plugin->visible) {
+                                $options[$name] = $plugin->get('desc');
+                        }
                 }
-                
+
                 $this->setAction($this->url->get('auth/login'));
                 $this->add(new Select("auth", $options));
                 $this->add(new Hidden("embed", array("value" => $this->request->get("embed"))));

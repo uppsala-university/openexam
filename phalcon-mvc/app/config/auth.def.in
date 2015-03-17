@@ -99,6 +99,7 @@ return array(
                 // 
                 // System login for the render service. This authenticator 
                 // is required by the rendering service.
+                // 
                 'render' => array(
                         'method' => function() use($config) {
                                 return new SystemLogin(
