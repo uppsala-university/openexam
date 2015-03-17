@@ -186,8 +186,8 @@
 				Please report this issue to the exam invigilator immediately.");
 			}*/
 		} catch(err) {
-			alert(err.message);
-			alert("Something went wrong in system. Please don't refresh/close web page window and contact your invigilator immediately.");
+			console.log(err);
+			alert("Something went wrong in system. Please don't refresh/close web page window and contact your invigilator immediately."+JSON.stringify(err));
 		}
 	}
 
@@ -197,17 +197,35 @@
 	var initCanvas = function(elementId, canvasJson) {
 		$('#'+elementId).literallycanvas({
 			onInit: function(lc) {
-				
+
 				canvasElem[elementId] = lc;
 				
-				if (localStorage.getItem(elementId)) {
-				      	lc.loadSnapshotJSON(localStorage.getItem(elementId));
-					canvasData[elementId] = localStorage.getItem(elementId);
-				}
-				
-				if(localStorage.getItem(elementId) != canvasJson) {
-					alert("Seems like your drawing is not being saved properly in database. Please contact your invigilator immediately and don't refresh/close this browser window.");
-					console.log(localStorage.getItem(elementId) +"-------------------------------------------------"+ canvasJson);
+				if(localStorage.getItem(elementId) == canvasJson) {
+					
+					if (localStorage.getItem(elementId)) {
+						lc.loadSnapshotJSON(localStorage.getItem(elementId));
+						canvasData[elementId] = localStorage.getItem(elementId);
+					}
+					
+				} else {
+					
+					alert("Error: Seems like your drawing is not being saved properly in database. Please contact your invigilator immediately and show this message to invigilator. Do not refresh/close this browser window.");
+					alert("From localStorage:" + localStorage.getItem(elementId));
+					alert("From database:"+ canvasJson);
+					while(confirm("Do you want to see what we have in localStorage and in database again? press ok if you want, press cancel if you want to proceed further.")) {
+						alert("From localStorage:" + localStorage.getItem(elementId));
+						alert("From database:"+ canvasJson);
+					}
+					
+					if(confirm("Please read carefully and take decision to restore data: Press ok to load from localStorage or cancel it if you would like to load it from database")) {
+						dirtybit = 1;
+						lc.loadSnapshotJSON(localStorage.getItem(elementId));
+						canvasData[elementId] = localStorage.getItem(elementId);
+					} else {
+						lc.loadSnapshotJSON(canvasJson);
+						canvasData[elementId] = canvasJson;
+					}
+					
 				}
 				
 				lc.on('drawingChange', function() {
