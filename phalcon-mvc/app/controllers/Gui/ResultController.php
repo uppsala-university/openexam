@@ -221,7 +221,7 @@ class ResultController extends GuiController
                 // get exam data 
                 $examId = $this->filter->sanitize($examId, 'int');
                 $exam = Exam::findFirst($examId);
-                
+
                 // generate, save result in pdf and download that pdf if it is for a student
                 $student = Student::findFirst(array(
                         "conditions" => "exam_id = ?1 and user = ?2",
@@ -237,47 +237,68 @@ class ResultController extends GuiController
                         $this->_generateResultPdf($exam, $student, TRUE);
                         
                 } else {
-                        // restrict 
                         
-                        //if request was not to download result of a specific student, 
-                        //we will generate zip file with all files located under results directory 
-                        //for this exam
-                        $cleanExamName = str_replace(" ", "-", $this->filter->sanitize($exam->name, 'string'));
-                        $resultsDir = $this->config->application->cacheDir . 'results/';
-                        $zipPath = $resultsDir.$cleanExamName.'.zip';
-                        $filesToZipLocation = $resultsDir . $cleanExamName . '-' . $exam->id;
-                        
-                        if(is_dir($filesToZipLocation)) {
+                        if(!$studentId) {
                                 
-                                //generate zip file if it don't exist
-                                if(!file_exists($zipPath)) {
-                                        
-                                        $zip = new \ZipArchive;
-                                        if($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
-                                                
-                                                if ($handle = opendir($filesToZipLocation)) {
-                                                        while (false !== ($entry = readdir($handle))) {
-                                                                if ($entry != "." && $entry != ".." && strstr($entry,'.pdf')) {
-                                                                        $zip->addFile($filesToZipLocation.'/'.$entry, $entry);
-                                                                }
-                                                        }
-                                                        closedir($handle);
-                                                }
+                                //if request was not to download result of a specific student, 
+                                //we will generate zip file with all files located under results directory 
+                                //for this exam
+                                $cleanExamName = str_replace(" ", "-", $this->filter->sanitize($exam->name, 'string'));
+                                $resultsDir = $this->config->application->cacheDir . 'results/';
+                                $zipPath = $resultsDir.$cleanExamName.'.zip';
+                                $filesToZipLocation = $resultsDir . $cleanExamName . '-' . $exam->id;
 
-                                                if(!$zip->close()) {
-                                                        throw new \Exception("Failed to zip files");
-                                                }
-                                                
-                                        } else {
-                                                throw new \Exception("Failed to create zip file");
-                                        }        
+                                if(is_dir($filesToZipLocation)) {
+
+                                        //generate zip file if it don't exist
+                                        if(!file_exists($zipPath)) {
+
+                                                $zip = new \ZipArchive;
+                                                if($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
+
+                                                        if ($handle = opendir($filesToZipLocation)) {
+                                                                while (false !== ($entry = readdir($handle))) {
+                                                                        if ($entry != "." && $entry != ".." && strstr($entry,'.pdf')) {
+                                                                                $zip->addFile($filesToZipLocation.'/'.$entry, $entry);
+                                                                        }
+                                                                }
+                                                                closedir($handle);
+                                                        }
+
+                                                        if(!$zip->close()) {
+                                                                throw new \Exception("Failed to zip files");
+                                                        }
+
+                                                } else {
+                                                        throw new \Exception("Failed to create zip file");
+                                                }        
+                                        }
+
+                                        $this->helper->downloadFile($zipPath);
+
+                                } else {
+                                        throw new \Exception("Unable to download result");
                                 }
                                 
-                                $this->helper->downloadFile($zipPath);
-                                
                         } else {
-                                throw new \Exception("Unable to download result");
-                        }
+                                
+                                // get student's data after verification
+                                $student = Student::findFirst(array(
+                                                "conditions" => "exam_id = ?1 and id = ?2",
+                                                "bind"       => array(
+                                                                1 => $examId,
+                                                                2 => $this->filter->sanitize($studentId, 'int')
+                                                        )
+                                            ));
+
+                                if(!$student) {
+                                        throw new \Exception("No such student ($studentId) was registered for exam ($examId)");
+                                }
+
+                                // generate pdf file and download
+                                $this->_generateResultPdf($exam, $student, TRUE);
+                                
+                        }        
                 }
         }
         
@@ -380,7 +401,8 @@ class ResultController extends GuiController
                 );
                 $render = $this->render->getRender(Renderer::FORMAT_PDF);
                 if($download) {
-                        $render->send($filePath, $pages);
+                        $render->save($filePath, $pages);
+                        $this->helper->downloadFile($filePath);
                 } else {
                         $render->save($filePath, $pages);
                 }
