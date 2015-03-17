@@ -247,7 +247,7 @@ $examsPerPage = 5;
 		<?php foreach($roleBasedExamList as $role => $exams) : ?>
 		<?php if($role != Roles::CREATOR && !count($exams))continue;?>
                 <div>
-                        <input id="ac-<?=$sectId?>" name="accordion-1" type="radio" <?=$sectId == 1 ? "checked" : ""?> />
+                        <input id="ac-<?=$sectId?>" name="accordion-1" type="radio"/>
                         <label for="ac-<?=$sectId?>">
                                 <?=$sections[$role]['title']?>
                                 <?php if($role == Roles::CREATOR):?>
