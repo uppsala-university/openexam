@@ -138,6 +138,13 @@ class Lockdown extends Component
         private function checkApproved()
         {
                 // 
+                // Bypass if lockdown is not enabled:
+                // 
+                if ($this->exam->lockdown == false) {
+                        return true;
+                }
+
+                // 
                 // Get existing lock:
                 // 
                 if (($this->lock = Lock::findFirst(array(
@@ -146,7 +153,7 @@ class Lockdown extends Component
                     ))) == false) {
                         return false;
                 }
-
+                
                 // 
                 // Check if lock has been approved:
                 // 
@@ -309,6 +316,8 @@ class Lockdown extends Component
                 $computer = new Computer();
                 $computer->room_id = $room->id;
                 $computer->ipaddr = $this->remote;
+                $computer->port = 0;
+                $computer->password = strtoupper(md5(time()));
                 $computer->hostname = gethostbyaddr($this->remote);
                 $computer->created = strftime("%x %X");
                 if ($computer->create() == false) {
