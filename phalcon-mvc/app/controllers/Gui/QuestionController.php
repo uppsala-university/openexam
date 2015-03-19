@@ -14,6 +14,7 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
+use OpenExam\Library\Core\Error;
 use OpenExam\Library\Core\Exam\Student\Access;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Answer;
@@ -111,16 +112,20 @@ class QuestionController extends GuiController
                         if ($exam->lockdown) {
                                 $access = new Access($exam);
                                 $role = $this->user->setPrimaryRole(Roles::STUDENT);
-                                if ($access->open() != Access::OPEN_APPROVED) {
-                                        throw new \Exception("Access denied for exam");
+                                switch ($access->open()) {
+                                        case Access::OPEN_APPROVED;
+                                                $this->user->setPrimaryRole($role);
+                                                break;
+                                        case Access::OPEN_DENIED:
+                                                throw new \Exception("Access denied for exam", Error::FORBIDDEN);
+                                        case Access::OPEN_PENDING:
+                                                $this->dispatcher->forward(array(
+                                                        'controller' => 'exam',
+                                                        'action'     => 'pending',
+                                                        'params'     => array('exam' => $exam)
+                                                ));
+                                                return false;
                                 }
-                                // 
-                                // TODO: Both this and the exam controller should support primary role.
-                                // 
-                                // This controller is doing unauthorized access to data below, so we 
-                                // have to reset previous role (null?) as a workaround.
-                                // 
-                                $this->user->setPrimaryRole($role);
                         }
 
                         ## find student id of this logged in person for this exam

@@ -446,4 +446,15 @@ class ExamController extends GuiController
                 $this->view->setVar("exam", $exam);
         }
 
+        /**
+         * Action for pending exam access.
+         */
+        public function pendingAction()
+        {
+                $exam = $this->dispatcher->getParam('exam');
+                $this->view->setVar('exam', $exam);
+                $this->view->setVar('icon', $this->url->get('/img/clock.png'));
+                $this->view->setVar('retry', $this->url->get('/exam/' . $exam->id . '/question/1'));
+        }
+
 }

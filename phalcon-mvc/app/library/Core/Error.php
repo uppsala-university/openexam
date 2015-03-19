@@ -133,7 +133,23 @@ class Error
         public static function lookup($code)
         {
                 static $http_codes = array(
-                        0   => 'Unknown error',
+                        // 
+                        // Error code unset:
+                        // 
+                        0   => 'Unknown Error',
+                        // 
+                        // Security exception extensions:
+                        // 
+                        1   => 'Failed Acquire Role',
+                        2   => 'Not Object Owner',
+                        3   => 'Access Denied',
+                        4   => 'Action Not Allowed',
+                        5   => 'ACL Service Missing',
+                        6   => 'User Service Missing',
+                        7   => 'Not Authenticated',
+                        // 
+                        // Standard HTTP codes:
+                        // 
                         100 => 'Continue',
                         101 => 'Switching Protocols',
                         102 => 'Processing',

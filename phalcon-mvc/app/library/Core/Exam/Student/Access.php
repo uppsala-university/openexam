@@ -92,8 +92,8 @@ class Access extends Component
          * and enforce access control.
          * 
          * Return OPEN_APPROVED if access is permitted or OPEN_PENDING if
-         * access is waiting for approval. Returns OPEN_DENIED if access is
-         * not permitted.
+         * access is waiting for approval. Returns OPEN_DENIED or throws an
+         * exception if access is not permitted.
          * 
          * @return int One of the OPEN_XXX constants.
          * @throws Exception
