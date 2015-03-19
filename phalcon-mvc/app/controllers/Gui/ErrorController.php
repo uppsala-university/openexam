@@ -14,6 +14,7 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
+use OpenExam\Library\Core\Error;
 
 /**
  * Handle error conditions.
@@ -55,6 +56,12 @@ class ErrorController extends GuiController
         {
                 $exception = $this->dispatcher->getParam('exception');
                 $this->view->setVar('exception', $exception);
+        }
+
+        public function showErrorAction()
+        {
+                $exception = $this->dispatcher->getParam('exception');
+                $this->view->setVar('error', new Error($exception));
         }
 
 }

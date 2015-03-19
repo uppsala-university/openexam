@@ -92,15 +92,26 @@ class GuiController extends ControllerBase
                                         return false;
                         }
                 }
-
-                $this->report($exception);
-                $this->dispatcher->forward(array(
-                        'controller' => 'error',
-                        'action'     => 'show503',
-                        'namespace'  => 'OpenExam\Controllers\Gui',
-                        'params'     => array('exception' => $exception)
-                ));
-                return false;
+                
+                if ($exception->getCode() == 0) {
+                        $this->report($exception);
+                        $this->dispatcher->forward(array(
+                                'controller' => 'error',
+                                'action'     => 'show503',
+                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                'params'     => array('exception' => $exception)
+                        ));
+                        return false;
+                } else {
+                        $this->report($exception);
+                        $this->dispatcher->forward(array(
+                                'controller' => 'error',
+                                'action'     => 'showError',
+                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                'params'     => array('exception' => $exception)
+                        ));
+                        return false;
+                }
         }
 
 }
