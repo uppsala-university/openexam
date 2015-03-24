@@ -13,6 +13,10 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use OpenExam\Library\Security\Exception;
+use OpenExam\Library\Security\User;
+use OpenExam\Models\Setting;
+
 /**
  * Access control for the Setting model.
  *
