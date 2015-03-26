@@ -78,10 +78,14 @@ abstract class ServiceController extends ControllerBase
                         $input = $this->request->getPost();
                 }
                 if ($this->request->isPut()) {
+                        $stdin = file_get_contents("php://input");
                         $input = key($this->request->getPut());
                 }
+                
                 if (isset($input) && $input == false) {
                         $input = file_get_contents("php://input");
+                } elseif (is_null($input) && isset($stdin)) {
+                        $input = $stdin;
                 }
 
                 // 
