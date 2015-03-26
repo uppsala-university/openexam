@@ -101,7 +101,7 @@ class Topic extends ModelBase
                 if (defined('VALIDATION_SKIP_UNIQUENESS_CHECK')) {
                         return true;
                 }
-                
+
                 $this->validate(new Uniqueness(
                     array(
                         "field"   => array("name", "exam_id"),
@@ -118,6 +118,9 @@ class Topic extends ModelBase
         {
                 if (!isset($this->randomize)) {
                         $this->randomize = 0;
+                }
+                if (!isset($this->slot)) {
+                        $this->slot = $this->exam->topics->count() + 1;
                 }
         }
 

@@ -9,7 +9,6 @@ use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Query\Builder;
-use Phalcon\Mvc\Model\Relation;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
 /**
@@ -170,6 +169,9 @@ class Question extends ModelBase
         {
                 if (!isset($this->status)) {
                         $this->status = self::STATUS_ACTIVE;
+                }
+                if (!isset($this->slot)) {
+                        $this->slot = $this->exam->questions->count() + 1;
                 }
         }
 
