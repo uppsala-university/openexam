@@ -1,0 +1,24 @@
+<?php
+
+$rootdir = ".";
+switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
+        case "admin":
+        case "teacher":
+        case "exam":
+        case "result":
+        case "evaluation":
+        case "media":
+                $rootdir = "..";
+                break;
+}
+
+printf("<ul class=\"menu0\">\n");
+printf("<li><a href=\"%s/index.php\" class=\"menubarlink\">%s</a></li>\n", $rootdir, _("Start"));
+printf("<li><a href=\"%s/exam/\"     class=\"menubarlink\">%s</a></li>\n", $rootdir, _("Examination"));
+printf("<li><a href=\"%s/result/\"   class=\"menubarlink\">%s</a></li>\n", $rootdir, _("Result"));
+printf("<li><a href=\"%s/evaluation/\"   class=\"menubarlink\">%s</a></li>\n", $rootdir, _("Evaluation"));
+printf("<li><a href=\"%s/help.php\"  class=\"menubarlink\">%s</a></li>\n", $rootdir, _("Help"));
+printf("<li><a href=\"%s/about.php\" class=\"menubarlink\">%s</a></li>\n", $rootdir, _("About"));
+printf("</ul>\n");
+?>
+

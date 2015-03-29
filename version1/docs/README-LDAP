@@ -1,0 +1,157 @@
+
+   The LDAP search class hierarchy explained.
+   
+
+** INTRODUCTION:
+
+   This README documents the LDAP search class. The code inside it might seem a
+   bit complex at first glance, but once explained, it's design will become
+   natural.
+
+   The classes LDAPSearch and LDAPException should be all familiar, so let skip
+   them. The other classes LDAPResultSet, LDAPDirectoryEntry and LDAPAttributeData
+   is not that obvious, here they are explained:
+
+** CLASSES:
+
+   * LDAPResultSet:
+
+   The purpose of this class is to present the LDAP search result as an
+   collection. It also gives random access thru index(pos). We use this class
+   as the base for LDAPDirectoryEntry and LDAPAttributeData because these are
+   collections too.
+   
+   The class parameter for the constructor defines the class to instance
+   object of for each entry in the data array.
+
+   * LDAPDirectoryEntry:
+
+   This class represent an single directory entry. The constructor passes
+   the type of child object type as the class argument for the parent
+   constructor, in this case we like to get attribute collection objects
+   back when iterating thru the entry attributes.
+
+   The public __get() and __call() functions let us access the attribute
+   objects as properties (i.e. $entry->cn) or using function calls (i.e.
+   $entry->hasCN() or $entry->getCN()).
+
+   * LDAPAttributeData:
+
+   This class represent the value collection for an directory entry
+   attribute. Remember that some attributes may be present multiple times in
+   a single directory entry (i.e. one person <-> many phone numbers).
+   
+   The public member function __tostring() will join together all attribute
+   values to an string when the object is present in an string context, for
+   example: printf("email: %s\n", $entry->mail);
+
+** DISSCUSSION:
+
+   This class scheme makes sense once we make this observation:
+
+     1. The LDAP search may return multiple directory entries.
+     2. A directory entry has multiple attributes.
+     3. Each attribute may have more than one value.
+   
+   Given that it seems natural to reuse the result set code at all levels. The
+   line that turn the stone rolling is this line inside class LDAPSearch:
+
+     return new LDAPResultSet(null, $de, "LDAPDirectoryEntry");
+
+   It create a result set object, telling it to use the class LDAPDirectoryEntry 
+   when creating objects for entries in the search result. We pass null as the
+   key argument because its useless anyway.
+
+** FILTERING:
+
+   If you know your'e only interested in a users common name and email
+   address, then you can apply a filter for the search to speed up the query
+   a bit:
+
+      $ldap->setAttributeFilter(array("cn", "mail"));
+      $data = $ldap->searchUID($account);
+
+** EXAMPLE:
+
+	// 
+	// Demo of using the LDAP search class.
+	// 
+	include "include/ldap.inc";
+
+	$ldap = LDAPSearch::factory();
+	$data = $ldap->searchUID($account_id)->first();
+
+	printf("entry count: %d\n", $data->count());
+  	foreach($data as $entry) {
+	    printf("  attr count: %d\n", $entry->count());
+	    foreach($entry as $attr) {
+		printf("    value count: %d\n", $attr->count());
+		foreach($attr as $key => $value) {
+		    printf("      key: %s, value: %s\n", $key, $value);
+		}
+	    }
+	}
+	printf("direct access:\n");
+	$entry = $data->index(0);
+	$attr = $entry->mail;
+	foreach($attr as $key => $value) {
+	    printf("  %s: %s\n", $key, $value);
+	}
+	if($entry->hasMail()) {
+	    $attr = $entry->getMail();
+	    foreach($attr as $key => $value) {
+		printf("  %s: %s\n", $key, $value);
+	    }
+	}
+	print_r($data);
+	foreach($data as $entry) {
+	    print_r($entry->getMail());
+	}
+
+   The output from this example will be:
+
+   entry count: 1
+     attr count: 8
+       value count: 4
+         key: objectclass, value: top
+         key: objectclass, value: person
+         key: objectclass, value: organizationalPerson
+         key: objectclass, value: inetOrgPerson
+       value count: 1
+         key: 0, value: objectclass
+       value count: 1
+         key: uid, value: abcd1234
+       value count: 1
+         key: 1, value: uid
+       value count: 1
+         key: cn, value: Haval Feily
+       value count: 1
+         key: 2, value: cn
+       value count: 1
+         key: displayname, value: Cderna, Aber
+       value count: 1
+         key: 3, value: displayname
+       value count: 1
+         key: sn, value: Aber
+       value count: 1
+         key: 4, value: sn
+       value count: 1
+         key: givenname, value: Haval
+       value count: 1
+         key: 5, value: givenname
+       value count: 1
+         key: mail, value: Aber.Cderna.1234@student.uu.se
+       value count: 1
+         key: 6, value: mail
+       value count: 1
+         key: ou, value: Student
+       value count: 1
+         key: 7, value: ou
+       value count: 1
+         key: dn, value: uid=abcd1234,ou=Student,o=Uppsala universitet,c=SE
+   direct access:
+     mail: Aber.Cderna.1234@student.uu.se
+     mail: Aber.Cderna.1234@student.uu.se
+
+
+// Anders Lövgren, 2009-08-27

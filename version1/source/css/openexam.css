@@ -1,0 +1,480 @@
+/* Format as -*- C -*- code.
+ * 
+ * Custom CSS for openexam project.
+ * 
+ * Author: Anders Lövgren
+ * Date:   2009-08-16
+*/
+
+img {
+    border: 0px;
+    float:left;
+    display: block;
+    padding-right: 10px;
+    padding-bottom: 5px;
+}
+
+label
+{
+    width: 12em;
+    float: left;
+    text-align: right;
+    margin-right: 0.5em;
+    display: block
+}
+
+input.file {
+    width: 400px;
+}
+
+.submit input
+{
+    margin-left: 8.5em;
+}
+
+div.lang-show {
+    margin: 0px;
+    padding: 0px;
+    float: right;
+}
+
+div.lang-show img {
+    vertical-align: middle;
+    padding-right: 3px;
+}
+
+div.lang-select {
+    position: absolute;
+    visibility: hidden;
+    z-index: 1;          /* always on top */
+    left: 820px;
+    top:  0px;
+    background-color: white;
+    border: 1px solid #aaaaaa;
+    padding: 5px;
+}
+
+#mainview {
+    border-radius: 15px 15px 15px 15px;
+    border: 5px solid #eee;
+    /*    -moz-box-shadow: 1px 1px 10px #00f; -webkit-box-shadow: 1px 1px 10px #00f; -khtml-box-shadow: 1px 1px 10px #00f; box-shadow: 1px 1px 10px #00f;*/
+    /*    -moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; box-shadow: inset 1px 1px 10px #999;*/
+    padding: 10px;
+}
+
+#menuhead {
+    margin-left: 10px;
+    font-weight: bold;
+    color: #666666;
+    text-decoration: underline;
+}
+
+table td {
+    padding-left: 5px;
+}
+
+th a, th a:hover {
+    color: #000;
+}
+
+div.validator {
+    margin-top: 5px;
+}
+
+/*
+ * Links at right hand side in trees.
+*/
+span.links {
+    position: absolute;
+    left: 610px;
+    width: 340px;
+    text-align: right;
+}
+
+/*
+ * Use this class by inherit from span.links, like: <span class="links viewmode">
+*/
+span.viewmode {
+    top: 125px;
+}
+
+tr:nth-child(even) {
+    background: #ffffcc;
+}
+
+tr:nth-child(odd) {
+    background: #efefef;
+}
+tr.nonth {
+    background: white;
+}
+
+/* 
+ * Used by the correcting page.
+*/
+tr.question, tr.comment {
+    background: #ffffcc;
+}
+tr.answer {
+    background: #efefef;
+}
+td.removed {
+    background: white;
+    border: 2px solid red;
+}
+li.ansc {       /* correct answer */
+    list-style-image: url('/openexam/icons/ok.png');
+}
+li.answ {       /* wrong answer */
+    list-style-image: url('/openexam/icons/error.png');
+}
+
+/*
+ * Style different types of list items.
+*/
+li.program,
+li.stage {
+    border-bottom: 1px solid #ffcccc;
+}
+li.semester,
+li.user,
+li.order {
+    border-bottom: 1px solid #ccccff;
+}
+li.course {
+    border-bottom: 1px solid #eeeeee;
+}
+
+/* 
+ * Wrap list items depending on nesting level (trees).
+*/
+ul.level1 {
+    width: 700px;
+}
+ul.level2 {
+    width: 600px;
+}
+ul.level3 {
+    width: 500px;
+}
+
+/* 
+ * The description of an examination.
+*/
+div.examination {
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+div.examhead {
+    color: white;
+    background-color: gray;
+    font-size: 1.5em;
+    padding: 5px;
+}
+div.examquest {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    padding: 3px;
+    border: 1px solid #dddddd;
+    background: #ffffcc;
+}
+
+/** 
+ *  Color encoding for the score board (author mode).
+*/
+td.cc {
+    width: 25px;
+    text-align: center;
+}
+td.no { /* not owner */
+    border: 1px solid #666666;
+    background-color: #999999;
+}
+td.na { /* no answer */
+    border: 1px solid #880000;
+    background-color: #ee0000;
+}
+td.nc { /* not yet corrected */
+    border: 1px solid #00aa00;
+    background-color: #00ff00;
+}
+td.ac { /* answer corrected */
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+}
+td.qu { /* question unassigned */
+    border: 1px solid #333333;
+    background-color: #666666;
+}
+td.qr { /* question flagged as removed */
+    border: 1px solid #00aaaa;
+    background-color: #00ffff;
+}
+td.aa { /* answer avarage (bottom) */
+    border: 1px solid #dddddd;
+    background-color: #eeeeee;
+}
+tr.avarage,
+tr.colorcode {
+    background-color: #ffffff;
+}
+
+/** 
+ *  Color encoding for the score board (colorized mode).
+*/
+td.s0 {
+    border: 1px solid #000000;
+    color: white;
+    background: #000033;
+}
+td.s20 {
+    border: 1px solid #000033;
+    color: white;
+    background: #000066;
+}
+td.s40 {
+    border: 1px solid #000066;
+    color: white;
+    background: #000099;
+}
+td.s60 {
+    border: 1px solid #0099cc;
+    color: black;
+    background: #33ccff;
+}
+td.s80 {
+    border: 1px solid #aacccc;
+    color: black;
+    background: #ddffff;
+}
+td.s100 {
+    border: 1px solid #cccccc;
+    color: black;
+    background: #ffffff;
+}
+
+/**
+ *  Decorate content on question answer page.
+*/
+div.question {
+    display: inline-block;
+    padding: 0;
+    padding-bottom: 10px;
+}
+div.answer {
+    padding: 0px 0px 10px 10px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background-color: #f9f9f9;
+}
+p.answer {
+    text-decoration: underline;
+    font-weight: bold;
+}
+div.media {
+    border-left: 2px solid #cccccc;
+    padding-left: 10px;
+}
+
+/**
+ *  Select media file popup-menu on question design page:
+*/
+div.mediamenu {
+    position: absolute;
+    visibility: hidden;
+    left: 0px;
+    top: 0px;
+    border: 1px solid #aaaaaa;
+    background: #f6f6f6;
+    padding: 5px;
+}
+p.mediamenu {
+    margin-left: 10px;
+}
+
+/**
+ *  Media library album view.
+*/
+table.album {
+    background-color: #aaaaaa;
+}
+td.album_head {
+    width: 100%;
+    font-weight: bold;
+}
+td.album_icon {
+    background-color:#f9f9f9;
+    width: 220px;
+    text-align: center;
+    color: #666666;
+}
+span.album_add {
+    float: right;
+    clear: none;
+    margin-right: 5px;
+}
+
+/** 
+ *  Standard width and height for text areas:
+*/
+textarea.message,
+textarea.description,
+textarea.students,
+textarea.question {
+    width: 530px;
+    height: 250px;
+}
+textarea.grade {
+    width: 300px;
+    height: 75px;
+}
+
+/** 
+ *  These classes is used in conjunction with grades in score table.
+*/
+td.gru {
+    border: 1px solid #880000;
+    background-color: #ee0000;
+}
+td.grg,
+td.gr3 {
+    border: 1px solid #dddddd;
+    background-color: #ffffff;
+}
+td.gr4 {
+    border: 1px solid #0000aa;
+    background-color: #6666ff;
+}
+td.grvg,
+td.gr5 {
+    border: 1px solid #00aa00;
+    background-color: #00ff00;
+}
+
+/**
+ *  The section header used in forms:
+*/
+h4.secthead {
+    color: gray;
+    text-decoration: underline;
+    margin: 0px;
+}
+
+/**
+ *  The manager status section.
+*/
+#managerstatus {
+    position: absolute;
+    top: -5px;
+    left: 180px;
+}
+#managerstatus dt {
+    color: gray;
+}
+
+/**
+ * Generic truncated text. Used in tree views together with links on right hand side.
+ */
+.truncate {
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: top;
+    padding-right: 15px;
+}
+.truncate i {
+    color: gray;
+}
+
+/**
+ *  Message box style (#1: mostly square boxes with background).
+**/
+/*
+div.mbox {
+    padding: 12px;
+    padding-right: 40px;
+    margin: 20px 0px 10px 0px;
+    box-shadow: 1px 1px 6px #999999;
+}
+div.mbox-head {
+    font-weight: bold;
+    font-size: 1.5em;
+    padding-bottom: 10px;
+}
+div.mbox-text {
+    position: relative;
+    left: 20px;
+}
+div.hint {
+    border: 1px solid #aaaaaa;
+    background: #f3f3f3;
+}
+div.success {
+    border: 1px dotted #009900;
+    background: #ddffaa;
+}
+div.info {
+    border: 2px solid #000099;
+    background: #ffffff;
+    border-radius: 10px 10px 10px 10px;
+}
+div.warn {
+    border: 1px dotted darkorange;
+    background: #ffffcc;
+}
+div.error {
+    border: 1px dotted #990000;
+    background: #ffddcc;
+}
+*/
+
+/**
+ *  Message box style (#2: rounded boxes without background).
+**/
+div.mbox {
+    padding: 12px;
+    margin: 10px;
+    box-shadow: 1px 1px 6px #999999;
+    border-radius: 10px 10px 10px 10px;
+    background: #ffffff;
+}
+div.mbox-head {
+    font-weight: bold;
+    font-size: 1.3em;
+    padding-bottom: 10px;
+}
+div.mbox-text {
+    position: relative;
+    left: 20px;
+}
+div.hint {
+    border: 1px solid #aaaaaa;
+    background: #f3f3f3;
+}
+div.success {
+    border: 2px solid #00aa00;
+}
+div.info {
+    border: 2px solid #000099;
+}
+div.warn {
+    border: 2px solid orange;
+    background-color: #ff6;
+}
+div.error {
+    border: 2px solid #cc0000;
+}
+
+/*
+ * User info (for exam page).
+ */
+div.userinfo {
+    position: absolute;
+    left: 650px;
+    top: 20px;
+    width: 330px;
+    background-color: #f6f6f6;
+    color: #999999;
+}

@@ -1,0 +1,38 @@
+
+   README FOR LATEX HANDLER
+
+** GENERAL:
+
+   The system has built-in support for embedding LaTeX code inside the question 
+   text. As the rendering of LaTeX -> PNG is done by external programs, these
+   has to be setup properly.
+
+** REQUIRED APPLICATIONS:
+
+   The rendering is done using a two-step pipe using the pdftex and dvipng 
+   command.
+
+** INSTALL:
+
+   These instructions are for Gentoo Linux. Install these packages:
+
+        o) dev-texlive/texlive-latex   (2010)
+        o) app-text/dvipng             (1.13)
+
+   Make sure that USE flags for app-text/dvipng contains truetype.
+
+** TESTING:
+
+   The picture is generated from LaTeX by the class LatexHandler defined in 
+   include/handler/latex.inc.
+
+   The handler can be tested either by defining a question having LaTeX code 
+   withing '<%latex ... %> tags or by passing the code direct to the image 
+   handler script:
+
+     http://localhost/openexam/images/handler.php?type=latex&data=...
+
+   The data argument should be the LaTeX code encoded by urlencode().
+   
+
+// Anders Lövgren, 2012-03-04
