@@ -28,7 +28,7 @@
         jQuery(document).ready(function () {
             setTimeout(function () {
                 window.location.assign('<?= $retry ?>');
-            }, 10000)
+            }, 30000)
         })();
 </script>
 
@@ -36,7 +36,7 @@
     <h1 class="pending">Approval required</h1>
     <p>
         Access to the exam '<?= $exam->name; ?>' is pending approval by the exam invigilator. 
-        Please wait for a while and then retry again or just wait for the automatic retry every 1 minute.
+        Please wait for a while before retrying again or wait for the automatic retry that occurs every 30 seconds.
     </p>
     <p>
         <input class="btn btn-green" type="submit" name="retry" value="Retry" onclick="window.location.assign('<?= $retry ?>')" title="Click on this button to retry access to this exam."/>
