@@ -21,6 +21,19 @@
     }  
 </style>
 
+<script>
+        $(document).ready(function () {
+            $("#td").click(function () {
+                $("#te").toggle('fast')
+            });
+        });
+        $(document).ready(function () {
+            $("#sd").click(function () {
+                $("#se").toggle('fast')
+            });
+        });
+</script>
+
 <div class="signup">
     <h1 class="signup">Signup</h1>
     <p>
@@ -33,30 +46,40 @@
                 <h3>Teacher</h3>
                 <p>
                     By continuing, you will be granted the teacher role in the system giving you 
-                    permission to create your own exam. These example exams will also be copied 
-                    and associated with your account:
+                    permission to create your own exam. You will also get some example exams
+                    copied to your account.
                 </p>
-                <?php
-                foreach ($texams as $exam) {
-                        if (!isset($exam->descr) || strlen($exam->descr) == 0) {
-                                $exam->descr = "Description is missing";
-                        }
+                <a href='#' id='td'>Details</a>
+                <div style='display: none' id='te'>
+                    <p>
+                        These example exams will be copied and associated with your account:                        
+                    </p>
+                    <?php
+                    foreach ($texams as $exam) {
+                            if (!isset($exam->descr) || strlen($exam->descr) == 0) {
+                                    $exam->descr = "Description is missing";
+                            }
 
-                        ?>
-                        <div class="exam-content-box">
-                            <div class="exam-head"><?= $exam->name ?></div>
-                            <div class="exam-body"><?= $exam->descr ?></div>
-                        </div>
-                <?php } ?>
-        <?php } ?>
+                            ?>
+                            <div class="exam-content-box">
+                                <div class="exam-head"><?= $exam->name ?></div>
+                                <div class="exam-body"><?= $exam->descr ?></div>
+                            </div>
+                    <?php } ?>
+            <?php } ?>
+        </div>
 
         <?php if (isset($student)) { ?>
                 <h3>Student</h3>
                 <p>
                     By continuing, you will be registered as a student in the system with access 
-                    to these test exams:
+                    to some example exams.
                 </p>
-                <ul>
+                <a href='#' id='sd'>Details</a>
+                <div style='display: none' id='se'>
+                    <p>
+                        These example exams will be available for you to test:                        
+                    </p>
                     <?php
                     foreach ($sexams as $exam) {
                             if (!isset($exam->descr) || strlen($exam->descr) == 0) {
@@ -70,35 +93,34 @@
                                 <div class="exam-status">&nbsp;</div>
                             </div>
                     <?php } ?>
-                </ul>
-        <?php } ?>
+            <?php } ?>
 
-        <?php if (!isset($student) && !isset($teacher)) { ?>
-                <h3>Continue</h3>
-                <p>
-                    By continuing, depending on you affiliation you will either be subscribed as a 
-                    employee or student in the system. You can also chose to click on the 'Reload'
-                    button to review this page in authenticated mode.
-                </p>
-        <?php } ?>
+            <?php if (!isset($student) && !isset($teacher)) { ?>
+                    <h3>Continue</h3>
+                    <p>
+                        By continuing, depending on you affiliation you will either be subscribed as a 
+                        employee or student in the system. You can also chose to click on the 'Reload'
+                        button to review this page in authenticated mode.
+                    </p>
+            <?php } ?>
 
-        <hr/>
-        <?php if (isset($insert)) { ?>
-                <input class="btn btn-green" type="submit" name="insert" value="Subscribe" onclick="window.location.assign('<?= $insert ?>')" title="Click on this button signup as a system user."/>
-        <?php } ?>
-        <?php if (isset($reload)) { ?>
-                <input class="btn btn-green" type="submit" name="reload" value="Reload" onclick="window.location.assign('<?= $reload ?>')" title="Click on this button authenticate and reload page."/>
+            <hr/>
+            <?php if (isset($insert)) { ?>
+                    <input class="btn btn-green" type="submit" name="insert" value="Signup" onclick="window.location.assign('<?= $insert ?>')" title="Click on this button signup as a system user."/>
+            <?php } ?>
+            <?php if (isset($reload)) { ?>
+                    <input class="btn btn-green" type="submit" name="reload" value="Reload" onclick="window.location.assign('<?= $reload ?>')" title="Click on this button authenticate and reload page."/>
+            <?php } ?>
+        </div>
+
+        <?php if (isset($remove)) { ?>
+                <div class="mbox">
+                    <h3>Unsubscribe</h3>
+                    <p>
+                        Click on the button below to remove yourself as a system user.
+                    </p>
+                    <hr/>
+                    <input class="btn btn-red" type="submit" name="insert" value="Remove" onclick="window.location.assign('<?= $remove ?>')" title="Click on this button remove yourself as a system user."/>
+                </div>
         <?php } ?>
     </div>
-
-    <?php if (isset($remove)) { ?>
-            <div class="mbox">
-                <h3>Unsubscribe</h3>
-                <p>
-                    Click on the button below to remove yourself as a system user.
-                </p>
-                <hr/>
-                <input class="btn btn-red" type="submit" name="insert" value="Remove" onclick="window.location.assign('<?= $remove ?>')" title="Click on this button remove yourself as a system user."/>
-            </div>
-    <?php } ?>
-</div>
