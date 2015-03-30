@@ -193,6 +193,10 @@ return array(
                 /**
                  * Use wizard mode during signup (on /signup).
                  */
-                'wizard'    => true
+                'wizard'    => true,
+                /**
+                 * Display remove option.
+                 */
+                'remove'    => false
         )
 );
