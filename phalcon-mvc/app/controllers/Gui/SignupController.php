@@ -88,8 +88,11 @@ class SignupController extends GuiController
                 }
                 if (!$this->setViewData()) {
                         $this->view->pick(array("signup/missing"));
-                } else {
+                }
+                if ($this->config->signup->automatic == false) {
                         $this->view->setVar('insert', $this->url->get('/signup/process'));
+                }
+                if ($this->config->signup->remove) {
                         $this->view->setVar('remove', $this->url->get('/signup/remove'));
                 }
         }
