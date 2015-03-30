@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Dispatcher;
 
+use OpenExam\Library\Core\Signup\Unattended as UnattendedSignup;
 use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\User;
 use OpenExam\Plugins\Security\Dispatcher\AuthenticationHandler;
@@ -179,6 +180,15 @@ class DispatchHandler extends Component implements DispatchHelper
                         if (!$this->user->impersonate($this->request->get('impersonate', "string"))) {
                                 $this->_listener->report('Failed impersonate', $this->getData());
                         }
+                }
+
+                // 
+                // Signup user:
+                // 
+                if ($this->config->signup->enabled &&
+                    $this->config->signup->automatic) {
+                        $signup = new UnattendedSignup();
+                        $signup->process();
                 }
 
                 // 

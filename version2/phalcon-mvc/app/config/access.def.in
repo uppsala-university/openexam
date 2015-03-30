@@ -120,6 +120,7 @@ return array(
         'public' => array(
                 'public' => array('*'),
                 'error'  => array('*'),
+                'signup' => array('index')
         ),
         'protected'      => array(
                 'soap'   => array('*'),

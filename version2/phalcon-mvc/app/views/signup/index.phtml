@@ -1,0 +1,104 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    index.phtml
+// Created: 2015-03-13 11:46:38
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+?>
+
+<?= Phalcon\Tag::stylesheetLink('css/signup.css'); ?>
+
+<style>
+    h1.signup {
+        padding-left: 30px;
+        background: url("<?= $icon ?>") no-repeat left;
+    }  
+</style>
+
+<div class="signup">
+    <h1 class="signup">Signup</h1>
+    <p>
+        The signup service allows you as student or employee to signup yourself for using the 
+        system. You will be requested to logon to continue whenever its required.
+    </p>
+
+    <div class="mbox">
+        <?php if (isset($teacher)) { ?>
+                <h3>Teacher</h3>
+                <p>
+                    By continuing, you will be granted the teacher role in the system giving you 
+                    permission to create your own exam. These example exams will also be copied 
+                    and associated with your account:
+                </p>
+                <?php
+                foreach ($texams as $exam) {
+                        if (!isset($exam->descr) || strlen($exam->descr) == 0) {
+                                $exam->descr = "Description is missing";
+                        }
+
+                        ?>
+                        <div class="exam-content-box">
+                            <div class="exam-head"><?= $exam->name ?></div>
+                            <div class="exam-body"><?= $exam->descr ?></div>
+                        </div>
+                <?php } ?>
+        <?php } ?>
+
+        <?php if (isset($student)) { ?>
+                <h3>Student</h3>
+                <p>
+                    By continuing, you will be registered as a student in the system with access 
+                    to these test exams:
+                </p>
+                <ul>
+                    <?php
+                    foreach ($sexams as $exam) {
+                            if (!isset($exam->descr) || strlen($exam->descr) == 0) {
+                                    $exam->descr = "Description is missing";
+                            }
+
+                            ?>
+                            <div class="exam-content-box">
+                                <div class="exam-head"><?= $exam->name ?></div>
+                                <div class="exam-body"><?= $exam->descr ?></div>
+                                <div class="exam-status">&nbsp;</div>
+                            </div>
+                    <?php } ?>
+                </ul>
+        <?php } ?>
+
+        <?php if (!isset($student) && !isset($teacher)) { ?>
+                <h3>Continue</h3>
+                <p>
+                    By continuing, depending on you affiliation you will either be subscribed as a 
+                    employee or student in the system. You can also chose to click on the 'Reload'
+                    button to review this page in authenticated mode.
+                </p>
+        <?php } ?>
+
+        <hr/>
+        <?php if (isset($insert)) { ?>
+                <input class="btn btn-green" type="submit" name="insert" value="Subscribe" onclick="window.location.assign('<?= $insert ?>')" title="Click on this button signup as a system user."/>
+        <?php } ?>
+        <?php if (isset($reload)) { ?>
+                <input class="btn btn-green" type="submit" name="reload" value="Reload" onclick="window.location.assign('<?= $reload ?>')" title="Click on this button authenticate and reload page."/>
+        <?php } ?>
+    </div>
+
+    <?php if (isset($remove)) { ?>
+            <div class="mbox">
+                <h3>Unsubscribe</h3>
+                <p>
+                    Click on the button below to remove yourself as a system user.
+                </p>
+                <hr/>
+                <input class="btn btn-red" type="submit" name="insert" value="Remove" onclick="window.location.assign('<?= $remove ?>')" title="Click on this button remove yourself as a system user."/>
+            </div>
+    <?php } ?>
+</div>
