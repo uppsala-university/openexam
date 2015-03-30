@@ -157,8 +157,8 @@ return array(
          * Static data for unit test.
          */
         'phpunit' => array(
-                'username' => null,
-                'persnr'   => null
+                'username'  => null,
+                'persnr'    => null
         ),
         /**
          * Session configuration.
@@ -167,5 +167,32 @@ return array(
                 'expires'   => 7200,            // Expires after (seconds)
                 'refresh'   => 1800,            // Refresh threshold (seconds)
                 'startPage' => 'exam/index'     // Start page (user initiated)
+        ),
+        /**
+         * System user signup. 
+         */
+        'signup'      => array(
+                /**
+                 * Enable user signup.
+                 */
+                'enabled'   => false,
+                /**
+                 * Register students on these exams or false to disable.
+                 * Example: 'student' => array(1, 54)
+                 */
+                'student'   => false,
+                /**
+                 * Clone these exams to signed up teachers or false to disable.
+                 * Example: 'teacher' => array(59)
+                 */
+                'teacher'   => false,
+                /**
+                 * Automatic signup at first login.
+                 */
+                'automatic' => false,
+                /**
+                 * Use wizard mode during signup (on /signup).
+                 */
+                'wizard'    => true
         )
 );

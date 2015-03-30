@@ -1,0 +1,76 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    process.phtml
+// Created: 2015-03-13 15:55:48
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+?>
+
+<?= Phalcon\Tag::javascriptInclude('js/views/signup/process.js'); ?>
+<?= Phalcon\Tag::stylesheetLink('css/signup.css'); ?>
+
+<style>
+    h1.signup {
+        padding-left: 30px;
+        background: url("<?= $icon ?>") no-repeat left;
+    }
+    .none {
+        padding-left: 50px;        
+        margin-left: 10px;
+    }
+    .wait {
+        background:url('<?= $wait ?>') no-repeat left;
+        margin-left: 10px;
+    }
+    .done {
+        background:url('<?= $done ?>') no-repeat left;
+        margin-left: 10px;
+    }
+</style>
+
+<div class="signup">
+    <h1 class="signup">Processing signup request...</h1>
+
+    <?php if (isset($teacher)) { ?>
+            <p>The following teacher tasks are being performed:</p>
+            <div class="exam-content-box grant">
+                <div class="exam-head">Insert teacher role:</div>
+                <div class="exam-status none">&nbsp;</div>
+            </div>
+            <?php foreach ($texams as $exam) { ?>
+                    <div class="exam-content-box clone" exam="<?= $exam->id ?>">
+                        <div class="exam-head">Copy exam <?= $exam->name ?>:</div>
+                        <div class="exam-body"><?= $exam->descr ?></div>
+                        <hr/>
+                        <div class="exam-status none">&nbsp;</div>
+                    </div>
+            <?php } ?>
+    <?php } ?>
+
+    <?php if (isset($student)) { ?>
+            <p>The following student tasks are being performed:</p>
+            <ul>
+                <?php foreach ($sexams as $exam) { ?>
+                        <div class="exam-content-box register" exam="<?= $exam->id ?>">
+                            <div class="exam-head">Register on exam <?= $exam->name ?>:</div>
+                            <div class="exam-body"><?= $exam->descr ?></div>
+                            <hr/>
+                            <div class="exam-status none">&nbsp;</div>
+                        </div>
+                <?php } ?>
+            </ul>
+    <?php } ?>
+
+    <br/>
+    <?php if ($wizard) { ?>
+            <input class="btn btn-green" id="next" style="display: none" type="submit" name="finish" value="Finish" onclick="window.location.assign('<?= $next ?>')" title ="Click on this button to finish the signup wizard."/>
+    <?php } else { ?>
+            <input class="btn btn-green" id="next" style="display: none" type="submit" name="start" value="Start" onclick="window.location.assign('<?= $next ?>')" title="Signup completed. Start using the system."/>
+    <?php } ?>
+</div>

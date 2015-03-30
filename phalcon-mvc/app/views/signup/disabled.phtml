@@ -1,0 +1,29 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    disabled.phtml
+// Created: 2015-03-13 23:05:46
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+?>
+
+<?= Phalcon\Tag::stylesheetLink('css/signup.css'); ?>
+
+<style>
+    h1.signup {
+        padding-left: 30px;
+        background: url("<?= $icon ?>") no-repeat left;
+    }  
+</style>
+
+<div class="signup">
+    <h1 class="signup">Disabled</h1>
+    <p>
+        Sorry, but the user signup service has been disabled by the system administrator.
+    </p>
+</div>
