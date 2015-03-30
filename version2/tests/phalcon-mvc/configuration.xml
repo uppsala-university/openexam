@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+
+    The source code is copyrighted, with equal shared rights, between the
+    authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+    unless otherwise explicit stated elsewhere.
+
+    File:    configuration.php
+    Created: 2014-08-26 11:45:13
+
+    Author:  Anders Lövgren (QNET/BMC CompDept)
+
+-->
+
+<!-- see http://www.phpunit.de/wiki/Documentation -->
+<phpunit bootstrap="./bootstrap.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         verbose="true"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="true"
+         syntaxCheck="true"
+         strict="true">
+    <testsuite name="Phalcon MVC - Testsuite">
+        <directory>./</directory>
+    </testsuite>
+    <filter>
+        <blacklist>
+            <directory>./../../vendor</directory>
+            <directory>./../../phalcon-mvc/app/config</directory>
+        </blacklist>
+    </filter>
+</phpunit>

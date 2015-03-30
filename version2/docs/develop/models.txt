@@ -1,0 +1,90 @@
+Models can be managed either using tasks (see phalcon-mvc/script) or direct using
+Phalcon devtools.
+
+** Using tasks:
+  
+   Backup and clean current model, then create new:
+
+        bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+        bash$> php openexam --model --create --clean --backup 
+
+   See help for more information:
+
+        bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+        bash$> php openexam --model --help 
+
+** Using Phalcon devtools:
+
+   Running the all-models script will take care of adding relations between models:
+
+        bash$> cd ${appdir}/openexam-php/phalcon-mvc
+        bash$> phalcon all-models --relations --fk --validations --force \
+                                  --namespace='OpenExam\Models' \
+                                  --extends='ModelBase' \
+                                  --config=app/config/devtools
+
+   Unfortunate, the devtools can only create new models, not updating existing. All
+   changes has to be applied manual.
+
+** Checked access:
+
+   Access restricted access to the model is enabled by setting a primary role on 
+   the user before accessing the model. Doing this enables resource (ACL) and object 
+   access in the model:
+
+        $user = $this->getDI()->get('user');
+        $user->setPrimaryRole($role);
+
+   Contrary, the access control gets disabled by setting the primary role to null:
+
+        $user->setPrimaryRole(null);
+
+   If using unchecked access (primary role == null) and later turning on access 
+   restriction, make sure to persist all models or model cache (pre-save) will
+   probably cause problems.
+
+   The special role cacls is intended for internal use only on server side to disable 
+   access control by the model while performing trusted operations, like accessing the 
+   model for checking roles.
+
+** Convenience:
+
+   The static function find() and findFirst() is overrided by the Exam and Question model
+   to provide automatic filtered access based on primary role set on the user object that
+   represent the current authenticated user.
+
+   Use getQuery() to get the same functionality for PHQL:
+
+        $result = $this->modelsManager->executeQuery(
+            Exam::getQuery(
+                "SELECT Exam.* FROM Exam WHERE Exam.name LIKE 'Name%'
+            )
+        );
+
+   Using this convenience prevents accidential access to database objects that can't be
+   read by the current user (e.g. not having required role). This functionality is not
+   directly related to security, the normal access control is still applied.
+
+** Behavior:
+
+   o) Creating an exam triggers these builtin side effects:
+
+        1. The caller (creator) is added as contributor on that exam.
+        2. The caller (creator) is added as decoder on that exam.
+        3. A default topic (named default) gets created.
+
+   o) Creating an question triggers these builtin side effects:
+
+        1. The caller (question publisher) is automatic added as corrector of 
+           that question.
+
+** Filter:
+
+   A model that has virtual properties (e.g. state and flags in Exam), can support 
+   filtering on these properties in addition to ordinary table properties by overriding 
+   the getFilter() method.
+
+   The OpenExam\Library\Model\Filter can also be used as a callback (functional) object
+   for the Phalcon result set filter() method.
+
+// Anders Lövgren, 2014-09-10

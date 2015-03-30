@@ -1,0 +1,44 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    pending.phtml
+// Created: 2015-03-19 12:52:04
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+?>
+
+<style>
+    h1.pending {
+        padding-left: 30px;
+        background: url("<?= $icon ?>") no-repeat left;
+    }  
+    div.pending {
+        padding-top: 20px;
+        padding-left: 20px;
+        max-width: 600px;
+        border-left: 2px solid #eee;
+    }
+</style>
+<script>
+        jQuery(document).ready(function () {
+            setTimeout(function () {
+                window.location.assign('<?= $retry ?>');
+            }, 10000)
+        })();
+</script>
+
+<div class="pending">
+    <h1 class="pending">Approval required</h1>
+    <p>
+        Access to the exam '<?= $exam->name; ?>' is pending approval by the exam invigilator. 
+        Please wait for a while and then retry again or just wait for the automatic retry every 1 minute.
+    </p>
+    <p>
+        <input class="btn btn-green" type="submit" name="retry" value="Retry" onclick="window.location.assign('<?= $retry ?>')" title="Click on this button to retry access to this exam."/>
+    </p>
+</div>

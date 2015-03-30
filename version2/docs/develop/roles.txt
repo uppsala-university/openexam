@@ -1,0 +1,82 @@
+
+    *************************************************************
+        Description of the system roles.
+    *************************************************************
+
+
+** Builtin roles:
+
+    The system defines built-in roles that are global (admin and teacher), roles that are 
+    connected with an exam (creator, contributor, invigilator, decoder and student) and 
+    roles that are connected with an question (the corrector role).
+
+    It's possible to redefine the meaning of these roles by modifying their definitions
+    in app/config/access.def. This config file is the foundation for ACL that is tightly 
+    integrated in the data model, see models.txt for more information.
+
+** Custom roles:
+
+    In addition to the built-in roles, it's possible to define custom roles by adding them
+    to app/config/access.def. Custom roles are global and gives access to both the web 
+    interface (GUI) and the web service interface.
+
+    Custom roles are meant to be defined for integration with other systems. A custom role
+    is typical injected from an authenticator plugin class.
+
+** Description of builtin roles:
+
+    o) teacher:
+
+        The teacher role grants permission to create exams. One that creates an exam
+        is implicit assigned the creator role on that exam.
+
+    o) creator:
+    
+        This role is assigned to the creator of an exam. This is an implicit assigned
+        role. 
+
+        The one in possession of this role can change exam properties, assign correcting
+        teacher on questions (added by self) and grant exam roles to other people.
+
+    o) contributor:
+
+        A contributor can add questions. By adding a question, he/her is automatic assigned
+        as the corrector of that question.
+
+    o) corrector:
+
+        The person that has been assigned the role as correcting answers on a question.
+        An question might have multiple correctors.
+
+        It's fully possible for a person to be the corrector of an question without been
+        granted the contributor role on that exam.
+
+    o) invigilator:
+
+        The invigilator has permission to change exam schedule and add/remove student from
+        an exam. The invigilator role is meant to be assigned to exam assistants, that is,
+        persons that are physical present during the exam.
+
+        Because an invigilator has access to the student real identity, it's not recommended
+        that the same person is a corrector on the same exam.
+
+    o) decoder:
+
+        The exam decoder has permission to decode the exam. By decoding the exam, students
+        real identity is revealed. After decoding its no longer possible to modify scores
+        assigned to answers (changing the results).
+
+    o) student:
+
+        The student role is assigned to anyone registered on a exam. The student role is only
+        granted access to the part used during exam and the result service (for downloading 
+        corrected answers/the exam graduation).
+
+    o) admin:
+
+        The admin role gives full permission to any part of the system. The primary purpose
+        is to "bootstrap" users by granting them the teacher role or performing restricted 
+        tasks as "upprättning" (changing the result scores after an exam has been decoded).
+
+
+// Anders Lövgren, 2014-11-25

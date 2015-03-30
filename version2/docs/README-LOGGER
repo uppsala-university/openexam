@@ -1,0 +1,49 @@
+
+** GENERAL:
+
+   System logging is configured in app/config/config.def, with system defaults in
+   app/config/system/config.php. Three target logs are defined (debug, system and 
+   auth):
+
+        ...
+        'logging'     => array(
+                'debug'  => array(
+                        'file'  => 'debug.log',
+                        'level' => LOG_DEBUG
+                ),
+                'system' => array(
+                        'file'  => 'system.log',
+                        'level' => LOG_NOTICE
+                ),
+                'auth'   => array(
+                        'syslog'   => 'openexam',
+                        'facility' => LOG_AUTH,
+                        'level'    => LOG_INFO
+                )   
+     )
+
+   The system defaults are to use files for debug and system messages, and syslog
+   for authentication (login/logout) messages.
+
+** DESTINATIONS:
+
+   It's possible to use other destinations. This configuration stores authentication
+   messages in a database tables:
+
+        'logging'     => array(
+            ...
+                'auth'   => array(
+                        'database' => 'openexam',
+                        'db'       => 'openexam',
+                        'table'    => 'auth'
+                )   
+   
+   Other possible log destinations are: stream, firephp and firelogger. Disable a
+   log destination by setting it to null:
+
+        'logging'     => array(
+                'debug'  => null,   // disable debug logging
+
+
+// Anders Lövgren, 2014-10-04
+   

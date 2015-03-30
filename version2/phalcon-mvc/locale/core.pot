@@ -1,0 +1,47 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR The authors, the Computing Department at BMC and the OpenExam project (Uppsala University)
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: openexam-php 2.0\n"
+"Report-Msgid-Bugs-To: support@bmc.uu.se\n"
+"POT-Creation-Date: 2014-11-04 01:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: phalcon-mvc/app/config/system/services.php:147
+msgid "Swedish"
+msgstr ""
+
+#: phalcon-mvc/app/config/system/services.php:148
+msgid "English (US)"
+msgstr ""
+
+#: phalcon-mvc/app/config/system/services.php:149
+msgid "English (GB)"
+msgstr ""
+
+#: phalcon-mvc/app/config/system/services.php:150
+msgid "Browser Default"
+msgstr ""
+
+#: phalcon-mvc/app/controllers/Service/Ajax/CoreController.php:253
+msgid "You don't have permissions to perform this action."
+msgstr ""
+
+#: phalcon-mvc/app/library/Catalog/DirectoryService/UppdokService.php:349
+msgid "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
+msgstr ""
+
+#: phalcon-mvc/app/library/Render/RenderService.php:69
+#, php-format
+msgid "Unknown format type %s"
+msgstr ""

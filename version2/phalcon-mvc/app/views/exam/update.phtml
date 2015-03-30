@@ -1,0 +1,179 @@
+<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.autocomplete.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.timepicker.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('css/opentip.css'); ?>
+
+<?= Phalcon\Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/ui/jquery-ui-timepicker.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('js/modernizr.js') ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/ckeditor.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js'); ?>
+<?=Phalcon\Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js')?>
+<?=Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js')?>
+
+<?= Phalcon\Tag::javascriptInclude('js/views/exam/create.js'); ?>
+
+<?php use \OpenExam\Library\Security\Roles;?>
+
+<?php $examQs = $exam->getQuestions(array("order" => "slot"));?>
+
+<!-- Left Column -->
+<?php $this->partial("exam/shared/left-menu", array('exam' => $exam)) ?> 
+
+<!-- Main area -->         
+<?php $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');?>
+<div id="container" class="left_menu_space" style="">
+	<?php if($exam->published):?>
+        <div id="breadcrumbsRow">
+                <?= Phalcon\Tag::image(array("img/published.gif", "style" => "z-index: 0; height: 65px; position: relative; float: right; top: -9px;")); ?>
+	</div>
+        <?php endif;?>
+        <div id="centerColWide">
+
+                <? /* --Exam title and description-- */ ?>
+                <h1>
+                        <?=trim($exam->name)!=''?$exam->name:'Untitled exam'?>
+                        <a href="#" class="prevent exam-settings">
+                                <i class="fa fa-gear" id="exam-settings" style="float:right"></i>
+                        </a>
+                </h1>
+                
+		<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("contributable", $exam->flags)):?>
+                <a href="#" style="font-size: 12px; float:right" class="add_new_qs">
+                        <div style="display: block; float:right">
+                                <span class="btn btn-success" style="padding:2px; font-size:11px">
+                                        <i class="fa fa-plus-circle"></i>
+                                        <span>Add a new question</span>
+                                </span>
+                        </div>                        
+                </a>
+                <?php endif;?>
+
+                <? /* --seprator-- */ ?>
+                <div class="seprator" style="border-bottom:0px"></div>
+
+                <? /* --Questions area-- */ ?>
+                <div id="qs_area">
+                
+                        <? /* --default message when there are no questions-- */ ?>
+                        <div id="default_msg_qs">
+                                There are no questions in this exam yet. <br>
+                                <?php /*if(($myRole == Roles::CONTRIBUTOR || $myRole == Roles::CREATOR) && in_array("editable", $exam->flags)):?>
+                                <a href="#" style="font-size: 12px;" class="add_new_qs"><?= Phalcon\Tag::image("img/plus-button-2.png"); ?> Add a question</a>
+                                <?php endif;*/?>
+                        </div>
+
+                        <? /* --Question lines-- */ ?>
+                        <!-- question line template -->
+                        <div class="qs_area_line" q-id="" q-no="" style="display:none">
+                                <div class="qs_area_line_q_no">
+                                        <div class="q_no"></div>
+                                        <div class="q_score"></div>
+                                        <?php if(/*$myRole == Roles::CREATOR && */in_array("editable", $exam->flags)):?>
+                                        <div class="q_line_op">
+                                                <a href="#"><i class="fa fa-pencil edit-q" style="color:#004276"></i></a>
+                                                <a href="#"><i class="fa fa-close del-q"></i></a>
+                                        </div>
+                                        <?php endif;?>
+                                </div>
+                                <div class="qs_area_line_q_parts">
+                                        <div class="qs_area_line_q" style="display:none">
+                                                <div class="q_head">
+							<div style="padding-bottom:5px;">
+								<span class="q_part_no" style="font-size:16px; padding-right:0px"></span>
+								<span class="q_part_pt" style="color:grey; font-size:10px"></span>
+							</div>
+                                                        <span class="q_title"></span>
+                                                </div>
+                                                <div class="q_fields" style="width:70%; float:left"></div>
+						<!--
+						<div style="float: right; font-weight: normal; position: inherit; width: 23.5%; margin-left: 15px; text-align: justify; position:relative; padding:5px; font-size:11px; background-color:#f6f6f6; border:1px solid rgb(222, 222, 222)">
+							<div>
+								<b>Correctors</b>
+								<ol style="margin-left:15px">
+									<li>hi</li>
+									<li>more hi</li>
+								</ol>
+							</div>
+						</div>	
+						-->
+						<br style="clear:both"/>
+                                        </div>
+                                </div>   
+                        </div>   
+                </div>
+                
+		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+                        <div id="exam_op_btns" style="padding:15px; <?=!count($examQs)?'display:none':''?>">
+                                <center>
+                                        <a href="<?=$this->url->get('exam/'.$exam->id)?>">
+					<span class="btn btn-default" style="font-size:11px; color:#333333">
+                                                <i class="fa fa-chevron-circle-right"></i>
+                                                <span>Preview student view</span>
+                                        </span>
+					</a>
+					&nbsp;
+					<?php if(!$exam->published):?>
+					<span class="btn btn-default exam-settings" style="font-size:11px; color:#333333">
+						<i class="fa fa-gear"></i>
+						<span>Check settings if exam is ready to be used</span>
+					</span>
+		                        <?php endif;?>
+                                </center>
+                        </div>
+
+                <?php elseif($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("editable", $exam->flags)):?>
+                <a href="<?=$this->url->get('exam/index');?>">
+                <div id="">
+                        <center>
+                                <span class="btn btn-success">
+                                        <i class="fa fa-chevron-circle-right"></i>
+                                        <span>I am done with my questions, Notify exam creator.</span>
+                                </span>
+                        </center>
+                </div>
+                </a>
+		<?php endif;?>
+
+                <!-- centerColWide --> 
+        </div>
+        <br clear="both">
+        <!-- container --> 
+</div>
+
+<!--------------- Hidden Divs ----------------->     
+<!-- Add / Edit question form that appears in light box -->
+<div id="question-form-dialog-wrap" q-no="" style="display:none" title=""></div>
+
+<!-- Student management form -->
+<div id="mng-students" title="Manage students for exam" style="display:none"></div>
+
+<!-- Exam settings -->
+<div id="exam-settings-box" style="display:none" title="Exam settings" ></div>
+
+<?php 
+	// combine question json to initialize exam
+	$combinedJson = array();
+	$questionNo = 1;
+	foreach($examQs as $qData) {
+		
+		// add questId node
+		$qJson = json_decode($qData->quest, true);
+		$qJson['questId'] = $qData->id;
+		$qJson['canUpdate'] = 1;//($this->capabilities->hasCapability($qData, 'update') && in_array("editable", $exam->flags) ? 1:0);
+		
+		$combinedJson[$questionNo++] = $qJson;
+	}
+	$combinedJson = (!count($combinedJson) ? "JSON.parse('{}')" : json_encode($combinedJson));
+?>
+<script language="javascript">
+	var mngr	= '<?=$exam->creator?>';
+	var user	= '<?=$this->user->getPrincipalName()?>';
+	var examId 	= <?=$exam->id?>;
+	var qsJson 	= <?=$combinedJson?>;
+	var qsCorrectorsJson = {};
+	var showAddQuestionView = <?=stristr($_SERVER['REQUEST_URI'], 'add-q') ? 'true':'false'?>;
+	var isNewExam = <?=stristr($_SERVER['REQUEST_URI'], 'new-exam') ? 'true':'false'?>;
+</script>

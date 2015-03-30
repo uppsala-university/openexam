@@ -1,0 +1,359 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    answers.phtml
+// 
+// Author:  Ahsan Shahzad (MedfarmDoIT)
+// 
+
+$decoded = $exam->decoded;
+?>
+
+<div class="hero-unit">
+        <h2>
+                <?=Phalcon\Tag::image(array("img/uu_logo.svg", "height"=>"55px", "style"=>"padding-right:20px"));?><?=$exam->name?></h2>
+        <br />
+        <div id="mainview" style="background-color: white; padding:15px; border-radius:5px">
+                <h3><?=$decoded ? "Answer correction": "Correct the answers"?> for <?=$heading?>.</h3>
+                <?php foreach($questions as $question):?>
+			<?php 
+                        $correctAns = array();
+                        $qCorrectorList = array();
+                        foreach($question->getCorrectors() as $qCorrector) :
+				$qCorrectorList[$qCorrector->id] = $qCorrector->user;
+			endforeach;
+                        ?>
+                
+                        <div class="q-wrapper" style="border: 1px solid #dedede; padding: 2px; margin-bottom:15px" >
+
+                                <?php if(!$decoded && $loadBy != 'question'):?>
+                                <?=Phalcon\Tag::image(array("img/not-corrected.gif", "style"=>"position: absolute; right: 15px; width: 5%;", "id"=>$question->id."-corrected", "class"=>"not-corrected"));?>
+                                <?php endif;?>
+                                <div class="q-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #D84B4B">
+                                        <span style="color:#990000; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?=$question->slot?$question->slot:$question->name?></span>
+                                </div>
+                                
+                                <?php 
+				$questParts = json_decode($question->quest, true);
+				if(isset($questParts['highlight-q'])) :
+					unset($questParts['highlight-q']);
+				endif;
+				?>
+                                <div class="q-body" style="padding:5px; <?=(!in_array($this->user->getPrincipalName(), $qCorrectorList)? "opacity:0.6":"")?>; <?=($loadBy != 'question')?'background-color: #E7FFE7':''?>">
+                                	<?php $qPartCounter = 1;?>
+                                        <?php foreach($questParts as $qPartTitle => $qPart):?>
+                                        <div class="q-part-wrapper" style=" <?=$loadBy != 'question' ? '1px dashed #dedede' : 'none'?>">
+                                        
+                                                <?php if(count($questParts) > 1):?>
+                                                <div style="q-part-heading">
+                                                        <span style="font-weight: bold; color:#4285f4">Part <?=$qPartTitle?>:</span>
+                                                </div>
+                                                <?php endif;?>
+                                                
+                                                <div class="q-part-body" >
+                                                
+                                                        <div class="q-part-txt">
+                                                                <?=$qPart['q_text']?>
+                                                        </div>
+							
+                                                        <div class="q-part-resources">
+                                                                <?php foreach($qPart['resources'] as $resName => $resPath):?>
+									<?php 
+									$mimeType = finfo_file(
+										finfo_open(FILEINFO_MIME_TYPE), 
+										$this->config->application->mediaDir.basename(dirname($resPath)).'s'.DIRECTORY_SEPARATOR.basename(urldecode($resPath))
+									);
+									?>
+									<?php if(stristr($mimeType, "image")):?>
+										<img src="<?=$resPath?>" style="max-width:100%" />
+                                                                        <?php else:?>
+                                                                        	<a href="<?="https://".$this->request->getServerName().$resPath?>" target="_blank"><?=$resName?></a>
+                                                                        <?php endif;?>
+								<?php endforeach;?>
+                                                        </div>
+                                                        
+                                                        <?php if($qPart['ans_area']['type'] == 'choicebox'):?>
+                                                        <div>
+                                                                <?php if(count($qPart['ans_area']['data'])):?>
+                                                                <ul style="margin: 5px 0 0 30px">
+                                                                        <?php foreach($qPart['ans_area']['data'] as $opt => $correct):?>
+                                                                                <?php if($correct == '1'):?>
+                                                                                        <li style="color:green"><?=$opt?></li>
+                                                                                        <?php $correctAns[$question->id][$qPartTitle][] = $opt;?>
+                                                                                <?php else:?>
+                                                                                        <li><?=$opt?></li>        
+                                                                                <?php endif;?>
+                                                                        <?php endforeach;?>
+                                                                </ul>
+                                                                <?php endif;?>
+                                                        </div>
+        
+                                                        <?php 
+                                                        $perOptPoints = 0;
+                                                        if(is_array($correctAns[$question->id][$qPartTitle]) && count($correctAns[$question->id][$qPartTitle])):
+                                                                $perOptPoints = round(($qPart['q_points']/count($correctAns[$question->id][$qPartTitle])), 2);
+                                                        endif;
+                                                        ?>
+                                                        
+                                                        <?php endif;?>
+                                                        
+                                                        <?php if($loadBy != 'question'): 
+                                                        	
+                                                                // filter answer for this question from list of answers
+                                                                $qSpecificAns = $answers->filter(function($tmpAns) use ($question) {
+                                                                    if ($tmpAns->question_id == $question->id) {
+                                                                            return $tmpAns;
+                                                                    }
+                                                                });
+                                                                ?>
+                                                                
+                                                                <?php foreach($qSpecificAns as $qSpecAns):
+                                                                	$result = $qSpecAns->getResult();
+                                                                	$scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array());
+									if($decoded || count($scoreData)):?>
+									<script>
+										$("#<?=$question->id?>-corrected").hide();
+										$("#<?=$question->id?>-corrected").parent().find('.q-body').css('background-color', '#fff');
+										$("#<?=$question->id?>-corrected").parent().find('.st-ans-ul').css('background-color', '#F9F9F9');
+									</script>
+									<?php endif;?>
+									<div class="q-part-txt-student-ans" style="padding-top: 20px">
+										<?php $ansData =json_decode($qSpecAns->answer, true);?>
+										<span style="color:#990000;"><i class="fa fa-arrow-circle-right"></i></span> 
+										<span style="color:#000; font-weight:bold">Student's answer</span>
+										<?php if(count($ansData[$qPartTitle]['ans'])):?>
+										<ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:#F5FAF5; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
+											<?php $totalCorrect = 0;?>
+											<?php $correctAnsPart = $correctAns[$question->id][$qPartTitle];?>
+											<?php foreach($ansData[$qPartTitle]['ans'] as $stAns):?>
+												<?php if($qPart['ans_area']['type'] == 'choicebox'):?>
+												<li style="color:<?=(in_array($stAns, $correctAnsPart) ? 'green' : 'red')?>">
+													<i class="fa fa-<?=(in_array($stAns, $correctAnsPart) ? 'check' : 'times')?>"></i> 
+													<?=$stAns?>
+													<?php in_array($stAns, $correctAnsPart) ? ++$totalCorrect : '';?>
+												</li>
+												<?php elseif($qPart['ans_area']['type'] == 'canvas'): ?>
+												<li><img src="<?=$stAns['canvasUrl']?>" max-width="50%" /></li>
+												<?php else:?>
+												<li><?=$stAns?></li>
+												<?php endif;?>
+												<?php if(empty($ansData[$qPartTitle]['ans'][0])):?>
+													<li><i>Student did not answer this question.</i></li>
+												<?php endif;?>
+											<?php endforeach;?>
+										</ul>
+										<?php else:?>
+											<span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
+										<?php endif;?>
+									</div>
+									<?php if($qPart['ans_area']['type']=='choicebox' && count($correctAnsPart) && $totalCorrect && $totalCorrect != count($correctAnsPart)) :?>
+									<div style="color:orange; margin-left:35px"><i class="fa fa-warning"></i>  Student's answer is partially correct </div>
+									<?php endif;?>
+									
+									<div class="q-part-student-score" style="padding-bottom: 10px; padding-left:35px">
+										<i class="fa fa-certificate" style="color:#D84B4B"></i>
+										<span style="color:#000;">
+										Points:<br />
+										<span style="margin-left: 15px">
+											<?php if(!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
+												<input placeholder="0" type="text" class="q-points changeable" ans-id="<?=$qSpecAns->id?>" res-id="<?=count($scoreData)?$result->id:0?>" q-part="<?=$qPartTitle?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['ans_area']['type']=='choicebox'?$perOptPoints*$totalCorrect:'')?>" max-pt="<?=$qPart['q_points']?>">								
+											<?php else:?>
+												<?=sprintf("%1.1f", $scoreData[$qPartTitle])?>
+											<?php endif;?>	
+											[Max: <?=$qPart['q_points']?>]
+										</span>
+										</span>
+									</div>
+
+									<?php if(count($qSpecificAns)):?>
+										<?php if(!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)):?>
+										<?php if(count($questParts) == $qPartCounter):?>
+										<div style="padding-bottom: 10px; padding-left:35px">
+											<i class="fa fa-comments"></i>
+											Comments:<br />
+											<textarea class="changeable" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?=$qSpecAns->id?>"><?=$result->comment?></textarea>
+										</div>
+										<div style="padding-bottom: 10px; padding-left: 45px;">
+											<input style="text-shadow:none; background-color:#D84B4B; font-size:11px" type="button" class="save-result ans-id<?=$qSpecAns->id?>" ans-id="<?=$qSpecAns->id?>" value="Save result for this question" corrector-id="<?=array_search($this->user->getPrincipalName(), $qCorrectorList)?>">
+										</div>
+										<?php endif;?>
+										<?php else:?>
+											<?php if(!empty($result->comment)):?>                                                
+											<div style="padding-top:8px">
+												<div>
+													<strong>Corrector's comments:</strong>
+												</div>
+												<div>
+													<?=$result->comment?>
+												</div>
+											</div>
+											<?php endif;?>
+										<?php endif;?>
+									
+										<div style="clear:both"></div>                                                
+									<?php endif;?>         
+									
+                                                                <?php endforeach;?>
+                                                                <?php if(!count($qSpecificAns)):?>
+                                                                        <span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
+                                                                        <script>$("#<?=$question->id?>-corrected").hide()</script>
+                                                                <?php endif;?>
+                                                        <?php endif;?>
+                                                </div>
+                                        </div>
+					<?php $qPartCounter++;?>
+                                        <?php endforeach;?>        
+                                        
+                                        <!--
+                                        <div class="q-part-corrector-comments" style="padding-top: 10px">
+                                                <textarea placeholder="This optional field can be used to save an comment for this answer correction." style="width:50%" name="comment[57197]"></textarea>
+                                        </div>-->
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        <?php if($loadBy == 'question'):?>
+                                        <div class="st-ans-box" style="border: 1px solid #dedede; padding: 2px; margin:15px">
+                                                <?php foreach($answers as $k => $answer):?>
+        					<div>
+                                                  <?php $result = $answer->getResult();?>
+                                                  <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array());?>
+                                                  <?php if(!$decoded && !count($scoreData)):?>
+                                                  <?=Phalcon\Tag::image(array("img/not-corrected.gif", "style"=>"position: absolute; right: 40px; width: 5%;", "class"=>"not-corrected"));?>
+                                                  <?php endif;?>
+						  <?php $student = \OpenExam\Models\Student::findFirst($answer->student_id);?>
+                                                  <div class="st-ans-box-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #999999">
+                                                        <span style="color:#514E4E; font-weight:normal">
+                                                                <i class="fa fa-user"></i>
+                                                                <?=$student->code?>'s answer for this question
+                                                        </span>
+                                                  </div>
+                                                  <?php 
+						  $ansData = json_decode($answer->answer, true);
+						  if(isset($ansData['highlight-q'])) :
+							unset($ansData['highlight-q']);
+						  endif;
+						  ?>
+                                                  
+                                                  <div class="st-ans-box-body q-body" style="padding:15px; <?=(!in_array($this->user->getPrincipalName(), $qCorrectorList)? "opacity:0.6;":"")?> <?=(!$decoded && !count($scoreData))?'background-color: #E7FFE7':''?>">
+                                                        <div class="st-ans-parts-wrapper" style="padding-bottom:15px; margin-bottom:10px;">
+                                                                <?php $qPartCounter = 1;?>
+								<?php foreach($ansData as $qPartTitle => $qPart):?>
+                                                                <div class="st-ans-part" style="padding-bottom:5px">
+                                                                        <?php if(count($ansData) > 1):?>
+                                                                        <div class="st-ans-part-title" style="padding-bottom:5px">
+                                                                                <span style="color:#4285f4">Part <?=$qPartTitle?>:</span>
+                                                                        </div>
+                                                                        <?php endif;?>
+                                                                        <div class="st-ans-part-content" style="baclground-color:#dedede; border">
+                                                                                <ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:<?=(!$decoded && !count($scoreData))?'#F5FAF5':'#F9F9F9'?>; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
+                                                                                        <?php $totalCorrect = 0;?>
+                                                                                        <?php $correctAnsPart = $correctAns[$question->id][$qPartTitle];?>
+                                                                                        <?php foreach($ansData[$qPartTitle]['ans'] as $stAns):?>
+                                                                                                <?php if($qPart['type'] == 'choicebox'):?>
+                                                                                                <li style="color:<?=(in_array($stAns, $correctAnsPart) ? 'green' : 'red')?>">
+                                                                                                        <i class="fa fa-<?=(in_array($stAns, $correctAnsPart) ? 'check' : 'times')?>"></i> 
+                                                                                                        <?=$stAns?>
+                                                                                                        <?php in_array($stAns, $correctAnsPart) ? ++$totalCorrect : '';?>
+                                                                                                </li>
+                                                                                                <?php elseif($qPart['type'] == 'canvas'):?>
+                                                                                                <li><img src="<?=$stAns['canvasUrl']?>" max-width="50%" /></li>
+                                                                                                <?php else:?>
+                                                                                                <li><?=$stAns?></li>
+                                                                                                <?php endif;?>
+                                                                                                
+                                                                                                <?php if(empty($ansData[$qPartTitle]['ans'][0])):?>
+                                                                                                        <li><i>Student did not answer this question.</i></li>
+                                                                                                <?php endif;?>
+                                                                                        <?php endforeach;?>
+                                                                                        
+                                                                                        <?php if($qPart['type']=='choicebox' && $totalCorrect && $totalCorrect != count($correctAnsPart)) :?>
+                                                                                        <li style="color:orange"><i class="fa fa-warning"></i> <?=$totalCorrect?> Student's answer is partially correct </li>
+                                                                                        <?php endif;?>
+                                                                                </ul>
+                                                                        </div>
+                                                                        
+                                                                        <div class="q-part-student-score" style="padding-top: 10px; padding-left:35px">
+                                                                                <i class="fa fa-certificate" style="color:#D84B4B"></i>
+                                                                                <span style="color:#000;">
+                                                                                        Points:<br />
+                                                                                        <?php if(!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)):?>
+                                                                                                <input type="text" placeholder="0" class="q-points changeable" ans-id="<?=$answer->id?>" res-id="<?=count($scoreData) ?$result->id : 0?>" q-part="<?=$qPartTitle?>" style="height:12px; border-radius:0px; width:50px; margin-left:15px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['type']=='choicebox'?$perOptPoints*$totalCorrect:'')?>"  max-pt="<?=$questParts[$qPartTitle]['q_points']?>">
+                                                                                        <?php else:?>
+                                                                                                <?=sprintf("%1.1f", $scoreData[$qPartTitle])?>
+                                                                                        <?php endif;?>
+        
+                                                                                        [Max: <?=$questParts[$qPartTitle]['q_points']?>]
+                                                                                </span>
+                                                                        </div>
+                                                                        
+									<?php if(!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)):?>
+									<?php if(count($ansData) == $qPartCounter):?>
+									<div style="padding-top: 10px; padding-left:35px">
+										<i class="fa fa-comments"></i>
+										Comments:<br />
+										<textarea class="changeable" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?=$answer->id?>"><?=$result->comment?></textarea>
+									</div>
+									
+									<div style="padding-top: 10px; padding-left: 45px;">
+										<input style="text-shadow:none; background-color:#D84B4B; font-size:11px" type="button" class="save-result ans-id<?=$answer->id?>" ans-id="<?=$answer->id?>" value="Save this result" corrector-id="<?=array_search($this->user->getPrincipalName(), $qCorrectorList)?>">
+									</div>
+									<?php endif;?>
+									<?php else:?>
+										<?php if(!empty($result->comment)):?>
+										<div>
+											<div>
+												<strong>Corrector's comments:</strong>
+											</div>
+											<div>
+												<?=$result->comment?>
+											</div>
+										</div>
+										<?php endif;?>
+									<?php endif;?>
+									<div style="clear:both"></div>                                                
+									
+                                                                </div>
+								<?php $qPartCounter++;?>
+                                                                <?php endforeach;?>
+								
+                                                                <?php if(!count($ansData)):?>
+                                                                        <span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
+                                                                <?php endif;?>
+                                                        </div>
+                                                  </div>
+                                                </div>
+                                                <?php endforeach;?>
+                                        </div>
+                                        <?php endif;?>
+                                </div>
+                        </div>
+                <?php endforeach;?>
+                <br />
+        </div>
+</div>
+<input type="button" style="text-shadow: none; background-color: rgb(216, 75, 75); position: fixed; bottom: 70px; left: 45%; font-size: 22px; padding: 7px;" class="save-all-result" corrector-id="<?=array_search($this->user->getPrincipalName(), $qCorrectorList)?>" value="Save all results »">
+<style>
+.hero-unit {
+    background-color:#F9F9F9 !important;
+    padding: 0px !important;
+}
+</style>
+<script>
+/*
+	jQuery(document).ready(function(){
+		// binds form submission and fields to the validation engine
+		//jQuery(".q-part-student-score").validationEngine();
+		$(".save-result").click(function(){
+			jQuery("#formID").validationEngine('validate');
+		})
+	});
+*/
+</script>

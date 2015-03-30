@@ -1,0 +1,13 @@
+# Fix missing use of Phalcon\Script\ScriptException in Migrations::run().
+# Author: Anders Lövgren
+# Date:   2014-09-08
+--- vendor/phalcon/devtools/scripts/Phalcon/Migrations.php.orig	2014-09-05 00:02:00.437977749 +0200
++++ vendor/phalcon/devtools/scripts/Phalcon/Migrations.php	2014-09-05 00:02:22.295977473 +0200
+@@ -23,6 +23,7 @@
+ use Phalcon\Script\Color;
+ use Phalcon\Version\Item as VersionItem;
+ use Phalcon\Mvc\Model\Migration as ModelMigration;
++use Phalcon\Script\ScriptException;
+ 
+ class Migrations
+ {

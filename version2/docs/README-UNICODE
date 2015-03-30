@@ -1,0 +1,51 @@
+
+   PCRE AND UNICODE CHARACTERS
+
+** INTRODUCTION:
+
+   Supporting input validation when using unicode (UTF-8) raises some issues
+   that needs to be taken care of. One of these is that the standard set of
+   patterns are no longer working.
+
+** THE PROBLEM:
+
+   Consider the case of matching an input string containing letters, digits,
+   punctuation and spaces. Using the ASCII character set we would do some-
+   thing like this:
+
+     if(preg_match("/^[[:ascii:]]+$/", $str)) {
+         // ... do something
+     }
+
+   or
+
+     if(preg_match("/^[[a-zA-Z0-9_-]+$/", $str)) {
+         // ... do something
+     }
+
+   This won't work with the swedish character set.
+
+** MATCHING UNICODE CHARACTERS:
+
+   To match unicode characters, use the character properties for unicode
+   (\p{XY}) in the regex pattern. Also, make sure to append /u as match
+   modifier.
+
+   These character properties are simple and useful:
+
+      \p{L} - match letter
+      \p{N} - match number
+      \p{Z} - match whitespace
+      \p{P} - match punctuation
+
+   The unicode equivalent pattern string for [:ascii:]+ seems to be a combination
+   of the above:
+
+      (\p{L}|\p{N}|\p{Z}|\p{P})+
+
+** MORE INFORMATION:
+
+   http://www.regular-expressions.info/unicode.html
+
+
+// Anders Lövgren, 2010-12-12

@@ -1,0 +1,32 @@
+# Apache web server configuration for this web application.
+#
+# File:   app/config/apache.conf
+# Author: Anders Lövgren
+# Date:   2014-10-10
+#
+# Make sure to update alias and public directory to match server setup.
+# 
+
+Alias /phalcon-mvc /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/public
+
+<Directory /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/public>
+    Order allow,deny
+    Allow from ::1 127.0.0.1
+
+    # Handle non-static content from index.php:
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ /phalcon-mvc/index.php?_url=/$1 [QSA,L]
+
+    # Enforce HTTPS connection:
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+    # Hide development files:
+    <FilesMatch "\.(inc|bak|svn|.*~)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</Directory>

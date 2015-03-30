@@ -1,0 +1,51 @@
+{
+    "name": "bmc/openexam-phalcon-mvc",
+    "description": "Description of project openexam-phalcon-mvc.",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://it.bmc.uu.se/andlov/php/proj/bmc/uup-auth/"
+        },
+        {
+            "type": "composer",
+            "url": "http://it.bmc.uu.se/andlov/php/proj/bmc/uup-mail/"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Anders Lövgren",
+            "email": "anders.lovgren@bmc.uu.se"
+        },
+        {
+            "name": "Ahsan Shahzad",
+            "email": "ahsan.shahzad@medfarm.uu.se"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "bmc/uup-auth": ">=2.1.3",
+        "bmc/uup-mail": ">=1.0.4",
+        "phalcon/devtools": "1.3.x-dev",
+        "phalcon/incubator": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "suggest": {
+        "jpgraph/jpgraph": "For statistical pages or dynamic generated GUI components, e.g. buttons.",
+        "piotrooo/wsdl-creator": "Create WSDL document based on PHP classes using annotations and reflection mechanism."
+    },
+    "autoload": {
+        "psr-4": {
+            "OpenExam\\Composer\\": "admin/composer"
+        }
+    },
+    "scripts": {
+        "post-package-install": [
+            "OpenExam\\Composer\\Installer::postPackageInstall"
+        ],
+        "post-package-update": [
+            "OpenExam\\Composer\\Installer::postPackageUpdate"
+        ]
+    }
+}

@@ -1,0 +1,22 @@
+An person granted the admin role can impersonate as another system user (acting as
+them using their login name) by passing the impersonate as request parameter with
+the user to impersonate as value:
+
+    ?impersonate=<user>
+
+Once granted, the impersonation is saved in the calling user session:
+
+    'impersonate' => array(
+        'actor'         => <user principal>,    // The admin user
+        'impersonated'  => <user principal>     // The impersonated user
+    )
+
+The impersonation is injected at dispatch time (thus supporting both Web/AJAX, REST 
+or SOAP requests). Explicit request for impersonation is handled by User::impersonate()
+
+Impersonation is restored by passing an impersonate request without a value or by 
+calling User::impersonate() with null as argument:
+
+    ?impersonate=<user>
+
+// Anders Lövgren, 2015-03-10

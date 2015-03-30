@@ -1,0 +1,150 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    access.def
+// Created: 2014-08-28 14:34:23
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+/** 
+ * This map is used for defining the ACL in the system by defining relations 
+ * between roles, resources and permissions. 
+ * 
+ * Except for creator can't have the create (obvious), it should be safe to
+ * define any other mappings. 
+ */
+return array(
+        // 
+        // Permissions map:
+        // 
+        'permissions' => array(
+                '*'      => '*',
+                'read'   => 'read',
+                'modify' => array('read', 'update'),
+                'manage' => array('read', 'update', 'delete'),
+                'full'   => array('create', 'read', 'update', 'delete')
+        ),
+        // 
+        // Model access map. 
+        // 
+        // Defines which role are allowed to perform an CRUD operation on an 
+        // model. The data structure format are role -> model -> action, where 
+        // the model or action might use '*' to mean all access.
+        // 
+        'roles'       => array(
+                'admin'       => '*',
+                'teacher'     => array(
+                        'exam' => '*'
+                ),
+                'creator'     => array(
+                        'exam'        => 'manage',
+                        'resource'    => '*',
+                        'topic'       => '*',
+                        'question'    => '*',
+                        'contributor' => '*',
+                        'decoder'     => '*',
+                        'invigilator' => '*',
+                        'student'     => 'read',
+                        'corrector'   => '*',
+                        'access'      => '*'
+                ),
+                'contributor' => array(
+                        'exam'        => 'read',
+                        'resource'    => '*',
+                        'topic'       => 'read',
+                        'question'    => '*',
+                        'contributor' => 'read',
+                        'decoder'     => 'read',
+                        'invigilator' => 'read',
+                        'corrector'   => 'read'
+                ),
+                'invigilator' => array(
+                        'exam'        => 'modify',
+                        'computer'    => 'read',
+                        'lock'        => '*',
+                        'room'        => 'read',
+                        'contributor' => 'read',
+                        'decoder'     => 'read',
+                        'invigilator' => 'read',
+                        'student'     => '*',
+                        'access'      => 'modify'
+                ),
+                'decoder'     => array(
+                        'exam'        => 'modify',
+                        'resource'    => 'read',
+                        'topic'       => 'read',
+                        'question'    => 'read',
+                        'answer'      => 'read',
+                        'result'      => 'read',
+                        'file'        => 'read',
+                        'contributor' => 'read',
+                        'decoder'     => 'read',
+                        'invigilator' => 'read',
+                        'student'     => 'read'
+                ),
+                'corrector'   => array(
+                        'exam'        => 'read',
+                        'topic'       => 'read',
+                        'question'    => 'read',
+                        'answer'      => 'read',
+                        'result'      => '*',
+                        'student'     => 'read',
+                        'corrector'   => 'read'
+                ),
+                'student'     => array(
+                        'exam'        => 'read',
+                        'topic'       => 'read',
+                        'question'    => 'read',
+                        'answer'      => '*',
+                        'resource'    => 'read',
+                        'file'        => '*',
+                        'corrector'   => 'read'
+                )
+        ),
+        // 
+        // Controller access map.
+        // 
+        // Defines which roles are allowed to execute action on a controller.        
+        // The data structure are protection -> controller -> actions -> roles,
+        // where actions or roles uses '*' to denote all access. 
+        // 
+        // The protection is either public, protected or private. Using 
+        // protected means that authentication is required, but might be
+        // handled internal by the controller/action.
+        // 
+        'public' => array(
+                'public' => array('*'),
+                'error'  => array('*'),
+        ),
+        'protected'      => array(
+                'soap'   => array('*'),
+                'auth'   => array('*')
+        ),
+        'private' => array(
+                'exam' => array(
+                        'index' => array('*'),
+                        'create' => array('teacher'),
+                        'update' => array('creator', 'contributor'),
+                        'replicate' => array('creator'),
+                        'instruction' => array('creator', 'student'),
+                        'students' => array('invigilator'),
+                        'settings' => array('creator') 
+                ),
+                'question' => array(
+                        'create' => array('creator', 'contributor'),
+                        'update' => array('creator', 'contributor'),
+                        'view' => array('creator', 'student'),
+                        'correction' => array('corrector', 'creator', 'decoder')
+                ),
+                'result' => array(
+                        'view' => array('decoder', 'student'),
+                        'generate' => array('decoder'),
+                        'download' => array('corrector', 'decoder', 'student')
+                )
+        )
+);

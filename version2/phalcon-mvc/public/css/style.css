@@ -1,0 +1,36 @@
+   .dos {
+   color: #dddddd;
+   background-color: #222222;
+   margin-right: 20%;
+   } 
+   .antidos {
+   color: #222222;
+   background-color: #dddddd;
+   }
+   body {
+   text-align: center;
+   margin-left: auto;
+   margin-right: auto;
+   }
+   dt {
+   font-weight: bold;
+   }
+   #wrapper {
+   text-align: left;
+   margin-left: auto;
+   margin-right: auto;
+   }
+   #centerColWide {
+   width: 97%;
+   margin-left: 15px;
+   margin-right: 15px;
+   }
+
+   /* Sortable tables */
+   table.sortable thead {
+   background-color:#eee;
+   color:#666666;
+   font-weight: bold;
+   cursor: default;
+   }
+

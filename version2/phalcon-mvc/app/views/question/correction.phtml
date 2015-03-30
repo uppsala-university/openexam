@@ -1,0 +1,683 @@
+
+<?php 
+$overallQuestScore = array();
+$totalExamScore = $totalStudentScore = 0;
+
+if(!count($studentData)) {
+	$students  = $exam->getStudents(array('order'=>'code asc'));
+} else {
+	$students = $studentData;
+}
+$studentIds = array();
+
+$grades = preg_split('/[\r\n]+/', $exam->grades);
+$examGrades = array();
+$passAt = 1000;
+foreach ($grades as $k => $grade) :
+	$t = explode(":", $grade);
+	$examGrades[$t[0]] =  $t[1];
+	$avgGrades[$t[0]] = 0;
+	if($k == 1) :
+		$passAt = $t[1];
+	endif;
+endforeach;
+arsort($examGrades);
+
+// if exam has been decoded or not
+$decoded = $exam->decoded;
+
+$showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator'), $exam->id) !== false);
+?>
+
+<!-- Main area -->
+<div id="container" class="left_menu_space" style="width:100%">
+        <div id="centerColWide" style="width:95%">
+                <div id="mainview">
+                        <?php if(!$decoded):?>
+                        <h3>Exam correction</h3>
+                        <p>Following table shows all answers from students to questions for the examination <strong>"<?=$exam->name?>"</strong>. </p>
+                        <p>Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.</p>
+                        <?php else:?>
+                        <h3>Exam score board</h3>
+                        <p>Following table shows the final result of all students for the examination <strong>"<?=$exam->name?>"</strong>. </p>
+                        <p>You can view the student's answers by student (rows), by question (column) or individual (by index). As this exam has been decoded, it is no more possible to change student results.</p>
+                        <?php endif;?>
+                        
+                        
+			<div>
+				<center>
+					<?php 
+					if(!$decoded && $this->user->aquire(array('decoder'), $exam->id)!==false && in_array('decodable', $exam->flags)):?>
+						<button id="decode-exam" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding:5px 15px">
+						  <h5 style="font-style:normal; font-size:12px">
+							<i class="fa fa-check-circle" style="color:green"></i> 
+							I am satisfied with exam correction, Decode this exam.
+						  </h5>
+						</button>
+					<?php endif;?>
+				
+					<?php if($this->user->aquire(array('decoder'), $exam->id)!==false && ($decoded || in_array('decodable', $exam->flags))):?>
+					<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+					<button id="download-scoreboard" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding:5px 15px">
+						<h5 style="font-style:normal; font-size:12px" >
+							<i class="fa fa-file-excel-o" style="color:#1D9D73"></i>
+							<span class="download-msg"> Download score board (xls)</span>
+						</h5>
+					</button>
+					<?php endif;?>
+				
+					<?php if($decoded):?>
+					<button id="downloadButton">
+						<h5 style="font-style:normal; font-size:12px" >
+							<i class="fa fa-file-pdf-o" style="color:red"></i>
+							<span class="download-msg"> Download all student's answers (pdf)</span>
+						</h5>
+					</button>
+					<?php endif;?>
+				</center>
+			</div>	
+			
+                        
+			<div style="overflow:scroll" id="scoreboard-wrapper">
+                                <table class="tablesorter">
+                                        <thead>
+                                                <tr>
+                                                        <?php foreach($questions as $qNo => $question):?>
+                                                                <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
+                                                                  <div style="text-align: center">
+                                                                        <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->slot?$question->slot:$question->name?><br>Max. <?=$question->score?></a>
+                                                                  </div>
+                                                                  <!--<div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>-->
+
+                                                                </th>
+                                                                <?php $totalExamScore += $question->score;?>
+                                                        <?php endforeach;?>
+
+                                                        <th style="background-color:#EAEAEA; width:62px" class="sortable">
+								Code
+							</th>
+							<?php if($decoded):?>
+                                                        <th style="background-color:#EAEAEA; width:62px" class="sortable">
+								F. name
+							</th>
+                                                        <th style="background-color:#EAEAEA; width:62px" class="sortable">
+								L. name
+							</th>
+							<th style="background-color:#EAEAEA; width:62px" class="sortable">
+								P No.
+							</th>
+							<?php endif;?>
+                                                        <?php if($showPercentScore):?>
+                                                        <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sortable">
+                                                          <div style="text-align: center">
+                                                                Total score
+                                                                <div>Max. <?=$totalExamScore?></div>
+                                                          </div>
+                                                        </th> 
+                                                        <th class="sortable" style="background-color:#EAEAEA; max-width:65px; text-align:center">%</th>
+                                                        <?php endif;?>
+                                                        <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
+                                                        <th class="sortable" style="background-color:#EAEAEA; width:35px;  text-align:center">Grade</th>
+                                                        <?php endif;?>
+                                                </tr>
+					</thead>	
+					<tbody>
+						<?php foreach($students as $student):?>
+                                                <tr>
+							<?php if(!$student->getAnswers()->count()) continue;?>
+                                                        
+							<?php $totalStudentScore = 0;?>
+							<?php foreach($questions as $question):
+                                                        
+                                                                //$totalPoints += $question->score;
+                                                                $result = NULL;
+                                                                $qScore = 0;
+                                                                $answer = $question->getAnswers("student_id = '".$student->id."'");
+                                                                if($answerd = $answer->count()) :
+                                                                
+                                                                        $result = $answer->getFirst()->getResult();
+                                                                        if(is_object($result) && $result->count()) :
+                                                                        
+                                                                                foreach(json_decode($result->score, true) as $part => $score):
+                                                                                        $qScore+=$score;
+                                                                                endforeach;
+                                                                                
+                                                                                $totalStudentScore+=$qScore;
+                                                                                $overallQuestScore[$question->id][] = $qScore;
+                                                                        endif;	
+                                                                //else:
+								//	$wasAbsent = true;
+								//	break;
+                                                                endif;
+								
+								// get corrector list
+								$qCorrectorList = array();
+								foreach($question->getCorrectors() as $qCorrector) :
+									$qCorrectorList[] = $qCorrector->user;
+								endforeach;
+                                                                ?>
+                                                                <?php //$ansResult = count($answers) ? $answers[0]->getResult() : array()?>
+                                                                
+                                                                        <?php /*foreach($answers as $ans):?>
+                                                                                <?php $result = $ans->getResult()?>
+                                                                                        <?php $pointsGained += $result->score;?>
+                                                                        <?php endforeach; */?>
+                                                                        
+                                                                <?php 
+                                                                // find color code
+                                                                $cLink = true;
+                                                                if(!$answerd) :
+                                                                        $cc = 'na';
+                                                                        $cLink = false;
+                                                                elseif(is_object($result) && $result->count())  :
+                                                                        $cc = 'ac';
+                                                                elseif(!in_array($this->user->getPrincipalName(), $qCorrectorList))  :
+                                                                        $cc = 'no';
+                                                                else :
+                                                                        $cc = 'nc';
+                                                                endif;
+                                                                ?>
+                                                                <td class="cc <?=$cc?>">
+                                                                        <?php if($cLink):?>
+                                                                        <a class="fb fancybox.ajax" ans-id="<?=$answer->getFirst()->id?>" 
+                                                                        href="<?=$this->url->get('exam/'.$exam->id.'/correction/answer/'.$answer->getFirst()->id)?>">
+                                                                                <?=(is_object($result) && $result->count())?sprintf("%1.1f", $qScore):'<i class="fa fa-check-square-o"></i>'?>
+                                                                        </a>
+                                                                        <?php else:?>
+                                                                        <i class="fa fa-ban"></i>
+                                                                        <?php endif;?>
+                                                                </td>
+
+                                                        <?php endforeach;?>
+							<?php //if($wasAbsent) continue;?>
+                                                        <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+									<?=$student->code?>
+                                                                </a>
+                                                        </td>
+							<?php if($decoded):?>
+							<?php $stName = explode(' ', $this->helper->getCatalogAttribute($student->user, 'name'), 2);?>
+                                                        <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+									<?=$stName[0]?>
+                                                                </a>
+                                                        </td>
+                                                        <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+									<?=$stName[1]?>
+                                                                </a>
+                                                        </td>
+                                                        <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                                <?=substr(substr_replace($this->helper->getCatalogAttribute($student->user, 'pnr'), "-", 8, 0), 2);?>
+                                                        </td>
+							<?php endif;?>
+                                                        <?php if($showPercentScore):?>
+                                                        <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
+                                                                <?=$totalStudentScore?>
+                                                                <?php
+								if($answerd):
+									$avgScore[] = $totalStudentScore; 
+								endif;	
+								?>                                                                
+                                                        </td>
+                                                        <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
+								<?=sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100)?>%
+                                                                <?php
+								if($answerd):
+									$avgPercentage[] = sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100); 
+								endif;	
+								?>
+                                                        </td>
+                                                        <?php endif?>
+                                                        <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
+                                                        <?php
+							$needGraceMarks = false; 
+                                                        foreach($examGrades as $grade => $limit) :
+                                                                if((($totalStudentScore/$totalExamScore)*100) >= $limit) :
+									end($examGrades);
+									if(key($examGrades) == $grade):
+										if($passAt - (($totalStudentScore/$totalExamScore)*100) <= 5) {
+											$colorScheme = 'background-color:#4285F4; color:#FFFFCC';
+											$needGraceMarks = true;
+										} else {
+											$colorScheme = 'background-color:#FF6B4F; color:#FFFFCC';
+										}
+										
+									else:
+                                                                        	$colorScheme = 'background-color:#8BC540; color:#41612c';
+									endif;
+                                                                        break;
+                                                                endif;
+                                                        endforeach;
+							$avgGrades[$grade]++; 
+                                                        ?>
+                                                        <td class="gru" style="border-bottom:1px #dedede solid; text-align:center; font-weight:bold; <?=$colorScheme?>">
+								<?=$grade?> <?=($needGraceMarks) ? "(".sprintf("%1.1f", (($passAt/100)*$totalExamScore) - $totalStudentScore)." pt. less)" : ''?>
+                                                        </td>
+                                                        <?php endif;?>
+                                                </tr>
+                                                <?php 
+						$studentIds[] = $student->id;
+						endforeach;
+						?>
+					</tbody>	
+					<tfoot>
+                                                <tr class="avarage">
+                                                        <?php foreach($questions as $q):?>
+                                                        	<?php $avg = sprintf("%1.1f", array_sum($overallQuestScore[$q->id])/count($overallQuestScore[$q->id]));?>
+                                                        	<td title="Answers: <?=count($overallQuestScore[$q->id])?> Percent: <?=(count($students)/count($overallQuestScore[$q->id]))*100?>%" class="cc aa">
+									<?=$avg?>/<?=$q->score?>
+                                                                </td>
+                                                        <?php endforeach;?>
+                                                        
+							<th  class="cc aa" align="right" style="vertical-align:top;">Avarage:</th>
+							<?php if($decoded):?>
+							<th align="right" style="vertical-align:top;"></th>
+							<th align="right" style="vertical-align:top;"></th>
+							<th align="right" style="vertical-align:top;"></th>
+							<?php endif;?>
+                                                        <?php if($showPercentScore):?>
+                                                        <td class="cc aa">
+								<?=sprintf("%1.1f", array_sum($avgScore)/count($avgScore))?>/<?=$totalExamScore?>
+                                                        </td>
+                                                        <td class="cc aa">
+								<?=sprintf("%1.1f", array_sum($avgPercentage)/count($avgPercentage))?>%
+                                                        </td>
+                                                        <?php endif;?>
+                                                        <?php if($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)):?>
+                                                        <td class="cc aa" style="text-align:right; margin:0; padding:0">
+                                                          <?php foreach($examGrades as $grade => $limit):?>
+                                                          	<div style="padding:1px; "><b><?=$grade?></b>: <?=$avgGrades[$grade]?></div>
+                                                          <?php endforeach;?>
+                                                        </td>
+                                                        <?php endif;?>
+                                                </tr>
+                                        </tfoot>
+                                </table>
+                        </div>  
+                        
+                        <h5>Color Codes</h5>
+                        <p>Following are the color codes used in the score board:</p>
+                        <table style="margin:0">
+                                <tbody>
+                                        <tr class="colorcode">
+                                                <td class="cc ac">&nbsp;</td>
+                                                <td>Answer has been corrected.</td>
+                                        </tr>
+                                        <?php if(!$decoded && $this->user->getPrincipalName() == $exam->creator):?>
+                                        <tr class="colorcode">
+                                                <td class="cc no">&nbsp;</td>
+                                                <td>This answer should be corrected by another person.</td>
+                                        </tr>
+                                        <?php endif;?>                                        
+                                        <tr class="colorcode">
+                                                <td class="cc na">&nbsp;</td>
+                                                <td>No answer was given for this question.</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc nc">&nbsp;</td>
+                                                <td>The answer has not yet been corrected.</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc gm">&nbsp;</td>
+                                                <td>Student can pass with some grace marks.</td>
+                                        </tr>
+                                        <!--
+                                        <tr class="colorcode">
+                                                <td class="cc qr">&nbsp;</td>
+                                                <td>Question is flagged as removed (no scores for this question is counted).</td>
+                                        </tr>
+                                        <tr class="colorcode">
+                                                <td class="cc qu">&nbsp;</td>
+                                                <td>This question was not assigned to this student.</td>
+                                        </tr>
+                                        -->
+                                </tbody>
+                        </table>
+                        <br />
+                        <!--
+                        <h5>Download Scoreboard</h5>
+                        <p>Click <a href="?exam=711&amp;mode=save">here</a> to download the score board.</p>-->
+                </div>
+        </div>
+        <br clear="both">
+        <!-- container --> 
+</div>
+
+<!-------------- Hidden Divs --------------->
+<div id="dialog" title="Generating exam result">
+          <div class="progress-label">Starting...</div>
+          <div id="progressbar"></div>
+</div>
+
+<?=Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
+<?=Phalcon\Tag::stylesheetLink('css/tablesorter.default.css'); ?>
+<?=Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<?=Phalcon\Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
+  <style>
+#progressbar {
+	margin-top: 20px;
+}
+.progress-label {
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #fff;
+}
+.ui-dialog-titlebar-close {
+	display: none;
+}
+.sortme {
+	cursor:pointer !important;
+}
+</style>
+
+<script language="javascript">
+var examId 	= <?=$exam->id?>;
+var stIds = <?=json_encode($studentIds)?>;
+var completedRequests = {};
+var resyncableResults = [];
+$(document).ready(function () {
+
+	// keep column order
+        jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function() { 
+		if(($(this).children().length)) {
+			for(i=0; i<<?=$decoded ? "7" : $showPercentScore ? "4" : "2"?>; i++) {
+				$(this).children(":first").before($(this).children(":last"));
+			}
+		} else {
+			$(this).remove();
+		}
+        });
+
+        $('.fb').fancybox({
+                        'width': "100%", 
+                        'height': "95%", 
+                        'autoSize': false,
+                        helpers : { 
+                            overlay : {closeClick: false}
+                        },
+                        afterClose: function() {
+				resyncableResults = [];
+                                location.reload();
+                        }
+        });
+	
+	
+	$('.tablesorter').tablesorter({
+		widgets        : ['zebra', 'columns'],
+		usNumberFormat : false,
+		sortReset      : true,
+		sortRestart    : true,
+		sortList: [[0,0]] 
+	});	
+	
+	
+	$(document).on('click', '.save-result', function() {
+		var tmp = [];
+		tmp.push($(this).attr('ans-id'));
+		saveResults(tmp);
+	});
+	
+	$(document).on('click', '#decode-exam', function() {
+		
+		var msg = "Please note that once an exam gets decoded, it will not be possible to change student score any more. \r\n Are you sure you want to decode this exam?";
+		if(confirm(msg)) {
+			// decode exam
+			ajax(
+				baseURL + 'core/ajax/decoder/exam/update',
+				{"id": examId, "decoded": "Y"},
+				function (status) {
+				    location.reload();
+				}
+			);
+		}
+	});
+
+	$(document).on('change', '.changeable', function() {
+		if(resyncableResults.indexOf($(this).attr('ans-id'))<0) {
+			resyncableResults.push($(this).attr('ans-id'));
+			console.log(resyncableResults);
+		}
+	});
+
+	$(document).on('click', '.save-all-result', function() {
+		saveResults(resyncableResults);
+		resyncableResults = [];
+	});
+	
+	$(document).on('blur', '.q-points', function() {
+		if($(this).val()!='' && !$.isNumeric($(this).val())) {
+			alert("Error: Question points must be numeric");
+			$(this).val(0);
+			return false;
+		}
+		
+		if(Number($(this).val()) > Number($(this).attr('max-pt'))) {
+			alert("Error: Maximum points for this part are:"+$(this).attr('max-pt'));
+			$(this).val('');
+			return false;
+		}
+		
+	});
+
+	$(document).on('click', '#download-scoreboard', function() {
+	
+		var source = $('#scoreboard-wrapper').find('table').clone();
+		$(source).find("a").contents().unwrap();
+		$(source).find(".adjustable").css('width', '150px');
+		$(source).find(".cc").css('width', '80px');
+		$.ajax({
+			type: "POST",
+			url: baseURL + 'result/exportScoreBoard/'+examId,
+			data: {score_board:'<table border="1">'+$(source).html()+'</table>'}
+		})
+		.done(function( resp ) {
+			if(resp == 'exported') {
+				location.href=baseURL + 'result/exportScoreBoard/'+examId+"/1";
+			}
+		});
+		
+	});
+	
+	
+	$('#containerflarp').css('width','92%');
+	
+	var saveResults = function (ansIds) {
+		var resultsCreate = [];
+		var resultsUpdate = [];
+		var totalCreated = 0;
+		$.each(ansIds, function(i, ansId) {
+			var saveResultBtn = $('.ans-id'+ansId);
+			var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
+			var correctorId = $(saveResultBtn).attr('corrector-id');
+			var resultJson = {};
+			var resId = ansId = 0;
+			$(saveResultBtn).closest('.q-body').find('.q-points').each(function(index, element) {
+				resultJson[$(element).attr('q-part')] = $.isNumeric($(element).val()) ? $(element).val() : 0;
+				ansId = $(element).attr('ans-id');
+				resId = $(element).attr('res-id');
+			});
+	
+			// send ajax requedt to update student's socre
+			if(resId != 0) {
+				resultsUpdate.push({id:resId, "answer_id":ansId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
+			} else {
+				resultsCreate.push({"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
+				totalCreated++;
+			}
+			
+			$(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
+			$(saveResultBtn).closest('.q-body').css('background-color', '#fff');
+			$(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
+		});
+		
+		if(resultsCreate.length) {
+			ajax (
+				baseURL + 'core/ajax/corrector/result/create',
+				JSON.stringify(resultsCreate),
+				function(rData) {
+					if(totalCreated > 1) {
+						jQuery.each(rData, function(i, e) {
+							
+							$('input[ans-id="'+e.answer_id+'"]').attr('res-id', e.id);
+							
+							var tScore = 0;
+							$.each(jQuery.parseJSON(e.score), function(j, sc) {
+								tScore = tScore+parseFloat(sc);
+							});
+							
+							$('a[ans-id="'+e.answer_id+'"]').parent().removeClass('nc').addClass('ac');
+							$('a[ans-id="'+e.answer_id+'"]').html(tScore);
+							
+						})
+					} else {
+						$('input[ans-id="'+rData.answer_id+'"]').attr('res-id', rData.id);
+						
+						var tScore = 0;
+						$.each(jQuery.parseJSON(rData.score), function(j, sc) {
+							tScore = tScore+parseFloat(sc);
+						});
+						
+						$('a[ans-id="'+rData.answer_id+'"]').parent().removeClass('nc').addClass('ac');
+						$('a[ans-id="'+rData.answer_id+'"]').html(tScore);
+						
+						resyncableResults = jQuery.grep(resyncableResults, function(value) {
+							return value != rData.answer_id;
+						});
+						console.log(resyncableResults);
+					}
+				}
+			);
+		}
+
+		if(resultsUpdate.length) {
+			ajax (
+				baseURL + 'core/ajax/corrector/result/update',
+				JSON.stringify(resultsUpdate),
+				function(rData) {
+					resyncableResults = jQuery.grep(resyncableResults, function(value) {
+						return value != rData.answer_id;
+					});
+					
+					$.each(resultsUpdate, function(i, rec) {
+						
+						var tScore = 0;
+						$.each(jQuery.parseJSON(rec.score), function(j, sc) {
+							tScore = tScore+parseFloat(sc);
+						});
+						
+						$('a[ans-id="'+rec.answer_id+'"]').html(tScore);
+					});
+					
+					console.log(resyncableResults);
+				}
+			);
+		}
+
+		/*
+		ajax (
+			baseURL + 'core/ajax/corrector/result/' + action,
+			param,
+			function(rData) {
+				$(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
+				$(saveResultBtn).closest('.q-body').css('background-color', '#fff');
+				$(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
+			}
+		);*/
+	
+	}
+});	
+</script>
+<script>
+$(function() {
+	var progressTimer,
+	progressbar = $( "#progressbar" ),
+	progressLabel = $( ".progress-label" ),
+	dialogButtons = [{
+		text: "Cancel Download",
+		click: closeDownload
+	}],
+	dialog = $( "#dialog" ).dialog({
+		autoOpen: false,
+		closeOnEscape: false,
+		resizable: false,
+		modal: true,
+		buttons: dialogButtons,
+		open: function() {
+			progressTimer = setTimeout( progress, 0 );
+		},
+		beforeClose: function() {
+			downloadButton.button( "option", {
+				disabled: false
+			});
+			downloadButton.find('.download-msg').html('Download result of all students');
+		}
+	}),
+	downloadButton = $( "#downloadButton" )
+			.button()
+			.on( "click", function() {
+				
+				//send ajax requests to generate results
+				$.each(stIds, function(i, stId) {
+					
+					$.ajax({
+						type: "POST",
+						url: baseURL + 'result/'+examId+'/generate/'+stId,
+						data: {stId:stId}
+					})
+					.done(function( resp ) {
+						resp = jQuery.parseJSON(resp);
+						completedRequests[resp.stId] = 1;
+					});
+					
+				});
+				$( this ).button( "option", {
+					disabled: true
+				});
+				$(this).find('.download-msg').html('Generating result ...');
+				dialog.dialog( "open" );
+			});
+	
+	progressbar.progressbar({
+		value: false,
+		change: function() {
+			progressLabel.text( "Current Progress: " + progressbar.progressbar( "value" ) + "%" );
+		},
+		complete: function() {
+			closeDownload();
+			location.href = baseURL + 'result/'+examId+'/download';
+		}
+	});
+	
+	function progress() {
+		
+		$('#ajax_loader').hide();
+		
+		//console.log((objectLength(completedRequests)/objectLength(stIds)) *100);
+		var val = ( (objectLength(completedRequests)/objectLength(stIds) ) * 100 ) || 0;
+		
+		progressbar.progressbar( "value", Math.round(val) );
+		
+		if ( val <= 99 ) {
+			progressTimer = setTimeout( progress, 50 );
+		}
+	}
+	
+	function closeDownload() {
+		clearTimeout( progressTimer );
+		dialog
+			.dialog( "option", "buttons", dialogButtons )
+			.dialog( "close" );
+			
+		progressbar.progressbar( "value", false );
+		
+		progressLabel
+			.text( "Starting download..." );
+			
+		downloadButton.focus();
+	}
+	
+	<?php if(stristr($_SERVER['REQUEST_URI'], 'download-result')):?>
+	$( "#downloadButton" ).trigger('click');
+	<?php endif;?>
+});
+</script>

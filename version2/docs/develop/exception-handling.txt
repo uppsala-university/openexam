@@ -1,0 +1,61 @@
+
+** Handling exceptions:
+
+    Each sub system (GUI, AJAX, REST and SOAP) should provide an method that 
+    gets called for handling exceptions:
+
+        public function exceptionAction($exception) 
+        {
+            // Report exception and inform peer...
+        }
+
+    This method decides how to handle the exception and reported back to end user 
+    in a format suitable for the current request (e.g. HTML for GUI or JSON for AJAX 
+    request). The exception handler gets called from dispatcher on beforeException 
+    events.
+
+    The base class controller is responsible for installing exception and error
+    handlers. Trapped errors are wrapped in ErrorException and thrown to be handled
+    by the current dispatched controller.
+
+** Throwing exceptions:
+
+    The code that throws an exception can set the optional exception code to an
+    HTTP status code (e.g. 403). When trapped by the GUI exception handler it will
+    be displayed using the generic exception report view.
+
+    The core class OpenExam\Library\Core\Error provides constants for some common
+    HTTP status codes:
+
+        throw new \Exception(
+            'You don't have permission to land on the moon', 
+            Error::UNAUTHORIZED
+        );
+
+    If the status code is unset, then its handled as HTTP status 503. For GUI this
+    means that the exception is displayed as an internal server error.
+
+** Dispatch exceptions:
+
+    The dispatcher itself will throw errors. These are forwarded to the sub system
+    exception handler method. Its recommended that the exception handler is not 
+    logging page not found exceptions:
+
+        if ($exception instanceof DispatcherException) {
+            switch ($exception->getCode()) {
+                case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                    // Handle 404 errors...
+        }
+
+        $this->report($exception);
+        // Report exception back to peer...
+
+** Reporting exceptions:
+
+    The exception handler (the controller action) should use the common base class 
+    report() method to log the exception, except for trivial exceptions like page
+    not found errors.
+
+
+// Anders Lövgren, 2015-03-19

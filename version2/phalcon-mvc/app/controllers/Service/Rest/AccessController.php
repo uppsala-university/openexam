@@ -1,0 +1,96 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    AccessController.php
+// Created: 2015-01-26 16:31:18
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+namespace OpenExam\Controllers\Service\Rest;
+
+use OpenExam\Controllers\Service\RestController;
+use OpenExam\Library\WebService\Handler\AccessHandler;
+
+/**
+ * Student exam access controller.
+ * 
+ * This controller can be called as student or invigilator through REST
+ * to open/close (student) the exam or approve/release (invigilator) exam
+ * locks.
+ * 
+ * Student actions (open/close exam):
+ * --------------------------------------------------
+ * curl -XPOST ${BASEURL}/rest/access/open  -d '{"exam_id":243}'   // open exam 243
+ * curl -XPOST ${BASEURL}/rest/access/close -d '{"exam_id":243}'   // close exam 243
+ * 
+ * Invigilator actions (approve/release exam lock):
+ * --------------------------------------------------
+ * curl -XPOST ${BASEURL}/rest/access/approve -d '{"lock_id":961}'   // approve lock 961
+ * curl -XPOST ${BASEURL}/rest/access/release -d '{"lock_id":961}'   // release lock 961
+ *
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
+ */
+class AccessController extends RestController
+{
+
+        /**
+         * @var AccessHandler 
+         */
+        protected $handler;
+
+        public function initialize()
+        {
+                parent::initialize();
+
+                $request = $this->getRequest(function($arg) {
+                        if(!is_numeric($arg)) {
+                                return "${arg}_id";
+                        } else {
+                                return $arg;
+                        }
+                });
+                $this->handler = new AccessHandler($request, $this->user);
+        }
+
+        /**
+         * Open exam action.
+         */
+        public function openAction()
+        {
+                $response = $this->handler->open();
+                $this->sendResponse($response);
+        }
+
+        /**
+         * Close exam action.
+         */
+        public function closeAction()
+        {
+                $response = $this->handler->close();
+                $this->sendResponse($response);
+        }
+
+        /**
+         * Approve exam lock action.
+         */
+        public function approveAction()
+        {
+                $response = $this->handler->approve();
+                $this->sendResponse($response);
+        }
+
+        /**
+         * Release exam lock action.
+         */
+        public function releaseAction()
+        {
+                $response = $this->handler->release();
+                $this->sendResponse($response);
+        }
+
+}

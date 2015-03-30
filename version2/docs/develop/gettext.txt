@@ -1,0 +1,159 @@
+
+     *** I18N using GNU gettext ***
+
+
+GNU gettext can be used as a internationalization (I18N) tool for translating 
+all strings that potential can end up visible to end users.
+
+The class OpenExam\Library\Globalization\Translate\Gettext\Translate provides 
+a simplified interface to Phalcon\Translate\Adapter\Gettext.
+
+Message catalog has to be prepared, translated and compiled into machine (binary) 
+format. The class OpenExam\Library\Globalization\Translate\Gettext\Setup can 
+assist in this process.
+
+----------------------
+
+Typical directory layout for message catalogs:
+
+    locale/
+       +-- messages.pot                 // The message catalog template (*.pot)
+       +-- en_US/
+              +-- LC_MESSAGES/
+                     +-- messages.po    // The message catalog for en_US locale.
+                     +-- messages.mo    // The compiled message catalog.
+       +-- sv_SE.UTF-8/
+              +-- LC_MESSAGES/
+                     +-- messages.po
+                     +-- messages.mo
+
+Only one text domain (messages) are shown above, but their could be multiple and
+message catalogs could be merged together (e.g. core + admin).
+
+----------------------
+
+How to make a translation object available in a view:
+
+    // Controller:
+    $this->view->setVar("user", $this->user->name);
+    $this->view->setVar("tr", new Translate('admin'));  // Use admin.mo in current locale.
+
+    // View:
+    $tr->_("Welcome %s", array($user));
+
+Notice that multiple text domains are supported by passing an array to Translate
+class constructor.
+
+A translation object could be made available as a service:
+
+    // services.php:
+    $di->set('tr', function() use($di) {
+        return new Translate('core');
+    });
+
+Once an translation object has been instantiated, its actually no longer required 
+for translation (using gettext) to work. Just calling one of the gettext functions 
+will translate the string:
+
+    // view.php
+    echo(_("Welcome %s", $this->request->get('name'));          // Välkommen xxx
+
+Two things to notice then is that formatting using array argument wont work and
+only a single module (text domain/*.mo-file) is supported. Using the translation
+object we can have one object per text domain (e.g. public and core).
+
+----------------------
+
+A OpenExam\Console\Tasks\GettextTask exist to make it easy to initialize new 
+message catalogs (for new translation modules (text domains) or to support a
+new locale).
+
+A command line script phalcon-mvc/script/gettext.php exist. This example initializes
+all translation modules defined in phalcon-mvc/app/config/system/config.php for 
+the french locale:
+
+    bash$> php phalcon-mvc/script/gettext.php --initialize --locale=fr_FR.UTF-8
+
+Translation modules can be defined like this:
+
+    // phalcon-mvc/app/config/system/config.php:
+
+            ...
+        'translate'   => array(
+                'core'    => array(
+                        'directories' => array(
+                                'phalcon-mvc/app/controllers',
+                                'phalcon-mvc/app/library',
+                                'phalcon-mvc/app/models',
+                                'phalcon-mvc/app/plugins'
+                        )
+                ),
+            ...
+                'web'     => array(
+                        'directories' => array(
+                                'phalcon-mvc/app/views/auth',
+                                'phalcon-mvc/app/views/index',
+                                'phalcon-mvc/app/views/public',
+                                'phalcon-mvc/app/views/layout'
+                        ),
+                        'files'       => array(
+                                'phalcon-mvc/app/public/index.php'
+                        ),
+                ),
+                'student' => array(
+                        'directories' => array('phalcon-mvc/app/views/student'),
+                        'merge'       => array('core', 'web')
+                ),
+
+Keys under translate define names for translation modules. Each module can have an
+optional directories, files and merge array.
+
+Running task gettext.php on this would produce core.po, web.po and student.po. The 
+student module defines that it should merge in the core and web module. 
+
+Now loading just the student text domain should make translation strings from the
+other modules available, while not having their translation strings in student.po
+and disturbing the translation process.
+
+Listing of locale directory after running initializing and compiling message
+catalogs:
+
+    bash$> tree locale
+    locale/
+    ├── admin.pot
+    ├── core.pot
+    ├── manager.pot
+    ├── student.pot
+    ├── sv_SE.UTF-8
+    │   └── LC_MESSAGES
+    │       ├── admin.mo
+    │       ├── admin.po
+    │       ├── admin.po.cat
+    │       ├── core.mo
+    │       ├── core.po
+    │       ├── manager.mo
+    │       ├── manager.po
+    │       ├── manager.po.cat
+    │       ├── student.mo
+    │       ├── student.po
+    │       ├── student.po.cat
+    │       ├── tasks.mo
+    │       ├── tasks.po
+    │       ├── tasks.po.cat
+    │       ├── web.mo
+    │       └── web.po
+    ├── tasks.pot
+    └── web.pot
+
+    2 directories, 22 files
+
+The *.cat-files are left-overs from concatenating *.po-files due to the module (e.g.
+admin or student) being declared to merge in other modules.
+
+----------------------
+
+Notice that xgettext will fail to create the message catalog template unless at
+least one translation string (in current module) is found. By default, only *.php
+and *.phtml-files are scanned.
+
+// Anders Lövgren, 2014-09-23

@@ -1,0 +1,57 @@
+
+    **************************************************
+     This file documents access restriction.
+    **************************************************
+
+
+We have two levels of access restriction:
+
+    1. Thru Apache web server configuration.
+    2. Dynamic for student access.
+
+Apache web server configuration:
+---------------------------------
+
+The Apache configuration provides static access restriction based on IP-address 
+ranges. It is set on locations and is kind of first level of access restriction.
+
+Dynamic for student access:
+---------------------------------
+
+This is handled through the models Lock and Access. They is only intended to be
+utilized for filtering student access to an exam during the examination time.
+
+The Access model defines the single hosts, ranges or subnets allowed to access 
+the examination view. One or more records in the related access table are associated 
+with a single exam.
+
+The Lock model contains active locks that is either pending or approved. If the
+exam is flagged as lockdown, then the student view should not be accessable unless
+an approved lock has been acquired.
+
+The lock model connects the student, exam and computer together. 
+
+Unified access restriction is performed by the open() method in the Access class 
+(see Core/Exam/Access.php). The open() method should be called from any part of
+the system that is accessed using the student role (Web/AJAX, REST or SOAP).
+
+The open() method has these duties:
+
+    1. Prepare the exam for student if required (e.g. assign empty answer in
+       randomized mode).
+
+    2. Ensure that access rules (as dictated by the Access model) is enforced.
+
+    3. Lock an exam to a specific computer. If extended lock down policy is activated,
+       it could also include checking the computer state (e.g. firewall rules) or 
+       force a specific browser to be used (not relying on user agent).
+
+The Access class provides the close() method that should be called in response 
+upon a student request to close the active exam. Once closed, it should not be
+possible to call open() again (in locked mode) to gain access to the exam again.
+
+An pending lock can be approved calling the approve() method in Access class. An
+lock can be release (by authorized persons) by calling the release() method.
+
+
+// Anders Lövgren, 2014-12-16

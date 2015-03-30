@@ -1,0 +1,80 @@
+# English translations for openexam-php package.
+# Copyright (C) 2014 The authors, the Computing Department at BMC and the OpenExam project (Uppsala University)
+# This file is distributed under the same license as the openexam-php package.
+# Automatically generated, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: openexam-php 2.0\n"
+"Report-Msgid-Bugs-To: support@bmc.uu.se\n"
+"POT-Creation-Date: 2014-11-04 01:19+0100\n"
+"PO-Revision-Date: 2014-11-03 23:22+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: phalcon-mvc/app/config/system/services.php:147
+msgid "Swedish"
+msgstr "Swedish"
+
+#: phalcon-mvc/app/config/system/services.php:148
+msgid "English (US)"
+msgstr "English (US)"
+
+#: phalcon-mvc/app/config/system/services.php:149
+msgid "English (GB)"
+msgstr "English (GB)"
+
+#: phalcon-mvc/app/config/system/services.php:150
+msgid "Browser Default"
+msgstr "Browser Default"
+
+#: phalcon-mvc/app/controllers/Service/Ajax/CoreController.php:253
+msgid "You don't have permissions to perform this action."
+msgstr "You don't have permissions to perform this action."
+
+#: phalcon-mvc/app/library/Catalog/DirectoryService/UppdokService.php:349
+msgid "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
+msgstr "There was a problem talking to the directory service, course information is unavailable due to network or configuration problems"
+
+#: phalcon-mvc/app/library/Render/RenderService.php:69
+#, php-format
+msgid "Unknown format type %s"
+msgstr "Unknown format type %s"
+
+#~ msgid "Missing domain part in username"
+#~ msgstr "Missing domain part in username"
+
+#~ msgid "Invalid argument"
+#~ msgstr "Invalid argument"
+
+#~ msgid "You are not authorized to make this call."
+#~ msgstr "You are not authorized to make this call."
+
+#~ msgid "Roles service ('roles') is missing."
+#~ msgstr "Roles service ('roles') is missing."
+
+#~ msgid "You are not authorized to access this answer."
+#~ msgstr "You are not authorized to access this answer."
+
+#~ msgid "You are not the owner of this answer."
+#~ msgstr "You are not the owner of this answer."
+
+#~ msgid "You are not authorized to access this exam."
+#~ msgstr "You are not authorized to access this exam."
+
+#~ msgid "Session service ('session') is missing."
+#~ msgstr "Session service ('session') is missing."
+
+#~ msgid "User session data ('auth') is missing."
+#~ msgstr "User session data ('auth') is missing."
+
+#~ msgid "The calling user is missing in session data."
+#~ msgstr "The calling user is missing in session data."
+
+#~ msgid "ACL service ('acl') is missing."
+#~ msgstr "ACL service ('acl') is missing."

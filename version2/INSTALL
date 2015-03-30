@@ -1,0 +1,156 @@
+
+   OPENEXAM PHP - INSTALL INSTRUCTIONS
+
+
+** REQUIREMENTS:
+
+   These are the requirements. Tested versions within brackets, but other
+   versions might work just OK.
+   
+        *) PHP >= 5.2.x (need to support the new object model). [5.2.13]
+        *) An SQL database (RDBS) supported by PDO. [MySQL 5.1.70]
+        *) Apache web server [2.2.27]
+        *) Composer [2014-08-11]
+	 
+   PECL Extensions (including those builtin in PHP):
+	    
+        *) cphalcon.so - Core MVC functionality (required).
+        *) gettext.so  - GNU gettext  (i.e. ngettext(), _(), ...) (recommended).
+        *) http.so     - HTTP extension (used to get content type of media URL's).
+        *) zip.so      - For bundling results for download (recommended).
+        *) curl.so     - For downloading UPPDOK data (optional).
+        *) fileinfo.so - For detection of MIME type for uploaded files.
+
+** CONFIGURATION:
+
+   Turn off magic quotes in php.ini:
+   
+        magic_quotes_gpc = Off
+        magic_quotes_runtime = Off
+   
+   It's no longer recommended to enable magic quotes. This feature defaults 
+   to off in PHP 5.3.x and is scheduled for removal in PHP 6.
+   
+** INSTALL:
+
+   To keep instructions compact, lets define some SHELL variables to use:
+
+        appdir=/var/www/localhost/apps/     # Web application directory not direct accessible.
+        webdir=/var/www/localhost/htdocs    # The web server document root.
+        bindir=/usr/local/bin               # System local binaries in PATH.
+
+   1. Install Composer:
+
+      Package dependencies are handled by Composer: https://getcomposer.org/. Follow these 
+      instructions for installing Composer globally:
+
+            bash$> curl -sS https://getcomposer.org/installer | \
+                        php -- --install-dir=${bindir} --filename=composer
+
+   2. Install Phalcon MVC:
+
+      This is a required extension PHP extension. Without it the MVC layer of OpenExam
+      wont work.
+
+            bash$> wget https://github.com/phalcon/cphalcon/archive/master.zip
+            bash$> unzip master.zip
+            bash$> cd cphalcon-master
+
+      Read thru the README.md and install any dependencies. Continue by configure,
+      build and install cp
+
+            bash$> phpize && aclocal && libtoolize --force && autoheader && autoconf
+            bash$> ./configure --enable-phalcon
+            bash$> make
+            bash$> make install
+
+      Add phalcon.so to PHP extensions (system dependent). Verify that the Phalcon
+      extension is enabled:
+
+            bash$> php -m | grep phalcon
+      
+   3. Install OpenExam:
+
+      o) From source code:
+
+            bash$> tar xfvzp openexam-php.tar.gz -C ${appdir}
+
+      o) From SVN:
+
+            bash$> svn co svn://svn.bmc.uu.se/cbe/openexam-php/trunk ${appdir}/openexam-php
+
+      Create a symbolic link to the applications public directory under the web root:
+
+            bash$> ln -s ${appdir}/openexam-php/phalcon-mvc/public ${webdir}/openexam
+
+      Install application dependencies (creates the vendor directory):
+
+            bash$> cd ${appdir}/openexam-php
+            bash$> composer install --no-dev
+
+   4. Configure OpenExam:
+
+      Make config protected versions from the template configuration files (*.def.in):
+	       
+            bash$> cd ${appdir}/openexam-php/phalcon-mvc/app/config
+            bash$> for f in *.in; do cp -i $f ${f%%.in}; done
+
+      Edit the configuration files (*.def) using your favorite editor.
+
+   5. Create database:
+
+      Create the database openexam. The database connection must be granted SELECT, INSERT,
+      UPDATE and DELETE privileges. If using phalcon.php (phalcon/devtools), then the connection
+      must be granted CREATE, ALTER and DROP table privileges.
+
+      Insert the connection parameter in ${appdir}/openexam-php/phalcon-mvc/app/config/config.def. 
+      
+      Repeat the database creation procedure on any SQL-server that is going to be used for load 
+      balancing. For a simple setup without load balancing, the same same SQL-server (typical 
+      running on localhost) is going to be used both for dbread and dbwrite.
+
+      o) Create database using SQL-script (MySQL only):
+
+            bash$> mysql -u root -p
+            Enter password:
+              ...
+            mysql> CREATE DATABASE openexam;
+            mysql> GRANT SELECT,INSERT,UPDATE,DELETE ON openexam.* TO openexam@localhost IDENTIFIED BY 'password';
+            mysql> FLUSH PRIVILEGES;
+            mysql> USE openexam;
+            mysql> SOURCE ${appdir}/openexam-php/phalcon-mvc/schemas/database/openexam.sql
+            mysql> INSERT INTO admins(user) VALUES('username');   # Add system administrator
+            mysql> EXIT
+
+      o) Create database using Phalcon Developer Tools (phalcon/devtools):
+
+         This procedure is recommended for RDBS other than MySQL (e.g. PostgreSQL). Use the
+         RDBS tools to create an empty database. Continue by creating the tables:
+
+            bash$> cd ${appdir}/openexam-php/phalcon-mvc
+            bash$> ../vendor/bin/phalcon.php migration run --migrations=schemas/migrations
+
+   6. Language support:
+
+      To get laguage support (translation) working, you have to compile the *.po files for your 
+      platform. This is done by running make in the package root directory:
+
+            bash$> cd ${appdir}/openexam-php
+            bash$> make
+
+      This should compile all *.po to *.mo that can be read by PHP's GNU gettext extension. If 
+      the gettext extension is missing, then application defaults to english text.
+	    
+   7. Finishing:
+
+      The user defined setting files (*.def) should not be readable by world, only by trusted 
+      users and the account the web server is running under (see admin/setperm.sh):
+
+            bash$> cd ${appdir}/openexam-php/phalcon-mvc/app/config
+            bash$> chmod 600 *.def
+            bash$> setfacl -m u:apache:r *.def
+
+      You are now ready to restart the web server at try it out.
+
+
+// Anders Lövgren, 2010-05-07

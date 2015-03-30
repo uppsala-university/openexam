@@ -1,0 +1,74 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    index.phtml
+// 
+// Author:  Ahsan Shahzad (MedfarmDoIT)
+// 
+?>
+
+<div class="hero-unit" style="padding-top:18px; margin-top:40px;">
+    <h1>Welcome!</h1>
+    <br />
+    <div style="padding-bottom:15px">OpenExam is an on line examination system that allows different types of computer-based tests and exams. It can replace traditional paper-based exams if performed in exam halls where computers are available. It may also be used for home exams and quizzes with randomly displayed questions. The system is entirely web based, from creating the exam to providing the students with the corrected exams.
+    </div>
+    <div style="padding-bottom:10px">
+    Through the links below, teachers and course providers can log in and create an exam, assign different roles to teachers contributing to the exam.
+Students can also log in and get access to their completed exams and find information about upcoming exams.
+    <a href="#">More information about OpenExam ...</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span4">
+        <h2>Are you a Teacher? </h2>
+        <div>
+		<img src="<?=$this->url->get("img/teachers.jpg")?>" style="padding-bottom:15px" />
+                If you are a teacher at Uppsala University or if you have been given access to the system by the administrator you can <a href="<?=$this->url->get('auth/login')?>" class="fancybox fancybox.ajax">log in here</a>.<br />
+		If you do not have access, please contact the <a href="#">system administrator.</a><br />
+        </div>
+    </div>
+    <div class="span4">
+        <h2>Are you a Student? </h2>
+        <div>
+                <img src="<?=$this->url->get("img/students.jpg")?>" style="padding-bottom:15px" />
+                If you have been registered for computer based exams you can <a href="<?=$this->url->get('auth/login')?>" class="fancybox fancybox.ajax">log in here</a> and find your previous and upcoming exams. If you cannot log in please contact your course administrator.<br />
+        </div>
+    </div>
+    <div class="span4">
+        <h2>News</h2>
+        <div>
+	<em>There are no news for now.</em>
+	</div>
+	<!--<p>
+        <span style="color:#3a87ad">2014-11-18</span><br />
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
+	-->
+    </div>
+    <div class="span4">
+        <h2>OpenExam Demo </h2>
+        <div>
+	<!--
+        <ul style="margin-top:0px; margin-bottom:15px">
+        	<li>Are you a teacher? <a href="#">Try!</a></li>
+                <li>Are you a student? <a href="#">Try!</a></li>
+        </ul>
+	-->
+        	<div id="msg-box" class="alert" style="font-weight:normal;text-align:left; position: inherit; width:90%; padding:8px 8px 8px 14px">We are working to setup  OpenExam demo. Thank you for your patience.</div>
+	Please <a href="#">contact</a> if you want to see OpenExam demo.
+	</div>
+    </div>
+</div>
+
+<script language="javascript">
+	url = window.location.toString();
+	$(function() {
+		if(url.indexOf('#login-me') >= 0) {
+			$('.login-me').trigger('click');
+		}
+	});	
+</script>
