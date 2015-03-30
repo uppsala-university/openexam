@@ -471,7 +471,11 @@ class Roles extends Component
          */
         public static function isGlobal($role)
         {
-                return self::isCustom($role) || $role == self::TEACHER || $role == self::ADMIN || $role == self::TRUSTED;
+                return self::isCustom($role) ||
+                    $role == self::TEACHER ||
+                    $role == self::ADMIN ||
+                    $role == self::TRUSTED ||
+                    $role == self::SYSTEM;
         }
 
 }
