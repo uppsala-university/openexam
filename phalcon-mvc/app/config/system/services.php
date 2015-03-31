@@ -129,7 +129,7 @@ $di->set('dbwrite', function () use ($config) {
  * Start the session the first time some component request the session service
  */
 $di->set('session', function() {
-        $session = new \Phalcon\Session\Adapter\Files();
+        $session = new OpenExam\Library\Database\SessionAdapter();
         $session->start();
         return $session;
 }, true);
