@@ -16,8 +16,13 @@ class ModelBase extends Model
 
         protected function initialize()
         {
-                $this->setReadConnectionService('dbread');
-                $this->setWriteConnectionService('dbwrite');
+                if (defined('MODEL_ALWAYS_USE_MASTER_CONNECTION') && MODEL_ALWAYS_USE_MASTER_CONNECTION) {
+                        $this->setReadConnectionService('dbwrite');
+                        $this->setWriteConnectionService('dbwrite');
+                } else {
+                        $this->setReadConnectionService('dbread');
+                        $this->setWriteConnectionService('dbwrite');
+                }
         }
 
         /**
