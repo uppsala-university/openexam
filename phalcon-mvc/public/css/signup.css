@@ -33,6 +33,7 @@ div.mbox {
     min-width: 350px;
     max-width: 650px;
     box-shadow: 1px 1px 6px #999999;
+    border-radius: 5px 5px 5px 5px;
 }
 div.mbox-head {
     font-weight: bold;
@@ -52,17 +53,20 @@ div.exam-content-box1 {
 }
 div.exam-content-box {
     margin-top: 20px;
-    padding-bottom: 5px;
-    border: 2px solid #ccc;
-    border-radius: 10px 10px 10px 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border: 1px solid #eaddc4;
+    border-radius: 8px 8px 8px 8px;
+    background: #fff;
 }
 div.exam-head {
-    margin: -2px;
+    margin: -1px;
     padding-left: 10px;
     margin-bottom: 5px;
-    border: 2px solid #ccc;
-    background: #ddd;
-    border-radius: 10px 10px 0px 0px;
+    background: #ffc;
+    color: #c09853;
+    border: 1px solid #eaddc4;
+    border-radius: 8px 8px 0px 0px;
     font-weight: bold;
 }
 div.exam-body {
@@ -71,4 +75,9 @@ div.exam-body {
 div.exam-status {    
     margin-top: 10px;
     padding-left: 10px;
+}
+div.exam-listing {
+    margin-top: 5px;
+    padding: 10px;
+    background: #eee;
 }
