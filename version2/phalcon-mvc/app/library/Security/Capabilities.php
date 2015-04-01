@@ -189,6 +189,16 @@ class Capabilities extends Component
         }
 
         /**
+         * Check if resource exist in resources list.
+         * @param string $resource The resource name.
+         * @return boolean
+         */
+        public function hasResource($resource)
+        {
+                return in_array($resource, $this->getResources());
+        }
+
+        /**
          * Get permitted actions on resource accessed using role.
          * @param string $role The role name.
          * @param string $resource The resource name.

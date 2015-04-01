@@ -78,11 +78,13 @@ class AclTest extends TestCase
                 }
 
                 // 
-                // These should all fail:
+                // Undefined roles and actions should fail, while undefined
+                // resources should succeed:
                 // 
                 $this->checkPermission('custom', 'question', 'read', false);            // non-existing role (custom)
-                $this->checkPermission('invigilator', 'panncake', 'read', false);       // non-existing resource (panncake)
                 $this->checkPermission('invigilator', 'exam', 'toast', false);          // non-existing action (toast)
+                $this->checkPermission('invigilator', 'panncake', 'read', true);        // non-existing resource (panncake)
+                
         }
 
         /**
