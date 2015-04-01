@@ -36,26 +36,25 @@
 
 <div class="signup">
     <h1 class="signup">Processing signup request...</h1>
+    <div class="exam-listing">
+        <?php if (isset($teacher)) { ?>
+                <p>The following teacher tasks are being performed:</p>
+                <div class="exam-content-box grant">
+                    <div class="exam-head">Insert teacher role:</div>
+                    <div class="exam-status none">&nbsp;</div>
+                </div>
+                <?php foreach ($texams as $exam) { ?>
+                        <div class="exam-content-box clone" exam="<?= $exam->id ?>">
+                            <div class="exam-head">Copy exam <?= $exam->name ?>:</div>
+                            <div class="exam-body"><?= $exam->descr ?></div>
+                            <hr/>
+                            <div class="exam-status none">&nbsp;</div>
+                        </div>
+                <?php } ?>
+        <?php } ?>
 
-    <?php if (isset($teacher)) { ?>
-            <p>The following teacher tasks are being performed:</p>
-            <div class="exam-content-box grant">
-                <div class="exam-head">Insert teacher role:</div>
-                <div class="exam-status none">&nbsp;</div>
-            </div>
-            <?php foreach ($texams as $exam) { ?>
-                    <div class="exam-content-box clone" exam="<?= $exam->id ?>">
-                        <div class="exam-head">Copy exam <?= $exam->name ?>:</div>
-                        <div class="exam-body"><?= $exam->descr ?></div>
-                        <hr/>
-                        <div class="exam-status none">&nbsp;</div>
-                    </div>
-            <?php } ?>
-    <?php } ?>
-
-    <?php if (isset($student)) { ?>
-            <p>The following student tasks are being performed:</p>
-            <ul>
+        <?php if (isset($student)) { ?>
+                <p>The following student tasks are being performed:</p>
                 <?php foreach ($sexams as $exam) { ?>
                         <div class="exam-content-box register" exam="<?= $exam->id ?>">
                             <div class="exam-head">Register on exam <?= $exam->name ?>:</div>
@@ -64,10 +63,10 @@
                             <div class="exam-status none">&nbsp;</div>
                         </div>
                 <?php } ?>
-            </ul>
-    <?php } ?>
+        <?php } ?>
+    </div>
+    <hr/>
 
-    <br/>
     <?php if ($wizard) { ?>
             <input class="btn btn-green" id="next" style="display: none" type="submit" name="finish" value="Finish" onclick="window.location.assign('<?= $next ?>')" title ="Click on this button to finish the signup wizard."/>
     <?php } else { ?>
