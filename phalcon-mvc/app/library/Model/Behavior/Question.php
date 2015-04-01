@@ -36,7 +36,9 @@ class Question extends ModelBehavior
                                 $corrector = new \OpenExam\Models\Corrector();
                                 $corrector->user = $model->user;
                                 $corrector->question_id = $model->id;
-                                return $corrector->save();
+                                if ($corrector->save() == false) {
+                                        throw new \OpenExam\Library\Model\Exception("Failed add corrector by behavior (" . $corrector->getMessages()[0] . ")");
+                                }
                         }, $model->getDI());
                 }
         }
