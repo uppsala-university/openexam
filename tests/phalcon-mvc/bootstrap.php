@@ -27,6 +27,7 @@ error_reporting(E_ALL);
 // Configure for running unit test:
 // 
 define('VALIDATION_SKIP_UNIQUENESS_CHECK', true);
+define('MODEL_ALWAYS_USE_MASTER_CONNECTION', true);
 define('CONFIG_PHP', __DIR__ . '/../../phalcon-mvc/app/config/system/config.php');
 
 // 
@@ -55,4 +56,3 @@ if (extension_loaded('posix')) {
             get_current_user(), gethostname()
         ));
 }
-
