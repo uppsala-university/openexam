@@ -62,7 +62,17 @@ class Acl extends Component
          */
         public function isAllowed($role, $resource, $action)
         {
-                return $this->getAcl()->isAllowed($role, $resource, $action);
+                // 
+                // Check ACL for defined resources:
+                // 
+                if ($this->capabilities->hasResource($resource)) {
+                        return $this->getAcl()->isAllowed($role, $resource, $action);
+                }
+
+                // 
+                // Grant access for undefined resources:
+                // 
+                return true;
         }
 
         /**

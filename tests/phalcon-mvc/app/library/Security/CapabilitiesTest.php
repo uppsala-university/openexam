@@ -72,7 +72,7 @@ class CapabilitiesTest extends TestCase
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
-                
+
                 $expect = array('creator', 'contributor');
                 $actual = $this->object->getRoles('question');
                 self::assertNotNull($actual);
@@ -96,7 +96,7 @@ class CapabilitiesTest extends TestCase
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
-                
+
                 $expect = array('exam', 'question');
                 $actual = $this->object->getResources('contributor');
                 self::assertNotNull($actual);
@@ -133,6 +133,26 @@ class CapabilitiesTest extends TestCase
         }
 
         /**
+         * @covers OpenExam\Library\Security\Capabilities::hasResource
+         * @group security
+         */
+        public function testHasResource()
+        {
+                foreach (array(
+                    'exam'     => true,
+                    'question' => true,
+                    'session'  => false,
+                    'student'  => true,
+                    'ansawer'  => false
+                ) as $resource => $expect) {
+                        $actual = $this->object->hasResource($resource);
+                        self::assertNotNull($actual);
+                        self::assertTrue(is_bool($actual));
+                        self::assertEquals($expect, $actual);
+                }
+        }
+
+        /**
          * @covers OpenExam\Library\Security\Capabilities::hasPermission
          * @group security
          */
@@ -147,6 +167,7 @@ class CapabilitiesTest extends TestCase
                 ) as $action => $expect) {
                         $actual = $this->object->hasPermission('creator', 'exam', $action);
                         self::assertNotNull($actual);
+                        self::assertTrue(is_bool($actual));
                         self::assertEquals($expect, $actual);
                 }
         }
