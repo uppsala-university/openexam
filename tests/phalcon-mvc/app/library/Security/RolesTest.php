@@ -598,7 +598,7 @@ class RolesTest extends TestCase
         private static function dump($model)
         {
                 self::info("%s: ", get_class($model));
-                self::info(print_r($model->dump(), true));
+                self::info(print_r($model->toArray(), true));
         }
 
 }
