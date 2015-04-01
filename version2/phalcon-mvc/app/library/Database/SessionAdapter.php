@@ -16,7 +16,7 @@ namespace OpenExam\Library\Database;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Models\Session as SessionModel;
-use Phalcon\Session\Adapter;
+use Phalcon\Session\Adapter As AdapterBase;
 use Phalcon\Session\AdapterInterface;
 
 /**
@@ -31,7 +31,7 @@ use Phalcon\Session\AdapterInterface;
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class SessionAdapter extends Adapter implements AdapterInterface
+class SessionAdapter extends AdapterBase implements AdapterInterface
 {
 
         /**
