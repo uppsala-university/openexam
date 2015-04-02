@@ -45,6 +45,9 @@ use OpenExam\Library\Catalog\Principal;
  * // Get custom attributes (service dependant) -> ["employee","member","staff"]:
  * input: '{"principal":"user@example.com","attribute":"edupersonaffiliation"}'
  * 
+ * // Get user affiliation of caller -> ["student"]:
+ * input: '{"attribute":"affiliation"}'
+ * 
  * Query members (/ajax/catalog/members):
  * ---------------------------------------------
  * 

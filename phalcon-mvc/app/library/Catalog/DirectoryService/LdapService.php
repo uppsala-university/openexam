@@ -157,14 +157,20 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                 public function setAffiliationMap($map)
                 {
                         $this->affiliation = function($attrs) use($map) {
-                                foreach ($map as $key => $val) {
-                                        foreach ($attrs as $index => $attr) {
-                                                if ($attr == $val) {
-                                                        $attrs[$index] = $key;
+                                $result = array();
+                                foreach ($map as $key => $values) {
+                                        if (!is_array($values)) {
+                                                $values = array($values);
+                                        }
+                                        foreach ($values as $val) {
+                                                foreach ($attrs as $index => $attr) {
+                                                        if ($attr == $val) {
+                                                                $result[$key] = true;
+                                                        }
                                                 }
                                         }
                                 }
-                                return $attrs;
+                                return array_keys($result);
                         };
                 }
 

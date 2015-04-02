@@ -66,9 +66,10 @@ return array(
                         );
                         $service->setAttributeMap(array(
                                 'person' => array(
-                                        Principal::ATTR_PN   => 'userPrincipalName',
-                                        Principal::ATTR_UID  => 'sAMAccountName',
-                                        Principal::ATTR_NAME => 'displayName'
+                                        Principal::ATTR_PN    => 'userPrincipalName',
+                                        Principal::ATTR_UID   => 'sAMAccountName',
+                                        Principal::ATTR_NAME  => 'displayName',
+                                        Principal::ATTR_AFFIL => 'memberOf'
                                 )
                         ));
                         // 
@@ -89,8 +90,12 @@ return array(
                         // Set user affiliation using attribute map:
                         // 
                         $service->setAffiliationMap(array(
-                                Affiliation::EMPLOYEE => 'CN=Employee,DC=users,DC=example,DC=com',
-                                Affiliation::STUDENT  => 'CN=Student,DC=users,DC=example,DC=com'
+                                Affiliation::EMPLOYEE => 
+                                        'CN=Employees,DC=users,DC=example,DC=com',
+                                Affiliation::STUDENT  => array(
+                                        'CN=Group1,OU=Student,DC=users,DC=example,DC=com',
+                                        'CN=Group2,OU=Student,DC=users,DC=example,DC=com'
+                                )
                         ));
                         $service->setBase('dc=users,dc=example,dc=com');
                         return $service;
