@@ -57,10 +57,17 @@ class SampleData
          */
         public function getSample($resource, $object = true)
         {
+                $data = (array) $this->sample[$resource];
+
+                foreach ($data as $key => $val) {
+                        if (is_object($val)) {
+                                unset($data[$key]);
+                        }
+                }
+
                 if ($object) {
-                        return $this->sample[$resource];
+                        return $data;
                 } else {
-                        $data = $this->sample[$resource];
                         unset($data['id']);
                         return $data;
                 }
