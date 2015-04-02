@@ -195,7 +195,6 @@ $config = new \Phalcon\Config(
                 // Security token, an absolute file path or string:
                 // 
                 'token' => BASE_DIR . '/cache/render.sec'
-
         ),
         /**
          * Models meta data cache. Only activated if application->release is
@@ -212,6 +211,46 @@ $config = new \Phalcon\Config(
                 'expires'   => 7200,            // Expires after (seconds)
                 'refresh'   => 1800,            // Refresh threshold (seconds)
                 'startPage' => 'exam/index'     // Start page (user initiated)
+        ),
+        /**
+         * Multi level object cache.
+         */
+        'cache'       => array(
+                /**
+                 * Enable these extensions (if available):
+                 */
+                'enable'   => array(
+                        'xcache'   => true,
+                        'apc'      => true,
+                        'memcache' => true,
+                        'file'     => true
+                ),
+                /**
+                 * Cached object lifetime:
+                 */
+                'lifetime' => array(
+                        'fast'   => 3600,
+                        'medium' => 86400,
+                        'slow'   => 604800
+                ),
+                /**
+                 * Extension specific settings:
+                 */
+                'xcache'   => array(
+                        'prefix' => 'cache'
+                ),
+                'apc'      => array(
+                        'prefix' => 'cache'
+                ),
+                'memcache' => array(
+                        'prefix' => 'cache',
+                        'host'   => 'localhost',
+                        'port'   => '11211'
+                ),
+                'file'     => array(
+                        'prefix'   => 'cache',
+                        'cacheDir' => BASE_DIR . '/cache/app/'
+                )
         )
     )
 );
