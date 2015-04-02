@@ -20,7 +20,7 @@ $di->set('config', $config, true);
 
 $di->set('router', function() use($di) {
         return require CONFIG_SYS . '/routes.php';
-});
+}, true);
 
 /**
  * Enforce model access check using custom model manager.
@@ -83,19 +83,19 @@ $di->set('dispatcher', function() use ($di) {
 });
 
 /**
- * The URL component is used to generate all kind of urls in the application
+ * The URL component is used to generate all kind of URL's in the application.
  */
 $di->set('url', function() use ($config) {
         $url = new \Phalcon\Mvc\Url();
         $url->setBaseUri($config->application->baseUri);
         return $url;
-});
+}, true);
 
 $di->set('view', function() use ($config) {
         $view = new \Phalcon\Mvc\View();
         $view->setViewsDir($config->application->viewsDir);
         return $view;
-});
+}, true);
 
 /**
  * Register the flash service with custom CSS classes
@@ -109,21 +109,14 @@ $di->set('flash', function() {
 });
 
 /**
- * Register a user component
- */
-$di->set('helper', function() {
-        return new \OpenExam\Library\Gui\Helper();
-});
-
-/**
  * Database connection is created based in the parameters defined in the configuration file
  */
 $di->set('dbread', function () use ($config) {
         return \OpenExam\Library\Database\Adapter::create($config->dbread);
-});
+}, true);
 $di->set('dbwrite', function () use ($config) {
         return \OpenExam\Library\Database\Adapter::create($config->dbwrite);
-});
+}, true);
 
 /**
  * Start the session the first time some component request the session service
@@ -155,13 +148,13 @@ $di->set('locale', function() use($config) {
  */
 $di->set('tr', function() use($config) {
         return new \OpenExam\Library\Globalization\Translate\Gettext\Translate('core');
-});
+}, true);
 
 $di->set('acl', function() {
         return new \OpenExam\Library\Security\Acl(
             require CONFIG_DIR . '/access.def'
         );
-});
+}, true);
 
 $di->set('auth', function() use($config) {
         return new \OpenExam\Library\Security\Authentication(
@@ -250,6 +243,20 @@ $di->set('capabilities', function() {
             require CONFIG_DIR . '/access.def'
         );
 }, true);
+
+/**
+ * Multi-level backend binary cache.
+ */
+$di->set('cache', function() use($config) {
+        return new \OpenExam\Library\Core\Cache($config);
+}, true);
+
+/**
+ * Register a user component
+ */
+$di->set('helper', function() {
+        return new \OpenExam\Library\Gui\Helper();
+});
 
 /**
  * Phql based model manager
