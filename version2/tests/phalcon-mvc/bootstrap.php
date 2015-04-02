@@ -20,7 +20,7 @@
  * command line task.
  */
 ini_set('display_errors', 1);
-ini_set("memory_limit", "1024M");
+ini_set("memory_limit", "1536M");
 error_reporting(E_ALL);
 
 // 
