@@ -198,5 +198,19 @@ return array(
                  * Display remove option.
                  */
                 'remove'    => false
+        ),
+        /**
+         * Multi level object cache (See system/config.php).
+         */
+        'cache'       => array(
+                /**
+                 * Enable these extensions (if available):
+                 */
+                'enable'   => array(
+                        'xcache'   => true,
+                        'apc'      => true,
+                        'memcache' => true,
+                        'file'     => true
+                )
         )
 );
