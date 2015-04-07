@@ -209,6 +209,15 @@
 					
 				} else {
 					
+					if(localStorage.getItem(elementId) === null) {
+						lc.loadSnapshotJSON(canvasJson);
+						canvasData[elementId] = canvasJson;
+					} else {
+						dirtybit = 1;
+						lc.loadSnapshotJSON(localStorage.getItem(elementId));
+						canvasData[elementId] = localStorage.getItem(elementId);
+					}
+					/*
 					alert("Error: Seems like your drawing is not being saved properly in database. Please contact your invigilator immediately and show this message to invigilator. Do not refresh/close this browser window.");
 					alert("From localStorage:" + localStorage.getItem(elementId));
 					alert("From database:"+ canvasJson);
@@ -224,7 +233,7 @@
 					} else {
 						lc.loadSnapshotJSON(canvasJson);
 						canvasData[elementId] = canvasJson;
-					}
+					}*/
 					
 				}
 				
