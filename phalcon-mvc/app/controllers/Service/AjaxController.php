@@ -55,6 +55,7 @@ class AjaxController extends ServiceController
 
         /**
          * Get service request.
+         * @param callable $remapper Callback remapping path element to field names (e.g. exams -> exam_id).
          * @return ServiceRequest
          * @throws ServiceException
          */
