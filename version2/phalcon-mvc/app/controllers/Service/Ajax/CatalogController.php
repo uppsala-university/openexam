@@ -14,8 +14,7 @@
 namespace OpenExam\Controllers\Service\Ajax;
 
 use OpenExam\Controllers\Service\AjaxController;
-use OpenExam\Library\Catalog\DirectoryManager;
-use OpenExam\Library\Catalog\Principal;
+use OpenExam\Library\WebService\Handler\CatalogHandler;
 
 /**
  * AJAX controller for catalog (directory information) service.
@@ -59,7 +58,7 @@ use OpenExam\Library\Catalog\Principal;
  * // Get all members in group 3FV271, looking in domain example.com:
  * input: '{"group":"3FV271","domain":"example.com"}'
  * 
- * // Filter returned attriubutes (depends on directory service backend):
+ * // Filter returned attributes (depends on directory service backend):
  * input: '{"group":"3FV271","attributes":["principal","cn","mail"]}'
  * 
  * Query principals (/ajax/catalog/principal):
@@ -145,79 +144,15 @@ class CatalogController extends AjaxController
 {
 
         /**
-         * Output as obejct.
+         *
+         * @var CatalogHandler 
          */
-        const OUTPUT_OBJECT = 'object';
-        /**
-         * Output as array.
-         */
-        const OUTPUT_ARRAY = 'array';
-        /**
-         * Strip null values in output.
-         */
-        const OUTPUT_STRIP = 'strip';
-        /**
-         * Compact otuput format.
-         */
-        const OUTPUT_COMPACT = 'compact';
-
-        /**
-         * The query data.
-         * @var array 
-         */
-        private $data;
-        /**
-         * The query parameters.
-         * @var array 
-         */
-        private $params;
+        private $handler;
 
         public function initialize()
         {
                 parent::initialize();
-
-                if ($this->request->isPost()) {
-                        $request = $this->getRequest();
-                }
-
-                if ($this->dispatcher->getActionName() == "groups") {
-                        if (!isset($request->data['attributes'])) {
-                                $request->data['attributes'] = array(Principal::ATTR_NAME);
-                        }
-                }
-
-                if ($this->dispatcher->getActionName() == "members") {
-                        if (!isset($request->data['attributes'])) {
-                                $request->data['attributes'] = DirectoryManager::$DEFAULT_ATTR;
-                        }
-                        if (!isset($request->data['domain'])) {
-                                $request->data['domain'] = null;
-                        }
-                }
-
-                if ($this->dispatcher->getActionName() == "attribute" ||
-                    $this->dispatcher->getActionName() == "name" ||
-                    $this->dispatcher->getActionName() == "mail") {
-                        if (!isset($request->params['svcref'])) {
-                                $request->params['svcref'] = false;
-                        }
-                        if (!isset($request->params['output'])) {
-                                $request->params['output'] = self::OUTPUT_COMPACT;
-                        }
-                }
-
-                if (!isset($request->data['principal'])) {
-                        $request->data['principal'] = $this->user->getPrincipalName();
-                }
-                if (!isset($request->params['output'])) {
-                        $request->params['output'] = self::OUTPUT_OBJECT;
-                }
-                if (!isset($request->params['svcref'])) {
-                        $request->params['svcref'] = true;
-                }
-
-                $this->data = $request->data;
-                $this->params = $request->params;
+                $this->handler = new CatalogHandler($this->getRequest(), $this->user, $this->catalog);
         }
 
         /**
@@ -259,7 +194,8 @@ class CatalogController extends AjaxController
          */
         public function domainsAction()
         {
-                $this->send(self::SUCCESS, $this->catalog->getDomains());
+                $response = $this->handler->domains();
+                $this->sendResponse($response);
         }
 
         /**
@@ -267,9 +203,8 @@ class CatalogController extends AjaxController
          */
         public function nameAction()
         {
-                $result = $this->catalog->getName($this->data['principal']);
-                $result = $this->formatResult($result, $this->params['output']);
-                $this->send(self::SUCCESS, $result);
+                $response = $this->handler->name();
+                $this->sendResponse($response);
         }
 
         /**
@@ -277,9 +212,8 @@ class CatalogController extends AjaxController
          */
         public function mailAction()
         {
-                $result = $this->catalog->getMail($this->data['principal']);
-                $result = $this->formatResult($result, $this->params['output']);
-                $this->send(self::SUCCESS, $result);
+                $response = $this->handler->mail();
+                $this->sendResponse($response);
         }
 
         /**
@@ -287,9 +221,8 @@ class CatalogController extends AjaxController
          */
         public function attributeAction()
         {
-                $result = $this->catalog->getAttribute($this->data['principal'], $this->data['attribute']);
-                $result = $this->formatResult($result, $this->params['output']);
-                $this->send(self::SUCCESS, $result);
+                $response = $this->handler->attribute();
+                $this->sendResponse($response);
         }
 
         /**
@@ -299,14 +232,8 @@ class CatalogController extends AjaxController
          */
         public function groupsAction($principal = null, $output = null)
         {
-                if ($this->request->isGet()) {
-                        $this->data['principal'] = $principal;
-                        $this->params['output'] = $output;
-                }
-
-                $result = $this->catalog->getGroups($this->data['principal'], $this->data['attributes']);
-                $result = $this->formatResult($result, $this->params['output']);
-                $this->send(self::SUCCESS, $result);
+                $response = $this->handler->groups($this->request->getMethod(), $principal, $output);
+                $this->sendResponse($response);
         }
 
         /**
@@ -316,14 +243,8 @@ class CatalogController extends AjaxController
          */
         public function membersAction($group = null, $output = null)
         {
-                if ($this->request->isGet()) {
-                        $this->data['group'] = $group;
-                        $this->params['output'] = $output;
-                }
-
-                $result = $this->catalog->getMembers($this->data['group'], $this->data['domain'], $this->data['attributes']);
-                $result = $this->formatResult($result, $this->params['output']);
-                $this->send(self::SUCCESS, $result);
+                $response = $this->handler->members($this->request->getMethod(), $group, $output);
+                $this->sendResponse($response);
         }
 
         /**
@@ -331,87 +252,8 @@ class CatalogController extends AjaxController
          */
         public function principalAction()
         {
-                $result = $this->catalog->getPrincipal(current($this->data), key($this->data), $this->params);
-                $result = $this->formatResult($result, $this->params['output']);
-                $this->send(self::SUCCESS, $result);
+                $response = $this->handler->principal();
+                $this->sendResponse($response);
         }
 
-        /**
-         * Format output based on request params preferences.
-         * @param array $input The result data.
-         * @return array
-         */
-        private function formatResult($input)
-        {
-                $output = $this->params['output'];
-                $svcref = $this->params['svcref'];
-
-                // 
-                // Strip service references if requested:
-                // 
-                if ($svcref == false) {
-                        for ($i = 0; $i < count($input); $i++) {
-                                if ($input[$i] instanceof Principal) {
-                                        unset($input[$i]->attr['svc']);
-                                } else {
-                                        unset($input[$i]['svc']);
-                                }
-                        }
-                }
-
-                // 
-                // Convert single index array to strings:
-                // 
-                if (is_array(current($input))) {
-                        for ($i = 0; $i < count($input); $i++) {
-                                foreach ($input[$i] as $key => $val) {
-                                        if (is_array($val) && count($val) == 1) {
-                                                $input[$i][$key] = $input[$i][$key][0];
-                                        }
-                                }
-                        }
-                }
-
-                // 
-                // Format output:
-                // 
-                if ($output == self::OUTPUT_OBJECT) {
-                        return $input;
-                } elseif ($output == self::OUTPUT_STRIP) {
-                        for ($i = 0; $i < count($input); $i++) {
-                                $input[$i] = array_filter((array) $input[$i]);
-                        }
-                        return $input;
-                } elseif ($output == self::OUTPUT_COMPACT) {
-                        $result = array();
-                        for ($i = 0; $i < count($input); $i++) {
-                                $result = array_merge($result, array_values(array_filter((array) $input[$i])));
-                        }
-                        return $result;
-                } elseif ($output == self::OUTPUT_ARRAY) {
-                        for ($i = 0; $i < count($input); $i++) {
-                                $input[$i] = array_values(array_filter((array) $input[$i]));
-                        }
-                        return $input;
-                }
-        }
-
-        /**
-         * Send service response.
-         * @param ServiceResponse $response The service response.
-         */
-        protected function send($status, $result)
-        {
-                $action = $this->dispatcher->getActionName();
-                $target = $this->dispatcher->getControllerName();
-
-                $this->response->setJsonContent(array(
-                        $status => array(
-                                'target' => $target,
-                                'action' => $action,
-                                'return' => $result
-                )));
-                $this->response->send();
-        }
-        
 }
