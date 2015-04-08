@@ -67,4 +67,6 @@ CKEDITOR.config.toolbar = [
 	config.autoParagraph = false;
 	
 	config.enterMode = CKEDITOR.ENTER_BR;
+	
+	config.entities = false;
 };
