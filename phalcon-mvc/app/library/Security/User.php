@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Security;
 
 use OpenExam\Library\Catalog\Affiliation;
+use OpenExam\Library\Core\Settings;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -35,6 +36,7 @@ use Phalcon\Mvc\User\Component;
  * using the impersonated user, not the actor (real user).
  * 
  * @property Roles $roles The roles associated with this user.
+ * @property Settings $settings The user settings.
  * @property-read Impersonation $impersonation The current impersonation.
  * @property-read Affiliation $affiliation The user affiliation.
  * 
@@ -103,6 +105,7 @@ class User extends Component
                         }
                         
                         $this->affiliation = new Affiliation($this->getPrincipalName());
+                        $this->settings = new Settings($this->getPrincipalName());
                 }
         }
 

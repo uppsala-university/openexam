@@ -126,14 +126,32 @@ class Setting extends ModelBase
          * 
          * @param string $key The settings key name.
          * @param string $sect Optinal sub section.
-         * @return atring|array
+         * @return string|array
          */
         public function get($key, $sect = null)
         {
+                if ($this->has($key, $sect) == false) {
+                        return null;
+                }
                 if (isset($sect)) {
                         return $this->data[$sect][$key];
                 } else {
                         return $this->data[$key];
+                }
+        }
+
+        /**
+         * Check if key is set, optional from a sub section.
+         * @param string $key The settings key name.
+         * @param string $sect Optinal sub section.
+         * @return boolean
+         */
+        public function has($key, $sect = null)
+        {
+                if (isset($sect)) {
+                        return isset($this->data[$sect][$key]);
+                } else {
+                        return isset($this->data[$key]);
                 }
         }
 
