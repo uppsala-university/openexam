@@ -60,10 +60,10 @@
 					if(ansData.trim()) {
 						console.log("not empty:"+ansData);
 						ansJson[qPartName]["ans"].push(ansData);
-						$('#ansBkp'+qPartName).val(ansData);
+						$('#ansBkp'+qPartName).html(ansData);
 					} else {
-						console.log("its empty .. so sending old value:"+$('#ansBkp'+qPartName).val());
-						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).val());
+						console.log("its empty .. so sending old value:"+$('#ansBkp'+qPartName).html());
+						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).html());
 					}
 					
 				} else if(ansType == 'textarea') {
@@ -73,10 +73,10 @@
 					if(ansData.trim()) {
 						console.log("not empty:"+ansData);
 						ansJson[qPartName]["ans"].push(ansData);
-						$('#ansBkp'+qPartName).val(ansData);
+						$('#ansBkp'+qPartName).html(ansData);
 					} else {
-						console.log("its empty .. so sending old value:"+$('#ansBkp'+qPartName).val());
-						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).val());
+						console.log("its empty .. so sending old value:"+$('#ansBkp'+qPartName).html());
+						ansJson[qPartName]["ans"].push($('#ansBkp'+qPartName).html());
 					}
 					
 				} else if(ansType == 'choicebox') {
