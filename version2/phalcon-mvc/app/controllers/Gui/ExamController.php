@@ -54,7 +54,7 @@ class ExamController extends GuiController
                     . "("
                         . "(s.endtime is NULL and e.endtime >= NOW()) or "
                         . "(s.endtime is not NULL  and s.endtime >= NOW()) or"
-                        . "(e.starttime is not NULL  and s.endtime is null)"
+                        . "(e.starttime is not NULL  and e.endtime is null)"
                     . ") and "
                     . "e.published = 'Y' "
                     . "order by e.starttime desc "
