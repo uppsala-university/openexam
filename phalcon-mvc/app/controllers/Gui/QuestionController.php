@@ -138,7 +138,7 @@ class QuestionController extends GuiController
                         $examEndsAt = !is_null($student->endtime) ? $student->endtime : $exam->endtime;
 
                         ## load exam with time checking
-                        if (strtotime($examStartsAt) > strtotime("now") || strtotime($examEndsAt) < strtotime("now")) {
+                        if (!is_null($examEndsAt) && (strtotime($examStartsAt) > strtotime("now") || strtotime($examEndsAt) < strtotime("now"))) {
                                 return $this->response->redirect('exam/index');
                         }
                 }

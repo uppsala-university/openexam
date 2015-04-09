@@ -58,7 +58,7 @@ die;*/
 		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
 			<input title="Exam code from active directory" type="text" value="<?=$exam->name?>" name="exam-title"  class="validate[required]" style="width:68% !important" ><!--data-prompt-position="topRight:-150"-->
 		<?php else:?>
-			<?=trim($exam->name)!=''?trim($exam->name):'Untitled exam'?>
+			<span style="border: 1px solid #cecece; padding:5px"><?=trim($exam->name)!=''?trim($exam->name):'Untitled exam'?></span>
 		<?php endif;?>
 	</div>
 	<div class="st-line" style="float:left; margin-right:25px">
@@ -66,7 +66,7 @@ die;*/
 		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
 			<input title="Course code of this exam" type="text" value="<?=$exam->course?>" name="exam-course-code">
 		<?php else:?>
-			<?=$exam->course?>
+			<span style="border: 1px solid #cecece; padding:5px"><?=empty($exam->course) ? " --- " : $exam->course?></span>
 		<?php endif;?>
 	</div>
 	<div class="st-line">
@@ -74,7 +74,7 @@ die;*/
 		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
 			<input title="Exam code from active directory" type="text" value="<?=$exam->code?>" name="exam-code">
 		<?php else:?>
-			<?=$exam->code?>
+			<span style="border: 1px solid #cecece; padding:5px;"><?=empty($exam->code) ? " --- " : $exam->code?></span>
 		<?php endif;?>
 	</div>
 	<div class="st-line" style="float:left; margin-right:25px">
@@ -82,7 +82,7 @@ die;*/
 		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
 		<input type="text" placeholder="yyyy-mm-dd hh:mm" value="<?=$exam->starttime?>" name="start" class="datepicker validate[required]">
 		<?php else:?>
-		<?=$exam->starttime?>
+		<span style="border: 1px solid #cecece; padding:5px"><?=$exam->starttime?></span>
 		<?php endif;?>
 	</div>
 
@@ -91,15 +91,15 @@ die;*/
 		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
 		<input type="text" placeholder="yyyy-mm-dd hh:mm" value="<?=$exam->endtime?>" name="end" class="datepicker">
 		<?php else:?>
-		<?=$exam->endtime?>
+		<span style="border: 1px solid #cecece; padding:5px"><?=$exam->endtime?></span>
 		<?php endif;?>
 	</div>
 	<div class="st-line" style="float:left; margin-right:25px">
 		<label for="grade"><strong>Grades:</strong> <span style="color:#F02222">*</span></label>
-		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+		<?php if($canUpdateExam):?>
 		<textarea title="Input name:value pairs on separate lines defining the Grade levels for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade validate[required]" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:15", 60, " ") . "VG:20"?>"><?=trim($exam->grades)?></textarea>
 		<?php else:?>
-		<?=nl2br(trim($exam->grades))?>
+		<span style="border: 1px solid #cecece; padding:5px"><?=nl2br(trim($exam->grades))?></span>
 		<?php endif;?>
 	</div>
 	<div class="st-line">
@@ -107,7 +107,7 @@ die;*/
 		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
 		<input type="text" value="<?= $exam->orgunit ?>" name="unit" class="validate[required]">
 		<?php else:?>
-		<?= $exam->orgunit ?>
+		<span style="border: 1px solid #cecece; padding:5px"><?= $exam->orgunit ?></span>
 		<?php endif;?>
 	</div>
 	<br style="clear:both" />
@@ -116,11 +116,11 @@ die;*/
 		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
 			<textarea id="exam-desc" style="width:99%;" rows="1" placeholder="Write exam description here"><?= trim($exam->descr) ?></textarea>
 		<?php else:?>
-			<div style="width:99%;"><?=trim($exam->descr)?></div>
+			<div style="width:99%;border: 1px solid #cecece; padding:5px"><?=trim($exam->descr)?></div>
 		<?php endif;?>
 	</div>
 	<div class="st-line">
-		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+		<?php if($canUpdateExam):?>
 			<input type="checkbox" value="1" title="Expose names and contact information for people involved in the creation and correction process in the result PDF seen by the student." <?=((($exam->details & 1) == 1 || empty($exam->details)) ? 'checked="checked"':'')?> name="details[]" >
 		In corrected exam, display correcting teacher.
 		<?php else:?>
@@ -128,7 +128,7 @@ die;*/
 		<?php endif;?>
 		<br />
 		
-		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+		<?php if($canUpdateExam):?>
 			<input type="checkbox" value="2" title="Include statistics like avarage/mean values and score distribution compared to other students in the result PDF seen by the student." <?=((($exam->details & 2) == 2 || empty($exam->details)) ? 'checked="checked"':'')?> name="details[]" >
 		In corrected exam, include result statistics.
 		<?php else:?>
@@ -136,7 +136,7 @@ die;*/
 		<?php endif;?>
 		<br>
 
-		<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+		<?php if($canUpdateExam):?>
 		<input type="checkbox" value="4" <?=((($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION || empty($exam->details)) ? 'checked="checked"':'')?> name="details[]" >
 		Expose student's accumulated points in score board.
 		<?php else:?>
@@ -144,7 +144,7 @@ die;*/
 		<?php endif;?>
 		<br>
 	</div>
-	<?php if($canUpdateExam && in_array("editable", $exam->flags)):?>
+	<?php if($canUpdateExam):?>
 	<div class="st-line">
 		<center>
 			<span style="padding:2px; font-size:11px" class="btn btn-success save-exam-settings">
