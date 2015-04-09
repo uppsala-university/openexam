@@ -23,7 +23,7 @@ $sections = array (
 				'del-exam' => array(
 						'target'=> 'del-exam',
 						'show-on-flags' => array (
-							"contributable",
+							"deletable",
 						)
 					),
 				'reuse-exam' => array(
@@ -41,17 +41,17 @@ $sections = array (
 				'manage-exam' => array(
 						'target'=> 'exam/update/{exam-id}/creator',
 						'show-on-flags' => array (
-							"contributable"
+							"*"
 						)
 					),
 					
-				'view-exam' => array(
+				/*'view-exam' => array(
 						'target'=> 'exam/update/{exam-id}/creator',
 						'show-on-flags' => array (
 							"running",
 							"finished"
 						)
-					),
+					),*/
 		)
 	),
 	Roles::CONTRIBUTOR => array (
@@ -170,8 +170,9 @@ $sections = array (
 				'st-exam-page' => array(
 						'target'=> 'exam/{exam-id}',
 						'show-on-flags' => array (
-							"upcoming", 
-							"running"
+							"*"
+							/*"upcoming", 
+							"running"*/
 						)
 				)
 		)
@@ -389,6 +390,12 @@ $examsPerPage = 5;
                 </div>
                 <?php $sectId++; ?>
                 <?php endforeach; ?>
+                <input id="ac-hidden" type="radio" name="accordion-1">
+                <label for="ac-hidden" id="ac-hidden-label" style="display:none">
+                        <i class="fa fa-chevron-right chevron" style="font-size: 16px; color: #990000"></i>
+                </label>
+                <article class="ac-large"  style="display:none">
+                </article>
         </section>
         
         <!-- hidden divs -->
@@ -436,14 +443,16 @@ $(function() {
 	$('.datepicker').datepicker({"dateFormat": "yy-mm-dd"});
 	$('.timepicker').timepicker();
 	$('.exam-list-boxes').click(function() {
+		//alert("clicked");
 		$('.chevron').removeClass('fa-chevron-down').addClass('fa-chevron-right').css('color','#990000');
 		$(this).find('.chevron').removeClass('fa-chevron-right').addClass('fa-chevron-down').css('color','#3A87AD');
-		/*if($(this).parent().find('input[type="radio"]').is(':checked')) {
-			$(this).parent().find('input[type="radio"]').prop('checked', false);
-			console.log($(this).parent().find('input[type="radio"]').is(':checked'));
+		if($(this).parent().find('input[type="radio"]').is(':checked')) {
+			$('#ac-hidden-label').trigger('click');
+			//$(this).parent().find('input[type="radio"]').prop('checked', false);
+			//alert("triggering");
 		} else {
 			console.log("not checked");
-		}*/
+		}
 	});
 });
 var examSections = <?=json_encode($sections);?>;
