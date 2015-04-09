@@ -46,7 +46,7 @@
 	endif;
 	
 	$start 	= date_create(strtotime($examStartsAt) > strtotime("now") ? $examStartsAt : "now");
-	$end 	= date_create($examEndsAt);
+	$end 	= date_create(!is_null($examEndsAt) ? $examEndsAt : date("Y-m-d H:i:s", strtotime("+30 days")));
 	
 	$timeLeft = $start->diff($end);
 	$secDiff = (int)$end->format('U') - (int)$start->format('U');
@@ -156,16 +156,18 @@
                     </li>
                     <li class='<?=($viewMode == 'all' ? 'active' : '')?>'>
                               <a class="sync-answer" href="#" hlink="<?=$this->url->get('exam/'.$exam->id.'/question/all')?>">
-                                <div style="float:left; width:20%"><i class='icon-list'></i></div>
-                                <div style="float:left; width:80%"><span>Preview your answers</span></div>
+                                <div style="float:left; width:20%"><i class='icon-signout'></i></div>
+                                <div style="float:left; width:80%"><span>Preview your answers and Quit</span></div>
                               </a>
                     </li>
+                    <!--
                     <li>
                               <a class="logout-me" href="#" hlink="<?=$this->url->get('auth/logout')?>">
                                 <div style="float:left; width:20%"><i class='icon-signout'></i></div>
                                 <div style="float:left; width:80%"><span>Quit and sign out</span></div>
                               </a>
                     </li>
+                    -->
         	    <?php foreach($allQs as $qNo => $question):?>
                     <?php $questionData = json_decode($question->quest);?>
 

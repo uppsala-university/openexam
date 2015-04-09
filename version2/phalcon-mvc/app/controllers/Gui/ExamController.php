@@ -51,7 +51,11 @@ class ExamController extends GuiController
                     . "inner join OpenExam\Models\Student s "
                     . "where "
                     . "s.user = :user: and "
-                    . "e.endtime >= NOW() and "
+                    . "("
+                        . "(s.endtime is NULL and e.endtime >= NOW()) or "
+                        . "(s.endtime is not NULL  and s.endtime >= NOW()) or"
+                        . "(e.starttime is not NULL  and s.endtime is null)"
+                    . ") and "
                     . "e.published = 'Y' "
                     . "order by e.starttime desc "
                     , array("user" => $loggedIn)
@@ -72,7 +76,10 @@ class ExamController extends GuiController
                     . "inner join OpenExam\Models\Student s "
                     . "where "
                     . "s.user = :user: and "
-                    . "e.endtime < NOW() and "
+                    . "("
+                        . "(s.endtime is NULL and e.endtime < NOW()) or "
+                        . "(s.endtime is not NULL and s.endtime < NOW())"
+                    . ") and "
                     . "e.published = 'Y' "
                     . "order by e.endtime desc "
                     , array("user" => $loggedIn)
@@ -377,9 +384,9 @@ class ExamController extends GuiController
 
                         $examStartsAt = !is_null($student->starttime) ? $student->starttime : $exam->starttime;
                         $examEndsAt = !is_null($student->endtime) ? $student->endtime : $exam->endtime;
-
+                        
                         ## load exam with time checking
-                        if (strtotime($examEndsAt) < strtotime("now")) {
+                        if (!is_null($examEndsAt) && strtotime($examEndsAt) < strtotime("now")) {
                                 return $this->response->redirect('exam/index');
                         }
                 }
