@@ -19,12 +19,5 @@ namespace OpenExam\Library\WebService\Common;
  */
 class Exception extends \Exception
 {
-
-        public function __construct($message, $code, $file, $line)
-        {
-                parent::__construct($message, $code, null);
-                $this->file = $file;
-                $this->line = $line;
-        }
-
+        
 }
