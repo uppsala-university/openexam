@@ -170,7 +170,7 @@ class State
                 if ($this->exam->testcase) {
                         $this->state |= self::TESTCASE | self::DELETABLE;
                 }
-                if ($this->exam->lockdown) {
+                if ($this->exam->lockdown->enable) {
                         $this->state |= self::LOCKDOWN;
                 }
                 if ($this->exam->published) {

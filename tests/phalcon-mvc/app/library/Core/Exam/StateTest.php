@@ -219,8 +219,8 @@ class StateTest extends TestCase
                 self::assertTrue(($this->state->getState() & State::LOCKDOWN) == 0);
                 self::assertTrue(($this->state->getState() & State::PUBLISHED) == 0);
 
+                $this->exam->lockdown = array('enable' => true);
                 $this->exam->testcase = true;
-                $this->exam->lockdown = true;
                 $this->exam->published = true;
 
                 $this->exam->update();
@@ -338,8 +338,8 @@ class StateTest extends TestCase
                 self::assertFalse($this->state->has(State::LOCKDOWN));
                 self::assertFalse($this->state->has(State::PUBLISHED));
 
+                $this->exam->lockdown = array('enable' => true);
                 $this->exam->testcase = true;
-                $this->exam->lockdown = true;
                 $this->exam->published = true;
 
                 $this->exam->update();
@@ -477,8 +477,8 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('lockdown', $flags));
                 self::assertFalse(in_array('published', $flags));
 
+                $this->exam->lockdown = array('enable' => true);
                 $this->exam->testcase = true;
-                $this->exam->lockdown = true;
                 $this->exam->published = true;
 
                 $this->exam->update();
