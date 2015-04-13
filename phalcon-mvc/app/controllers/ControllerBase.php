@@ -42,7 +42,7 @@ abstract class ControllerBase extends Controller
          * Exception handler action.
          */
         public abstract function exceptionAction($exception);
-        
+
         /**
          * Log error and throw exception.
          * @param int $code The error level (severity).
@@ -70,8 +70,17 @@ abstract class ControllerBase extends Controller
          */
         protected function report($exception)
         {
-                $request = $this->request->get();
-                $payload = method_exists($this, 'getPayload') ? $this->getPayload() : array();
+                try {
+                        $request = $this->request->get();
+                        $payload = method_exists($this, 'getPayload') ? $this->getPayload() : array();
+                } catch (\Exception $exception) {
+                        if (!isset($request)) {
+                                $request = array('failed' => true);
+                        }
+                        if (!isset($payload)) {
+                                $payload = array('failed' => true);
+                        }
+                }
 
                 $this->logger->system->begin();
                 $this->logger->system->error(print_r(array(
