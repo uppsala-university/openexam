@@ -245,6 +245,15 @@ $di->set('capabilities', function() {
 }, true);
 
 /**
+ * The location information service.
+ */
+$di->set('location', function() {
+        return new \OpenExam\Library\Core\Location(
+            require CONFIG_DIR . '/location.def'
+        );
+}, true);
+
+/**
  * Multi-level backend binary cache.
  */
 $di->set('cache', function() use($config) {

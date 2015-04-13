@@ -1,0 +1,70 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    location.def.in
+// Created: 2015-04-08 23:47:17
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+/**
+ * Location definitions.
+ * 
+ * These entries defines locations for access control definition (available
+ * in exam security view) and for location aware user information. The array
+ * is grouped by organization, campus and place (e.g. UU -> BMC -> B1:3).
+ * 
+ * Each place can contain 'desc', 'info' and 'addr' keys:
+ * 
+ * o) The desc key contains a short information text suitable for tooltip.
+ * 
+ * o) The info key is an URI with information about this place (e.g. computer 
+ *    specific information). The URI is either a complete URL or relative to
+ *    this applications document root.
+ * 
+ * o) The addr key is an string or array with hostname, subnet, address range 
+ *    or IP address for this place. Multiple addresses can also be separated
+ *    by a ';' delimiter.
+ * 
+ * The entries should be ordered from most specific to more general. A "catch
+ * all" entry might appear last in the list:
+ * 
+ * '*' => array(
+ *      '*' => array(
+ *              'World' => array(
+ *                      'addr' => '0.0.0.0/0'
+ *              )
+ *      )
+ * );
+ */
+return array(
+        'UU' => array(
+                'BMC' => array(
+                        'B1:3'  => array(
+                                'desc' => 'Exam hall (B1:314)',
+                                'info' => 'http://www.bmc.uu.se/mediateket/rooms/b1_3.html',
+                                'addr' => '192.168.180.0/24'
+                        ),
+                        'C11:1' => array(
+                                'addr' => array(
+                                        '192.168.35.10-192.168.35.40',
+                                        '192.168.37.25-192.168.37.60'
+                                )
+                        ),
+                        'A6:0'  => array(
+                                'desc' => 'Side A and B',
+                                'addr' => '192.168.38.0/26;192.168.38.128/26'
+                        )
+                ),
+                'OSC' => array(
+                        'T465' => array(
+                                'desc' => 'Another computer room',
+                                'addr' => '|^.*.osc.uu.se$|'
+                        )
+                )
+        )        
+);

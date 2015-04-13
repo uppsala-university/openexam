@@ -1,82 +1,89 @@
---- vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php.orig	2014-10-31 11:05:23.000000000 +0100
-+++ vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php	2014-10-31 11:01:28.000000000 +0100
-@@ -1,7 +1,31 @@
+--- vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php.orig	2015-04-10 01:45:05.912108123 +0200
++++ vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php	2015-04-10 02:04:21.371645795 +0200
+@@ -1,5 +1,30 @@
  <?php 
  
--namespace Phalcon\DI {
 +namespace OpenExam\Library\DI {
-+        
-+     class Logger 
-+     {
-+             /**
-+              * The system log.
-+              * @var \Phalcon\Logger\AdapterInterface 
-+              */
-+             public $system;
 +
-+             /**
-+              * The authentication log.
-+              * @var \Phalcon\Logger\AdapterInterface
-+              */
-+             public $auth;
-+             
-+             /**
-+              * The debug log.
-+              * @var \Phalcon\Logger\AdapterInterface
-+              */
-+             public $debug;
-+     }
++    class Logger
++    {
++
++        /**
++         * The system log.
++         * @var \Phalcon\Logger\AdapterInterface 
++         */
++        public $system;
++        /**
++         * The authentication log.
++         * @var \Phalcon\Logger\AdapterInterface
++         */
++        public $auth;
++        /**
++         * The debug log.
++         * @var \Phalcon\Logger\AdapterInterface
++         */
++        public $debug;
++
++    }
++
 +}
++
+ namespace Phalcon\DI {
  
-+namespace Phalcon\DI {
-+        
      /**
-      * Phalcon\DI\Injectable
-      *
-@@ -180,5 +204,76 @@
+@@ -180,5 +205,82 @@
          {
          }
  
 +        // 
 +        // OpenExam specific services:
 +        // 
-+                
++
 +        /**
 +         * The access control (ACL) service.
 +         * @var \OpenExam\Library\Security\Acl
 +         */
 +        public $acl;
-+        
 +        /**
 +         * The user authentication service.
 +         * @var \OpenExam\Library\Security\Authentication
 +         */
 +        public $auth;
-+        
++        /**
++         * The multi-level general purpose caching service.
++         * @var \OpenExam\Library\Core\Cache
++         */
++        public $cache;
++        /**
++         * The capabilities service.
++         * @var \OpenExam\Library\Security\Capabilities
++         */
++        public $capabilities;
 +        /**
 +         * The catalog (directory information) service.
 +         * @var \OpenExam\Library\Catalog\DirectoryManager
 +         */
 +        public $catalog;
-+        
 +        /**
 +         * Database connection object (for read only).
 +         * @var \Phalcon\Db\Adapter\Pdo 
 +         */
 +        public $dbread;
-+        
 +        /**
 +         * Database connection object (for read/write).
 +         * @var \Phalcon\Db\Adapter\Pdo 
 +         */
 +        public $dbwrite;
-+        
 +        /**
 +         * The locale service.
 +         * @var \OpenExam\Library\Globalization\Locale\Locale
 +         */
 +        public $locale;
-+        
++        /**
++         * The location and access information service.
++         * @var \OpenExam\Library\Core\Location
++         */
++        public $location;
 +        /**
 +         * The logging service.
 +         * 
@@ -89,19 +96,16 @@
 +         * @var \OpenExam\Library\DI\Logger
 +         */
 +        public $logger;
-+        
 +        /**
 +         * The render service.
 +         * @var \OpenExam\Library\Render\RenderService
 +         */
 +        public $render;
-+        
 +        /**
 +         * The translation service.
 +         * @var \OpenExam\Library\Globalization\Translate\Translate
 +         */
 +        public $tr;
-+        
 +        /**
 +         * The authenticated user.
 +         * @var \OpenExam\Library\Security\User 
