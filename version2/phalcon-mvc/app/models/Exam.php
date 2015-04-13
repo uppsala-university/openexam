@@ -142,7 +142,7 @@ class Exam extends ModelBase
         public $testcase;
         /**
          * Does this exam require client lockdown?
-         * @var bool
+         * @var object
          */
         public $lockdown;
         /**
@@ -238,7 +238,7 @@ class Exam extends ModelBase
                         $this->testcase = false;
                 }
                 if (!isset($this->lockdown)) {
-                        $this->lockdown = false;
+                        $this->lockdown = (object) array('enable' => false);
                 }
         }
 
@@ -250,7 +250,9 @@ class Exam extends ModelBase
                 $this->decoded = $this->decoded ? 'Y' : 'N';
                 $this->published = $this->published ? 'Y' : 'N';
                 $this->testcase = $this->testcase ? 'Y' : 'N';
-                $this->lockdown = $this->lockdown ? 'Y' : 'N';
+                if (!is_string($this->lockdown)) {
+                        $this->lockdown = json_encode($this->lockdown);
+                }
         }
 
         /**
@@ -261,7 +263,7 @@ class Exam extends ModelBase
                 $this->decoded = $this->decoded == 'Y';
                 $this->published = $this->published == 'Y';
                 $this->testcase = $this->testcase == 'Y';
-                $this->lockdown = $this->lockdown == 'Y';
+                $this->lockdown = json_decode($this->lockdown);
         }
 
         /**
@@ -272,7 +274,7 @@ class Exam extends ModelBase
                 $this->decoded = $this->decoded == 'Y';
                 $this->published = $this->published == 'Y';
                 $this->testcase = $this->testcase == 'Y';
-                $this->lockdown = $this->lockdown == 'Y';
+                $this->lockdown = json_decode($this->lockdown);
                 $state = new State($this);
                 $this->state = $state->getState();
                 $this->flags = $state->getFlags();

@@ -109,7 +109,7 @@ class QuestionController extends GuiController
                         $testMode = TRUE;
                 } else {
                         ## check access:
-                        if ($exam->lockdown) {
+                        if ($exam->lockdown->enable) {
                                 $access = new Access($exam);
                                 $role = $this->user->setPrimaryRole(Roles::STUDENT);
                                 switch ($access->open()) {

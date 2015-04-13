@@ -149,7 +149,7 @@ class Lockdown extends Component
                 // 
                 // Bypass if lockdown is not enabled:
                 // 
-                if ($this->_exam->lockdown == false) {
+                if ($this->_exam->lockdown->enable == false) {
                         return true;
                 }
 
@@ -255,7 +255,7 @@ class Lockdown extends Component
                 //
                 // If lockdown are not requested, then we are done.
                 // 
-                if ($this->_exam->lockdown == false) {
+                if ($this->_exam->lockdown->enable == false) {
                         return true;
                 }
 
