@@ -1,6 +1,8 @@
-Version 1.5.10 (yyyy-mm-dd):
+Version 1.5.10 (2015-04-14):
 
         * Adding support for exporting project data in JSON encoded format.
+	
+	* Use admin/export.php for exporting in batch mode from command line.
 
 Version 1.5.9 (2014-11-20):
 
