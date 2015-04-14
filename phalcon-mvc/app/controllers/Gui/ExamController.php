@@ -454,6 +454,29 @@ class ExamController extends GuiController
         }
 
         /**
+         * Load popup for exam security
+         * exam/security
+         * 
+         * Allowed to Roles: creator
+         */
+        public function securityAction()
+        {
+                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                
+                if (($examId = $this->request->getPost("exam_id", "int")) == null) {
+                        throw new \Exception("Missing exam ID");
+                }
+                if (($exam = Exam::findFirst($examId)) == false) {
+                        throw new \Exception("Unable to load exam settings.");
+                }
+                
+                $this->view->setVar("active", $this->location->getActive($examId));
+                $this->view->setVar("system", $this->location->getSystem());
+                $this->view->setVar("recent", $this->location->getRecent());
+                $this->view->setVar("exam", $exam);
+        }
+
+        /**
          * Action for pending exam access.
          */
         public function pendingAction()

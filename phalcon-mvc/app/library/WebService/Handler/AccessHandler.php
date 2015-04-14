@@ -14,8 +14,10 @@
 namespace OpenExam\Library\WebService\Handler;
 
 use OpenExam\Library\Core\Exam\Student\Access;
+use OpenExam\Library\Core\Location;
 use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\Roles;
+use OpenExam\Library\Security\User;
 use OpenExam\Library\WebService\Common\ServiceHandler;
 use OpenExam\Library\WebService\Common\ServiceRequest;
 use OpenExam\Library\WebService\Common\ServiceResponse;
@@ -62,7 +64,7 @@ class AccessHandler extends ServiceHandler
                         }
                 }
 
-                $this->access = new Access();
+                $this->access = new Access($this->exam);
         }
 
         /**
@@ -109,6 +111,10 @@ class AccessHandler extends ServiceHandler
                 }
         }
 
+        /**
+         * Approve exam lock.
+         * @return ServiceResponse
+         */
         public function approve()
         {
                 if (!isset($this->lock)) {
@@ -121,6 +127,10 @@ class AccessHandler extends ServiceHandler
                 return new ServiceResponse($this, self::SUCCESS, true);
         }
 
+        /**
+         * Release exam lock.
+         * @return ServiceResponse
+         */
         public function release()
         {
                 if (!isset($this->lock)) {
@@ -131,6 +141,41 @@ class AccessHandler extends ServiceHandler
                 $this->access->release($this->lock);
 
                 return new ServiceResponse($this, self::SUCCESS, true);
+        }
+
+        /**
+         * Get location/access information entries.
+         * @param Location $location The location and information service.
+         * @param string $section The section (active, system or recent).
+         * @return ServiceResponse
+         */
+        public function entries($location, $section = null)
+        {
+                if (!isset($this->request->data['exam_id'])) {
+                        $this->request->data['exam_id'] = 0;
+                }
+                if (isset($section)) {
+                        $this->request->params['filter'] = array(
+                                $section => true
+                        );
+                }
+                if (!isset($this->request->params['filter'])) {
+                        $this->request->params['filter'] = array(
+                                'system' => true,
+                                'recent' => true,
+                                'active' => true
+                        );
+                }
+                if (!isset($this->request->params['flat'])) {
+                        $this->request->params['flat'] = false;
+                }
+                
+                print_r($this->request);
+
+                $result = $location->getEntries(
+                    $this->request->data['exam_id'], $this->request->params['filter'], $this->request->params['flat']
+                );
+                return new ServiceResponse($this, self::SUCCESS, $result);
         }
 
 }

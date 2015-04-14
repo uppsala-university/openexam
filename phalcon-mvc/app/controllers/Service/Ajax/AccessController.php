@@ -40,7 +40,24 @@ use OpenExam\Library\WebService\Handler\AccessHandler;
  * 
  * # As student, try to gain access to exam 367:
  * curl -XPOST /ajax/access/open -d '{"exam_id":367}'
- *
+ * 
+ * Location/access information:
+ * --------------------------------------------------
+ * Takes an optional exam ID. The filter params can be passed to restrict
+ * what information gets returned. Pass flat to collapse the array tree
+ * structure of returned data.
+ * 
+ * /ajax/access/entries input: '{"exam_id":eid}'
+ * /ajax/access/entries input: '{"data":{"exam_id":eid},"params":{"filter":{"system":true,"recent":false,"active":true}}}'
+ * /ajax/access/entries input: '{"params":{"filter":{"system":true}}}'
+ * /ajax/access/entries input: '{"params":{"filter":{"system":true},"flat":true}}'
+ * 
+ * It's also possible to pass the filter option (active, recent or system) 
+ * through the URL. These two examples yields the same result:
+ * 
+ * /ajax/access/entries/active  input: '{"exam_id":eid}'
+ * /ajax/access/entries/        input: '{"data":{"exam_id":eid},"params":{"filter":{"active":true}}}'
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class AccessController extends AjaxController
@@ -55,7 +72,6 @@ class AccessController extends AjaxController
         {
                 parent::initialize();
                 $this->handler = new AccessHandler($this->getRequest(), $this->user);
-                
         }
 
         /**
@@ -92,6 +108,20 @@ class AccessController extends AjaxController
         {
                 $response = $this->handler->release();
                 $this->sendResponse($response);
+        }
+
+        /**
+         * Location and access information action.
+         */
+        public function entriesAction()
+        {
+                if (($section = $this->dispatcher->getParam(0))) {
+                        $response = $this->handler->entries($this->location, $section);
+                        $this->sendResponse($response);
+                } else {
+                        $response = $this->handler->entries($this->location);
+                        $this->sendResponse($response);
+                }
         }
 
 }

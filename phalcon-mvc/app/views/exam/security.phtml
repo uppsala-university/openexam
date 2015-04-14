@@ -1,0 +1,145 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    security.phtml
+// Created: 2015-04-07 23:20:12
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+/**
+ * @internal Helper class for displaying locations.
+ * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
+ */
+class DisplayLocation
+{
+
+        private $data;
+        private $name;
+
+        public function __construct($data, $name)
+        {
+                $this->data = $data;
+                $this->name = $name;
+        }
+
+        public function display()
+        {
+                if ($this->data) {
+                        printf("<b><u>%s</u></b>\n", $this->name);
+                        printf("<ul>\n");
+                        foreach ($this->data as $key => $location) {
+                                if (is_array($location['addr'])) {
+                                        $location['disp'] = $location['addr'];
+                                        $location['addr'] = implode(';', $location['addr']);
+                                } elseif (strstr($location['addr'], ';')) {
+                                        $location['disp'] = explode(';', $location['addr']);
+                                } else {
+                                        $location['disp'] = array($location['addr']);
+                                }
+
+                                printf("<li addr='%s' disp='%s'>\n", $location['addr'], $key);
+                                printf("<b>%s</b><br/><div class='location-addresses'>%s</br/></div>\n", $key, implode('<br/>', $location['disp']));
+                                printf("<span style='padding:2px; font-size:11px; min-width: 6em' class='btn btn-success' id='location-add'>\n");
+                                printf("<i class='fa fa-plus-circle'></i>\n");
+                                printf("<span>Add</span>\n");
+                                printf("</span>\n");
+                                printf("</li>\n");
+                                printf("<br/>\n");
+                        }
+                        printf("</ul>\n");
+                }
+        }
+
+}
+
+?>
+
+<style>
+    div.locations, div.lockdown-method {
+        padding-top: 20px;
+    }
+    div.location-addresses {
+        display: none;
+    }
+</style>
+
+<div class="exam-security-box">
+    <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+        Use this view for defining exam security and access restrictions. <strong>Notice:</strong> For keeping the exam public (no access restriction), simply uncheck the 'Enable lockdown' option.
+    </div>
+
+    <p><input id="lockdown-enable" class="save" type="checkbox" <?= $exam->lockdown->enable ? "checked" : "" ?>> Enable lockdown</input></p>
+
+    <div class="locations">
+        <p><b>This exam should only be accessable from these locations:</b></p>
+        <table id="locations-table" class="table table-hover">
+            <thead><tr><th>Location</th><th>Address</th></tr></thead>
+            <tbody>
+                <?php foreach ($active as $key => $location) { ?>
+                        <tr entry="update" id="<?= $location['id'] ?>">
+                            <td contenteditable="true"><?= $key ?></td>
+                            <td contenteditable="true"><?= str_replace(';', '<br/>', $location['addr']) ?></td>
+                            <td>
+                                <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="location-remove">
+                                    <i class="fa fa-cut"></i>
+                                    <span>Remove</span>
+                                </span>
+                            </td>
+                        </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+        <div id="locations-list" style="display: none">
+            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+                Select locations from recent used, system pre-defined or current action locations.
+            </div>
+            <span style="padding:2px; font-size:11px; min-width: 6em; float: right" class="btn btn-success" id="locations-details">
+                <i class="fa fa-list-alt"></i>
+                <span>Details</span>
+            </span>
+            <?php
+            $location = new DisplayLocation($recent, 'Recent used locations');
+            $location->display();
+            $location = new DisplayLocation($system, 'Pre-defined locations');
+            $location->display();
+            $location = new DisplayLocation($active, 'Currently active locations');
+            $location->display();
+
+            ?>
+        </div>
+        <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="location-new">
+            <i class="fa fa-plus-circle"></i>
+            <span>New</span>
+        </span>
+        <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="location-insert">
+            <i class="fa fa-list"></i>
+            <span>Insert...</span>
+        </span>
+    </div>
+
+    <div class="lockdown-method">
+        <p><b>Use this method for client side locking:</b></p>
+        <select id="lockdown-method" class="save">
+            <option value="" <?= $exam->lockdown->method == "" ? "selected" : "" ?>>---</option>
+            <option value="fwexamd" <?= $exam->lockdown->method == "fwexamd" ? "selected" : "" ?>>fwexamd</option>
+        </select>
+    </div>
+
+    <br/>
+    <div class="st-line">
+        <center>
+            <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success save" id="close-security">
+                <i class="fa fa-save"></i>
+                <span>OK</span>
+            </span>
+            <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="close-security">
+                <i class="fa fa-undo"></i>
+                <span>Cancel</span>
+            </span>
+        </center>		
+    </div>   
+</div>

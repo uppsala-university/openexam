@@ -14,6 +14,7 @@
 <?=Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js')?>
 
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/create.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('js/views/exam/security.js'); ?>
 
 <?php use \OpenExam\Library\Security\Roles;?>
 
@@ -36,8 +37,11 @@
                 <h1>
                         <?=trim($exam->name)!=''?$exam->name:'Untitled exam'?>
                         <a href="#" class="prevent exam-settings">
-                                <i class="fa fa-gear" id="exam-settings" style="float:right"></i>
-                        </a>
+                                <i class="fa fa-gear" id="exam-settings" style="float:right;padding:3px"></i>
+                        </a> 
+                        <a href="#" class="prevent exam-security">
+                                <i class="fa fa-lock" id="exam-security" style="float:right;padding:3px"></i>
+                        </a>                
                 </h1>
                 
 		<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("contributable", $exam->flags)):?>
@@ -152,6 +156,9 @@
 
 <!-- Exam settings -->
 <div id="exam-settings-box" style="display:none" title="Exam settings" ></div>
+
+<!-- Exam security -->
+<div id="exam-security-box" style="display:none" title="Security and access control" ></div>
 
 <?php 
 	// combine question json to initialize exam
