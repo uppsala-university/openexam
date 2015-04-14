@@ -91,7 +91,15 @@ class RestController extends ServiceController
                         }
                         $prev = $curr;
                 }
+                
+                // 
+                // Merge query parameters into params:
+                // 
+                $params = array_merge($params, $this->request->getQuery());
 
+                // 
+                // Return service request object:
+                // 
                 return new ServiceRequest($data, $params);
         }
 
