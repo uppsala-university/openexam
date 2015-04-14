@@ -534,7 +534,9 @@ $(document).ready(function () {
 		// get data to be saved
 		settingBox = $(this).closest('.exam-settings-box');
 		examTitle = $(settingBox).find('input[name="exam-title"]').val();
-		examDesc = CKEDITOR.instances['exam-desc'] ? CKEDITOR.instances['exam-desc'].getData() : null;
+		if(CKEDITOR.instances['exam-desc']) {
+			examDesc = CKEDITOR.instances['exam-desc'].getData();
+		}
 		org = $(settingBox).find('input[name="unit"]').val();
 		start = $(settingBox).find('input[name="start"]').val();
 		end = $(settingBox).find('input[name="end"]').val();
