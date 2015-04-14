@@ -454,7 +454,9 @@ class ExportDelegate
          */
         public function send()
         {
-                ob_end_clean();
+                if (ob_get_level()) {
+                        ob_end_clean();
+                }
                 $this->prepare();
                 $this->formatter->send($this->name);
                 $this->formatter->cleanup();
@@ -709,9 +711,13 @@ class ExportFormatJSON extends ExportFormatOpenExam
                 echo json_encode($this->root, JSON_PRETTY_PRINT);
         }
 
-        public function write($filename)
+        public function write($filename = null)
         {
-                file_put_contents($filename, json_encode($this->root, JSON_PRETTY_PRINT));
+                if (isset($filename)) {
+                        file_put_contents($filename, json_encode($this->root, JSON_PRETTY_PRINT));
+                } else {
+                        echo json_encode($this->root, JSON_PRETTY_PRINT);
+                }
         }
 
 }
