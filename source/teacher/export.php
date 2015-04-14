@@ -75,7 +75,7 @@ class ExportPage extends TeacherPage
                 "exam"    => parent::pattern_index,
                 "show"    => "/^(basic|advanced)$/",
                 "action"  => "/^(show|export)$/",
-                "format"  => "/^(native|word|excel|pdf|plain)$/",
+                "format"  => "/^(native|json|word|excel|pdf|plain)$/",
                 "options" => parent::pattern_index,
                 "order"   => "/^(state|name|date)$/"
         );
@@ -154,7 +154,7 @@ class ExportPage extends TeacherPage
                         $this->showOptionsBasic();
                 }
 
-                MessageBox::show(MessageBox::information, _("Use OpenExam native project format to export this examination in a format that can be imported again later."));
+                MessageBox::show(MessageBox::information, _("Use the native format <u>OpenExam XML Project</u> to export this examination in a format that can be imported again later."));
         }
 
         // 
@@ -171,8 +171,10 @@ class ExportPage extends TeacherPage
                 $root = $tree->getRoot();
 //                $node = $root->addChild(_("Microsoft Word 2007 document"));
 //                $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=word&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
-                $node = $root->addChild(_("OpenExam project data"));
+                $node = $root->addChild(_("OpenExam XML Project"));
                 $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=native&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
+                $node = $root->addChild(_("OpenExam JSON Encoded"));
+                $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=json&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
 //                $node = $root->addChild(_("Adobe PDF document"));
 //                $node->setLink(sprintf("?exam=%d&amp;action=export&amp;format=native&amp;options=%d", $this->param->exam, OPENEXAM_EXPORT_INCLUDE_DEFAULT));
                 $tree->output();
@@ -190,7 +192,8 @@ class ExportPage extends TeacherPage
                 $combo->setLabel(_("Format"));
                 // $combo->addOption("word", _("Microsoft Word 2007 document"));
                 // $combo->addOption("excel", _("Microsoft Excel 2007 document"));
-                $combo->addOption("native", _("OpenExam project data"));
+                $combo->addOption("native", _("OpenExam XML Project"));
+                $combo->addOption("json", _("OpenExam JSON Encoded"));
                 // $combo->addOption("pdf", _("Adobe PDF document"));
                 // $combo->addOption("plain", _("Plain text document"));
                 $form->addSpace();

@@ -27,6 +27,9 @@
 if (!defined("OPENEXAM_EXPORT_FORMAT_NATIVE")) {
         define("OPENEXAM_EXPORT_FORMAT_NATIVE", "native");
 }
+if (!defined("OPENEXAM_EXPORT_FORMAT_JSON")) {
+        define("OPENEXAM_EXPORT_FORMAT_JSON", "json");
+}
 
 // 
 // Include data options:
@@ -105,7 +108,7 @@ abstract class ExportFormatter
         /**
          * House keeping function.
          */
-        public function initilize()
+        public function initialize()
         {
                 // ignore
         }
@@ -199,6 +202,8 @@ abstract class ExportFormatter
                 switch ($format) {
                         case OPENEXAM_EXPORT_FORMAT_NATIVE:
                                 return new ExportFormatOpenExam();
+                        case OPENEXAM_EXPORT_FORMAT_JSON:
+                                return new ExportFormatJSON();
                         default:
                                 throw new ExportException(sprintf("Can't create export formatter for format '%s'", $format));
                 }
@@ -468,7 +473,7 @@ class ExportDelegate
 
         private function prepare()
         {
-                $this->formatter->initilize();
+                $this->formatter->initialize();
                 $this->formatter->addFrontPage($this->data);
                 if (isset($this->data->project)) {
                         $this->formatter->addProjectData($this->data);
@@ -505,8 +510,8 @@ class ExportDelegate
 class ExportFormatOpenExam extends ExportFormatter
 {
 
-        private $root;
-        private $proj;
+        protected $root;
+        protected $proj;
 
         public function __construct()
         {
@@ -518,7 +523,7 @@ class ExportFormatOpenExam extends ExportFormatter
                 }
         }
 
-        public function initilize()
+        public function initialize()
         {
                 $this->root = new SimpleXMLElement("<?xml version='1.0' standalone='yes'?><openexam></openexam>\n");
                 $this->root->addAttribute("format", OPENEXAM_EXPORT_FORMAT_VERSION);
@@ -680,6 +685,33 @@ class ExportFormatOpenExam extends ExportFormatter
                 } else {
                         echo $dom->saveXML();
                 }
+        }
+
+}
+
+/**
+ * Export the exam in JSON encoded format. Let parent class handle data
+ * aggregation and 
+ */
+class ExportFormatJSON extends ExportFormatOpenExam
+{
+
+        public function send($name)
+        {
+                header("Content-type: application/json;charset=utf-8\n");
+                header("Content-Disposition: attachement; filename=\"$name.json\"");
+                header("Cache-Control: private");
+                header("Pragma-directive: no-cache");
+                header("Cache-directive: no-cache");
+                header("Pragma: public");
+                header("Expires: 0");
+
+                echo json_encode($this->root, JSON_PRETTY_PRINT);
+        }
+
+        public function write($filename)
+        {
+                file_put_contents($filename, json_encode($this->root, JSON_PRETTY_PRINT));
         }
 
 }
