@@ -532,6 +532,7 @@ $(document).ready(function () {
 	
 	//if(jQuery("#exam-settings-box").validationEngine('validate')) {
 		// get data to be saved
+		var examDesc;
 		settingBox = $(this).closest('.exam-settings-box');
 		examTitle = $(settingBox).find('input[name="exam-title"]').val();
 		if(CKEDITOR.instances['exam-desc']) {
