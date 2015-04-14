@@ -32,7 +32,19 @@ use OpenExam\Library\WebService\Handler\AccessHandler;
  * --------------------------------------------------
  * curl -XPOST ${BASEURL}/rest/access/approve -d '{"lock_id":961}'   // approve lock 961
  * curl -XPOST ${BASEURL}/rest/access/release -d '{"lock_id":961}'   // release lock 961
- *
+ * 
+ * Location/access information:
+ * --------------------------------------------------
+ * 
+ * # The exam ID is passed through URL path:
+ * curl -XGET ${BASEURL}/rest/access/entries/exam/829  // All sections
+ * 
+ * # Sections and output format can be defined:
+ * curl -XGET ${BASEURL}/rest/access/entries/exam/829?section=active&flat=0
+ * 
+ * # Get system (pre-defined) locations in flat format:
+ * curl -XGET ${BASEURL}/rest/access/entries/?section=system&flat=1"
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class AccessController extends RestController
@@ -48,7 +60,7 @@ class AccessController extends RestController
                 parent::initialize();
 
                 $request = $this->getRequest(function($arg) {
-                        if(!is_numeric($arg)) {
+                        if (!is_numeric($arg)) {
                                 return "${arg}_id";
                         } else {
                                 return $arg;
@@ -91,6 +103,20 @@ class AccessController extends RestController
         {
                 $response = $this->handler->release();
                 $this->sendResponse($response);
+        }
+
+        /**
+         * Location and access information action.
+         */
+        public function entriesAction()
+        {
+                if (($section = $this->request->getQuery('section'))) {
+                        $response = $this->handler->entries($this->location, $section);
+                        $this->sendResponse($response);
+                } else {
+                        $response = $this->handler->entries($this->location);
+                        $this->sendResponse($response);
+                }
         }
 
 }
