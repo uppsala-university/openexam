@@ -154,7 +154,7 @@ class DispatchListener extends Plugin
                         );
                         $this->logger->auth->commit();
                 }
-                
+
                 // 
                 // Log this dispatcher:
                 // 
@@ -184,18 +184,38 @@ class DispatchListener extends Plugin
          */
         private static function getTarget($dispatcher)
         {
-                $target = explode("\\", strtolower($dispatcher->getControllerClass()));
+                $parent = current(
+                    class_parents(
+                        $dispatcher->getControllerClass()
+                    )
+                );
 
-                if ($target[2] == "gui") {
-                        return array(
-                                'service' => 'web',
-                                'type'    => 'gui'
-                        );
-                } else {
-                        return array(
-                                'service' => $target[3],
-                                'type'    => 'service'
-                        );
+                switch ($parent) {
+                        case 'OpenExam\Controllers\GuiController':
+                                return array(
+                                        'service' => 'web',
+                                        'type'    => 'gui'
+                                );
+                        case 'OpenExam\Controllers\Service\AjaxController':
+                                return array(
+                                        'service' => 'ajax',
+                                        'type'    => 'service'
+                                );
+                        case 'OpenExam\Controllers\Service\RestController':
+                                return array(
+                                        'service' => 'rest',
+                                        'type'    => 'service'
+                                );
+                        case 'OpenExam\Controllers\Service\SoapController':
+                                return array(
+                                        'service' => 'soap',
+                                        'type'    => 'service'
+                                );
+                        default:
+                                return array(
+                                        'service' => $dispatcher->getControllerName(),
+                                        'type'    => 'service'
+                                );
                 }
         }
 
