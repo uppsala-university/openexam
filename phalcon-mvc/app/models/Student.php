@@ -2,8 +2,8 @@
 
 namespace OpenExam\Models;
 
-use Phalcon\Mvc\Model\Relation;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * The student model.
@@ -82,6 +82,26 @@ class Student extends Role
                                 'user' => true
                         )
                 )));
+        }
+
+        public function validation()
+        {
+                if (parent::validation() == false) {
+                        return false;
+                }
+
+                if (defined('VALIDATION_SKIP_UNIQUENESS_CHECK')) {
+                        return true;
+                }
+
+                $this->validate(new Uniqueness(
+                    array(
+                        "field"   => array("code", "exam_id"),
+                        "message" => "The code '$this->code' is already in use on this exam"
+                    )
+                ));
+
+                return $this->validationHasFailed() != true;
         }
 
         public function getSource()
