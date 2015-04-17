@@ -15,7 +15,6 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Catalog\DirectoryManager;
 use OpenExam\Library\Catalog\Principal;
-use OpenExam\Library\Security\User;
 use OpenExam\Models\ModelBase;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -59,21 +58,21 @@ class Role extends ModelBase
                         $this->validate(new Uniqueness(
                             array(
                                 "field"   => array("user", "exam_id"),
-                                "message" => "This role has already been granted"
+                                "message" => "This role has already been granted for $this->user"
                             )
                         ));
                 } elseif (property_exists($this, 'question_id')) {
                         $this->validate(new Uniqueness(
                             array(
                                 "field"   => array("user", "question_id"),
-                                "message" => "This role has already been granted"
+                                "message" => "This role has already been granted for $this->user"
                             )
                         ));
                 } else {
                         $this->validate(new Uniqueness(
                             array(
                                 "field"   => "user",
-                                "message" => "This role has already been granted"
+                                "message" => "This role has already been granted for $this->user"
                             )
                         ));
                 }
@@ -91,9 +90,24 @@ class Role extends ModelBase
         }
 
         /**
-         * Called before persisting the model object.
+         * Called before validation of the model object.
          */
-        protected function beforeSave()
+        protected function beforeValidation()
+        {
+                $this->setDomain();
+        }
+
+        private function getAttribute($name)
+        {
+                if (($attrs = $this->catalog->getAttribute($this->user, $name))) {
+                        return current($attrs)[$name][0];
+                }
+        }
+
+        /**
+         * Apply default domain to user principal name if missing.
+         */
+        private function setDomain()
         {
                 while ($this->user[0] == '@') {         // Someones gonna try...
                         $this->user = substr($this->user, 1);
@@ -110,13 +124,6 @@ class Role extends ModelBase
                         $this->user = sprintf("%s@%s", $this->user, $domain);
                 } elseif (($domain = $config->user->domain) != false) {
                         $this->user = sprintf("%s@%s", $this->user, $domain);
-                }
-        }
-
-        private function getAttribute($name)
-        {
-                if (($attrs = $this->catalog->getAttribute($this->user, $name))) {
-                        return current($attrs)[$name][0];
                 }
         }
 

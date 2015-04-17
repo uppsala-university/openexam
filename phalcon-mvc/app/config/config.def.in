@@ -23,21 +23,23 @@ return array(
          * The write-only/master database connection (for load balancing).
          */
         'dbwrite'     => array(
-                'adapter'  => 'Mysql',
-                'host'     => 'localhost',
-                'username' => 'openexam',
-                'password' => '',
-                'dbname'   => 'openexam'
+                'adapter'    => 'Mysql',
+                'host'       => 'localhost',
+                'username'   => 'openexam',
+                'password'   => '',
+                'dbname'     => 'openexam',
+                'persistent' => true   // Required for uniquness validation
         ),
         /**
          * The read-only/slave database connection (for load balancing).
          */
         'dbread'      => array(
-                'adapter'  => 'Mysql',
-                'host'     => 'localhost',
-                'username' => 'openexam',
-                'password' => '',
-                'dbname'   => 'openexam'
+                'adapter'    => 'Mysql',
+                'host'       => 'localhost',
+                'username'   => 'openexam',
+                'password'   => '',
+                'dbname'     => 'openexam',
+                'persistent' => true   // Required for uniquness validation
         ),
         /**
          * User service configuration.
