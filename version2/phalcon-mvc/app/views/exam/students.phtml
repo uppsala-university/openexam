@@ -82,17 +82,28 @@ endforeach;
                                 </span>
                             </div>                                
                         </div>
-                        <h3>Import from Uppdock</h3>
+                        <h3>Import from group</h3>
                         <div>
-                            <p>
-                                Provide term details in following form
-                            </p>
-                            <div>
-                                Enter course code: <input type="text" /><br />
-                                Select Term: <select><option>Select</option></select>
+                            <div id="student-group-import-content">
+                                <p>
+                                    Supply the name of a group to import students from. The name could e.g. be a course code or a domain group. The search can be restricted to a single domain.
+                                </p>
+                                <form id="student-file-import" name="student-group-import">
+                                    <div>
+                                        <label for="group">Group name:</label>
+                                        <input id="group-name" type="text" name="group" placeholder="3MK579" /><br />
+                                        <label for="domain">Domain:</label> 
+                                        <select id="domain-name" name="domain">
+                                            <option></option>
+                                            <?php foreach ($domains as $domain): ?>
+                                                    <option><?= $domain ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </form>
                             </div>
 
-                            <div id="import_students_by_file" style="display: block;margin:10px 0px 30px 0px;">        
+                            <div id="import-students-by-group" style="display: block;margin:10px 0px 30px 0px;">        
                                 <span class="btn btn-success">
                                     <i class="fa fa-chevron-circle-right"></i>
                                     <span>Import students</span>
@@ -241,7 +252,7 @@ endforeach;
                     );
                 }
             });
-            
+
             $(document).on('click', '#add_students_btn', function () {
 
                 stData = [];
@@ -306,10 +317,34 @@ endforeach;
                     $('#student-file-import-content').attr('id', 'student-data-import-content');
                     $('#import-students-by-file').attr('id', 'import-students-by-table');
                 }).fail(function (message) {
-                    alert("Failed upload file")
+                    alert("Failed submit form")
                 });
             });
-
+            
+            // 
+            // Handle student group import:
+            // 
+            $(document).on('click', '#import-students-by-group', function () {
+                var data = new FormData($('form#student-group-import')[0]);
+                data.append('group', $('#group-name').val());
+                data.append('domain', $('#domain-name').val());
+                data.append('exam_id', examId);
+                $.ajax({
+                    url: baseURL + '/utility/import/students/group',
+                    type: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false, // Prevent corrupted boundary strings.
+                    processData: false    // No need to process data.
+                }).done(function (result) {
+                    $('#student-group-import-content').html(result);
+                    $('#student-group-import-content').attr('id', 'student-data-import-content');
+                    $('#import-students-by-group').attr('id', 'import-students-by-table');
+                }).fail(function (message) {
+                    alert("Failed submit form")
+                });
+            });
+            
             // 
             // Import students from table data (file or group import):
             // 
@@ -317,14 +352,14 @@ endforeach;
 
                 var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
                 var stdata = [], sthead = [];
-                
+
                 // 
                 // Create column type lookup table:
                 // 
                 $('#table-import-students thead tr th').each(function (i) {
                     sthead[i] = $(this).val();
                 });
-                
+
                 // 
                 // Process table body. Add students to object array:
                 // 

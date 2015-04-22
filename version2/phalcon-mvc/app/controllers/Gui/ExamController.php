@@ -52,9 +52,9 @@ class ExamController extends GuiController
                     . "where "
                     . "s.user = :user: and "
                     . "("
-                        . "(s.endtime is NULL and e.endtime >= NOW()) or "
-                        . "(s.endtime is not NULL  and s.endtime >= NOW()) or"
-                        . "(e.starttime is not NULL  and e.endtime is null)"
+                    . "(s.endtime is NULL and e.endtime >= NOW()) or "
+                    . "(s.endtime is not NULL  and s.endtime >= NOW()) or"
+                    . "(e.starttime is not NULL  and e.endtime is null)"
                     . ") and "
                     . "e.published = 'Y' "
                     . "order by e.starttime desc "
@@ -77,8 +77,8 @@ class ExamController extends GuiController
                     . "where "
                     . "s.user = :user: and "
                     . "("
-                        . "(s.endtime is NULL and e.endtime < NOW()) or "
-                        . "(s.endtime is not NULL and s.endtime < NOW())"
+                    . "(s.endtime is NULL and e.endtime < NOW()) or "
+                    . "(s.endtime is not NULL and s.endtime < NOW())"
                     . ") and "
                     . "e.published = 'Y' "
                     . "order by e.endtime desc "
@@ -206,7 +206,7 @@ class ExamController extends GuiController
 
                 // pass data to view
                 $this->view->setVars(array(
-                        'exam' => $exam,
+                        'exam' => $exam
                     //'myRole' => $role,
                 ));
         }
@@ -384,7 +384,7 @@ class ExamController extends GuiController
 
                         $examStartsAt = !is_null($student->starttime) ? $student->starttime : $exam->starttime;
                         $examEndsAt = !is_null($student->endtime) ? $student->endtime : $exam->endtime;
-                        
+
                         ## load exam with time checking
                         if (!is_null($examEndsAt) && strtotime($examEndsAt) < strtotime("now")) {
                                 return $this->response->redirect('exam/index');
@@ -427,6 +427,7 @@ class ExamController extends GuiController
                 }
 
                 $this->view->setVar("exam", $exam);
+                $this->view->setVar("domains", $this->catalog->getDomains());
         }
 
         /**
@@ -462,14 +463,14 @@ class ExamController extends GuiController
         public function securityAction()
         {
                 $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
-                
+
                 if (($examId = $this->request->getPost("exam_id", "int")) == null) {
                         throw new \Exception("Missing exam ID");
                 }
                 if (($exam = Exam::findFirst($examId)) == false) {
                         throw new \Exception("Unable to load exam settings.");
                 }
-                
+
                 $this->view->setVar("active", $this->location->getActive($examId));
                 $this->view->setVar("system", $this->location->getSystem());
                 $this->view->setVar("recent", $this->location->getRecent());
