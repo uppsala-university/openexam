@@ -1,0 +1,52 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    students.phtml
+// Created: 2015-04-22 00:57:33
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+?>
+
+<?= Phalcon\Tag::javascriptInclude('js/views/import/students.js'); ?>
+
+<p>
+    Select type of data contained in columns using the column header drop-down button. Scroll down and press the 'Import students' button to add students in list to this exam.
+</p>
+<table id="table-import-students" class="table table-bordered">
+    <thead>
+        <tr>
+            <?php for ($col = 0; $col < count($data[0]); $col++): ?>
+                    <th>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Select 
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" value='user'>Username</a></li>
+                    <li><a href="#" value='code'>Anonymous Code</a></li>
+                    <li><a href="#" value='pnr'>Personal Number</a></li>
+                    <li><a href="#" value='tag'>Custom Tag</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li><a href="#" value='remove'><i class="fa fa-cut"></i> Remove</a></li>
+                </ul>
+            </div>
+        </th>
+<?php endfor; ?>
+</tr>
+</thead>
+<tbody>
+    <?php for ($row = 0; $row < count($data); $row++): ?>
+            <tr>
+                <?php for ($col = 0; $col < count($data[$row]); $col++): ?>
+                        <td contenteditable="true"><?= $data[$row][$col] ?></td>
+                <?php endfor; ?>
+                <td><a class="import-student-remove"><span class="label label-orange"><i class="fa fa-cut"></i> Remove</span></a></td>
+            </tr>
+    <?php endfor; ?>
+</tbody>
+</table>

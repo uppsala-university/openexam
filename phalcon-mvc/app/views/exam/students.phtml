@@ -1,259 +1,377 @@
 <!-- Main area -->
 
 <?php
-$i=0;
-$stList = array(); 
+$i = 0;
+$stList = array();
 $students = $exam->getStudents();
-foreach($students as $student):
-	$stList[$i]["id"] = $student->id;
-	$stList[$i]["value"] = $student->user." - ".$student->code;
-	$i++;
+foreach ($students as $student):
+        $stList[$i]["id"] = $student->id;
+        $stList[$i]["value"] = $student->user . " - " . $student->code;
+        $i++;
 endforeach;
-?>
-<div id="st-mng-wrapper" exam-id="<?=$this->request->getPost('exam_id')?>">
-	<div style="padding-bottom:15px">
-        	<h3><?=$exam->name?></h3>
-        </div>
-        <div class="tabs">
-		<ul>
-                        <li><a href="#tabs-1">Add new students</a></li>
-                        <li><a href="#tabs-2">Manage existing students</a></li>
-                </ul>
-                <div id="tabs-1">
 
-                        <div class="accordion">
-			    <h3>Add single or multiple students</h3>
-                            <div>
-                                <p>
-                                    Write usernames and exam code (optional) of single or multiple students. Username and exam code should be space seprated.
-                                    To add multiple students, data of students should be new line seprated.
-                                    <br />
-                                    <small>
-                                    Format to add single student: <strong>username code</strong><br />
-                                    Format to add multiple student: <br />
-                                    <strong>username1 code1</strong><br />
-                                    <strong>username2 code2</strong>
-                                    </small>
-                                </p>
-                                <textarea id="student_list" placeholder="username code" style="height:100px; width:480px"></textarea>
-                                
-                                <div id="add_students_btn" style="display: block;margin:10px 0px 30px 0px;">        
-                                        <span class="btn btn-success">
-                                                <i class="fa fa-chevron-circle-right"></i>
-                                                <span>Add students</span>
-                                        </span>
-                                </div>                                
-                            </div>
-                            <?php if($this->user->getPrincipalName() == $exam->creator):?>
-			    <h3>Import from file</h3>
-                            <div>
-                                <p>
-                                        Instructions about the file to be imported.
-                                </p>
-                                <input type="file" />
-                                
-                                <div id="import_students_by_file" style="display: block;margin:10px 0px 30px 0px;">        
-                                        <span class="btn btn-success">
-                                                <i class="fa fa-chevron-circle-right"></i>
-                                                <span>Import students</span>
-                                        </span>
-                                </div>                                
-                            </div>
-                            <h3>Import from Uppdock</h3>
-                            <div>
-                                <p>
-                                        Provide term details in following form
-                                </p>
-                                <div>
-                                	Enter course code: <input type="text" /><br />
-                                        Select Term: <select><option>Select</option></select>
-                                </div>
-                                
-                                <div id="import_students_by_file" style="display: block;margin:10px 0px 30px 0px;">        
-                                        <span class="btn btn-success">
-                                                <i class="fa fa-chevron-circle-right"></i>
-                                                <span>Import students</span>
-                                        </span>
-                                </div>                                
-                            </div>
-			    <?php endif;?>
-                        </div>
+?>
+<div id="st-mng-wrapper" exam-id="<?= $this->request->getPost('exam_id') ?>">
+    <div style="padding-bottom:15px">
+        <h3><?= $exam->name ?></h3>
+    </div>
+    <div class="tabs">
+        <ul>
+            <li><a href="#tabs-1">Add new students</a></li>
+            <li><a href="#tabs-2">Manage existing students</a></li>
+        </ul>
+        <div id="tabs-1">
+
+            <div class="accordion">
+                <h3>Add single or multiple students</h3>
+                <div>
+                    <p>
+                        Write identities and anonymous code (optional) of single or multiple students. Separate the identity (username or personal number) and code by space.
+                        The data should be separated by newlines when adding multiple students.
+                        <br />
+                        <small>
+                            Format to add single student: <strong>identity code</strong><br />
+                            Format to add multiple student: <br />
+                            <strong>identity1 code1</strong><br />
+                            <strong>identity1 code2</strong>
+                        </small>
+                    </p>
+                    <textarea id="student_list" placeholder="identity code" style="height:100px; width:480px"></textarea>
+
+                    <div id="add_students_btn" style="display: block;margin:10px 0px 30px 0px;">        
+                        <span class="btn btn-success">
+                            <i class="fa fa-chevron-circle-right"></i>
+                            <span>Add students</span>
+                        </span>
+                    </div>                                
                 </div>
-                <div id="tabs-2">
-                	<h4 style="float:left">Registered students in this exam</h4>
-                        <div style="float:right">
-                                <input class="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
-                                <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
+                <?php if ($this->user->getPrincipalName() == $exam->creator): ?>
+                        <h3>Import from file</h3>
+                        <div>
+                            <div id="student-file-import-content">
+                                <p>
+                                    Upload the file containing students to import. Students can be imported by username or personal number, with optional supplied anonymous code and/or tag.
+                                </p>
+                                <form id="student-file-import" name="student-file-import">
+                                    <input type="file" name="file[]" />                                
+                                    <div class="btn-group" style="padding-top: 5px">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Filetype 
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#" type='-1'>Auto Detect</a></li>
+                                            <li><a href="#" type='oocalc'>OpenDocument Format Spreadsheet (*.ods,*.ots)</a></li>
+                                            <li><a href="#" type='excel2007'>Microsoft Excel 2007/2010/2013 XML (*.xlsx)</a></li>
+                                            <li><a href="#" type='excel2003'>Microsoft Excel 2003 XML (*.xml)</a></li>
+                                            <li><a href="#" type='excel97'>Microsoft Excel 97/2000/XP/2003 (*.xls,*.xlt)</a></li>
+                                            <li><a href="#" type='tab'>TAB Separated Values (*.tab,*.tsv,*.txt)</a></li>
+                                            <li><a href="#" type='csv'>CSV File (*.csv)</a></li>
+                                            <li><a href="#" type='gnumeric'>Gnumeric Spreadsheet (*.gnumeric)</a></li>
+                                            <li><a href="#" type='html'>HTML Document (*.htm,*.html)</a></li>
+                                            <li><a href="#" type='sylk'>SYLK Document (*.slk,*.sylk)</a></li>
+                                        </ul>
+                                        <div id='file-type' type='-1' style="padding: 5px 0"><span style="margin-left: 10px">Auto Detect</span></div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="import-students-by-file" style="display: block; margin:10px 0px 30px 0px;">        
+                                <span class="btn btn-success">
+                                    <i class="fa fa-chevron-circle-right"></i>
+                                    <span>Import students</span>
+                                </span>
+                            </div>                                
                         </div>
-                       	<div style="clear:both"></div>
-                       
-                       	<!--
-                        <a href="#" id="lsit-all-students" class="prevent" style="color:#CC0066"> View list of all students</a><br />
-                        -->
-			<div id="no-student-msg" style=" <?=(count($students)?'display:none':'')?>">
-				<em>No students have been added to the exam yet.</em>
-			</div>
-			<ul class="student-list" style="list-style:none; max-height:500px; overflow:auto; margin-left:0px" >
-                                <li style="float: left; background-color: #FEFF99; border: 1px solid rgb(222, 222, 222); padding: 5px; margin:2px; display:none">
-                                        <a href="#" class="prevent del-student" data-id=""><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
-                                        <span></span>
-                                </li>
-                                <?php foreach($students as $student):?>
-                                        <li style="float: left; background-color: #F5F5F5; border: 1px solid #dedede; padding: 5px; margin:2px">
-                                                <a href="#" class="prevent del-student" data-id="<?=$student->id?>"><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
-                                                <span><?=$student->user." - ".$student->code?></span>
-                                        </li>
-                                <?php endforeach;?>
-                        </ul>
-                        <div style="clear:both"></div>
-                </div>
+                        <h3>Import from Uppdock</h3>
+                        <div>
+                            <p>
+                                Provide term details in following form
+                            </p>
+                            <div>
+                                Enter course code: <input type="text" /><br />
+                                Select Term: <select><option>Select</option></select>
+                            </div>
+
+                            <div id="import_students_by_file" style="display: block;margin:10px 0px 30px 0px;">        
+                                <span class="btn btn-success">
+                                    <i class="fa fa-chevron-circle-right"></i>
+                                    <span>Import students</span>
+                                </span>
+                            </div>                                
+                        </div>
+                <?php endif; ?>
+            </div>
         </div>
+        <div id="tabs-2">
+            <h4 style="float:left">Registered students in this exam</h4>
+            <div style="float:right">
+                <input class="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
+                <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
+            </div>
+            <div style="clear:both"></div>
+
+            <!--
+            <a href="#" id="lsit-all-students" class="prevent" style="color:#CC0066"> View list of all students</a><br />
+            -->
+            <div id="no-student-msg" style=" <?= (count($students) ? 'display:none' : '') ?>">
+                <em>No students have been added to the exam yet.</em>
+            </div>
+            <ul class="student-list" style="list-style:none; max-height:500px; overflow:auto; margin-left:0px" >
+                <li style="float: left; background-color: #FEFF99; border: 1px solid rgb(222, 222, 222); padding: 5px; margin:2px; display:none">
+                    <a href="#" class="prevent del-student" data-id=""><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
+                    <span></span>
+                </li>
+                <?php foreach ($students as $student): ?>
+                        <li style="float: left; background-color: #F5F5F5; border: 1px solid #dedede; padding: 5px; margin:2px">
+                            <a href="#" class="prevent del-student" data-id="<?= $student->id ?>"><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
+                            <span><?= $student->user . " - " . $student->code ?></span>
+                        </li>
+                <?php endforeach; ?>
+            </ul>
+            <div style="clear:both"></div>
+        </div>
+    </div>
 </div>
 
 <script language="javascript">
-var studentList = <?=json_encode($stList)?>;
+        var studentList = <?= json_encode($stList) ?>;
 
-$(function() {
+        $(function () {
 
-	$('.tabs').tabs();
-	
-	$( ".accordion" ).accordion({
-      		heightStyle: "content"
-	});
+            $('.tabs').tabs();
+            $(".accordion").accordion({
+                heightStyle: "content"
+            });
 
-	
-	$( ".search-students" ).autocomplete({
-		source: studentList,
-		select: function( event, ui ) {
-			newItem = $('.student-list > li:first').clone();
-			newItem.find('span').html(ui.item.value).end()
-				.find('a').attr('data-id', ui.item.id).end()
-				.show();
-			$('.student-list').empty();
-			$('.student-list').append(newItem);
-			$('.ui-autocomplete-input').val('');
-		}
-		
-	});
+            $(".search-students").autocomplete({
+                source: studentList,
+                select: function (event, ui) {
+                    newItem = $('.student-list > li:first').clone();
+                    newItem.find('span').html(ui.item.value).end()
+                            .find('a').attr('data-id', ui.item.id).end()
+                            .show();
+                    $('.student-list').empty();
+                    $('.student-list').append(newItem);
+                    $('.ui-autocomplete-input').val('');
+                }
 
-	if(stEvents == 'loaded') {
-		return;
-	} else {
-		stEvents = 'loaded';
-	}
-	
-	/*
-	$(document).on('click', '#lsit-all-students', function () {
+            });
 
-		$('.student-list > li:visible').remove();
-		jQuery.each(studentList , function( i, studentData ) {
-			//jQuery.each(studentData , function( username, student ) {			
-				newItem = $('.student-list > li:first').clone();
-				newItem.find('span').html(studentData.value).end()
-					.find('a').attr('data-id', studentData.id).end()
-					.show();
-				$('.student-list').append(newItem);
-			//});	
-		});
-		
-		if(!$('.student-list > li:visible').length) {
-			$('.student-list').append('<li>There are no registered users in this exam.</li>');
-		}
-		$('.student-list').show();
-		
-	});*/
-	
-	$(document).on('click', '.del-student', function () {
-		var student = $(this);
-		if(confirm("Are you sure you want to delete this student?")) {
-			ajax(
-				baseURL + 'core/ajax/invigilator/student/delete', 
-				{"id":$(this).attr('data-id')}, 
-				function(status) {
-					console.log(studentList);
-					jQuery.each(studentList , function( i, sData ) {
-						if(typeof sData !== 'undefined' && sData.id == $(student).attr('data-id')) {
-							delete studentList[i];
-						}
-					});
-					
-					// hide from list
-					$(student).parent().slideUp('500', function() {
-						// hide
-						$(this).remove();
-					});
-					
-					if($('.total-exam-students')) {
-						$('.total-exam-students').html($('.student-list').find('li').length-1);
-					}
-					
-				}
-			);
-		}
-	});
-	
-	$(document).on('click', '#add_students_btn', function () {
-		
-		stData = [];
-		examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
-		if(examId) {
-			stList = jQuery.trim($('#student_list').val()).split("\n");
-			
-			//prepare data object
-            var totalStudents = 0;
-			$.each(stList, function(i, val) {
-				if(jQuery.trim(val)!='') {
-					st = jQuery.trim(val).split(/\s/g);
-					if(st.length > 2) {
-						var tmp = '';
-						jQuery.each(st, function(i, e){
-							if(i) {
-								tmp = tmp+" "+e;
-							}
-						});
-						st[1] = jQuery.trim(tmp);
-					}	
+            if (stEvents == 'loaded') {
+                return;
+            } else {
+                stEvents = 'loaded';
+            }
 
-					stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
-					totalStudents++;
-				}
-			});
-			
-			console.log(stData);
-			
-			// send ajax request to add these students to the exam
-			ajax(
-				baseURL + 'core/ajax/invigilator/student/create',
-				JSON.stringify(stData),
-				function (userData) {
-                                        if(totalStudents > 1) {
-                                                $.each(userData, function(i, user) {
-                                                        newItem = $('.student-list > li').first().clone();
-                                                        $(newItem)
-                                                                .find('.del-student').attr('data-id', user.id).end()
-                                                                .find('span').html(user.user+" - "+user.code).end()
-                                                                .show();
-                                                        $('.student-list').prepend($(newItem));
-                                                });
-                                        } else {
-                                                newItem = $('.student-list > li').first().clone();
-                                                $(newItem)
-                                                        .find('.del-student').attr('data-id', userData.id).end()
-                                                        .find('span').html(userData.user+" - "+userData.code).end()
-                                                        .show();
-                                                $('.student-list').prepend($(newItem));
-                                        }
-					$(".tabs").tabs("option", "active", 1);
+            // 
+            // Called after students has been added to exam.
+            // 
+            // @param array userData The array of newly created student objects.
+            // 
+            var onStudentInserted = function (userData) {
+                if (userData.length > 1) {
+                    $.each(userData, function (i, user) {
+                        newItem = $('.student-list > li').first().clone();
+                        $(newItem)
+                                .find('.del-student').attr('data-id', user.id).end()
+                                .find('span').html(user.user + " - " + user.code).end()
+                                .show();
+                        $('.student-list').prepend($(newItem));
+                    });
+                } else {
+                    newItem = $('.student-list > li').first().clone();
+                    $(newItem)
+                            .find('.del-student').attr('data-id', userData.id).end()
+                            .find('span').html(userData.user + " - " + userData.code).end()
+                            .show();
+                    $('.student-list').prepend($(newItem));
+                }
+                $(".tabs").tabs("option", "active", 1);
+                if ($('.total-exam-students')) {
+                    $('.total-exam-students').html($('.student-list').find('li').length - 1);
+                }
 
-					if($('.total-exam-students')) {
-						$('.total-exam-students').html($('.student-list').find('li').length-1);
-					}
-					
-					$('#no-student-msg').hide();
-				}
-			);
-		}
-	});
-	
-});
+                $('#no-student-msg').hide();
+            }
+
+            /*
+             $(document).on('click', '#lsit-all-students', function () {
+             
+             $('.student-list > li:visible').remove();
+             jQuery.each(studentList , function( i, studentData ) {
+             //jQuery.each(studentData , function( username, student ) {			
+             newItem = $('.student-list > li:first').clone();
+             newItem.find('span').html(studentData.value).end()
+             .find('a').attr('data-id', studentData.id).end()
+             .show();
+             $('.student-list').append(newItem);
+             //});	
+             });
+             
+             if(!$('.student-list > li:visible').length) {
+             $('.student-list').append('<li>There are no registered users in this exam.</li>');
+             }
+             $('.student-list').show();
+             
+             });*/
+
+            $(document).on('click', '.del-student', function () {
+                var student = $(this);
+                if (confirm("Are you sure you want to delete this student?")) {
+                    ajax(
+                            baseURL + 'core/ajax/invigilator/student/delete',
+                            {"id": $(this).attr('data-id')},
+                    function (status) {
+                        console.log(studentList);
+                        jQuery.each(studentList, function (i, sData) {
+                            if (typeof sData !== 'undefined' && sData.id == $(student).attr('data-id')) {
+                                delete studentList[i];
+                            }
+                        });
+                        // hide from list
+                        $(student).parent().slideUp('500', function () {
+                            // hide
+                            $(this).remove();
+                        });
+                        if ($('.total-exam-students')) {
+                            $('.total-exam-students').html($('.student-list').find('li').length - 1);
+                        }
+
+                    }
+                    );
+                }
+            });
+            
+            $(document).on('click', '#add_students_btn', function () {
+
+                stData = [];
+                examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
+                if (examId) {
+                    stList = jQuery.trim($('#student_list').val()).split("\n");
+                    //prepare data object
+                    $.each(stList, function (i, val) {
+                        if (jQuery.trim(val) != '') {
+                            st = jQuery.trim(val).split(/\s/g);
+                            if (st.length > 2) {
+                                var tmp = '';
+                                jQuery.each(st, function (i, e) {
+                                    if (i) {
+                                        tmp = tmp + " " + e;
+                                    }
+                                });
+                                st[1] = jQuery.trim(tmp);
+                            }
+
+                            stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
+                        }
+                    });
+                    console.log(stData);
+                    // send ajax request to add these students to the exam
+                    ajax(
+                            baseURL + 'core/ajax/invigilator/student/create',
+                            JSON.stringify(stData),
+                            function (userData) {
+                                onStudentInserted(userData);
+                            }
+                    );
+                }
+            });
+
+            // 
+            // On select file type (file import):
+            // 
+            $(document).on('click', 'ul.dropdown-menu > li > a', function () {
+                var target = $("div#file-type");
+                target.children().first().text($(this).text()); // Display
+                target.attr('type', $(this).attr('type')); // Save type
+            });
+
+            // 
+            // Handle students file upload:
+            // 
+            $(document).on('click', '#import-students-by-file', function () {
+
+                var data = new FormData($('form#student-file-import')[0]);
+                data.append('type', $('#file-type').attr('type'));
+                data.append('exam_id', examId);
+                $.ajax({
+                    url: baseURL + '/utility/import/students/file',
+                    type: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false, // Prevent corrupted boundary strings.
+                    processData: false    // No need to process data.
+                }).done(function (result) {
+                    $('#student-file-import-content').html(result);
+                    $('#student-file-import-content').attr('id', 'student-data-import-content');
+                    $('#import-students-by-file').attr('id', 'import-students-by-table');
+                }).fail(function (message) {
+                    alert("Failed upload file")
+                });
+            });
+
+            // 
+            // Import students from table data (file or group import):
+            // 
+            $(document).on('click', '#import-students-by-table', function () {
+
+                var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
+                var stdata = [], sthead = [];
+                
+                // 
+                // Create column type lookup table:
+                // 
+                $('#table-import-students thead tr th').each(function (i) {
+                    sthead[i] = $(this).val();
+                });
+                
+                // 
+                // Process table body. Add students to object array:
+                // 
+                $('#table-import-students tbody tr').each(function () {
+                    var stuobj = {'exam_id': examId};
+                    $(this).find('td').each(function (i) {
+                        switch (sthead[i]) {
+                            case 'user':
+                                if ($(this).text() !== "") {
+                                    stuobj.user = $(this).text();
+                                }
+                                break;
+                            case 'code':
+                                if ($(this).text() !== "") {
+                                    stuobj.code = $(this).text();
+                                }
+                                break;
+                            case 'tag':
+                                if ($(this).text() !== "") {
+                                    stuobj.tag = $(this).text();
+                                }
+                                break;
+                            case 'pnr':
+                                if ($(this).text() !== "" && stuobj.user === undefined) {
+                                    stuobj.user = $(this).text();
+                                }
+                                break;
+                        }
+                    });
+                    if (stuobj.user !== undefined && stuobj.user !== "") {
+                        stdata.push(stuobj);
+                    }
+                });
+                if (stdata.length === 0) {
+                    alert("No student selected for import");
+                    return;
+                }
+
+                // 
+                // Send AJAX request to add students:
+                // 
+                ajax(
+                        baseURL + 'ajax/core/invigilator/student/create',
+                        JSON.stringify(stdata),
+                        function (result) {
+                            onStudentInserted(result)
+                        });
+            });
+        });
 </script>
