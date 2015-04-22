@@ -146,6 +146,9 @@ return array(
                         'view' => array('decoder', 'student'),
                         'generate' => array('decoder'),
                         'download' => array('corrector', 'decoder', 'student')
+                ),
+                'import' => array(
+                        'students' => array('invigilator')
                 )
         )
 );

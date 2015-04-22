@@ -42,9 +42,17 @@ class ImportController extends GuiController
                         case 'file':
                                 $this->studentFileAction();
                                 break;
+                        case 'group':
+                                $this->studentGroupAction();
+                                break;
                         default:
                                 throw new Exception("Unknown mode $mode", Error::BAD_REQUEST);
                 }
+        }
+
+        public function missingAction()
+        {
+                
         }
 
         /**
@@ -63,6 +71,45 @@ class ImportController extends GuiController
                 $import->close();
 
                 $this->view->setVar('data', $import->getSheet());
+        }
+
+        /**
+         * Support for import of student from catalog group.
+         */
+        private function studentGroupAction()
+        {
+                $group = $this->request->get('group');
+                $domain = $this->request->get('domain');
+
+                if (strlen(trim($domain)) == 0) {
+                        $domain = null;
+                }
+
+                // 
+                // Get user principal objects:
+                // 
+                $members = $this->catalog->getMembers($group, $domain);
+
+                if (count($members) == 0) {
+                        $this->dispatcher->forward(array(
+                                'action' => 'missing'
+                        ));
+                        return false;
+                }
+
+                $data = array(array(
+                                'user', 'tag', 'name'
+                ));
+
+                foreach ($members as $member) {
+                        $data[] = array(
+                                $member->principal,
+                                $group,
+                                $member->name
+                        );
+                }
+
+                $this->view->setVar('data', $data);
         }
 
 }
