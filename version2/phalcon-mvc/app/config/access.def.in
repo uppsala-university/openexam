@@ -134,7 +134,8 @@ return array(
                         'replicate' => array('creator'),
                         'instruction' => array('creator', 'student'),
                         'students' => array('invigilator'),
-                        'settings' => array('creator') 
+                        'settings' => array('creator'),
+                        'security' => array('creator', 'invigilator')
                 ),
                 'question' => array(
                         'create' => array('creator', 'contributor'),
@@ -144,8 +145,8 @@ return array(
                 ),
                 'result' => array(
                         'view' => array('decoder', 'student'),
-                        'generate' => array('decoder'),
-                        'download' => array('corrector', 'decoder', 'student')
+                        'generate' => array('decoder')
+//                        'download' => array('corrector', 'decoder', 'student')
                 ),
                 'import' => array(
                         'students' => array('invigilator')
