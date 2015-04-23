@@ -62,7 +62,6 @@ class SignupController extends GuiController
         {
                 parent::initialize();
 
-                $this->view->setLayout('main');
                 $this->view->setVar('icon', $this->url->get('img/tools-wizard.png'));
 
                 $this->teacher = new Teacher($this->user->getPrincipalName());

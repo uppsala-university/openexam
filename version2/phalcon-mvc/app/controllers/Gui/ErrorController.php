@@ -31,7 +31,6 @@ class ErrorController extends GuiController
         public function initialize()
         {
                 parent::initialize();
-                $this->view->setLayout('main');
                 $this->view->setvar('icon', $this->url->get('img/cross-button.png'));
         }
 
