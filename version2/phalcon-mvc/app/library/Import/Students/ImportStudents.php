@@ -15,6 +15,7 @@ namespace OpenExam\Library\Import\Students;
 
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Error;
+use OpenExam\Library\Import\Exception as ImportException;
 use OpenExam\Library\Import\ImportBase;
 use OpenExam\Library\Import\ImportData;
 use stdClass;
@@ -137,7 +138,7 @@ class ImportStudents extends ImportBase
                 }
 
                 if (count($this->students) == 0) {
-                        throw new ImportException(_("No account information in import file.", Error::PRECONDITION_FAILED));
+                        throw new ImportException("No account information in import file.", Error::PRECONDITION_FAILED);
                 }
 
                 if (isset($this->opts->coltag)) {
