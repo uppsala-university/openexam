@@ -20,6 +20,7 @@ use Phalcon\Config;
 use Phalcon\Logger;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Dispatcher\Exception as DispatcherException;
+use Phalcon\Mvc\View;
 
 /**
  * Base class for gui controllers.
@@ -40,12 +41,19 @@ class GuiController extends ControllerBase
                 // Normal exception handling is not working at dispatch time.
                 // We need to use try/catch with forward to error page.
                 // 
+                
                 try {
+                        if ($this->request->isAjax()) {
+                                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+                        } else {
+                                $this->view->setLayout('main');
+                        }
+                        
                         $this->checkAccess(
                             $this->dispatcher->getControllerName(), $this->dispatcher->getActionName()
                         );
+                        
                         $this->view->setVar("authenticators", $this->auth->getChain("web"));
-                        $this->view->setLayout('main');
                 } catch (\Exception $exception) {
                         return $this->exceptionAction($exception);
                 }
@@ -116,7 +124,7 @@ class GuiController extends ControllerBase
         {
                 $access = new Config(require CONFIG_DIR . '/access.def');
                 $permit = $access->private->$controller->$action;
-                
+
                 // 
                 // Bypass for non-configured controller/action:
                 // 

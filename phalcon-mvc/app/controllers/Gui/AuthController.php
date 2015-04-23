@@ -18,7 +18,6 @@ use OpenExam\Library\Form\LoginForm;
 use OpenExam\Library\Form\LoginSelect;
 use OpenExam\Library\Security\Login\Base\FormLogin;
 use OpenExam\Library\Security\Login\Base\RemoteLogin;
-use Phalcon\Mvc\View;
 use UUP\Authentication\Stack\AuthenticatorChain;
 
 /**
@@ -32,16 +31,6 @@ use UUP\Authentication\Stack\AuthenticatorChain;
  */
 class AuthController extends GuiController
 {
-
-        public function initialize()
-        {
-                parent::initialize();
-                if ($this->request->get('embed', 'int', 0) == 1) {
-                        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
-                } else {
-                        $this->view->setLayout('main');
-                }
-        }
 
         /**
          * Index action.
