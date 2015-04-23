@@ -45,72 +45,70 @@ endforeach;
                         </span>
                     </div>                                
                 </div>
-                <?php if ($this->user->getPrincipalName() == $exam->creator): ?>
-                        <h3>Import from file</h3>
-                        <div>
-                            <div id="student-file-import-content">
-                                <p>
-                                    Upload the file containing students to import. Students can be imported by username or personal number, with optional supplied anonymous code and/or tag.
-                                </p>
-                                <form id="student-file-import" name="student-file-import">
-                                    <input type="file" name="file[]" />                                
-                                    <div class="btn-group" style="padding-top: 5px">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Filetype 
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#" type='-1'>Auto Detect</a></li>
-                                            <li><a href="#" type='oocalc'>OpenDocument Format Spreadsheet (*.ods,*.ots)</a></li>
-                                            <li><a href="#" type='excel2007'>Microsoft Excel 2007/2010/2013 XML (*.xlsx)</a></li>
-                                            <li><a href="#" type='excel2003'>Microsoft Excel 2003 XML (*.xml)</a></li>
-                                            <li><a href="#" type='excel97'>Microsoft Excel 97/2000/XP/2003 (*.xls,*.xlt)</a></li>
-                                            <li><a href="#" type='tab'>TAB Separated Values (*.tab,*.tsv,*.txt)</a></li>
-                                            <li><a href="#" type='csv'>CSV File (*.csv)</a></li>
-                                            <li><a href="#" type='gnumeric'>Gnumeric Spreadsheet (*.gnumeric)</a></li>
-                                            <li><a href="#" type='html'>HTML Document (*.htm,*.html)</a></li>
-                                            <li><a href="#" type='sylk'>SYLK Document (*.slk,*.sylk)</a></li>
-                                        </ul>
-                                        <div id='file-type' type='-1' style="padding: 5px 0"><span style="margin-left: 10px">Auto Detect</span></div>
-                                    </div>
-                                </form>
+                <h3>Import from file</h3>
+                <div>
+                    <div id="student-file-import-content">
+                        <p>
+                            Upload the file containing students to import. Students can be imported by username or personal number, with optional supplied anonymous code and/or tag.
+                        </p>
+                        <form id="student-file-import" name="student-file-import">
+                            <input type="file" name="file[]" />                                
+                            <div class="btn-group" style="padding-top: 5px">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Filetype 
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#" type='-1'>Auto Detect</a></li>
+                                    <li><a href="#" type='oocalc'>OpenDocument Format Spreadsheet (*.ods,*.ots)</a></li>
+                                    <li><a href="#" type='excel2007'>Microsoft Excel 2007/2010/2013 XML (*.xlsx)</a></li>
+                                    <li><a href="#" type='excel2003'>Microsoft Excel 2003 XML (*.xml)</a></li>
+                                    <li><a href="#" type='excel97'>Microsoft Excel 97/2000/XP/2003 (*.xls,*.xlt)</a></li>
+                                    <li><a href="#" type='tab'>TAB Separated Values (*.tab,*.tsv,*.txt)</a></li>
+                                    <li><a href="#" type='csv'>CSV File (*.csv)</a></li>
+                                    <li><a href="#" type='gnumeric'>Gnumeric Spreadsheet (*.gnumeric)</a></li>
+                                    <li><a href="#" type='html'>HTML Document (*.htm,*.html)</a></li>
+                                    <li><a href="#" type='sylk'>SYLK Document (*.slk,*.sylk)</a></li>
+                                </ul>
+                                <div id='file-type' type='-1' style="padding: 5px 0"><span style="margin-left: 10px">Auto Detect</span></div>
                             </div>
+                        </form>
+                    </div>
 
-                            <div id="import-students-by-file" style="display: block; margin:10px 0px 30px 0px;">        
-                                <span class="btn btn-success">
-                                    <i class="fa fa-chevron-circle-right"></i>
-                                    <span>Import students</span>
-                                </span>
-                            </div>                                
-                        </div>
-                        <h3>Import from group</h3>
-                        <div>
-                            <div id="student-group-import-content">
-                                <p>
-                                    Supply the name of a group to import students from. The name could e.g. be a course code or a domain group. The search can be restricted to a single domain.
-                                </p>
-                                <form id="student-file-import" name="student-group-import">
-                                    <div>
-                                        <label for="group">Group name:</label>
-                                        <input id="group-name" type="text" name="group" placeholder="3MK579" /><br />
-                                        <label for="domain">Domain:</label> 
-                                        <select id="domain-name" name="domain">
-                                            <option></option>
-                                            <?php foreach ($domains as $domain): ?>
-                                                    <option><?= $domain ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                </form>
+                    <div id="import-students-by-file" style="display: block; margin:10px 0px 30px 0px;">        
+                        <span class="btn btn-success">
+                            <i class="fa fa-chevron-circle-right"></i>
+                            <span>Import students</span>
+                        </span>
+                    </div>                                
+                </div>
+                <h3>Import from group</h3>
+                <div>
+                    <div id="student-group-import-content">
+                        <p>
+                            Supply the name of a group to import students from. The name could e.g. be a course code or a domain group. The search can be restricted to a single domain.
+                        </p>
+                        <form id="student-file-import" name="student-group-import">
+                            <div>
+                                <label for="group">Group name:</label>
+                                <input id="group-name" type="text" name="group" placeholder="3MK579" /><br />
+                                <label for="domain">Domain:</label> 
+                                <select id="domain-name" name="domain">
+                                    <option></option>
+                                    <?php foreach ($domains as $domain): ?>
+                                            <option><?= $domain ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
+                        </form>
+                    </div>
 
-                            <div id="import-students-by-group" style="display: block;margin:10px 0px 30px 0px;">        
-                                <span class="btn btn-success">
-                                    <i class="fa fa-chevron-circle-right"></i>
-                                    <span>Import students</span>
-                                </span>
-                            </div>                                
-                        </div>
-                <?php endif; ?>
+                    <div id="import-students-by-group" style="display: block;margin:10px 0px 30px 0px;">        
+                        <span class="btn btn-success">
+                            <i class="fa fa-chevron-circle-right"></i>
+                            <span>Import students</span>
+                        </span>
+                    </div> 
+                </div>
             </div>
         </div>
         <div id="tabs-2">
@@ -255,8 +253,8 @@ endforeach;
 
             $(document).on('click', '#add_students_btn', function () {
 
-                stData = [];
-                examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
+                var stData = [];
+                var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
                 if (examId) {
                     stList = jQuery.trim($('#student_list').val()).split("\n");
                     //prepare data object
@@ -304,7 +302,7 @@ endforeach;
 
                 var data = new FormData($('form#student-file-import')[0]);
                 data.append('type', $('#file-type').attr('type'));
-                data.append('exam_id', examId);
+                data.append('exam_id', $(this).closest('#st-mng-wrapper').attr('exam-id'));
                 $.ajax({
                     url: baseURL + '/utility/import/students/file',
                     type: 'POST',
@@ -320,7 +318,7 @@ endforeach;
                     alert("Failed submit form")
                 });
             });
-            
+
             // 
             // Handle student group import:
             // 
@@ -328,7 +326,7 @@ endforeach;
                 var data = new FormData($('form#student-group-import')[0]);
                 data.append('group', $('#group-name').val());
                 data.append('domain', $('#domain-name').val());
-                data.append('exam_id', examId);
+                data.append('exam_id', $(this).closest('#st-mng-wrapper').attr('exam-id'));
                 $.ajax({
                     url: baseURL + '/utility/import/students/group',
                     type: 'POST',
@@ -344,7 +342,7 @@ endforeach;
                     alert("Failed submit form")
                 });
             });
-            
+
             // 
             // Import students from table data (file or group import):
             // 
