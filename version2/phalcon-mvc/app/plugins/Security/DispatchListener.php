@@ -214,8 +214,6 @@ class DispatchListener extends Plugin
                 }
 
                 $target = explode("\\", strtolower($dispatcher->getControllerClass()));
-                
-                print_r($target);
 
                 if ($target[2] == "gui") {
                         return array(
