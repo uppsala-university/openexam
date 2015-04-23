@@ -175,7 +175,7 @@ class DispatchListener extends Plugin
          * 
          * <code>
          * array(
-         *      'service' => web|rest|soap,
+         *      'service' => web|rest|soap|ajax,
          *      'type'    => service|gui
          * )
          * </code>
@@ -184,38 +184,49 @@ class DispatchListener extends Plugin
          */
         private static function getTarget($dispatcher)
         {
-                $parent = current(
-                    class_parents(
-                        $dispatcher->getControllerClass()
-                    )
-                );
+                if (class_exists($dispatcher->getControllerClass())) {
+                        if (($parents = class_parents(
+                            $dispatcher->getControllerClass()
+                            ))) {
+                                switch (current($parents)) {
+                                        case 'OpenExam\Controllers\GuiController':
+                                                return array(
+                                                        'service' => 'web',
+                                                        'type'    => 'gui'
+                                                );
+                                        case 'OpenExam\Controllers\Service\AjaxController':
+                                                return array(
+                                                        'service' => 'ajax',
+                                                        'type'    => 'service'
+                                                );
+                                        case 'OpenExam\Controllers\Service\RestController':
+                                                return array(
+                                                        'service' => 'rest',
+                                                        'type'    => 'service'
+                                                );
+                                        case 'OpenExam\Controllers\Service\SoapController':
+                                                return array(
+                                                        'service' => 'soap',
+                                                        'type'    => 'service'
+                                                );
+                                }
+                        }
+                }
 
-                switch ($parent) {
-                        case 'OpenExam\Controllers\GuiController':
-                                return array(
-                                        'service' => 'web',
-                                        'type'    => 'gui'
-                                );
-                        case 'OpenExam\Controllers\Service\AjaxController':
-                                return array(
-                                        'service' => 'ajax',
-                                        'type'    => 'service'
-                                );
-                        case 'OpenExam\Controllers\Service\RestController':
-                                return array(
-                                        'service' => 'rest',
-                                        'type'    => 'service'
-                                );
-                        case 'OpenExam\Controllers\Service\SoapController':
-                                return array(
-                                        'service' => 'soap',
-                                        'type'    => 'service'
-                                );
-                        default:
-                                return array(
-                                        'service' => $dispatcher->getControllerName(),
-                                        'type'    => 'service'
-                                );
+                $target = explode("\\", strtolower($dispatcher->getControllerClass()));
+                
+                print_r($target);
+
+                if ($target[2] == "gui") {
+                        return array(
+                                'service' => 'web',
+                                'type'    => 'gui'
+                        );
+                } else {
+                        return array(
+                                'service' => $target[3],
+                                'type'    => $target[2]
+                        );
                 }
         }
 
