@@ -32,6 +32,7 @@ class ErrorController extends GuiController
         {
                 parent::initialize();
                 $this->view->setvar('icon', $this->url->get('img/cross-button.png'));
+                $this->view->setVar('style', $this->request->isAjax() == false ? "margin-top: 50px" : "");
         }
 
         public function indexAction()
