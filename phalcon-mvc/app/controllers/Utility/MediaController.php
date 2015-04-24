@@ -13,8 +13,9 @@
 
 namespace OpenExam\Controllers\Utility;
 
-use OpenExam\Controllers\ControllerBase;
+use OpenExam\Controllers\GuiController;
 use OpenExam\Models\Resource;
+use Phalcon\Mvc\View;
 
 require_once (EXTERN_DIR . 'UploadHandler.php');
 
@@ -23,7 +24,7 @@ require_once (EXTERN_DIR . 'UploadHandler.php');
  *
  * @author Ahsan Shahzad (MedfarmDoIT)
  */
-class MediaController extends ControllerBase
+class MediaController extends GuiController
 {
 
         /**
@@ -69,7 +70,7 @@ class MediaController extends ControllerBase
                     ));
                 
                 // set rendering level
-                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
         }
 
         /**
