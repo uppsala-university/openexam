@@ -13,7 +13,7 @@
 
 namespace OpenExam\Library\Import\Students;
 
-use PHPExcel_IOFactory;
+use PHPExcel_Reader_CSV;
 
 /**
  * Import students from TAB-separated values file.
@@ -23,7 +23,7 @@ use PHPExcel_IOFactory;
 class ImportStudentsTextTab extends ImportStudents
 {
 
-        private static $mimedef = "text/tab-separated-values";
+        private static $mimedef = array("text/tab-separated-values", "text/plain");
 
         public function __construct($accept = "")
         {
@@ -32,7 +32,7 @@ class ImportStudentsTextTab extends ImportStudents
 
         public function open()
         {
-                $this->reader = PHPExcel_IOFactory::createReader('CSV');
+                $this->reader = new PHPExcel_Reader_CSV();
                 $this->reader->setDelimiter("\t");
                 $this->reader->setReadDataOnly(true);
         }
