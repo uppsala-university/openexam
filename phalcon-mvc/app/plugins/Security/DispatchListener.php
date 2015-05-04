@@ -72,7 +72,7 @@ class DispatchListener extends Plugin
                                 // 
                                 // Get target information:
                                 // 
-                                $target = self::getTarget($dispatcher);
+                                $target = $this->getTarget($dispatcher);
 
                                 // 
                                 // Handle dispatch:
@@ -98,7 +98,7 @@ class DispatchListener extends Plugin
                 // 
                 // Get target information:
                 // 
-                $target = self::getTarget($dispatcher);
+                $target = $this->getTarget($dispatcher);
 
                 // 
                 // Stop event propagation:
@@ -182,8 +182,11 @@ class DispatchListener extends Plugin
          * 
          * @param Dispatcher $dispatcher The dispatcher object.
          */
-        private static function getTarget($dispatcher)
+        private function getTarget($dispatcher)
         {
+                // 
+                // Get sub system from class inheritance:
+                // 
                 if (class_exists($dispatcher->getControllerClass())) {
                         if (($parents = class_parents(
                             $dispatcher->getControllerClass()
@@ -213,6 +216,9 @@ class DispatchListener extends Plugin
                         }
                 }
 
+                // 
+                // Guess sub system from target controller and request type:
+                // 
                 $target = explode("\\", strtolower($dispatcher->getControllerClass()));
 
                 if ($target[2] == "gui") {
@@ -220,10 +226,30 @@ class DispatchListener extends Plugin
                                 'service' => 'web',
                                 'type'    => 'gui'
                         );
-                } else {
+                } elseif ($target[2] == "service") {
                         return array(
                                 'service' => $target[3],
                                 'type'    => $target[2]
+                        );
+                } elseif ($this->request->getUserAgent()) {
+                        return array(
+                                'service' => 'web',
+                                'type'    => 'gui'
+                        );
+                } elseif ($this->request->isAjax()) {
+                        return array(
+                                'service' => 'ajax',
+                                'type'    => 'service'
+                        );
+                } elseif ($this->request->isSoapRequested()) {
+                        return array(
+                                'service' => 'soap',
+                                'type'    => 'service'
+                        );
+                } else {
+                        return array(
+                                'service' => 'rest',
+                                'type'    => 'service'
                         );
                 }
         }
