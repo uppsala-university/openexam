@@ -133,7 +133,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                                 $result = NULL;
                                                                 $qScore = 0;
                                                                 $answer = $question->getAnswers("student_id = '".$student->id."'");
-                                                                if($answerd = $answer->count()) :
+                                                                if($answered = $answer->count()) :
                                                                 
                                                                         $result = $answer->getFirst()->getResult();
                                                                         if(is_object($result) && $result->count()) :
@@ -166,16 +166,17 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                                 <?php 
                                                                 // find color code
                                                                 $cLink = true;
-                                                                if(!$answerd) :
+                                                                echo $result->correction;
+                                                                if(!$answered) {
                                                                         $cc = 'na';
                                                                         $cLink = false;
-                                                                elseif(is_object($result) && $result->count())  :
+                                                                } elseif(is_object($result) && $result->count() && in_array($result->correction, array('completed', 'finalized'))) {
                                                                         $cc = 'ac';
-                                                                elseif(!in_array($this->user->getPrincipalName(), $qCorrectorList))  :
+                                                                } elseif(!in_array($this->user->getPrincipalName(), $qCorrectorList)) {
                                                                         $cc = 'no';
-                                                                else :
+                                                                } else {
                                                                         $cc = 'nc';
-                                                                endif;
+                                                                }
                                                                 ?>
                                                                 <td class="cc <?=$cc?>">
                                                                         <?php if($cLink):?>
@@ -215,7 +216,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                         <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
                                                                 <?=$totalStudentScore?>
                                                                 <?php
-								if($answerd):
+								if($answered):
 									$avgScore[] = $totalStudentScore; 
 								endif;	
 								?>                                                                
@@ -223,7 +224,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                         <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
 								<?=sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100)?>%
                                                                 <?php
-								if($answerd):
+								if($answered):
 									$avgPercentage[] = sprintf("%1.1f", ($totalStudentScore/$totalExamScore)*100); 
 								endif;	
 								?>
@@ -316,7 +317,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                         </tr>
                                         <tr class="colorcode">
                                                 <td class="cc nc">&nbsp;</td>
-                                                <td>The answer has not yet been corrected.</td>
+                                                <td>The answer is uncorrected or partially corrected.</td>
                                         </tr>
                                         <tr class="colorcode">
                                                 <td class="cc gm">&nbsp;</td>
@@ -502,23 +503,30 @@ $(document).ready(function () {
 			var correctorId = $(saveResultBtn).attr('corrector-id');
 			var resultJson = {};
 			var resId = ansId = 0;
+                        var correctionStatus = 'completed';
 			$(saveResultBtn).closest('.q-body').find('.q-points').each(function(index, element) {
-				resultJson[$(element).attr('q-part')] = $.isNumeric($(element).val()) ? $(element).val() : 0;
-				ansId = $(element).attr('ans-id');
-				resId = $(element).attr('res-id');
+                                if($.isNumeric($(element).val())) {
+                                        resultJson[$(element).attr('q-part')] = $(element).val();
+                                        ansId = $(element).attr('ans-id');
+                                        resId = $(element).attr('res-id');
+                                } else {
+                                        correctionStatus = 'partial';
+                                }
 			});
 	
 			// send ajax requedt to update student's socre
 			if(resId != 0) {
-				resultsUpdate.push({id:resId, "answer_id":ansId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
+				resultsUpdate.push({id:resId, "answer_id":ansId, "score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":correctionStatus});
 			} else {
-				resultsCreate.push({"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":"completed"});
+				resultsCreate.push({"answer_id":ansId,"score":JSON.stringify(resultJson), "comment":correctorComents, "corrector_id":correctorId, "correction":correctionStatus});
 				totalCreated++;
 			}
 			
-			$(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
-			$(saveResultBtn).closest('.q-body').css('background-color', '#fff');
-			$(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
+                        if(correctionStatus !== 'partial') {
+                                $(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
+                                $(saveResultBtn).closest('.q-body').css('background-color', '#fff');
+                                $(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
+                        }
 		});
 		
 		if(resultsCreate.length) {

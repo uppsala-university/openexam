@@ -125,6 +125,9 @@ class ResultController extends GuiController
                                                 
                                                 $data['results'][$student->id][$question->id]["comments"]
                                                     = $result->comment;    
+                                                
+                                                $data['results'][$student->id][$question->id]["correction"]
+                                                    = $result->correction;    
                                         }
 
                                         foreach($qPartsResult as $part => $score) {
