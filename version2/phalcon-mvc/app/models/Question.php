@@ -171,7 +171,7 @@ class Question extends ModelBase
                         $this->status = self::STATUS_ACTIVE;
                 }
                 if (!isset($this->slot)) {
-                        $this->slot = count($this->exam->questions) + 1;
+                        $this->slot = self::count(sprintf("exam_id = %d", $this->exam_id)) + 1;
                 }
         }
 
