@@ -440,6 +440,17 @@ $(document).ready(function () {
 	});
 
 	$(document).on('click', '.save-all-result', function() {
+                // 
+                // Save all results having score set. This should be optimized
+                // with filtering for multiple choice questions.
+                // 
+                $('.q-points').each(function(){
+                        if(resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
+                                if($(this).val() != '') {
+                                        resyncableResults.push($(this).attr('ans-id'));
+                                }
+                        }
+                });
 		saveResults(resyncableResults);
 		resyncableResults = [];
 	});
