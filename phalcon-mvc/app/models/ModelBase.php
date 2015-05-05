@@ -191,7 +191,11 @@ class ModelBase extends Model
                 $txlevel = $connection->getTransactionLevel();
 
                 try {
-                        $result = parent::_preSaveRelatedRecords($connection, $related);
+                        if (($result = parent::_preSaveRelatedRecords($connection, $related))) {
+                                $this->_related = null;
+                        } else {
+                                $this->_related = $related;
+                        }
                 } catch (\Exception $exception) {
                         while ($connection->getTransactionLevel() > $txlevel) {
                                 try {
@@ -200,6 +204,7 @@ class ModelBase extends Model
                                         // ignore
                                 }
                         }
+                        $this->_related = $related;
                         $user->setPrimaryRole($role);
                         throw $exception;
                 }
