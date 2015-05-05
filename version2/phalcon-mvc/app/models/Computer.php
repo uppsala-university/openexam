@@ -3,7 +3,6 @@
 namespace OpenExam\Models;
 
 use Phalcon\Mvc\Model\Behavior\Timestampable;
-use Phalcon\Mvc\Model\Relation;
 
 /**
  * The computer model.

@@ -120,7 +120,7 @@ class Topic extends ModelBase
                         $this->randomize = 0;
                 }
                 if (!isset($this->slot)) {
-                        $this->slot = $this->exam->topics->count() + 1;
+                        $this->slot = count($this->exam->topics) + 1;
                 }
         }
 

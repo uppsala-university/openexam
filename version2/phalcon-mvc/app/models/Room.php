@@ -2,8 +2,6 @@
 
 namespace OpenExam\Models;
 
-use Phalcon\Mvc\Model\Relation;
-
 /**
  * The room model.
  * 

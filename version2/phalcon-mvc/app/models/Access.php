@@ -29,6 +29,8 @@ namespace OpenExam\Models;
  * $access->addr = "192.168.25.0/255.255.255.192";      // Subnet-notation.
  * $access->addr = "192.168.25.1-192.168.25.63";        // Address range.
  * </code>
+ * 
+ * @property Exam $exam The related exam.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class Access extends ModelBase
