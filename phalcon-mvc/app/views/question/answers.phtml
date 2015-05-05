@@ -114,7 +114,7 @@ $decoded = $exam->decoded;
                                                                 <?php foreach($qSpecificAns as $qSpecAns):
                                                                 	$result = $qSpecAns->getResult();
                                                                 	$scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array());
-									if($decoded || count($scoreData)):?>
+									if($decoded || (count($scoreData) && $result->correction != 'partial')):?>
 									<script>
 										$("#<?=$question->id?>-corrected").hide();
 										$("#<?=$question->id?>-corrected").parent().find('.q-body').css('background-color', '#fff');
@@ -225,7 +225,7 @@ $decoded = $exam->decoded;
         					<div>
                                                   <?php $result = $answer->getResult();?>
                                                   <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array());?>
-                                                  <?php if(!$decoded && !count($scoreData)):?>
+                                                  <?php if(!$decoded && (count($scoreData) == 0 || !in_array($result->correction, array('completed','finalized')))):?>
                                                   <?=Phalcon\Tag::image(array("img/not-corrected.gif", "style"=>"position: absolute; right: 40px; width: 5%;", "class"=>"not-corrected"));?>
                                                   <?php endif;?>
 						  <?php $student = \OpenExam\Models\Student::findFirst($answer->student_id);?>

@@ -212,7 +212,8 @@ class State
                 $resultset = $connection->query("
                 SELECT  a.id
                 FROM    questions q, students s, answers a
-                        LEFT JOIN results r ON a.id = r.answer_id
+                        LEFT JOIN results r ON 
+                        (a.id = r.answer_id AND r.correction NOT IN ('waiting','partial'))
                 WHERE   s.exam_id = :examid AND
                         s.id = a.student_id AND
                         q.id = a.question_id AND 
