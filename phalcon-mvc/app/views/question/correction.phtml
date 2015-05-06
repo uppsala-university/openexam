@@ -166,7 +166,6 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                                 <?php 
                                                                 // find color code
                                                                 $cLink = true;
-                                                                echo $result->correction;
                                                                 if(!$answered) {
                                                                         $cc = 'na';
                                                                         $cLink = false;
@@ -442,18 +441,21 @@ $(document).ready(function () {
 
 	$(document).on('click', '.save-all-result', function() {
                 // 
-                // Save all results having score set. This should be optimized
-                // with filtering for multiple choice questions.
+                // Save result with values, but not yet saved by default. Give
+                // caller an option to force save all result.
                 // 
-                $('.q-points').each(function(){
-                        if(resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
-                                if($(this).val() != '') {
-                                        resyncableResults.push($(this).attr('ans-id'));
-                                }
+                resyncableResults = getSyncableResults('unsaved');
+                
+                if(resyncableResults.length == 0) {
+                        if(confirm('No result need to be saved. Save anyway?')) {
+                                resyncableResults = getSyncableResults('complete');
+                        } else {
+                                return false;
                         }
-                });
-		saveResults(resyncableResults);
-		resyncableResults = [];
+                }
+                
+                saveResults(resyncableResults);
+                resyncableResults = [];
 	});
 	
 	$(document).on('blur', '.q-points', function() {
@@ -493,6 +495,39 @@ $(document).ready(function () {
 	
 	$('#containerflarp').css('width','92%');
 	
+        // 
+        // Get syncable results. The mode defines which ans-id to return:
+        // changed  - Return only manual changed results.
+        // unsaved  - Return all not yet saved results.
+        // complete - Return all results excluding any unset.
+        // 
+        var getSyncableResults = function(mode) {
+                if(mode == 'changed') {
+                        return resyncableResults;
+                } else if(mode == 'unsaved') {
+                        $('.q-points').each(function() {
+                                if(resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
+                                        if($(this).val() != '' && $(this).attr('res-id') == 0) {
+                                                resyncableResults.push($(this).attr('ans-id'));
+                                        }
+                                }
+                        });
+                        return resyncableResults;
+                } else if(mode == 'complete') {
+                        $('.q-points').each(function() {
+                                if(resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
+                                        if($(this).val() != '') {
+                                                resyncableResults.push($(this).attr('ans-id'));
+                                        }
+                                }
+                        });
+                        return resyncableResults;
+                } else {
+                        console.log('Unknown resyncable result mode requested: ' + mode);
+                        return [];
+                }
+        }
+        
 	var saveResults = function (ansIds) {
 		var resultsCreate = [];
 		var resultsUpdate = [];
