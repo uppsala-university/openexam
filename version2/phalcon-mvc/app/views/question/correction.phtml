@@ -458,16 +458,20 @@ $(document).ready(function () {
                 resyncableResults = [];
 	});
 	
+        $(document).on('focus', '.q-points', function() {
+                $(this).attr('reset', $(this).val());
+        });
+        
 	$(document).on('blur', '.q-points', function() {
 		if($(this).val()!='' && !$.isNumeric($(this).val())) {
 			alert("Error: Question points must be numeric");
-			$(this).val(0);
+                        $(this).val($(this).attr('reset'));
 			return false;
 		}
 		
 		if(Number($(this).val()) > Number($(this).attr('max-pt'))) {
 			alert("Error: Maximum points for this part are:"+$(this).attr('max-pt'));
-			$(this).val('');
+                        $(this).val($(this).attr('reset'));
 			return false;
 		}
 		
