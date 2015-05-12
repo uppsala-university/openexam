@@ -27,6 +27,7 @@
                 <xs:element name="students" type="tns:students" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
+        <xs:attribute name="format" type="xs:integer" use="required" default="6073"/>
     </xs:element>
     
     <!-- Project properties: -->
@@ -42,7 +43,6 @@
             <xs:element name="creator" type="xs:string"/>
             <xs:element name="grades" type="xs:string"/> 
         </xs:sequence>
-        <xs:attribute name="format" type="xs:integer" use="required" default="6073"/>
     </xs:complexType>
  
     <!-- Roles: -->   
