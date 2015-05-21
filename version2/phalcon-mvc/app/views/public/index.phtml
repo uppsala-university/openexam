@@ -14,12 +14,11 @@
 <div class="hero-unit" style="padding-top:18px; margin-top:40px;">
     <h1>Welcome!</h1>
     <br />
-    <div style="padding-bottom:15px">OpenExam is an on line examination system that allows different types of computer-based tests and exams. It can replace traditional paper-based exams if performed in exam halls where computers are available. It may also be used for home exams and quizzes with randomly displayed questions. The system is entirely web based, from creating the exam to providing the students with the corrected exams.
+    <div style="padding-bottom:15px">OpenExam is an on line examination system that allows different types of computer-based tests and exams. It replaces traditional paper-based exams if performed in exam halls equipped with computers or in computer class rooms where restricted interned can be controlled. It may also be used for home exams and diagnostic tests on student’s personal devices. The front end of the system is entirely web based, from creating the exam to providing the students with the corrected exams.
     </div>
     <div style="padding-bottom:10px">
-    Through the links below, teachers and course providers can log in and create an exam, assign different roles to teachers contributing to the exam.
-Students can also log in and get access to their completed exams and find information about upcoming exams.
-    <a href="#">More information about OpenExam ...</a>
+    Through the links below, teachers and course providers can log in and create an exam, assign different roles to teachers contributing to the exam. Students can also log in and get access to their completed exams and find information about upcoming exams.
+    <?= Phalcon\Tag::linkTo('public/about', 'Read more..') ?>
     </div>
 </div>
 
@@ -28,7 +27,7 @@ Students can also log in and get access to their completed exams and find inform
         <h2>Are you a Teacher? </h2>
         <div>
 		<img src="<?=$this->url->get("img/teachers.jpg")?>" style="padding-bottom:15px" />
-                If you are a teacher at Uppsala University or if you have been given access to the system by the administrator you can <a href="<?=$this->url->get('auth/login')?>" class="fancybox fancybox.ajax">log in here</a>.<br />
+                If you are a teacher at Uppsala University or if you have been given access to the system by the administrator you can log in by clicking on "Login" link in top right corner.</a>.<br />
 		If you do not have access, please contact the <a href="#">system administrator.</a><br />
         </div>
     </div>
@@ -36,7 +35,8 @@ Students can also log in and get access to their completed exams and find inform
         <h2>Are you a Student? </h2>
         <div>
                 <img src="<?=$this->url->get("img/students.jpg")?>" style="padding-bottom:15px" />
-                If you have been registered for computer based exams you can <a href="<?=$this->url->get('auth/login')?>" class="fancybox fancybox.ajax">log in here</a> and find your previous and upcoming exams. If you cannot log in please contact your course administrator.<br />
+                If you have been registered for computer based exams you can log in by clicking on "Login" link in top right corner and find your previous and upcoming exams. If you cannot log in please contact your course administrator.<br />
+                <!--<a href="<?=$this->url->get('auth/login')?>" class="fancybox fancybox.ajax">log in here</a>-->
         </div>
     </div>
     <div class="span4">

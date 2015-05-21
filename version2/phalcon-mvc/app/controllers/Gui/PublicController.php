@@ -34,6 +34,11 @@ class PublicController extends \OpenExam\Controllers\GuiController
             /* data to be sent */
         }
 
+        public function aboutAction()
+        {
+            $this->view->disableLevel(View::LEVEL_BEFORE_TEMPLATE);
+        }
+
         public function helpAction($role, $model, $action)
         {
             /* data to be sent */
