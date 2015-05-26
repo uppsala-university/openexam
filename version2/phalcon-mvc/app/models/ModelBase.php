@@ -213,4 +213,46 @@ class ModelBase extends Model
                 return $result;
         }
 
+        /**
+         * Inserts or updates a model instance. Returning true on success or 
+         * false otherwise. 
+         * 
+         * This method extends Phalcon save() method adding retry behavior by 
+         * trying to save the model for 5 times during a total period of 3 sec
+         * before failing.
+         * 
+         * <code>
+         * // Creating a new robot 
+         * $robot = new Robots(); 
+         * $robot->type = 'mechanical'; 
+         * $robot->name = 'Astro Boy'; 
+         * $robot->year = 1952; $robot->save();  
+         * </code>
+         * 
+         * <code>
+         * // Updating a robot name:
+         * $robot = Robots::findFirst("id=100"); 
+         * $robot->name = "Biomass"; 
+         * $robot->save();  
+         * </code>
+         * 
+         * @param array $data
+         * @param array $whiteList
+         * @return boolean 
+         */
+        public function save($data = null, $whiteList = null)
+        {
+                $retry = 5;             // max retry
+                $sleep = 200000;        // microsec
+
+                for ($i = 1; $i <= $retry; $i++) {
+                        if (parent::save($data, $whiteList)) {
+                                return true;
+                        }
+                        usleep($sleep * $i);
+                }
+
+                return false;
+        }
+
 }
