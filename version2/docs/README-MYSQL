@@ -1,6 +1,26 @@
 
-   NOTES FOR MYSQL SERVER
+    ************************************
+     NOTES FOR MYSQL SERVER
+    ************************************
 
+
+** CLIENT CONNECTION LIMIT:
+
+   The default number of accepted client connections might be to low, resulting
+   in client SQL errors. The upper limit can be extended for mysqld in my.cnf:
+
+        open_files_limit = 8192
+        max_connections  = 1000
+
+   These values can also be queried or dynamic set using the MySQL command:
+
+        mysql> show variables like 'max_connections';
+        +-----------------+-------+
+        | Variable_name   | Value |
+        +-----------------+-------+
+        | max_connections | 1000  |
+        +-----------------+-------+
+        1 row in set (0,00 sec)
 
 ** SAVING LARGE ANSWERS:
 
@@ -12,8 +32,8 @@
    The default max single SQL statement accepted by MySQL is 1MB. Too actually
    save answers larger than 1MB a few configurations has to be done:
 
-     1. Modify post_max_size in php.ini
-     2. Modify max_allowed_packet in my.cnf
+        1. Modify post_max_size in php.ini
+        2. Modify max_allowed_packet in my.cnf
 
    This text snippet from MySQL reference manual explain this:
 
@@ -34,9 +54,13 @@
 
       ..."
 
+   This variable can also be queried and set from the MySQL prompt:
+
+        mysql> show variables like 'max_allowed_packet';
+
    See these links for more information:
 
-     http://dev.mysql.com/doc/refman/5.0/en/storage-requirements.html
-     http://dev.mysql.com/doc/refman/5.1/en/packet-too-large.html
+        http://dev.mysql.com/doc/refman/5.0/en/storage-requirements.html
+        http://dev.mysql.com/doc/refman/5.1/en/packet-too-large.html
 
 // Anders Lövgren, 2012-03-14
