@@ -1,0 +1,48 @@
+
+    *************************************************************
+     Exam states
+    *************************************************************
+
+** Introduction:
+
+   This document describes the different state an exam can be in and the allowed
+   operations during each state. The fully details can be read direct from the 
+   source code:
+
+        *) phalcon-mvc/app/library/Core/Exam/State.php
+        *) tests/phalcon-mvc/app/library/Core/Exam/StateTest.php
+
+** State matrix:
+
+        Flag:           [1]	[2]	[3]	[4]	[5]	[6]	[7]
+        ----------------------------------------------------------------------
+        CONTRIBUTABLE 	yes	yes	yes	no	no	no	no
+        CORRECTABLE	no	no	no	no	yes	yes	no
+        DECODABLE	no	no	no	no	no	yes	yes
+        DECODED         no	no	no	no	no	no	yes
+        DELETABLE	yes	no	no	no	no	no	no
+        EDITABLE	yes	yes	yes	no	no	no	no
+        EXAMINATABLE	yes	yes	yes	yes	no	no	no
+        FINISHED	no	no	no	no	yes	yes	yes
+        REUSABLE	yes	yes	yes	no	no	no	no
+        RUNNING         no	no	yes	yes	no	no	no
+        UPCOMING	yes	yes	no	no	no	no	no
+
+        Description:	
+        --------------
+
+        [1] Before examination started (unpublished)	
+        [2] Before examination started (published)	
+        [3] Ongoing examination (unseen)	
+        [4] Ongoing examination (seen)	
+        [5] Finished examination (not yet corrected)	
+        [6] Finished examination (corrected)	
+        [7] Finished examination (decoded)
+
+        Notice:	
+        --------------
+
+        An exam not yet published or flagged as testcase can always be deleted.						
+
+
+// Anders Lövgren, 2015-05-27
