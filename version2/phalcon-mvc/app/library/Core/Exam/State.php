@@ -179,8 +179,8 @@ class State
                         $this->state |= self::DELETABLE;
                 }
 
-                if ($this->hasAnswers() == false) {     // Contributable until first seen
-                        $this->state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE;
+                if ($this->hasAnswers() == false) {     // Contributable and resuable until first seen
+                        $this->state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::REUSABLE;
                 }
         }
 
