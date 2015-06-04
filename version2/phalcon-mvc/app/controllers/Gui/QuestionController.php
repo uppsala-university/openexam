@@ -15,12 +15,14 @@ namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
+use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Core\Exam\Student\Access;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Answer;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Question;
 use OpenExam\Models\Student;
+use Phalcon\Mvc\View;
 
 /**
  * Controller for adding/loading Exam questions
@@ -44,7 +46,7 @@ class QuestionController extends GuiController
                 $this->view->setVar('exam', Exam::findFirst($examId));
 
                 //disable main layout
-                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
                 //pickup question form
                 $this->view->pick("question/form");
@@ -69,7 +71,7 @@ class QuestionController extends GuiController
                         $exam = Exam::findFirst($question->exam_id);
 
                         //load question form with preloaded data and layout disabled
-                        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                         $this->view->setVars(array(
                                 'question' => $question,
                                 'exam'     => $exam
@@ -91,30 +93,58 @@ class QuestionController extends GuiController
          */
         public function viewAction()
         {
-                //initializations
+                // 
+                // Initialization:
+                // 
                 $questData = $ansData = array();
-                $student = NULL;
-                $loggedIn = $this->user->getPrincipalName();
+                $exam = false;
 
-                ## sanitize
-                $examId = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
-                $questId = $this->filter->sanitize($this->dispatcher->getParam("questId"), "int");
+                // 
+                // Get sanitized request parameters:
+                // 
+                $examId = $this->dispatcher->getParam("examId", "int");
+                $questId = $this->dispatcher->getParam("questId", "int");
 
-                ## load exam
-                $exam = Exam::findFirst($examId);
+                // 
+                // Load exam object using primary role (if any). If primary 
+                // role is unset, then use roles allowed to access this action.
+                // 
+                // TODO: Keep access list of allowed roles in parent controller.
+                // 
+                if ($this->user->hasPrimaryRole()) {
+                        $exam = Exam::findFirst($examId);
+                }
+                if (!$exam) {
+                        $role = $this->user->setPrimaryRole(Roles::STUDENT);
+                        $exam = Exam::findFirst($examId);
+                }
+                if (!$exam) {
+                        $role = $this->user->setPrimaryRole(Roles::CREATOR);
+                        $exam = Exam::findFirst($examId);
+                }
+                if (!$exam) {
+                        throw new \Exception("Failed to load exam for this question");
+                }
 
-                ## if it is exam test mode?
-                $testMode = FALSE;
-                if ($exam->creator == $loggedIn) {
-                        $testMode = TRUE;
-                } else {
-                        ## check access:
+                // 
+                // Is the exam accessed in test mode?:
+                // 
+                if ($exam->creator == $this->user->getPrincipalName()) {
+                        $exam->testcase = true;
+                        $this->user->setPrimaryRole(Roles::CREATOR);
+                }
+
+                if (!$exam->testcase) {
+                        // 
+                        // Check exam access:
+                        // 
                         if ($exam->lockdown->enable) {
                                 $access = new Access($exam);
-                                $role = $this->user->setPrimaryRole(Roles::STUDENT);
                                 switch ($access->open()) {
                                         case Access::OPEN_APPROVED;
-                                                $this->user->setPrimaryRole($role);
+                                                $this->logger->auth->debug(
+                                                    sprintf("Approved exam access for student %s", $this->user->getPrincipalName())
+                                                );
                                                 break;
                                         case Access::OPEN_DENIED:
                                                 throw new \Exception("Access denied for exam", Error::FORBIDDEN);
@@ -128,17 +158,22 @@ class QuestionController extends GuiController
                                 }
                         }
 
-                        ## find student id of this logged in person for this exam
-                        $student = Student::findFirst("user = '" . $loggedIn . "' and exam_id = " . $examId);
-                        if (!$student) {
+                        // 
+                        // Disable further access control:
+                        // 
+                        $this->user->setPrimaryRole(Roles::SYSTEM);
+
+                        // 
+                        // Find student object of this logged in person for this exam:
+                        // 
+                        if (!($student = Student::findFirst("user = '" . $this->user->getPrincipalName() . "' and exam_id = " . $examId))) {
                                 throw new \Exception("You are not authorized to access this question");
                         }
 
-                        $examStartsAt = !is_null($student->starttime) ? $student->starttime : $exam->starttime;
-                        $examEndsAt = !is_null($student->endtime) ? $student->endtime : $exam->endtime;
-
-                        ## load exam with time checking
-                        if (!is_null($examEndsAt) && (strtotime($examStartsAt) > strtotime("now") || strtotime($examEndsAt) < strtotime("now"))) {
+                        // 
+                        // Redirect to index page if exam is not running:
+                        // 
+                        if ($exam->getState()->has(State::RUNNING) == false) {
                                 return $this->response->redirect('exam/index');
                         }
                 }
@@ -163,7 +198,7 @@ class QuestionController extends GuiController
 
                         ## pick up answer data if student has answered
                         ## otherwise, create an entry in answer table for this question against this student
-                        if (!$testMode) {
+                        if (!$exam->testcase) {
                                 $ans = Answer::findFirst("student_id = " . $student->id . " and question_id = " . $questData[0]->id);
                                 if (!$ans) {
                                         //lets add answer record in database now
@@ -182,7 +217,7 @@ class QuestionController extends GuiController
                         $questData = $allQs;
 
                         ## load all answers that logged in student has given against all qs
-                        if (!$testMode) {
+                        if (!$exam->testcase) {
                                 foreach ($allQs as $qObj) {
                                         $tmp = Answer::findFirst("student_id = " . $student->id . " and question_id = " . $qObj->id);
                                         if (is_object($tmp) && $tmp->count()) {
@@ -194,7 +229,7 @@ class QuestionController extends GuiController
 
                 ## get list of all questions that this student has asked to highlight
                 $highlightedQuestList = array();
-                if (!$testMode) {
+                if (!$exam->testcase) {
                         foreach ($allQs as $q) {
                                 $allAns = $q->getAnswers('student_id = ' . $student->id);
                                 if (is_object($allAns) && $allAns->count()) {
@@ -215,7 +250,7 @@ class QuestionController extends GuiController
                         'answer'        => $ansData,
                         'highlightedQs' => $highlightedQuestList,
                         'viewMode'      => $viewMode,
-                        'testMode'      => $testMode,
+                        'testMode'      => $exam->testcase,
                         'student'       => $student
                 ));
                 $this->view->setLayout('thin-layout');
@@ -308,7 +343,7 @@ class QuestionController extends GuiController
                                 'heading' => $heading
                         ));
 
-                        $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                         $this->view->pick('question/answers');
                 } else {
 
