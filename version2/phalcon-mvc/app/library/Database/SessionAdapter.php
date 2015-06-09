@@ -107,10 +107,6 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 }
 
                 if ($this->session->data == $data) {
-                        if ($this->session->session_id == $sessionId) {
-                                return true;
-                        }
-
                         $maxlifetime = (int) ini_get('session.gc_maxlifetime');
                         if ($this->session->updated + $maxlifetime > time()) {
                                 return true;
@@ -125,7 +121,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                         $this->session->session_id = $sessionId;
                         $this->session->data = $data;
                         $this->session->created = time();
-                        $this->session->updated = time();
+                        $this->session->updated = null;
                 }
 
                 if (($this->session->save() == false)) {
@@ -169,17 +165,15 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
         public function gc($maxlifetime)
         {
                 if (!$this->session) {
-                        return true;
-                }
-
-                if ($this->session->updated + $maxlifetime > time()) {
                         return false;
                 }
 
-                $result = $this->session->delete();
-                $this->session = false;
-
-                return $result;
+                $dbo = $this->session->getWriteConnection();
+                return $dbo->execute(
+                        sprintf(
+                            'DELETE FROM sessions WHERE COALESCE(updated, created) + %d < ?', $maxlifetime
+                        ), array(time())
+                );
         }
 
 }
