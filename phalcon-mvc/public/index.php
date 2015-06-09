@@ -17,6 +17,11 @@ if ($config->application->release) {
         ini_set('display_startup_errors', 1);
 }
 
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 1000);
+ini_set('session.gc_maxlifetime', $config->session->expires);
+ini_set('session.cookie_lifetime', 0);
+
 include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
 
