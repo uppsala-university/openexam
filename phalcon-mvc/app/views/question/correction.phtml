@@ -181,7 +181,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                                         <?php if($cLink):?>
                                                                         <a class="fb fancybox.ajax" ans-id="<?=$answer->getFirst()->id?>" 
                                                                         href="<?=$this->url->get('exam/'.$exam->id.'/correction/answer/'.$answer->getFirst()->id)?>">
-                                                                                <?=(is_object($result) && $result->count())?sprintf("%1.1f", $qScore):'<i class="fa fa-check-square-o"></i>'?>
+                                                                                <?=(is_object($result) && $result->count())?$qScore:'<i class="fa fa-check-square-o"></i>'?>
                                                                         </a>
                                                                         <?php else:?>
                                                                         <i class="fa fa-ban"></i>
