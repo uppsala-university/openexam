@@ -44,7 +44,10 @@ $decoded = $exam->decoded;
 				endif;
 				?>
                                 <div class="q-body" style="padding:5px; <?=(!in_array($this->user->getPrincipalName(), $qCorrectorList)? "opacity:0.6":"")?>; <?=($loadBy != 'question')?'background-color: #E7FFE7':''?>">
-                                	<?php $qPartCounter = 1;?>
+                                	<?php 
+                                        $qPartCounter = 1;
+                                        $perOptPoints = array();
+                                        ?>
                                         <?php foreach($questParts as $qPartTitle => $qPart):?>
                                         <div class="q-part-wrapper" style=" <?=$loadBy != 'question' ? '1px dashed #dedede' : 'none'?>">
                                         
@@ -93,9 +96,8 @@ $decoded = $exam->decoded;
                                                         </div>
         
                                                         <?php 
-                                                        $perOptPoints = 0;
                                                         if(is_array($correctAns[$question->id][$qPartTitle]) && count($correctAns[$question->id][$qPartTitle])):
-                                                                $perOptPoints = round(($qPart['q_points']/count($correctAns[$question->id][$qPartTitle])), 2);
+                                                                $perOptPoints[$question->id][$qPartTitle] = ($qPart['q_points']/count($correctAns[$question->id][$qPartTitle]));
                                                         endif;
                                                         ?>
                                                         
@@ -160,7 +162,7 @@ $decoded = $exam->decoded;
 										Points:<br />
 										<span style="margin-left: 15px">
 											<?php if(!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-												<input type="text" class="q-points changeable" ans-id="<?=$qSpecAns->id?>" res-id="<?=count($scoreData)?$result->id:0?>" q-part="<?=$qPartTitle?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['ans_area']['type']=='choicebox'?$perOptPoints*$totalCorrect:'')?>" max-pt="<?=$qPart['q_points']?>">								
+												<input type="text" class="q-points changeable" ans-id="<?=$qSpecAns->id?>" res-id="<?=count($scoreData)?$result->id:0?>" q-part="<?=$qPartTitle?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['ans_area']['type']=='choicebox'?round($perOptPoints[$question->id][$qPartTitle]*$totalCorrect, 2):'')?>" max-pt="<?=$qPart['q_points']?>">								
 											<?php else:?>
 												<?=sprintf("%1.1f", $scoreData[$qPartTitle])?>
 											<?php endif;?>	
@@ -285,7 +287,7 @@ $decoded = $exam->decoded;
                                                                                 <span style="color:#000;">
                                                                                         Points:<br />
                                                                                         <?php if(!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)):?>
-                                                                                                <input type="text" class="q-points changeable" ans-id="<?=$answer->id?>" res-id="<?=count($scoreData) ?$result->id : 0?>" q-part="<?=$qPartTitle?>" style="height:12px; border-radius:0px; width:50px; margin-left:15px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['type']=='choicebox'?$perOptPoints*$totalCorrect:'')?>"  max-pt="<?=$questParts[$qPartTitle]['q_points']?>">
+                                                                                                <input type="text" class="q-points changeable" ans-id="<?=$answer->id?>" res-id="<?=count($scoreData) ?$result->id : 0?>" q-part="<?=$qPartTitle?>" style="height:12px; border-radius:0px; width:50px; margin-left:15px" value="<?=isset($scoreData[$qPartTitle])?$scoreData[$qPartTitle]:($qPart['type']=='choicebox'?round($perOptPoints[$question->id][$qPartTitle]*$totalCorrect, 2):'')?>"  max-pt="<?=$questParts[$qPartTitle]['q_points']?>">
                                                                                         <?php else:?>
                                                                                                 <?=sprintf("%1.1f", $scoreData[$qPartTitle])?>
                                                                                         <?php endif;?>
