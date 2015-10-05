@@ -148,7 +148,9 @@
 						if(t==="timeout") {
 							alert("Seems like you lost your internet connection. Please make sure that internet cable is properly connected with computer. \r\n");
 						} else {
-							alert("Error occured!" + failMsg +"\r\n\r\n >>>"+ JSON.stringify(x)+"--"+t+"--"+m);
+							if(m != '' && m != null) {
+								alert("Error occured! System was'nt able to save your answer during last 10 seconds. Please ignore if you see this message for the first time and review you answer again. Otherwise, please inform it to invigilator." + "\r\n\r\n >>>"+ JSON.stringify(x)+"--"+t+"--"+m);
+							}
 						}
 					}
 				})
@@ -273,7 +275,10 @@
 		});
 		
 		$(document).on('click', '.sync-answer', function() {
-			syncAnswers(true, $(this).attr('hlink'));
+			
+			location.href = $(this).attr('hlink');
+			
+			//syncAnswers(true, $(this).attr('hlink'));
 			/*console.log(syncSuccess);
 			if(syncSuccess === true || syncSuccess === "test-mode") {
 				console.log($(this).attr('hlink'));
