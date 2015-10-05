@@ -28,6 +28,14 @@ $decoded = $exam->decoded;
 
 $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator'), $exam->id) !== false);
 ?>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+  });
+</script>
+<?=Phalcon\Tag::javascriptInclude('js/mathjax/MathJax.js');?>
 
 <!-- Main area -->
 <div id="container" class="left_menu_space" style="width:100%">
@@ -191,6 +199,10 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                         <?php endforeach;?>
 							<?php //if($wasAbsent) continue;?>
                                                         <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                        	<?php if($decoded):?>
+                                                                <a title="download result in pdf format" href="<?=$this->url->get('result/'.$exam->id.'/download/'.$student->id)?>"><i class="fa fa-file-pdf-o" style="color:red"></i></a>    
+                                                                &nbsp; &nbsp; &nbsp;
+                                                                <?php endif;?> 
                                                                 <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
 									<?=$student->code?>
                                                                 </a>
@@ -198,14 +210,14 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
 							<?php if($decoded):?>
 							<?php $stName = explode(' ', $this->helper->getCatalogAttribute($student->user, 'name'), 2);?>
                                                         <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+                                                                <!--<a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">-->
 									<?=$stName[0]?>
-                                                                </a>
+                                                                <!--</a>-->
                                                         </td>
                                                         <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                                <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">
+                                                                <!--<a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/student/'.$student->id)?>">-->
 									<?=$stName[1]?>
-                                                                </a>
+                                                                <!--</a>-->
                                                         </td>
                                                         <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                                 <?=substr(substr_replace($this->helper->getCatalogAttribute($student->user, 'pnr'), "-", 8, 0), 2);?>
@@ -270,7 +282,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                                 </td>
                                                         <?php endforeach;?>
                                                         
-							<th  class="cc aa" align="right" style="vertical-align:top;">Avarage:</th>
+							<th  class="cc aa" align="right" style="vertical-align:top;">Average:</th>
 							<?php if($decoded):?>
 							<th align="right" style="vertical-align:top;"></th>
 							<th align="right" style="vertical-align:top;"></th>
@@ -380,7 +392,7 @@ $(document).ready(function () {
 	// keep column order
         jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function() { 
 		if(($(this).children().length)) {
-			for(i=0; i<<?=$decoded ? "7" : $showPercentScore ? "4" : "2"?>; i++) {
+			for(i=0; i<<?=$decoded ? "7" : ($showPercentScore ? "4" : "2")?>; i++) {
 				$(this).children(":first").before($(this).children(":last"));
 			}
 		} else {
@@ -397,7 +409,7 @@ $(document).ready(function () {
                         },
                         afterClose: function() {
 				resyncableResults = [];
-                                location.reload();
+                                //location.reload();
                         }
         });
 	
@@ -711,7 +723,7 @@ $(function() {
 		$('#ajax_loader').hide();
 		
 		//console.log((objectLength(completedRequests)/objectLength(stIds)) *100);
-		var val = ( (objectLength(completedRequests)/objectLength(stIds) ) * 100 ) || 0;
+		var val = ( ((objectLength(completedRequests)+1)/objectLength(stIds) ) * 100 ) || 0;
 		
 		progressbar.progressbar( "value", Math.round(val) );
 		
