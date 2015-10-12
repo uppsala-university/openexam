@@ -136,7 +136,7 @@ $decoded = $exam->decoded;
 												<li style="color:<?=(in_array($stAns, $correctAnsPart) ? 'green' : 'red')?>">
 													<i class="fa fa-<?=(in_array($stAns, $correctAnsPart) ? 'check' : 'times')?>"></i> 
 													<?=$stAns?>
-													<?php in_array($stAns, $correctAnsPart) ? ++$totalCorrect : '';?>
+													<?php in_array($stAns, $correctAnsPart) ? ++$totalCorrect : --$totalCorrect;?>
 												</li>
 												<?php elseif($qPart['ans_area']['type'] == 'canvas'): ?>
 												<li><img src="<?=$stAns['canvasUrl']?>" max-width="50%" /></li>
@@ -147,6 +147,7 @@ $decoded = $exam->decoded;
 													<li><i>Student did not answer this question.</i></li>
 												<?php endif;?>
 											<?php endforeach;?>
+                                                                                        <?php if($totalCorrect < 0) { $totalCorrect = 0; } ?>
 										</ul>
 										<?php else:?>
 											<span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
@@ -263,7 +264,7 @@ $decoded = $exam->decoded;
                                                                                                 <li style="color:<?=(in_array($stAns, $correctAnsPart) ? 'green' : 'red')?>">
                                                                                                         <i class="fa fa-<?=(in_array($stAns, $correctAnsPart) ? 'check' : 'times')?>"></i> 
                                                                                                         <?=$stAns?>
-                                                                                                        <?php in_array($stAns, $correctAnsPart) ? ++$totalCorrect : '';?>
+                                                                                                        <?php in_array($stAns, $correctAnsPart) ? ++$totalCorrect : --$totalCorrect;?>
                                                                                                 </li>
                                                                                                 <?php elseif($qPart['type'] == 'canvas'):?>
                                                                                                 <li><img src="<?=$stAns['canvasUrl']?>" max-width="50%" /></li>
@@ -275,6 +276,7 @@ $decoded = $exam->decoded;
                                                                                                         <li><i>Student did not answer this question.</i></li>
                                                                                                 <?php endif;?>
                                                                                         <?php endforeach;?>
+                                                                                        <?php if($totalCorrect < 0) { $totalCorrect = 0; } ?>
                                                                                         
                                                                                         <?php if($qPart['type']=='choicebox' && $totalCorrect && $totalCorrect != count($correctAnsPart)) :?>
                                                                                         <li style="color:orange"><i class="fa fa-warning"></i> Student's answer is partially correct </li>
