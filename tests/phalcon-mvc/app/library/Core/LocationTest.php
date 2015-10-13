@@ -151,7 +151,7 @@ class LocationTest extends TestCase
                 self::assertEquals($actual['ckey'], 'C3');
                 self::assertEquals($actual['pkey'], 'P6');
 
-                $actual = $this->object->getEntry('130.238.39.138');    // it.bmc.uu.se
+                $actual = $this->object->getEntry('130.238.55.23');    // it.bmc.uu.se
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O2');
