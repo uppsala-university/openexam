@@ -162,10 +162,10 @@ class CoreHandler extends Component
                                 return $result;
                         }
                 } catch (TransactionFailed $exception) {
-                        $this->report($exception, $model);
+                        $this->report($exception, $model, $action);
                         throw $exception;
                 } catch (Exception $exception) {
-                        $this->report($exception, $model);
+                        $this->report($exception, $model, $action);
                         if (isset($transaction)) {
                                 $transaction->rollback($exception->getMessage());
                         } else {
@@ -247,7 +247,7 @@ class CoreHandler extends Component
          */
         private static function instantiate($model)
         {
-                $array = $model->dump();
+                $array = $model->toArray();
                 $class = get_class($model);
                 $model = new $class();
                 $model->assign($array);
@@ -295,71 +295,80 @@ class CoreHandler extends Component
                         return $dump;
                 };
 
+                // 
+                // Get unique model:
+                // 
                 if ($model->id != 0) {
                         $class = get_class($model);
                         return $strip($class::findFirstById($model->id));
-                } else {
-                        $class = get_class($model);
+                }
 
-                        // 
-                        // Create conditions from model values:
-                        // 
-                        foreach ($model->dump() as $key => $val) {
-                                if (isset($val)) {
-                                        if (!isset($params['conditions'])) {
-                                                $params['conditions'] = array();
-                                        }
-                                        if (is_numeric($val)) {
-                                                $params['conditions'][] = array(
-                                                        "$class.$key = :$key:",
-                                                        array($key => "$val")
-                                                );
-                                        } elseif (is_string($val)) {
-                                                $params['conditions'][] = array(
-                                                        "$class.$key LIKE :$key:",
-                                                        array($key => "%$val%"),
-                                                        array($key => PDO::PARAM_STR)
-                                                );
-                                        }
+                // 
+                // The following is dealing with searching for array of
+                // models using conditions supplied in the passed model
+                // object.
+                // 
+
+                $class = get_class($model);
+
+                // 
+                // Create conditions from model values:
+                // 
+                foreach ($model->toArray() as $key => $val) {
+                        if (isset($val)) {
+                                if (!isset($params['conditions'])) {
+                                        $params['conditions'] = array();
+                                }
+                                if (is_numeric($val)) {
+                                        $params['conditions'][] = array(
+                                                "$class.$key = :$key:",
+                                                array($key => "$val")
+                                        );
+                                } elseif (is_string($val)) {
+                                        $params['conditions'][] = array(
+                                                "$class.$key LIKE :$key:",
+                                                array($key => "%$val%"),
+                                                array($key => PDO::PARAM_STR)
+                                        );
                                 }
                         }
+                }
 
-                        // 
-                        // Get matching models, possibly taking roles into account
-                        // and collect requested model data excluding any relations
-                        // with other models.
-                        // 
+                // 
+                // Get matching models, possibly taking roles into account
+                // and collect requested model data excluding any relations
+                // with other models.
+                // 
 
-                        $models = $class::find($params);
-                        $result = array();
+                $models = $class::find($params);
+                $result = array();
 
-                        // 
-                        // Process non-empty resultset:
-                        // 
-                        if (count($models) != 0) {
-                                $filter = $models->getFirst()->getFilter($params);
+                // 
+                // Process non-empty resultset:
+                // 
+                if (count($models) != 0) {
+                        $filter = $models->getFirst()->getFilter($params);
 
-                                if (isset($filter)) {
-                                        $result = $models->filter($filter);
-                                } else {
-                                        foreach ($models as $m) {
-                                                $result[] = $strip($m);
-                                        }
-                                }
-                        }
-
-                        // 
-                        // Return count on resultset or simply the result:
-                        // 
-                        if ($params['count'] === self::COUNT_INLINE) {
-                                return array('count' => count($result), 'result' => $result);
-                        } elseif ($params['count'] === self::COUNT_SIMPLE) {
-                                return count($result);
-                        } elseif ($params['count'] === self::COUNT_NOTHING) {
-                                return $result;
+                        if (isset($filter)) {
+                                $result = $models->filter($filter);
                         } else {
-                                throw new Exception("Unknown argument for count.");
+                                foreach ($models as $m) {
+                                        $result[] = $strip($m);
+                                }
                         }
+                }
+
+                // 
+                // Return count on resultset or simply the result:
+                // 
+                if ($params['count'] === self::COUNT_INLINE) {
+                        return array('count' => count($result), 'result' => $result);
+                } elseif ($params['count'] === self::COUNT_SIMPLE) {
+                        return count($result);
+                } elseif ($params['count'] === self::COUNT_NOTHING) {
+                        return $result;
+                } else {
+                        throw new Exception("Unknown argument for count.");
                 }
         }
 
@@ -385,7 +394,7 @@ class CoreHandler extends Component
          * @param Exception $exception The exception to report.
          * @param Model $model The current model.
          */
-        private function report($exception, $model)
+        private function report($exception, $model, $action)
         {
                 $this->logger->system->begin();
                 $this->logger->system->error(
@@ -393,7 +402,8 @@ class CoreHandler extends Component
                         'Exception' => get_class($exception),
                         'Message'   => $exception->getMessage(),
                         'Model'     => get_class($model),
-                        'Data'      => print_r($model->dump(), true)
+                        'Action'    => $action,
+                        'Data'      => print_r($model->toArray(), true)
                         ), true
                     )
                 );
