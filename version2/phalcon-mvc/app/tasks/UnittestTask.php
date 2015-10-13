@@ -127,7 +127,7 @@ class UnittestTask extends MainTask
 
                         if ($options['verbose']) {
                                 $this->flash->notice(sprintf("Model %s:\n", $class));
-                                $this->flash->notice(print_r($model->dump(), true));
+                                $this->flash->notice(print_r($model->toArray(), true));
                                 $this->flash->write();
                         }
 
@@ -293,7 +293,7 @@ class UnittestTask extends MainTask
                                         }
                                         return false;
                                 }
-                                $data[$m] = $model->dump();
+                                $data[$m] = $model->toArray();
                                 if ($options['verbose']) {
                                         $this->flash->notice(sprintf("Model %s:\n", $class));
                                         $this->flash->notice(print_r($data[$m], true));
