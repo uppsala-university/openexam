@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.22, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.26, for Linux (x86_64)
 --
--- Host: localhost    Database: openexam
+-- Host: localhost    Database: openexam2prod
 -- ------------------------------------------------------
--- Server version	5.6.22-log
+-- Server version	5.6.26-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -59,7 +59,7 @@ CREATE TABLE `answers` (
   `question_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `answered` enum('Y','N') DEFAULT 'N',
-  `answer` mediumtext,
+  `answer` mediumblob,
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `question_id` (`question_id`),
@@ -248,8 +248,8 @@ CREATE TABLE `questions` (
   `user` varchar(60) NOT NULL,
   `score` float NOT NULL,
   `name` varchar(30) NOT NULL,
-  `quest` text NOT NULL,
-  `answer` text,
+  `quest` blob NOT NULL,
+  `answer` blob,
   `status` enum('active','removed') NOT NULL DEFAULT 'active',
   `comment` text,
   `grades` varchar(200) DEFAULT NULL,
@@ -422,4 +422,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-13 22:54:56
+-- Dump completed on 2015-10-28 18:15:06
