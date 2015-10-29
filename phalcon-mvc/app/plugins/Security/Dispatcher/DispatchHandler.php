@@ -231,6 +231,14 @@ class DispatchHandler extends Component implements DispatchHelper
                 }
 
                 // 
+                // Handle incoming request from SSO logout:
+                // 
+                if ($this->request->hasPost("logoutRequest")) {
+                        $this->response->redirect($this->config->application->baseUri);
+                        exit(0);
+                }
+
+                // 
                 // Handle user initiated login request:
                 // 
                 if ($this->_target == "auth" && $this->_action == "login") {
