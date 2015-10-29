@@ -36,7 +36,7 @@ return array(
                 // Enable CAS login, but only for web:
                 // 
                 'cas'  => array(
-                        'method' => function() {
+                        'method' => function() use($config) {
                                 return new CasLogin(
                                         $config, 'cas.example.com', 443, '/cas'
                                         );
