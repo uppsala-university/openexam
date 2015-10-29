@@ -163,7 +163,7 @@ class Authentication implements Authenticator, Restrictor
                 }
                 if (isset($this->chains[$service][$name])) {
                         $this->enable(
-                            $name, $service, $this->chains[$service][$name]['desc'], $this->chains[$service][$name]['method']($this->config)
+                            $name, $service, $this->chains[$service][$name]['desc'], $this->chains[$service][$name]['method']()
                         );
                 }
         }
@@ -207,7 +207,7 @@ class Authentication implements Authenticator, Restrictor
         {
                 if (isset($this->chains[$service])) {
                         foreach ($this->chains[$service] as $name => $plugin) {
-                                $authenticator = $plugin['method']($this->config);
+                                $authenticator = $plugin['method']();
                                 $authenticator->name($name);
                                 if ($authenticator->control === Authenticator::required) {
                                         if (!$authenticator->accepted()) {
