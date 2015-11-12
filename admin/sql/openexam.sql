@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.6.26, for Linux (x86_64)
 --
--- Host: localhost    Database: openexam2prod
+-- Host: localhost    Database: openexam2
 -- ------------------------------------------------------
 -- Server version	5.6.26-log
 
@@ -296,7 +296,7 @@ CREATE TABLE `results` (
   `answer_id` int(11) NOT NULL,
   `corrector_id` int(11) NOT NULL,
   `correction` enum('waiting','partial','completed','finalized') NOT NULL DEFAULT 'waiting',
-  `score` varchar(255) NOT NULL,
+  `score` varchar(1024) NOT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
@@ -422,4 +422,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-28 18:15:06
+-- Dump completed on 2015-11-12 13:39:05
