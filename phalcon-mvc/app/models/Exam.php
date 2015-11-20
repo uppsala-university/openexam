@@ -238,7 +238,7 @@ class Exam extends ModelBase
                         $this->testcase = false;
                 }
                 if (!isset($this->lockdown)) {
-                        $this->lockdown = (object) array('enable' => false);
+                        $this->lockdown = (object) array('enable' => true);
                 }
         }
 
