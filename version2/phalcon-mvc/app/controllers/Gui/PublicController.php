@@ -31,7 +31,6 @@ class PublicController extends \OpenExam\Controllers\GuiController
         public function indexAction()
         {
             $this->view->disableLevel(View::LEVEL_BEFORE_TEMPLATE);
-            /* data to be sent */
         }
 
         public function aboutAction()
@@ -41,12 +40,12 @@ class PublicController extends \OpenExam\Controllers\GuiController
 
         public function helpAction($role, $model, $action)
         {
-            /* data to be sent */
+                // TODO: Do we need this action? Manuals are going to be access restricted.
         }
 
         public function contactusAction($role, $model, $action)
         {
-            /* data to be sent */
+                // TODO: Popup window with contact info or full form?
         }
 
 }
