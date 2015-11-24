@@ -67,6 +67,7 @@ $config = new \Phalcon\Config(
                 'cacheDir'       => BASE_DIR . '/cache/',
                 'logsDir'        => BASE_DIR . '/logs',
                 'baseDir'        => BASE_DIR . '/',
+                'docsDir'        => PROJ_DIR . '/docs',
                 'baseUri'        => '/phalcon-mvc/'
         ),
         'phpunit'     => array(
@@ -183,13 +184,13 @@ $config = new \Phalcon\Config(
                 'image' => array(
                         'fmt'          => 'png',
                         'imageQuality' => 95,
-                        // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
+                // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                 ),
                 'pdf'   => array(
                         'produceForms' => false,
                         'outline'      => true,
                         'outlineDepth' => 2,
-                        // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
+                // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                 ),
                 // 
                 // Security token, an absolute file path or string:
@@ -208,8 +209,8 @@ $config = new \Phalcon\Config(
          * Session configuration.
          */
         'session'     => array(
-                'expires'   => 7200,            // Expires after (seconds)
-                'refresh'   => 1800,            // Refresh threshold (seconds)
+                'expires'   => 7200, // Expires after (seconds)
+                'refresh'   => 1800, // Refresh threshold (seconds)
                 'startPage' => 'exam/index'     // Start page (user initiated)
         ),
         /**

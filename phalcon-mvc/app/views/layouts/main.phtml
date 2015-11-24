@@ -59,9 +59,6 @@ $actionName = $this->dispatcher->getActionName();
                             <?= Phalcon\Tag::linkTo('exam/index', 'My Exams') ?>
                         </li>
                 <?php endif; ?>
-                <li>
-                    <?= Phalcon\Tag::linkTo('public/about', 'About') ?>
-                </li>
             </ul>
             <!-- Top right menu -->
             <ul id="menucontainer" style="float:right;" class="login-menu">
@@ -96,9 +93,26 @@ $actionName = $this->dispatcher->getActionName();
 
                     ?>
                 </li>
-
             </ul>
+            <ul id="menucontainer" style="float:right;" class="help-menu">
+                <li id="help">
+                    <?=
+                    Phalcon\Tag::linkTo(array(
+                            "help",
+                            '<i class="fa fa-question-circle"></i> Help'
+                    ));
 
+                    ?>
+                    <ul class="help-menu" style="visibility:hidden">
+                        <li>
+                            <?= Phalcon\Tag::linkTo('help/manual/teacher', 'Teacher Manual') ?>
+                        </li>
+                        <li>
+                            <?= Phalcon\Tag::linkTo('public/about', 'About') ?>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 
