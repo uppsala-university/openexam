@@ -1,5 +1,4 @@
 <?php
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -9,42 +8,65 @@
 // 
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 // 
+
 ?>
 
-<div class="hero-unit" style="padding-top:18px; margin-top:40px;">
+<style>
+    div.mbox {
+        padding: 12px;
+        margin: 10px;
+        margin-top: 50px;
+        box-shadow: 1px 1px 6px #999999;
+        border-radius: 10px 10px 10px 10px;
+        background: #ffffff;
+        max-width: 1024px;
+    }
+</style>
+
+<div class="mbox">
     <h1>About OpenExam</h1>
-    <br />
-    <div style="padding-bottom:15px">OpenExam is an on line examination system that allows different types of computer-based tests and exams. It replace traditional paper-based exams if performed in exam halls equipped with computers (currently 150 computers) or in computer class rooms where restricted interned can be controlled (available at different campuses). It may also be used for home exams and diagnostic tests on student’s personal devices. The front end of the system is entirely web based, from creating the exam to providing the students with the corrected exams.
-    </div>
-    <div style="padding-bottom:10px">
-        Access to work in OpenExam is defined by different roles. Anyone listed as teacher (see below “Who may use OpenExam?”) has the right to create an exam and win doing so will assign different roles to persons/students that should contribute or take the exam.<br />
-The exam creator (usually the course leader or course administrator) adds all basic information about the exam and then assigns contributors (teachers that will provide questions and correct answers), invigilators, students, correctors (as stand alone or as a default role for contributor) and decoders.<br />
-As a standard, the creator has access to all functions of OpenExam. All other roles will only have restricted access to specific functions. For example, correctors will only see the answers to questions that they should correct. A brief description of the work flow and who can do what is found below. A detailed manual is available after log in.
+    
+    <h2>Introduction</h2>
+    <div>
+        <p>OpenExam Online is the web frontend that allows different types of computer-based tests and exams. It replace traditional paper-based exams if performed in exam halls equipped with computers or in computer class rooms where restricted interned can be controlled (available at different campuses).</p>
+        <img src="<?= $this->url->get("img/server-shaded-border.jpg") ?>" align="right"/>
+        <p>It may also be used for home exams and diagnostic tests on student’s personal devices. The front end of the system is entirely web based, from creating the exam to providing the students with the corrected exams.</p>
     </div>
     
-    <div style="padding-bottom:10px">
-        <strong>The work flow</strong> of OpenExam can be divided into three steps – before, during and after the exam.
+    <h2>Roles</h2>
+    <div>
+        <p>Access to work in OpenExam is defined by different roles. Anyone listed as teacher (see below “Who may use OpenExam?”) has the right to create an exam and win doing so will assign different roles to persons/students that should contribute or take the exam.</p>
+        <p>The exam creator (usually the course leader or course administrator) adds all basic information about the exam and then assigns contributors (teachers that will provide questions and correct answers), invigilators, students, correctors (as stand alone or as a default role for contributor) and decoders.</p>
+        <p>As a standard, the creator has access to all functions of OpenExam. All other roles will only have restricted access to specific functions. For example, correctors will only see the answers to questions that they should correct.</p> 
+        <p>A brief description of the work flow and who can do what is found below. A detailed manual is available for download after log in from the help menu.</p>
+    </div>
+
+    <h2>Life cycle</h2>
+    <div>
+        <p><strong>The work flow</strong> of OpenExam can be divided into three steps – before, during and after the exam.</p>
         <ul>
             <li>
-                <strong>Before the exam</strong>, the creator defines the time and place for the exam, uploads a list of students that are allowed to take the exam and add any specific information to students. The creator can at this stage also define the number of questions and their individual credits, threshold for grades, accessibility to supplementary material or even upload all questions provided by teachers. Alternatively, the people assigned as contributors may themselves add questions, upload supplementary files and links according to the created exam.
+                <p><strong>Before the exam</strong>, the creator defines the time and place for the exam, uploads a list of students that are allowed to take the exam and add any specific information to students. The creator can at this stage also define the number of questions and their individual credits, threshold for grades, accessibility to supplementary material or even upload all questions provided by teachers. Alternatively, the people assigned as contributors may themselves add questions, upload supplementary files and links according to the created exam.</p>
             </li>
             <li>
-                <strong>During the exam</strong>, eligible students can log in to the system and take the exam. Log in will automatically create an anonymous code that will not be broken until all answers have been corrected. The identity of the students will however be displayed on the computer screen and checked against ID card by the circulating invigilators. The invigilators may add students that failed to register for the exam, and also change closing time (for example for students with special needs). During the exam, the answers given by the students are automatically saved every ten seconds. 
+                <p><strong>During the exam</strong>, eligible students can log in to the system and take the exam. Log in will automatically create an anonymous code that will not be broken until all answers have been corrected. The identity of the students will however be displayed on the computer screen and checked against ID card by the circulating invigilators.</p>
+                <p>The invigilators may add students that failed to register for the exam, and also change closing time (for example for students with special needs). During the exam, the answers given by the students are automatically saved every ten seconds. </p>
             </li>    
             <li>
-                Immediately <strong>after the exam</strong>, the system is open for the correcting teachers to assess the students’ answers. Log in is possible form anywhere an internet connection is available, but is restricted through access to the university proxyserver. Corrections can be done per student or per question and automatically generates a scoreboard. When all questions have been corrected, the creator will be notified and is then able to decode the exams. After decoding, it is no longer possible to change correction and grading. Following decoding students are informed that the exam correction is completed and that the corrected exam is available for download. Students will obtain a pdf with corrections, teacher’s comments and statistics. After decoding the creator can upload the results to the student registry, Uppdok (currently through Student portal).
+                <p>Immediately <strong>after the exam</strong>, the system is open for the correcting teachers to assess the students’ answers. Log in is possible form anywhere an internet connection is available, but is restricted through access to the university proxyserver. Corrections can be done per student or per question and automatically generates a scoreboard.</p>
+                <p>When all questions have been corrected, the creator will be notified and is then able to decode the exams. After decoding, it is no longer possible to change correction and grading. Following decoding students are informed that the exam correction is completed and that the corrected exam is available for download. Students will obtain a pdf with corrections, teacher’s comments and statistics. After decoding the creator can upload the results to the student registry, Uppdok (currently through Student portal).</p>
             </li>
         </ul>        
-	</div>
-    
-    <div style="padding-bottom:10px">
-		<strong>Type of questions</strong><br />
-    	Open Exam can be used for different types of questions, such as open end questions (short answers, essays, chemical structures, formulas, calculations etc), automatically corrected multiple choice questions, simple drawings (only on specific computers in the exam hall). Supplementary material such as pdf files, images, movies, formularies etc is uploaded to a library and displayed during the exam.
     </div>
-   
+
+    <h2>Type of questions</h2>
+    <div>
+        Open Exam can be used for different types of questions, such as open end questions (short answers, essays, chemical structures, formulas, calculations etc), automatically corrected multiple choice questions, simple drawings (only on specific computers in the exam hall). Supplementary material such as pdf files, images, movies, formularies etc is uploaded to a library and displayed during the exam.
+    </div>
+
+    <h2>Who may use OpenExam?</h2>
     <div style="padding-bottom:10px">
-		<strong>Who may use OpenExam?</strong><br />
-    	Any teacher/course administrator at Uppsala University can be given the right to use OpenExam (the role teacher). As per May 2015, the system is still a project within the disciplinary domain of medicine and pharmacy and the possibility to obtain access by the other disciplinary domains is yet limited. We however welcome different courses to test the system to be able to continue the development of the system and add additional functions. If you work within medicine-pharmacy, contact Anders Lovgren directly. If not, contact Catharina Svensson for discussion. 
+        Any teacher/course administrator at Uppsala University can be given the right to use OpenExam (the role teacher). As per May 2015, the system is still a project within the disciplinary domain of medicine and pharmacy and the possibility to obtain access by the other disciplinary domains is yet limited. We however welcome different courses to test the system to be able to continue the development of the system and add additional functions. If you work within medicine-pharmacy, contact Anders Lövgren directly. If not, contact Catharina Svensson for discussion. 
     </div>
     
 </div>
