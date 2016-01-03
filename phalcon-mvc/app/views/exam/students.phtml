@@ -148,7 +148,7 @@ endforeach;
                         <td><input name="students[]" type="checkbox" value="<?= $student->id ?>"></td>
                         <td>
                             <a href="#" data-id="<?=$student->id?>" class="st-exam-detail" style="color:blue">
-                                Name:<?=$this->helper->getCatalogAttribute($student->user, 'name')?>
+                                <?=$this->helper->getCatalogAttribute($student->user, 'name')?>
                             </a>
                         </td>
                         <td><?=$student->user?></td>
