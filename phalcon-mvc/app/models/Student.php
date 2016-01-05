@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -60,6 +61,7 @@ class Student extends Role
          * @var string 
          */
         public $finished;
+        public $persnr;
 
         protected function initialize()
         {
@@ -102,6 +104,15 @@ class Student extends Role
                 ));
 
                 return $this->validationHasFailed() != true;
+        }
+
+        /**
+         * Called after the model was read.
+         */
+        protected function afterFetch()
+        {
+                $this->persnr = $this->getAttribute(Principal::ATTR_PNR);
+                parent::afterFetch();
         }
 
         public function getSource()

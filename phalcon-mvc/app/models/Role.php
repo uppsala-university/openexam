@@ -97,7 +97,12 @@ class Role extends ModelBase
                 $this->setDomain();
         }
 
-        private function getAttribute($name)
+        /**
+         * Helper function returning single line attribute from catalog service.
+         * @param string $name The attribute name.
+         * @return string
+         */
+        protected function getAttribute($name)
         {
                 if (($attrs = $this->catalog->getAttribute($this->user, $name))) {
                         return current($attrs)[$name][0];
