@@ -61,6 +61,10 @@ class Student extends Role
          * @var string 
          */
         public $finished;
+        /**
+         * The student personal number.
+         * @var string 
+         */
         public $persnr;
 
         protected function initialize()
