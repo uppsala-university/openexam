@@ -58,6 +58,8 @@ class ActiveDirectorySession extends ActiveDirectoryLogin
                 }
 
                 unset($_SESSION[$this->name]);
+                unset($_SESSION['method']);
+                
                 parent::logout();
         }
 
