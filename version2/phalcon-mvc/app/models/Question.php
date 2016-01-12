@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\FilterText;
 use OpenExam\Library\Model\Behavior\Ownership;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
 use OpenExam\Library\Model\Behavior\UUID;
@@ -143,6 +144,19 @@ class Question extends ModelBase
                                 'force' => false
                         )
                 )));
+
+                // 
+                // TODO: better do filtering on client side.
+                // 
+                $this->addBehavior(new FilterText(array(
+                        'beforeValidationOnCreate' => array(
+                                'fields' => array('quest', 'answer', 'comment')
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'fields' => array('quest', 'answer', 'comment')
+                        )
+                    )
+                ));
 
                 $this->addBehavior(new QuestionBehavior());
         }

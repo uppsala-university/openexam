@@ -67,6 +67,34 @@ class AnswerTest extends TestModel
         }
 
         /**
+         * Test model behavior.
+         * @group model
+         */
+        public function testBehavior()
+        {
+                $object = new Answer();
+                $object->assign($this->sample->getSample('answer', false));
+                $object->create();
+
+                // 
+                // Test filter text:
+                // 
+                foreach (array('answer', 'comment') as $field) {
+                        $object->$field = '<!--[if gte mso 9]><xml>test1<![endif]-->test2\n<!--[if gte mso 9]><xml>test1<![endif]--><br/>test3\n\n<t >test4</t><!--[if gte mso 9]><xml>test5<![endif]-->';
+                        $expect = 'test2\n<br/>test3\n\n<t >test4</t>';
+
+                        self::assertTrue($object->update());
+                        self::assertNotNull($object->$field);
+                        self::assertTrue(is_string($object->$field));
+
+                        $actual = $object->$field;
+                        self::assertEquals($expect, $actual);
+                }
+
+                $object->delete();
+        }
+
+        /**
          * @covers OpenExam\Models\Answer::create
          * @group model
          */

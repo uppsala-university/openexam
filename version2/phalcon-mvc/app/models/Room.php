@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\FilterText;
+
 /**
  * The room model.
  * 
@@ -33,6 +35,19 @@ class Room extends ModelBase
 
                 $this->hasMany('id', 'OpenExam\Models\Computer', 'room_id', array(
                         'alias' => 'computers'
+                ));
+
+                // 
+                // TODO: better do filtering on client side.
+                // 
+                $this->addBehavior(new FilterText(array(
+                        'beforeValidationOnCreate' => array(
+                                'fields' => 'description'
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'fields' => 'description'
+                        )
+                    )
                 ));
         }
 
