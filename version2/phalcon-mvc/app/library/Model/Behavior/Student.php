@@ -15,6 +15,7 @@ namespace OpenExam\Library\Model\Behavior;
 
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
+use OpenExam\Library\Model\Exception;
 
 /**
  * Behavior for the student model.
@@ -74,7 +75,7 @@ class Student extends ModelBehavior
                 if (count($result) != 0) {
                         return $result[0]->principal;
                 } else {
-                        return $user;
+                        throw new Exception(sprintf("%s was recognized as a personal number, but username could not be looked up.", $user));
                 }
         }
 
