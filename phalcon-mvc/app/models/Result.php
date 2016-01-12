@@ -2,6 +2,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\FilterText;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
 /**
@@ -73,6 +74,19 @@ class Result extends ModelBase
                 $this->belongsTo('corrector_id', 'OpenExam\Models\Corrector', 'id', array(
                         'foreignKey' => true,
                         'alias'      => 'corrector'
+                ));
+
+                // 
+                // TODO: better do filtering on client side.
+                // 
+                $this->addBehavior(new FilterText(array(
+                        'beforeValidationOnCreate' => array(
+                                'fields' => 'comment'
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'fields' => 'comment'
+                        )
+                    )
                 ));
         }
 

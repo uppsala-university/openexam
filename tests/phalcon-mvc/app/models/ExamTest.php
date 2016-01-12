@@ -63,7 +63,7 @@ class ExamTest extends TestModel
 
                 self::assertNotEquals(0, $object->resources->count());
                 self::assertTrue(count($object->resources) > 0);
-                
+
                 self::assertNotEquals(0, $object->access->count());
                 self::assertTrue(count($object->access) > 0);
         }
@@ -151,6 +151,26 @@ class ExamTest extends TestModel
                 self::assertEquals($expect, $actual);
 
                 $object->delete();
+                
+                // 
+                // Test filter text:
+                // 
+                $object = new Exam();
+                $object->assign($this->sample->getSample('exam', false));
+                $object->create();
+                
+                foreach (array('descr') as $field) {
+                        $object->$field = '<!--[if gte mso 9]><xml>test1<![endif]-->test2\n<!--[if gte mso 9]><xml>test1<![endif]--><br/>test3\n\n<t >test4</t><!--[if gte mso 9]><xml>test5<![endif]-->';
+                        $expect = 'test2\n<br/>test3\n\n<t >test4</t>';
+
+                        self::assertTrue($object->update());
+                        self::assertNotNull($object->$field);
+                        self::assertTrue(is_string($object->$field));
+
+                        $actual = $object->$field;
+                        self::assertEquals($expect, $actual);
+                }
+
         }
 
         /**
@@ -425,7 +445,7 @@ class ExamTest extends TestModel
                                     'name'    => $sample['name'],
                                     'details' => $sample['details']
                             ))
-                            ->betweenWhere("created", "2014-01-01", "2015-12-31")
+                            ->betweenWhere("created", "2014-01-01", "2020-01-01")
                             ->inWhere("id", array(1, $sample['id']))
                             ->orderBy("name desc, details");
                         $result = $criteria->execute();
@@ -448,6 +468,24 @@ class ExamTest extends TestModel
                         $model = $result->getLast();
                         self::assertNotNull($model);
                         self::assertTrue($model->id == $sample['id']);
+
+                        // 
+                        // Test missing model:
+                        // 
+                        $criteria = Exam::query();
+                        $criteria
+                            ->andWhere("name = :name: AND details = :details:", array(
+                                    'name'    => $sample['name'],
+                                    'details' => $sample['details']
+                            ))
+                            ->betweenWhere("created", "2000-01-01", "2000-12-31")
+                            ->inWhere("id", array(1, $sample['id']))
+                            ->orderBy("name desc, details");
+                        $result = $criteria->execute();
+                        self::assertNotNull($result);
+                        $model = $result->getLast();
+                        self::assertTrue(is_bool($model));
+                        self::assertTrue($model == false);
                 }
         }
 

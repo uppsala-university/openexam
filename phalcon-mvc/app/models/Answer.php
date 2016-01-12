@@ -2,6 +2,8 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\FilterText;
+
 /**
  * The answer model.
  * 
@@ -63,6 +65,19 @@ class Answer extends ModelBase
                 $this->belongsTo('student_id', 'OpenExam\Models\Student', 'id', array(
                         'foreignKey' => true,
                         'alias'      => 'student'
+                ));
+                
+                // 
+                // TODO: better do filtering on client side.
+                // 
+                $this->addBehavior(new FilterText(array(
+                        'beforeValidationOnCreate' => array(
+                                'fields' => array('answer', 'comment')
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'fields' => array('answer', 'comment')
+                        )
+                    )
                 ));
         }
 
