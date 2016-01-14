@@ -86,6 +86,11 @@ class CoreHandler extends Component
                         throw new Exception("Failed map request target.");
                 }
 
+                if (isset($data[0])) {
+                        $data['id'] = $data[0];
+                        unset($data[0]);
+                }
+
                 if (isset($data['id'])) {
                         $model = $class::findFirstById($data['id']);
                         if ($model == false) {
