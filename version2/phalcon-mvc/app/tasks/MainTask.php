@@ -13,12 +13,14 @@
 
 namespace OpenExam\Console\Tasks;
 
+use Phalcon\CLI\Task as PhalconTask;
+
 /**
  * The main task.
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class MainTask extends \Phalcon\CLI\Task
+class MainTask extends PhalconTask implements TaskInterface
 {
 
         /**
@@ -26,7 +28,7 @@ class MainTask extends \Phalcon\CLI\Task
          */
         public function indexAction()
         {
-                printf("No default action defined, see --help.\n");
+                $this->helpAction();
         }
 
         /**
@@ -70,6 +72,11 @@ class MainTask extends \Phalcon\CLI\Task
         public static function getUsage()
         {
                 return array('action' => '--main');
+        }
+
+        public function helpAction()
+        {
+                printf("No default action defined, see --help.\n");                
         }
 
 }

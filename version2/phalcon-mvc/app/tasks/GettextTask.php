@@ -20,7 +20,7 @@ use OpenExam\Library\Globalization\Translate\Gettext\Setup;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class GettextTask extends MainTask
+class GettextTask extends MainTask implements TaskInterface
 {
 
         /**

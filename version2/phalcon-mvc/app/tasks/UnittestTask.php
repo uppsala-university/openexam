@@ -25,7 +25,7 @@ define('VALIDATION_SKIP_UNIQUENESS_CHECK', true);
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class UnittestTask extends MainTask
+class UnittestTask extends MainTask implements TaskInterface
 {
 
         /**

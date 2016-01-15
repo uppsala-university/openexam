@@ -13,7 +13,6 @@
 
 namespace OpenExam\Console\Tasks;
 
-use OpenExam\Library\Render\Renderer;
 use OpenExam\Library\Render\RenderImage;
 use OpenExam\Library\Render\RenderPdfDocument;
 
@@ -21,7 +20,7 @@ use OpenExam\Library\Render\RenderPdfDocument;
  * Render service task.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class RenderTask extends MainTask
+class RenderTask extends MainTask implements TaskInterface
 {
 
         /**
