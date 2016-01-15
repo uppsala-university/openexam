@@ -41,7 +41,7 @@ use OpenExam\Library\Model\ModelManager;
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class ModelTask extends MainTask
+class ModelTask extends MainTask implements TaskInterface
 {
 
         /**

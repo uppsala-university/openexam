@@ -20,7 +20,7 @@ use OpenExam\Library\Database\Migration;
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class DatabaseTask extends MainTask
+class DatabaseTask extends MainTask implements TaskInterface
 {
 
         public static function getUsage()

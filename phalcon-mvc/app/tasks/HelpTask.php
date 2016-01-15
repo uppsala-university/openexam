@@ -18,7 +18,7 @@ namespace OpenExam\Console\Tasks;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class HelpTask extends MainTask
+class HelpTask extends MainTask implements TaskInterface
 {
 
         /**
@@ -26,7 +26,7 @@ class HelpTask extends MainTask
          */
         public function indexAction()
         {
-                parent::showUsage(self::getUsage());
+                $this->helpAction();
         }
 
         public static function getUsage()
@@ -56,6 +56,11 @@ class HelpTask extends MainTask
                 }
 
                 return $usage;
+        }
+
+        public function helpAction()
+        {
+                parent::showUsage(self::getUsage());
         }
 
 }

@@ -23,7 +23,7 @@ use OpenExam\Library\WebService\Soap\ServiceGenerator;
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class SoapServiceTask extends MainTask
+class SoapServiceTask extends MainTask implements TaskInterface
 {
 
         /**
