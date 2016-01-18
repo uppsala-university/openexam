@@ -27,9 +27,9 @@ class FilterText extends ModelBehavior
 {
 
         /**
-         * Matches MS Word 9 comments.
+         * Matches MS Word 9+ comments.
          */
-        const PATTERN_MSWORD9_COMMENT = "/<\!--\[if gte mso 9\]>.*<\!\[endif\]-->/smU";
+        const PATTERN_OPENXML_COMMENT = "/<\!--\[if gte mso \d+\]>.*<\!\[endif\]-->/smU";
 
         public function notify($type, $model)
         {
@@ -41,7 +41,7 @@ class FilterText extends ModelBehavior
                         // Use default pattern:
                         // 
                         if (!isset($options['patterns'])) {
-                                $patterns = array(self::PATTERN_MSWORD9_COMMENT);
+                                $patterns = array(self::PATTERN_OPENXML_COMMENT);
                         } elseif (is_string($options['patterns'])) {
                                 $patterns = array($options['patterns']);
                         } else {
