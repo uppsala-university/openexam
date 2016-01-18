@@ -16,7 +16,9 @@ namespace OpenExam\Console\Tasks;
 use OpenExam\Models\Answer;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Question;
+use OpenExam\Models\Session;
 use OpenExam\Models\Student;
+use Phalcon\Mvc\Model\Resultset;
 
 /**
  * System load task.
@@ -47,43 +49,63 @@ class SimulateTask extends MainTask implements TaskInterface
                         'header'   => 'Simulate system load.',
                         'action'   => '--simulate',
                         'usage'    => array(
-                                '--setup --student=username [--questions=num]',
-                                '--run --ajax --exam=id [--read] [--write] [--session=str] [--torture] [--sleep=sec] [--duration=sec]'
+                                '--setup [--students=num] [--questions=num]',
+                                '--run --exam=id [student=str [--session=str]] [options...]',
+                                '--script --exam=id [options...]',
+                                '--defaults'
                         ),
                         'options'  => array(
                                 '--setup'         => 'Create exam.',
                                 '--run'           => 'Run simulation.',
-                                '--session=str'   => 'Use cookie string for authentication.',
+                                '--defaults'      => 'Show default options.',
+                                '--script'        => 'Create run script.',
+                                '--output=file'   => 'Script filename (for --script option).',
+                                '--result=file'   => 'Simulation result file.',
                                 '--exam=id'       => 'Use exam ID.',
+                                '--session=str'   => 'Use cookie string for authentication.',
                                 '--student=user'  => 'The student username.',
+                                '--students=num'  => 'Add num students on exam.',
                                 '--questions=num' => 'Insert num questions (setup only).',
                                 '--natural'       => 'Simulate normal user interface load.',
                                 '--torture'       => 'Run in torture mode (no sleep).',
                                 '--read'          => 'Generate read load.',
                                 '--write'         => 'Generate write load.',
-                                '--sleep=sec'     => 'Pause sleep second between each iteration.',
+                                '--sleep=sec'     => 'Pause sec second between each iteration.',
                                 '--duration=sec'  => 'Number of seconds to run.',
                                 '--verbose'       => 'Be more verbose.',
                                 '--debug'         => 'Print debug information',
-                                '--dry-run'       => 'Just print whats going to be done.'
+                                '--dry-run'       => 'Just print whats going to be done.',
+                                '--quite'         => 'Be quiet.'
                         ),
                         'examples' => array(
                                 array(
                                         'descr'   => 'Create exam with 20 questions',
-                                        'command' => '--setup --student=user@example.com --questions=20'
+                                        'command' => '--setup --questions=20'
                                 ),
                                 array(
-                                        'descr'   => 'Simulate a real world application',
-                                        'command' => '--session=xxx --exam=123 --natural --sleep=10 --duration=120'
+                                        'descr'   => 'Create exam with 250 students and 12 questions',
+                                        'command' => '--setup --questions=12 --students=250'
                                 ),
                                 array(
-                                        'descr'   => 'Run torture test',
-                                        'command' => '--session=xxx --exam=123 --torture'
+                                        'descr'   => 'Simulate a real world application (calling user)',
+                                        'command' => '--run --exam=123 --natural --sleep=10 --duration=120'
+                                ),
+                                array(
+                                        'descr'   => 'Simulate a real world application (using username)',
+                                        'command' => '--run --exam=123 --natural --sleep=10 --duration=120 --student=xxx'
+                                ),
+                                array(
+                                        'descr'   => 'Run torture test and write result to file',
+                                        'command' => '--run --exam=123 --torture --duration=300 --student=xxx --result=file'
                                 ),
                                 array(
                                         'descr'   => 'Run custom read/write simulation for 5 min',
-                                        'command' => '--session=xxx --exam=123 --read --write --sleep=1 --duration=300'
+                                        'command' => '--run --exam=123 --read --write --sleep=1 --duration=300 --student=xxx'
                                 ),
+                                array(
+                                        'descr'   => 'Create simulation script',
+                                        'command' => '--script --exam=123 --natural --sleep=10 --duration=180 --result=file --output=file'
+                                )
                         )
                 );
         }
@@ -96,96 +118,20 @@ class SimulateTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'setup');
 
-                $exam = $this->addExam();
-                $stud = $this->addStudent($exam);
-                $this->addQuestions($exam, $stud);
+                if (!($exam = $this->addExam())) {
+                        return false;
+                }
 
-                if ($this->options['verbose']) {
+                $students = $this->addStudents($exam);
+                $questions = $this->addQuestions($exam);
+
+                foreach ($students as $student) {
+                        $this->addAnswers($student, $questions);
+                        $this->addSession($student);
+                }
+
+                if ($this->options['verbose'] && !$this->options['quiet']) {
                         $this->flash->success(sprintf("Exam %d successful setup", $exam->id));
-                }
-        }
-
-        private function addExam()
-        {
-                $exam = new Exam();
-                $exam->assign(array(
-                        'name'    => 'Simulation',
-                        'creator' => $this->options['student'],
-                        'orgunit' => 'Organization',
-                        'grades'  => '{U:0,G:50,VG:75}'
-                ));
-                if (!$this->options['dry-run']) {
-                        if (!$exam->save()) {
-                                $this->flash->error(sprintf("Failed save exam: %s", current($exam->getMessages())));
-                                return false;
-                        }
-                }
-                if ($this->options['debug']) {
-                        $this->flash->notice(print_r($exam->toArray(), true));
-                }
-
-                return $exam;
-        }
-
-        private function addStudent($exam)
-        {
-                $student = new Student();
-                $student->assign(array(
-                        'exam_id' => $exam->id,
-                        'user'    => $this->options['student']
-                ));
-                if (!$this->options['dry-run']) {
-                        if (!$student->save()) {
-                                $this->flash->error(sprintf("Failed save student: %s", current($student->getMessages())));
-                                return false;
-                        }
-                }
-                if ($this->options['debug']) {
-                        $this->flash->notice(print_r($student->toArray(), true));
-                }
-
-                return $student;
-        }
-
-        private function addQuestions($exam, $student)
-        {
-                // 
-                // Add questions and answers:
-                // 
-                for ($i = 0; $i < $this->options['questions']; ++$i) {
-                        $question = new Question();
-                        $question->assign(array(
-                                'exam_id'  => $exam->id,
-                                'topic_id' => $exam->topics[0]->id,
-                                'user'     => $this->options['student'],
-                                'score'    => 1,
-                                'name'     => sprintf("Q%d", $i + 1),
-                                'quest'    => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc.\n\nCurabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.'
-                        ));
-                        if (!$this->options['dry-run']) {
-                                if (!$question->save()) {
-                                        $this->flash->error(sprintf("Failed save question: %s", current($question->getMessages())));
-                                        return false;
-                                }
-                        }
-                        if ($this->options['debug']) {
-                                $this->flash->notice(print_r($question->toArray(), true));
-                        }
-
-                        $answer = new Answer();
-                        $answer->assign(array(
-                                'question_id' => $question->id,
-                                'student_id'  => $student->id
-                        ));
-                        if (!$this->options['dry-run']) {
-                                if (!$answer->save()) {
-                                        $this->flash->error(sprintf("Failed save answer: %s", current($answer->getMessages())));
-                                        return false;
-                                }
-                        }
-                        if ($this->options['debug']) {
-                                $this->flash->notice(print_r($answer->toArray(), true));
-                        }
                 }
         }
 
@@ -198,13 +144,16 @@ class SimulateTask extends MainTask implements TaskInterface
                 $this->setOptions($params, 'run');
                 $this->options['url'] = sprintf("http://localhost/%s/ajax/core", $this->config->application->baseUri);
 
+                if (!$this->options['session']) {
+                        $this->options['session'] = $this->getSession($this->options['student']);
+                }
+                if ($this->options['verbose'] && !$this->options['quiet']) {
+                        $this->flash->notice(sprintf("Running until %s using %d sec pause between requests.", strftime("%c", $this->options['endtime']), $this->options['sleep']));
+                }
+
                 $this->curl = curl_init();
                 curl_setopt($this->curl, CURLOPT_COOKIE, sprintf("PHPSESSID=%s", $this->options['session']));
                 curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
-
-                if ($this->options['verbose']) {
-                        $this->flash->notice(sprintf("Running until %s using %d sec pause between requests.", strftime("%c", $this->options['endtime']), $this->options['sleep']));
-                }
 
                 // 
                 // Get exam data (exam, questions, answers, ...):
@@ -239,6 +188,216 @@ class SimulateTask extends MainTask implements TaskInterface
                 curl_close($this->curl);
 
                 $this->showStatistics($stat);
+                $this->saveStatistics($stat);
+        }
+
+        /**
+         * Show default options.
+         */
+        public function defaultsAction()
+        {
+                $this->setOptions(array(), 'defaults');
+                $this->flash->success(print_r($this->options, true));
+        }
+
+        /**
+         * Generate runtime script.
+         * @param array $params Task action parameters.
+         */
+        public function scriptAction($params = array())
+        {
+                $this->setOptions($params, 'script');
+
+                if (!($students = $this->getStudents())) {
+                        return false;
+                }
+
+                if (!($handle = fopen($this->options['output'], "w"))) {
+                        $this->flash->error("Failed open output script");
+                        return false;
+                }
+
+                fprintf($handle, "#!/bin/bash\n\n");
+                fprintf($handle, "# options=\"--verbose --debug\"\n\n");
+                foreach ($students as $student) {
+                        $command = sprintf("php %s/script/simulate.php --run --student=%s", BASE_DIR, $student->user);
+                        foreach ($this->options as $key => $val) {
+                                if ($key == 'script' || $key == 'output' ||
+                                    $key == 'endtime' || $key == 'student' ||
+                                    $key == 'students') {
+                                        continue;
+                                } elseif (is_bool($val) && $val == false) {
+                                        continue;
+                                } else {
+                                        $command .= " --$key=$val";
+                                }
+                        }
+                        fprintf($handle, "%s \$options &\n", $command);
+                }
+
+                fclose($handle);
+
+                if (!$this->options['quiet']) {
+                        $this->flash->success(sprintf("Created script %s", $this->options['output']));
+                }
+        }
+
+        /**
+         * Add new exam.
+         * @return Exam|boolean
+         */
+        private function addExam()
+        {
+                $exam = new Exam();
+                $exam->assign(array(
+                        'name'    => 'Simulation',
+                        'creator' => $this->options['student'],
+                        'orgunit' => 'Organization',
+                        'grades'  => '{U:0,G:50,VG:75}'
+                ));
+                if (!$this->options['dry-run']) {
+                        if (!$exam->save()) {
+                                $this->flash->error(sprintf("Failed save exam: %s", current($exam->getMessages())));
+                                return false;
+                        }
+                }
+                if ($this->options['debug'] && !$this->options['quiet']) {
+                        $this->flash->notice(print_r($exam->toArray(), true));
+                }
+
+                return $exam;
+        }
+
+        /**
+         * Add student on exam.
+         * @param Exam $exam The exam model.
+         * @return Student[]
+         */
+        private function addStudents($exam)
+        {
+                $students = array();
+
+                for ($i = 1; $i <= $this->options['students']; ++$i) {
+                        $student = new Student();
+                        $student->assign(array(
+                                'exam_id' => $exam->id,
+                                'user'    => sprintf("user%d", $i)
+                        ));
+                        if (!$this->options['dry-run']) {
+                                if (!$student->save()) {
+                                        $this->flash->error(sprintf("Failed save student: %s", current($student->getMessages())));
+                                        continue;
+                                }
+                        }
+                        if ($this->options['debug'] && !$this->options['quiet']) {
+                                $this->flash->notice(print_r($student->toArray(), true));
+                        }
+
+                        $students[] = $student;
+                }
+
+                return $students;
+        }
+
+        /**
+         * Add questions on exam.
+         * @param Exam $exam The exam model.
+         * @return Question[]
+         */
+        private function addQuestions($exam)
+        {
+                $questions = array();
+
+                // 
+                // Add questions and answers:
+                // 
+                for ($i = 0; $i < $this->options['questions']; ++$i) {
+                        $question = new Question();
+                        $question->assign(array(
+                                'exam_id'  => $exam->id,
+                                'topic_id' => $exam->topics[0]->id,
+                                'user'     => $this->options['student'],
+                                'score'    => 1,
+                                'name'     => sprintf("Q%d", $i + 1),
+                                'quest'    => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc.\n\nCurabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.'
+                        ));
+                        if (!$this->options['dry-run']) {
+                                if (!$question->save()) {
+                                        $this->flash->error(sprintf("Failed save question: %s", current($question->getMessages())));
+                                        continue;
+                                }
+                        }
+                        if ($this->options['debug'] && !$this->options['quiet']) {
+                                $this->flash->notice(print_r($question->toArray(), true));
+                        }
+
+                        $questions[] = $question;
+                }
+
+                return $questions;
+        }
+
+        /**
+         * Add answers for student.
+         * @param Student $student The student model.
+         * @param Question[] $questions The question models.
+         */
+        private function addAnswers($student, $questions)
+        {
+                foreach ($questions as $question) {
+                        $answer = new Answer();
+                        $answer->assign(array(
+                                'question_id' => $question->id,
+                                'student_id'  => $student->id
+                        ));
+                        if (!$this->options['dry-run']) {
+                                if (!$answer->save()) {
+                                        $this->flash->error(sprintf("Failed save answer: %s", current($answer->getMessages())));
+                                        continue;
+                                }
+                        }
+                        if ($this->options['debug'] && !$this->options['quiet']) {
+                                $this->flash->notice(print_r($answer->toArray(), true));
+                        }
+                }
+        }
+
+        /**
+         * Add fake session for student.
+         * @param Student $student The student model.
+         * @param int $expires The session expires offset from now in seconds.
+         */
+        private function addSession($student, $expires = 28800)
+        {
+                // 
+                // Required for generation of session ID and encoding:
+                // 
+                session_id(md5($student->user));
+
+                // 
+                // Session data:
+                // 
+                $_SESSION['auth'] = array(
+                        'user'   => $student->user,
+                        'type'   => 'simulate',
+                        'expire' => time() + $expires,
+                        'remote' => '::1'
+                );
+
+                // 
+                // Insert session in database:
+                // 
+                $session = new Session();
+                $session->assign(array(
+                        'session_id' => session_id(),
+                        'data'       => session_encode(),
+                        'created'    => time()
+                ));
+                if (!$session->save()) {
+                        $this->flash->error(sprintf("Failed save session: %s", current($session->getMessages())));
+                } elseif ($this->options['verbose'] && !$this->options['quiet']) {
+                        $this->flash->success(sprintf("%s\t%s", $student->user, $session->session_id));
+                }
         }
 
         /**
@@ -250,12 +409,14 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Get student model:
                 // 
-                $student = current($this->sendRequest(array(
-                            'role' => 'admin',
-                            'path' => 'student/read',
-                            'data' => array('user' => $this->options['student'], 'exam_id' => $this->options['exam'])
+                $student = Student::findFirst(array(
+                            'conditions' => 'exam_id = :exam: and user = :user:',
+                            'bind'       => array(
+                                    'exam' => $this->options['exam'],
+                                    'user' => $this->options['student']
+                            )
                         )
-                ));
+                );
 
                 // 
                 // Get exam data:
@@ -299,10 +460,38 @@ class SimulateTask extends MainTask implements TaskInterface
         }
 
         /**
-         * Show simulation statistics.
-         * @param array $stat The collected statistics.
+         * Get session ID.
+         * @param string $user The user principal name.
+         * @return string
          */
-        private function showStatistics($stat)
+        private function getSession($user)
+        {
+                if (!($session = Session::findFirst("data LIKE '%$user%'"))) {
+                        $this->flash->error("failed find session of $user");
+                } else {
+                        return $session->session_id;
+                }
+        }
+
+        /**
+         * Get all students on this exam.
+         * @return Resultset
+         */
+        private function getStudents()
+        {
+                if (!($students = Student::find(sprintf("exam_id = %d", $this->options['exam'])))) {
+                        $this->flash->error("failed get students");
+                } else {
+                        return $students;
+                }
+        }
+
+        /**
+         * Get filtered statistics.
+         * @param array $stat The collected statistics.
+         * @return array
+         */
+        private function getStatistics($stat)
         {
                 // 
                 // Remove unused slots:
@@ -332,10 +521,39 @@ class SimulateTask extends MainTask implements TaskInterface
                         }
                 }
 
-                // 
-                // Use simple display method:
-                // 
-                $this->flash->success(print_r($stat, true));
+                return $stat;
+        }
+
+        /**
+         * Show simulation statistics.
+         * @param array $stat The collected statistics.
+         */
+        private function showStatistics($stat)
+        {
+                if (!$this->options['quiet']) {
+                        $this->flash->success(print_r($this->getStatistics($stat), true));
+                }
+        }
+
+        /**
+         * Save simulation statistics.
+         * @param type $stat
+         */
+        private function saveStatistics($stat)
+        {
+                $file = $this->options['result'];
+                $user = $this->options['student'];
+
+                if ($file) {
+                        if (file_exists($file)) {
+                                $prev = unserialize(file_get_contents($file));
+                                $prev[$user] = $stat;
+                        } else {
+                                $prev = array();
+                                $prev[$user] = $stat;
+                        }
+                        file_put_contents($file, serialize($prev), FILE_APPEND);
+                }
         }
 
         /**
@@ -407,6 +625,11 @@ class SimulateTask extends MainTask implements TaskInterface
          */
         private function runNatural($data, &$stat)
         {
+                // 
+                // Fix burst of simulation running in parallell.
+                // 
+                sleep(rand(0, $this->options['sleep']));
+
                 // 
                 // Reset saved answers:
                 // 
@@ -540,36 +763,27 @@ class SimulateTask extends MainTask implements TaskInterface
          */
         private function sendRequest($params)
         {
-                if ($params['role'] != 'admin') {
-                        $impersonate = $this->options['impersonate'];
-                } else {
-                        $impersonate = false;
-                }
-
-                if ($impersonate) {
-                        curl_setopt($this->curl, CURLOPT_URL, sprintf("%s/%s/%s?impersonate=%s", $this->options['url'], $params['role'], $params['path'], $this->options['student']));
-                } else {
-                        curl_setopt($this->curl, CURLOPT_URL, sprintf("%s/%s/%s", $this->options['url'], $params['role'], $params['path']));
-                }
-
+                curl_setopt($this->curl, CURLOPT_URL, sprintf("%s/%s/%s", $this->options['url'], $params['role'], $params['path']));
                 curl_setopt($this->curl, CURLOPT_POST, 1);
                 curl_setopt($this->curl, CURLOPT_POSTFIELDS, $params['data']);
 
                 if (!($result = curl_exec($this->curl))) {
                         $this->flash->error(curl_error($this->curl));
+                        $this->flash->error(sprintf("%s: %d", $params['path'], $params['data']->id));
                         return false;
                 } else {
                         $result = json_decode($result);
                 }
 
-                if ($this->options['debug']) {
+                if ($this->options['debug'] && !$this->options['quiet']) {
                         $this->flash->notice(print_r($result, true));
-                } else if ($this->options['verbose']) {
+                } else if ($this->options['verbose'] && !$this->options['quiet']) {
                         $this->flash->notice("Requested $params[path] using role $params[role]");
                 }
 
                 if (isset($result->failed)) {
                         $this->flash->error($result->failed->return);
+                        $this->flash->error(sprintf("%s: %d", $params['path'], $params['data']->id));
                         return false;
                 } else {
                         return $result->success->return;
@@ -586,12 +800,12 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'read' => false, 'write' => false, 'natural' => false, 'questions' => 12, 'torture' => false, 'sleep' => 10, 'duration' => 120, 'impersonate' => false);
+                $this->options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'questions' => 12, 'sleep' => 10, 'duration' => 120, 'students' => 1);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'debug', 'dry-run', 'setup', 'student', 'questions', 'run', 'exam', 'read', 'write', 'natural', 'session', 'torture', 'sleep', 'duration', 'impersonate');
+                $options = array('verbose', 'debug', 'dry-run', 'quiet', 'setup', 'student', 'students', 'questions', 'run', 'exam', 'read', 'write', 'natural', 'torture', 'script', 'output', 'result', 'session', 'sleep', 'duration');
                 $current = $action;
 
                 // 
