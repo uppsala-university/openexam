@@ -218,7 +218,7 @@ td,th {
                         <div class="body" >
                                 <div class="body-content">
                                         <div class="quest">
-	                                        <h1 class="q-<?=$question->id?>">Question <?=$questNo+1?> </h1>
+	                                        <h1 class="q-<?=$question->id?>">Question <?=$question->slot ? $question->slot : $question->name?> </h1>
                                                 
                                                 <?php foreach($data['qData'][$question->id]['qParts'] as $pTitle => $pData):?>
                                         	<div class="quest-part">
