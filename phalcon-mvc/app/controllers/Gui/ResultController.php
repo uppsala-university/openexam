@@ -80,7 +80,7 @@ class ResultController extends GuiController
                 
                 ## Fetch question data
                 $data['examScore'] = 0;
-                $questions = $exam->getQuestions(array("order" => "slot"));
+                $questions = $exam->getQuestions(array("order" => "slot", 'conditions' => "status = 'active'"));
                 foreach($questions as $question) {
                         
                         $qScore = 0;
