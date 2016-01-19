@@ -36,7 +36,16 @@ use Phalcon\Mvc\Model\Resultset;
 class SimulateTask extends MainTask implements TaskInterface
 {
 
+        /**
+         * Runtime options
+         * @var array 
+         */
         private $options;
+        /**
+         * Fetched exam data.
+         * @var array 
+         */
+        private $data;
 
         public function helpAction()
         {
@@ -55,23 +64,23 @@ class SimulateTask extends MainTask implements TaskInterface
                                 '--defaults'
                         ),
                         'options'  => array(
-                                '--setup'         => 'Create exam.',
+                                '--setup'         => 'Create exam for simulation.',
                                 '--run'           => 'Run simulation.',
-                                '--defaults'      => 'Show default options.',
                                 '--script'        => 'Create run script.',
-                                '--output=file'   => 'Script filename (for --script option).',
-                                '--result=file'   => 'Simulation result file.',
+                                '--defaults'      => 'Show default options.',
+                                '--output=file'   => 'Generate script file (for --script option).',
+                                '--result=file'   => 'Write simulation result to file.',
                                 '--exam=id'       => 'Use exam ID.',
                                 '--session=str'   => 'Use cookie string for authentication.',
-                                '--student=user'  => 'The student username.',
+                                '--student=user'  => 'Run simulation as student user.',
                                 '--students=num'  => 'Add num students on exam.',
                                 '--questions=num' => 'Insert num questions (setup only).',
-                                '--natural'       => 'Simulate normal user interface load.',
+                                '--natural'       => 'Run normal user interface simulation.',
                                 '--torture'       => 'Run in torture mode (no sleep).',
-                                '--read'          => 'Generate read load.',
-                                '--write'         => 'Generate write load.',
-                                '--sleep=sec'     => 'Pause sec second between each iteration.',
-                                '--duration=sec'  => 'Number of seconds to run.',
+                                '--read'          => 'Generate answer read load.',
+                                '--write'         => 'Generate answer write load.',
+                                '--sleep=sec'     => 'Second to sleep between server requests.',
+                                '--duration=sec'  => 'Duration of simulation.',
                                 '--verbose'       => 'Be more verbose.',
                                 '--debug'         => 'Print debug information',
                                 '--dry-run'       => 'Just print whats going to be done.',
@@ -130,7 +139,7 @@ class SimulateTask extends MainTask implements TaskInterface
                         $this->addSession($student);
                 }
 
-                if ($this->options['verbose'] && !$this->options['quiet']) {
+                if (!$this->options['quiet']) {
                         $this->flash->success(sprintf("Exam %d successful setup", $exam->id));
                 }
         }
@@ -151,10 +160,6 @@ class SimulateTask extends MainTask implements TaskInterface
                         $this->flash->notice(sprintf("Running until %s using %d sec pause between requests.", strftime("%c", $this->options['endtime']), $this->options['sleep']));
                 }
 
-                $this->curl = curl_init();
-                curl_setopt($this->curl, CURLOPT_COOKIE, sprintf("PHPSESSID=%s", $this->options['session']));
-                curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
-
                 // 
                 // Get exam data (exam, questions, answers, ...):
                 // 
@@ -168,11 +173,11 @@ class SimulateTask extends MainTask implements TaskInterface
 
                 for ($text = array(), $size = 1024, $max = 512 * 1024; $size <= $max; $size *= 2) {
                         $text[] = array('len' => $size, 'str' => str_repeat("X", $size));
-                        $stat[$size]['r'] = array('time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
-                        $stat[$size]['w'] = array('time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
+                        $stat[$size]['r'] = array('tmin' => 60, 'tmax' => 0, 'time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
+                        $stat[$size]['w'] = array('tmin' => 60, 'tmax' => 0, 'time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
                 }
-                $stat['avarage']['r'] = array('time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
-                $stat['avarage']['w'] = array('time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
+                $stat['avarage']['r'] = array('tmin' => 60, 'tmax' => 0, 'time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
+                $stat['avarage']['w'] = array('tmin' => 60, 'tmax' => 0, 'time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
 
                 // 
                 // Run simulation:
@@ -184,8 +189,6 @@ class SimulateTask extends MainTask implements TaskInterface
                 } else {
                         $this->runCustom($data, $text, $stat);
                 }
-
-                curl_close($this->curl);
 
                 $this->showStatistics($stat);
                 $this->saveStatistics($stat);
@@ -208,6 +211,10 @@ class SimulateTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'script');
 
+                if (!$this->options['exam']) {
+                        $this->flash->error("Required parameter --exam is missing");
+                        return false;
+                }
                 if (!($students = $this->getStudents())) {
                         return false;
                 }
@@ -448,6 +455,15 @@ class SimulateTask extends MainTask implements TaskInterface
                         ),
                 );
 
+                //
+                // Sanity check:
+                // 
+                foreach ($data as $key => $val) {
+                        if (is_bool($val) && $val == false) {
+                                die("Failed initialize data");
+                        }
+                }
+
                 // 
                 // Re-index answers to use question ID as key:
                 // 
@@ -456,6 +472,7 @@ class SimulateTask extends MainTask implements TaskInterface
                         unset($data['a'][$key]);
                 }
 
+                $this->data = $data;
                 return $data;
         }
 
@@ -513,11 +530,11 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 foreach ($stat as $key => $arr) {
                         if (is_numeric($key)) {
-                                $stat[$key]['r']['request'] = $stat[$key]['r']['time'] / $stat[$key]['r']['count'];
-                                $stat[$key]['w']['request'] = $stat[$key]['w']['time'] / $stat[$key]['w']['count'];
+                                $stat[$key]['r']['mean'] = $stat[$key]['r']['time'] / $stat[$key]['r']['count'];
+                                $stat[$key]['w']['mean'] = $stat[$key]['w']['time'] / $stat[$key]['w']['count'];
                         } else {
-                                $stat['avarage']['r']['request'] = $stat['avarage']['r']['time'] / $stat['avarage']['r']['count'];
-                                $stat['avarage']['w']['request'] = $stat['avarage']['w']['time'] / $stat['avarage']['w']['count'];
+                                $stat['avarage']['r']['mean'] = $stat['avarage']['r']['time'] / $stat['avarage']['r']['count'];
+                                $stat['avarage']['w']['mean'] = $stat['avarage']['w']['time'] / $stat['avarage']['w']['count'];
                         }
                 }
 
@@ -665,16 +682,18 @@ class SimulateTask extends MainTask implements TaskInterface
                                         'path' => 'question/read',
                                         'data' => array($qdat->id)
                                 ));
+                                $etime = microtime(true);
+                                $ttime = $etime - $stime;       // total                                
+                                $this->setStatistics($stat, strlen($qdat->quest), $ttime, 'r', 'avarage');
+
                                 $this->sendRequest(array(
                                         'role' => 'student',
                                         'path' => 'answer/read',
                                         'data' => array($adat->id)
                                 ));
                                 $etime = microtime(true);
-
-                                $stat['avarage']['r']['time'] += $etime - $stime;
-                                $stat['avarage']['r']['count'] ++;
-                                $stat['avarage']['r']['bytes'] += strlen($adat->answer);
+                                $ttime = $etime - $stime;       // total
+                                $this->setStatistics($stat, strlen($adat->answer), $ttime, 'r', 'avarage');
                         }
 
                         // 
@@ -689,12 +708,32 @@ class SimulateTask extends MainTask implements TaskInterface
                                 'data' => (array) $adat
                         ));
                         $etime = microtime(true);
-
-                        $stat['avarage']['w']['time'] += $etime - $stime;
-                        $stat['avarage']['w']['count'] ++;
-                        $stat['avarage']['w']['bytes'] += strlen($adat->answer);
+                        $ttime = $etime - $stime;       // total
+                        $this->setStatistics($stat, strlen($adat->answer), $ttime, 'w', 'avarage');
 
                         sleep($this->options['sleep']);
+                }
+        }
+
+        /**
+         * Save statistics.
+         * @param array $stat The collected statistics.
+         * @param int $bytes Number rof bytes read or write.
+         * @param float $time Elapsed time.
+         * @param string $mode The read/write mode ('r' or 'w').
+         * @param string|int $key The section key.
+         */
+        private function setStatistics(&$stat, $bytes, $time, $mode, $key)
+        {
+                $stat[$key][$mode]['time'] += $time;
+                $stat[$key][$mode]['count'] ++;
+                $stat[$key][$mode]['bytes'] += $bytes;
+
+                if ($time < $stat[$key][$mode]['tmin']) {
+                        $stat[$key][$mode]['tmin'] = $time;
+                }
+                if ($time > $stat[$key][$mode]['tmax']) {
+                        $stat[$key][$mode]['tmax'] = $time;
                 }
         }
 
@@ -717,12 +756,8 @@ class SimulateTask extends MainTask implements TaskInterface
                         $stat[$text['len']]['w']['failed'] ++;
                         $stat['avarage']['w']['failed'] ++;
                 } else {
-                        $stat[$text['len']]['w']['time'] += $etime - $stime;
-                        $stat[$text['len']]['w']['count'] ++;
-                        $stat[$text['len']]['w']['bytes'] += $text['len'];      // approx
-                        $stat['avarage']['w']['time'] += $etime - $stime;
-                        $stat['avarage']['w']['count'] ++;
-                        $stat['avarage']['w']['bytes'] += $text['len'];         // approx
+                        $this->setStatistics($stat, $text['len'], $etime - $stime, 'w', $text['len']);
+                        $this->setStatistics($stat, $text['len'], $etime - $stime, 'w', 'avarage');
                 }
         }
 
@@ -747,12 +782,8 @@ class SimulateTask extends MainTask implements TaskInterface
                 } elseif ($result->answer != $answer->answer) {
                         $this->flash->error(sprintf("Answer truncated for id=%d and size=%d", $answer->id, $text['len']));
                 } else {
-                        $stat[$text['len']]['r']['time'] += $etime - $stime;
-                        $stat[$text['len']]['r']['count'] ++;
-                        $stat[$text['len']]['r']['bytes'] += $text['len'];      // approx
-                        $stat['avarage']['r']['time'] += $etime - $stime;
-                        $stat['avarage']['r']['count'] ++;
-                        $stat['avarage']['r']['bytes'] += $text['len'];         // approx
+                        $this->setStatistics($stat, $text['len'], $etime - $stime, 'r', $text['len']);
+                        $this->setStatistics($stat, $text['len'], $etime - $stime, 'r', 'avarage');
                 }
         }
 
@@ -763,13 +794,36 @@ class SimulateTask extends MainTask implements TaskInterface
          */
         private function sendRequest($params)
         {
+                // 
+                // Initialize cURL:
+                // 
+                if (!($this->curl = curl_init())) {
+                        $this->flash->error("cURL failed initilize");
+                        return false;
+                }
+                curl_setopt($this->curl, CURLOPT_COOKIE, sprintf("PHPSESSID=%s", $this->options['session']));
+                curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
+
+                // 
+                // Timeout and transfer limit before failing:
+                // 
+                curl_setopt($this->curl, CURLOPT_TIMEOUT, 60);
+                curl_setopt($this->curl, CURLOPT_LOW_SPEED_LIMIT, 1);
+                curl_setopt($this->curl, CURLOPT_LOW_SPEED_TIME, 60);
+
+                // 
+                // Set AJAX request options:
+                // 
                 curl_setopt($this->curl, CURLOPT_URL, sprintf("%s/%s/%s", $this->options['url'], $params['role'], $params['path']));
                 curl_setopt($this->curl, CURLOPT_POST, 1);
                 curl_setopt($this->curl, CURLOPT_POSTFIELDS, $params['data']);
 
+                // 
+                // Send request:
+                // 
                 if (!($result = curl_exec($this->curl))) {
-                        $this->flash->error(curl_error($this->curl));
-                        $this->flash->error(sprintf("%s: %d", $params['path'], $params['data']->id));
+                        $this->flash->error(sprintf("cURL [execute]:\t%s", curl_error($this->curl)));
+                        curl_close($this->curl);
                         return false;
                 } else {
                         $result = json_decode($result);
@@ -782,10 +836,11 @@ class SimulateTask extends MainTask implements TaskInterface
                 }
 
                 if (isset($result->failed)) {
-                        $this->flash->error($result->failed->return);
-                        $this->flash->error(sprintf("%s: %d", $params['path'], $params['data']->id));
+                        $this->flash->error(sprintf("cURL [response]: %s", $result->failed->return));
+                        curl_close($this->curl);
                         return false;
                 } else {
+                        curl_close($this->curl);
                         return $result->success->return;
                 }
         }
