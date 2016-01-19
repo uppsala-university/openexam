@@ -289,7 +289,7 @@ class QuestionController extends GuiController
                                         $questData = $this->phql->executeQuery(
                                             "select distinct q.* from OpenExam\Models\Question q "
                                             . "inner join OpenExam\Models\Corrector c "
-                                            . "where  exam_id = '" . $exam->id . "' "
+                                            . "where  exam_id = '" . $exam->id . "' and q.status = 'active' "
                                             . ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
                                                 "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
                                             . "order by q.slot asc"
@@ -306,7 +306,7 @@ class QuestionController extends GuiController
                                         $questData = $this->phql->executeQuery(
                                             "select distinct q.* from OpenExam\Models\Question q "
                                             . "inner join OpenExam\Models\Corrector c "
-                                            . "where q.id = " . $loadBy[2]
+                                            . "where q.id = " . $loadBy[2] . " and q.status = 'active' "
                                             . ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
                                                 "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
                                         );
@@ -321,7 +321,7 @@ class QuestionController extends GuiController
                                             "select distinct q.* from OpenExam\Models\Question q "
                                             . "inner join OpenExam\Models\Corrector c "
                                             . "inner join OpenExam\Models\Answer a "
-                                            . "where a.id = " . $loadBy[2]
+                                            . "where a.id = " . $loadBy[2] . " and q.status = 'active' " 
                                             . ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
                                                 "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
                                         );
