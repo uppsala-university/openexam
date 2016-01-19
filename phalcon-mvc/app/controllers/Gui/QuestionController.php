@@ -354,7 +354,7 @@ class QuestionController extends GuiController
                                 $questData = $this->phql->executeQuery(
                                     "select distinct q.* from OpenExam\Models\Question q "
                                     . "inner join OpenExam\Models\Corrector c "
-                                    . "where exam_id = '" . $exam->id . "' "
+                                    . "where exam_id = '" . $exam->id . "' and q.status = 'active' "
                                     . ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
                                         "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
                                     . "order by q.slot asc"
