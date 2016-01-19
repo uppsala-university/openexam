@@ -25,13 +25,16 @@ use UUP\Authentication\Validator\LdapBindValidator;
  * a unique $options array:
  * 
  * $auth = new ActiveDirectoryLogin(
- *      'server.example.com', 636, $config, array(
+ *      $config, 'server.example.com', 636, array(
  *              'form' => array(
  *                      'name' => 'myform',
  *                      'user' => 'user1'
  *              )
  *      )
  * );
+ * 
+ * A second key ('ldap') in options array can be used for passing LDAP options. 
+ * Use the numeric value of LDAP option as array keys.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -51,11 +54,8 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin
                         'name'  => null,
                         'user'  => null,
                         'pass'  => null
-                ),
-                'ldap' => array(
-                        LDAP_OPT_REFERRALS        => false,
-                        LDAP_OPT_PROTOCOL_VERSION => 3
-                )))
+                )
+        ))
         {
                 // 
                 // These are the default options:
@@ -76,6 +76,9 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin
                 // not possible because of numeric keys.
                 // 
                 foreach ($defaults as $service => $array) {
+                        if (!isset($options[$service])) {
+                                $options[$service] = array();
+                        }
                         foreach ($array as $key => $val) {
                                 if (!isset($options[$service][$key]) || $options[$service][$key] == null) {
                                         $options[$service][$key] = $val;
