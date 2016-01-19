@@ -13,6 +13,9 @@ Alias /phalcon-mvc /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/publ
     Order allow,deny
     Allow from ::1 127.0.0.1
 
+    # Disable htaccess for performance reasons:
+    AllowOverride none
+
     # Handle non-static content from index.php:
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-d
