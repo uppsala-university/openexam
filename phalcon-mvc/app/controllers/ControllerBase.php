@@ -71,6 +71,7 @@ abstract class ControllerBase extends Controller
         protected function report($exception)
         {
                 try {
+                        $session = $this->session->getId();
                         $request = $this->request->get();
                         $payload = method_exists($this, 'getPayload') ? $this->getPayload() : array();
                 } catch (\Exception $exception) {
@@ -98,8 +99,9 @@ abstract class ControllerBase extends Controller
                         'Request'   => array(
                                 'Server'  => sprintf("%s (%s)", $this->request->getServerName(), $this->request->getServerAddress()),
                                 'Method'  => $this->request->getMethod(),
-                                'Query'   => $request,
-                                'Payload' => $payload
+                                'Query'   => (array) $request,
+                                'Payload' => (array) $payload,
+                                'Session' => (string) $session
                         ),
                         'Source'    => array(
                                 'User'   => $this->user->getPrincipalName(),
