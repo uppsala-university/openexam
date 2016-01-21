@@ -61,15 +61,18 @@ class SimulateTask extends MainTask implements TaskInterface
                                 '--setup [--students=num] [--questions=num]',
                                 '--run --exam=id [student=str [--session=str]] [options...]',
                                 '--script --exam=id [options...]',
+                                '--compile --result=file',
                                 '--defaults'
                         ),
                         'options'  => array(
                                 '--setup'         => 'Create exam for simulation.',
-                                '--run'           => 'Run simulation.',
-                                '--script'        => 'Create run script.',
+                                '--run'           => 'Run single student simulation.',
+                                '--script'        => 'Create simulation script.',
+                                '--compile'       => 'Compile result from previous simulation',
                                 '--defaults'      => 'Show default options.',
                                 '--output=file'   => 'Generate script file (for --script option).',
-                                '--result=file'   => 'Write simulation result to file.',
+                                '--result=file'   => 'Simulation result file.',
+                                '--target=url'    => 'Target server URL (defaults to this app on localhost).',
                                 '--exam=id'       => 'Use exam ID.',
                                 '--session=str'   => 'Use cookie string for authentication.',
                                 '--student=user'  => 'Run simulation as student user.',
@@ -96,6 +99,10 @@ class SimulateTask extends MainTask implements TaskInterface
                                         'command' => '--setup --questions=12 --students=250'
                                 ),
                                 array(
+                                        'descr'   => 'Create simulation script',
+                                        'command' => '--script --exam=123 --natural --sleep=10 --duration=180 --result=file.dat --output=file.sh'
+                                ),
+                                array(
                                         'descr'   => 'Simulate a real world application (calling user)',
                                         'command' => '--run --exam=123 --natural --sleep=10 --duration=120'
                                 ),
@@ -105,15 +112,15 @@ class SimulateTask extends MainTask implements TaskInterface
                                 ),
                                 array(
                                         'descr'   => 'Run torture test and write result to file',
-                                        'command' => '--run --exam=123 --torture --duration=300 --student=xxx --result=file'
+                                        'command' => '--run --exam=123 --torture --duration=300 --student=xxx --result=file.dat'
                                 ),
                                 array(
                                         'descr'   => 'Run custom read/write simulation for 5 min',
                                         'command' => '--run --exam=123 --read --write --sleep=1 --duration=300 --student=xxx'
                                 ),
                                 array(
-                                        'descr'   => 'Create simulation script',
-                                        'command' => '--script --exam=123 --natural --sleep=10 --duration=180 --result=file --output=file'
+                                        'descr'   => 'Compile result from previous simulation',
+                                        'command' => '--compile --result=file.dat'
                                 )
                         )
                 );
@@ -151,7 +158,7 @@ class SimulateTask extends MainTask implements TaskInterface
         public function runAction($params = array())
         {
                 $this->setOptions($params, 'run');
-                $this->options['url'] = sprintf("http://localhost/%s/ajax/core", $this->config->application->baseUri);
+                $this->options['url'] = sprintf("%s/ajax/core", $this->options['target']);
 
                 if (!$this->options['session']) {
                         $this->options['session'] = $this->getSession($this->options['student']);
@@ -195,15 +202,6 @@ class SimulateTask extends MainTask implements TaskInterface
         }
 
         /**
-         * Show default options.
-         */
-        public function defaultsAction()
-        {
-                $this->setOptions(array(), 'defaults');
-                $this->flash->success(print_r($this->options, true));
-        }
-
-        /**
          * Generate runtime script.
          * @param array $params Task action parameters.
          */
@@ -226,7 +224,9 @@ class SimulateTask extends MainTask implements TaskInterface
 
                 fprintf($handle, "#!/bin/bash\n\n");
                 fprintf($handle, "# options=\"--verbose --debug\"\n\n");
-                foreach ($students as $student) {
+
+                for ($i = 0; $i < count($students); ++$i) {
+                        $student = $students[$i];
                         $command = sprintf("php %s/script/simulate.php --run --student=%s", BASE_DIR, $student->user);
                         foreach ($this->options as $key => $val) {
                                 if ($key == 'script' || $key == 'output' ||
@@ -240,6 +240,9 @@ class SimulateTask extends MainTask implements TaskInterface
                                 }
                         }
                         fprintf($handle, "%s \$options &\n", $command);
+                        if ($i % 50 == 0 && $i != 0) {
+                                fprintf($handle, "sleep 1\n");  // be nice ;-)
+                        }
                 }
 
                 fclose($handle);
@@ -247,6 +250,76 @@ class SimulateTask extends MainTask implements TaskInterface
                 if (!$this->options['quiet']) {
                         $this->flash->success(sprintf("Created script %s", $this->options['output']));
                 }
+        }
+
+        /**
+         * Compile and present result from previous simulation.
+         * @param array $params Task action parameters.
+         */
+        public function compileAction($params = array())
+        {
+                $this->setOptions($params, 'compile');
+
+                if (!file_exists($this->options['result'])) {
+                        $this->flash->error("Input file is missing");
+                        return false;
+                }
+
+                if (!($data = $this->readStatistics($this->options['result']))) {
+                        return false;
+                }
+
+                $stat = array();
+                for ($i = 0; $i < count($data); ++$i) {
+                        foreach ($data[$i] as $k1 => $v1) {
+                                if (!isset($stat[$k1])) {
+                                        $stat[$k1] = array();
+                                }
+                                foreach ($v1 as $k2 => $v2) {
+                                        if (!isset($stat[$k1][$k2])) {
+                                                $stat[$k1][$k2] = array('tmin' => 60, 'tmax' => 0, 'time' => 0, 'count' => 0, 'failed' => 0, 'bytes' => 0);
+                                        }
+                                        foreach ($v2 as $k3 => $v3) {
+                                                if ($k3 == 'mean') {
+                                                        continue;
+                                                }
+
+                                                switch ($k3) {
+                                                        case 'tmin':
+                                                                if ($v3 < $stat[$k1][$k2][$k3]) {
+                                                                        $stat[$k1][$k2][$k3] = $v3;
+                                                                }
+                                                                break;
+                                                        case 'tmax':
+                                                                if ($v3 > $stat[$k1][$k2][$k3]) {
+                                                                        $stat[$k1][$k2][$k3] = $v3;
+                                                                }
+                                                                break;
+                                                        default:
+                                                                $stat[$k1][$k2][$k3] += $v3;
+                                                                break;
+                                                }
+                                        }
+                                }
+                        }
+                }
+
+                foreach ($stat as $k1 => $v1) {
+                        foreach ($v1 as $k2 => $v2) {
+                                $stat[$k1][$k2]['mean'] = $stat[$k1][$k2]['time'] / $stat[$k1][$k2]['count'];
+                        }
+                }
+                
+                print_r($stat);
+        }
+
+        /**
+         * Show default options.
+         */
+        public function defaultsAction()
+        {
+                $this->setOptions(array(), 'defaults');
+                $this->flash->success(print_r($this->options, true));
         }
 
         /**
@@ -460,7 +533,8 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 foreach ($data as $key => $val) {
                         if (is_bool($val) && $val == false) {
-                                die("Failed initialize data");
+                                $this->flash->error(sprintf("Failed initialize data, exiting now (pid=%d, stud=%s)", getmypid(), $student->user));
+                                exit(1);
                         }
                 }
 
@@ -553,23 +627,72 @@ class SimulateTask extends MainTask implements TaskInterface
         }
 
         /**
+         * Read statistics collected by script.
+         * @param string $file The result file.
+         * @return array
+         */
+        private function readStatistics($file)
+        {
+                $result = array();
+
+                if (!($handle = fopen($file, "r"))) {
+                        $this->flash->error("Failed open result file");
+                        return false;
+                }
+                while (($line = fgets($handle))) {
+                        $data = unserialize(trim($line));
+                        $result[] = $data;
+                }
+                if (!fclose($handle)) {
+                        $this->flash->error("Failed close result file");
+                        return false;
+                }
+
+                return $result;
+        }
+
+        /**
          * Save simulation statistics.
-         * @param type $stat
+         * @param array $stat The collected statistics.
          */
         private function saveStatistics($stat)
         {
                 $file = $this->options['result'];
                 $user = $this->options['student'];
+                $stat = $this->getStatistics($stat);
+
+                // 
+                // Use lockfile to ensure exclusive access during write.
+                // 
 
                 if ($file) {
-                        if (file_exists($file)) {
-                                $prev = unserialize(file_get_contents($file));
-                                $prev[$user] = $stat;
-                        } else {
-                                $prev = array();
-                                $prev[$user] = $stat;
+                        if (!($handle = fopen($file, "a"))) {
+                                $this->flash->error("Failed open result file");
+                                return false;
                         }
-                        file_put_contents($file, serialize($prev), FILE_APPEND);
+                        if (!flock($handle, LOCK_EX)) {
+                                $this->flash->error("Failed lock result file");
+                                return false;
+                        }
+
+                        if (!fwrite($handle, serialize($stat) . "\n")) {
+                                $this->flash->error("Failed write result file");
+                                return false;
+                        }
+                        if (!fflush($handle)) {
+                                $this->flash->error("Failed flush result file");
+                                return false;
+                        }
+
+                        if (!flock($handle, LOCK_UN)) {
+                                $this->flash->error("Failed unlock result file");
+                                return false;
+                        }
+
+                        if (!fclose($handle)) {
+                                $this->flash->error("Failed close result file");
+                                return false;
+                        }
                 }
         }
 
@@ -642,11 +765,6 @@ class SimulateTask extends MainTask implements TaskInterface
          */
         private function runNatural($data, &$stat)
         {
-                // 
-                // Fix burst of simulation running in parallell.
-                // 
-                sleep(rand(0, $this->options['sleep']));
-
                 // 
                 // Reset saved answers:
                 // 
@@ -803,6 +921,7 @@ class SimulateTask extends MainTask implements TaskInterface
                 }
                 curl_setopt($this->curl, CURLOPT_COOKIE, sprintf("PHPSESSID=%s", $this->options['session']));
                 curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 
                 // 
                 // Timeout and transfer limit before failing:
@@ -822,7 +941,8 @@ class SimulateTask extends MainTask implements TaskInterface
                 // Send request:
                 // 
                 if (!($result = curl_exec($this->curl))) {
-                        $this->flash->error(sprintf("cURL [execute]:\t%s", curl_error($this->curl)));
+                        $this->flash->error(sprintf("cURL [execute]: %s (%s - %d)", curl_error($this->curl), curl_getinfo($this->curl, CURLINFO_EFFECTIVE_URL), curl_getinfo($this->curl, CURLINFO_HTTP_CODE)));
+                        $this->flash->error(sprintf("cURL [execute]: data=[%s]", json_encode($params['data'])));
                         curl_close($this->curl);
                         return false;
                 } else {
@@ -855,12 +975,12 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'questions' => 12, 'sleep' => 10, 'duration' => 120, 'students' => 1);
+                $this->options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'target' => false, 'questions' => 12, 'sleep' => 10, 'duration' => 120, 'students' => 1);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'debug', 'dry-run', 'quiet', 'setup', 'student', 'students', 'questions', 'run', 'exam', 'read', 'write', 'natural', 'torture', 'script', 'output', 'result', 'session', 'sleep', 'duration');
+                $options = array('verbose', 'debug', 'dry-run', 'quiet', 'setup', 'student', 'students', 'questions', 'run', 'exam', 'read', 'write', 'natural', 'torture', 'script', 'output', 'result', 'target', 'session', 'sleep', 'duration');
                 $current = $action;
 
                 // 
@@ -897,6 +1017,9 @@ class SimulateTask extends MainTask implements TaskInterface
                         $this->options['student'] = $this->getDI()->getUser()->getPrincipalName();
                 } else {
                         $this->options['impersonate'] = true;
+                }
+                if (!$this->options['target']) {
+                        $this->options['target'] = sprintf("http://localhost/%s", $this->config->application->baseUri);
                 }
 
                 $this->options['endtime'] = time() + $this->options['duration'];
