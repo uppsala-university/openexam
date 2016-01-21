@@ -46,11 +46,17 @@ class Formatter extends LineFormatter implements InjectionAwareInterface
          * @var string 
          */
         private $_msgfmt = "- [%1\$s][%2\$s]:\n%3\$s\n";
+        /**
+         * Logged on user (principal name).
+         * @var string 
+         */
+        private $_user = false;
+        /**
+         * Remote host name.
+         * @var string 
+         */
+        private $_host = false;
 
-        public function __construct($format = null, $dateFormat = null)
-        {
-                parent::__construct($format, $dateFormat);
-        }
         /**
          * Set message format. 
          * 
@@ -63,6 +69,7 @@ class Formatter extends LineFormatter implements InjectionAwareInterface
         {
                 $this->_msgfmt = $format;
         }
+
         /**
          * Get message format.
          * @return string
@@ -75,10 +82,10 @@ class Formatter extends LineFormatter implements InjectionAwareInterface
         public function format($message, $type, $timestamp, $context)
         {
                 if (isset($this->_di)) {
-                        if (!isset($this->_user)) {
+                        if (!$this->_user) {
                                 $this->_user = $this->_di->get('user')->getPrincipalName();
                         }
-                        if (!isset($this->_host)) {
+                        if (!$this->_host) {
                                 $this->_host = $this->_di->get('request')->getClientAddress(true);
                         }
                 }
