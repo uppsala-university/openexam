@@ -160,20 +160,20 @@ $config = new \Phalcon\Config(
         'logging'     => array(
                 'debug'  => array(
                         'file'  => 'debug.log',
-                        'level' => LOG_DEBUG
+                        'level' => \Phalcon\Logger::DEBUG
                 ),
                 'system' => array(
                         'file'  => 'system.log',
-                        'level' => LOG_NOTICE
+                        'level' => \Phalcon\Logger::NOTICE
                 ),
                 'auth'   => array(
                         'syslog'   => 'openexam',
-                        'facility' => LOG_AUTH,
-                        'level'    => LOG_INFO
+                        'level'    => \Phalcon\Logger::INFO,
+                        'facility' => LOG_AUTH
                 ),
                 'test'   => array(
                         'file'  => 'phpunit.log',
-                        'level' => LOG_DEBUG
+                        'level' => \Phalcon\Logger::DEBUG
                 )
         ),
         /**
