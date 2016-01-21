@@ -130,13 +130,13 @@ class GuiController extends ControllerBase
                 // 
                 if (!isset($permit)) {
                         if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->access->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rule missing)", $this->user->getPrincipalName(), $controller, $action));
+                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule missing)", $controller, $action));
                         }
                         return true;
                 }
                 if (count($permit->toArray()) == 0) {
                         if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->access->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rules empty)", $this->user->getPrincipalName(), $controller, $action));
+                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rules empty)", $controller, $action));
                         }
                         return true;
                 }
@@ -146,7 +146,7 @@ class GuiController extends ControllerBase
                 // 
                 if ($permit[0] == '*') {
                         if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->access->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rule is '*')", $this->user->getPrincipalName(), $controller, $action));
+                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule is '*')", $controller, $action));
                         }
                         return true;
                 }
@@ -159,7 +159,7 @@ class GuiController extends ControllerBase
                     ($id = $this->dispatcher->getParam('questId', 'int'))) {
                         if ($this->user->roles->aquire(Roles::CORRECTOR, $id)) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->access->debug(sprintf("Permitted question access for %s on %s -> %s (id: %d, roles: %s)", $this->user->getPrincipalName(), $controller, $action, $id, Roles::CORRECTOR));
+                                        $this->logger->access->debug(sprintf("Permitted question level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, Roles::CORRECTOR));
                                 }
                                 return true;
                         }
@@ -173,7 +173,7 @@ class GuiController extends ControllerBase
                     ($id = $this->dispatcher->getParam('examId', 'int'))) {
                         if (($roles = $this->user->aquire($permit, $id))) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->access->debug(sprintf("Permitted exam access for %s on %s -> %s (id: %d, roles: %s)", $this->user->getPrincipalName(), $controller, $action, $id, implode(",", $roles)));
+                                        $this->logger->access->debug(sprintf("Permitted exam level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, implode(",", $roles)));
                                 }
                                 return true;
                         }
@@ -184,7 +184,7 @@ class GuiController extends ControllerBase
                 // 
                 if (($roles = $this->user->aquire($permit))) {
                         if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->access->debug(sprintf("Permitted role access for %s on %s -> %s (roles: %s)", $this->user->getPrincipalName(), $controller, $action, implode(",", $roles)));
+                                $this->logger->access->debug(sprintf("Permitted role based access on %s -> %s (roles: %s)", $controller, $action, implode(",", $roles)));
                         }
                         return true;
                 }

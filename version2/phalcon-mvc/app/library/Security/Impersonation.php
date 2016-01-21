@@ -65,13 +65,13 @@ class Impersonation extends Component
         {
                 if ($this->user->getUser() == null) {
                         $this->logger->auth->alert(sprintf(
-                                "Denied impersonate request as %s from %s (not authenticated)", $user, $this->request->getClientAddress(true)
+                                "Denied impersonate request as %s (not authenticated)", $user
                         ));
                         return false;
                 }
                 if (!$this->user->roles->aquire(Roles::ADMIN)) {
                         $this->logger->auth->alert(sprintf(
-                                "Denied impersonate request as %s by %s from %s (caller is not admin)", $user, $this->user->getPrincipalName(), $this->request->getClientAddress(true)
+                                "Denied impersonate request as %s (caller is not admin)", $user
                         ));
                         return false;
                 }

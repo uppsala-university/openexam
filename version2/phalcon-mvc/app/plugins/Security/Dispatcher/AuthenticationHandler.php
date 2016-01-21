@@ -82,9 +82,7 @@ class AuthenticationHandler extends Component implements DispatchHelper
                         $this->auth->activate($method, $this->_service);
                 }
                 if (!$this->auth->accepted($this->_service)) {
-                        $this->logger->auth->debug(sprintf(
-                                "Caller is not authenticated (from %s)", $this->_remote
-                        ));
+                        $this->logger->auth->debug("Caller is not authenticated");
                         return false;
                 } else {
                         $this->logger->auth->notice(sprintf(
