@@ -97,13 +97,15 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
         public function write($sessionId, $data)
         {
                 if (!$this->session) {
-                        if (($this->session = SessionModel::findFirstBySessionId($sessionId)) == false) {
-                                $this->session = new SessionModel();
-                        }
+                        $this->session = SessionModel::findFirstBySessionId($sessionId);
                 }
-                if (empty($data)) {
-                        $this->session->delete();
+
+                if (empty($data) && $this->session) {
+                        return $this->session->delete();
+                } elseif (empty($data)) {
                         return true;
+                } elseif (!$this->session) {
+                        $this->session = new SessionModel();
                 }
 
                 if ($this->session->data == $data) {
