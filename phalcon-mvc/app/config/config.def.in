@@ -147,16 +147,17 @@ return array(
         'logging'    => array(
                 'system' => array(
                         'file'     => 'system.log',
-                        'level'    => LOG_NOTICE
+                        'level'    => \Phalcon\Logger::NOTICE
                 ),
                 'auth'   => array(
                         'syslog'   => 'openexam',
-                        'facility' => LOG_AUTH,
-                        'level'    => LOG_INFO
+                        'level'    => \Phalcon\Logger::INFO,
+                        'option'   => LOG_NDELAY,
+                        'facility' => LOG_AUTH
                 ),
                 'access' => array(
                         'file'     => 'access.log',
-                        'level'    => LOG_INFO
+                        'level'    => \Phalcon\Logger::INFO
                 )
         ),
         /**

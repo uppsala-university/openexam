@@ -175,7 +175,7 @@ $di->set('user', function() use($config) {
  */
 $di->set('logger', function() use($config, $di) {
         $logger = array();
-        
+
         $formatter = new \OpenExam\Library\Core\Formatter();
         $formatter->setDI($di);
         $formatter->setDateFormat('Y-m-d H:i:s');
