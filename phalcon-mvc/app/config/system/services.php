@@ -173,8 +173,13 @@ $di->set('user', function() use($config) {
 /**
  * Setup system logging (debug, system and auth)
  */
-$di->set('logger', function() use($config) {
+$di->set('logger', function() use($config, $di) {
         $logger = array();
+        
+        $formatter = new \OpenExam\Library\Core\Formatter();
+        $formatter->setDI($di);
+        $formatter->setDateFormat('Y-m-d H:i:s');
+
         foreach ($config->logging as $name => $option) {
                 if (!isset($option)) {
                         continue;
@@ -184,7 +189,9 @@ $di->set('logger', function() use($config) {
                         }
                         $logger[$name] = (
                             new Phalcon\Logger\Adapter\File($option->file)
-                            )->setLogLevel($option->level);
+                            )
+                            ->setLogLevel($option->level)
+                            ->setFormatter($formatter);
                 } elseif (isset($option->syslog)) {
                         $logger[$name] = (
                             new Phalcon\Logger\Adapter\Syslog($option->syslog, $option)

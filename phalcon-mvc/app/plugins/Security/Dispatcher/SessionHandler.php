@@ -86,9 +86,7 @@ class SessionHandler extends Component implements DispatchHelper
                 // Validate session data:
                 // 
                 if (!$this->get('expire')) {
-                        $this->logger->auth->debug(sprintf(
-                                "Session is missing (no auth entry)"
-                        ));
+                        $this->logger->auth->debug("Session is missing (no auth entry)");
                         return false;   // No session exist
                 } elseif ($this->get('expire') < time()) {
                         $this->logger->auth->debug(sprintf(
@@ -107,7 +105,7 @@ class SessionHandler extends Component implements DispatchHelper
                 // Session is validated.
                 // 
                 $this->logger->auth->debug(sprintf(
-                        "Verified session data for %s: %s", $this->_remote, print_r($this->_data, true)
+                        "Verified session data: %s", print_r($this->_data, true)
                 ));
                 return true;
         }

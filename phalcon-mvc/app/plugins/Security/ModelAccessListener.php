@@ -71,7 +71,6 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
         {
                 $type = $event->getType();
                 $name = $model->getResourceName();
-                $addr = $this->request->getClientAddress(true);
 
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
@@ -89,8 +88,6 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 if (($user = $this->getDI()->get('user')) == false) {
                         $this->logger->system->critical("The User service ('user') is missing.");
                         throw new Exception("System configuration error", Exception::USER);
-                } else {
-                        $principal = $user->getPrincipalName();
                 }
 
                 // 
@@ -99,22 +96,22 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // 
                 if ($user->hasPrimaryRole() == false) {
                         $this->logger->access->info(sprintf(
-                                "Granted %s access on %s(id=%d) to user %s (primary role unset) [%s]", $action, $name, $model->id, $principal, $addr
+                                "Granted %s access on %s(id=%d) to user (primary role unset)", $action, $name, $model->id
                         ));
                         return true;    // unrestricted access
                 } elseif (($role = $user->getPrimaryRole()) === Roles::TRUSTED) {
                         $this->logger->access->info(sprintf(
-                                "Granted %s access on %s(id=%d) for %s (trusted role) [%s]", $action, $name, $model->id, $role, $addr
+                                "Granted %s access on %s(id=%d) for %s (trusted role)", $action, $name, $model->id, $role
                         ));
                         return true;    // Control ACL System
                 } elseif (($role = $user->getPrimaryRole()) === Roles::SYSTEM) {
                         $this->logger->access->info(sprintf(
-                                "Granted %s access on %s(id=%d) for %s (trusted role) [%s]", $action, $name, $model->id, $role, $addr
+                                "Granted %s access on %s(id=%d) for %s (trusted role)", $action, $name, $model->id, $role
                         ));
                         return true;    // System internal
                 } elseif ($user->getUser() == null) {
                         $this->logger->access->error(sprintf(
-                                "Denied %s access on %s(id=%d) (unauthenticated user) [%s]", $action, $name, $model->id, $addr
+                                "Denied %s access on %s(id=%d) (unauthenticated user)", $action, $name, $model->id
                         ));
                         throw new Exception("Authentication required", Exception::AUTH);
                 }
@@ -124,7 +121,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // 
                 if ($acl->isAllowed($role, $name, $action) == false) {
                         $this->logger->access->error(sprintf(
-                                "Denied %s access on %s(id=%d) for user %s using role %s (blocked by ACL) [%s]", $action, $name, $model->id, $principal, $role, $addr
+                                "Denied %s access on %s(id=%d) for caller using role %s (blocked by ACL)", $action, $name, $model->id, $role
                         ));
                         throw new Exception("Access denied by ACL", Exception::ACCESS);
                 }
@@ -135,26 +132,28 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // 
                 if ($user->roles->aquire($role) == false) {
                         $this->logger->access->error(sprintf(
-                                "Denied %s access on %s(id=%d) for user %s using role %s (failed aquire role) [%s]", $action, $name, $model->id, $principal, $role, $addr
+                                "Denied %s access on %s(id=%d) for caller using role %s (failed aquire role)", $action, $name, $model->id, $role
                         ));
                         throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
                 } elseif ($action == ObjectAccess::CREATE) {
                         $this->logger->access->info(sprintf(
-                                "Granted %s access on %s(id=%d) for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr
+                                "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
                         ));
                         return true;    // The create action is not connected with an object.
                 } elseif (Roles::isCustom($role)) {
                         $this->logger->access->info(sprintf(
-                                "Granted %s access on %s(id=%d) for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr
+                                "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
                         ));
                         return true;    // Custom roles are global
                 } elseif (($access = $this->getObjectAccess($name))) {
-                        $this->logger->debug->log(sprintf(
-                                "%s(event=%s, model=%s, user=%s) [calling]", get_class($access), $type, $name, $principal
-                        ));
+                        if ($this->logger->debug) {
+                                $this->logger->debug->log(sprintf(
+                                        "%s(event=%s, model=%s, user=%s) [calling]", get_class($access), $type, $name, $user->getPrincipalName()
+                                ));
+                        }
                         if ($access->notify($type, $model, $user)) {
                                 $this->logger->access->info(sprintf(
-                                        "Granted %s access on %s(id=%d) for user %s using role %s [%s]", $action, $name, $model->id, $principal, $role, $addr
+                                        "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
                                 ));
                         }
                 } else {

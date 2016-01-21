@@ -277,9 +277,7 @@ class DispatchHandler extends Component implements DispatchHelper
                 // Return true unless protection is private:
                 // 
                 if ($this->_protection == 'protected') {
-                        $this->logger->auth->debug(sprintf(
-                                "Granting protected access to %s", $this->_remote
-                        ));
+                        $this->logger->auth->debug("Granting protected access");
                         return true;
                 }
 
@@ -291,9 +289,7 @@ class DispatchHandler extends Component implements DispatchHelper
                         // Redirect web request to login page. Keep track of
                         // requested URL for redirect on authenticated.
                         // 
-                        $this->logger->auth->debug(sprintf(
-                                "Forwarding %s to login page (auth -> select)", $this->_remote
-                        ));
+                        $this->logger->auth->debug("Forwarding to login page (auth -> select)");
                         if (!$this->session->has('return')) {
                                 $this->session->set('return', $this->request->get('_url'));
                         }
