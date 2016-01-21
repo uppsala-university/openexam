@@ -215,7 +215,7 @@ abstract class ObjectAccess extends Plugin
         protected function trustedContextCall($callback)
         {
                 $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-                $this->logger->auth->debug(print_r($trace, true));
+                $this->logger->access->debug(print_r($trace, true));
 
                 // 
                 // Skip roles check for trusted calls:

@@ -129,14 +129,14 @@ class GuiController extends ControllerBase
                 // Bypass for non-configured controller/action:
                 // 
                 if (!isset($permit)) {
-                        if ($this->logger->auth->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->auth->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rule missing)", $this->user->getPrincipalName(), $controller, $action));
+                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                $this->logger->access->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rule missing)", $this->user->getPrincipalName(), $controller, $action));
                         }
                         return true;
                 }
                 if (count($permit->toArray()) == 0) {
-                        if ($this->logger->auth->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->auth->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rules empty)", $this->user->getPrincipalName(), $controller, $action));
+                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                $this->logger->access->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rules empty)", $this->user->getPrincipalName(), $controller, $action));
                         }
                         return true;
                 }
@@ -145,8 +145,8 @@ class GuiController extends ControllerBase
                 // Using roles == '*' means access for all roles:
                 // 
                 if ($permit[0] == '*') {
-                        if ($this->logger->auth->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->auth->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rule is '*')", $this->user->getPrincipalName(), $controller, $action));
+                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                $this->logger->access->debug(sprintf("Bypass access restriction for %s on %s -> %s (access rule is '*')", $this->user->getPrincipalName(), $controller, $action));
                         }
                         return true;
                 }
@@ -158,8 +158,8 @@ class GuiController extends ControllerBase
                     ($id = $this->request->get('questionId', 'int')) ||
                     ($id = $this->dispatcher->getParam('questId', 'int'))) {
                         if ($this->user->roles->aquire(Roles::CORRECTOR, $id)) {
-                                if ($this->logger->auth->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->auth->debug(sprintf("Permitted question access for %s on %s -> %s (id: %d, roles: %s)", $this->user->getPrincipalName(), $controller, $action, $id, Roles::CORRECTOR));
+                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                        $this->logger->access->debug(sprintf("Permitted question access for %s on %s -> %s (id: %d, roles: %s)", $this->user->getPrincipalName(), $controller, $action, $id, Roles::CORRECTOR));
                                 }
                                 return true;
                         }
@@ -172,8 +172,8 @@ class GuiController extends ControllerBase
                     ($id = $this->request->get('examId', 'int')) ||
                     ($id = $this->dispatcher->getParam('examId', 'int'))) {
                         if (($roles = $this->user->aquire($permit, $id))) {
-                                if ($this->logger->auth->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->auth->debug(sprintf("Permitted exam access for %s on %s -> %s (id: %d, roles: %s)", $this->user->getPrincipalName(), $controller, $action, $id, implode(",", $roles)));
+                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                        $this->logger->access->debug(sprintf("Permitted exam access for %s on %s -> %s (id: %d, roles: %s)", $this->user->getPrincipalName(), $controller, $action, $id, implode(",", $roles)));
                                 }
                                 return true;
                         }
@@ -183,8 +183,8 @@ class GuiController extends ControllerBase
                 // Check role access:
                 // 
                 if (($roles = $this->user->aquire($permit))) {
-                        if ($this->logger->auth->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->auth->debug(sprintf("Permitted role access for %s on %s -> %s (roles: %s)", $this->user->getPrincipalName(), $controller, $action, implode(",", $roles)));
+                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                $this->logger->access->debug(sprintf("Permitted role access for %s on %s -> %s (roles: %s)", $this->user->getPrincipalName(), $controller, $action, implode(",", $roles)));
                         }
                         return true;
                 }

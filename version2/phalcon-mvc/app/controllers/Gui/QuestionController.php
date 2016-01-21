@@ -142,7 +142,7 @@ class QuestionController extends GuiController
                                 $access = new Access($exam);
                                 switch ($access->open()) {
                                         case Access::OPEN_APPROVED;
-                                                $this->logger->auth->debug(
+                                                $this->logger->access->debug(
                                                     sprintf("Approved exam access for student %s", $this->user->getPrincipalName())
                                                 );
                                                 break;
