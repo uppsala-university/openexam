@@ -88,28 +88,28 @@ class Lockdown extends Component
         {
                 try {
                         if ($this->checkState() == false) {
-                                $this->logger->auth->debug(sprintf("Denied access to exam for %s from %s (is not accessable)", $this->_student->user, $this->_remote));
+                                $this->logger->access->debug(sprintf("Denied access to exam for %s from %s (is not accessable)", $this->_student->user, $this->_remote));
                                 return Access::OPEN_DENIED;
                         }
                         if ($this->checkApproved() == true) {
-                                $this->logger->auth->debug(sprintf("Verified access to exam for %s from %s (id=%d)", $this->_student->user, $this->_remote, $this->_exam->id));
+                                $this->logger->access->debug(sprintf("Verified access to exam for %s from %s (id=%d)", $this->_student->user, $this->_remote, $this->_exam->id));
                                 return Access::OPEN_APPROVED;
                         }
                         if ($this->checkAddress() == false) {
-                                $this->logger->auth->notice(sprintf("Pending exam approval for %s from %s (blocked by ip-address)", $this->_student->user, $this->_remote));
+                                $this->logger->access->notice(sprintf("Pending exam approval for %s from %s (blocked by ip-address)", $this->_student->user, $this->_remote));
                                 return Access::OPEN_PENDING;
                         }
                         if ($this->checkLocking() == false) {
-                                $this->logger->auth->notice(sprintf("Denied access to exam for %s from %s (locking failed)", $this->_student->user, $this->_remote));
+                                $this->logger->access->notice(sprintf("Denied access to exam for %s from %s (locking failed)", $this->_student->user, $this->_remote));
                                 return Access::OPEN_DENIED;
                         }
 
-                        $this->logger->auth->debug(sprintf("Granted access to exam to %s from %s (id=%d)", $this->_student->user, $this->_remote, $this->_exam->id));
+                        $this->logger->access->debug(sprintf("Granted access to exam to %s from %s (id=%d)", $this->_student->user, $this->_remote, $this->_exam->id));
                         return Access::OPEN_APPROVED;
                 } catch (ModelException $exception) {
                         throw new Exception("Failed query database", Error::SERVICE_UNAVAILABLE, $exception);
                 } catch (SecurityException $exception) {
-                        $this->logger->auth->notice(sprintf("Denied access to exam for %s from %s (%s)", $this->_student->user, $this->_remote, $exception->getMessage()));
+                        $this->logger->access->notice(sprintf("Denied access to exam for %s from %s (%s)", $this->_student->user, $this->_remote, $exception->getMessage()));
                         throw $exception;
                 }
         }
@@ -168,7 +168,7 @@ class Lockdown extends Component
                 // for remote computer.
                 // 
                 if ($this->_lock->status != Lock::STATUS_APPROVED) {
-                        $this->logger->auth->debug(sprintf("Continue open exam check for %s from %s (lock not approved: %s)", $this->_student->user, $this->_remote, $this->_lock->status));
+                        $this->logger->access->debug(sprintf("Continue open exam check for %s from %s (lock not approved: %s)", $this->_student->user, $this->_remote, $this->_lock->status));
                         return false;
                 } elseif ($this->_lock->computer->ipaddr != $this->_remote) {
                         throw new SecurityException(sprintf("This exam is already locked to %s (%s) in %s, %s", $this->_lock->computer->hostname, $this->_lock->computer->ipaddr, $this->_lock->computer->room->name, $this->_lock->computer->room->description), SecurityException::ACCESS);
@@ -208,7 +208,7 @@ class Lockdown extends Component
                 // explicit define access list.
                 // 
                 if (count($accesslist) == 0) {
-                        $this->logger->auth->warning(sprintf("The exam %d has no remote address access list", $this->_exam->id));
+                        $this->logger->access->warning(sprintf("The exam %d has no remote address access list", $this->_exam->id));
                         $this->setLock(Lock::STATUS_APPROVED, $this->getComputer());
                         return true;
                 }
@@ -350,7 +350,7 @@ class Lockdown extends Component
                 if ($this->_lock->save() == false) {
                         throw new ModelException($this->_lock->getMessages()[0]);
                 } else {
-                        $this->logger->auth->debug(sprintf("Wrote %s exam access lock for %s from %s (id=%d)", $status, $this->_student->user, $this->_remote, $this->_exam->id));
+                        $this->logger->access->debug(sprintf("Wrote %s exam access lock for %s from %s (id=%d)", $status, $this->_student->user, $this->_remote, $this->_exam->id));
                 }
         }
 

@@ -1,6 +1,6 @@
---- vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php.orig	2015-04-10 01:45:05.912108123 +0200
-+++ vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php	2015-04-10 02:04:21.371645795 +0200
-@@ -1,5 +1,30 @@
+--- vendor/phalcon/devtools/api/Phalcon/DI/Injectable.php	2016-01-21 07:55:41.000000000 +0100
++++ vendor/phalcon/devtools-saved/api/Phalcon/DI/Injectable.php	2016-01-21 07:47:51.000000000 +0100
+@@ -1,5 +1,35 @@
  <?php 
  
 +namespace OpenExam\Library\DI {
@@ -19,6 +19,11 @@
 +         */
 +        public $auth;
 +        /**
++         * The object access log.
++         * @var \Phalcon\Logger\AdapterInterface
++         */
++        public $access;
++        /**
 +         * The debug log.
 +         * @var \Phalcon\Logger\AdapterInterface
 +         */
@@ -31,7 +36,7 @@
  namespace Phalcon\DI {
  
      /**
-@@ -180,5 +205,82 @@
+@@ -180,5 +210,82 @@
          {
          }
  

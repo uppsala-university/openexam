@@ -149,9 +149,13 @@ return array(
                         'file'     => 'system.log',
                         'level'    => LOG_NOTICE
                 ),
-                'auth' => array(
+                'auth'   => array(
                         'syslog'   => 'openexam',
                         'facility' => LOG_AUTH,
+                        'level'    => LOG_INFO
+                ),
+                'access' => array(
+                        'file'     => 'access.log',
                         'level'    => LOG_INFO
                 )
         ),

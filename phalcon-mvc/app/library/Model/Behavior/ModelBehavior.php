@@ -57,13 +57,13 @@ class ModelBehavior extends Behavior implements BehaviorInterface
                 $trace['user'] = $this->user->getPrincipalName();
                 $trace['role'] = $this->user->getPrimaryRole();
 
-                $this->logger->auth->debug(print_r($trace, true));
+                $this->logger->access->debug(print_r($trace, true));
 
                 $role = $this->user->setPrimaryRole(Roles::TRUSTED);
                 try {
                         $result = $callback($this->user);
                 } catch (\Exception $exception) {
-                        $this->logger->auth->error($exception);
+                        $this->logger->access->error($exception);
                         $this->user->setPrimaryRole($role);
                         throw $exception;
                 }
