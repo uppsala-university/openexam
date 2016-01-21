@@ -289,7 +289,7 @@ class DispatchHandler extends Component implements DispatchHelper
                         // Redirect web request to login page. Keep track of
                         // requested URL for redirect on authenticated.
                         // 
-                        $this->logger->auth->debug("Forwarding to login page (auth -> select)");
+                        $this->logger->auth->info("Forwarding to login page (auth -> select)");
                         if (!$this->session->has('return')) {
                                 $this->session->set('return', $this->request->get('_url'));
                         }

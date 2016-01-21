@@ -86,19 +86,22 @@ class SessionHandler extends Component implements DispatchHelper
                 // Validate session data:
                 // 
                 if (!$this->get('expire')) {
-                        $this->logger->auth->debug("Session is missing (no auth entry)");
+                        $this->logger->auth->info("Session is missing (no auth entry)");
                         return false;   // No session exist
                 } elseif ($this->get('expire') < time()) {
-                        $this->logger->auth->debug(sprintf(
+                        $this->logger->auth->info(sprintf(
                                 "Session has expired (valid until %s)", strftime("%x %X", $this->get('expire'))
                         ));
                         return false;   // Session has expired.
-                } elseif ($this->get('remote') != $this->_remote) {
-                        $this->logger->auth->debug(sprintf(
+                } elseif (
+                    $this->get('remote') != $this->_remote &&
+                    $this->_remote != "::1" &&          // localhost (IPv6)
+                    $this->_remote != "127.0.0.1") {    // localhost (IPv4)
+                        $this->logger->auth->warning(sprintf(
                                 "Remote address missmatch (expected %s, was %s)", $this->get('remote'), $this->_remote
                         ));
                         $this->_listener->report('Remote address missmatch', $this->_data);
-                        return false;   // Session owner missmatch
+                        return false;   // Session peer missmatch
                 }
 
                 // 
