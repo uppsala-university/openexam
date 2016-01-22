@@ -195,6 +195,16 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                 private function search($type, $value, $attributes, $class = 'person', $limit = null)
                 {
                         // 
+                        // Return entry from cache if existing:
+                        // 
+                        if ($this->lifetime) {
+                                $cachekey = sprintf("%s-search-%s-%s-%s", $this->name, $class, $type, md5(serialize(array($value, $attributes, $limit))));
+                                if ($this->cache->exists($cachekey, $this->lifetime)) {
+                                        return $this->cache->get($cachekey, $this->lifetime);
+                                }
+                        }
+
+                        // 
                         // Select attribute map:
                         // 
                         $attrmap = $this->attrmap[$class];
@@ -232,7 +242,12 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                 throw new Exception(ldap_error($this->ldap->connection), ldap_errno($this->ldap->connection));
                         }
 
-                        return array('entries' => $entries, 'attrmap' => $attrmap);
+                        // 
+                        // Return entries and attribute map:
+                        // 
+                        return $this->setCacheData(
+                                $cachekey, array('entries' => $entries, 'attrmap' => $attrmap)
+                        );
                 }
 
                 /**
@@ -244,6 +259,16 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 private function read($path, $attributes, $class = 'person')
                 {
+                        // 
+                        // Return entry from cache if existing:
+                        // 
+                        if ($this->lifetime) {
+                                $cachekey = sprintf("%s-read-%s-%s", $this->name, $class, md5(serialize(array($path, $attributes))));
+                                if ($this->cache->exists($cachekey, $this->lifetime)) {
+                                        return $this->cache->get($cachekey, $this->lifetime);
+                                }
+                        }
+
                         // 
                         // Select attribute map:
                         // 
@@ -304,8 +329,10 @@ namespace OpenExam\Library\Catalog\DirectoryService {
 
                         // 
                         // Return entry data and attribute map:
-                        // 
-                        return array('entry' => $data, 'attrmap' => $attrmap);
+                        //                         
+                        return $this->setCacheData(
+                                $cachekey, array('entry' => $data, 'attrmap' => $attrmap)
+                        );
                 }
 
                 /**
@@ -325,6 +352,16 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function getAttribute($principal, $attribute)
                 {
+                        // 
+                        // Return entry from cache if existing:
+                        // 
+                        if ($this->lifetime) {
+                                $cachekey = sprintf("%s-attribute-%s-%s", $this->name, $attribute, md5($principal));
+                                if ($this->cache->exists($cachekey, $this->lifetime)) {
+                                        return $this->cache->get($cachekey, $this->lifetime);
+                                }
+                        }
+
                         $search = $this->search(Principal::ATTR_PN, $principal, array($attribute));
 
                         $result = new LdapResult(array_flip($search['attrmap']));
@@ -343,9 +380,11 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Filter out related entries not containing the
                         // requested attribute:
                         // 
-                        return array_filter($output, function($entry) use($attribute) {
-                                return isset($entry[$attribute]);
-                        });
+                        return $this->setCacheData(
+                                $cachekey, array_filter($output, function($entry) use($attribute) {
+                                        return isset($entry[$attribute]);
+                                })
+                        );
                 }
 
                 /**
@@ -356,6 +395,16 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function getGroups($principal, $attributes)
                 {
+                        // 
+                        // Return entry from cache if existing:
+                        // 
+                        if ($this->lifetime) {
+                                $cachekey = sprintf("%s-groups-%s", $this->name, md5(serialize(array($principal, $attributes))));
+                                if ($this->cache->exists($cachekey, $this->lifetime)) {
+                                        return $this->cache->get($cachekey, $this->lifetime);
+                                }
+                        }
+
                         // 
                         // Get distinguished names for all user principal groups:
                         // 
@@ -388,7 +437,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         $result->setName($this->name);
                         $result->append($groups);
 
-                        return $result->getResult();
+                        return $this->setCacheData($cachekey, $result->getResult());
                 }
 
                 /**
@@ -424,6 +473,16 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function getPrincipal($needle, $attribute, $options)
                 {
+                        // 
+                        // Return entry from cache if existing:
+                        // 
+                        if ($this->lifetime) {
+                                $cachekey = sprintf("%s-principal-%s-%s", $this->name, $attribute, md5(serialize(array($needle, $options))));
+                                if ($this->cache->exists($cachekey, $this->lifetime)) {
+                                        return $this->cache->get($cachekey, $this->lifetime);
+                                }
+                        }
+
                         // 
                         // Search for attribute matching needle:
                         // 
@@ -478,7 +537,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return user principals:
                         // 
-                        return $principals;
+                        return $this->setCacheData($cachekey, $principals);
                 }
 
                 /**
@@ -490,6 +549,16 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function getMembers($group, $domain, $attributes)
                 {
+                        // 
+                        // Return entry from cache if existing:
+                        // 
+                        if ($this->lifetime) {
+                                $cachekey = sprintf("%s-members-%s", $this->name, md5(serialize(array($group, $domain, $attributes))));
+                                if ($this->cache->exists($cachekey, $this->lifetime)) {
+                                        return $this->cache->get($cachekey, $this->lifetime);
+                                }
+                        }
+
                         // 
                         // Search in group member attribute:
                         // 
@@ -562,7 +631,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return user principals:
                         // 
-                        return $principals;
+                        return $this->setCacheData($cachekey, $principals);
                 }
 
         }

@@ -414,6 +414,16 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function getMembers($group, $domain, $attributes)
                 {
+                        // 
+                        // Return entry from cache if existing:
+                        // 
+                        if ($this->lifetime) {
+                                $cachekey = sprintf("%s-members-%s", $this->name, md5(serialize(array($group, $domain, $attributes))));
+                                if ($this->cache->exists($cachekey, $this->lifetime)) {
+                                        return $this->cache->get($cachekey, $this->lifetime);
+                                }
+                        }
+
                         $result = array();
                         $group = trim($group, '*');
 
@@ -433,7 +443,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                 $result[] = $principal;
                         }
 
-                        return $result;
+                        return $this->setCacheData($cachekey, $result);
                 }
 
         }
