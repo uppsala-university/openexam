@@ -47,6 +47,7 @@ return array(
                                 )
                         ));
                         $service->setBase('ou=employees,dc=example,dc=com');
+                        $service->setCacheLifetime(1800);
                         return $service;
                 },
                 'domains' => array(
@@ -98,6 +99,7 @@ return array(
                                 )
                         ));
                         $service->setBase('dc=users,dc=example,dc=com');
+                        $service->setCacheLifetime(900);
                         return $service;
                 },
                 'domains' => 'example.com'
