@@ -169,7 +169,12 @@ $config = new \Phalcon\Config(
                 'auth'   => array(
                         'syslog'   => 'openexam',
                         'level'    => \Phalcon\Logger::INFO,
+                        'option'   => LOG_NDELAY,
                         'facility' => LOG_AUTH
+                ),
+                'access' => array(
+                        'file'     => 'access.log',
+                        'level'    => \Phalcon\Logger::INFO
                 ),
                 'test'   => array(
                         'file'  => 'phpunit.log',
