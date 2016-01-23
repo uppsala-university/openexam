@@ -1,0 +1,85 @@
+
+    ************************************
+     NOTES FOR MYSQL SERVER
+    ************************************
+
+**  OPEN FILES LIMIT:
+
+    The default max open files limit is probably too low and needs to be upped a bit. Having a
+    to low limit typical result in errors like this on a loaded/busy server:
+
+        [Sat Jan 23 13:22:47 2016] [error] [client ::1] PHP Warning:  fopen(/var/www/localhost/apps/openexam-phalcon-svn/phalcon-mvc/logs/system.log): failed to open stream: Too many open files in /var/www/localhost/apps/openexam-phalcon-svn/phalcon-mvc/app/config/system/services.php on line 191
+
+    Current process limits can be queried from the proc file system:
+
+        bash$> cat /proc/10778/limits 
+        Limit                     Soft Limit           Hard Limit           Units     
+        Max cpu time              unlimited            unlimited            seconds   
+        Max file size             unlimited            unlimited            bytes     
+        Max data size             unlimited            unlimited            bytes     
+        Max stack size            8388608              unlimited            bytes     
+        Max core file size        0                    unlimited            bytes     
+        Max resident set          unlimited            unlimited            bytes     
+        Max processes             96325                96325                processes 
+    ->  Max open files            1024                 4096                 files     
+        Max locked memory         65536                65536                bytes     
+        Max address space         unlimited            unlimited            bytes     
+        Max file locks            unlimited            unlimited            locks     
+        Max pending signals       96325                96325                signals   
+        Max msgqueue size         819200               819200               bytes     
+        Max nice priority         0                    0                    
+        Max realtime priority     0                    0                    
+        Max realtime timeout      unlimited            unlimited            us        
+
+    The "Max open files" value should be increased to ~8 times the MaxClients value (for the 
+    Apache MPM being used) to have enough file descriptors for per process log files or socket 
+    connections. How to actual increase the limit depends on used Linux flavor.
+
+**  SYSTEMD:
+
+    Find the system wide configuration file:
+
+        bash$> locate apache2.service
+        /usr/lib64/systemd/system/apache2.service
+
+    Create a custom service description file:
+
+        bash$> cp /usr/lib64/systemd/system/apache2.service /etc/systemd/system/apache2.service
+
+    Under the [Service] section, insert this entry:
+
+        LimitNOFILE=8192
+
+    Reload configuration and restart all apache processes:
+
+        bash$> systemctl daemon-reload
+        bash$> systemctl restart apache2
+
+**  SYSVINIT:
+
+    This is for system using /etc/init.d/xxx service scripts. There are multiple options here,
+    each depending on Linux distribution and service account. The good news is that limits
+    can have both soft and hard limits.
+
+    1. On Gentoo Linux the ulimit commands can be placed direct in the service configuration
+      file /etc/conf.d/apache2:
+
+        bash$> grep ulimit /etc/conf.d/apache2
+        ulimit -Sn 4096
+        ulimit -Hn 8192
+
+    2. If the service account have a real shell, then /etc/security/limits.conf might be 
+      used. At least its worth a try:
+
+        bash$> grep apache /etc/security/limits.conf
+        apache           soft    nofile          8192
+        apache           hard    nofile          8192
+
+    3. Red Hat and derivates typical have a /etc/sysconfig where services can be configured.
+      Try insert ulimit commands in the configuration files sourced by the init-script.
+
+    4. The swiss army knife is to put ulimits command inside the startup script itself. This
+      has the downside of updates might overwrite the custom settings.
+
+
+// Anders Lövgren, 2016-01-23
