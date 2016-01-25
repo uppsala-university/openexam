@@ -103,7 +103,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 if (empty($data) && $this->session) {
                         return $this->session->delete();
                 } elseif (empty($data)) {
-                        return true;
+                        return false;
                 } elseif (!$this->session) {
                         $this->session = new SessionModel();
                 }
