@@ -114,6 +114,8 @@ class State
          * @var array 
          */
         private $flags;
+        private $corrected;
+        private $answered;
 
         /**
          * Constructor.
@@ -140,6 +142,12 @@ class State
         {
                 if (isset($this->flags)) {
                         unset($this->flags);    // Called from refresh
+                }
+                if (isset($this->corrected)) {
+                        unset($this->corrected);
+                }
+                if (isset($this->answered)) {
+                        unset($this->answered);
                 }
 
                 if ($this->exam->decoded) {
@@ -208,8 +216,9 @@ class State
          */
         private function isCorrected()
         {
-                $connection = $this->exam->getReadConnection();
-                $resultset = $connection->query("
+                if (!isset($this->corrected)) {
+                        $connection = $this->exam->getReadConnection();
+                        $resultset = $connection->query("
                 SELECT  a.id
                 FROM    questions q, students s, answers a
                         LEFT JOIN results r ON 
@@ -220,7 +229,9 @@ class State
                         q.status != 'removed' AND 
                         a.answered = 'Y' AND
                         r.id IS NULL", array('examid' => $this->exam->id));
-                return $resultset->numRows() == 0;
+                        $this->corrected = ($resultset->numRows() == 0);
+                }
+                return $this->corrected;
         }
 
         /**
@@ -228,8 +239,9 @@ class State
          */
         private function hasAnswers()
         {
-                $connection = $this->exam->getReadConnection();
-                $resultset = $connection->query("
+                if (!isset($this->answered)) {
+                        $connection = $this->exam->getReadConnection();
+                        $resultset = $connection->query("
                 SELECT  a.id
                 FROM    questions q, students s, answers a
                         LEFT JOIN results r ON a.id = r.answer_id
@@ -238,7 +250,9 @@ class State
                         q.id = a.question_id AND 
                         q.status != 'removed' AND 
                         a.answered = 'Y'", array('examid' => $this->exam->id));
-                return $resultset->numRows() != 0;
+                        $this->answered = ($resultset->numRows() != 0);
+                }
+                return $this->answered;
         }
 
         /**
