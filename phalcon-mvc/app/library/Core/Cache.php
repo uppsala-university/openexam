@@ -17,6 +17,7 @@ use Phalcon\Cache\Backend\Apc as ApcCache;
 use Phalcon\Cache\Backend\File as FileCache;
 use Phalcon\Cache\Backend\Memcache as MemcacheCache;
 use Phalcon\Cache\Backend\Xcache;
+use Phalcon\Cache\BackendInterface;
 use Phalcon\Cache\Frontend\Data as DataFrontend;
 use Phalcon\Cache\Multiple;
 use Phalcon\Config;
@@ -32,6 +33,12 @@ use Phalcon\Config;
  */
 class Cache extends Multiple
 {
+
+        /**
+         * Fastest cache backend.
+         * @var BackendInterface 
+         */
+        private $_fastest;
 
         /**
          * Constructor.
@@ -76,17 +83,56 @@ class Cache extends Multiple
                 if (!file_exists($config->cache->file->cacheDir)) {
                         mkdir($config->cache->file->cacheDir);
                 }
+                if (count($backends) != 0) {
+                        $this->_fastest = $backends[0];
+                }
 
                 parent::__construct($backends);
         }
 
         /**
          * Get cache backends.
-         * @return \Phalcon\Cache\BackendInterface[]
+         * @return BackendInterface[]
          */
         public function getBackends()
         {
                 return $this->_backends;
+        }
+
+        public function get($keyName, $lifetime = null)
+        {
+                // 
+                // Cache might be disabled or having dynamic added backends.
+                // 
+                if (!isset($this->_fastest)) {
+                        if (count($this->_backends) == 0) {
+                                return false;
+                        } else {
+                                $this->_fastest = $this->_backends[0];
+                        }
+                }
+
+                // 
+                // Always use fastest backend when possible.
+                // 
+                if ($this->_fastest->exists($keyName, $lifetime)) {
+                        return $this->_fastest->get($keyName, $lifetime);
+                }
+
+                // 
+                // See if any backend contains key.
+                // 
+                if (!parent::exists($keyName, $lifetime)) {
+                        return false;
+                }
+
+                // 
+                // Insert from slower backend into fastest.
+                // 
+                $content = parent::get($keyName, $lifetime);
+                $this->_fastest->save($keyName, $content, $lifetime);
+
+                return $content;
         }
 
 }
