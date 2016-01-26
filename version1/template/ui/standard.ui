@@ -60,11 +60,13 @@ $page->printLanguageSelect();
   <img src="/openexam/images/uu_red/uulogo_white.gif" width="160" height="160" alt="Uppsala universitet" />
 </a>
 <!-- lyssna-knapp -->
+<!--
 <div id="knapp">
 <form class="ISI_REMOVE" id="rs_form" name="rs_form" action="http://isi.phoneticom.com/cgi-bin/uursone" method="post" onsubmit="sayit()" target="rs">
 <input class="saysubmit" accesskey="L" type="submit" title="<?php echo _("Listen to page/selected text"); ?>" alt="<?php echo _("Say it"); ?>" value="<?php echo _("Say it"); ?>" /><input type="hidden" name="rstext" /><input type="hidden" name="customerid" value="47" /><input type="hidden" name="url" /><input type="hidden" name="id" value="1" /><input type="hidden" name="type" value="2" /><input type="hidden" name="lang" value="sv" />
 </form>
 </div>
+-->
 <?php $page->printMenu(); ?>
 </div>
 <?php
