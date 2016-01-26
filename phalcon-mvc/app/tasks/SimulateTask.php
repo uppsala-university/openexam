@@ -152,7 +152,7 @@ class SimulateTask extends MainTask implements TaskInterface
         }
 
         /**
-         * Setup sample data.
+         * Run simulation.
          * @param array $params Task action parameters.
          */
         public function runAction($params = array())

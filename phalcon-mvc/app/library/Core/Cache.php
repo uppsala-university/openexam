@@ -72,12 +72,21 @@ class Cache extends Multiple
                             $frontend['slow'], $config->cache->file->toArray()
                         );
                 }
-                
+
                 if (!file_exists($config->cache->file->cacheDir)) {
                         mkdir($config->cache->file->cacheDir);
                 }
 
                 parent::__construct($backends);
+        }
+
+        /**
+         * Get cache backends.
+         * @return \Phalcon\Cache\BackendInterface[]
+         */
+        public function getBackends()
+        {
+                return $this->_backends;
         }
 
 }
