@@ -60,6 +60,11 @@ class User extends Component
          * @var string 
          */
         private $_role;
+        /**
+         * Construction time injected roles.
+         * @var array 
+         */
+        private $_injected;
 
         /**
          * Constructor.
@@ -71,6 +76,7 @@ class User extends Component
         public function __construct($user = null, $domain = null, $role = null, $roles = array())
         {
                 $this->_role = $role;
+                $this->_injected = $roles;
 
                 if (isset($user)) {
                         if (isset($domain)) {
@@ -88,24 +94,27 @@ class User extends Component
                         }
 
                         if (!isset($this->_domain)) {
-                                throw new Exception("Missing domain part in username");
-                        }
-
-                        if (count($roles) != 0) {
-                                $this->roles = new Roles($roles);
-                        } elseif ($this->config->user->roles->count() != 0) {
-                                $this->roles = new Roles($this->config->user->roles);
-                        } else {
-                                $this->roles = new Roles();
+                                throw new Exception("Missing domain part in username $user");
                         }
 
                         $this->impersonation = new Impersonation();
                         if ($this->impersonation->active) {
                                 $this->setPrincipalName($this->impersonation->impersonated);
                         }
-                        
-                        $this->affiliation = new Affiliation($this->getPrincipalName());
-                        $this->settings = new Settings($this->getPrincipalName());
+                }
+        }
+
+        public function __get($property)
+        {
+                switch ($property) {
+                        case 'roles':
+                                return $this->getRoles();
+                        case 'affiliation':
+                                return $this->getAffiliation();
+                        case 'settings':
+                                return $this->getSettings();
+                        default:
+                                return parent::__get($property);
                 }
         }
 
@@ -253,6 +262,46 @@ class User extends Component
                                 $this->impersonation->disable();
                                 return true;
                         }
+                }
+        }
+
+        /**
+         * Get roles object.
+         * 
+         * @return Roles
+         */
+        private function getRoles()
+        {
+                if (isset($this->_user)) {
+                        if (count($this->_injected) != 0) {
+                                return $this->roles = new Roles($this->_injected);
+                        } elseif ($this->config->user->roles->count() != 0) {
+                                return $this->roles = new Roles($this->config->user->roles);
+                        } else {
+                                return $this->roles = new Roles();
+                        }
+                }
+        }
+
+        /**
+         * Get user affiliation.
+         * @return Affiliation
+         */
+        private function getAffiliation()
+        {
+                if (isset($this->_user)) {
+                        return $this->affiliation = new Affiliation($this->getPrincipalName());
+                }
+        }
+
+        /**
+         * Get user settings.
+         * @return Settings
+         */
+        private function getSettings()
+        {
+                if (isset($this->_user)) {
+                        return $this->settings = new Settings($this->getPrincipalName());
                 }
         }
 
