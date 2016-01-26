@@ -156,6 +156,16 @@ class Exam extends ModelBase
          * @var string[]
          */
         public $flags;
+        /**
+         * Internal cache of state object.
+         * @var State 
+         */
+        private $_state;
+        /**
+         * Internal cache of grades object.
+         * @var Grades 
+         */
+        private $_grades;
 
         protected function initialize()
         {
@@ -303,12 +313,12 @@ class Exam extends ModelBase
         protected function afterDelete()
         {
                 $cachekey = sprintf("roles-%s", $this->creator);
-                
+
                 if ($this->getDI()->get('cache')->exists($cachekey)) {
                         $this->getDI()->get('cache')->delete($cachekey);
                 }
         }
-        
+
         public function getSource()
         {
                 return 'exams';
@@ -320,7 +330,11 @@ class Exam extends ModelBase
          */
         public function getState()
         {
-                return new State($this);
+                if (!isset($this->_state)) {
+                        return $this->_state = new State($this);
+                } else {
+                        return $this->_state;
+                }
         }
 
         /**
@@ -329,7 +343,11 @@ class Exam extends ModelBase
          */
         public function getGrades()
         {
-                return new Grades($this);
+                if (!isset($this->_grades)) {
+                        return $this->_grades = new Grades($this);
+                } else {
+                        return $this->_grades;
+                }
         }
 
         /**

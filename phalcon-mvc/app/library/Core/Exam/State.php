@@ -114,7 +114,15 @@ class State
          * @var array 
          */
         private $flags;
+        /**
+         * This exam has been corrected.
+         * @var bool 
+         */
         private $corrected;
+        /**
+         * This exam has at least one answer.
+         * @var bool 
+         */
         private $answered;
 
         /**
