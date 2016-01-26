@@ -154,11 +154,15 @@ class CacheTask extends MainTask implements TaskInterface
                                 'fresh'    => $backend->isFresh(),
                                 'last key' => $backend->getLastKey(),
                                 'options'  => $backend->getOptions(),
+                                'frontend' => array(
+                                        'buffering' => $backend->getFrontend()->isBuffering(),
+                                        'lifetime'  => $backend->getFrontend()->getLifetime()
+                                )
                         );
                         $this->flash->success(sprintf("%s:\t%s\n", $name, print_r($data, true)));
                 }
         }
-        
+
         /**
          * Set options from task action parameters.
          * @param array $params The task action parameters.
