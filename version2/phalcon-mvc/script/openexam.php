@@ -20,6 +20,6 @@ try {
         $console = new Application($di);
         $console->process();
 } catch (\Exception $exception) {
-        $di->flash->error($exception->getMessage());
+        $di->get('flash')->error($exception->getMessage());
         exit(255);
 }
