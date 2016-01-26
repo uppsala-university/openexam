@@ -27,9 +27,11 @@ use ReflectionClass;
 /**
  * Manage roles for user session.
  * 
- * Roles are aquired either system wide or bound to an object (identified
- * by the object ID in the model). Internal the aquired roles are stored 
- * as:
+ * Roles are aquired either system wide or bound to an object (identified by 
+ * the object ID in the model). Aquired roles are stored in the cache that 
+ * should be invalidated whenever user roles are added or deleted. The mutators
+ * 
+ * Internal the aquired roles are stored as:
  * 
  * <code>
  * $roles[0][role]              // System wide role.
@@ -126,6 +128,16 @@ class Roles extends Component
          * @var array 
          */
         private $_roles = array();
+        /**
+         * Cached data has been modified flag.
+         * @var bool 
+         */
+        private $_dirty = false;
+        /**
+         * The cache data key.
+         * @var string 
+         */
+        private $_rckey = false;
 
         /**
          * Constructor.
@@ -138,6 +150,13 @@ class Roles extends Component
          */
         public function __construct($roles = array())
         {
+                if ($this->getDI()->has('user')) {
+                        $this->_rckey = sprintf("roles-%s", $this->getDI()->get('user')->getPrincipalName());
+                }
+                if ($this->cache->exists($this->_rckey)) {
+                        $this->_roles = $this->cache->get($this->_rckey);
+                }
+
                 if (count($roles) != 0) {
                         foreach ($roles as $id => $arr) {
                                 foreach ($arr as $key => $val) {
@@ -148,6 +167,13 @@ class Roles extends Component
                                         }
                                 }
                         }
+                }
+        }
+
+        public function __destruct()
+        {
+                if ($this->_dirty) {
+                        $this->cache->save($this->_rckey, $this->_roles);
                 }
         }
 
@@ -165,9 +191,11 @@ class Roles extends Component
         {
                 if ($id == 0) {
                         $this->_roles[0][$role] = true;
+                        $this->_dirty = true;
                 } else {
                         $this->_roles[0][$role] = true;
                         $this->_roles[$id][$role] = true;
+                        $this->_dirty = true;
                 }
         }
 
@@ -181,6 +209,7 @@ class Roles extends Component
                 if (isset($this->_roles[$id])) {
                         if (array_key_exists($role, $this->_roles[$id])) {
                                 unset($this->_roles[$id][$role]);
+                                $this->_dirty = true;
                         }
                 }
         }
@@ -229,6 +258,7 @@ class Roles extends Component
         public function clear()
         {
                 $this->_roles = array();
+                $this->_dirty = true;
         }
 
         /**

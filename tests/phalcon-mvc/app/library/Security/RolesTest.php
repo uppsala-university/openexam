@@ -29,16 +29,8 @@ class RolesTest extends TestCase
         {
                 parent::setUp();
                 $this->object = new Roles();
+                $this->object->clear();         // No cached roles
                 print_r($this->object->user, true);
-        }
-
-        /**
-         * Tears down the fixture, for example, closes a network connection.
-         * This method is called after a test is executed.
-         */
-        protected function tearDown()
-        {
-                
         }
 
         /**
