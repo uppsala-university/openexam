@@ -90,6 +90,18 @@ class Role extends ModelBase
         }
 
         /**
+         * Called after the model was deleted.
+         */
+        protected function afterDelete()
+        {
+                $cachekey = sprintf("roles-%s", $this->user);
+                
+                if ($this->getDI()->get('cache')->exists($cachekey)) {
+                        $this->getDI()->get('cache')->delete($cachekey);
+                }
+        }
+
+        /**
          * Called before validation of the model object.
          */
         protected function beforeValidation()

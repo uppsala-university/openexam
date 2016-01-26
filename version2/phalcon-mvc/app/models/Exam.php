@@ -297,6 +297,18 @@ class Exam extends ModelBase
                 parent::afterFetch();
         }
 
+        /**
+         * Called after the model was deleted.
+         */
+        protected function afterDelete()
+        {
+                $cachekey = sprintf("roles-%s", $this->creator);
+                
+                if ($this->getDI()->get('cache')->exists($cachekey)) {
+                        $this->getDI()->get('cache')->delete($cachekey);
+                }
+        }
+        
         public function getSource()
         {
                 return 'exams';

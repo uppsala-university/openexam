@@ -46,6 +46,7 @@ class TestModel extends TestCase
 
         public function tearDown()
         {
+                $this->getDI()->get('user')->roles->clear();    // Clear cached roles
                 $this->getDI()->get('user')->setPrimaryRole(null);
                 parent::tearDown();
         }
