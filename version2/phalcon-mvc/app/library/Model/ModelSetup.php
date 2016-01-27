@@ -20,11 +20,11 @@ use Phalcon\DI\InjectionAwareInterface;
 use Phalcon\Events\EventsAwareInterface;
 
 /**
- * Description of ModelManager
+ * Custom model manager.
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ModelManager extends Injectable implements InjectionAwareInterface, EventsAwareInterface
+class ModelSetup extends Injectable implements InjectionAwareInterface, EventsAwareInterface
 {
 
         /**
