@@ -198,7 +198,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Return entry from cache if existing:
                         // 
                         if ($this->lifetime) {
-                                $cachekey = sprintf("%s-search-%s-%s-%s", $this->name, $class, $type, md5(serialize(array($value, $attributes, $limit))));
+                                $cachekey = sprintf("catalog-%s-search-%s-%s-%s", $this->name, $class, $type, md5(serialize(array($value, $attributes, $limit))));
                                 if ($this->cache->exists($cachekey, $this->lifetime)) {
                                         return $this->cache->get($cachekey, $this->lifetime);
                                 }
@@ -263,7 +263,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Return entry from cache if existing:
                         // 
                         if ($this->lifetime) {
-                                $cachekey = sprintf("%s-read-%s-%s", $this->name, $class, md5(serialize(array($path, $attributes))));
+                                $cachekey = sprintf("catalog-%s-read-%s-%s", $this->name, $class, md5(serialize(array($path, $attributes))));
                                 if ($this->cache->exists($cachekey, $this->lifetime)) {
                                         return $this->cache->get($cachekey, $this->lifetime);
                                 }
@@ -356,7 +356,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Return entry from cache if existing:
                         // 
                         if ($this->lifetime) {
-                                $cachekey = sprintf("%s-attribute-%s-%s", $this->name, $attribute, md5($principal));
+                                $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->name, $attribute, md5($principal));
                                 if ($this->cache->exists($cachekey, $this->lifetime)) {
                                         return $this->cache->get($cachekey, $this->lifetime);
                                 }
@@ -399,7 +399,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Return entry from cache if existing:
                         // 
                         if ($this->lifetime) {
-                                $cachekey = sprintf("%s-groups-%s", $this->name, md5(serialize(array($principal, $attributes))));
+                                $cachekey = sprintf("catalog-%s-groups-%s", $this->name, md5(serialize(array($principal, $attributes))));
                                 if ($this->cache->exists($cachekey, $this->lifetime)) {
                                         return $this->cache->get($cachekey, $this->lifetime);
                                 }
@@ -477,7 +477,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Return entry from cache if existing:
                         // 
                         if ($this->lifetime) {
-                                $cachekey = sprintf("%s-principal-%s-%s", $this->name, $attribute, md5(serialize(array($needle, $options))));
+                                $cachekey = sprintf("catalog-%s-principal-%s-%s", $this->name, $attribute, md5(serialize(array($needle, $options))));
                                 if ($this->cache->exists($cachekey, $this->lifetime)) {
                                         return $this->cache->get($cachekey, $this->lifetime);
                                 }
@@ -553,7 +553,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Return entry from cache if existing:
                         // 
                         if ($this->lifetime) {
-                                $cachekey = sprintf("%s-members-%s", $this->name, md5(serialize(array($group, $domain, $attributes))));
+                                $cachekey = sprintf("catalog-%s-members-%s", $this->name, md5(serialize(array($group, $domain, $attributes))));
                                 if ($this->cache->exists($cachekey, $this->lifetime)) {
                                         return $this->cache->get($cachekey, $this->lifetime);
                                 }

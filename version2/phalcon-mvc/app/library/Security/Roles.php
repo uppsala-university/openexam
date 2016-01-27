@@ -151,7 +151,7 @@ class Roles extends Component
         public function __construct($roles = array())
         {
                 if ($this->getDI()->has('user')) {
-                        $this->_rckey = sprintf("roles-%s", $this->getDI()->get('user')->getPrincipalName());
+                        $this->_rckey = sprintf("roles-aquired-%s", $this->getDI()->get('user')->getPrincipalName());
                 }
                 if ($this->cache->exists($this->_rckey)) {
                         $this->_roles = $this->cache->get($this->_rckey);

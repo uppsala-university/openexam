@@ -418,7 +418,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Return entry from cache if existing:
                         // 
                         if ($this->lifetime) {
-                                $cachekey = sprintf("%s-members-%s", $this->name, md5(serialize(array($group, $domain, $attributes))));
+                                $cachekey = sprintf("catalog-%s-members-%s", $this->name, md5(serialize(array($group, $domain, $attributes))));
                                 if ($this->cache->exists($cachekey, $this->lifetime)) {
                                         return $this->cache->get($cachekey, $this->lifetime);
                                 }
