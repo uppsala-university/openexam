@@ -144,7 +144,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         private static function createCacheKey($user, $model, $action)
         {
-                return sprintf("model-%s-%s-%s-%d", $user, $model->getResourceName(), $action, $model->id);
+                return sprintf("model-access-%s-%s-%s-%d", $user, $action, $model->getResourceName(), $model->id);
         }
 
         /**

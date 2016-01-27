@@ -42,11 +42,11 @@ class Acl extends Component
         public function getAcl()
         {
                 if (!isset($this->acl)) {
-                        if ($this->cache->exists('acl')) {
-                                $this->acl = $this->cache->get('acl');
+                        if ($this->cache->exists('acl-access')) {
+                                $this->acl = $this->cache->get('acl-access');
                         } else {
                                 $this->acl = $this->rebuild();
-                                $this->cache->save('acl', $this->acl);
+                                $this->cache->save('acl-access', $this->acl);
                         }
                 }
                 return $this->acl;
