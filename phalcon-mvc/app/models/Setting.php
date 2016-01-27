@@ -1,5 +1,16 @@
 <?php
 
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    Setting.php
+// Created: 2014-11-29 23:54:14
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Ownership;

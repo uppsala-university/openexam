@@ -1,5 +1,16 @@
 <?php
 
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    Student.php
+// Created: 2014-02-24 07:04:58
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
 namespace OpenExam\Models;
 
 use OpenExam\Library\Catalog\Principal;
