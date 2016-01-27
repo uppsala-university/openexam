@@ -173,8 +173,8 @@ $config = new \Phalcon\Config(
                         'facility' => LOG_AUTH
                 ),
                 'access' => array(
-                        'file'     => 'access.log',
-                        'level'    => \Phalcon\Logger::INFO
+                        'file'  => 'access.log',
+                        'level' => \Phalcon\Logger::INFO
                 ),
                 'test'   => array(
                         'file'  => 'phpunit.log',
@@ -237,7 +237,8 @@ $config = new \Phalcon\Config(
                 'lifetime' => array(
                         'fast'   => 3600,
                         'medium' => 86400,
-                        'slow'   => 604800
+                        'slow'   => 604800,
+                        'model'  => 60
                 ),
                 /**
                  * Extension specific settings:

@@ -33,6 +33,9 @@ use Phalcon\Mvc\User\Plugin;
  * 
  * Object specific access control is provided by classes derived from 
  * Model\ObjectAccess.
+ * 
+ * All granted model access actions are by default cached. Using cache can
+ * be disabled by setting lifetime to 0.
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -40,23 +43,148 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
 {
 
         /**
+         * The object access callable.
          * @var callable 
          */
         private $callable;
         /**
+         * Register of object access callable.
          * @var array 
          */
         private $register;
+        /**
+         * Lifetime of cached model access.
+         * @var long 
+         */
+        private $lifetime;
 
         /**
          * Constructor.
          * @param callable $callable
          * @param array $register
          */
-        public function __construct($callable, $register = array())
+        public function __construct($callable, $register = array(), $lifetime = 60)
         {
                 $this->callable = $callable;
                 $this->register = $register;
+                $this->lifetime = $lifetime;
+        }
+
+        /**
+         * Set lifetime of cached model access.
+         * @param long $lifetime Lifetime of each cache entry.
+         */
+        public function setGrantLifetime($lifetime)
+        {
+                $this->lifetime = $lifetime;
+        }
+
+        /**
+         * Get model access cache lifetime.
+         * @return long
+         */
+        public function getGrantLifetime()
+        {
+                return $this->lifetime;
+        }
+
+        /**
+         * Check if access has been granted.
+         * 
+         * @param string $user User principal name.
+         * @param Model $model The affected model.
+         * @param string $action The requested action.
+         * @return boolean
+         */
+        private function getGrantAccess($user, $model, $action)
+        {
+                return $this->cache->exists(
+                        self::createCacheKey($user, $model, $action), $this->lifetime
+                );
+        }
+
+        /**
+         * Record grant access and return true.
+         * 
+         * @param string $user User principal name.
+         * @param Model $model The affected model.
+         * @param string $action The requested action.
+         * @return boolean
+         */
+        private function setGrantAccess($user, $model, $action)
+        {
+                $this->cache->save(
+                    self::createCacheKey($user, $model, $action), true, $this->lifetime
+                );
+
+                return true;
+        }
+
+        /**
+         * Get object access check object.
+         * @param string $name The model name.
+         * @return ObjectAccess
+         */
+        private function getObjectAccess($name)
+        {
+                if (!isset($this->register[$name])) {
+                        $loader = $this->callable;
+                        $this->register[$name] = $loader($name);
+                }
+                return $this->register[$name];
+        }
+
+        /**
+         * Create cache key from parameters.
+         * 
+         * @param string $user User principal name.
+         * @param Model $model The affected model.
+         * @param string $action The requested action.
+         * @return string
+         */
+        private static function createCacheKey($user, $model, $action)
+        {
+                return sprintf("model-%s-%s-%s-%d", $user, $model->getResourceName(), $action, $model->id);
+        }
+
+        /**
+         * Called before a model is created.
+         * @param Event $event
+         * @param Model $model
+         */
+        protected function beforeCreate($event, $model)
+        {
+                return $this->checkAccess($event, $model, ObjectAccess::CREATE);
+        }
+
+        /**
+         * Called before a model is updated.
+         * @param Event $event
+         * @param Model $model
+         */
+        protected function beforeUpdate($event, $model)
+        {
+                return $this->checkAccess($event, $model, ObjectAccess::UPDATE);
+        }
+
+        /**
+         * Called before a model is deleted.
+         * @param Event $event
+         * @param Model $model
+         */
+        protected function beforeDelete($event, $model)
+        {
+                return $this->checkAccess($event, $model, ObjectAccess::DELETE);
+        }
+
+        /**
+         * Called after a model is fetched (read).
+         * @param Event $event
+         * @param Model $model
+         */
+        protected function afterFetch($event, $model)
+        {
+                return $this->checkAccess($event, $model, ObjectAccess::READ);
         }
 
         /**
@@ -117,6 +245,16 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 }
 
                 // 
+                // Check if permission has already been granted:
+                // 
+                if ($this->getGrantAccess($user->getPrincipalName(), $model, $action)) {
+                        $this->logger->access->info(sprintf(
+                                "Granted %s access on %s(id=%d) for %s (already granted)", $action, $name, $model->id, $role
+                        ));
+                        return true;
+                }
+
+                // 
                 // Check that ACL permits access for this role:
                 // 
                 if ($acl->isAllowed($role, $name, $action) == false) {
@@ -135,16 +273,16 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                                 "Denied %s access on %s(id=%d) for caller using role %s (failed aquire role)", $action, $name, $model->id, $role
                         ));
                         throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
-                } elseif ($action == ObjectAccess::CREATE) {
+                } elseif ($action == ObjectAccess::CREATE) {    // The create action is not connected with an object.
                         $this->logger->access->info(sprintf(
                                 "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
                         ));
-                        return true;    // The create action is not connected with an object.
-                } elseif (Roles::isCustom($role)) {
+                        return $this->setGrantAccess($user->getPrincipalName(), $model, $action);
+                } elseif (Roles::isCustom($role)) {             // Custom roles are global
                         $this->logger->access->info(sprintf(
                                 "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
                         ));
-                        return true;    // Custom roles are global
+                        return $this->setGrantAccess($user->getPrincipalName(), $model, $action);
                 } elseif (($access = $this->getObjectAccess($name))) {
                         if ($this->logger->debug) {
                                 $this->logger->debug->log(sprintf(
@@ -155,64 +293,11 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                                 $this->logger->access->info(sprintf(
                                         "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
                                 ));
+                                return $this->setGrantAccess($user->getPrincipalName(), $model, $action);
                         }
                 } else {
                         return false;
                 }
-        }
-
-        /**
-         * Called before a model is created.
-         * @param Event $event
-         * @param Model $model
-         */
-        protected function beforeCreate($event, $model)
-        {
-                return $this->checkAccess($event, $model, ObjectAccess::CREATE);
-        }
-
-        /**
-         * Called before a model is updated.
-         * @param Event $event
-         * @param Model $model
-         */
-        protected function beforeUpdate($event, $model)
-        {
-                return $this->checkAccess($event, $model, ObjectAccess::UPDATE);
-        }
-
-        /**
-         * Called before a model is deleted.
-         * @param Event $event
-         * @param Model $model
-         */
-        protected function beforeDelete($event, $model)
-        {
-                return $this->checkAccess($event, $model, ObjectAccess::DELETE);
-        }
-
-        /**
-         * Called after a model is fetched (read).
-         * @param Event $event
-         * @param Model $model
-         */
-        protected function afterFetch($event, $model)
-        {
-                return $this->checkAccess($event, $model, ObjectAccess::READ);
-        }
-
-        /**
-         * Get object access check object.
-         * @param string $name The model name.
-         * @return ObjectAccess
-         */
-        private function getObjectAccess($name)
-        {
-                if (!isset($this->register[$name])) {
-                        $loader = $this->callable;
-                        $this->register[$name] = $loader($name);
-                }
-                return $this->register[$name];
         }
 
 }
