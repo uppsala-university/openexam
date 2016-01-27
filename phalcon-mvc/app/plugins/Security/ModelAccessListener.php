@@ -245,16 +245,6 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 }
 
                 // 
-                // Check if permission has already been granted:
-                // 
-                if ($this->getGrantAccess($user->getPrincipalName(), $model, $action)) {
-                        $this->logger->access->info(sprintf(
-                                "Granted %s access on %s(id=%d) for %s (already granted)", $action, $name, $model->id, $role
-                        ));
-                        return true;
-                }
-
-                // 
                 // Check that ACL permits access for this role:
                 // 
                 if ($acl->isAllowed($role, $name, $action) == false) {
@@ -262,6 +252,16 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                                 "Denied %s access on %s(id=%d) for caller using role %s (blocked by ACL)", $action, $name, $model->id, $role
                         ));
                         throw new Exception("Access denied by ACL", Exception::ACCESS);
+                }
+
+                // 
+                // Check if permission has already been granted:
+                // 
+                if ($this->getGrantAccess($user->getPrincipalName(), $model, $action)) {
+                        $this->logger->access->info(sprintf(
+                                "Granted %s access on %s(id=%d) for %s (already granted)", $action, $name, $model->id, $role
+                        ));
+                        return true;
                 }
 
                 // 
