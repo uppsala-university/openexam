@@ -25,7 +25,7 @@ $di->set('router', function() use($di) {
 /**
  * Enforce model access check using custom model manager.
  */
-$di->set('modelsManager', function() use($di) {
+$di->set('modelsManager', function() use($di, $config) {
         $eventsManager = new \Phalcon\Events\Manager();
         $accessListener = new OpenExam\Plugins\Security\ModelAccessListener(
             function($resource) {
@@ -36,6 +36,7 @@ $di->set('modelsManager', function() use($di) {
                         return false;
                 }
         });
+        $accessListener->setGrantLifetime($config->cache->lifetime->model);
         $accessListener->setEventsManager($eventsManager);
         $eventsManager->attach('model', $accessListener);
         $modelsManager = new \Phalcon\Mvc\Model\Manager();
