@@ -13,7 +13,7 @@
 
 namespace OpenExam\Console\Tasks;
 
-use OpenExam\Library\Model\ModelManager;
+use OpenExam\Library\Model\ModelSetup;
 
 /**
  * Models task.
@@ -45,9 +45,9 @@ class ModelTask extends MainTask implements TaskInterface
 {
 
         /**
-         * @var ModelManager 
+         * @var ModelSetup 
          */
-        private $manager;
+        private $setup;
         /**
          * Command line options.
          * @var array 
@@ -59,8 +59,8 @@ class ModelTask extends MainTask implements TaskInterface
          */
         public function initialize()
         {
-                $this->manager = new ModelManager();
-                $this->manager->setDI($this->getDI());
+                $this->setup = new ModelSetup();
+                $this->setup->setDI($this->getDI());
         }
 
         public static function getUsage()
@@ -226,16 +226,16 @@ class ModelTask extends MainTask implements TaskInterface
         private function perform()
         {
                 if ($this->options['backup']) {
-                        $this->manager->backup($this->options);
+                        $this->setup->backup($this->options);
                 }
                 if ($this->options['clean']) {
-                        $this->manager->clean($this->options);
+                        $this->setup->clean($this->options);
                 }
                 if ($this->options['create']) {
-                        $this->manager->create($this->options);
+                        $this->setup->create($this->options);
                 }
                 if ($this->options['update']) {
-                        $this->manager->update($this->options);
+                        $this->setup->update($this->options);
                 }
         }
 
