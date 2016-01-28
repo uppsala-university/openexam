@@ -105,6 +105,12 @@ class CoreHandler extends ServiceHandler
                 $models = array();
 
                 // 
+                // Set primary role before capabilities check for better error
+                // reporting.
+                // 
+                $this->user->setPrimaryRole($role);
+                
+                // 
                 // Static check if capabilities allow this action:
                 // 
                 if (!isset($this->request->params['capability'])) {
