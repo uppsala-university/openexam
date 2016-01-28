@@ -1,5 +1,16 @@
 <?php
 
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    ModelBase.php
+// Created: 2014-02-24 16:36:39
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Filter;
@@ -126,6 +137,10 @@ class ModelBase extends Model
                 return null;
         }
 
+        /**
+         * Let our custom event manager handle model access control by fire
+         * an after fetch event on this model.
+         */
         protected function afterFetch()
         {
                 $modelsManager = $this->getModelsManager();
@@ -133,6 +148,55 @@ class ModelBase extends Model
                 $eventsManager->fire('model:afterFetch', $this);
         }
 
+        /**
+         * Inserts or updates a model instance. Returning true on success or 
+         * false otherwise. 
+         * 
+         * This method overrides Phalcon's save() method by adding retry 
+         * behavior trying to persist the model 4 times during a total period 
+         * of 3 sec before failing.
+         * 
+         * <code>
+         * // Creating a new robot 
+         * $robot = new Robots(); 
+         * $robot->type = 'mechanical'; 
+         * $robot->name = 'Astro Boy'; 
+         * $robot->year = 1952; $robot->save();  
+         * </code>
+         * 
+         * <code>
+         * // Updating a robot name:
+         * $robot = Robots::findFirst("id=100"); 
+         * $robot->name = "Biomass"; 
+         * $robot->save();  
+         * </code>
+         * 
+         * @param array $data
+         * @param array $whiteList
+         * @return boolean 
+         */
+        public function save($data = null, $whiteList = null)
+        {
+                $retry = array(400000, 600000, 1000000, 1000000);
+
+                for ($i = 0; $i < count($retry); $i++) {
+                        if (parent::save($data, $whiteList)) {
+                                return true;
+                        }
+                        usleep($retry[$i]);
+                }
+
+                return false;
+        }
+
+        /**
+         * Merge this model with the existing model (having same ID). 
+         * 
+         * Allowing us to save sparse model object (not having all required
+         * attributes set). Any missing required attribute in this model is
+         * set to previous value. For complete model objects, this is an noop
+         * with minimal performance hit.
+         */
         protected function beforeValidationOnUpdate()
         {
                 // 
@@ -211,47 +275,6 @@ class ModelBase extends Model
 
                 $user->setPrimaryRole($role);
                 return $result;
-        }
-
-        /**
-         * Inserts or updates a model instance. Returning true on success or 
-         * false otherwise. 
-         * 
-         * This method overrides Phalcon's save() method by adding retry 
-         * behavior trying to persist the model 4 times during a total period 
-         * of 3 sec before failing.
-         * 
-         * <code>
-         * // Creating a new robot 
-         * $robot = new Robots(); 
-         * $robot->type = 'mechanical'; 
-         * $robot->name = 'Astro Boy'; 
-         * $robot->year = 1952; $robot->save();  
-         * </code>
-         * 
-         * <code>
-         * // Updating a robot name:
-         * $robot = Robots::findFirst("id=100"); 
-         * $robot->name = "Biomass"; 
-         * $robot->save();  
-         * </code>
-         * 
-         * @param array $data
-         * @param array $whiteList
-         * @return boolean 
-         */
-        public function save($data = null, $whiteList = null)
-        {
-                $retry = array(400000, 600000, 1000000, 1000000);
-
-                for ($i = 0; $i < count($retry); $i++) {
-                        if (parent::save($data, $whiteList)) {
-                                return true;
-                        }
-                        usleep($retry[$i]);
-                }
-
-                return false;
         }
 
 }
