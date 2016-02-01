@@ -38,7 +38,12 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          * The cached session model.
          * @var SessionModel
          */
-        private $session = false;
+        private $session = null;
+        /**
+         * Last queried session ID.
+         * @var string 
+         */
+        private $lastsid = null;
 
         /**
          * {@inheritdoc}
@@ -78,10 +83,19 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function read($sessionId)
         {
+                if (empty($sessionId)) {
+                        return "";
+                }
+
+                if ($sessionId != $this->lastsid) {
+                        $this->session = null;
+                        $this->lastsid = $sessionId;
+                }
+                if (is_null($this->session)) {
+                        $this->session = SessionModel::findFirstBySessionId($sessionId);
+                }
                 if (!$this->session) {
-                        if (($this->session = SessionModel::findFirstBySessionId($sessionId)) == false) {
-                                return "";
-                        }
+                        return "";
                 }
 
                 return $this->session->data;
@@ -96,7 +110,8 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function write($sessionId, $data)
         {
-                if (!$this->session) {
+
+                if (is_null($this->session)) {
                         $this->session = SessionModel::findFirstBySessionId($sessionId);
                 }
 
@@ -148,7 +163,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                         $sessionId = $this->getId();
                 }
 
-                if (!$this->session) {
+                if (empty($this->session)) {
                         return true;
                 }
 
@@ -166,7 +181,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function gc($maxlifetime)
         {
-                if (!$this->session) {
+                if (empty($this->session)) {
                         return false;
                 }
 
