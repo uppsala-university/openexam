@@ -70,11 +70,15 @@ class SessionAdapterTest extends TestCase
                 $actual = $this->object->read(null);
                 self::assertEquals($actual, $expect);
 
+                $expect = "";
+                $actual = $this->object->read("");
+                self::assertEquals($actual, $expect);
+                
                 $expect = $session->data;
                 $actual = $this->object->read($session->session_id);
                 self::assertEquals($actual, $expect);
 
-                $expect = $session->data;
+                $expect = "";
                 $actual = $this->object->read(null);
                 self::assertEquals($actual, $expect);
 
