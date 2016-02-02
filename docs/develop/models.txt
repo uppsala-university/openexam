@@ -87,4 +87,17 @@ Phalcon devtools.
    The OpenExam\Library\Model\Filter can also be used as a callback (functional) object
    for the Phalcon result set filter() method.
 
+** Caching:
+
+   Notice that Phalcon caches all query results in memory for model relations flagged 
+   as reusable. Because of that, calling count() on an relation will always return the 
+   same number in each request:
+
+        $exam->students->count();   // Returns 175
+        $student->save();           // Add another student
+        $exam->students->count();   // Still 175
+
+   This behavior can be observed in the getReusableRecords() function in the model manager 
+   that is never called more than once.
+
 // Anders Lövgren, 2014-09-10

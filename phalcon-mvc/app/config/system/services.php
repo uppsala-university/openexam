@@ -23,7 +23,8 @@ $di->set('router', function() use($di) {
 }, true);
 
 /**
- * Enforce model access check using custom model manager.
+ * Enforce model access check attaching to event manager. Model cache 
+ * in ORM handled by custom model manager.
  */
 $di->set('modelsManager', function() use($di, $config) {
         $eventsManager = new \Phalcon\Events\Manager();
@@ -39,7 +40,7 @@ $di->set('modelsManager', function() use($di, $config) {
         $accessListener->setGrantLifetime($config->cache->lifetime->model);
         $accessListener->setEventsManager($eventsManager);
         $eventsManager->attach('model', $accessListener);
-        $modelsManager = new \Phalcon\Mvc\Model\Manager();
+        $modelsManager = new \OpenExam\Library\Model\ModelManager();
         $modelsManager->setEventsManager($eventsManager);
         return $modelsManager;
 }, true);
@@ -68,6 +69,18 @@ $di->set('modelsMetadata', function() use($config) {
         } elseif ($config->metadata->type == 'apc') {
                 return new Phalcon\Mvc\Model\MetaData\Apc($config->metadata);
         }
+}, true);
+
+/**
+ * Setup the models cache service.
+ */
+$di->set('modelsCache', function() use($di, $config) {
+        return new Phalcon\Cache\Backend\Apc(
+            new \Phalcon\Cache\Frontend\Data(
+            array(
+                "lifetime" => $config->cache->lifetime->model
+            )
+        ));
 }, true);
 
 /**
