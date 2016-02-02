@@ -27,11 +27,6 @@ class Role extends ModelBase
 {
 
         /**
-         * The directory service (catalog service).
-         * @var DirectoryManager 
-         */
-        protected $catalog;
-        /**
          * The user name.
          * @var string 
          */
@@ -45,7 +40,6 @@ class Role extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
-                $this->catalog = $this->getDI()->getCatalog();
         }
 
         public function validation()
@@ -94,10 +88,12 @@ class Role extends ModelBase
          */
         protected function afterDelete()
         {
-                $cachekey = sprintf("roles-%s", $this->user);
-                
-                if ($this->getDI()->get('cache')->exists($cachekey)) {
-                        $this->getDI()->get('cache')->delete($cachekey);
+                $key = sprintf("roles-%s", $this->user);
+
+                if (($cache = $this->getDI()->getCache()) != false) {
+                        if ($cache->exists($key)) {
+                                $cache->delete($key);
+                        }
                 }
         }
 
@@ -116,8 +112,10 @@ class Role extends ModelBase
          */
         protected function getAttribute($name)
         {
-                if (($attrs = $this->catalog->getAttribute($this->user, $name))) {
-                        return current($attrs)[$name][0];
+                if (($catalog = $this->getDI()->getCatalog()) != false) {
+                        if (($attrs = $catalog->getAttribute($this->user, $name))) {
+                                return current($attrs)[$name][0];
+                        }
                 }
         }
 
