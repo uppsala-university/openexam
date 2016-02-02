@@ -100,7 +100,8 @@ class Resource extends ModelBase
 
                 $this->belongsTo("exam_id", "OpenExam\Models\Exam", "id", array(
                         "foreignKey" => true,
-                        "alias"      => 'exam'
+                        "alias"      => 'exam',
+                        'reusable'   => true
                 ));
 
                 $this->addBehavior(new Ownership(array(

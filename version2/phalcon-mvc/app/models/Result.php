@@ -84,7 +84,8 @@ class Result extends ModelBase
                 ));
                 $this->belongsTo('corrector_id', 'OpenExam\Models\Corrector', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'corrector'
+                        'alias'      => 'corrector',
+                        'reusable'   => true
                 ));
 
                 // 

@@ -183,31 +183,40 @@ class Exam extends ModelBase
                 parent::initialize();
 
                 $this->hasMany('id', 'OpenExam\Models\Contributor', 'exam_id', array(
-                        'alias' => 'contributors'
+                        'alias'    => 'contributors',
+                        'reusable' => true
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Decoder', 'exam_id', array(
-                        'alias' => 'decoders'
+                        'alias'    => 'decoders',
+                        'reusable' => true
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Invigilator', 'exam_id', array(
-                        'alias' => 'invigilators'
+                        'alias'    => 'invigilators',
+                        'reusable' => true
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Lock', 'exam_id', array(
-                        'alias' => 'locks'
+                        'alias'    => 'locks',
+                        'reusable' => true
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Question', 'exam_id', array(
-                        'alias' => 'questions'
+                        'alias'    => 'questions',
+                        'reusable' => true
                 ));
                 $this->hasMany("id", "OpenExam\Models\Resource", "exam_id", array(
-                        'alias' => 'resources'
+                        'alias'    => 'resources',
+                        'reusable' => true
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array(
-                        'alias' => 'students'
+                        'alias'    => 'students',
+                        'reusable' => true
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array(
-                        'alias' => 'topics'
+                        'alias'    => 'topics',
+                        'reusable' => true
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Access', 'exam_id', array(
-                        'alias' => 'access'
+                        'alias'    => 'access',
+                        'reusable' => true
                 ));
 
                 $this->addBehavior(new Timestampable(array(
@@ -310,10 +319,12 @@ class Exam extends ModelBase
                 $this->published = $this->published == 'Y';
                 $this->testcase = $this->testcase == 'Y';
                 $this->lockdown = json_decode($this->lockdown);
-                $state = new State($this);
+
+                $this->setStudentDatetime();
+
+                $state = $this->getState();
                 $this->state = $state->getState();
                 $this->flags = $state->getFlags();
-                $this->setStudentDatetime();
 
                 parent::afterFetch();
         }
