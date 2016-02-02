@@ -122,8 +122,8 @@ $di->set('dbwrite', function () use ($config) {
 /**
  * Start the session the first time some component request the session service
  */
-$di->set('session', function() {
-        $session = new OpenExam\Library\Database\SessionAdapter();
+$di->set('session', function() use ($config) {
+        $session = new OpenExam\Library\Database\SessionAdapter($config->session);
         $session->start();
         return $session;
 }, true);
