@@ -14,9 +14,14 @@
 namespace OpenExam\Library\Core\Exam;
 
 use OpenExam\Models\Exam;
+use Phalcon\Mvc\User\Component;
+use OpenExam\Library\Database\Exception as DatabaseException;
 
 /**
  * Represents the exam state.
+ * 
+ * State:
+ * ---------
  * 
  * <code>
  * $state = new State($exam);
@@ -33,10 +38,22 @@ use OpenExam\Models\Exam;
  * o) starttime == null -> The exam is considered to be a draft (not yet scheduled).
  * o) endtime   == null -> The exam is ongoing (running), but without an ending.
  * 
+ * Cache:
+ * ---------
+ * 
+ * The answered and corrected properties are quite expensive to compute and
+ * are therefor cached for 30 seconds to overcome slow query problems when
+ * many students tries to read an exam. 
+ * 
+ * During this period the exam state might be inconsistent, but the impact 
+ * should be minimal and the benefit that large to justify this. If problem
+ * with decoding arise, then the corrected cache can be invalidated when a
+ * answer result is saved.
+ * 
  * @see http://it.bmc.uu.se/andlov/proj/edu/openexam/manual/workflow.php
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class State
+class State extends Component
 {
 
         /**
@@ -99,6 +116,18 @@ class State
          * Examination has been published.
          */
         const PUBLISHED = 0x4000;
+        /**
+         * Lifetime of cached answered and corrected state.
+         */
+        const CACHE_LIFETIME = 30;
+        /**
+         * Correction status cache key.
+         */
+        const CACHE_SUB_KEY_CORRECTED = 'corrected';
+        /**
+         * Answer status cache key.
+         */
+        const CACHE_SUB_KEY_ANSWERED = 'answered';
 
         /**
          * @var Exam 
@@ -132,14 +161,16 @@ class State
         public function __construct($exam)
         {
                 $this->exam = $exam;
-                $this->setState();
+                $this->refresh(false);
         }
 
         /**
          * Refresh examination state.
          */
-        public function refresh()
+        public function refresh($nocache = true)
         {
+                $this->setAnswered($nocache);
+                $this->setCorrected($nocache);
                 $this->setState();
         }
 
@@ -150,12 +181,6 @@ class State
         {
                 if (isset($this->flags)) {
                         unset($this->flags);    // Called from refresh
-                }
-                if (isset($this->corrected)) {
-                        unset($this->corrected);
-                }
-                if (isset($this->answered)) {
-                        unset($this->answered);
                 }
 
                 if ($this->exam->decoded) {
@@ -175,9 +200,9 @@ class State
                                 $this->state = self::EXAMINATABLE | self::RUNNING;
                         } elseif ($ctime < $etime) {            // After exam begin, but before its finished
                                 $this->state = self::EXAMINATABLE | self::RUNNING;
-                        } elseif (!$this->hasAnswers()) {       // Unseen exam can be reused
+                        } elseif (!$this->answered) {           // Unseen exam can be reused
                                 $this->state = self::REUSABLE | self::DELETABLE | self::FINISHED;
-                        } elseif ($this->isCorrected()) {       // After exam has finished
+                        } elseif ($this->corrected) {           // After exam has finished
                                 $this->state = self::CORRECTABLE | self::FINISHED | self::DECODABLE;
                         } else {
                                 $this->state = self::CORRECTABLE | self::FINISHED;
@@ -195,7 +220,7 @@ class State
                         $this->state |= self::DELETABLE;
                 }
 
-                if ($this->hasAnswers() == false) {     // Contributable and resuable until first seen
+                if ($this->answered == false) {     // Contributable and resuable until first seen
                         $this->state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::REUSABLE;
                 }
         }
@@ -210,6 +235,24 @@ class State
         }
 
         /**
+         * Check correction status.
+         * @return bool True if exam is fully corrected.
+         */
+        public function isCorrected()
+        {
+                return $this->corrected;
+        }
+
+        /**
+         * Check answer status
+         * @return bool True if examination has answers.
+         */
+        public function isAnswered()
+        {
+                return $this->answered;
+        }
+
+        /**
          * Test if flag is set.
          * @param int $flag One of the class constants.
          * @return bool
@@ -217,50 +260,6 @@ class State
         public function has($flag)
         {
                 return ($this->state & $flag) != 0;
-        }
-
-        /**
-         * Returns true if examination is corrected.
-         */
-        private function isCorrected()
-        {
-                if (!isset($this->corrected)) {
-                        $connection = $this->exam->getReadConnection();
-                        $resultset = $connection->query("
-                SELECT  a.id
-                FROM    questions q, students s, answers a
-                        LEFT JOIN results r ON 
-                        (a.id = r.answer_id AND r.correction NOT IN ('waiting','partial'))
-                WHERE   s.exam_id = :examid AND
-                        s.id = a.student_id AND
-                        q.id = a.question_id AND 
-                        q.status != 'removed' AND 
-                        a.answered = 'Y' AND
-                        r.id IS NULL", array('examid' => $this->exam->id));
-                        $this->corrected = ($resultset->numRows() == 0);
-                }
-                return $this->corrected;
-        }
-
-        /**
-         * Returns true if examination has answers.
-         */
-        private function hasAnswers()
-        {
-                if (!isset($this->answered)) {
-                        $connection = $this->exam->getReadConnection();
-                        $resultset = $connection->query("
-                SELECT  a.id
-                FROM    questions q, students s, answers a
-                        LEFT JOIN results r ON a.id = r.answer_id
-                WHERE   s.exam_id = :examid AND
-                        s.id = a.student_id AND
-                        q.id = a.question_id AND 
-                        q.status != 'removed' AND 
-                        a.answered = 'Y'", array('examid' => $this->exam->id));
-                        $this->answered = ($resultset->numRows() != 0);
-                }
-                return $this->answered;
         }
 
         /**
@@ -284,6 +283,115 @@ class State
                 }
 
                 return $this->flags;
+        }
+
+        /**
+         * Set exam corrected status.
+         * @param bool $nocache Use cached status if false.
+         */
+        private function setCorrected($nocache)
+        {
+                if ($nocache) {
+                        $this->corrected = ($this->getUncorrected() == 0);
+                        return;
+                }
+
+                $cachekey = $this->createCacheKey(self::CACHE_SUB_KEY_CORRECTED);
+                $lifetime = self::CACHE_LIFETIME;
+
+                if ($this->cache->exists($cachekey, $lifetime)) {
+                        $this->corrected = $this->cache->get($cachekey, $lifetime);
+                } else {
+                        $this->corrected = ($this->getUncorrected() == 0);
+                        $this->cache->save($cachekey, $this->corrected, $lifetime);
+                }
+        }
+
+        /**
+         * Set exam answered status.
+         * @param bool $nocache Use cached status if false.
+         */
+        private function setAnswered($nocache)
+        {
+                if ($nocache) {
+                        $this->answered = ($this->getAnswered() != 0);
+                        return;
+                }
+
+                $cachekey = $this->createCacheKey(self::CACHE_SUB_KEY_ANSWERED);
+                $lifetime = self::CACHE_LIFETIME;
+
+                if ($this->cache->exists($cachekey, $lifetime)) {
+                        $this->answered = $this->cache->get($cachekey, $lifetime);
+                } else {
+                        $this->answered = ($this->getAnswered() != 0);
+                        $this->cache->save($cachekey, $this->answered, $lifetime);
+                }
+        }
+
+        private function createCacheKey($type)
+        {
+                return sprintf("state-exam-%d-%s", $this->exam->id, $type);
+        }
+
+        /**
+         * Get number of uncorrected answers.
+         * @return int 
+         */
+        private function getUncorrected()
+        {
+                if (!($connection = $this->exam->getReadConnection())) {
+                        throw new DatabaseException("Failed get read connection");
+                }
+
+                // 
+                // This query will become slow on a heavy loaded server. Use 
+                // result cache if possible.
+                // 
+                if (($resultset = $connection->query("
+        SELECT  a.id
+        FROM    questions q, students s, answers a
+                LEFT JOIN results r ON 
+                (a.id = r.answer_id AND r.correction NOT IN ('waiting','partial'))
+        WHERE   s.exam_id = :examid AND
+                s.id = a.student_id AND
+                q.id = a.question_id AND 
+                q.status != 'removed' AND 
+                a.answered = 'Y' AND
+                r.id IS NULL", array('examid' => $this->exam->id)))) {
+                        return $resultset->numRows();
+                } else {
+                        throw new DatabaseException("Failed query uncorrected answers.");
+                }
+        }
+
+        /**
+         * Get number of answers.
+         * @return int
+         */
+        private function getAnswered()
+        {
+                if (!($connection = $this->exam->getReadConnection())) {
+                        throw new DatabaseException("Failed get read connection");
+                }
+
+                // 
+                // This query will become slow on a heavy loaded server. Use 
+                // result cache if possible.
+                // 
+                if (($resultset = $connection->query("
+        SELECT  a.id
+        FROM    questions q, students s, answers a
+                LEFT JOIN results r ON a.id = r.answer_id
+        WHERE   s.exam_id = :examid AND
+                s.id = a.student_id AND
+                q.id = a.question_id AND 
+                q.status != 'removed' AND 
+                a.answered = 'Y'", array('examid' => $this->exam->id)))) {
+                        return $resultset->numRows();
+                } else {
+                        throw new DatabaseException("Failed query answers on exam.");
+                }
         }
 
 }
