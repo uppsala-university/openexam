@@ -140,7 +140,7 @@ class SessionAdapterTest extends TestCase
          */
         public function testGc()
         {
-                $maxlifetime = (int) ini_get('session.gc_maxlifetime');
+                $maxlifetime = $this->config->session->expires;
 
                 $session = new Session();
                 $session->data = "data_gc";

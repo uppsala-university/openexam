@@ -16,7 +16,7 @@ namespace OpenExam\Library\Database;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Models\Session as SessionModel;
-use Phalcon\Session\Adapter As AdapterBase;
+use Phalcon\Session\Adapter as AdapterBase;
 use Phalcon\Session\AdapterInterface;
 
 /**
@@ -29,6 +29,9 @@ use Phalcon\Session\AdapterInterface;
  * 1. Minimize the number of table insert/update.
  * 2. Use separate database connection for read/write.
  * 
+ * The session.gc_maxlifetime should already been set by index.php to
+ * session expire time in system/user config.
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class SessionAdapter extends AdapterBase implements AdapterInterface
@@ -38,24 +41,55 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          * The cached session model.
          * @var SessionModel
          */
-        private $session = null;
+        private $_session = null;
         /**
          * Last queried session ID.
          * @var string 
          */
-        private $lastsid = null;
+        private $_lastsid = null;
 
         /**
          * {@inheritdoc}
          *
          * @param array $options
          */
-        public function __construct($options = null)
+        public function __construct($options = array())
         {
-                parent::__construct($options);
+                if (!isset($options)) {
+                        throw new Exception("No configuration given");
+                }
+                if ($options instanceof \Phalcon\Config) {
+                        $options = $options->toArray();
+                }
+
+                if (isset($options['name'])) {
+                        ini_set('session.name', $options['name']);
+                }
+                if (isset($options['lifetime'])) {
+                        ini_set('session.gc_maxlifetime', $options['lifetime']);
+                }
+                if (isset($options['cookie_lifetime'])) {
+                        ini_set('session.cookie_lifetime', $options['cookie_lifetime']);
+                }
+                if (isset($options['cookie_secure'])) {
+                        ini_set('session.cookie_secure', $options['cookie_secure']);
+                }
+
+                if (!isset($options['expires'])) {
+                        $options['expires'] = ini_get('session.gc_maxlifetime');
+                }
+                if (!isset($options['refresh'])) {
+                        $options['refresh'] = $options['expires'] - 1800;
+                }
+                if (!isset($options['cleanup'])) {
+                        $options['cleanup'] = true;
+                }
+
                 session_set_save_handler(
                     array($this, 'open'), array($this, 'close'), array($this, 'read'), array($this, 'write'), array($this, 'destroy'), array($this, 'gc')
                 );
+
+                parent::__construct($options);
         }
 
         /**
@@ -87,18 +121,18 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                         return "";
                 }
 
-                if ($sessionId != $this->lastsid) {
-                        $this->session = null;
-                        $this->lastsid = $sessionId;
+                if ($sessionId != $this->_lastsid) {
+                        $this->_session = null;
+                        $this->_lastsid = $sessionId;
                 }
-                if (is_null($this->session)) {
-                        $this->session = SessionModel::findFirstBySessionId($sessionId);
+                if (is_null($this->_session)) {
+                        $this->_session = SessionModel::findFirstBySessionId($sessionId);
                 }
-                if (!$this->session) {
+                if (!$this->_session) {
                         return "";
                 }
 
-                return $this->session->data;
+                return $this->_session->data;
         }
 
         /**
@@ -111,38 +145,39 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
         public function write($sessionId, $data)
         {
 
-                if (is_null($this->session)) {
-                        $this->session = SessionModel::findFirstBySessionId($sessionId);
+                if (is_null($this->_session)) {
+                        $this->_session = SessionModel::findFirstBySessionId($sessionId);
                 }
 
-                if (empty($data) && $this->session) {
-                        return $this->session->delete();
+                if (empty($data) && $this->_session) {
+                        return $this->_session->delete();
                 } elseif (empty($data)) {
                         return false;
-                } elseif (!$this->session) {
-                        $this->session = new SessionModel();
+                } elseif (!$this->_session) {
+                        $this->_session = new SessionModel();
                 }
 
-                if ($this->session->data == $data) {
-                        $maxlifetime = (int) ini_get('session.gc_maxlifetime');
-                        if ($this->session->updated + $maxlifetime > time()) {
+                if ($this->_session->data == $data) {
+                        if ($this->getOption('expires') -
+                            $this->getOption('refresh') +
+                            $this->_session->updated > time()) {
                                 return true;
                         }
                 }
 
-                if (isset($this->session->id)) {
-                        $this->session->session_id = $sessionId;
-                        $this->session->data = $data;
-                        $this->session->updated = time();
+                if (isset($this->_session->id)) {
+                        $this->_session->session_id = $sessionId;
+                        $this->_session->data = $data;
+                        $this->_session->updated = time();
                 } else {
-                        $this->session->session_id = $sessionId;
-                        $this->session->data = $data;
-                        $this->session->created = time();
-                        $this->session->updated = null;
+                        $this->_session->session_id = $sessionId;
+                        $this->_session->data = $data;
+                        $this->_session->created = time();
+                        $this->_session->updated = null;
                 }
 
-                if (($this->session->save() == false)) {
-                        throw new ModelException($this->session->getMessages()[0], Error::SERVICE_UNAVAILABLE);
+                if (($this->_session->save() == false)) {
+                        throw new ModelException($this->_session->getMessages()[0], Error::SERVICE_UNAVAILABLE);
                 } else {
                         return true;
                 }
@@ -163,12 +198,12 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                         $sessionId = $this->getId();
                 }
 
-                if (empty($this->session)) {
+                if (empty($this->_session)) {
                         return true;
                 }
 
-                $result = $this->session->delete();
-                $this->session = false;
+                $result = $this->_session->delete();
+                $this->_session = false;
 
                 session_regenerate_id();
                 return $result;
@@ -181,16 +216,27 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function gc($maxlifetime)
         {
-                if (empty($this->session)) {
+                if (empty($this->_session)) {
                         return false;
                 }
+                if (!$this->getOption('cleanup')) {
+                        return false;
+                }
+                if ($maxlifetime < $this->getOption('expires')) {
+                        $maxlifetime = $this->getOption('expires');
+                }
 
-                $dbo = $this->session->getWriteConnection();
+                $dbo = $this->_session->getWriteConnection();
                 return $dbo->execute(
                         sprintf(
                             'DELETE FROM sessions WHERE COALESCE(updated, created) + %d < ?', $maxlifetime
                         ), array(time())
                 );
+        }
+
+        private function getOption($key)
+        {
+                return $this->_options[$key];
         }
 
 }
