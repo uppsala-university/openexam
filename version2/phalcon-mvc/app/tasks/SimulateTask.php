@@ -65,29 +65,30 @@ class SimulateTask extends MainTask implements TaskInterface
                                 '--defaults'
                         ),
                         'options'  => array(
-                                '--setup'         => 'Create exam for simulation.',
-                                '--run'           => 'Run single student simulation.',
-                                '--script'        => 'Create simulation script.',
-                                '--compile'       => 'Compile result from previous simulation',
-                                '--defaults'      => 'Show default options.',
-                                '--output=file'   => 'Generate script file (for --script option).',
-                                '--result=file'   => 'Simulation result file.',
-                                '--target=url'    => 'Target server URL (defaults to this app on localhost).',
-                                '--exam=id'       => 'Use exam ID.',
-                                '--session=str'   => 'Use cookie string for authentication.',
-                                '--student=user'  => 'Run simulation as student user.',
-                                '--students=num'  => 'Add num students on exam.',
-                                '--questions=num' => 'Insert num questions (setup only).',
-                                '--natural'       => 'Run normal user interface simulation.',
-                                '--torture'       => 'Run in torture mode (no sleep).',
-                                '--read'          => 'Generate answer read load.',
-                                '--write'         => 'Generate answer write load.',
-                                '--sleep=sec'     => 'Second to sleep between server requests.',
-                                '--duration=sec'  => 'Duration of simulation.',
-                                '--verbose'       => 'Be more verbose.',
-                                '--debug'         => 'Print debug information',
-                                '--dry-run'       => 'Just print whats going to be done.',
-                                '--quite'         => 'Be quiet.'
+                                '--setup'          => 'Create exam for simulation.',
+                                '--run'            => 'Run single student simulation.',
+                                '--script'         => 'Create simulation script.',
+                                '--compile'        => 'Compile result from previous simulation',
+                                '--defaults'       => 'Show default options.',
+                                '--output=file'    => 'Generate script file (for --script option).',
+                                '--result=file'    => 'Simulation result file.',
+                                '--target=url'     => 'Target server URL (defaults to this app on localhost).',
+                                '--exam=id'        => 'Use exam ID.',
+                                '--session=str'    => 'Use cookie string for authentication.',
+                                '--student=user'   => 'Run simulation as student user.',
+                                '--students=num'   => 'Add num students on exam.',
+                                '--questions=num'  => 'Insert num questions (setup only).',
+                                '--natural'        => 'Run normal user interface simulation.',
+                                '--torture'        => 'Run in torture mode (no sleep).',
+                                '--read'           => 'Generate answer read load.',
+                                '--write'          => 'Generate answer write load.',
+                                '--start=num:wait' => 'Client startup options (for --script option).',
+                                '--sleep=sec'      => 'Second to sleep between server requests.',
+                                '--duration=sec'   => 'Duration of simulation.',
+                                '--verbose'        => 'Be more verbose.',
+                                '--debug'          => 'Print debug information',
+                                '--dry-run'        => 'Just print whats going to be done.',
+                                '--quite'          => 'Be quiet.'
                         ),
                         'examples' => array(
                                 array(
@@ -100,7 +101,7 @@ class SimulateTask extends MainTask implements TaskInterface
                                 ),
                                 array(
                                         'descr'   => 'Create simulation script',
-                                        'command' => '--script --exam=123 --natural --sleep=10 --duration=180 --result=file.dat --output=file.sh'
+                                        'command' => '--script --exam=123 --natural --start=30:1 --sleep=10 --duration=180 --result=file.dat --output=file.sh'
                                 ),
                                 array(
                                         'descr'   => 'Simulate a real world application (calling user)',
@@ -222,6 +223,8 @@ class SimulateTask extends MainTask implements TaskInterface
                         return false;
                 }
 
+                list($start, $wait) = explode(":", $this->options['start']);
+
                 fprintf($handle, "#!/bin/bash\n\n");
                 fprintf($handle, "# options=\"--verbose --debug\"\n\n");
 
@@ -240,8 +243,8 @@ class SimulateTask extends MainTask implements TaskInterface
                                 }
                         }
                         fprintf($handle, "%s \$options &\n", $command);
-                        if ($i % 50 == 0 && $i != 0) {
-                                fprintf($handle, "sleep 1\n");  // be nice ;-)
+                        if ($i % $start == 0 && $i != 0) {
+                                fprintf($handle, "sleep $wait\n");  // be nice ;-)
                         }
                 }
 
@@ -309,7 +312,7 @@ class SimulateTask extends MainTask implements TaskInterface
                                 $stat[$k1][$k2]['mean'] = $stat[$k1][$k2]['time'] / $stat[$k1][$k2]['count'];
                         }
                 }
-                
+
                 print_r($stat);
         }
 
@@ -489,14 +492,17 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Get student model:
                 // 
-                $student = Student::findFirst(array(
+                if (!($student = Student::findFirst(array(
                             'conditions' => 'exam_id = :exam: and user = :user:',
                             'bind'       => array(
                                     'exam' => $this->options['exam'],
                                     'user' => $this->options['student']
                             )
                         )
-                );
+                    ))) {
+                        $this->flash->error(sprintf("Failed find student, exiting now (pid=%d, stud=%s)", getmypid(), $this->options['student']));
+                        exit(1);
+                }
 
                 // 
                 // Get exam data:
@@ -975,12 +981,12 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'target' => false, 'questions' => 12, 'sleep' => 10, 'duration' => 120, 'students' => 1);
+                $this->options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'target' => false, 'questions' => 12, 'start' => '30:1', 'sleep' => 10, 'duration' => 120, 'students' => 1);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'debug', 'dry-run', 'quiet', 'setup', 'student', 'students', 'questions', 'run', 'exam', 'read', 'write', 'natural', 'torture', 'script', 'output', 'result', 'target', 'session', 'sleep', 'duration');
+                $options = array('verbose', 'debug', 'dry-run', 'quiet', 'setup', 'student', 'students', 'questions', 'run', 'exam', 'read', 'write', 'natural', 'torture', 'script', 'output', 'result', 'target', 'session', 'start', 'sleep', 'duration');
                 $current = $action;
 
                 // 
