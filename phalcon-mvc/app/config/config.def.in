@@ -16,7 +16,10 @@ use OpenExam\Models\Exam;
 /**
  * User defined settings.
  * 
- * See docs/README-DATABASE also.
+ * You can override any system settings (see system/config.php) by providing
+ * a re-definition here. 
+ * 
+ * For database configuration, see docs/README-DATABASE.
  */
 return array(
         /**
@@ -142,38 +145,11 @@ return array(
                 )
         ),
         /**
-         * System logging to file and syslog(3). See README-LOGGER.
-         */
-        'logging'    => array(
-                'system' => array(
-                        'file'     => 'system.log',
-                        'level'    => \Phalcon\Logger::NOTICE
-                ),
-                'auth'   => array(
-                        'syslog'   => 'openexam',
-                        'level'    => \Phalcon\Logger::INFO,
-                        'option'   => LOG_NDELAY,
-                        'facility' => LOG_AUTH
-                ),
-                'access' => array(
-                        'file'     => 'access.log',
-                        'level'    => \Phalcon\Logger::INFO
-                )
-        ),
-        /**
          * Static data for unit test.
          */
         'phpunit' => array(
                 'username'  => null,
                 'persnr'    => null
-        ),
-        /**
-         * Session configuration.
-         */
-        'session'     => array(
-                'expires'   => 7200,            // Expires after (seconds)
-                'refresh'   => 1800,            // Refresh threshold (seconds)
-                'startPage' => 'exam/index'     // Start page (user initiated)
         ),
         /**
          * System user signup. 

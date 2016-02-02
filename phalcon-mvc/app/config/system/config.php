@@ -162,19 +162,25 @@ $config = new \Phalcon\Config(
                         'file'  => 'debug.log',
                         'level' => \Phalcon\Logger::DEBUG
                 ),
-                'system' => array(
-                        'file'  => 'system.log',
-                        'level' => \Phalcon\Logger::NOTICE
+                'system'   => array(
+                        'syslog'   => 'openexam',
+                        'level'    => \Phalcon\Logger::NOTICE,
+                        'option'   => LOG_NDELAY,
+                        'facility' => LOG_LOCAL0
+                ),
+                'access' => array(
+                        'file'  => 'access.log',
+                        'level' => \Phalcon\Logger::INFO
+                ),
+                'cache'  => array(
+                        'file'  => 'cache.log',
+                        'level' => \Phalcon\Logger::INFO
                 ),
                 'auth'   => array(
                         'syslog'   => 'openexam',
                         'level'    => \Phalcon\Logger::INFO,
                         'option'   => LOG_NDELAY,
                         'facility' => LOG_AUTH
-                ),
-                'access' => array(
-                        'file'  => 'access.log',
-                        'level' => \Phalcon\Logger::INFO
                 ),
                 'test'   => array(
                         'file'  => 'phpunit.log',
@@ -214,8 +220,9 @@ $config = new \Phalcon\Config(
          * Session configuration.
          */
         'session'     => array(
-                'expires'   => 7200, // Expires after (seconds)
-                'refresh'   => 1800, // Refresh threshold (seconds)
+                'expires'   => 21600,           // Expires after (seconds)
+                'refresh'   => 7200,            // Refresh threshold (seconds)
+                'cleanup'   => true,            // Enable garbage collection
                 'startPage' => 'exam/index'     // Start page (user initiated)
         ),
         /**
@@ -238,7 +245,7 @@ $config = new \Phalcon\Config(
                         'fast'   => 3600,
                         'medium' => 86400,
                         'slow'   => 604800,
-                        'model'  => 60
+                        'model'  => 1800
                 ),
                 /**
                  * Extension specific settings:
