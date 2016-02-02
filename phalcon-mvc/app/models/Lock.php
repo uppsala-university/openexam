@@ -79,11 +79,13 @@ class Lock extends ModelBase
                 ));
                 $this->belongsTo('computer_id', 'OpenExam\Models\Computer', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'computer'
+                        'alias'      => 'computer',
+                        'reusable'   => true
                 ));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'exam'
+                        'alias'      => 'exam',
+                        'reusable'   => true
                 ));
 
                 $this->addBehavior(new Timestampable(array(

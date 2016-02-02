@@ -45,11 +45,13 @@ class Corrector extends Role
                 parent::initialize();
 
                 $this->hasMany("id", "OpenExam\Models\Result", "corrector_id", array(
-                        'alias' => 'results'
+                        'alias'    => 'results',
+                        'reusable' => true
                 ));
                 $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'question'
+                        'alias'      => 'question',
+                        'reusable'   => true
                 ));
         }
 

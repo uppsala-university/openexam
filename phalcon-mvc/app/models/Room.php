@@ -45,7 +45,8 @@ class Room extends ModelBase
                 parent::initialize();
 
                 $this->hasMany('id', 'OpenExam\Models\Computer', 'room_id', array(
-                        'alias' => 'computers'
+                        'alias'    => 'computers',
+                        'reusable' => true
                 ));
 
                 // 

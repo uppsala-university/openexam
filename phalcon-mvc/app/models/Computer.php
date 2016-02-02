@@ -73,11 +73,13 @@ class Computer extends ModelBase
                 parent::initialize();
 
                 $this->hasMany('id', 'OpenExam\Models\Lock', 'computer_id', array(
-                        'alias' => 'locks'
+                        'alias'    => 'locks',
+                        'reusable' => true
                 ));
                 $this->belongsTo('room_id', 'OpenExam\Models\Room', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'room'
+                        'alias'      => 'room',
+                        'reusable'   => true
                 ));
 
                 $this->addBehavior(new Timestampable(array(

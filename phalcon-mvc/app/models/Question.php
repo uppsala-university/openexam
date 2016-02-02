@@ -1,4 +1,5 @@
 <?php
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -120,18 +121,21 @@ class Question extends ModelBase
                 parent::initialize();
 
                 $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array(
-                        'alias' => 'answers'
+                        'alias'    => 'answers'
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array(
-                        'alias' => 'correctors'
+                        'alias'    => 'correctors',
+                        'reusable' => true
                 ));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'exam'
+                        'alias'      => 'exam',
+                        'reusable'   => true
                 ));
                 $this->belongsTo('topic_id', 'OpenExam\Models\Topic', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'topic'
+                        'alias'      => 'topic',
+                        'reusable'   => true
                 ));
 
                 $this->addBehavior(new Ownership(array(

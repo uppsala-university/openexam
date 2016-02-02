@@ -88,11 +88,13 @@ class Topic extends ModelBase
                 parent::initialize();
 
                 $this->hasMany('id', 'OpenExam\Models\Question', 'topic_id', array(
-                        'alias' => 'questions'
+                        'alias'    => 'questions',
+                        'reusable' => true
                 ));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'exam'
+                        'alias'      => 'exam',
+                        'reusable'   => true
                 ));
 
                 $this->addBehavior(new UUID(array(

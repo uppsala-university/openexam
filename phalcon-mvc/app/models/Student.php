@@ -86,11 +86,13 @@ class Student extends Role
                         'alias' => 'answers'
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Lock', 'student_id', array(
-                        'alias' => 'locks'
+                        'alias'    => 'locks',
+                        'reusable' => true
                 ));
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'exam'
+                        'alias'      => 'exam',
+                        'reusable'   => true
                 ));
 
                 $this->addBehavior(new StudentBehavior(array(

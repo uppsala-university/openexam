@@ -46,7 +46,8 @@ class Contributor extends Role
 
                 $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
                         'foreignKey' => true,
-                        'alias'      => 'exam'
+                        'alias'      => 'exam',
+                        'reusable'   => true
                 ));
         }
 
