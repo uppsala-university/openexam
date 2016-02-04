@@ -20,8 +20,8 @@ user="apache"
 # These directories/files should be writable by the web server:
 for d in cache logs schemas/soap; do
   if [ -d $root/$d -o -h $root/$d ]; then
-    find $root/$d -type d | while read d; do setfacl -m u:$user:rwx $d; done
-    find $root/$d -type f | while read f; do setfacl -m u:$user:rw  $f; done
+    find $root/$d -type d | while read d; do setfacl -m u:$user:rwx "$d"; done
+    find $root/$d -type f | while read f; do setfacl -m u:$user:rw  "$f"; done
   fi
 done
 
