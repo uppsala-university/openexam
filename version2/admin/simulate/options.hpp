@@ -85,22 +85,26 @@ public:
     void Usage() const;
     void Version() const;
 
-    std::ostream & Dump(std::ostream &out) const;
-
     const Task  & GetTask() const;
     const Start & GetStart() const;
 
     const std::string & GetTaskFile() const;
     bool HasTaskFile() const;
 
+    std::ostream & Dump(std::ostream &out) const;
+
 private:
     std::string program;    // Program name.
     std::string version;    // Program version.
     std::string tasks;      // The task definition file (when multi threaded).
     std::string result;     // Simulation result file.
+
     Task task;              // Common task options.
     Start start;            // Client startup options.
 
+    int  verbose;           // Be more verbose.
+    bool debug;             // Print debug information.
+    bool quiet;             // Be quiet.
 };
 
 inline const Task & Options::GetTask() const

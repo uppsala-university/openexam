@@ -28,29 +28,26 @@
 
 #include "task.hpp"
 #include "options.hpp"
-
-namespace {
-    pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-}
+#include "output.hpp"
 
 Task::Task()
-    : mode(Custom), sleep(10), duration(300),
-      verbose(false), debug(false), dry_run(false), quiet(false)
+    : observer(0), status(Scheduled), mode(Custom), sleep(10), duration(300), dry_run(false)
 {
     target = "http://localhost/openexam";
 }
 
 Task::Task(std::string input)
-    : mode(Custom), sleep(10), duration(300),
-      verbose(false), debug(false), dry_run(false), quiet(false)
+    : observer(0), status(Scheduled), mode(Custom), sleep(10), duration(300), dry_run(false)
 {
     target = "http://localhost/openexam";
     Scan(input);
 }
 
+//
+// Scan additional task options from string.
+//
 void Task::Scan(std::string input)
 {
-    std::string::size_type pos;
     std::istringstream ss(input);
     std::string token;
 
@@ -81,23 +78,15 @@ void Task::Scan(std::string input)
             read = true;
         } else if(option.key == "write") {
             write = true;
-        } else if(option.key == "verbose") {
-            verbose++;
-        } else if(option.key == "debug") {
-            debug = true;
         } else if(option.key == "dry-run") {
             dry_run = true;
-        } else if(option.key == "quite") {
-            quiet = true;
         }
-    }
-
-    if(quiet) {
-        verbose = 0;
-        debug = 0;
     }
 }
 
+//
+// The thread start function.
+//
 void *Task::Start(void *arg)
 {
     Task *task = static_cast<Task *>(arg);
@@ -105,60 +94,85 @@ void *Task::Start(void *arg)
     return task;
 }
 
+//
+// Start task.
+//
 void Task::Start()
 {
     int endtime = time(0) + duration;
 
-    Output(Debug, "Starting");
-    Output(Debug, session);
+    SetStatus(Starting, "Starting");
 
-    while(time(0) < endtime) {
-        Output(Debug, "Running");
+    while(time(0) < endtime && status != Stopped) {
+        SetStatus(Running, "Running");
         if(sleep) {
+            SetStatus(Sleeping, "Sleeping");
             ::sleep(sleep);
         }
     }
 
-    Output(Debug, "Finished");
+    if(status == Stopped) {
+        SetStatus(Cancelled, "Cancelled");
+    } else {
+        SetStatus(Finished, "Finished");
+    }
 }
 
 //
-// Filter output.
+// Get object representation.
 //
-bool Task::Output(Level level) const
+std::string Task::ToString() const
 {
-    if(quiet) {
-        return level >= Error;
-    } else if(level == Debug) {
-        return debug;
-    } else if(level == Info) {
-        return verbose > 1;
-    } else  {
-        return verbose;
-    }
+    std::ostringstream ss;
+
+    std::boolalpha(ss);
+
+    ss << "{student="  << student
+       << ",session="  << session
+       << ",exam="     << exam
+       << ",mode="     << mode
+       << ",read="     << read
+       << ",write="    << write
+       << ",status="   << status
+       << ",sleep="    << sleep
+       << ",duration=" << duration
+       << ",target="   << target
+       << "}";
+
+    return ss.str();
 }
 
-//
-// Filter output.
-//
-void Task::Output(Task::Level level, const std::string &message) const
+std::string Task::GetActivity() const
 {
-    if(pthread_mutex_lock(&lock) != 0) {
-        perror("pthread_mutex_lock");
-        return;
-    }
-
-    if(Output(level)) {
-        if(level != Error) {
-            std::cout << "[" << pthread_self() << "]: " << message << std::endl;
-        } else {
-            std::cerr << "[" << pthread_self() << "]: " << message << std::endl;
-        }
-    }
-
-    if(pthread_mutex_unlock(&lock) != 0) {
-        perror("pthread_mutex_unlock");
-        return;
+    switch(status) {
+    case Cancelled:
+        return "cancelled";
+    case Finished:
+        return "finished";
+    case Running:
+        return "running";
+    case Scheduled:
+        return "scheduled";
+    case Sleeping:
+        return "sleeping";
+    case Stopped:
+        return "stopped";
+    case Starting:
+        return "starting";
+    default:
+        return "unknown";
     }
 }
 
+void Task::SetStatus(Task::Status status)
+{
+    this->status = status;
+    OnStatusChange();
+}
+
+void Task::SetStatus(Task::Status status, const std::string &message)
+{
+    this->status = status;
+    OnStatusChange();
+    Output::Debug(message);
+}
