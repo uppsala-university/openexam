@@ -15,7 +15,7 @@ HEADERS += \
 
 OTHER_FILES += \
     simulate.pro.user \
-    client.txt
+    clients.txt
 
 QMAKE_CXXFLAGS += -std=c++0x -pthread
 LIBS += -pthread
