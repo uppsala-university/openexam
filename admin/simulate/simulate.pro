@@ -6,12 +6,16 @@ CONFIG -= qt
 SOURCES += main.cpp \
     options.cpp \
     task.cpp \
-    application.cpp
+    application.cpp \
+    result.cpp \
+    output.cpp
 
 HEADERS += \
     options.hpp \
     task.hpp \
-    application.hpp
+    application.hpp \
+    result.hpp \
+    output.hpp
 
 OTHER_FILES += \
     simulate.pro.user \

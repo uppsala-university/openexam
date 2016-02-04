@@ -27,6 +27,7 @@
 #include <string>
 
 class Options;
+class TaskObserver;
 
 class Task
 {
@@ -43,31 +44,143 @@ public:
     //
     enum Level { Debug, Info, Notice, Error };
 
+    //
+    // Task status.
+    //
+    enum Status { Scheduled, Starting, Running, Sleeping, Finished, Cancelled, Stopped };
+
     Task();
     Task(std::string input);
 
-    void Scan(std::string input);
+    void Scan(std::string input);       // Merge in options from string.
 
-    static void * Start(void *arg);     // Task runner.
-    void Start();                       // Task runner.
+    static void * Start(void *arg);     // Start task.
+    void Start();                       // Run task.
+    void Stop();                        // Stop task.
 
-    bool Output(Level level) const;     // Check requested output level.
-    void Output(Level level, const std::string &message) const;
+    std::string ToString() const;       // To string operator.
+
+    //
+    // Status information.
+    //
+    Status GetStatus() const;
+    Mode GetMode() const;
+
+    int GetExam() const;
+    int GetSleep() const;
+    int GetDuration() const;
+
+    const std::string & GetTarget() const;
+    const std::string & GetSession() const;
+    const std::string & GetStudent() const;
+    std::string GetActivity() const;
+
+    bool IsReading() const;
+    bool IsWriting() const;
+    bool IsDryRun() const;
+
+    //
+    // Observers:
+    //
+    void setTaskObserver(const TaskObserver *observer);
 
 private:
-    std::string target;     // Target server URL (defaults to this app on localhost).
+    void SetStatus(Status status);
+    void SetStatus(Status status, const std::string &message);
+    void OnStatusChange() const;
+
+    const TaskObserver *observer;
+
+    Status status;          // Task status.
     Mode mode;              // Runtime mode.
     int exam;               // Use exam ID.
     int sleep;              // Second to sleep between server requests.
     int duration;           // Duration of simulation.
+    std::string target;     // Target server URL (defaults to this app on localhost).
     std::string session;    // Use cookie string for authentication.
     std::string student;    // Run simulation as student user.
     bool read;              // Generate answer read load.
     bool write;             // Generate answer write load.
-    int  verbose;           // Be more verbose.
-    bool debug;             // Print debug information.
     bool dry_run;           // Just print what's going to be done.
-    bool quiet;             // Be quiet.
 };
+
+class TaskObserver
+{
+public:
+    virtual void OnStatusChange(const Task *task) const = 0;
+};
+
+inline void Task::Stop()
+{
+    this->SetStatus(Stopped, "Stopping");
+}
+
+inline Task::Status Task::GetStatus() const
+{
+    return status;
+}
+
+inline Task::Mode Task::GetMode() const
+{
+    return mode;
+}
+
+inline int Task::GetExam() const
+{
+    return exam;
+}
+
+inline int Task::GetSleep() const
+{
+    return sleep;
+}
+
+inline int Task::GetDuration() const
+{
+    return duration;
+}
+
+inline const std::string &Task::GetTarget() const
+{
+    return target;
+}
+
+inline const std::string &Task::GetSession() const
+{
+    return session;
+}
+
+inline const std::string &Task::GetStudent() const
+{
+    return student;
+}
+
+inline bool Task::IsReading() const
+{
+    return read;
+}
+
+inline bool Task::IsWriting() const
+{
+    return write;
+}
+
+inline bool Task::IsDryRun() const
+{
+    return dry_run;
+}
+
+inline void Task::setTaskObserver(const TaskObserver *observer)
+{
+    this->observer = observer;
+}
+
+inline void Task::OnStatusChange() const
+{
+    if(observer) {
+        observer->OnStatusChange(this);
+    }
+
+}
 
 #endif // TASK_HPP

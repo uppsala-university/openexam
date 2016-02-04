@@ -24,6 +24,7 @@
 #include <iostream>
 
 #include "options.hpp"
+#include "output.hpp"
 
 Options::Start::Start(std::string opt)
 {
@@ -87,31 +88,34 @@ void Options::Parse(int argc, char **argv)
                   option.key == "-D") {
             Dump(std::cout);
             exit(0);
-        } else if(option.key == "--verbose" ||
-                  option.key == "-v") {
-            task.verbose++;
-        } else if(option.key == "--debug" ||
-                  option.key == "-d") {
-            task.debug = true;
         } else if(option.key == "--dry-run") {
             task.dry_run = true;
+        } else if(option.key == "--verbose" ||
+                  option.key == "-v") {
+            verbose++;
+        } else if(option.key == "--debug" ||
+                  option.key == "-d") {
+            debug = true;
         } else if(option.key == "--quiet" ||
                   option.key == "-q") {
-            task.quiet = true;
+            quiet = true;
         } else {
             std::cerr << program << ": Unknown option '" << option.key << "', see --help\n";
             exit(1);
         }
     }
 
-    if(task.quiet) {
-        task.verbose = 0;
-        task.debug = 0;
-    }
-
-    if(task.debug) {
+    if(debug) {
         Dump(std::cout);
     }
+    if(quiet) {
+        verbose = 0;
+        debug = 0;
+    }
+
+    Output *newins = new Output(quiet, debug, verbose);
+    Output::SetInstance(newins);
+
 }
 
 void Options::Usage() const
@@ -120,11 +124,11 @@ void Options::Usage() const
             << program << " - Run exam simulation\n"
             << "\n"
             << "Usage:\n"
-            << "  " << program << " --tasks=file.def [--start=30:2] [options...]\n"
+            << "  " << program << " --tasks=clients.def [--start=30:2] [options...]\n"
             << "  " << program << " --exam=num --session=id [--natural|--torture|--read|--write] [options...]\n"
             << "\n"
             << "Options:\n"
-            << "  --tasks=file        : Task definition file (when multi threaded)\n"
+            << "  --tasks=file        : Task definition file (runs multi-threaded)\n"
             << "  --result=file       : Simulation result file.\n"
             << "  --target=url        : Target server URL (defaults to this app on localhost).\n"
             << "  --exam=id           : Use exam ID.\n"
@@ -146,11 +150,11 @@ void Options::Usage() const
             << "  --quite,-q          : Be quiet.\n"
             << "\n"
             << "Examples:\n"
-            << "  # Run multi threaded simulation (start 20 clients with 3 sec interval):\n"
+            << "  # Run multi-threaded simulation (start 20 clients with 3 sec interval):\n"
             << "  " << program << " --tasks=file.def --start=20:3\n"
             << "\n"
             << "  # Run natural single client simulation for default duration:\n"
-            << "  " << program << " --natural --exam=999 --session=abcd1234 --target=http://localhost/app\n"
+            << "  " << program << " --natural --exam=999 --session=abcd1234 --target=http://localhost/openexam\n"
             << "\n"
             << "Copyright (C) 2016 Anders Lövgren, BMC Computing Department, Uppsala University\n";
 
@@ -164,26 +168,26 @@ void Options::Version() const
 std::ostream & Options::Dump(std::ostream &out) const
 {
     return out
-            << "\n Runtime:\n"
-            << "-------------\n"
-            << "   Task File:\t" << tasks << std::endl
-            << "   Result:\t"    << result << std::endl
-            << "   Start:\t"     << start.num << " (num), " << start.wait << " (wait)" << std::endl
-            << "   Sleep:\t"     << task.sleep << std::endl
-            << "   Duration:\t"  << task.duration << std::endl
-            << "\n Task:\n"
-            << "-------------\n"
-            << "   Target:\t"    << task.target << std::endl
-            << "   Exam:\t"      << task.exam << std::endl
-            << "   Session:\t"   << task.session << std::endl
-            << "   Student:\t"   << task.student << std::endl
-            << "   Mode:\t"      << task.mode << std::endl
-            << "   Read:\t"      << task.read << std::endl
-            << "   Write:\t"     << task.write << std::endl
-            << "\n Common:\n"
-            << "-------------\n"
-            << "   Verbose:\t"   << task.verbose << std::endl
-            << "   Debug:\t"     << task.debug << std::endl
-            << "   Quiet:\t"     << task.quiet << std::endl
-            << "   Dry Run:\t"   << task.dry_run << std::endl;
+            << "\nRuntime -> {\n"
+            << "   Tasks:\t"    << tasks << std::endl
+            << "   Result:\t"   << result << std::endl
+            << "   Start:\t"    << start.num << " (num), " << start.wait << " (wait)" << std::endl
+            << "   Sleep:\t"    << task.sleep << std::endl
+            << "   Duration:\t" << task.duration << std::endl
+            << "}\n"
+            << "\nTask -> {\n"
+            << "   Target:\t"   << task.target << std::endl
+            << "   Exam:\t"     << task.exam << std::endl
+            << "   Session:\t"  << task.session << std::endl
+            << "   Student:\t"  << task.student << std::endl
+            << "   Mode:\t"     << task.mode << std::endl
+            << "   Read:\t"     << task.read << std::endl
+            << "   Write:\t"    << task.write << std::endl
+            << "   Dry Run:\t"  << task.dry_run << std::endl
+            << "}\n"
+            << "\nCommon -> {\n"
+            << "   Verbose:\t"  << verbose << std::endl
+            << "   Debug:\t"    << debug << std::endl
+            << "   Quiet:\t"    << quiet << std::endl
+            << "}\n\n";
 }

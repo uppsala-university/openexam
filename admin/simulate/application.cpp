@@ -22,9 +22,12 @@
 //
 
 #include <fstream>
+#include <sstream>
+#include <unistd.h>
 
 #include "application.hpp"
 #include "options.hpp"
+#include "output.hpp"
 
 Application::Application(int argc, char **argv)
 {
@@ -54,8 +57,7 @@ void Application::Process()
 //
 void Application::Process(const Task &task) const
 {
-    Task tt(task);
-    Process(&tt);
+    Process(new Task(task));
 }
 
 //
@@ -63,6 +65,7 @@ void Application::Process(const Task &task) const
 //
 void Application::Process(Task *task) const
 {
+    task->setTaskObserver(this);
     task->Start();
 }
 
@@ -75,9 +78,9 @@ void Application::Process(const std::string &file)
 
     if(!stream) {
         throw Exception("Failed open " + file);
-    } else {
-        Process(stream);
     }
+
+    Process(stream);
 }
 
 //
@@ -85,25 +88,103 @@ void Application::Process(const std::string &file)
 //
 void Application::Process(std::ifstream &stream)
 {
+    Start(stream);
+    Join();
+}
+
+//
+// Start all task from input stream.
+//
+void Application::Start(std::ifstream &stream)
+{
     std::string line;
-    pthread_t thread;
     int index = 0;
 
     const Options::Start &start = options->GetStart();
 
     while(std::getline(stream, line)) {
-        Task *task = new Task(options->GetTask());
-        task->Scan(line);
-
-        if(pthread_create(&thread, 0, Task::Start, task) != 0) {
-            throw Exception("Failed create thread");
-        } else {
-            tasks[thread] = task;
+        if(Start(line)) {
+            if((index != 0) && (index % start.num == 0)) {
+                ::sleep(start.wait);
+            }
         }
     }
+}
 
+//
+// Start task defined by input string (read from file). The task is
+// merged with common task options before started. The defined task
+// options have precedence.
+//
+bool Application::Start(const std::string &line)
+{
+    Task *task = new Task(options->GetTask());
+    task->Scan(line);
+
+    return Start(task);
+}
+
+//
+// Start task in own thread. If successful, the task is inserted in the
+// list of running tasks.
+//
+bool Application::Start(Task *task)
+{
+    Thread thread;
+
+    if(pthread_create(&thread, 0, Task::Start, task) != 0) {
+        perror("pthread_create");
+        return false;
+    }
+
+    tasks[thread] = task;
+    task->setTaskObserver(this);
+
+    return true;
+}
+
+//
+// Join all running threads (tasks).
+//
+void Application::Join()
+{
     for(TaskIterator it = tasks.begin(); it != tasks.end(); ++it) {
-        pthread_join(it->first, 0);
-        delete it->second;
+        Join(it->first, it->second);
+    }
+}
+
+//
+// Join thread and collect results.
+//
+void Application::Join(Application::Thread thread, Task *task)
+{
+    if(pthread_join(thread, 0) != 0) {
+        perror("pthread_join");
+    }
+
+    tasks.erase(tasks.find(thread));
+}
+
+//
+// Collect result from finished task.
+//
+void Application::Collect(const Task *task)
+{
+
+}
+
+void Application::Status(std::string message) const
+{
+    std::ostringstream ss;
+    ss << tasks.size() << " active tasks: " << message;
+    Output::Info(ss.str());
+}
+
+void Application::OnStatusChange(const Task *task) const
+{
+    if(task->GetStatus() == Task::Starting) {
+        Status(task->GetStudent() + " [" + task->GetActivity() + "]" + "\tparams=" + task->ToString());
+    } else {
+        Status(task->GetStudent() + " [" + task->GetActivity() + "]");
     }
 }

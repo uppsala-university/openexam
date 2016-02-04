@@ -27,13 +27,16 @@
 #include <string>
 #include <map>
 
-class Options;
-class Task;
+#include "result.hpp"
+#include "task.hpp"
 
-class Application
+class Options;
+
+class Application : public TaskObserver
 {
-    typedef std::map<pthread_t, Task *> Tasks;
-    typedef std::map<pthread_t, Task *>::iterator TaskIterator;
+    typedef pthread_t Thread;
+    typedef std::map<Thread, Task *> Tasks;
+    typedef std::map<Thread, Task *>::iterator TaskIterator;
 
 public:
     struct Exception : public std::exception
@@ -53,9 +56,22 @@ public:
     void Process(const std::string &file);
     void Process(std::ifstream &stream);
 
+    void OnStatusChange(const Task *task) const;
+
 private:
+    void Start(std::ifstream &stream);
+    bool Start(const std::string &line);
+    bool Start(Task *task);
+
+    void Join();
+    void Join(Thread thread, Task *task);
+
+    void Collect(const Task *task);
+    void Status(std::string message) const;
+
     Options *options;
     Tasks tasks;
+    Result result;
 };
 
 #endif // APPLICATION_HPP
