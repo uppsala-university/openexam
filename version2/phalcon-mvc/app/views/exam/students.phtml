@@ -124,11 +124,16 @@ endforeach;
                 <em>No students have been added to the exam yet.</em>
             </div>
             <?php else:?>
+            <div style="float:left; margin-bottom: 5px;">
+                <span id='del-st-btn' class="btn btn-danger" style="display: none">
+                        <i class="fa fa-trash-o"></i>
+                        <span></span>
+                </span>
+            </div>
             <div style="float:right">
                 <input id="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
                 <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
             </div>
-
             <table style="width:100%" class="tablesorter">
                 <thead>
                     <tr>
@@ -222,6 +227,7 @@ endforeach;
 </div>
 
 <script language="javascript">
+        console.log("<?=$_SERVER['SERVER_ADDR'];?>");
         var studentList = <?= json_encode($stList) ?>;
 
         $(function () {
@@ -364,7 +370,7 @@ endforeach;
                             baseURL + 'core/ajax/invigilator/student/update',
                             JSON.stringify(stData),
                             function (userData) {
-                                    console.log(userData);
+                                    //console.log(userData);
                                     //onStudentInserted(userData);
                             }
                     );
@@ -409,7 +415,7 @@ endforeach;
                             if (jQuery.trim($(elem).text()).indexOf(value) != 0) {
                                 $row.hide();
                             } else {
-                                console.log(jQuery.trim($(elem).text()));
+                                //console.log(jQuery.trim($(elem).text()));
                                 $row.show();
                                 return false;
                             }
@@ -444,7 +450,7 @@ endforeach;
                             baseURL + 'core/ajax/invigilator/student/delete',
                             {"id": $(this).attr('data-id')},
                     function (status) {
-                        console.log(studentList);
+                        //console.log(studentList);
                         jQuery.each(studentList, function (i, sData) {
                             if (typeof sData !== 'undefined' && sData.id == $(student).attr('data-id')) {
                                 delete studentList[i];
@@ -487,7 +493,7 @@ endforeach;
                             stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
                         }
                     });
-                    console.log(stData);
+                    //console.log(stData);
                     // send ajax request to add these students to the exam
                     ajax(
                             baseURL + 'core/ajax/invigilator/student/create',
@@ -619,5 +625,35 @@ endforeach;
                             onStudentInserted(result)
                         }); 
             });
-        });
+            
+            //Attach event for student deletion button
+            $(document).on('change', 'input[name="students[]"], #select_all_students', function () {
+                //console.log($('input[name="students[]"]:checked').length);
+                if($('input[name="students[]"]:checked').length) {
+                        $('#del-st-btn > span').html("delete selected "+$('input[name="students[]"]:checked').length+ " students").parent().show();
+                } else {
+                        $('#del-st-btn').hide();
+                }
+            });
+            
+            //Delete selected student
+            $(document).on('click', '#del-st-btn', function() {
+                    if(confirm("Are you sure you want to "+$('#del-st-btn > span').html()+"?")) {
+                        
+                        var delStudent = [];
+                        $('input[name="students[]"]:checked').each(function(i, elem) {
+                                delStudent.push({'id': $(this).val()});
+                        });
+                        
+                        ajax(
+                            baseURL + 'core/ajax/invigilator/student/delete',
+                            JSON.stringify(delStudent),
+                            function (status) {
+                                    $('input[name="students[]"]:checked').closest('tr').remove();
+                            }
+                        );
+                    }
+            });
+            
+        }); 
 </script>
