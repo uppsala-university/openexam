@@ -160,7 +160,7 @@ class ExamController extends GuiController
                         'descr'   => ' ',
                         'creator' => $this->user->getPrincipalName(),
                         'orgunit' => $this->catalog->getAttribute($this->user->getPrincipalName(), 'department')[0]['department'][0],
-                        'grades'  => 'U:0&#13;&#10;G:15&#13;&#10;VG:20',
+                        'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75',
                         'details' => 7
                 ));
 
