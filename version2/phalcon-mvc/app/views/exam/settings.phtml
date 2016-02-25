@@ -97,7 +97,7 @@ die;*/
 	<div class="st-line" style="float:left; margin-right:25px">
 		<label for="grade"><strong>Grades:</strong> <span style="color:#F02222">*</span></label>
 		<?php if($canUpdateExam):?>
-		<textarea title="Input name:value pairs on separate lines defining the Grade levels for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade validate[required]" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:15", 60, " ") . "VG:20"?>"><?=trim($exam->grades)?></textarea>
+		<textarea title="Input name:value pairs on separate lines defining the grade levels in percent for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade validate[required]" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:50", 60, " ") . "VG:75"?>"><?=trim($exam->grades)?></textarea>
 		<?php else:?>
 		<span style="border: 1px solid #cecece; padding:5px"><?=nl2br(trim($exam->grades))?></span>
 		<?php endif;?>

@@ -111,7 +111,7 @@
         <div class="st-line">
                 <label for="grade"><strong>Grades:</strong></label>
                 <?php $examGrades = trim($exam->grades);?>
-                <textarea title="Input name:value pairs on separate lines defining the Grade levels for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade validate[required]" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:15", 60, " ") . "VG:20"?>"><?=(!empty($examGrades) ? $examGrades : "U:0&#13;&#10;G:15&#13;&#10;VG:20")?></textarea>
+                <textarea title="Input name:value pairs on separate lines defining the grade levels in percent for this examination. The first line must be on form name:0, denoting the failed grade." name="grade" class="grade validate[required]" placeholder="<?=str_pad("U:0", 65, " ").str_pad("G:50", 60, " ") . "VG:75"?>"><?=(!empty($examGrades) ? $examGrades : "U:0&#13;&#10;G:50&#13;&#10;VG:75")?></textarea>
         </div>
 
         <div class="st-line">
