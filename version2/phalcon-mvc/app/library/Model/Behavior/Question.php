@@ -28,11 +28,18 @@ class Question extends ModelBehavior
          */
         public function notify($type, $model)
         {
-                // 
-                // Add caller as question corrector:
-                // 
                 if ($type == 'afterCreate') {
                         $this->trustedContextCall(function($user) use($model) {
+                                // 
+                                // Don't add exam creator as question corrector.
+                                // 
+                                if ($user->getPrincipalName() == $model->exam->creator) {
+                                        return;
+                                }
+
+                                // 
+                                // Add caller as question corrector:
+                                // 
                                 $corrector = new \OpenExam\Models\Corrector();
                                 $corrector->user = $model->user;
                                 $corrector->question_id = $model->id;
