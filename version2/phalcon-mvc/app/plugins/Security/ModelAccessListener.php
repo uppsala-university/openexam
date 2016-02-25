@@ -273,14 +273,9 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                                 "Denied %s access on %s(id=%d) for caller using role %s (failed aquire role)", $action, $name, $model->id, $role
                         ));
                         throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
-                } elseif ($action == ObjectAccess::CREATE) {    // The create action is not connected with an object.
-                        $this->logger->access->info(sprintf(
-                                "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
-                        ));
-                        return $this->setGrantAccess($user->getPrincipalName(), $model, $action);
                 } elseif (Roles::isCustom($role)) {             // Custom roles are global
                         $this->logger->access->info(sprintf(
-                                "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
+                                "Granted %s access on %s(id=%d) for caller using role %s (custom role)", $action, $name, $model->id, $role
                         ));
                         return $this->setGrantAccess($user->getPrincipalName(), $model, $action);
                 } elseif (($access = $this->getObjectAccess($name))) {
@@ -291,7 +286,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                         }
                         if ($access->notify($type, $model, $user)) {
                                 $this->logger->access->info(sprintf(
-                                        "Granted %s access on %s(id=%d) for caller using role %s", $action, $name, $model->id, $role
+                                        "Granted %s access on %s(id=%d) for caller using role %s (object access)", $action, $name, $model->id, $role
                                 ));
                                 return $this->setGrantAccess($user->getPrincipalName(), $model, $action);
                         }

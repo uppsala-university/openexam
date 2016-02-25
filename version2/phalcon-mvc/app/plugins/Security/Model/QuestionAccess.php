@@ -121,7 +121,7 @@ class QuestionAccess extends ObjectAccess
                             // 
                             if ($action != self::READ) {
                                     if ($model->exam->getState()->has(State::PUBLISHED)) {
-                                            throw new Exception("Questions can't be modified in an published exam", Exception::ACTION);
+                                            throw new Exception("Questions can't be added, modified or deleted in an published exam", Exception::ACTION);
                                     }
                             }
 
