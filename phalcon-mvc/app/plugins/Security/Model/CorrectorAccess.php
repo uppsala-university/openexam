@@ -75,4 +75,30 @@ class CorrectorAccess extends ObjectAccess
                     });
         }
 
+        /**
+         * Check object action.
+         * 
+         * @param string $action The model action.
+         * @param Corrector $model The model object.
+         * @param User $user The peer object.
+         * @return boolean
+         */
+        public function checkObjectAction($action, $model, $user)
+        {
+                if ($this->logger->debug) {
+                        $this->logger->debug->log(sprintf(
+                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+                        ));
+                }
+
+                // 
+                // Perform access control in a trusted context:
+                // 
+                return $this->trustedContextCall(function($role) use($action, $model, $user) {
+                            if ($action == self::DELETE && $model->results->count() > 0) {
+                                    throw new Exception("Cowardly refusing to delete a corrector having saved results. The linked role can instead be transfered to another person using update.", Exception::ACTION);
+                            }
+                    });
+        }
+
 }
