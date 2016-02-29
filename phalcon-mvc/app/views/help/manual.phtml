@@ -36,7 +36,16 @@
                 printf("</a>");
                 printf("<ul>\n");
                 foreach ($data['data'] as $format => $name) {
-                        printf("<li><a href=\"%s/manual/%s/%s\">%s</a></li>\n", $base, $section, $format, $name);
+                        printf("<li>\n");
+                        printf("<a href=\"%s/manual/%s/%s/%s\">%s</a>\n", $base, $section, $data['lang'][0], $format, $name);
+                        if (count($data['lang']) > 1) {
+                                $links = array();
+                                foreach ($data['lang'] as $language) {
+                                        $links[] = sprintf("<a href=\"%s/manual/%s/%s/%s\">%s</a>", $base, $section, $language, $format, ucfirst($language));
+                                }
+                                printf("<br/>[%s]", implode(", ", $links));
+                        }
+                        printf("</li>\n");
                 }
                 printf("</ul>\n");
                 printf("</div>\n");

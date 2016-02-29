@@ -31,7 +31,8 @@ class HelpController extends GuiController
          */
         private static $mime = array(
                 "pdf"  => "application/pdf",
-                "docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                "docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "odt"  => "application/vnd.oasis.opendocument.text"
         );
         /**
          * Help content description.
@@ -45,8 +46,17 @@ class HelpController extends GuiController
                                         "name" => "The OpenExam Teacher Manual",
                                         "data" => array(
                                                 "pdf"  => "Portable Document Format (PDF)",
-                                                "docx" => "Microsoft Word OpenDocument"
-                                        )
+                                                "docx" => "Microsoft Word OpenXML"
+                                        ),
+                                        "lang" => array("english")
+                                ),
+                                "student" => array(
+                                        "name" => "The OpenExam Student Manual",
+                                        "data" => array(
+                                                "pdf" => "Portable Document Format (PDF)",
+                                                "odt" => "Open Document Format (Text)"
+                                        ),
+                                        "lang" => array("swedish", "english")
                                 )
                         )
                 )
@@ -76,15 +86,20 @@ class HelpController extends GuiController
          * links to downloadable content.
          * 
          * @param string $target The target manual.
+         * @param string $language The manual language.
          * @param string $format The manual format (e.g. pdf)
          * @throws Exception
          * 
          * @location /help/manual/*
          */
-        public function manualAction($target = null, $format = "pdf")
+        public function manualAction($target = null, $language = "swedish", $format = "pdf")
         {
                 if ($target == "teacher") {
-                        $this->teacherManual($target, $format);
+                        $this->teacherManual($target, $language, $format);
+                        return;
+                }
+                if ($target == "student") {
+                        $this->studentManual($target, $language, $format);
                         return;
                 }
 
@@ -98,10 +113,11 @@ class HelpController extends GuiController
          * should defined in access.def.
          * 
          * @param string $target The target manual.
+         * @param string $language The manual language.
          * @param string $format The manual format (e.g. pdf)
          * @throws Exception
          */
-        private function teacherManual($target, $format)
+        private function teacherManual($target, $language, $format)
         {
 
                 $file = sprintf("openexam-%s-manual.%s", $target, $format);
@@ -110,6 +126,26 @@ class HelpController extends GuiController
                 if (!$this->user->affiliation->isEmployee()) {
                         throw new Exception("The teacher manual is only available for employees", Error::FORBIDDEN);
                 }
+
+                $this->sendManual($path, $file, $format);
+        }
+
+        /**
+         * Handles the student manual.
+         * 
+         * This manual should be restricted. This is subject to changes and
+         * should defined in access.def.
+         * 
+         * @param string $target The target manual.
+         * @param string $language The manual language.
+         * @param string $format The manual format (e.g. pdf)
+         * @throws Exception
+         */
+        private function studentManual($target, $language, $format)
+        {
+
+                $file = sprintf("openexam-%s-manual-%s.%s", $target, $language, $format);
+                $path = sprintf("%s/manual/%s", $this->config->application->docsDir, $file);
 
                 $this->sendManual($path, $file, $format);
         }
