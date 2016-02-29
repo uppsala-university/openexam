@@ -31,7 +31,7 @@
         foreach ($help as $section => $ds) {
                 printf("<div class=\"span3\">\n");
                 foreach ($help as $section => $ds) {
-                        printf("<a href=\"%s/%s\">\n", $base, $section);
+                        printf("<a href=\"%s/%s\" title=\"Click to display more manuals in various formats and translations\">\n", $base, $section);
                         printf("<h2>%s</h2>\n", $ds['name']);
                         printf("<img src=\"%s\" style=\"padding-bottom:15px\" />\n", $icon);
                         printf("</a>\n");
@@ -39,6 +39,7 @@
                         foreach ($ds['data'] as $target => $dt) {
                                 printf("<li><a href=\"%s/%s/%s\">%s</a></li>\n", $base, $section, $target, $dt['name']);
                         }
+                        printf("<br/><li><a href=\"%s/%s\">Other formats and translations...</a></li>\n", $base, $section);
                         printf("</ul>\n");
                 }
                 printf("</div>\n");
