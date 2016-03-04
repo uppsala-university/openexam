@@ -156,7 +156,7 @@
 												<?php foreach($qPartData['ans_area']['data'] as $qPartOpt => $ans):?>
 												<div class="checkbox">
 													<label>
-														<input <?=$type=='radio'?'name="'.$questionNo.'-'.$qPart.'"':''?> type="<?=$type?>" value="<?=$qPartOpt?>" class="changeable" <?=isset($answerData[$qPart]['ans']) && in_array($qPartOpt, $answerData[$qPart]['ans']) ? 'checked="checked"' : ''?>>
+														<input <?=$type=='radio'?'name="'.$questionNo.'-'.$qPart.'"':''?> type="<?=$type?>" value="<?=htmlspecialchars($qPartOpt)?>" class="changeable" <?=isset($answerData[$qPart]['ans']) && in_array($qPartOpt, $answerData[$qPart]['ans']) ? 'checked="checked"' : ''?>>
 														<?=$qPartOpt?>
 													</label>
 												</div>
