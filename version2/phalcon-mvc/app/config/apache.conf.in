@@ -10,8 +10,7 @@
 Alias /phalcon-mvc /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/public
 
 <Directory /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/public>
-    Order allow,deny
-    Allow from ::1 127.0.0.1
+    Require local
 
     # Disable htaccess for performance reasons:
     AllowOverride none
@@ -29,7 +28,6 @@ Alias /phalcon-mvc /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/publ
 
     # Hide development files:
     <FilesMatch "\.(inc|bak|svn|.*~)$">
-        Order allow,deny
-        Deny from all
+	Require all denied
     </FilesMatch>
 </Directory>

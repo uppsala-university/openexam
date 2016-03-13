@@ -20,14 +20,12 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
 
 # The application root directory, its safe to keep this public.
 <Directory /var/www/localhost/apps/openexam-php/source/>
-  Order deny,allow
-  Allow from all
+  Require all granted
   Options Indexes FollowSymLinks MultiViews
   
   # Hide development files:
   <FilesMatch "\.(inc|bak|svn|.*~)$">
-    Order allow,deny
-    Deny from all
+    Require all denied
   </FilesMatch>
   
   # Set custom include path:
@@ -37,9 +35,8 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
 
 # This directory contains the exam, so keep it medium private.
 <Directory /var/www/localhost/apps/openexam-php/source/exam/>
-  Order deny,allow
-  Deny from all
-  Allow from 127.0.0.1 ::1 192.168. 10. 169.254.
+  Require local
+  Require ip 192.168. 10. 169.254.
 
   # Enforce HTTPS connection:
   RewriteEngine On
@@ -49,9 +46,7 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
 
 # This directory contains the pages used by teachers for managing the exams.
 <Directory /var/www/localhost/apps/openexam-php/source/teacher/>
-  Order deny,allow
-  Deny from all
-  Allow from 127.0.0.1 ::1
+  Require local
 
   # Enforce HTTPS connection:
   RewriteEngine On
@@ -61,9 +56,7 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
 
 # This directory contains admin pages, test scripts and setup, so keep it private:
 <Directory /var/www/localhost/apps/openexam-php/source/admin/>
-  Order deny,allow
-  Deny from all
-  Allow from 127.0.0.1 ::1
+  Require local
 
   # Enforce HTTPS connection:
   RewriteEngine On
@@ -74,16 +67,14 @@ Alias /openexam/ /var/www/localhost/apps/openexam-php/source/
 # This directory contains supporting media files. Don't enforce HTTPS as it 
 # breaks some media player plugins.
 <Directory /var/www/localhost/apps/openexam-php/source/media/>
-  Order deny,allow
-  Allow from all
+  Require all granted
 </Directory>
 
 # The directory from where students can download results from their 
 # examinations. This URL should probably be accessable from anywhere.
 <Directory /var/www/localhost/apps/openexam-php/source/result/>
-  Order deny,allow
-  Deny from all
-  Allow from 127.0.0.1 ::1 192.168. 10. 169.254.
+  Require local
+  Require ip 192.168. 10. 169.254.
 
   # Enforce HTTPS connection:
   RewriteEngine On
