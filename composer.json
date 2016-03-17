@@ -4,11 +4,11 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "http://it.bmc.uu.se/andlov/php/proj/bmc/uup-auth/"
+            "url": "https://it.bmc.uu.se/andlov/php/proj/bmc/uup-auth/"
         },
         {
             "type": "composer",
-            "url": "http://it.bmc.uu.se/andlov/php/proj/bmc/uup-mail/"
+            "url": "https://it.bmc.uu.se/andlov/php/proj/bmc/uup-mail/"
         }
     ],
     "authors": [
