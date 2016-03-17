@@ -1,0 +1,1141 @@
+
+Data Source Analysed
+
+Directories                                         81
+Files                                              519
+
+Extensions Analysis
+
+    Extension    Matches REF        EXT min/Max PHP min/Max PHP all 
+    Core                 Core                   4.0.0       5.4.0   
+    Reflection           Reflection 5.0.0       5.0.0               
+ C  SimpleXML            user                   4.0.0       5.0.1   
+ C  apc                  user                   4.0.0               
+ C  curl                 user                   4.0.0       4.0.4   
+    date                 date       4.0.0       4.0.0       5.2.0   
+ C  dom                  user                   4.0.0       5.0.0   
+    exif                 exif       4.3.0       4.3.0               
+ C  fileinfo             user                   4.0.0       5.3.0   
+    filter               filter     0.9.0       4.0.0       5.0.0   
+    gd                   gd         4.0.0       4.0.0       5.5.0   
+ C  gettext              gettext    4.0.0       4.0.0       4.2.0   
+ C  imagick              user                   4.0.0       5.1.3   
+ C  intl                 user                   4.0.0       5.2.0   
+    json                 json       5.2.0       5.2.0               
+    ldap                 ldap       4.0.0       4.0.0       4.0.4   
+ C  memcache             user                   4.0.0               
+    pcre                 pcre       4.0.0       4.0.0       4.0.5   
+ C  phpwkhtmltox         user                   4.0.0               
+ C  posix                user                   4.0.0               
+    session              session    4.0.0       4.0.0       5.4.0   
+ C  soap                 user                   4.0.0       5.0.0   
+    spl                  spl        5.0.0       5.0.0       5.1.3   
+    standard             standard   4.0.6       4.0.6       5.3.0   
+ C  xcache               user                   4.0.0               
+    xml                  xml        4.0.0       4.0.0               
+    zip                  zip        1.6.0       5.2.0               
+    Total [27]                                  5.2.0       5.5.0   
+
+Namespaces Analysis
+
+    Namespace                                                Matches REF  EXT min/Max PHP min/Max PHP all 
+    +global                                                          Core             4.0.0       5.4.0   
+    OpenExam\Console\Tasks                                           user             5.3.0               
+    OpenExam\Controllers                                             user             5.3.0       5.4.0   
+    OpenExam\Controllers\Gui                                         user             5.3.0               
+    OpenExam\Controllers\Service                                     user             5.3.0               
+    OpenExam\Controllers\Service\Ajax                                user             5.3.0               
+    OpenExam\Controllers\Service\Rest                                user             5.3.0               
+    OpenExam\Controllers\Service\Soap                                user             5.3.0               
+    OpenExam\Controllers\Utility                                     user             5.3.0               
+    OpenExam\Library\Catalog                                         user             5.3.0               
+    OpenExam\Library\Catalog\DirectoryService                        user             5.3.0               
+    OpenExam\Library\Catalog\DirectoryService\Ldap                   user             5.3.0               
+    OpenExam\Library\Catalog\DirectoryService\Uppdok                 user             5.3.0               
+    OpenExam\Library\Console                                         user             5.3.0               
+    OpenExam\Library\Core                                            user             5.3.0               
+    OpenExam\Library\Core\Exam                                       user             5.3.0               
+    OpenExam\Library\Core\Exam\Student                               user             5.3.0               
+    OpenExam\Library\Core\Handler                                    user             5.3.0               
+    OpenExam\Library\Core\Signup                                     user             5.3.0               
+    OpenExam\Library\Database                                        user             5.3.0               
+    OpenExam\Library\Form                                            user             5.3.0               
+    OpenExam\Library\Globalization                                   user             5.3.0               
+    OpenExam\Library\Globalization\Locale                            user             5.3.0               
+    OpenExam\Library\Globalization\Translate                         user             5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext                 user             5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Command         user             5.3.0               
+    OpenExam\Library\Gui                                             user             5.3.0               
+    OpenExam\Library\Import                                          user             5.3.0               
+    OpenExam\Library\Import\Project                                  user             5.3.0               
+    OpenExam\Library\Import\Questions                                user             5.3.0               
+    OpenExam\Library\Import\Students                                 user             5.3.0               
+    OpenExam\Library\Model                                           user             5.3.0               
+    OpenExam\Library\Model\Behavior                                  user             5.3.0       5.4.0   
+    OpenExam\Library\Render                                          user             5.3.0               
+    OpenExam\Library\Security                                        user             5.3.0               
+    OpenExam\Library\Security\Login                                  user             5.3.0       5.4.0   
+    OpenExam\Library\Security\Login\Base                             user             5.3.0               
+    OpenExam\Library\WebService\Common                               user             5.3.0               
+    OpenExam\Library\WebService\Handler                              user             5.3.0               
+    OpenExam\Library\WebService\Soap                                 user             5.3.0               
+    OpenExam\Library\WebService\Soap\Service                         user             5.3.0               
+    OpenExam\Library\WebService\Soap\Types                           user             5.3.0               
+    OpenExam\Library\WebService\Soap\Wrapper                         user             5.3.0               
+    OpenExam\Library\WebService\Wsdl                                 user             5.3.0               
+    OpenExam\Models                                                  user             5.3.0               
+    OpenExam\Plugins\Security                                        user             5.3.0               
+    OpenExam\Plugins\Security\Dispatcher                             user             5.3.0               
+    OpenExam\Plugins\Security\Model                                  user             5.3.0       5.4.0   
+    Total [48]                                                                        5.3.0       5.4.0   
+
+Interfaces Analysis
+
+    Interface                                           Matches REF  EXT min/Max PHP min/Max PHP all 
+    OpenExam\Console\Tasks\TaskInterface                10      user             5.3.0               
+    OpenExam\Library\Catalog\DirectoryService           2       user             5.3.0               
+    OpenExam\Library\Catalog\ServiceConnection          1       user             5.3.0               
+    OpenExam\Library\Core\Signup                        1       user             5.3.0               
+    OpenExam\Library\Globalization\Translate\Setup      1       user             5.3.0               
+    OpenExam\Library\Globalization\Translate\Translate  1       user             5.3.0               
+    OpenExam\Library\Import\Import                      1       user             5.3.0               
+    OpenExam\Library\Render\Renderer                    2       user             5.3.0               
+    OpenExam\Library\Security\Login\Base\FormLogin      1       user             5.3.0               
+    OpenExam\Library\Security\Login\Base\RemoteLogin    1       user             5.3.0               
+    OpenExam\Library\WebService\Soap\SoapHandler        2       user             5.3.0               
+    OpenExam\Plugins\Security\Dispatcher\DispatchHelper 3       user             5.3.0               
+  U Phalcon\DI\InjectionAwareInterface                  2       user             5.3.0               
+  U Phalcon\Events\EventsAwareInterface                 2       user             5.3.0               
+  U Phalcon\Mvc\Model\BehaviorInterface                 1       user             5.3.0               
+  U Phalcon\Session\AdapterInterface                    1       user             5.3.0               
+  U UUP\Authentication\Authenticator\Authenticator      1       user             5.3.0               
+  U UUP\Authentication\Restrictor\Restrictor            1       user             5.3.0               
+    Total [18]                                                                   5.3.0               
+
+No trait found
+
+Classes Analysis
+
+    Class                                                                     Matches REF        EXT min/Max PHP min/Max PHP all 
+    AccessMigration_2010                                                              user                   5.3.0               
+    AccessMigration_207                                                               user                   5.3.0               
+    AccessMigration_208                                                               user                   5.3.0               
+    AccessMigration_209                                                               user                   5.3.0               
+    AdminsMigration_090                                                               user                   5.3.0               
+    AdminsMigration_100                                                               user                   5.3.0               
+    AdminsMigration_110                                                               user                   5.3.0               
+    AdminsMigration_120                                                               user                   5.3.0               
+    AdminsMigration_200                                                               user                   5.3.0               
+    AdminsMigration_201                                                               user                   5.3.0               
+    AdminsMigration_2010                                                              user                   5.3.0               
+    AdminsMigration_202                                                               user                   5.3.0               
+    AdminsMigration_203                                                               user                   5.3.0               
+    AdminsMigration_204                                                               user                   5.3.0               
+    AdminsMigration_205                                                               user                   5.3.0               
+    AdminsMigration_206                                                               user                   5.3.0               
+    AdminsMigration_207                                                               user                   5.3.0               
+    AdminsMigration_208                                                               user                   5.3.0               
+    AdminsMigration_209                                                               user                   5.3.0               
+    AnswersMigration_090                                                              user                   5.3.0               
+    AnswersMigration_100                                                              user                   5.3.0               
+    AnswersMigration_110                                                              user                   5.3.0               
+    AnswersMigration_120                                                              user                   5.3.0               
+    AnswersMigration_200                                                              user                   5.3.0               
+    AnswersMigration_201                                                              user                   5.3.0               
+    AnswersMigration_2010                                                             user                   5.3.0               
+    AnswersMigration_202                                                              user                   5.3.0               
+    AnswersMigration_203                                                              user                   5.3.0               
+    AnswersMigration_204                                                              user                   5.3.0               
+    AnswersMigration_205                                                              user                   5.3.0               
+    AnswersMigration_206                                                              user                   5.3.0               
+    AnswersMigration_207                                                              user                   5.3.0               
+    AnswersMigration_208                                                              user                   5.3.0               
+    AnswersMigration_209                                                              user                   5.3.0               
+    ComputersMigration_090                                                            user                   5.3.0               
+    ComputersMigration_100                                                            user                   5.3.0               
+    ComputersMigration_110                                                            user                   5.3.0               
+    ComputersMigration_120                                                            user                   5.3.0               
+    ComputersMigration_200                                                            user                   5.3.0               
+    ComputersMigration_201                                                            user                   5.3.0               
+    ComputersMigration_2010                                                           user                   5.3.0               
+    ComputersMigration_202                                                            user                   5.3.0               
+    ComputersMigration_203                                                            user                   5.3.0               
+    ComputersMigration_204                                                            user                   5.3.0               
+    ComputersMigration_205                                                            user                   5.3.0               
+    ComputersMigration_206                                                            user                   5.3.0               
+    ComputersMigration_207                                                            user                   5.3.0               
+    ComputersMigration_208                                                            user                   5.3.0               
+    ComputersMigration_209                                                            user                   5.3.0               
+    ContributorsMigration_090                                                         user                   5.3.0               
+    ContributorsMigration_100                                                         user                   5.3.0               
+    ContributorsMigration_110                                                         user                   5.3.0               
+    ContributorsMigration_120                                                         user                   5.3.0               
+    ContributorsMigration_200                                                         user                   5.3.0               
+    ContributorsMigration_201                                                         user                   5.3.0               
+    ContributorsMigration_2010                                                        user                   5.3.0               
+    ContributorsMigration_202                                                         user                   5.3.0               
+    ContributorsMigration_203                                                         user                   5.3.0               
+    ContributorsMigration_204                                                         user                   5.3.0               
+    ContributorsMigration_205                                                         user                   5.3.0               
+    ContributorsMigration_206                                                         user                   5.3.0               
+    ContributorsMigration_207                                                         user                   5.3.0               
+    ContributorsMigration_208                                                         user                   5.3.0               
+    ContributorsMigration_209                                                         user                   5.3.0               
+    CorrectorsMigration_201                                                           user                   5.3.0               
+    CorrectorsMigration_2010                                                          user                   5.3.0               
+    CorrectorsMigration_202                                                           user                   5.3.0               
+    CorrectorsMigration_203                                                           user                   5.3.0               
+    CorrectorsMigration_204                                                           user                   5.3.0               
+    CorrectorsMigration_205                                                           user                   5.3.0               
+    CorrectorsMigration_206                                                           user                   5.3.0               
+    CorrectorsMigration_207                                                           user                   5.3.0               
+    CorrectorsMigration_208                                                           user                   5.3.0               
+    CorrectorsMigration_209                                                           user                   5.3.0               
+    DecodersMigration_090                                                             user                   5.3.0               
+    DecodersMigration_100                                                             user                   5.3.0               
+    DecodersMigration_110                                                             user                   5.3.0               
+    DecodersMigration_120                                                             user                   5.3.0               
+    DecodersMigration_200                                                             user                   5.3.0               
+    DecodersMigration_201                                                             user                   5.3.0               
+    DecodersMigration_2010                                                            user                   5.3.0               
+    DecodersMigration_202                                                             user                   5.3.0               
+    DecodersMigration_203                                                             user                   5.3.0               
+    DecodersMigration_204                                                             user                   5.3.0               
+    DecodersMigration_205                                                             user                   5.3.0               
+    DecodersMigration_206                                                             user                   5.3.0               
+    DecodersMigration_207                                                             user                   5.3.0               
+    DecodersMigration_208                                                             user                   5.3.0               
+    DecodersMigration_209                                                             user                   5.3.0               
+    DirectoryIterator                                                         4       spl        5.0.0       5.0.0               
+    DisplayLocation                                                           3       user                   5.0.0               
+    DomDocument                                                               7       dom        5.0.0       5.0.0               
+    DomElement                                                                5       dom        5.0.0       5.0.0               
+    ErrorException                                                            1       Core       5.1.0       5.1.0               
+    ExaminatorsMigration_090                                                          user                   5.3.0               
+    ExaminatorsMigration_100                                                          user                   5.3.0               
+    ExaminatorsMigration_110                                                          user                   5.3.0               
+    ExaminatorsMigration_120                                                          user                   5.3.0               
+    ExamsMigration_090                                                                user                   5.3.0               
+    ExamsMigration_100                                                                user                   5.3.0               
+    ExamsMigration_110                                                                user                   5.3.0               
+    ExamsMigration_120                                                                user                   5.3.0               
+    ExamsMigration_200                                                                user                   5.3.0               
+    ExamsMigration_201                                                                user                   5.3.0               
+    ExamsMigration_2010                                                               user                   5.3.0               
+    ExamsMigration_202                                                                user                   5.3.0               
+    ExamsMigration_203                                                                user                   5.3.0               
+    ExamsMigration_204                                                                user                   5.3.0               
+    ExamsMigration_205                                                                user                   5.3.0               
+    ExamsMigration_206                                                                user                   5.3.0               
+    ExamsMigration_207                                                                user                   5.3.0               
+    ExamsMigration_208                                                                user                   5.3.0               
+    ExamsMigration_209                                                                user                   5.3.0               
+    Exception                                                                 35      Core       5.1.0       5.1.0               
+    FilesMigration_2010                                                               user                   5.3.0               
+    FilesMigration_202                                                                user                   5.3.0               
+    FilesMigration_203                                                                user                   5.3.0               
+    FilesMigration_204                                                                user                   5.3.0               
+    FilesMigration_205                                                                user                   5.3.0               
+    FilesMigration_206                                                                user                   5.3.0               
+    FilesMigration_207                                                                user                   5.3.0               
+    FilesMigration_208                                                                user                   5.3.0               
+    FilesMigration_209                                                                user                   5.3.0               
+    FilterIterator                                                            1       spl        5.1.0       5.1.0               
+    Imagick                                                                   4       imagick    2.0.0a1     5.1.3               
+    ImagickPixel                                                              2       imagick    2.0.0a1     5.1.3               
+    InvigilatorsMigration_200                                                         user                   5.3.0               
+    InvigilatorsMigration_201                                                         user                   5.3.0               
+    InvigilatorsMigration_2010                                                        user                   5.3.0               
+    InvigilatorsMigration_202                                                         user                   5.3.0               
+    InvigilatorsMigration_203                                                         user                   5.3.0               
+    InvigilatorsMigration_204                                                         user                   5.3.0               
+    InvigilatorsMigration_205                                                         user                   5.3.0               
+    InvigilatorsMigration_206                                                         user                   5.3.0               
+    InvigilatorsMigration_207                                                         user                   5.3.0               
+    InvigilatorsMigration_208                                                         user                   5.3.0               
+    InvigilatorsMigration_209                                                         user                   5.3.0               
+    Locale                                                                    4       intl       1.0.0beta   5.2.0               
+    LocksMigration_090                                                                user                   5.3.0               
+    LocksMigration_100                                                                user                   5.3.0               
+    LocksMigration_110                                                                user                   5.3.0               
+    LocksMigration_120                                                                user                   5.3.0               
+    LocksMigration_200                                                                user                   5.3.0               
+    LocksMigration_201                                                                user                   5.3.0               
+    LocksMigration_2010                                                               user                   5.3.0               
+    LocksMigration_202                                                                user                   5.3.0               
+    LocksMigration_203                                                                user                   5.3.0               
+    LocksMigration_204                                                                user                   5.3.0               
+    LocksMigration_205                                                                user                   5.3.0               
+    LocksMigration_206                                                                user                   5.3.0               
+    LocksMigration_207                                                                user                   5.3.0               
+    LocksMigration_208                                                                user                   5.3.0               
+    LocksMigration_209                                                                user                   5.3.0               
+    OpenExam\Console\Tasks\CacheTask                                          1       user                   5.3.0               
+    OpenExam\Console\Tasks\DatabaseTask                                       1       user                   5.3.0               
+    OpenExam\Console\Tasks\Exception                                          11      user                   5.3.0               
+    OpenExam\Console\Tasks\GettextTask                                        1       user                   5.3.0               
+    OpenExam\Console\Tasks\HelpTask                                                   user                   5.3.0               
+    OpenExam\Console\Tasks\MainTask                                           9       user                   5.3.0               
+    OpenExam\Console\Tasks\ModelTask                                          1       user                   5.3.0               
+    OpenExam\Console\Tasks\RenderTask                                         1       user                   5.3.0               
+    OpenExam\Console\Tasks\SimulateTask                                               user                   5.3.0               
+    OpenExam\Console\Tasks\SoapServiceTask                                    1       user                   5.3.0               
+    OpenExam\Console\Tasks\UnittestTask                                               user                   5.3.0               
+    OpenExam\Controllers\ControllerBase                                       2       user                   5.3.0       5.4.0   
+    OpenExam\Controllers\GuiController                                        11      user                   5.3.0               
+    OpenExam\Controllers\Gui\AuthController                                           user                   5.3.0               
+    OpenExam\Controllers\Gui\ErrorController                                          user                   5.3.0               
+    OpenExam\Controllers\Gui\ExamController                                           user                   5.3.0               
+  U OpenExam\Controllers\Gui\Exception                                        1       user                   5.3.0               
+    OpenExam\Controllers\Gui\HelpController                                           user                   5.3.0               
+    OpenExam\Controllers\Gui\PublicController                                         user                   5.3.0               
+    OpenExam\Controllers\Gui\QuestionController                                       user                   5.3.0               
+    OpenExam\Controllers\Gui\ResultController                                         user                   5.3.0               
+    OpenExam\Controllers\Gui\SignupController                                         user                   5.3.0               
+    OpenExam\Controllers\ServiceController                                    3       user                   5.3.0               
+    OpenExam\Controllers\Service\AjaxController                               4       user                   5.3.0               
+    OpenExam\Controllers\Service\Ajax\AccessController                                user                   5.3.0               
+    OpenExam\Controllers\Service\Ajax\CatalogController                               user                   5.3.0               
+    OpenExam\Controllers\Service\Ajax\CoreController                                  user                   5.3.0               
+    OpenExam\Controllers\Service\Ajax\SignupController                                user                   5.3.0               
+    OpenExam\Controllers\Service\RestController                               4       user                   5.3.0               
+    OpenExam\Controllers\Service\Rest\AccessController                                user                   5.3.0               
+    OpenExam\Controllers\Service\Rest\CatalogController                               user                   5.3.0               
+    OpenExam\Controllers\Service\Rest\CoreController                                  user                   5.3.0               
+    OpenExam\Controllers\Service\Rest\SignupController                                user                   5.3.0               
+    OpenExam\Controllers\Service\SoapController                               1       user                   5.3.0               
+    OpenExam\Controllers\Service\Soap\CoreController                                  user                   5.3.0               
+    OpenExam\Controllers\Utility\ImportController                                     user                   5.3.0               
+    OpenExam\Controllers\Utility\MediaController                                      user                   5.3.0               
+    OpenExam\Controllers\Utility\ModelController                                      user                   5.3.0               
+    OpenExam\Library\Catalog\Affiliation                                      1       user                   5.3.0               
+    OpenExam\Library\Catalog\DirectoryManager                                 1       user                   5.3.0               
+    OpenExam\Library\Catalog\DirectoryService\LdapService                             user                   5.3.0               
+    OpenExam\Library\Catalog\DirectoryService\Ldap\LdapConnection             1       user                   5.3.0               
+    OpenExam\Library\Catalog\DirectoryService\Ldap\LdapResult                 4       user                   5.3.0               
+    OpenExam\Library\Catalog\DirectoryService\UppdokService                           user                   5.3.0               
+    OpenExam\Library\Catalog\DirectoryService\Uppdok\UppdokData               1       user                   5.3.0               
+    OpenExam\Library\Catalog\DirectoryService\Uppdok\UppdokRecord             1       user                   5.3.0               
+    OpenExam\Library\Catalog\Exception                                        15      user                   5.3.0               
+    OpenExam\Library\Catalog\Group                                                    user                   5.3.0               
+    OpenExam\Library\Catalog\Principal                                        3       user                   5.3.0               
+    OpenExam\Library\Catalog\ServiceAdapter                                   2       user                   5.3.0               
+    OpenExam\Library\Console\Application                                      5       user                   5.3.0               
+    OpenExam\Library\Console\CommandOption                                    1       user                   5.3.0               
+    OpenExam\Library\Console\Flash                                            1       user                   5.3.0               
+    OpenExam\Library\Core\Cache                                               1       user                   5.3.0               
+    OpenExam\Library\Core\Error                                               1       user                   5.3.0               
+  U OpenExam\Library\Core\Exam\Grades                                         1       user                   5.3.0               
+    OpenExam\Library\Core\Exam\State                                          1       user                   5.3.0               
+    OpenExam\Library\Core\Exam\Student\Access                                 2       user                   5.3.0               
+  U OpenExam\Library\Core\Exam\Student\Computer                               1       user                   5.3.0               
+    OpenExam\Library\Core\Exam\Student\Lockdown                               1       user                   5.3.0               
+    OpenExam\Library\Core\Exam\Student\Setup                                  1       user                   5.3.0               
+    OpenExam\Library\Core\Formatter                                           1       user                   5.3.0               
+    OpenExam\Library\Core\Handler\CoreHandler                                 2       user                   5.3.0               
+    OpenExam\Library\Core\Handler\Exception                                   7       user                   5.3.0               
+    OpenExam\Library\Core\Location                                            1       user                   5.3.0               
+    OpenExam\Library\Core\Pattern                                                     user                   5.3.0               
+    OpenExam\Library\Core\Settings                                            1       user                   5.3.0               
+    OpenExam\Library\Core\Signup\SignupBase                                   2       user                   5.3.0               
+    OpenExam\Library\Core\Signup\Student                                      3       user                   5.3.0               
+    OpenExam\Library\Core\Signup\Teacher                                      3       user                   5.3.0               
+    OpenExam\Library\Core\Signup\Unattended                                   1       user                   5.3.0               
+    OpenExam\Library\Database\Adapter                                         2       user                   5.3.0               
+    OpenExam\Library\Database\Exception                                       9       user                   5.3.0               
+    OpenExam\Library\Database\Migration                                       1       user                   5.3.0               
+    OpenExam\Library\Database\SessionAdapter                                  1       user                   5.3.0               
+    OpenExam\Library\Form\LoginForm                                           1       user                   5.3.0               
+    OpenExam\Library\Form\LoginSelect                                         1       user                   5.3.0               
+    OpenExam\Library\Globalization\Exception                                  8       user                   5.3.0               
+    OpenExam\Library\Globalization\Locale\Locale                              1       user                   5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Command\Clean            1       user                   5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Command\Command          5       user                   5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Command\Compile          1       user                   5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Command\Initialize       1       user                   5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Command\Merge            1       user                   5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Command\SourceFileFilter 1       user                   5.1.0       5.3.0   
+    OpenExam\Library\Globalization\Translate\Gettext\Command\Update           1       user                   5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Setup                    1       user                   5.3.0               
+    OpenExam\Library\Globalization\Translate\Gettext\Translate                1       user                   5.3.0               
+    OpenExam\Library\Gui\Helper                                               1       user                   5.3.0               
+    OpenExam\Library\Import\Exception                                         31      user                   5.3.0               
+    OpenExam\Library\Import\FileImport                                        2       user                   5.3.0               
+    OpenExam\Library\Import\ImportBase                                        3       user                   5.3.0               
+    OpenExam\Library\Import\ImportData                                        2       user                   5.3.0               
+    OpenExam\Library\Import\ImportInsert                                              user                   5.3.0               
+    OpenExam\Library\Import\Project\ImportOpenExamXml                         1       user                   5.3.0               
+    OpenExam\Library\Import\Questions\ImportPingPong                          2       user                   5.3.0               
+    OpenExam\Library\Import\Questions\ImportPingPongExcel                     1       user                   5.3.0               
+    OpenExam\Library\Import\Questions\ImportPingPongText                      1       user                   5.3.0               
+  U OpenExam\Library\Import\Questions\Spreadsheet_Excel_Reader                1       user                   5.3.0               
+  U OpenExam\Library\Import\RuntimeException                                  1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudents                           9       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsExcel2003Xml               1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsExcel2007                  1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsExcel97                    1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsGnumeric                   1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsHtml                       1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsOpenDocument               1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsSylk                       1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsTextCsv                    1       user                   5.3.0               
+    OpenExam\Library\Import\Students\ImportStudentsTextTab                    1       user                   5.3.0               
+    OpenExam\Library\Model\Behavior\Exam                                      1       user                   5.3.0               
+    OpenExam\Library\Model\Behavior\FilterText                                5       user                   5.3.0               
+    OpenExam\Library\Model\Behavior\ModelBehavior                             6       user                   5.3.0       5.4.0   
+    OpenExam\Library\Model\Behavior\Ownership                                 4       user                   5.3.0               
+    OpenExam\Library\Model\Behavior\Question                                  1       user                   5.3.0               
+    OpenExam\Library\Model\Behavior\Student                                   1       user                   5.3.0               
+    OpenExam\Library\Model\Behavior\UUID                                      2       user                   5.3.0               
+    OpenExam\Library\Model\Exception                                          33      user                   5.3.0               
+    OpenExam\Library\Model\Filter                                             1       user                   5.3.0               
+    OpenExam\Library\Model\ModelCache                                         1       user                   5.3.0               
+    OpenExam\Library\Model\ModelManager                                       1       user                   5.3.0               
+    OpenExam\Library\Model\ModelSetup                                         1       user                   5.3.0               
+    OpenExam\Library\Render\Exception                                         2       user                   5.3.0               
+    OpenExam\Library\Render\RenderBase                                        2       user                   5.3.0               
+    OpenExam\Library\Render\RenderImage                                       2       user                   5.3.0               
+    OpenExam\Library\Render\RenderPdfDocument                                 2       user                   5.3.0               
+    OpenExam\Library\Render\RenderService                                     1       user                   5.3.0               
+    OpenExam\Library\Security\Acl                                             1       user                   5.3.0               
+    OpenExam\Library\Security\Authentication                                  1       user                   5.3.0               
+    OpenExam\Library\Security\Capabilities                                    3       user                   5.3.0               
+    OpenExam\Library\Security\Exception                                       66      user                   5.3.0               
+    OpenExam\Library\Security\Impersonation                                   1       user                   5.3.0               
+    OpenExam\Library\Security\Login\ActiveDirectoryLogin                      1       user                   5.3.0               
+    OpenExam\Library\Security\Login\ActiveDirectorySession                            user                   5.3.0       5.4.0   
+    OpenExam\Library\Security\Login\CasLogin                                          user                   5.3.0               
+    OpenExam\Library\Security\Login\SystemLogin                                       user                   5.3.0               
+    OpenExam\Library\Security\Roles                                           10      user                   5.3.0               
+    OpenExam\Library\Security\User                                            5       user                   5.3.0               
+    OpenExam\Library\WebService\Common\Exception                              4       user                   5.1.0       5.3.0   
+    OpenExam\Library\WebService\Common\ServiceHandler                         4       user                   5.3.0               
+    OpenExam\Library\WebService\Common\ServiceRequest                         2       user                   5.3.0               
+    OpenExam\Library\WebService\Common\ServiceResponse                        33      user                   5.3.0               
+    OpenExam\Library\WebService\Handler\AccessHandler                         2       user                   5.3.0               
+    OpenExam\Library\WebService\Handler\CatalogHandler                        2       user                   5.3.0               
+    OpenExam\Library\WebService\Handler\CoreHandler                           2       user                   5.3.0               
+    OpenExam\Library\WebService\Handler\SignupHandler                         2       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Member                                   2       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Method                                   10      user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Parameter                                11      user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Result                                   8       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\ServiceClass                             2       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\ServiceGenerator                         1       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Service\CoreService                      1       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\SoapRequest                              1       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\SoapService                              1       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Throws                                   1       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Type                                     4       user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Types\Handle                                     user                   5.3.0               
+    OpenExam\Library\WebService\Soap\Wrapper\DocumentLiteral                  1       user                   5.3.0               
+    OpenExam\Library\WebService\Wsdl\Generator                                1       user                   5.3.0               
+    OpenExam\Library\WebService\Wsdl\ServiceDescription                       1       user                   5.3.0               
+    OpenExam\Models\Access                                                    2       user                   5.3.0               
+    OpenExam\Models\Admin                                                     4       user                   5.3.0               
+    OpenExam\Models\Answer                                                    10      user                   5.3.0               
+    OpenExam\Models\Computer                                                  5       user                   5.3.0               
+    OpenExam\Models\Contributor                                               5       user                   5.3.0               
+    OpenExam\Models\Corrector                                                 6       user                   5.3.0               
+    OpenExam\Models\Decoder                                                   5       user                   5.3.0               
+    OpenExam\Models\Exam                                                      30      user                   5.3.0               
+    OpenExam\Models\File                                                      3       user                   5.3.0               
+    OpenExam\Models\Invigilator                                               5       user                   5.3.0               
+    OpenExam\Models\Lock                                                      9       user                   5.3.0               
+    OpenExam\Models\ModelBase                                                 20      user                   5.3.0               
+    OpenExam\Models\Question                                                  9       user                   5.3.0               
+    OpenExam\Models\Resource                                                  4       user                   5.3.0               
+    OpenExam\Models\Result                                                    3       user                   5.3.0               
+    OpenExam\Models\Role                                                      7       user                   5.3.0       5.4.0   
+    OpenExam\Models\Room                                                      5       user                   5.3.0               
+    OpenExam\Models\Session                                                   5       user                   5.3.0               
+    OpenExam\Models\Setting                                                   2       user                   5.3.0               
+    OpenExam\Models\Student                                                   23      user                   5.3.0               
+    OpenExam\Models\Teacher                                                   7       user                   5.3.0               
+    OpenExam\Models\Topic                                                     7       user                   5.3.0               
+    OpenExam\Plugins\Security\DispatchListener                                1       user                   5.3.0               
+    OpenExam\Plugins\Security\Dispatcher\AuthenticationHandler                1       user                   5.3.0               
+    OpenExam\Plugins\Security\Dispatcher\DispatchHandler                      1       user                   5.3.0               
+    OpenExam\Plugins\Security\Dispatcher\SessionHandler                       1       user                   5.3.0               
+    OpenExam\Plugins\Security\ModelAccessListener                             1       user                   5.3.0               
+    OpenExam\Plugins\Security\Model\AccessAccess                                      user                   5.3.0               
+    OpenExam\Plugins\Security\Model\AdminAccess                                       user                   5.3.0               
+    OpenExam\Plugins\Security\Model\AnswerAccess                                      user                   5.3.0               
+    OpenExam\Plugins\Security\Model\ComputerAccess                                    user                   5.3.0               
+    OpenExam\Plugins\Security\Model\ContributorAccess                                 user                   5.3.0               
+    OpenExam\Plugins\Security\Model\CorrectorAccess                                   user                   5.3.0               
+    OpenExam\Plugins\Security\Model\DecoderAccess                                     user                   5.3.0               
+    OpenExam\Plugins\Security\Model\ExamAccess                                        user                   5.3.0               
+    OpenExam\Plugins\Security\Model\FileAccess                                        user                   5.3.0               
+    OpenExam\Plugins\Security\Model\InvigilatorAccess                                 user                   5.3.0               
+    OpenExam\Plugins\Security\Model\LockAccess                                        user                   5.3.0               
+    OpenExam\Plugins\Security\Model\ObjectAccess                              20      user                   5.3.0       5.4.0   
+    OpenExam\Plugins\Security\Model\QuestionAccess                                    user                   5.3.0               
+    OpenExam\Plugins\Security\Model\ResourceAccess                                    user                   5.3.0               
+    OpenExam\Plugins\Security\Model\ResultAccess                                      user                   5.3.0               
+    OpenExam\Plugins\Security\Model\RoomAccess                                        user                   5.3.0               
+    OpenExam\Plugins\Security\Model\SessionAccess                                     user                   5.3.0               
+    OpenExam\Plugins\Security\Model\SettingAccess                                     user                   5.3.0               
+    OpenExam\Plugins\Security\Model\StudentAccess                                     user                   5.3.0               
+    OpenExam\Plugins\Security\Model\TeacherAccess                                     user                   5.3.0               
+    OpenExam\Plugins\Security\Model\TopicAccess                                       user                   5.3.0               
+  U PHPExcel_Reader_CSV                                                       2       user                   4.0.0               
+  U PHPExcel_Reader_Excel2003XML                                              1       user                   4.0.0               
+  U PHPExcel_Reader_Excel2007                                                 1       user                   4.0.0               
+  U PHPExcel_Reader_Excel5                                                    1       user                   4.0.0               
+  U PHPExcel_Reader_Gnumeric                                                  1       user                   4.0.0               
+  U PHPExcel_Reader_HTML                                                      1       user                   4.0.0               
+  U PHPExcel_Reader_OOCalc                                                    1       user                   4.0.0               
+  U PHPExcel_Reader_SYLK                                                      1       user                   4.0.0               
+  U Phalcon\Acl\Adapter\Memory                                                1       user                   5.3.0               
+  U Phalcon\Acl\Role                                                          1       user                   5.3.0               
+  U Phalcon\Builder\AllModels                                                 1       user                   5.3.0               
+  U Phalcon\CLI\Console                                                       1       user                   5.3.0               
+  U Phalcon\CLI\Dispatcher                                                    1       user                   5.3.0               
+  U Phalcon\CLI\Task                                                          1       user                   5.3.0               
+  U Phalcon\Cache\Backend\Apc                                                 2       user                   5.3.0               
+  U Phalcon\Cache\Backend\File                                                1       user                   5.3.0               
+  U Phalcon\Cache\Backend\Memcache                                            1       user                   5.3.0               
+  U Phalcon\Cache\Backend\Xcache                                              1       user                   5.3.0               
+  U Phalcon\Cache\Frontend\Data                                               4       user                   5.3.0               
+  U Phalcon\Cache\Multiple                                                    1       user                   5.3.0               
+  U Phalcon\Config                                                            4       user                   5.3.0               
+  U Phalcon\DI                                                                6       user                   5.3.0               
+  U Phalcon\DI\FactoryDefault                                                 1       user                   5.3.0               
+  U Phalcon\DI\FactoryDefault\CLI                                             1       user                   5.3.0               
+  U Phalcon\DI\Injectable                                                     1       user                   5.3.0               
+  U Phalcon\Db\Adapter\Pdo\Mysql                                              2       user                   5.3.0               
+  U Phalcon\Db\Adapter\Pdo\Oracle                                             2       user                   5.3.0               
+  U Phalcon\Db\Adapter\Pdo\Postgresql                                         2       user                   5.3.0               
+  U Phalcon\Db\Adapter\Pdo\Sqlite                                             2       user                   5.3.0               
+  U Phalcon\Db\Column                                                         1413    user                   5.3.0               
+  U Phalcon\Db\Index                                                          486     user                   5.3.0               
+  U Phalcon\Db\Reference                                                      221     user                   5.3.0               
+  U Phalcon\Events\Event                                                      1       user                   5.3.0               
+  U Phalcon\Events\Manager                                                    1       user                   5.3.0               
+  U Phalcon\Flash\Direct                                                      2       user                   5.3.0               
+  U Phalcon\Forms\Element\Hidden                                              2       user                   5.3.0               
+  U Phalcon\Forms\Element\Password                                            1       user                   5.3.0               
+  U Phalcon\Forms\Element\Select                                              1       user                   5.3.0               
+  U Phalcon\Forms\Element\Submit                                              2       user                   5.3.0               
+  U Phalcon\Forms\Element\Text                                                1       user                   5.3.0               
+  U Phalcon\Forms\Form                                                        2       user                   5.3.0               
+  U Phalcon\Loader                                                            1       user                   5.3.0               
+  U Phalcon\Logger\Adapter\Database                                           1       user                   5.3.0               
+  U Phalcon\Logger\Adapter\File                                               1       user                   5.3.0               
+  U Phalcon\Logger\Adapter\Firelogger                                         1       user                   5.3.0               
+  U Phalcon\Logger\Adapter\Firephp                                            1       user                   5.3.0               
+  U Phalcon\Logger\Adapter\Stream                                             1       user                   5.3.0               
+  U Phalcon\Logger\Adapter\Syslog                                             1       user                   5.3.0               
+  U Phalcon\Logger\Formatter\Line                                             1       user                   5.3.0               
+  U Phalcon\Logger\Multiple                                                   1       user                   5.3.0               
+  U Phalcon\Migrations                                                        2       user                   5.3.0               
+  U Phalcon\Mvc\Application                                                   1       user                   5.3.0               
+  U Phalcon\Mvc\Controller                                                    1       user                   5.3.0               
+  U Phalcon\Mvc\Dispatcher                                                    2       user                   5.3.0               
+  U Phalcon\Mvc\Model                                                         1       user                   5.3.0               
+  U Phalcon\Mvc\Model\Behavior                                                1       user                   5.3.0               
+  U Phalcon\Mvc\Model\Behavior\Timestampable                                  5       user                   5.3.0               
+  U Phalcon\Mvc\Model\Manager                                                 2       user                   5.3.0               
+  U Phalcon\Mvc\Model\MetaData\Apc                                            1       user                   5.3.0               
+  U Phalcon\Mvc\Model\Metadata\Memory                                         2       user                   5.3.0               
+  U Phalcon\Mvc\Model\Metadata\Xcache                                         1       user                   5.3.0               
+  U Phalcon\Mvc\Model\Migration                                               259     user                   5.3.0               
+  U Phalcon\Mvc\Model\Query\Builder                                           4       user                   5.3.0               
+  U Phalcon\Mvc\Model\Transaction\Manager                                     1       user                   5.3.0               
+  U Phalcon\Mvc\Model\Validator\Inclusionin                                   4       user                   5.3.0               
+  U Phalcon\Mvc\Model\Validator\Uniqueness                                    5       user                   5.3.0               
+  U Phalcon\Mvc\Router                                                        1       user                   5.3.0               
+  U Phalcon\Mvc\Router\Group                                                  1       user                   5.3.0               
+  U Phalcon\Mvc\Url                                                           1       user                   5.3.0               
+  U Phalcon\Mvc\User\Component                                                31      user                   5.3.0               
+  U Phalcon\Mvc\User\Plugin                                                   3       user                   5.3.0               
+  U Phalcon\Mvc\View                                                          1       user                   5.3.0               
+  U Phalcon\Session\Adapter                                                   1       user                   5.3.0               
+  U Phalcon\Tag                                                               130     user                   5.3.0               
+  U Phalcon\Translate\Adapter\Gettext                                         3       user                   5.3.0               
+    PrefixRoute                                                               5       user                   5.3.0               
+    QuestionsMigration_090                                                            user                   5.3.0               
+    QuestionsMigration_100                                                            user                   5.3.0               
+    QuestionsMigration_110                                                            user                   5.3.0               
+    QuestionsMigration_120                                                            user                   5.3.0               
+    QuestionsMigration_200                                                            user                   5.3.0               
+    QuestionsMigration_201                                                            user                   5.3.0               
+    QuestionsMigration_2010                                                           user                   5.3.0               
+    QuestionsMigration_202                                                            user                   5.3.0               
+    QuestionsMigration_203                                                            user                   5.3.0               
+    QuestionsMigration_204                                                            user                   5.3.0               
+    QuestionsMigration_205                                                            user                   5.3.0               
+    QuestionsMigration_206                                                            user                   5.3.0               
+    QuestionsMigration_207                                                            user                   5.3.0               
+    QuestionsMigration_208                                                            user                   5.3.0               
+    QuestionsMigration_209                                                            user                   5.3.0               
+    RecursiveDirectoryIterator                                                1       spl        5.1.2       5.1.2               
+    RecursiveIteratorIterator                                                 1       spl        5.1.3       5.1.3               
+    ReflectionClass                                                           4       Reflection 5.0.0       5.0.0               
+    ReflectionObject                                                          1       Reflection 5.0.0       5.0.0               
+    ResourcesMigration_2010                                                           user                   5.3.0               
+    ResourcesMigration_202                                                            user                   5.3.0               
+    ResourcesMigration_203                                                            user                   5.3.0               
+    ResourcesMigration_204                                                            user                   5.3.0               
+    ResourcesMigration_205                                                            user                   5.3.0               
+    ResourcesMigration_206                                                            user                   5.3.0               
+    ResourcesMigration_207                                                            user                   5.3.0               
+    ResourcesMigration_208                                                            user                   5.3.0               
+    ResourcesMigration_209                                                            user                   5.3.0               
+    ResultsMigration_090                                                              user                   5.3.0               
+    ResultsMigration_100                                                              user                   5.3.0               
+    ResultsMigration_110                                                              user                   5.3.0               
+    ResultsMigration_120                                                              user                   5.3.0               
+    ResultsMigration_200                                                              user                   5.3.0               
+    ResultsMigration_201                                                              user                   5.3.0               
+    ResultsMigration_2010                                                             user                   5.3.0               
+    ResultsMigration_202                                                              user                   5.3.0               
+    ResultsMigration_203                                                              user                   5.3.0               
+    ResultsMigration_204                                                              user                   5.3.0               
+    ResultsMigration_205                                                              user                   5.3.0               
+    ResultsMigration_206                                                              user                   5.3.0               
+    ResultsMigration_207                                                              user                   5.3.0               
+    ResultsMigration_208                                                              user                   5.3.0               
+    ResultsMigration_209                                                              user                   5.3.0               
+    RoomsMigration_090                                                                user                   5.3.0               
+    RoomsMigration_100                                                                user                   5.3.0               
+    RoomsMigration_110                                                                user                   5.3.0               
+    RoomsMigration_120                                                                user                   5.3.0               
+    RoomsMigration_200                                                                user                   5.3.0               
+    RoomsMigration_201                                                                user                   5.3.0               
+    RoomsMigration_2010                                                               user                   5.3.0               
+    RoomsMigration_202                                                                user                   5.3.0               
+    RoomsMigration_203                                                                user                   5.3.0               
+    RoomsMigration_204                                                                user                   5.3.0               
+    RoomsMigration_205                                                                user                   5.3.0               
+    RoomsMigration_206                                                                user                   5.3.0               
+    RoomsMigration_207                                                                user                   5.3.0               
+    RoomsMigration_208                                                                user                   5.3.0               
+    RoomsMigration_209                                                                user                   5.3.0               
+    SchemainfoMigration_100                                                           user                   5.3.0               
+    SchemainfoMigration_110                                                           user                   5.3.0               
+    SchemainfoMigration_120                                                           user                   5.3.0               
+    SessionsMigration_2010                                                            user                   5.3.0               
+    SessionsMigration_202                                                             user                   5.3.0               
+    SessionsMigration_203                                                             user                   5.3.0               
+    SessionsMigration_204                                                             user                   5.3.0               
+    SessionsMigration_205                                                             user                   5.3.0               
+    SessionsMigration_206                                                             user                   5.3.0               
+    SessionsMigration_207                                                             user                   5.3.0               
+    SessionsMigration_208                                                             user                   5.3.0               
+    SessionsMigration_209                                                             user                   5.3.0               
+    SettingsMigration_2010                                                            user                   5.3.0               
+    SettingsMigration_205                                                             user                   5.3.0               
+    SettingsMigration_206                                                             user                   5.3.0               
+    SettingsMigration_207                                                             user                   5.3.0               
+    SettingsMigration_208                                                             user                   5.3.0               
+    SettingsMigration_209                                                             user                   5.3.0               
+    SimpleXMLElement                                                          1       SimpleXML  5.0.1       5.0.1               
+    SoapFault                                                                 1       soap       5.0.0       5.0.0               
+    SoapServer                                                                2       soap       5.0.0       5.0.0               
+    StudentsMigration_090                                                             user                   5.3.0               
+    StudentsMigration_100                                                             user                   5.3.0               
+    StudentsMigration_110                                                             user                   5.3.0               
+    StudentsMigration_120                                                             user                   5.3.0               
+    StudentsMigration_200                                                             user                   5.3.0               
+    StudentsMigration_201                                                             user                   5.3.0               
+    StudentsMigration_2010                                                            user                   5.3.0               
+    StudentsMigration_202                                                             user                   5.3.0               
+    StudentsMigration_203                                                             user                   5.3.0               
+    StudentsMigration_204                                                             user                   5.3.0               
+    StudentsMigration_205                                                             user                   5.3.0               
+    StudentsMigration_206                                                             user                   5.3.0               
+    StudentsMigration_207                                                             user                   5.3.0               
+    StudentsMigration_208                                                             user                   5.3.0               
+    StudentsMigration_209                                                             user                   5.3.0               
+    TeachersMigration_090                                                             user                   5.3.0               
+    TeachersMigration_100                                                             user                   5.3.0               
+    TeachersMigration_110                                                             user                   5.3.0               
+    TeachersMigration_120                                                             user                   5.3.0               
+    TeachersMigration_200                                                             user                   5.3.0               
+    TeachersMigration_201                                                             user                   5.3.0               
+    TeachersMigration_2010                                                            user                   5.3.0               
+    TeachersMigration_202                                                             user                   5.3.0               
+    TeachersMigration_203                                                             user                   5.3.0               
+    TeachersMigration_204                                                             user                   5.3.0               
+    TeachersMigration_205                                                             user                   5.3.0               
+    TeachersMigration_206                                                             user                   5.3.0               
+    TeachersMigration_207                                                             user                   5.3.0               
+    TeachersMigration_208                                                             user                   5.3.0               
+    TeachersMigration_209                                                             user                   5.3.0               
+    TopicsMigration_100                                                               user                   5.3.0               
+    TopicsMigration_110                                                               user                   5.3.0               
+    TopicsMigration_120                                                               user                   5.3.0               
+    TopicsMigration_200                                                               user                   5.3.0               
+    TopicsMigration_201                                                               user                   5.3.0               
+    TopicsMigration_2010                                                              user                   5.3.0               
+    TopicsMigration_202                                                               user                   5.3.0               
+    TopicsMigration_203                                                               user                   5.3.0               
+    TopicsMigration_204                                                               user                   5.3.0               
+    TopicsMigration_205                                                               user                   5.3.0               
+    TopicsMigration_206                                                               user                   5.3.0               
+    TopicsMigration_207                                                               user                   5.3.0               
+    TopicsMigration_208                                                               user                   5.3.0               
+    TopicsMigration_209                                                               user                   5.3.0               
+  U UUP\Authentication\Authenticator\CasAuthenticator                         1       user                   5.3.0               
+  U UUP\Authentication\Authenticator\DomainAuthenticator                      1       user                   5.3.0               
+  U UUP\Authentication\Authenticator\HostnameAuthenticator                    1       user                   5.3.0               
+  U UUP\Authentication\Authenticator\NullAuthenticator                        1       user                   5.3.0               
+  U UUP\Authentication\Authenticator\RequestAuthenticator                     1       user                   5.3.0               
+  U UUP\Authentication\Restrictor\AddressRestrictor                           2       user                   5.3.0               
+  U UUP\Authentication\Stack\AuthenticatorChain                               1       user                   5.3.0               
+  U UUP\Authentication\Stack\AuthenticatorRequiredException                   1       user                   5.3.0               
+  U UUP\Authentication\Validator\LdapBindValidator                            1       user                   5.3.0               
+    UploadHandler                                                             2       user                   4.0.0       5.3.0   
+    WSDL_Gen                                                                  1       user                   5.0.0               
+    ZipArchive                                                                1       zip        1.6.0       5.2.0               
+    parent                                                                    115     Core       5.0.0       5.0.0               
+    self                                                                      89      Core       5.0.0       5.0.0               
+    stdClass                                                                  7       Core       4.0.0       4.0.0               
+    Total [576]                                                                                              5.3.0       5.4.0   
+
+Functions Analysis
+
+    Function                 Matches REF       EXT min/Max PHP min/Max       
+ C  _                        22      gettext   4.0.0       4.0.0       4.0.7 
+    array_change_key_case    3       standard  4.2.0       4.2.0             
+    array_diff               5       standard  4.0.1       4.0.1             
+    array_filter             7       standard  4.0.6       4.0.6             
+    array_flip               5       standard  4.0.0       4.0.0             
+    array_intersect          1       standard  4.0.1       4.0.1             
+    array_key_exists         5       standard  4.0.7       4.0.7             
+    array_keys               26      standard  4.0.0       4.0.0             
+    array_map                3       standard  4.0.6       4.0.6             
+    array_merge              23      standard  4.0.0       4.0.0             
+    array_push               2       standard  4.0.0       4.0.0             
+    array_reverse            2       standard  4.0.0       4.0.0             
+    array_search             4       standard  4.0.5       4.0.5             
+    array_shift              9       standard  4.0.0       4.0.0             
+    array_slice              1       standard  4.0.0       4.0.0             
+    array_sum                3       standard  4.0.4       4.0.4             
+    array_unique             2       standard  4.0.1       4.0.1             
+    array_unshift            1       standard  4.0.0       4.0.0             
+    array_values             9       standard  4.0.0       4.0.0             
+    arsort                   2       standard  4.0.0       4.0.0             
+    basename                 20      standard  4.0.0       4.0.0             
+    call_user_func_array     1       standard  4.0.4       4.0.4             
+    ceil                     1       standard  4.0.0       4.0.0             
+    chdir                    2       standard  4.0.0       4.0.0             
+    chmod                    1       standard  4.0.0       4.0.0             
+    chr                      2       standard  4.0.0       4.0.0             
+    class_exists             3       Core      4.0.0       4.0.0             
+    class_parents            1       spl       5.1.0       5.1.0             
+    clearstatcache           4       standard  5.3.0       5.3.0             
+    closedir                 1       standard  4.0.0       4.0.0             
+    closure-100-111                  user                  5.3.0             
+    closure-100-113                  user                  5.3.0             
+    closure-102-106                  user                  5.3.0             
+    closure-106-116                  user                  5.3.0             
+    closure-108-112                  user                  5.3.0             
+    closure-109-113                  user                  5.3.0             
+    closure-112-176                  user                  5.3.0             
+    closure-117-123                  user                  5.3.0             
+    closure-128-130                  user                  5.3.0             
+    closure-131-133                  user                  5.3.0             
+    closure-138-142                  user                  5.3.0             
+    closure-147-157                  user                  5.3.0             
+    closure-159-174                  user                  5.3.0             
+    closure-163-165                  user                  5.3.0             
+    closure-167-171                  user                  5.3.0             
+    closure-173-177                  user                  5.3.0             
+    closure-182-185                  user                  5.3.0             
+    closure-188-192                  user                  5.3.0             
+    closure-190-235                  user                  5.3.0       5.4.0 
+    closure-21-23                    user                  5.3.0             
+    closure-240-242                  user                  5.3.0             
+    closure-247-257                  user                  5.3.0             
+    closure-262-266                  user                  5.3.0             
+    closure-271-275                  user                  5.3.0             
+    closure-280-282                  user                  5.3.0             
+    closure-287-289                  user                  5.3.0             
+    closure-29-46                    user                  5.3.0             
+    closure-290-301                  user                  5.3.0             
+    closure-294-296                  user                  5.3.0             
+    closure-32-39                    user                  5.3.0             
+    closure-32-49                    user                  5.3.0             
+    closure-34-45                    user                  5.3.0             
+    closure-35-63                    user                  5.3.0             
+    closure-384-386                  user                  5.3.0             
+    closure-47-51                    user                  5.3.0             
+    closure-47-52                    user                  5.3.0             
+    closure-47-54                    user                  5.3.0             
+    closure-47-56                    user                  5.3.0             
+    closure-47-76                    user                  5.3.0             
+    closure-47-77                    user                  5.3.0             
+    closure-48-75                    user                  5.3.0             
+    closure-48-77                    user                  5.3.0             
+    closure-48-78                    user                  5.3.0             
+    closure-48-83                    user                  5.3.0             
+    closure-49-76                    user                  5.3.0             
+    closure-49-78                    user                  5.3.0             
+    closure-49-84                    user                  5.3.0             
+    closure-49-88                    user                  5.3.0             
+    closure-51-70                    user                  5.3.0             
+    closure-51-72                    user                  5.3.0             
+    closure-53-57                    user                  5.3.0             
+    closure-59-61                    user                  5.3.0             
+    closure-59-63                    user                  5.3.0             
+    closure-61-90                    user                  5.3.0             
+    closure-62-68                    user                  5.3.0             
+    closure-63-67                    user                  5.3.0             
+    closure-77-84                    user                  5.3.0             
+    closure-85-87                    user                  5.3.0             
+    closure-90-97                    user                  5.3.0             
+    closure-97-101                   user                  5.3.0             
+    closure-98-136                   user                  5.3.0             
+    closure-99-108                   user                  5.3.0             
+    closure-99-119                   user                  5.3.0             
+    connection_status        2       standard  4.0.0       4.0.0             
+    copy                     8       standard  4.0.0       4.0.0             
+    count                    133     standard  4.0.0       4.0.0             
+    curl_close               4       curl      4.0.2       4.0.2             
+    curl_error               2       curl      4.0.3       4.0.3             
+    curl_exec                2       curl      4.0.2       4.0.2             
+    curl_getinfo             3       curl      4.0.4       4.0.4             
+    curl_init                2       curl      4.0.2       4.0.2             
+    curl_setopt              14      curl      4.0.2       4.0.2             
+    current                  9       standard  4.0.0       4.0.0             
+    date                     24      date      4.0.0       4.0.0             
+    date_create              2       date      5.2.0       5.2.0             
+    debug_backtrace          3       Core      4.3.0       4.3.0       5.4.0 
+    define                   25      Core      4.0.0       4.0.0             
+    defined                  29      Core      4.0.0       4.0.0             
+    dirname                  12      standard  4.0.0       4.0.0             
+    dngettext                        user                  4.0.0       4.2.0 
+    end                      1       standard  4.0.0       4.0.0             
+    error_log                9       standard  4.0.0       4.0.0             
+    error_reporting          3       Core      4.0.0       4.0.0             
+    escapeshellarg           12      standard  4.0.3       4.0.3             
+    exec                     4       standard  4.0.0       4.0.0             
+ C  exif_imagetype           4       exif      4.3.0       4.3.0             
+ C  exif_read_data           2       exif      4.2.0       4.2.0             
+    explode                  17      standard  4.0.0       4.0.0             
+    extension_loaded         25      Core      4.0.0       4.0.0             
+    fclose                   12      standard  4.0.0       4.0.0             
+    feof                     3       standard  4.0.0       4.0.0             
+    fflush                   1       standard  4.0.1       4.0.1             
+    fgets                    2       standard  4.0.0       4.0.0             
+    file_exists              27      standard  4.0.0       4.0.0             
+    file_get_contents        9       standard  4.3.0       4.3.0       5.1.0 
+    file_put_contents        10      standard  5.0.0       5.0.0             
+    filemtime                2       standard  4.0.0       4.0.0             
+    filesize                 5       standard  4.0.0       4.0.0             
+    filter_input             2       filter    0.11.0      5.0.0             
+    finfo_close              1       fileinfo  0.1.0       4.0.0             
+    finfo_file               6       fileinfo  0.1.0       4.0.0             
+    finfo_open               6       fileinfo  0.1.0       4.0.0             
+    flock                    2       standard  4.0.0       4.0.0             
+    flush                    5       standard  4.0.0       4.0.0             
+    fopen                    13      standard  4.0.0       4.0.0             
+    fprintf                  5       standard  5.0.0       5.0.0             
+    fread                    4       standard  4.0.0       4.0.0             
+    fseek                    1       standard  4.0.0       4.0.0             
+    func_get_arg             1       Core      4.0.0       4.0.0             
+    func_get_args            2       Core      4.0.0       4.0.0             
+    function_exists          14      Core      4.0.0       4.0.0             
+    fwrite                   2       standard  4.0.0       4.0.0             
+    get_class                14      Core      4.0.0       4.0.0             
+    get_current_user         1       standard  4.0.0       4.0.0             
+    get_magic_quotes_gpc     1       standard  4.0.0       4.0.0             
+    get_object_vars          1       Core      4.0.0       4.0.0             
+    getcwd                   1       standard  4.0.0       4.0.0             
+    getenv                   2       standard  4.0.0       4.0.0             
+    gethostbyaddr            2       standard  4.0.0       4.0.0             
+    gethostname              2       standard  5.3.0       5.3.0             
+ C  getimagesize             2       standard  4.0.0       4.0.0             
+    getmypid                 2       standard  4.0.0       4.0.0             
+    gmdate                   2       date      4.0.0       4.0.0             
+    header                   23      standard  4.0.0       4.0.0             
+    html_entity_decode       1       standard  4.3.0       4.3.0             
+    htmlentities             3       standard  4.0.0       4.0.0             
+    htmlspecialchars         4       standard  4.0.0       4.0.0             
+    imagealphablending       2       gd        4.0.6       4.0.6             
+    imagecolorallocate       2       gd        4.0.0       4.0.0             
+    imagecolortransparent    2       gd        4.0.0       4.0.0             
+    imagecopyresampled       4       gd        4.0.6       4.0.6             
+ C  imagecreatetruecolor     6       gd        4.0.6       4.0.6             
+    imagedestroy             6       gd        4.0.0       4.0.0             
+ C  imageflip                2       gd        5.5.0       5.5.0             
+    imagerotate              10      gd        4.3.0       4.3.0             
+    imagesavealpha           2       gd        4.3.2       4.3.2             
+    imagesx                  4       gd        4.0.0       4.0.0             
+    imagesy                  4       gd        4.0.0       4.0.0             
+    implode                  25      standard  4.0.0       4.0.0             
+    in_array                 81      standard  4.0.0       4.0.0             
+    ini_get                  3       standard  4.0.0       4.0.0             
+    ini_set                  12      standard  4.0.0       4.0.0             
+    intval                   15      standard  4.0.0       4.0.0             
+    is_array                 25      standard  4.0.0       4.0.0             
+    is_bool                  6       standard  4.0.0       4.0.0             
+    is_dir                   10      standard  4.0.0       4.0.0             
+    is_file                  13      standard  4.0.0       4.0.0             
+    is_int                   5       standard  4.0.0       4.0.0             
+    is_null                  12      standard  4.0.4       4.0.4             
+    is_numeric               15      standard  4.0.0       4.0.0             
+    is_object                21      standard  4.0.0       4.0.0             
+    is_resource              2       standard  4.0.0       4.0.0             
+    is_string                21      standard  4.0.0       4.0.0             
+    is_uploaded_file         5       standard  4.0.3       4.0.3             
+    json_decode              24      json      5.2.0       5.2.0             
+    json_encode              12      json      5.2.0       5.2.0             
+    key                      7       standard  4.0.0       4.0.0             
+    ksort                    3       standard  4.0.0       4.0.0             
+    ldap_bind                1       ldap      4.0.0       4.0.0             
+    ldap_connect             1       ldap      4.0.0       4.0.0             
+    ldap_errno               10      ldap      4.0.0       4.0.0             
+    ldap_error               10      ldap      4.0.0       4.0.0             
+    ldap_first_entry         1       ldap      4.0.0       4.0.0             
+    ldap_free_result         2       ldap      4.0.0       4.0.0             
+    ldap_get_attributes      1       ldap      4.0.0       4.0.0             
+    ldap_get_entries         1       ldap      4.0.0       4.0.0             
+    ldap_read                1       ldap      4.0.0       4.0.0             
+    ldap_search              1       ldap      4.0.0       4.0.2             
+    ldap_set_option          1       ldap      4.0.4       4.0.4             
+    ldap_unbind              1       ldap      4.0.0       4.0.0             
+    md5                      14      standard  4.0.0       4.0.0             
+    method_exists            1       Core      4.0.0       4.0.0             
+    microtime                16      standard  5.0.0       5.0.0             
+    min                      2       standard  4.0.0       4.0.0             
+    mkdir                    9       standard  5.0.0       5.0.0             
+    move_uploaded_file       2       standard  4.0.3       4.0.3             
+    ngettext                 1       user                  4.0.0       4.2.0 
+    nl2br                    2       standard  4.0.0       4.0.0             
+    ob_clean                 1       standard  4.2.0       4.2.0             
+    ob_end_clean             2       standard  4.0.0       4.0.0             
+    ob_flush                 3       standard  4.2.0       4.2.0             
+    ob_get_level             2       standard  4.2.0       4.2.0             
+    opendir                  1       standard  4.0.0       4.0.0             
+    ord                      3       standard  4.0.0       4.0.0             
+    pathinfo                 4       standard  4.0.3       4.0.3             
+    php_sapi_name            2       standard  4.0.1       4.0.1             
+    posix_geteuid            1       posix     4.0.0       4.0.0             
+    posix_getpwuid           1       posix     4.0.0       4.0.0             
+    preg_match               25      pcre      4.0.0       4.0.0             
+    preg_match_all           1       pcre      4.0.0       4.0.0             
+    preg_replace             6       pcre      4.0.0       4.0.0             
+    preg_replace_callback    2       pcre      4.0.5       4.0.5             
+    preg_split               9       pcre      4.0.0       4.0.0             
+    print_r                  30      standard  4.0.0       4.0.0             
+    printf                   58      standard  4.0.0       4.0.0             
+    proc_close               1       standard  4.3.0       4.3.0             
+    proc_get_status          1       standard  5.0.0       5.0.0             
+    proc_open                1       standard  4.3.0       4.3.0             
+    property_exists          4       Core      5.1.0       5.1.0             
+    rand                     5       standard  4.0.0       4.0.0             
+    rawurldecode             2       standard  4.0.0       4.0.0             
+    rawurlencode             14      standard  4.0.0       4.0.0             
+    readdir                  1       standard  4.0.0       4.0.0             
+    readfile                 4       standard  4.0.0       4.0.0             
+    rename                   1       standard  4.0.0       4.0.0             
+    round                    2       standard  4.0.0       4.0.0             
+    scandir                  2       standard  5.0.0       5.0.0             
+    serialize                10      standard  4.0.0       4.0.0             
+    session_encode           1       session   4.0.0       4.0.0             
+    session_id               4       session   4.0.0       4.0.0             
+    session_regenerate_id    1       session   4.3.2       4.3.2             
+    session_set_save_handler 1       session   4.0.0       4.0.0             
+    session_start            3       session   4.0.0       4.0.0             
+    session_status           3       session   5.4.0       5.4.0             
+    set_error_handler        1       Core      4.0.1       4.0.1             
+    set_exception_handler    1       Core      5.0.0       5.0.0             
+    set_time_limit           1       standard  4.0.0       4.0.0             
+    setlocale                2       standard  4.0.0       4.0.0             
+    simplexml_load_file      1       SimpleXML 5.0.0       5.0.0             
+    sleep                    3       standard  4.0.0       4.0.0             
+    sprintf                  339     standard  4.0.0       4.0.0             
+    str_pad                  5       standard  4.0.1       4.0.1             
+    str_repeat               1       standard  4.0.0       4.0.0             
+    str_replace              12      standard  4.0.0       4.0.0             
+    strcasecmp               2       Core      4.0.0       4.0.0             
+    stream_get_contents      2       standard  5.0.0       5.0.0             
+    strftime                 6       date      4.0.0       4.0.0             
+    strip_tags               3       standard  4.0.0       4.0.0             
+    stripslashes             11      standard  4.0.0       4.0.0             
+    stristr                  11      standard  4.0.0       4.0.0             
+    strlen                   21      Core      4.0.0       4.0.0             
+    strpbrk                  1       standard  5.0.0       5.0.0             
+    strpos                   24      standard  4.0.0       4.0.0             
+    strrchr                  16      standard  4.0.0       4.0.0             
+    strrpos                  2       standard  4.0.0       4.0.0             
+    strstr                   11      standard  4.0.0       4.0.0             
+    strtolower               20      standard  4.0.0       4.0.0             
+    strtotime                35      date      4.0.0       4.0.0             
+    strtoupper               2       standard  4.0.0       4.0.0             
+    substr                   40      standard  4.0.0       4.0.0             
+    substr_replace           1       standard  4.0.0       4.0.0             
+    sys_get_temp_dir         2       standard  5.2.1       5.2.1             
+    tempnam                  1       standard  4.0.0       4.0.0             
+    time                     25      date      4.0.0       4.0.0             
+    trim                     45      standard  4.0.0       4.0.0             
+    ucfirst                  28      standard  4.0.0       4.0.0             
+    uniqid                   1       standard  4.0.0       4.0.0             
+    unlink                   10      standard  4.0.0       4.0.0             
+    unserialize              4       standard  4.0.0       4.0.0             
+    urldecode                4       standard  4.0.0       4.0.0             
+    usleep                   1       standard  4.0.0       4.0.0             
+    utf8_encode              1       xml       4.0.0       4.0.0             
+    var_export               1       standard  4.2.0       4.2.0             
+    version_compare          2       standard  4.0.7       4.0.7             
+    vsprintf                 2       standard  4.0.7       4.0.7             
+    wkhtmltox_convert        1       user                  4.0.0             
+    Total [286]                                            5.4.0             
+
+Constants Analysis
+
+    Constant                           Matches REF      EXT min/Max PHP min/Max  
+ C  APP_DIR                            9       user                 4.0.0        
+    AdminService                       1       user                 4.0.0        
+ C  BASE_DIR                           10      user                 4.0.0        
+ C  CONFIG_DIR                         9       user                 4.0.0        
+    CONFIG_PHP                         2       user                 4.0.0        
+ C  CONFIG_SYS                         6       user                 4.0.0        
+    CONNECTION_NORMAL                  2       standard 4.0.0       4.0.0        
+    CURLINFO_EFFECTIVE_URL             1       curl     4.0.2       4.0.2        
+    CURLINFO_HTTP_CODE                 1       curl     4.0.2       4.0.2        
+    CURLOPT_COOKIE                     1       curl     4.0.2       4.0.2        
+    CURLOPT_HEADER                     1       curl     4.0.2       4.0.2        
+    CURLOPT_HTTP_VERSION               2       curl     4.0.2       4.0.2        
+    CURLOPT_LOW_SPEED_LIMIT            1       curl     4.0.2       4.0.2        
+    CURLOPT_LOW_SPEED_TIME             1       curl     4.0.2       4.0.2        
+    CURLOPT_POST                       1       curl     4.0.2       4.0.2        
+    CURLOPT_POSTFIELDS                 1       curl     4.0.2       4.0.2        
+    CURLOPT_RETURNTRANSFER             2       curl     4.0.2       4.0.2        
+    CURLOPT_TIMEOUT                    1       curl     4.0.2       4.0.2        
+    CURLOPT_URL                        2       curl     4.0.2       4.0.2        
+    CURLOPT_VERBOSE                    1       curl     4.0.2       4.0.2        
+    CURL_HTTP_VERSION_1_0              2       curl     4.0.2       4.0.2        
+    ContributorService                 1       user                 4.0.0        
+    CoreService                        2       user                 4.0.0        
+    CorrectorService                   1       user                 4.0.0        
+    CreatorService                     1       user                 4.0.0        
+    DEBUG_BACKTRACE_IGNORE_ARGS        3       Core     5.3.6       5.3.6        
+    DIRECTORY_SEPARATOR                9       standard 4.0.6       4.0.6        
+    DecoderService                     1       user                 4.0.0        
+ C  EXTERN_DIR                         2       user                 4.0.0        
+    E_ALL                              3       Core     4.0.0       4.0.0        
+    E_COMPILE_ERROR                    1       Core     4.0.0       4.0.0        
+    E_CORE_ERROR                       1       Core     4.0.0       4.0.0        
+    E_DEPRECATED                       1       Core     5.3.0       5.3.0        
+    E_ERROR                            1       Core     4.0.0       4.0.0        
+    E_NOTICE                           1       Core     4.0.0       4.0.0        
+    E_RECOVERABLE_ERROR                1       Core     5.2.0       5.2.0        
+    E_STRICT                           2       Core     5.0.0       5.0.0        
+    E_USER_ERROR                       1       Core     4.0.0       4.0.0        
+    FALSE                              2       Core     4.0.0       4.0.0        
+    FILEINFO_MIME_TYPE                 6       fileinfo 1.0.5-dev   5.3.0        
+    FILE_APPEND                        4       standard 4.0.0       4.0.0        
+    FILTER_SANITIZE_STRING             2       filter   0.9.4       4.0.0        
+    IMAGETYPE_GIF                      2       standard 4.0.0       4.0.0        
+    IMAGETYPE_JPEG                     2       standard 4.0.0       4.0.0        
+    IMAGETYPE_PNG                      2       standard 4.0.0       4.0.0        
+ C  IMG_FLIP_HORIZONTAL                4       gd       5.5.0       5.5.0        
+ C  IMG_FLIP_VERTICAL                  4       gd       5.5.0       5.5.0        
+ C  INFO_CGI_DEBUG                     1       user                 4.0.0        
+ C  INFO_CGI_FIELD_EXPIRES                     user                 4.0.0        
+ C  INFO_CGI_FIELD_MAIL                1       user                 4.0.0        
+ C  INFO_CGI_FIELD_NAME                4       user                 4.0.0        
+ C  INFO_CGI_FIELD_SEPARATOR           1       user                 4.0.0        
+ C  INFO_CGI_FIELD_SOCIAL_NUMBER       1       user                 4.0.0        
+ C  INFO_CGI_FIELD_USER                4       user                 4.0.0        
+ C  INFO_CGI_PORT                      2       user                 4.0.0        
+ C  INFO_CGI_RECORD_SEPARATOR          1       user                 4.0.0        
+ C  INFO_CGI_SERVER                    2       user                 4.0.0        
+ C  INFO_CGI_VERBOSE                   1       user                 4.0.0        
+    INPUT_ENV                          2       filter   0.9.0       4.0.0        
+    InvigilatorService                 1       user                 4.0.0        
+    LC_ALL                             2       standard 4.0.0       4.0.0        
+    LDAP_OPT_PROTOCOL_VERSION          1       ldap     4.0.0       4.0.0        
+    LDAP_OPT_REFERRALS                 1       ldap     4.0.0       4.0.0        
+    LOCK_EX                            1       standard 4.0.0       4.0.0        
+    LOCK_UN                            1       standard 4.0.0       4.0.0        
+    LOG_AUTH                           1       standard 4.0.0       4.0.0        
+    LOG_LOCAL0                         1       standard 4.0.0       4.0.0        
+    LOG_NDELAY                         2       standard 4.0.0       4.0.0        
+ C  MODEL_ALWAYS_USE_MASTER_CONNECTION 1       user                 4.0.0        
+    NULL                               3       Core     4.0.0       4.0.0        
+    PATHINFO_EXTENSION                 3       standard 4.0.0       4.0.0        
+    PHP_EOL                            6       Core     4.3.10      4.3.10       
+    PHP_INT_MAX                        2       Core     4.4.0       4.4.0        
+    PHP_SESSION_DISABLED               2       session  5.4.0       5.4.0        
+    PHP_SESSION_NONE                   1       session  5.4.0       5.4.0        
+    PHP_VERSION                        2       Core     4.0.0       4.0.0        
+    PREG_SET_ORDER                     1       pcre     4.0.0       4.0.0        
+ C  PROJ_DIR                           2       user                 4.0.0        
+    SOAP_DOCUMENT                      1       soap     5.0.0       5.0.0        
+    SOAP_ENCODED                       1       soap     5.0.0       5.0.0        
+    SOAP_LITERAL                       1       soap     5.0.0       5.0.0        
+    SOAP_RPC                           1       soap     5.0.0       5.0.0        
+    STDERR                             1       Core     4.3.0       4.3.0        
+    StudentService                     1       user                 4.0.0        
+    TASKS_PHP                          5       user                 4.0.0        
+    TRUE                               9       Core     4.0.0       4.0.0        
+    TeacherService                     1       user                 4.0.0        
+    UPLOAD_ERR_CANT_WRITE              1       Core     5.1.0       5.1.0        
+    UPLOAD_ERR_EXTENSION               1       Core     5.2.0       5.2.0        
+    UPLOAD_ERR_FORM_SIZE               1       Core     4.3.0       4.3.0        
+    UPLOAD_ERR_INI_SIZE                1       Core     4.3.0       4.3.0        
+    UPLOAD_ERR_NO_FILE                 1       Core     4.3.0       4.3.0        
+    UPLOAD_ERR_NO_TMP_DIR              1       Core     4.3.10      4.3.10       
+    UPLOAD_ERR_PARTIAL                 1       Core     4.3.0       4.3.0        
+ C  VALIDATION_SKIP_UNIQUENESS_CHECK           user                 4.0.0        
+    __CLASS__                          3       Core     4.3.0       4.3.0        
+    __DIR__                            11      Core     5.3.0       5.3.0        
+    __METHOD__                         40      Core     5.0.0       5.0.0        
+    __NAMESPACE__                      6       Core     5.3.0       5.3.0        
+    false                              401     Core     4.0.0       4.0.0        
+    null                               231     Core     4.0.0       4.0.0        
+    true                               2123    Core     4.0.0       4.0.0        
+    Total [102]                                                     5.4.0        
+
+Conditions Analysis
+
+    Condition                                   Matches REF      EXT min/Max PHP min/Max  
+    defined(APP_DIR)                            1       user                 4.0.0        
+    defined(BASE_DIR)                           1       user                 4.0.0        
+    defined(CONFIG_DIR)                         1       user                 4.0.0        
+    defined(CONFIG_SYS)                         1       user                 4.0.0        
+    defined(EXTERN_DIR)                         1       user                 4.0.0        
+    defined(IMG_FLIP_HORIZONTAL)                4       gd       5.5.0       5.5.0        
+    defined(IMG_FLIP_VERTICAL)                  4       gd       5.5.0       5.5.0        
+    defined(INFO_CGI_DEBUG)                     1       user                 4.0.0        
+    defined(INFO_CGI_FIELD_EXPIRES)             1       user                 4.0.0        
+    defined(INFO_CGI_FIELD_MAIL)                1       user                 4.0.0        
+    defined(INFO_CGI_FIELD_NAME)                1       user                 4.0.0        
+    defined(INFO_CGI_FIELD_SEPARATOR)           1       user                 4.0.0        
+    defined(INFO_CGI_FIELD_SOCIAL_NUMBER)       1       user                 4.0.0        
+    defined(INFO_CGI_FIELD_USER)                1       user                 4.0.0        
+    defined(INFO_CGI_PORT)                      1       user                 4.0.0        
+    defined(INFO_CGI_RECORD_SEPARATOR)          1       user                 4.0.0        
+    defined(INFO_CGI_SERVER)                    1       user                 4.0.0        
+    defined(INFO_CGI_VERBOSE)                   1       user                 4.0.0        
+    defined(MODEL_ALWAYS_USE_MASTER_CONNECTION) 1       user                 4.0.0        
+    defined(PROJ_DIR)                           1       user                 4.0.0        
+    defined(VALIDATION_SKIP_UNIQUENESS_CHECK)   3       user                 4.0.0        
+    extension_loaded(SimpleXML)                 1       user                 4.0.0        
+    extension_loaded(apc)                       1       user                 4.0.0        
+    extension_loaded(curl)                      1       user                 4.0.0        
+    extension_loaded(dom)                       1       user                 4.0.0        
+    extension_loaded(fileinfo)                  1       user                 4.0.0        
+    extension_loaded(gettext)                   4       user                 4.0.0        
+    extension_loaded(imagick)                   6       user                 4.0.0        
+    extension_loaded(intl)                      4       user                 4.0.0        
+    extension_loaded(memcache)                  1       user                 4.0.0        
+    extension_loaded(phpwkhtmltox)              1       user                 4.0.0        
+    extension_loaded(posix)                     1       user                 4.0.0        
+    extension_loaded(soap)                      1       user                 4.0.0        
+    extension_loaded(xcache)                    1       user                 4.0.0        
+    function_exists(_)                          2       gettext  4.0.0       4.0.0        
+    function_exists(exif_imagetype)             4       exif     4.3.0       4.3.0        
+    function_exists(exif_read_data)             2       exif     4.2.0       4.2.0        
+    function_exists(getimagesize)               2       standard 4.0.0       4.0.0        
+    function_exists(imagecreatetruecolor)       2       gd       4.0.6       4.0.6        
+    function_exists(imageflip)                  2       gd       5.5.0       5.5.0        
+    Total [40]                                                               5.5.0        
+
+Requires PHP 5.4.0 (min), PHP 5.4.0 (all)

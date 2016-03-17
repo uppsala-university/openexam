@@ -33,6 +33,7 @@
         "phpunit/phpunit": "3.7.*"
     },
     "suggest": {
+        "bartlett/php-compatinfo": "For static code compatibility checks.",
         "jpgraph/jpgraph": "For statistical pages or dynamic generated GUI components, e.g. buttons.",
         "piotrooo/wsdl-creator": "Create WSDL document based on PHP classes using annotations and reflection mechanism."
     },
