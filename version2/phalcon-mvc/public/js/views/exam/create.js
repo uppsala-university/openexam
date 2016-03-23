@@ -785,10 +785,10 @@ $(document).ready(function () {
                     var qCorrectorsArr = [];
                     var qCorrectorList = $('.q_corrector_list');
                     qsCorrectorsJson[qIndex] = {};
-
+                    
                     $(qCorrectorList).find('.left-col-user').each(function (i, rElem) {
 			var correctorUserName = $(rElem).attr('data-user');    
-                        if (!qId && correctorUserName != mngr && user == mngr) {
+                        if(!qId) {
                             qCorrectorsArr.push({'question_id': qData.id, "user": $(rElem).attr('data-user')});
                         }
 
