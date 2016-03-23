@@ -146,7 +146,13 @@
 	?>
         <div style="margin:25px 10px; <?=(!$showCorrectors ? "display:none":"")?>" id="q_correctors">
                 <article class="ac-large">
-                        <?php $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')." [".$this->user->getUser()."]");?>
+                        <?php 
+                        if($showCorrectors) {
+                                $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')." [".$this->user->getUser()."]");
+                        } else {
+                                $correctors = is_object($question) ? $question->correctors : array();
+                        }
+                        ?>
                         <div style="font-weight:bold"> Question Correctors: <a href="#" onClick="return false;">
                                 <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "id" => "uu-id4")); ?>
                                 </a> <br>
