@@ -280,4 +280,47 @@ class LocaleTest extends TestCase
                 self::assertTrue(count($locales) > 0);
         }
 
+        /**
+         * @covers OpenExam\Library\Globalization\Locale\Locale::getRegion
+         * @group globalization
+         */
+        public function testGetRegion()
+        {
+                $expect = "US";
+                $actual = $this->object->getRegion('en_US');
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+                
+                $expect = "GB";
+                $actual = $this->object->getRegion('en_GB');
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+                
+                $expect = "SE";
+                $actual = $this->object->getRegion('sv_SE.UTF-8');
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+        }
+        
+        /**
+         * @covers OpenExam\Library\Globalization\Locale\Locale::getLanguage
+         * @group globalization
+         */
+        public function testGetLanguage()
+        {
+                $expect = "en";
+                $actual = $this->object->getLanguage('en_US');
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+                
+                $expect = "en";
+                $actual = $this->object->getLanguage('en_GB');
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+                
+                $expect = "sv";
+                $actual = $this->object->getLanguage('sv_SE.UTF-8');
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+        }
 }

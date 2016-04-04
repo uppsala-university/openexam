@@ -173,6 +173,7 @@ class Locale extends Component
         /**
          * Get display language for given locale.
          * @param string $locale The locale name.
+         * @return string 
          */
         public function getDisplayLanguage($locale)
         {
@@ -182,6 +183,38 @@ class Locale extends Component
                         return $this->tr->_($locale);
                 } else {
                         return $locale;
+                }
+        }
+
+        /**
+         * Get language code. For example, if locale is 'en_GB', then the
+         * language code is 'en'.
+         * 
+         * @param string $locale The locale name.
+         * @return string
+         */
+        public function getRegion($locale)
+        {
+                if (extension_loaded('intl')) {
+                        return LocaleSystem::getRegion($locale);
+                } else {
+                        return substr($locale, 3, 2);
+                }
+        }
+
+        /**
+         * Get language region. For example, if locale is 'en_GB', then region
+         * is 'GB' while language is 'en'.
+         * 
+         * @param string $locale The locale name.
+         * @return string
+         */
+        public function getLanguage($locale)
+        {
+                if (extension_loaded('intl')) {
+                        return LocaleSystem::getPrimaryLanguage($locale);
+                } else {
+                        return substr($locale, 0, 2);
                 }
         }
 
@@ -217,7 +250,7 @@ class Locale extends Component
                                 }
                         }
                 }
-                
+
                 if (!array_key_exists($locale, $this->locales)) {
                         if ($this->findLocale($locale) ||
                             $this->findVariant($locale) ||
