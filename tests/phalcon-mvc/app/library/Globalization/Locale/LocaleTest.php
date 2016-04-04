@@ -177,7 +177,7 @@ class LocaleTest extends TestCase
          */
         public function testDetect()
         {
-                $name = 'lang';
+                $name = 'locale';
 
                 // 
                 // Make sure request honours "live" mode:
@@ -199,6 +199,7 @@ class LocaleTest extends TestCase
                     'sv_SE.UTF-8' => 'sv_SE.UTF-8', // locale
                     'sv'          => 'sv_SE.UTF-8', // lang
                     'se'          => 'sv_SE.UTF-8', // variant
+                    'en-us'       => 'en_US', // alias
                     'en'          => 'en_US',
                     'fr'          => $default) as $lang => $expect) {
                         // 
@@ -254,6 +255,7 @@ class LocaleTest extends TestCase
                     'sv_SE.UTF-8' => 'sv_SE.UTF-8', // locale
                     'sv'          => 'sv_SE.UTF-8', // lang
                     'se'          => 'sv_SE.UTF-8', // variant
+                    'en-us'       => 'en_US', // alias
                     'en'          => 'en_US',
                     'fr'          => $default) as $lang => $expect) {
                         foreach (array('LANG', 'LC_CTYPE') as $name) {

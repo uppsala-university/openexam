@@ -39,7 +39,7 @@ use Phalcon\Mvc\User\Component;
  * $locale = new Locale();
  * $locale->addLocale('sv_SE', 'Swedish');
  * // ...
- * $locale->detect('lang', 'en_US');    // 
+ * $locale->detect('locale', 'en_US');    // 
  * </code>
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -111,7 +111,7 @@ class Locale extends Component
          * @param string $name Store locale in named session variable.
          * @return bool 
          */
-        public function setLocale($locale, $name = 'lang')
+        public function setLocale($locale, $name = 'locale')
         {
                 if (!isset($locale)) {
                         return false;
@@ -192,7 +192,7 @@ class Locale extends Component
          * @param bool $apply Set locale to detected or default.
          * @return string The detected locale or $default.
          */
-        public function detect($name = 'lang', $default = 'C', $apply = false)
+        public function detect($name = 'locale', $default = 'C', $apply = false)
         {
                 $locale = null;
 
@@ -217,17 +217,17 @@ class Locale extends Component
                                 }
                         }
                 }
-
-                if (strlen($locale) == 2) {
-                        if ($this->findLocale($locale) == false &&
-                            $this->findVariant($locale) == false) {
-                                $locale = null;
+                
+                if (!array_key_exists($locale, $this->locales)) {
+                        if ($this->findLocale($locale) ||
+                            $this->findVariant($locale) ||
+                            $this->findAlias($locale)) {
+                                
+                        } else {
+                                $locale = $default;
                         }
                 }
 
-                if ($locale == null) {
-                        $locale = $default;
-                }
                 if ($apply) {
                         $this->setLocale($locale);
                 }
@@ -273,11 +273,13 @@ class Locale extends Component
          */
         private function findLocale(&$locale)
         {
-                foreach (array_keys($this->locales) as $key) {
-                        $match = substr($key, 0, 2);
-                        if ($locale == $match) {
-                                $locale = $key;
-                                return true;
+                if (strlen($locale) == 2) {
+                        foreach (array_keys($this->locales) as $key) {
+                                $match = substr($key, 0, 2);
+                                if ($locale == $match) {
+                                        $locale = $key;
+                                        return true;
+                                }
                         }
                 }
                 return false;
@@ -295,11 +297,37 @@ class Locale extends Component
          */
         private function findVariant(&$locale)
         {
-                foreach (array_keys($this->locales) as $key) {
-                        $match = strtolower(substr($key, 3, 2));
-                        if ($locale == $match) {
-                                $locale = $key;
-                                return true;
+                if (strlen($locale) == 2) {
+                        foreach (array_keys($this->locales) as $key) {
+                                $match = strtolower(substr($key, 3, 2));
+                                if ($locale == $match) {
+                                        $locale = $key;
+                                        return true;
+                                }
+                        }
+                }
+                return false;
+        }
+
+        /**
+         * Find locale by language string.
+         * 
+         * This function matches the language code against aliases in all
+         * set locales (e.g. en-us => en_US). The $locale argument is set to 
+         * matching locale if found.
+         * 
+         * @param type $locale
+         * @return boolean
+         */
+        private function findAlias(&$locale)
+        {
+                if (strlen($locale) > 3 && $locale[2] == '-') {
+                        foreach (array_keys($this->locales) as $key) {
+                                $match = str_replace('_', '-', $key);
+                                if (strncasecmp($locale, $match, strlen($locale)) == 0) {
+                                        $locale = $key;
+                                        return true;
+                                }
                         }
                 }
                 return false;
