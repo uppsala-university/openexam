@@ -108,8 +108,10 @@ $actionName = $this->dispatcher->getActionName();
                             <?= Phalcon\Tag::linkTo('help/manual/teacher', 'Teacher Manual') ?>
                         </li>
                         <li>
-                            <?= Phalcon\Tag::linkTo('help/manual/student/swedish', 'Student Manual (Swedish)') ?>
-                            <?= Phalcon\Tag::linkTo('help/manual/student/english', 'Student Manual (English)') ?>
+                            <?= Phalcon\Tag::linkTo('help/manual/student', 'Student Manual') ?>
+                        </li>
+                        <li>
+                            <?= Phalcon\Tag::linkTo(array('help/manual', 'Show All...', 'target' => '_blank', 'title' => 'Open page with manuals in other languages and formats in new window.')) ?>
                         </li>
                         <li>
                             <?= Phalcon\Tag::linkTo('public/about', 'About') ?>

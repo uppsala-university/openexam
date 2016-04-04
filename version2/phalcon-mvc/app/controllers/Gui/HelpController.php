@@ -46,9 +46,9 @@ class HelpController extends GuiController
                                         "name" => "The OpenExam Teacher Manual",
                                         "data" => array(
                                                 "pdf"  => "Portable Document Format (PDF)",
-                                                "docx" => "Microsoft Word OpenXML"
+                                                "docx" => "Microsoft Word OpenXML (Text)"
                                         ),
-                                        "lang" => array("english")
+                                        "lang" => array("swedish", "english")
                                 ),
                                 "student" => array(
                                         "name" => "The OpenExam Student Manual",
@@ -92,8 +92,27 @@ class HelpController extends GuiController
          * 
          * @location /help/manual/*
          */
-        public function manualAction($target = null, $language = "swedish", $format = "pdf")
+        public function manualAction($target = null, $language = null, $format = "pdf")
         {
+                $languages = array(
+                        'swedish' => 'sv',
+                        'english' => 'en'
+                );
+
+                // 
+                // Use prefered language unless explicit selecting other 
+                // language. The default language is swedish.
+                // 
+                if (!isset($language)) {
+                        $language = $this->locale->getLanguage(
+                            $this->locale->getLocale()
+                        );
+                } elseif (array_key_exists($language, $languages)) {
+                        $language = $languages[$language];
+                } else {
+                        $language = $languages['swedish'];
+                }
+
                 if ($target == "teacher") {
                         $this->teacherManual($target, $language, $format);
                         return;
@@ -120,7 +139,7 @@ class HelpController extends GuiController
         private function teacherManual($target, $language, $format)
         {
 
-                $file = sprintf("openexam-%s-manual.%s", $target, $format);
+                $file = sprintf("openexam-%s-manual-%s.%s", $target, $language, $format);
                 $path = sprintf("%s/manual/%s", $this->config->application->docsDir, $file);
 
                 if (!$this->user->affiliation->isEmployee()) {
