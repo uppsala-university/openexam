@@ -135,7 +135,7 @@
 				
 				failMsg = "Failed to save your answer! \r\n \
 				Please report this issue to the exam invigilator immediately. \r\n \
-				Please DO NOT refresh/close this web page otherwise we may loose your answer.";
+				Please DO NOT refresh/close this web page otherwise we may loose your answer.\r\n";
 				
 				$.ajax({
 					type: 	"POST",
@@ -158,7 +158,7 @@
 					
 					if (typeof respJson.success == "undefined") {
 						if(async) {
-							alert(failMsg);
+							alert(failMsg+JSON.stringify(respJson));
 						} else {
 							return failMsg;
 						}
