@@ -75,12 +75,14 @@
                                 <div class="qs_area_line_q_no">
                                         <div class="q_no"></div>
                                         <div class="q_score"></div>
-                                        <?php if(/*$myRole == Roles::CREATOR && */in_array("editable", $exam->flags)):?>
                                         <div class="q_line_op">
+                                        <?php if(/*$myRole == Roles::CREATOR && */in_array("published", $exam->flags)) { ?>
+                                                <a href="#"><i class="fa fa-pencil edit-q" style="color:#994276"></i></a>
+                                        <?php } else { ?>
                                                 <a href="#"><i class="fa fa-pencil edit-q" style="color:#004276"></i></a>
                                                 <a href="#"><i class="fa fa-close del-q"></i></a>
+                                        <?php } ?>
                                         </div>
-                                        <?php endif;?>
                                 </div>
                                 <div class="qs_area_line_q_parts">
                                         <div class="qs_area_line_q" style="display:none">
