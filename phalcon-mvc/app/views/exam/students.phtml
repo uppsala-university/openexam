@@ -220,6 +220,12 @@ endforeach;
                 <?php endforeach; ?>
             </ul>
 -->
+                    <div id="print-students-list" style="display: block; margin:10px 0px 30px 0px;">        
+                        <span class="btn btn-success">
+                            <i class="fa fa-print"></i>
+                            <span>Download</span>
+                        </span>
+                    </div>                                
 
             <div style="clear:both"></div>
         </div>
@@ -653,6 +659,13 @@ endforeach;
                             }
                         );
                     }
+            });
+            
+            // 
+            // Handle print student list.
+            // 
+            $(document).on("click", "#print-students-list", function() {
+                    window.location.href = baseURL + 'utility/export/students/' + examId + '/download'
             });
             
         }); 

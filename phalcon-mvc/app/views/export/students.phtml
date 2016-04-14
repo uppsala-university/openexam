@@ -1,0 +1,82 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    student-list.php
+// Created: 2016-04-14 12:24:39
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+?>
+
+<style>
+    table, tr { 
+        border: 1px solid black;
+        margin: 0px;
+        font-size: 0.9em;
+        width: 22cm;
+    }
+    td {
+        white-space: nowrap;
+    }
+    th {
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        text-align: left;
+        min-width: 30px;
+    }
+    tr.student:nth-child(odd) {
+        background: #eeeeee;
+    }
+    th.notes {
+        min-width: 400px;
+    }
+    .subject {
+        text-decoration: underline
+    }
+    td.description {
+        background-color: #eeeeee;
+        padding: 10px;
+    }
+</style>
+
+<table>
+    <tr>
+        <td colspan="7">
+            <b><?= $exam->name ?> (<?= $exam->code ?>)</b><br/>
+            <span class="subject">Department:</span> <?= $exam->orgunit ?>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><span class="subject">Start:</span> <?= $exam->starttime ?></td>
+        <td colspan="2"><span class="subject">End:</span> <?= $exam->endtime ?></td>
+    </tr>
+    <tr><td></td></tr>
+    <tr>
+        <td colspan="7" class="description"><?= $exam->descr ?></td>
+    </tr>
+    <tr><td></td></tr>
+    <tr>
+        <td colspan="7">
+            <span class="subject">Contact:</span> <?= $contact->name ?> (<?= implode(", ", $contact->mail) ?>)
+        </td>
+    </tr>
+    <tr><td><br/></td></tr>
+    <tr>
+        <th>Name</th><th>Pers Nr</th><th>Code</th><th>Tag</th><th>ID</th><th>Finished</th><th class="notes">Notes</th>
+    </tr>
+    <?php foreach ($students as $student) { ?>
+            <tr class="student">
+                <td><?= $student->name ?></td>
+                <td><?= $student->persnr ?></td>
+                <td><?= $student->code ?></td>
+                <td><?= $student->tag ?></td>
+                <td></td>
+                <td><?= $student->finished ?></td>
+                <td></td>
+            </tr>
+    <?php } ?>
+</table>
