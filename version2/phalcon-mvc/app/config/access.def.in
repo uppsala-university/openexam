@@ -150,6 +150,9 @@ return array(
                 ),
                 'import' => array(
                         'students' => array('invigilator')
+                ),
+                'export' => array(
+                        'students' => array('invigilator')
                 )
         )
 );
