@@ -50,7 +50,7 @@ class ExportController extends GuiController
                         throw new StandardException("Missing exam ID", Error::BAD_REQUEST);
                 }
                 if (!$this->user->roles->aquire(Roles::INVIGILATOR, $id)) {
-                        throw new SecurityException("only accessable for invigilators.", Error::METHOD_NOT_ALLOWED);
+                        throw new SecurityException("This page is only accessable for invigilators.", Error::METHOD_NOT_ALLOWED);
                 } else {
                         $this->user->setPrimaryRole(Roles::INVIGILATOR);
                 }
@@ -59,26 +59,30 @@ class ExportController extends GuiController
                         $this->studentsDownload($id);
                         return true;
                 }
-                
+
                 // 
-                // Get students in this exam and exam data.
+                // Get students in this exam and exam data. Names are fetched
+                // from the directory service, so we can't sort on them.
                 // 
-                if(($students = Student::find("exam_id = $id")) == false) {
+                if (($students = Student::find(array(
+                            "exam_id = $id",
+                            "order" => "user"
+                    ))) == false) {
                         throw new ModelException("Failed find student on exam");
                 }
-                if(($exam = Exam::findFirst($id)) == false) {
+                if (($exam = Exam::findFirst($id)) == false) {
                         throw new ModelException("Failed get exam data");
                 }
-                
+
                 // 
                 // Exam contact information.
                 // 
                 $contact = $this->catalog->getPrincipal($exam->creator, Principal::ATTR_PN)[0];
-                
+
                 $this->view->setVar('students', $students);
                 $this->view->setVar('exam', $exam);
                 $this->view->setvar('contact', $contact);
-                
+
                 $this->view->setLayout(null);
         }
 
