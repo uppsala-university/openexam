@@ -665,6 +665,7 @@ endforeach;
             // Handle print student list.
             // 
             $(document).on("click", "#print-students-list", function() {
+                    var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
                     window.location.href = baseURL + 'utility/export/students/' + examId + '/download'
             });
             
