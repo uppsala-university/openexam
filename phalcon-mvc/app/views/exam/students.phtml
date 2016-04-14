@@ -124,7 +124,14 @@ endforeach;
                 <em>No students have been added to the exam yet.</em>
             </div>
             <?php else:?>
-            <div style="float:left; margin-bottom: 5px;">
+            <div id="print-students-list" style="float:left; display: inline; margin-bottom: 10px; margin-right: 5px;">        
+                <span class="btn btn-success">
+                        <i class="fa fa-print"></i>
+                        <span>Download</span>
+                </span>
+            </div>                                
+
+            <div style="float:left; margin-bottom: 10px;">
                 <span id='del-st-btn' class="btn btn-danger" style="display: none">
                         <i class="fa fa-trash-o"></i>
                         <span></span>
@@ -220,12 +227,6 @@ endforeach;
                 <?php endforeach; ?>
             </ul>
 -->
-                    <div id="print-students-list" style="display: block; margin:10px 0px 30px 0px;">        
-                        <span class="btn btn-success">
-                            <i class="fa fa-print"></i>
-                            <span>Download</span>
-                        </span>
-                    </div>                                
 
             <div style="clear:both"></div>
         </div>
