@@ -140,6 +140,15 @@ class DirectoryManager extends Component implements DirectoryService
         }
 
         /**
+         * Get array of default attributes for user principal searches.
+         * @return array
+         */
+        public function getdefaultAttributes()
+        {
+                return self::$DEFAULT_ATTR;
+        }
+
+        /**
          * Get groups for user.
          * @param string $principal The user principal name.
          * @param array $attributes The attributes to return.
@@ -236,9 +245,9 @@ class DirectoryManager extends Component implements DirectoryService
          * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
          * 
          * // Get email for user tomas:
-         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
+         * $manager->getPrincipal('thomas', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
          * 
-         * // Get email for user principal tomas@example.com:
+         * // Get email for user principal name tomas@example.com:
          * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
          * </code>
          * 

@@ -13,7 +13,7 @@
 
 namespace OpenExam\Models;
 
-use OpenExam\Library\Catalog\DirectoryManager;
+use OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Models\ModelBase;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
@@ -33,9 +33,19 @@ class Role extends ModelBase
         public $name;
         /**
          * The email address.
+         * @var array 
+         */
+        public $mail = array();
+        /**
+         * The first name.
          * @var string 
          */
-        public $mail;
+        public $fname;
+        /**
+         * The last name.
+         * @var string 
+         */
+        public $lname;
 
         protected function initialize()
         {
@@ -78,8 +88,7 @@ class Role extends ModelBase
          */
         protected function afterFetch()
         {
-                $this->name = $this->getAttribute(Principal::ATTR_NAME);
-                $this->mail = $this->getAttribute(Principal::ATTR_MAIL);
+                $this->setAttributes();
                 parent::afterFetch();
         }
 
@@ -116,6 +125,73 @@ class Role extends ModelBase
                         if (($attrs = $catalog->getAttribute($this->user, $name))) {
                                 return current($attrs)[$name][0];
                         }
+                }
+        }
+
+        /**
+         * Get all attributes from directory service.
+         * @return array
+         */
+        protected function getAttributes()
+        {
+                if (($catalog = $this->getDI()->getCatalog()) != false) {
+                        return $catalog->getPrincipal(
+                                $this->user, Principal::ATTR_PN, array(
+                                    'attr' => array(
+                                            Principal::ATTR_NAME,
+                                            Principal::ATTR_GN,
+                                            Principal::ATTR_SN,
+                                            Principal::ATTR_MAIL
+                                    )
+                        ));
+                }
+        }
+
+        /**
+         * Set all attributes from directory service.
+         */
+        protected function setAttributes()
+        {
+                if (!($principals = $this->getAttributes())) {
+                        return;
+                }
+
+                foreach ($principals as $principal) {
+                        if (!isset($this->name) && isset($principal->name)) {
+                                $this->name = $principal->name;
+                        }
+                        if (!isset($this->fname) && isset($principal->gn)) {
+                                $this->fname = $principal->gn;
+                        }
+                        if (!isset($this->lname) && isset($principal->sn)) {
+                                $this->lname = $principal->sn;
+                        }
+                        if (isset($principal->mail)) {
+                                foreach ($principal->mail as $key => $val) {
+                                        if (!in_array($val, $this->mail)) {
+                                                $this->mail[] = $val;
+                                        }
+                                        if (!is_numeric($key)) {
+                                                $this->mail[$key] = $val;
+                                        }
+                                }
+                        }
+                }
+
+                $this->setPrimaryMail(DirectoryService::PRIMARY_ATTR_VALUE);
+        }
+
+        /**
+         * Set primary mail for user.
+         * @param string $key The primary mail attribute key.
+         */
+        private function setPrimaryMail($key, $unique = true)
+        {
+                if (array_key_exists($key, $this->mail)) {
+                        array_unshift($this->mail, $this->mail[$key]);
+                }
+                if ($unique) {
+                        $this->mail = array_unique($this->mail);
                 }
         }
 
