@@ -61,17 +61,28 @@ class ExportController extends GuiController
                 }
 
                 // 
-                // Get students in this exam and exam data. Names are fetched
-                // from the directory service, so we can't sort on them.
+                // Get students in this exam and exam data.
                 // 
-                if (($students = Student::find(array(
-                            "exam_id = $id",
-                            "order" => "user"
-                    ))) == false) {
+                if (($stud = Student::find("exam_id = $id")) == false) {
                         throw new ModelException("Failed find student on exam");
                 }
                 if (($exam = Exam::findFirst($id)) == false) {
                         throw new ModelException("Failed get exam data");
+                }
+
+                // 
+                // Students need to be sorted on name and name need to be
+                // transformed to lastname, first name.
+                // 
+                $students = array();
+                foreach ($stud as $s) {
+                        if (count($students) == 0) {
+                                $students[] = $s;
+                        } elseif (strcmp($students[0]->lname, $s->lname) < 0) { 
+                                array_push($students, $s);
+                        } else {
+                                array_unshift($students, $s);
+                        }
                 }
 
                 // 
