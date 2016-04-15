@@ -21,6 +21,11 @@ interface DirectoryService
 {
 
         /**
+         * Identifier of prefered value in attribute collection.
+         */
+        const PRIMARY_ATTR_VALUE = 'x-primary';
+
+        /**
          * Get groups for user.
          * @param string $principal The user principal name.
          * @param array $attributes The attributes to return.
@@ -61,8 +66,11 @@ interface DirectoryService
          * // Search three first Tomas in example.com domain:
          * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
          * 
-         * // Get email for tomas@example.com:
-         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
+         * // Get email for user tomas:
+         * $manager->getPrincipal('thomas', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
+         * 
+         * // Get email for user principal name tomas@example.com:
+         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
          * </code>
          * 
          * The $options parameter is an array containing zero or more of 
