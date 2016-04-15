@@ -71,8 +71,7 @@ class ExportController extends GuiController
                 }
 
                 // 
-                // Students need to be sorted on name and name need to be
-                // transformed to lastname, first name.
+                // Sort student list on lastname.
                 // 
                 $students = array();
                 foreach ($stud as $s) {
