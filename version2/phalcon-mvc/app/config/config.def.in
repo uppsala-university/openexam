@@ -31,7 +31,7 @@ return array(
                 'username'   => 'openexam',
                 'password'   => '',
                 'dbname'     => 'openexam',
-                'persistent' => true   // Required for uniquness validation
+                'persistent' => true   // Required for uniqueness validation
         ),
         /**
          * The read-only/slave database connection (for load balancing).
@@ -42,7 +42,18 @@ return array(
                 'username'   => 'openexam',
                 'password'   => '',
                 'dbname'     => 'openexam',
-                'persistent' => true   // Required for uniquness validation
+                'persistent' => true   // Required for uniqueness validation
+        ),
+        /**
+         * The audit trail database connection (for tracking changes).
+         */
+        'audit'      => array(
+                'adapter'    => 'Mysql',
+                'host'       => 'localhost',
+                'username'   => 'openexam',
+                'password'   => '',
+                'dbname'     => 'openexam',
+                'persistent' => true   // Required for uniqueness validation
         ),
         /**
          * User service configuration.
@@ -195,5 +206,9 @@ return array(
                         'memcache' => true,
                         'file'     => true
                 )
-        )
+        ),
+        /**
+         * See docs/README-AUDIT before enabling/configure this option.
+         */
+        'audit'       => false
 );

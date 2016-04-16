@@ -1,4 +1,8 @@
 
+    ************************************
+     README FOR LOGGING
+    ************************************
+
 ** GENERAL:
 
    System logging is configured in app/config/config.def, with system defaults in

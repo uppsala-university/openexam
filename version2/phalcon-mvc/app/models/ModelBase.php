@@ -13,10 +13,15 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Audit\DataTargetAudit;
+use OpenExam\Library\Model\Audit\FileTargetAudit;
 use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
+use Phalcon\Config;
+use Phalcon\Db\AdapterInterface;
 use Phalcon\Mvc\Model;
+use Phalcon\Mvc\ModelInterface;
 
 /**
  * Base class for all models.
@@ -34,6 +39,90 @@ class ModelBase extends Model
                         $this->setReadConnectionService('dbread');
                         $this->setWriteConnectionService('dbwrite');
                 }
+
+                if ($this->getDI()->has('config')) {
+                        $config = $this->getDI()->get('config');
+                        if ($this->setAuditBehavior($config)) {
+                                $this->keepSnapshots(true);
+                        }
+                }
+        }
+
+        /**
+         * Set audit behavior on model.
+         * @param Config $config The system/user config.
+         */
+        private function setAuditBehavior($config)
+        {
+                $audit = $config->get('audit', false);
+                $model = $this->getResourceName();
+
+                // 
+                // Look for audit config:
+                // 
+                if (is_array($audit)) {
+                        foreach (array($model, '*') as $key) {
+                                if (isset($audit[$key])) {
+                                        $data = $audit[$key];
+                                        break;
+                                }
+                        }
+                } elseif (is_bool($audit) && $audit == true) {
+                        $data = true;
+                }
+
+                // 
+                // No audit config found or disabled.
+                // 
+                if (!isset($data) || $data == false) {
+                        return false;
+                }
+
+                // 
+                // Set default audit:
+                // 
+                if ($data == true) {
+                        $this->addBehavior(new DataTargetAudit(array(
+                                'actions' => array(
+                                        'create', 'update', 'delete'
+                                ),
+                                'data'    => array(
+                                        'connection' => 'dbaudit',
+                                        'table'      => $model
+                                )
+                        )));
+                        return true;
+                }
+
+                // 
+                // Set file target audit:
+                // 
+                if (isset($data['file'])) {
+                        if (is_array($data['file'])) {
+                                $this->addBehavior(new FileTargetAudit($data));
+                                return true;
+                        }
+                        if (is_bool($data['file']) && $data['file'] == true) {
+                                $this->addBehavior(new FileTargetAudit());
+                                return true;
+                        }
+                }
+
+                // 
+                // Set database target audit:
+                // 
+                if (isset($data['data'])) {
+                        if (is_array($data['data'])) {
+                                $this->addBehavior(new DataTargetAudit($data));
+                                return true;
+                        }
+                        if (is_bool($data['data']) && $data['data'] == true) {
+                                $this->addBehavior(new DataTargetAudit($data));
+                                return true;
+                        }
+                }
+
+                return false;
         }
 
         /**
@@ -239,8 +328,8 @@ class ModelBase extends Model
          * Saves related records that must be stored prior to save the 
          * master record.
          * 
-         * @param \Phalcon\Db\AdapterInterface $connection
-         * @param \Phalcon\Mvc\ModelInterface[] $related
+         * @param AdapterInterface $connection
+         * @param ModelInterface[] $related
          * @return bool 
          */
         protected function _preSaveRelatedRecords($connection, $related)

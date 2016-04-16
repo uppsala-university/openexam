@@ -1,0 +1,185 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="openexam_audit">
+	<table_structure name="access">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="access" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:20" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="admins">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="admins" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:20" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="answers">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="answers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:20" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="computers">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="computers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:20" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="contributors">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="contributors" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:20" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="correctors">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="correctors" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:21" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="decoders">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="decoders" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:21" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="exams">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="exams" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:21" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="files">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="files" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:21" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="invigilators">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="invigilators" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:21" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="locks">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="locks" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:21" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="questions">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="questions" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:21" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="resources">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="resources" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:22" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="results">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="results" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:22" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="rooms">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="rooms" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:22" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="sessions">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="sessions" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:22" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="settings">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="settings" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:22" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="students">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="students" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:22" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="teachers">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="teachers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:23" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="topics">
+		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="model" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="type" Type="char(6)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
+		<options Name="topics" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2016-04-16 15:25:23" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+</database>
+</mysqldump>
