@@ -47,44 +47,46 @@ class Cache extends Multiple
          */
         public function __construct($config, $backends = array())
         {
-                $frontend = array(
-                        'fast'   => new DataFrontend(array(
-                                "lifetime" => $config->cache->lifetime->fast
-                            )),
-                        'medium' => new DataFrontend(array(
-                                "lifetime" => $config->cache->lifetime->medium
-                            )),
-                        'slow'   => new DataFrontend(array(
-                                "lifetime" => $config->cache->lifetime->slow
-                            ))
-                );
+                if ($config->cache) {
+                        $frontend = array(
+                                'fast'   => new DataFrontend(array(
+                                        "lifetime" => $config->cache->lifetime->fast
+                                    )),
+                                'medium' => new DataFrontend(array(
+                                        "lifetime" => $config->cache->lifetime->medium
+                                    )),
+                                'slow'   => new DataFrontend(array(
+                                        "lifetime" => $config->cache->lifetime->slow
+                                    ))
+                        );
 
-                if ($config->cache->enable->xcache && extension_loaded('xcache')) {
-                        $backends[] = new Xcache(
-                            $frontend['fast'], $config->cache->xcache->toArray()
-                        );
-                }
-                if ($config->cache->enable->apc && extension_loaded('apc')) {
-                        $backends[] = new ApcCache(
-                            $frontend['fast'], $config->cache->apc->toArray()
-                        );
-                }
-                if ($config->cache->enable->memcache && extension_loaded('memcache')) {
-                        $backends[] = new MemcacheCache(
-                            $frontend['medium'], $config->cache->memcache->toArray()
-                        );
-                }
-                if ($config->cache->enable->file) {
-                        $backends[] = new FileCache(
-                            $frontend['slow'], $config->cache->file->toArray()
-                        );
-                }
+                        if ($config->cache->enable->xcache && extension_loaded('xcache')) {
+                                $backends[] = new Xcache(
+                                    $frontend['fast'], $config->cache->xcache->toArray()
+                                );
+                        }
+                        if ($config->cache->enable->apc && extension_loaded('apc')) {
+                                $backends[] = new ApcCache(
+                                    $frontend['fast'], $config->cache->apc->toArray()
+                                );
+                        }
+                        if ($config->cache->enable->memcache && extension_loaded('memcache')) {
+                                $backends[] = new MemcacheCache(
+                                    $frontend['medium'], $config->cache->memcache->toArray()
+                                );
+                        }
+                        if ($config->cache->enable->file) {
+                                $backends[] = new FileCache(
+                                    $frontend['slow'], $config->cache->file->toArray()
+                                );
+                        }
 
-                if (!file_exists($config->cache->file->cacheDir)) {
-                        mkdir($config->cache->file->cacheDir);
-                }
-                if (count($backends) != 0) {
-                        $this->_fastest = $backends[0];
+                        if (!file_exists($config->cache->file->cacheDir)) {
+                                mkdir($config->cache->file->cacheDir);
+                        }
+                        if (count($backends) != 0) {
+                                $this->_fastest = $backends[0];
+                        }
                 }
 
                 parent::__construct($backends);
