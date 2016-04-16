@@ -39,36 +39,40 @@ class StateTest extends TestCase
                 parent::setUp();
 
                 self::$data = array(
-                        'exam'     => array(
+                        'exam'      => array(
                                 'name'    => 'Exam 1',
                                 'creator' => $this->caller,
                                 'orgunit' => 'orgunit1',
                                 'grades'  => json_encode(array('data' => array('U' => 0, 'G' => 20, 'VG' => 30)))
                         ),
-                        'student'  => array(
+                        'student'   => array(
                                 'exam_id' => 0,
                                 'user'    => $this->caller,
                                 'code'    => '1234ABCD'
                         ),
-                        'topic'    => array(
+                        'topic'     => array(
                                 'exam_id'   => 0,
                                 'name'      => 'Topic 1',
                                 'randomize' => 0
                         ),
-                        'question' => array(
+                        'question'  => array(
                                 'exam_id'  => 0,
                                 'topic_id' => 0,
                                 'score'    => 1.0,
                                 'name'     => 'Question 1',
                                 'quest'    => 'Question text',
-                                'user'     => $this->caller,
+                                'user'     => $this->caller
                         ),
-                        'answer'   => array(
+                        'corrector' => array(
+                                'question_id' => 0,
+                                'user'        => $this->caller
+                        ),
+                        'answer'    => array(
                                 'question_id' => 0,
                                 'student_id'  => 0,
                                 'answered'    => true
                         ),
-                        'result'   => array(
+                        'result'    => array(
                                 'answer_id'  => 0,
                                 'score'      => 1.5,
                                 'correction' => 'completed'
@@ -79,6 +83,7 @@ class StateTest extends TestCase
                 $this->addStudent();
                 $this->addTopic();
                 $this->addQuestion();
+                $this->addCorrector();
 
                 $this->state = new State($this->exam);
         }
@@ -122,6 +127,13 @@ class StateTest extends TestCase
                 $this->question->create(self::$data['question']);
         }
 
+        private function addCorrector()
+        {
+                self::$data['corrector']['question_id'] = $this->question->id;
+                $this->corrector = new \OpenExam\Models\Corrector();
+                $this->corrector->create(self::$data['corrector']);
+        }
+
         private function addAnswer()
         {
                 self::$data['answer']['student_id'] = $this->student->id;
@@ -151,7 +163,7 @@ class StateTest extends TestCase
                 // Before examination started (unpublished):
                 // 
                 $this->exam->published = false;
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() + 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 120);
 
@@ -176,7 +188,7 @@ class StateTest extends TestCase
                 // Before examination started (published):
                 // 
                 $this->exam->published = true;
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() + 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 120);
 
@@ -264,10 +276,10 @@ class StateTest extends TestCase
                 // Finished examination (corrected):
                 // 
                 $this->addResult();
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 120);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() - 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -333,10 +345,10 @@ class StateTest extends TestCase
                 // Before examination started (unpublished):
                 // 
                 $this->exam->published = false;
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() + 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 120);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -356,10 +368,10 @@ class StateTest extends TestCase
                 // Before examination started (published):
                 // 
                 $this->exam->published = true;
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() + 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 120);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -380,7 +392,7 @@ class StateTest extends TestCase
                 // 
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -400,10 +412,10 @@ class StateTest extends TestCase
                 // Ongoing examination (seen):
                 // 
                 $this->addAnswer();
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -418,13 +430,13 @@ class StateTest extends TestCase
                 self::assertFalse($this->state->has(State::REUSABLE));
                 self::assertTrue($this->state->has(State::RUNNING));
                 self::assertFalse($this->state->has(State::UPCOMING));
-                
+
                 // 
                 // Finished examination (not yet corrected):
                 // 
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 120);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() - 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -447,7 +459,7 @@ class StateTest extends TestCase
 
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 120);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() - 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -513,10 +525,10 @@ class StateTest extends TestCase
                 // Before examination started (unpublished):
                 // 
                 $this->exam->published = false;
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() + 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 120);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -540,10 +552,10 @@ class StateTest extends TestCase
                 // Before examination started (published):
                 // 
                 $this->exam->published = true;
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() + 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 120);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -568,7 +580,7 @@ class StateTest extends TestCase
                 // 
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -592,10 +604,10 @@ class StateTest extends TestCase
                 // Ongoing examination (seen):
                 // 
                 $this->addAnswer();
-                
+
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 60);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() + 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -620,7 +632,7 @@ class StateTest extends TestCase
                 // 
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 120);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() - 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
@@ -647,7 +659,7 @@ class StateTest extends TestCase
 
                 $this->exam->starttime = date('Y-m-d H:i:s', time() - 120);
                 $this->exam->endtime = date('Y-m-d H:i:s', time() - 60);
-                
+
                 $this->exam->update();
                 $this->state->refresh();
 
