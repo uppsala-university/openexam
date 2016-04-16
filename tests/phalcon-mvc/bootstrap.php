@@ -35,6 +35,19 @@ define('CONFIG_PHP', __DIR__ . '/../../phalcon-mvc/app/config/system/config.php'
 // 
 $config = include(CONFIG_PHP);
 
+// 
+// Disable caching:
+// 
+$config->cache->enable->xcache = false;
+$config->cache->enable->apc = false;
+$config->cache->enable->memcache = false;
+$config->cache->enable->file = false;
+
+// 
+// Disable audit:
+// 
+// $config->audit = false;
+
 include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
 
