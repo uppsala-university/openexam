@@ -65,6 +65,7 @@ $config = new \Phalcon\Config(
                 'migrationsDir'  => BASE_DIR . '/schemas/migrations/',
                 'localeDir'      => BASE_DIR . '/locale/',
                 'cacheDir'       => BASE_DIR . '/cache/',
+                'auditDir'       => BASE_DIR . '/audit',
                 'logsDir'        => BASE_DIR . '/logs',
                 'baseDir'        => BASE_DIR . '/',
                 'docsDir'        => PROJ_DIR . '/docs',
@@ -162,7 +163,7 @@ $config = new \Phalcon\Config(
                         'file'  => 'debug.log',
                         'level' => \Phalcon\Logger::DEBUG
                 ),
-                'system'   => array(
+                'system' => array(
                         'syslog'   => 'openexam',
                         'level'    => \Phalcon\Logger::NOTICE,
                         'option'   => LOG_NDELAY,
@@ -220,9 +221,9 @@ $config = new \Phalcon\Config(
          * Session configuration.
          */
         'session'     => array(
-                'expires'   => 21600,           // Expires after (seconds)
-                'refresh'   => 7200,            // Refresh threshold (seconds)
-                'cleanup'   => true,            // Enable garbage collection
+                'expires'   => 21600, // Expires after (seconds)
+                'refresh'   => 7200, // Refresh threshold (seconds)
+                'cleanup'   => true, // Enable garbage collection
                 'startPage' => 'exam/index'     // Start page (user initiated)
         ),
         /**
@@ -265,7 +266,11 @@ $config = new \Phalcon\Config(
                         'prefix'   => 'cache',
                         'cacheDir' => BASE_DIR . '/cache/app/'
                 )
-        )
+        ),
+        /**
+         * Audit is disabled by default.
+         */
+        'audit'       => false
     )
 );
 

@@ -131,6 +131,9 @@ $di->set('dbread', function () use ($config) {
 $di->set('dbwrite', function () use ($config) {
         return \OpenExam\Library\Database\Adapter::create($config->dbwrite);
 }, true);
+$di->set('dbaudit', function () use ($config) {
+        return \OpenExam\Library\Database\Adapter::create($config->dbaudit);
+}, true);
 
 /**
  * Start the session the first time some component request the session service

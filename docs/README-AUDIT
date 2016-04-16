@@ -1,0 +1,178 @@
+
+    ************************************
+     README FOR AUDIT TRAILS
+    ************************************
+
+** INTRODUCTION:
+
+   Audit let you keep track on changes to the database model (create, update and delete).
+   In essence, it can be used for answering questions like:
+
+        *) Who made changes to that object?
+        *) What was actually changed?
+        *) Who's the one one to blame?
+
+   By far, the most important thing to audit is answers. This let us keep track of changes
+   to proof whether answers where changed or not.
+
+   A bonus effect of auditing is that it "out of the box" gives us (at least theoretical)
+   opportunity to rollback changes to a previous state. For answers, this could be used
+   as a rudimentary version control (undo/redo).
+
+** SETUP:
+
+   It's recommended to have a separate database for keeping audits, possibly on another 
+   server than the other databases. Use scheme admin/sql/openexam-audit.sql for creating a 
+   database with multiple tables (one table for each model). 
+
+   If using files as audit target, make sure to keep them in the local file system. Don't
+   even think about using SMB. Please notice that each request won't exit before the audit
+   data has been written!
+
+   Its also possible to keep all audits in the same table or file, but it's not the 
+   recommended solution.
+
+** CONFIGURATION:
+
+   Configuration is done in app/config/config.def. Audit can be attached on each database
+   model and fine tuned to your needs. The defaults are (when using audit => true):
+
+        *) Audit all models.
+        *) Audit all change actions (create, update and delete).
+        *) Use database connection named 'dbaudit'.
+        *) Use a table named 'audit'.
+
+   Use false to explicit disable an audit, see example below.
+
+   The possible configurations are:
+
+        'audit' => bool|array(
+            '*'|<model> => bool|array(      // The model name or '*' for all models (i).
+                'actions' => array(...)     // Optional, defaults to array('create','update','delete').
+                'file' => bool|array(
+                    'name'       => <path>  // Optional, defaults to audit/<model>.dat
+                    'format'     => <type>  // Optional, defaults to 'serialize' (ii).
+                ),
+                'data' => bool|array(
+                    'connection' => <name>  // Optional, defaults to 'dbaudit'.
+                    'table'      => <name>  // Optional, defaults to <model> name (iii).
+                )
+            )
+        );
+
+   (i)   The '*' matches all models not matched by a unique name.
+   (ii)  The type can be either 'export','json' or 'serialize'.
+   (iii) The table should have these fields:
+
+        CREATE TABLE `audit` (
+            `id` int(11) DEFAULT NULL,
+            `model` varchar(20) DEFAULT NULL,
+            `type` char(6) DEFAULT NULL,
+            `user` varchar(60) DEFAULT NULL,
+            `time` datetime DEFAULT NULL,
+            `changes` mediumblob
+        );
+
+    The audit data will grow fast for large installations. In this case its recommended to 
+    keep audit data separated from system data, that means, a separate server with its own
+    database (not replicated). 
+
+    Preferable there should be one audit table per audited model. A SQL script for generating
+    the audit database can be found in admin/sql/audit.
+
+** EXAMPLES:
+
+    // 
+    // Enable auditing with default options. This will audit all models for all changes and 
+    // store them using database connection 'dbaudit' and table answer.
+    // 
+    'audit' => true
+
+    // 
+    // Audit all model changes except for session:
+    // 
+    'audit' => array(
+        '*'       => true,
+        'session' => false
+    )
+
+    // 
+    // Audit changes to roles:
+    // 
+    'audit' => array(
+        'student'     => true,
+        'corrector'   => true,
+        'contributor' => true,
+        'decoders'    => true,
+        'invigilator' => true,
+        'admin'       => true,
+        'teacher'     => true
+    )
+
+    // 
+    // Audit logon/logoff in session:
+    // 
+    'audit' => array(
+        'session' => array(
+            'actions' => array('create','delete)
+        )
+    )
+
+    // 
+    // Audit open exam (by student):
+    // 
+    'audit' => array(
+        'lock' => array(
+            'actions' => array('create')
+        ),
+        'computer' => array(
+            'actions' => array('create')
+        )
+    )
+
+    // 
+    // Audit exam changes to separate JSON log file:
+    // 
+    'audit' => array(
+        'exam' => array(
+            'file' => array(
+                'name'   => '/var/data/openexam/exam-changelog.json',
+                'format' => 'json'
+        )
+    )
+
+    // 
+    // Same as above, but using constants for value check:
+    // 
+    'audit' => array(
+        'exam' => array(
+            'file' => array(
+                'name'   => '/var/data/openexam/exam-changelog.json',
+                'format' => Audit::FORMAT_JSON
+        )
+    )
+
+    // 
+    // Audit create/update by default, but only delete on student. Don't audit sessions:
+    // 
+    'audit' => array(
+        '*' => array(
+            'actions' => array('create','update')
+        ),
+        'student' => array(
+            'actions' => array('delete')
+        ),
+        'session' => false
+    )
+
+** TIPS:
+
+   Use file as audit target and logtail to push changes to other hosts. This could be done
+   using e.g. SSH, netcat or curl:
+
+    bash$> tail -f /var/data/openexam/exam-changelog.json | \
+           while read line; do \
+                curl -XPOST http://www.example.com/audit-receiver.php -d '$line' \
+           done
+
+// Anders Lövgren, 2016-04-15
