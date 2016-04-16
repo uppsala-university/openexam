@@ -2,6 +2,7 @@
 
 namespace OpenExam\Library\Security;
 
+use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Question;
 use OpenExam\Models\Topic;
@@ -477,6 +478,14 @@ class RolesTest extends TestCase
                 }
                 self::dump($qmodel);
 
+                $cmodel = new Corrector();
+                $cmodel->question_id = $qmodel->id;
+                $cmodel->user = $user;
+                if ($cmodel->create() == false) {
+                        self::error(implode("\n", $cmodel->getMessages()));
+                }
+                self::dump($cmodel);
+
                 self::assertEquals($user, $qmodel->user);
                 self::assertTrue($this->object->aquire($role));
                 self::assertTrue($this->object->aquire($role, 0));
@@ -488,6 +497,7 @@ class RolesTest extends TestCase
 
                 $qmodel->delete();
                 $tmodel->delete();
+                $cmodel->delete();
         }
 
         /**

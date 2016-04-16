@@ -159,7 +159,7 @@ class QuestionTest extends TestModel
                 $object->delete();
 
                 /**
-                 * Test caller added as corrector:
+                 * Test caller was not added as corrector (exam creator):
                  */
                 $expect = $user->getPrincipalName();
                 $object = new Question();
@@ -167,17 +167,40 @@ class QuestionTest extends TestModel
                 $object->user = $expect;
 
                 self::assertTrue($object->create());
+                self::assertNotNull($object->correctors);
+                self::assertTrue($object->correctors->count() == 0);
+
+                $object->delete();
+                
+                /**
+                 * Test caller was added as corrector (not exam creator):
+                 */
+                $exam = new Exam();
+                $exam->assign($this->sample->getSample('exam', false));
+                $exam->id = null;
+                $exam->creator = "testxxx";
+                self::assertTrue($exam->create());
+                
+                $expect = $user->getPrincipalName();
+                $object = new Question();
+                $object->assign($this->sample->getSample('question', false));
+                $object->exam_id = $exam->id;
+                $object->user = $expect;
+
+                self::assertTrue($object->create());
+                self::assertNotNull($object->correctors);
                 self::assertTrue($object->correctors->count() != 0);
                 $corrector = $object->correctors[0];
                 self::assertNotNull($corrector);
                 self::assertEquals($expect, $corrector->user);
 
+                $exam->delete();
                 $object->delete();
 
                 $object = new Question();
                 $object->assign($this->sample->getSample('question', false));
                 $object->create();
-
+                
                 // 
                 // Test filter text:
                 // 
