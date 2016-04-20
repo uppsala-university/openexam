@@ -15,6 +15,7 @@ namespace OpenExam\Console\Tasks;
 
 use OpenExam\Library\Core\Result as ResultHandler;
 use OpenExam\Models\Exam;
+use Phalcon\Mvc\Model\Resultset\Simple as SimpleResultSet;
 
 /**
  * Downloadable results task.
@@ -66,8 +67,9 @@ class ResultTask extends MainTask implements TaskInterface
                         'options'  => array(
                                 '--create'   => 'Generate result files.',
                                 '--delete'   => 'Remove generated result files.',
-                                '--days=num' => 'Older/newer than num days.',
+                                '--days=num' => 'Work on exams older/newer than num days.',
                                 '--exam=num' => 'Use this exam instead of using --days.',
+                                '--all'      => 'Process all exams.',
                                 '--generate' => 'Alias for --create.',
                                 '--remove'   => 'Alias for --delete',
                                 '--force'    => 'Force generate files.',
@@ -86,8 +88,11 @@ class ResultTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Remove result files for exams older than one month',
                                         'command' => '--delete --days=31'
-                                )
-                        )
+                                ),
+                                array(
+                                        'descr'   => 'Remove result files for all exams',
+                                        'command' => '--delete --all'
+                                ))
                 );
         }
 
@@ -99,33 +104,17 @@ class ResultTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'create');
 
+                if (!file_exists($this->resdir)) {
+                        $this->flash->error("The result directory is missing");
+                        return false;
+                }
                 if ($this->options['verbose']) {
                         $this->flash->notice("Starting result file generation");
                 }
 
                 $exams = $this->getExams();
-
                 foreach ($exams as $exam) {
-                        if ($this->options['verbose']) {
-                                $this->flash->notice(sprintf("Processing exam %d", $exam->id));
-                        }
-                        $result = new ResultHandler($exam);
-                        $result->setForced($this->options['force']);
-
-                        foreach ($exam->students as $student) {
-                                if ($this->options['verbose']) {
-                                        $this->flash->notice(sprintf("  Generating result for student %d (%s)", $student->id, $student->code));
-                                }
-                                if (!$this->options['dry-run']) {
-                                        $result->createFile($student);
-                                }
-                        }
-                        if ($this->options['verbose']) {
-                                $this->flash->notice(sprintf("  Creating zip-file for exam %d", $exam->id));
-                        }
-                        if (!$this->options['dry-run']) {
-                                $result->createArchive();
-                        }
+                        $this->createResults($exam);
                 }
 
                 if ($this->options['verbose']) {
@@ -133,6 +122,10 @@ class ResultTask extends MainTask implements TaskInterface
                 }
         }
 
+        /**
+         * Alias action for create.
+         * @param array $params
+         */
         public function generateAction($params = array())
         {
                 $this->createAction($params);
@@ -146,67 +139,17 @@ class ResultTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'delete');
 
+                if (!file_exists($this->resdir)) {
+                        $this->flash->error("The result directory is missing");
+                        return false;
+                }
                 if ($this->options['verbose']) {
                         $this->flash->notice("Starting result file cleanup");
                 }
 
                 $exams = $this->getExams();
-                $remove = array();
-
-                if (!file_exists($this->resdir)) {
-                        $this->flash->error("The result directory is missing");
-                        return false;
-                }
-
-                if (($handle = opendir($this->resdir)) !== false) {
-                        while (($name = readdir($handle))) {
-                                if ($name == "." || $name == "..") {
-                                        continue;
-                                } else {
-                                        $path = sprintf("%s/%s", $this->resdir, $name);
-                                }
-                                if (is_dir($path)) {
-                                        $found = $exams->filter(function($exam) use($name) {
-                                                if ($exam->id == intval($name)) {
-                                                        return $exam;
-                                                }
-                                        });
-                                        if (count($found) == 0) {
-                                                if (($exam = Exam::findFirst(intval($name)))) {
-                                                        $remove[] = $exam;
-                                                } elseif ($this->options['force']) {
-                                                        $this->deleteDirectory($path);
-                                                        $this->flash->notice("  Deleted result directory $name (forced)");
-                                                } else {
-                                                        $this->flash->warning("  Ignoring result directory $name without matching model (--force to delete).");
-                                                }
-                                        }
-                                }
-                        }
-                        closedir($handle);
-                } else {
-                        throw new Exception("Failed open cache directory handle.");
-                }
-
-                foreach ($remove as $exam) {
-                        $result = new ResultHandler($exam);
-                        if ($this->options['verbose']) {
-                                $this->flash->notice(sprintf("  Processing exam %d", $exam->id));
-                        }
-                        foreach ($exam->students as $student) {
-                                if ($this->options['verbose']) {
-                                        $this->flash->notice(sprintf("  Removing result for student %d (%s)", $student->id, $student->code));
-                                }
-                                if (!$this->options['dry-run']) {
-                                        $result->delete($student);
-                                }
-                        }
-                        if ($this->options['verbose']) {
-                                $this->flash->notice(sprintf("  Cleanup of exam %d", $exam->id));
-                        }
-                        if (!$this->options['dry-run']) {
-                                $result->clean();
-                        }
+                foreach ($exams as $exam) {
+                        $this->deleteResults($exam);
                 }
 
                 if ($this->options['verbose']) {
@@ -219,32 +162,65 @@ class ResultTask extends MainTask implements TaskInterface
                 $this->deleteAction($params);
         }
 
-        private function deleteDirectory($root)
+        /**
+         * Create result for this exam.
+         * @param Exam $exam The exam object.
+         */
+        private function createResults($exam)
         {
                 if ($this->options['verbose']) {
-                        $this->flash->notice("  Deleting directory $root");
+                        $this->flash->notice(sprintf("++ Processing exam %d", $exam->id));
                 }
+                $result = new ResultHandler($exam);
+                $result->setForced($this->options['force']);
 
-                if (($handle = opendir($root)) !== false) {
-                        while (($name = readdir($handle))) {
-                                if ($name == "." || $name == "..") {
-                                        continue;
-                                }
-
-                                $path = sprintf("%s/%s", $root, $name);
-                                if (is_dir($path)) {
-                                        $this->deleteDirectory($path);
-                                } elseif (!$this->options['dry-run']) {
-                                        unlink($path);
-                                }
+                foreach ($exam->students as $student) {
+                        if ($this->options['verbose']) {
+                                $this->flash->notice(sprintf("   Generating result for student %d (%s)", $student->id, $student->code));
                         }
-                        closedir($handle);
                         if (!$this->options['dry-run']) {
-                                rmdir($root);
+                                $result->createFile($student);
                         }
+                }
+                if ($this->options['verbose']) {
+                        $this->flash->notice(sprintf("   Creating zip-file for exam %d", $exam->id));
+                }
+                if (!$this->options['dry-run']) {
+                        $result->createArchive();
                 }
         }
 
+        /**
+         * Delete results for this exam.
+         * @param Exam $exam The exam object.
+         */
+        private function deleteResults($exam)
+        {
+                $result = new ResultHandler($exam);
+                if ($this->options['verbose']) {
+                        $this->flash->notice(sprintf("++ Processing exam %d", $exam->id));
+                }
+                foreach ($exam->students as $student) {
+                        if ($this->options['verbose']) {
+                                $this->flash->notice(sprintf("   Removing result for student %d (%s)", $student->id, $student->code));
+                        }
+                        if (!$this->options['dry-run']) {
+                                $result->delete($student);
+                        }
+                }
+                if ($this->options['verbose']) {
+                        $this->flash->notice(sprintf("   Cleanup of exam %d", $exam->id));
+                }
+                if (!$this->options['dry-run']) {
+                        $result->clean();
+                }
+        }
+
+        /**
+         * Get exams to process.
+         * @return SimpleResultSet
+         * @throws Exception
+         */
         private function getExams()
         {
                 if ($this->options['exam']) {
@@ -254,9 +230,22 @@ class ResultTask extends MainTask implements TaskInterface
                             ))) == false) {
                                 throw new Exception("Failed get exam models.");
                         }
-                } else {
+                } elseif ($this->options['all']) {
+                        if (($exams = Exam::find(array(
+                                    'conditions' => "decoded = 'Y'"
+                            ))) == false) {
+                                throw new Exception("Failed get exam models.");
+                        }
+                } elseif ($this->options['create']) {
                         if (($exams = Exam::find(array(
                                     'conditions' => "endtime > :date: AND decoded = 'Y'",
+                                    'bind'       => array('date' => $this->options['time'])
+                            ))) == false) {
+                                throw new Exception("Failed get exam models.");
+                        }
+                } elseif ($this->options['delete']) {
+                        if (($exams = Exam::find(array(
+                                    'conditions' => "endtime < :date: AND decoded = 'Y'",
                                     'bind'       => array('date' => $this->options['time'])
                             ))) == false) {
                                 throw new Exception("Failed get exam models.");
@@ -281,7 +270,7 @@ class ResultTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'dry-run', 'create', 'delete', 'days', 'exam', 'remove', 'generate');
+                $options = array('verbose', 'force', 'dry-run', 'create', 'delete', 'days', 'exam', 'all', 'remove', 'generate');
                 $current = $action;
 
                 // 
@@ -314,8 +303,8 @@ class ResultTask extends MainTask implements TaskInterface
                         }
                 }
 
-                if (!$this->options['days'] && !$this->options['exam']) {
-                        throw new Exception("Required option '--days' or '--exam' is missing.");
+                if (!$this->options['days'] && !$this->options['exam'] && !$this->options['all']) {
+                        throw new Exception("Required option '--days', '--exam' or '--all' is missing.");
                 }
 
                 if ($this->options['days']) {
