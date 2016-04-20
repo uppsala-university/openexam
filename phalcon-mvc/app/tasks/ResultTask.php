@@ -197,6 +197,14 @@ class ResultTask extends MainTask implements TaskInterface
         private function deleteResults($exam)
         {
                 $result = new ResultHandler($exam);
+
+                if (!$result->exist()) {
+                        if ($this->options['verbose']) {
+                                $this->flash->notice(sprintf("++ Skipping exam %d (result directory missing)", $exam->id));
+                        }
+                        return;
+                }
+                
                 if ($this->options['verbose']) {
                         $this->flash->notice(sprintf("++ Processing exam %d", $exam->id));
                 }
