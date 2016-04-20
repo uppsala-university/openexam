@@ -168,11 +168,19 @@ class ResultTask extends MainTask implements TaskInterface
          */
         private function createResults($exam)
         {
+                $result = new ResultHandler($exam);
+                $result->setForced($this->options['force']);
+
+                if ($result->exist() && !$result->getForced()) {
+                        if ($this->options['verbose']) {
+                                $this->flash->notice(sprintf("++ Skipping exam %d (result directory exists)", $exam->id));
+                        }
+                        return;
+                }
+
                 if ($this->options['verbose']) {
                         $this->flash->notice(sprintf("++ Processing exam %d", $exam->id));
                 }
-                $result = new ResultHandler($exam);
-                $result->setForced($this->options['force']);
 
                 foreach ($exam->students as $student) {
                         if ($this->options['verbose']) {
@@ -204,7 +212,7 @@ class ResultTask extends MainTask implements TaskInterface
                         }
                         return;
                 }
-                
+
                 if ($this->options['verbose']) {
                         $this->flash->notice(sprintf("++ Processing exam %d", $exam->id));
                 }
