@@ -1,0 +1,33 @@
+#!/bin/sh
+# 
+# Result directory maintenance script. The task should be run as web server
+# to have correct permission set on generated files.
+#
+# Author: Anders Lövgren
+# Date:   2016-04-20
+
+# Current directory:
+cwd="$(dirname $0)"
+
+# The phalcon directory:
+root="$(realpath $cwd/../../phalcon-mvc)"
+
+# Web server user:
+user="apache"
+
+# Script to run:
+script="$root/script/openexam.php"
+
+# Extra options:
+#options="--verbose"
+
+if ! [ -e $script ]; then
+  echo "$0: missing script $script"
+  exit 1
+fi
+
+# Cleanup old result files:
+sudo -u $user /usr/bin/php $script --result --delete --days=30 $options $*
+
+# Generate new result files:
+sudo -u $user /usr/bin/php $script --result --create --days=14 $options $*
