@@ -57,7 +57,7 @@ class ResultTask extends MainTask implements TaskInterface
         public static function getUsage()
         {
                 return array(
-                        'header'   => 'Maintenance downloadable results.',
+                        'header'   => 'Management tool for downloadable result files.',
                         'action'   => '--result',
                         'usage'    => array(
                                 '--create --days=num|--exam=num [--force]',
@@ -71,7 +71,8 @@ class ResultTask extends MainTask implements TaskInterface
                                 '--generate' => 'Alias for --create.',
                                 '--remove'   => 'Alias for --delete',
                                 '--force'    => 'Force generate files.',
-                                '--verbose'  => 'Be more verbose.'
+                                '--verbose'  => 'Be more verbose.',
+                                '--dry-run'  => 'Just print whats going to be done.'
                         ),
                         'examples' => array(
                                 array(
@@ -115,12 +116,16 @@ class ResultTask extends MainTask implements TaskInterface
                                 if ($this->options['verbose']) {
                                         $this->flash->notice(sprintf("  Generating result for student %d (%s)", $student->id, $student->code));
                                 }
-                                $result->createFile($student);
+                                if (!$this->options['dry-run']) {
+                                        $result->createFile($student);
+                                }
                         }
                         if ($this->options['verbose']) {
                                 $this->flash->notice(sprintf("  Creating zip-file for exam %d", $exam->id));
                         }
-                        $result->createArchive();
+                        if (!$this->options['dry-run']) {
+                                $result->createArchive();
+                        }
                 }
 
                 if ($this->options['verbose']) {
@@ -192,12 +197,16 @@ class ResultTask extends MainTask implements TaskInterface
                                 if ($this->options['verbose']) {
                                         $this->flash->notice(sprintf("  Removing result for student %d (%s)", $student->id, $student->code));
                                 }
-                                $result->delete($student);
+                                if (!$this->options['dry-run']) {
+                                        $result->delete($student);
+                                }
                         }
                         if ($this->options['verbose']) {
                                 $this->flash->notice(sprintf("  Cleanup of exam %d", $exam->id));
                         }
-                        $result->clean();
+                        if (!$this->options['dry-run']) {
+                                $result->clean();
+                        }
                 }
 
                 if ($this->options['verbose']) {
@@ -212,6 +221,10 @@ class ResultTask extends MainTask implements TaskInterface
 
         private function deleteDirectory($root)
         {
+                if ($this->options['verbose']) {
+                        $this->flash->notice("  Deleting directory $root");
+                }
+
                 if (($handle = opendir($root)) !== false) {
                         while (($name = readdir($handle))) {
                                 if ($name == "." || $name == "..") {
@@ -221,12 +234,14 @@ class ResultTask extends MainTask implements TaskInterface
                                 $path = sprintf("%s/%s", $root, $name);
                                 if (is_dir($path)) {
                                         $this->deleteDirectory($path);
-                                } else {
+                                } elseif (!$this->options['dry-run']) {
                                         unlink($path);
                                 }
                         }
                         closedir($handle);
-                        rmdir($root);
+                        if (!$this->options['dry-run']) {
+                                rmdir($root);
+                        }
                 }
         }
 
@@ -247,7 +262,7 @@ class ResultTask extends MainTask implements TaskInterface
                                 throw new Exception("Failed get exam models.");
                         }
                 }
-                
+
                 return $exams;
         }
 
@@ -261,12 +276,12 @@ class ResultTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'force' => false);
+                $this->options = array('verbose' => false, 'force' => false, 'dry-run' => false);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'create', 'delete', 'days', 'exam', 'remove', 'generate', 'force');
+                $options = array('verbose', 'force', 'dry-run', 'create', 'delete', 'days', 'exam', 'remove', 'generate');
                 $current = $action;
 
                 // 
@@ -300,7 +315,7 @@ class ResultTask extends MainTask implements TaskInterface
                 }
 
                 if (!$this->options['days'] && !$this->options['exam']) {
-                        throw new Exception("Required option '--days' or 'exam' is missing.");
+                        throw new Exception("Required option '--days' or '--exam' is missing.");
                 }
 
                 if ($this->options['days']) {
