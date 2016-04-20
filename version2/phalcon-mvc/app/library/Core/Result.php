@@ -75,6 +75,15 @@ class Result extends Component
         }
 
         /**
+         * Check if forced file generation is enabled.
+         * @return boolean
+         */
+        public function getForced()
+        {
+                return $this->forced;
+        }
+
+        /**
          * Force generate files even if existing.
          * @param bool $enable
          */
@@ -145,7 +154,10 @@ class Result extends Component
 
         /**
          * Create PDF for this student.
-         * @param int|Student $sid The student.
+         * 
+         * @param type $sid
+         * @return boolean True if new file was created.
+         * @throws \Exception
          */
         public function createFile($sid)
         {
@@ -167,7 +179,7 @@ class Result extends Component
                         if ($this->forced) {
                                 unlink($target);
                         } else {
-                                return;
+                                return false;
                         }
                 }
 
@@ -203,7 +215,7 @@ class Result extends Component
                         $render->save($target, $settings);
 
                         if (file_exists($target) && filesize($target) > self::MIN_FILE_SIZE) {
-                                return;
+                                return true;
                         } else {
                                 sleep(5);
                         }
