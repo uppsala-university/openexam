@@ -242,41 +242,53 @@ class ResultController extends GuiController
         }
 
         /**
-         * Downloads score board in excel sheet format
-         * -- ajax action
+         * Downloads scoreboard as faked (HTML) Excel Spreadsheet. 
+         * 
+         * @param int $examId The exam ID.
+         * @param bool $download True for sending data.
          */
-        public function exportScoreBoardAction($examId, $downloadFile = 0)
+        public function exportScoreBoardAction($examId, $download = false)
         {
                 $examId = $this->filter->sanitize($examId, "int");
 
-                // load exam data
-                $exam = Exam::findFirst($examId);
-                if (!$exam) {
-                        throw new \Exception("Sorry! Couldn't find this exam.");
+                // 
+                // Get exam data:
+                // 
+                if (!($exam = Exam::findFirst($examId))) {
+                        throw new ModelException("Failed find exam", Error::PRECONDITION_FAILED);
                 }
 
-                $cleanExamName = str_replace(" ", "-", $this->filter->sanitize($exam->name, 'string'));
-                $generateFilePath = $this->config->application->cacheDir .
-                    'results/' . $cleanExamName . '-scoreboard.xls';
+                // 
+                // The file path:
+                // 
+                $source = sprintf("%s/results/%d.xls", $this->config->application->cacheDir, $exam->id);
+                $target = sprintf("\"%s.xls\"", $exam->name);
 
-                if (!$downloadFile) {
-
-                        $scoreBoardHtml = $this->request->getPost('score_board');
-                        if (!empty($scoreBoardHtml)) {
-
-                                $handle = fopen($generateFilePath, "w");
-                                fwrite($handle, $scoreBoardHtml);
-                                fclose($handle);
-                                print "exported";
-                        } else {
-                                throw new \Exception("Failed to generate excel sheet.");
+                // 
+                // Store POST data:
+                // 
+                if (!$download) {
+                        if (!$this->request->hasPost('score_board')) {
+                                return;
                         }
-                } else {
-
-                        if (file_exists($generateFilePath)) {
-                                $this->helper->downloadFile($generateFilePath);
+                        if (!($data = $this->request->getPost('score_board'))) {
+                                throw new \Exception("Failed to generate Excel (HTML) Spreadsheet.");
                         }
+
+                        file_put_contents($source, $data);
+                        print "exported";
+                        return;
                 }
+
+                // 
+                // Use MIME hint when sending file:
+                // 
+                $this->view->disable();
+
+                $this->response->setFileToSend($source, $target);
+                $this->response->setContentType('application/vnd.ms-excel', 'UTF-8');
+
+                $this->response->send();
         }
 
 }
