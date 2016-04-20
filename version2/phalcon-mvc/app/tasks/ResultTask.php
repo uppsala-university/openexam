@@ -60,16 +60,17 @@ class ResultTask extends MainTask implements TaskInterface
                         'header'   => 'Maintenance downloadable results.',
                         'action'   => '--result',
                         'usage'    => array(
-                                '--create --days=num [--force]',
+                                '--create --days=num|--exam=num [--force]',
                                 '--delete --days=num'
                         ),
                         'options'  => array(
                                 '--create'   => 'Generate result files.',
                                 '--delete'   => 'Remove generated result files.',
                                 '--days=num' => 'Older/newer than num days.',
+                                '--exam=num' => 'Use this exam instead of using --days.',
                                 '--generate' => 'Alias for --create.',
                                 '--remove'   => 'Alias for --delete',
-                                '--force'    => 'Force generate files even if existing.',
+                                '--force'    => 'Force generate files.',
                                 '--verbose'  => 'Be more verbose.'
                         ),
                         'examples' => array(
@@ -78,7 +79,11 @@ class ResultTask extends MainTask implements TaskInterface
                                         'command' => '--create --days=14'
                                 ),
                                 array(
-                                        'descr'   => 'Remove result files older than one month',
+                                        'descr'   => 'Generate result files for this exam',
+                                        'command' => '--create --exam=27386'
+                                ),
+                                array(
+                                        'descr'   => 'Remove result files for exams older than one month',
                                         'command' => '--delete --days=31'
                                 )
                         )
@@ -227,13 +232,22 @@ class ResultTask extends MainTask implements TaskInterface
 
         private function getExams()
         {
-                if (($exams = Exam::find(array(
-                            'conditions' => "endtime > :date: AND decoded = 'Y'",
-                            'bind'       => array('date' => $this->options['time'])
-                    ))) == false) {
-                        throw new Exception("Failed get exam models.");
+                if ($this->options['exam']) {
+                        if (($exams = Exam::find(array(
+                                    'conditions' => "id = :exam: AND decoded = 'Y'",
+                                    'bind'       => array('exam' => $this->options['exam'])
+                            ))) == false) {
+                                throw new Exception("Failed get exam models.");
+                        }
+                } else {
+                        if (($exams = Exam::find(array(
+                                    'conditions' => "endtime > :date: AND decoded = 'Y'",
+                                    'bind'       => array('date' => $this->options['time'])
+                            ))) == false) {
+                                throw new Exception("Failed get exam models.");
+                        }
                 }
-
+                
                 return $exams;
         }
 
@@ -252,7 +266,7 @@ class ResultTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'create', 'delete', 'days', 'remove', 'generate', 'force');
+                $options = array('verbose', 'create', 'delete', 'days', 'exam', 'remove', 'generate', 'force');
                 $current = $action;
 
                 // 
@@ -285,9 +299,11 @@ class ResultTask extends MainTask implements TaskInterface
                         }
                 }
 
-                if (!$this->options['days']) {
-                        throw new Exception("Required option '--days' is missing.");
-                } else {
+                if (!$this->options['days'] && !$this->options['exam']) {
+                        throw new Exception("Required option '--days' or 'exam' is missing.");
+                }
+
+                if ($this->options['days']) {
                         $this->options['time'] = strftime(
                             "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->options['days'])
                         );
