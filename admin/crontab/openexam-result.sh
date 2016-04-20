@@ -5,10 +5,10 @@
 # Author: Anders Lövgren
 # Date:   2016-04-20
 
-scrdir="/var/www/localhost/apps/openexam-phalcon-svn/phalcon-mvc/script"
+script="/var/www/localhost/apps/openexam-phalcon-svn/phalcon-mvc/script/openexam.php"
 
 # Cleanup old result files:
-/usr/bin/php ${scrdir}/openexam.php --result --delete --days=30
+/usr/bin/php $script --result --delete --days=30
 
 # Generate new result files:
-/usr/bin/php ${scrdir}/openexam.php --result --create --days=14
+/usr/bin/php $script --result --create --days=14
