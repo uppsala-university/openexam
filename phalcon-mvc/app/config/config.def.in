@@ -45,9 +45,9 @@ return array(
                 'persistent' => true   // Required for uniqueness validation
         ),
         /**
-         * The audit trail database connection (for tracking changes).
+         * The audit trail database connection (for model change tracking).
          */
-        'audit'      => array(
+        'dbaudit'      => array(
                 'adapter'    => 'Mysql',
                 'host'       => 'localhost',
                 'username'   => 'openexam',
