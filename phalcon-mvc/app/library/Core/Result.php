@@ -350,13 +350,13 @@ class Result extends Component
                 // 
                 if (!isset($sid)) {
                         $found = $this->exam->students->filter(function($student) {
-                                if ($student->user = $this->user->getPrincipalName()) {
+                                if ($student->user == $this->user->getPrincipalName()) {
                                         return $student;
                                 }
                         });
                 } else {
                         $found = $this->exam->students->filter(function($student) use($sid) {
-                                if ($student->id = $sid) {
+                                if ($student->id == $sid) {
                                         return $student;
                                 }
                         });
