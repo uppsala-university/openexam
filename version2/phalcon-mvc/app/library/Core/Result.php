@@ -84,6 +84,15 @@ class Result extends Component
         }
 
         /**
+         * Check if result directory exists for this exam.
+         * @return bool
+         */
+        public function exist()
+        {
+                return file_exists(self::getPath($this->exam->id));
+        }
+
+        /**
          * Cleanup result for this exam.
          */
         public function clean()
@@ -105,7 +114,7 @@ class Result extends Component
                                 throw new \Exception("Failed unlink result spreadsheet.");
                         }
                 }
-                
+
                 $target = sprintf("%s", self::getPath($this->exam->id));
                 if (file_exists($target)) {
                         if (!rmdir($target)) {
