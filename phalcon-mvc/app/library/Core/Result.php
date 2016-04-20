@@ -99,8 +99,16 @@ class Result extends Component
                         }
                 }
 
-                if (file_exists(dirname($target))) {
-                        if (!rmdir(dirname($target))) {
+                $target = sprintf("%s.xls", self::getPath($this->exam->id));
+                if (file_exists($target)) {
+                        if (!unlink($target)) {
+                                throw new \Exception("Failed unlink result spreadsheet.");
+                        }
+                }
+                
+                $target = sprintf("%s", self::getPath($this->exam->id));
+                if (file_exists($target)) {
+                        if (!rmdir($target)) {
                                 throw new \Exception("Failed delete result directory.");
                         }
                 }
