@@ -36,7 +36,7 @@ $loader->register();
 // Inject a limited set of system services:
 // 
 $ds = include(CONFIG_SYS . "/services.php");
-$di = new \Phalcon\DI\FactoryDefault\CLI();
+$di = new Phalcon\DI\FactoryDefault\CLI();
 foreach (array('config', 'dbread', 'dbwrite', 'catalog', 'logger', 'cache') as $service) {
         $di->set($service, $ds->get($service));
 }
@@ -64,11 +64,11 @@ $di->set('flash', function() {
 // Set authenticated user to task runner:
 // 
 if (extension_loaded('posix')) {
-        $di->set('user', new \OpenExam\Library\Security\User(
+        $di->set('user', new OpenExam\Library\Security\User(
             posix_getpwuid(posix_geteuid())['name'], gethostname()
         ));
 } else {
-        $di->set('user', new \OpenExam\Library\Security\User(
+        $di->set('user', new OpenExam\Library\Security\User(
             get_current_user(), gethostname()
         ));
 }
