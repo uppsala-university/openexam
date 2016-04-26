@@ -14,7 +14,7 @@
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
  */
-$di = new \Phalcon\DI\FactoryDefault();
+$di = new Phalcon\DI\FactoryDefault();
 
 $di->set('config', $config, true);
 
@@ -27,7 +27,7 @@ $di->set('router', function() use($di) {
  * in ORM handled by custom model manager.
  */
 $di->set('modelsManager', function() use($di, $config) {
-        $eventsManager = new \Phalcon\Events\Manager();
+        $eventsManager = new Phalcon\Events\Manager();
         $accessListener = new OpenExam\Plugins\Security\ModelAccessListener(
             function($resource) {
                 $class = sprintf("OpenExam\Plugins\Security\Model\%sAccess", ucfirst($resource));
@@ -40,7 +40,7 @@ $di->set('modelsManager', function() use($di, $config) {
         $accessListener->setGrantLifetime($config->cache->lifetime->model);
         $accessListener->setEventsManager($eventsManager);
         $eventsManager->attach('model', $accessListener);
-        $modelsManager = new \OpenExam\Library\Model\ModelManager();
+        $modelsManager = new OpenExam\Library\Model\ModelManager();
         $modelsManager->setEventsManager($eventsManager);
         return $modelsManager;
 }, true);
@@ -76,7 +76,7 @@ $di->set('modelsMetadata', function() use($config) {
  */
 $di->set('modelsCache', function() use($di, $config) {
         return new Phalcon\Cache\Backend\Apc(
-            new \Phalcon\Cache\Frontend\Data(
+            new Phalcon\Cache\Frontend\Data(
             array(
                 "lifetime" => $config->cache->lifetime->model
             )
@@ -100,13 +100,13 @@ $di->set('dispatcher', function() use ($di) {
  * The URL component is used to generate all kind of URL's in the application.
  */
 $di->set('url', function() use ($config) {
-        $url = new \Phalcon\Mvc\Url();
+        $url = new Phalcon\Mvc\Url();
         $url->setBaseUri($config->application->baseUri);
         return $url;
 }, true);
 
 $di->set('view', function() use ($config) {
-        $view = new \Phalcon\Mvc\View();
+        $view = new Phalcon\Mvc\View();
         $view->setViewsDir($config->application->viewsDir);
         return $view;
 }, true);
@@ -115,7 +115,7 @@ $di->set('view', function() use ($config) {
  * Register the flash service with custom CSS classes
  */
 $di->set('flash', function() {
-        return new \Phalcon\Flash\Direct(array(
+        return new Phalcon\Flash\Direct(array(
                 'error'   => 'alert alert-error',
                 'success' => 'alert alert-success',
                 'notice'  => 'alert alert-info',
@@ -125,14 +125,14 @@ $di->set('flash', function() {
 /**
  * Database connection is created based in the parameters defined in the configuration file
  */
-$di->set('dbread', function () use ($config) {
-        return \OpenExam\Library\Database\Adapter::create($config->dbread);
+$di->set('dbread', function() use ($config) {
+        return OpenExam\Library\Database\Adapter::create($config->dbread);
 }, true);
-$di->set('dbwrite', function () use ($config) {
-        return \OpenExam\Library\Database\Adapter::create($config->dbwrite);
+$di->set('dbwrite', function() use ($config) {
+        return OpenExam\Library\Database\Adapter::create($config->dbwrite);
 }, true);
-$di->set('dbaudit', function () use ($config) {
-        return \OpenExam\Library\Database\Adapter::create($config->dbaudit);
+$di->set('dbaudit', function() use ($config) {
+        return OpenExam\Library\Database\Adapter::create($config->dbaudit);
 }, true);
 
 /**
@@ -148,7 +148,7 @@ $di->set('session', function() use ($config) {
  * The locale service. Detect prefered locale on first use.
  */
 $di->set('locale', function() use($config) {
-        $locale = new \OpenExam\Library\Globalization\Locale\Locale();
+        $locale = new OpenExam\Library\Globalization\Locale\Locale();
         $locale->setLocales(array(
                 'sv_SE.UTF-8' => _('Swedish'),
                 'en_US'       => _('English (US)'),
@@ -164,17 +164,17 @@ $di->set('locale', function() use($config) {
  * own translator object (with its own message catalogs).
  */
 $di->set('tr', function() use($config) {
-        return new \OpenExam\Library\Globalization\Translate\Gettext\Translate('core');
+        return new OpenExam\Library\Globalization\Translate\Gettext\Translate('core');
 }, true);
 
 $di->set('acl', function() {
-        return new \OpenExam\Library\Security\Acl(
+        return new OpenExam\Library\Security\Acl(
             require CONFIG_DIR . '/access.def'
         );
 }, true);
 
 $di->set('auth', function() use($config) {
-        return new \OpenExam\Library\Security\Authentication(
+        return new OpenExam\Library\Security\Authentication(
             require CONFIG_DIR . '/auth.def'
         );
 }, true);
@@ -183,7 +183,7 @@ $di->set('auth', function() use($config) {
  * The logged on user. Should be replaced by authentication.
  */
 $di->set('user', function() use($config) {
-        $user = new \OpenExam\Library\Security\User();
+        $user = new OpenExam\Library\Security\User();
         return $user;
 }, true);
 
@@ -193,7 +193,7 @@ $di->set('user', function() use($config) {
 $di->set('logger', function() use($config, $di) {
         $logger = array();
 
-        $formatter = new \OpenExam\Library\Core\Formatter();
+        $formatter = new OpenExam\Library\Core\Formatter();
         $formatter->setDI($di);
         $formatter->setDateFormat('Y-m-d H:i:s');
 
@@ -231,24 +231,24 @@ $di->set('logger', function() use($config, $di) {
                             )->setLogLevel($option->level);
                 }
         }
-        $logger['phpunit'] = new \Phalcon\Logger\Multiple();
+        $logger['phpunit'] = new Phalcon\Logger\Multiple();
         $logger['phpunit']->push($logger['debug']);
         $logger['phpunit']->push($logger['test']);
-        return new \Phalcon\Config($logger);
+        return new Phalcon\Config($logger);
 }, true);
 
 /**
  * Get render service.
  */
 $di->set('render', function() use($config) {
-        return new \OpenExam\Library\Render\RenderService();
+        return new OpenExam\Library\Render\RenderService();
 }, true);
 
 /**
  * Get catalog (directory information) service.
  */
 $di->set('catalog', function() use($config) {
-        $manager = new \OpenExam\Library\Catalog\DirectoryManager();
+        $manager = new OpenExam\Library\Catalog\DirectoryManager();
         $services = require CONFIG_DIR . '/catalog.def';
         foreach ($services as $name => $data) {
                 $service = $data['service'];
@@ -263,7 +263,7 @@ $di->set('catalog', function() use($config) {
  * Capabilities service.
  */
 $di->set('capabilities', function() {
-        return new \OpenExam\Library\Security\Capabilities(
+        return new OpenExam\Library\Security\Capabilities(
             require CONFIG_DIR . '/access.def'
         );
 }, true);
@@ -272,7 +272,7 @@ $di->set('capabilities', function() {
  * The location information service.
  */
 $di->set('location', function() {
-        return new \OpenExam\Library\Core\Location(
+        return new OpenExam\Library\Core\Location(
             require CONFIG_DIR . '/location.def'
         );
 }, true);
@@ -281,14 +281,14 @@ $di->set('location', function() {
  * Multi-level backend binary cache.
  */
 $di->set('cache', function() use($config) {
-        return new \OpenExam\Library\Core\Cache($config);
+        return new OpenExam\Library\Core\Cache($config);
 }, true);
 
 /**
  * Register a user component
  */
 $di->set('helper', function() {
-        return new \OpenExam\Library\Gui\Helper();
+        return new OpenExam\Library\Gui\Helper();
 });
 
 /**

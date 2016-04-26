@@ -52,7 +52,7 @@ if (!defined('EXTERN_DIR')) {
  * These are the system default settings. Site local configuration can 
  * be done in app/config/config.def.
  */
-$config = new \Phalcon\Config(
+$config = new Phalcon\Config(
     array(
         'application' => array(
                 'controllersDir' => APP_DIR . '/controllers/',
@@ -161,31 +161,31 @@ $config = new \Phalcon\Config(
         'logging'     => array(
                 'debug'  => array(
                         'file'  => 'debug.log',
-                        'level' => \Phalcon\Logger::DEBUG
+                        'level' => Phalcon\Logger::DEBUG
                 ),
                 'system' => array(
                         'syslog'   => 'openexam',
-                        'level'    => \Phalcon\Logger::NOTICE,
+                        'level'    => Phalcon\Logger::NOTICE,
                         'option'   => LOG_NDELAY,
                         'facility' => LOG_LOCAL0
                 ),
                 'access' => array(
                         'file'  => 'access.log',
-                        'level' => \Phalcon\Logger::INFO
+                        'level' => Phalcon\Logger::INFO
                 ),
                 'cache'  => array(
                         'file'  => 'cache.log',
-                        'level' => \Phalcon\Logger::INFO
+                        'level' => Phalcon\Logger::INFO
                 ),
                 'auth'   => array(
                         'syslog'   => 'openexam',
-                        'level'    => \Phalcon\Logger::INFO,
+                        'level'    => Phalcon\Logger::INFO,
                         'option'   => LOG_NDELAY,
                         'facility' => LOG_AUTH
                 ),
                 'test'   => array(
                         'file'  => 'phpunit.log',
-                        'level' => \Phalcon\Logger::DEBUG
+                        'level' => Phalcon\Logger::DEBUG
                 )
         ),
         /**

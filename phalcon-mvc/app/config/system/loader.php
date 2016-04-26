@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-$loader = new \Phalcon\Loader();
+$loader = new Phalcon\Loader();
 
 /**
  * Register namespace mapping taken from the configuration files:
