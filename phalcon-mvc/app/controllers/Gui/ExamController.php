@@ -69,21 +69,23 @@ class ExamController extends GuiController
                         return $this->response->redirect('exam/' . $stExamsToday[0]->id);
                 }
 
-                #------------ Finished student exam --------#                
-                $exams['student-finished'] = $this->phql
-                    ->executeQuery(
-                    "select $colList from OpenExam\Models\Exam e "
-                    . "inner join OpenExam\Models\Student s "
-                    . "where "
-                    . "s.user = :user: and "
-                    . "("
-                    . "(s.endtime is NULL and e.endtime < NOW()) or "
-                    . "(s.endtime is not NULL and s.endtime < NOW())"
-                    . ") and "
-                    . "e.published = 'Y' "
-                    . "order by e.endtime desc "
-                    , array("user" => $loggedIn)
-                );
+                if (!count($stExamsToday)) {
+                        #------------ Finished student exam --------#                
+                        $exams['student-finished'] = $this->phql
+                            ->executeQuery(
+                            "select $colList from OpenExam\Models\Exam e "
+                            . "inner join OpenExam\Models\Student s "
+                            . "where "
+                            . "s.user = :user: and "
+                            . "("
+                            . "(s.endtime is NULL and e.endtime < NOW()) or "
+                            . "(s.endtime is not NULL and s.endtime < NOW())"
+                            . ") and "
+                            . "e.published = 'Y' "
+                            . "order by e.endtime desc "
+                            , array("user" => $loggedIn)
+                        );
+                }
 
                 #------------ Exam creator --------#
                 if ($this->user->aquire(array(Roles::TEACHER))) {
