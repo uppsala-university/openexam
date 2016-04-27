@@ -113,7 +113,15 @@ class AuditTask extends MainTask implements TaskInterface
          */
         private function dataQuery($model)
         {
-                $params = array();
+                $params = array(sprintf("res = '%s'", $model));
+
+                $config = $this->audit->getConfig($model);
+                $target = $config->getTarget('data');
+
+                if (!$target) {
+                        $this->flash->warning("Skipping model $model (data config is missing)");
+                        return false;
+                }
 
                 if ($this->options['id']) {
                         $params[] = sprintf("rid = %d", $this->options['id']);
@@ -131,14 +139,8 @@ class AuditTask extends MainTask implements TaskInterface
                         $params[] = sprintf("changes LIKE '%%%s%%'", $this->options['fuzzy']);
                 }
 
-
-                if (count($params)) {
-                        $sql = sprintf("SELECT * FROM %s WHERE %s", $model, implode(" AND ", $params));
-                } else {
-                        $sql = sprintf("SELECT * FROM %s", $model);
-                }
-
-                $dbh = $this->dbaudit;
+                $sql = sprintf("SELECT * FROM %s WHERE %s", $target['table'], implode(" AND ", $params));
+                $dbh = $this->getDI()->get($target['connection']);
                 $sth = $dbh->prepare($sql);
                 $res = $sth->execute();
 
