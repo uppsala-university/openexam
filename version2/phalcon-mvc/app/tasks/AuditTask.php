@@ -48,12 +48,14 @@ class AuditTask extends MainTask implements TaskInterface
                         'header'   => 'Audit trails.',
                         'action'   => '--audit',
                         'usage'    => array(
-                                '--show [--model=name]',
-                                '--data [--model=name] [--id=num] [--user=str] [--type=action] [--time=str] [--fuzzy=str] [--decode]'
+                                '--show  [--model=name]',
+                                '--data  [--model=name] [--time=str] [--id=num] [--user=str] [--type=action] [--fuzzy=str] [--decode]',
+                                '--clean [--model=name] [--time=str] [--days=num]'
                         ),
                         'options'  => array(
                                 '--show'        => 'Show current configuration.',
                                 '--data'        => 'Query audit data.',
+                                '--clean'       => 'Cleanup expired audit data',
                                 '--model=name'  => 'Select this model.',
                                 '--id=num'      => 'Select this object ID.',
                                 '--user=str'    => 'Select this username.',
@@ -86,8 +88,29 @@ class AuditTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Make a fuzzy search in changes',
                                         'command' => '--data --model=answer --fuzzy="Some text"'
+                                ),
+                                array(
+                                        'descr'   => 'Cleanup audit data older that 90 days',
+                                        'command' => '--cleanup --days=90'
                                 ))
                 );
+        }
+
+        /**
+         * Cleanup expired audit data action.
+         * @param array $params
+         */
+        public function cleanAction($params = array())
+        {
+                $this->setOptions($params, 'clean');
+
+                if ($this->options['model']) {
+                        $this->dataClean($this->options['model']);
+                } else {
+                        foreach (self::getModels() as $model) {
+                                $this->dataClean($model);
+                        }
+                }
         }
 
         /**
@@ -103,6 +126,23 @@ class AuditTask extends MainTask implements TaskInterface
                 } else {
                         foreach (self::getModels() as $model) {
                                 $this->dataQuery($model);
+                        }
+                }
+        }
+
+        /**
+         * Show config action.
+         * @param array $params
+         */
+        public function showAction($params = array())
+        {
+                $this->setOptions($params, 'show');
+
+                if ($this->options['model']) {
+                        $this->showModel($this->options['model']);
+                } else {
+                        foreach (self::getModels() as $model) {
+                                $this->showModel($model);
                         }
                 }
         }
@@ -163,23 +203,6 @@ class AuditTask extends MainTask implements TaskInterface
         }
 
         /**
-         * Show config action.
-         * @param array $params
-         */
-        public function showAction($params = array())
-        {
-                $this->setOptions($params, 'show');
-
-                if ($this->options['model']) {
-                        $this->showModel($this->options['model']);
-                } else {
-                        foreach (self::getModels() as $model) {
-                                $this->showModel($model);
-                        }
-                }
-        }
-
-        /**
          * Show this model.
          * @param string $model The resource name.
          */
@@ -199,6 +222,49 @@ class AuditTask extends MainTask implements TaskInterface
                         }
                 } elseif ($this->options['verbose']) {
                         $this->flash->warning($model);
+                }
+        }
+
+        private function dataClean($model)
+        {
+                $params = array(sprintf("res = '%s'", $model));
+
+                $config = $this->audit->getConfig($model);
+                $target = $config->getTarget('data');
+
+                if (!$target) {
+                        $this->flash->warning("Skipping model $model (data config is missing)");
+                        return false;
+                }
+
+                if ($this->options['id']) {
+                        $params[] = sprintf("rid = %d", $this->options['id']);
+                }
+                if ($this->options['type']) {
+                        $params[] = sprintf("type = '%s'", $this->options['type']);
+                }
+                if ($this->options['user']) {
+                        $params[] = sprintf("user = '%s'", $this->options['user']);
+                }
+                if ($this->options['time']) {
+                        $params[] = sprintf("time < '%s'", $this->options['time']);
+                }
+                if ($this->options['fuzzy']) {
+                        $params[] = sprintf("changes LIKE '%%%s%%'", $this->options['fuzzy']);
+                }
+
+                $sql = sprintf("DELETE FROM %s WHERE %s", $target['table'], implode(" AND ", $params));
+                $dbh = $this->getDI()->get($target['connection']);
+                $sth = $dbh->prepare($sql);
+                $res = $sth->execute();
+                
+                if (!$res) {
+                        $this->flash->error(print_f($sth->errorInfo()));
+                        return false;
+                } elseif ($this->options['verbose'] && $sth->rowCount() > 0) {
+                        $this->flash->success(sprintf("Expired audit data older than %s in %s (%d rows deleted)", $this->options['time'], $model, $sth->rowCount()));
+                } elseif ($this->options['verbose']) {
+                        $this->flash->notice(sprintf("No audit data older than %s found in %s (%d rows deleted)", $this->options['time'], $model, $sth->rowCount()));
                 }
         }
 
@@ -243,7 +309,7 @@ class AuditTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'show', 'data', 'model', 'user', 'type', 'time', 'id', 'fuzzy', 'decode');
+                $options = array('verbose', 'show', 'data', 'cleanup', 'model', 'user', 'type', 'time', 'id', 'fuzzy', 'decode', 'days');
                 $current = $action;
 
                 // 
@@ -274,6 +340,12 @@ class AuditTask extends MainTask implements TaskInterface
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
+                }
+
+                if ($this->options['days']) {
+                        $this->options['time'] = strftime(
+                            "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->options['days'])
+                        );
                 }
         }
 
