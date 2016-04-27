@@ -4,7 +4,7 @@
 <?=Phalcon\Tag::stylesheetLink("plugins/canvas/css/literallycanvas.css");?>
 <?=Phalcon\Tag::javascriptInclude('plugins/canvas/js/react-with-addons.js');?>
 <?=Phalcon\Tag::javascriptInclude('plugins/canvas/js/ie_customevent.js');?>
-<?=Phalcon\Tag::javascriptInclude('plugins/canvas/js/literallycanvas.js');?>
+<?=Phalcon\Tag::javascriptInclude('plugins/canvas/js/literallycanvas.min.js');?>
 
 
 <!-- view.phtml specific js -->
@@ -148,7 +148,7 @@
                                                                                 	<?php $drawingJson = trim(json_encode($answerData[$qPart]['ans'][0]['canvasJson']), '"');?>
 											<div id="s<?=$student->id?>q<?=$qObj->id?>p<?=$qPart?>" class="literally changeable"></div>
 											<button class="fullscreen" isfor="s<?=$student->id?>q<?=$qObj->id?>p<?=$qPart?>">Fullscreen</button>    
-											<script language="javascript">initCanvas('s<?=$student->id?>q<?=$qObj->id?>p<?=$qPart?>', <?=$drawingJson!='null'?"'".$drawingJson."'":'null'?>);</script>
+											<script language="javascript">initCanvas('s<?=$student->id?>q<?=$qObj->id?>p<?=$qPart?>', <?=$drawingJson!='null'?'"'.$drawingJson.'"':'null'?>);</script>
 										<?php elseif($qPartData['ans_area']['type'] == 'choicebox'):?>
                                                                                 	<?php $type = (count(array_filter($qPartData['ans_area']['data']))==1)?'radio':'checkbox';?>
 											<div class="col-md-10">
