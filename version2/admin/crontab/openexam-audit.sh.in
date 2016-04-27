@@ -1,0 +1,33 @@
+#!/bin/sh
+# 
+# Audit data cleanup script. This script is typical run periodical as a cron job.
+#
+# Author: Anders Lövgren
+# Date:   2016-04-27
+
+# This script directory:
+cwd="$(dirname $(realpath $0))"
+
+# The phalcon directory:
+root="$(realpath $cwd/../../phalcon-mvc)"
+
+# Web server user:
+user="apache"
+
+# Script to run:
+script="$root/script/openexam.php"
+
+# Extra options:
+#options="--verbose --force"
+
+if ! [ -e $script ]; then
+  echo "$0: missing script $script"
+  exit 1
+fi
+if ! [ -d $root ]; then
+  echo "$0: missing application directory $root"
+  exit 1
+fi
+
+# Cleanup expired audit data:
+/usr/bin/sudo -u $user /usr/bin/php $script --audit --clean --days=90 $options $*
