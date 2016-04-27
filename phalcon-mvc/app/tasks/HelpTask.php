@@ -49,7 +49,8 @@ class HelpTask extends MainTask implements TaskInterface
                     SoapServiceTask::getUsage(),
                     RenderTask::getUsage(),
                     CacheTask::getUsage(),
-                    ResultTask::getUsage()
+                    ResultTask::getUsage(),
+                    AuditTask::getUsage()
                 ) as $task) {
                         foreach ($task['usage'] as $val) {
                                 $usage['usage'][] = sprintf("%s %s", $task['action'], $val);

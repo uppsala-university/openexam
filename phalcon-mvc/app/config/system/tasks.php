@@ -37,7 +37,7 @@ $loader->register();
 // 
 $ds = include(CONFIG_SYS . "/services.php");
 $di = new Phalcon\DI\FactoryDefault\CLI();
-foreach (array('config', 'dbread', 'dbwrite', 'catalog', 'logger', 'cache') as $service) {
+foreach (array('config', 'dbread', 'dbwrite', 'dbaudit', 'catalog', 'logger', 'cache', 'audit') as $service) {
         $di->set($service, $ds->get($service));
 }
 
