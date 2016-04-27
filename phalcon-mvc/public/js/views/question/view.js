@@ -219,24 +219,6 @@
 						lc.loadSnapshotJSON(localStorage.getItem(elementId));
 						canvasData[elementId] = localStorage.getItem(elementId);
 					}
-					/*
-					alert("Error: Seems like your drawing is not being saved properly in database. Please contact your invigilator immediately and show this message to invigilator. Do not refresh/close this browser window.");
-					alert("From localStorage:" + localStorage.getItem(elementId));
-					alert("From database:"+ canvasJson);
-					while(confirm("Do you want to see what we have in localStorage and in database again? press ok if you want, press cancel if you want to proceed further.")) {
-						alert("From localStorage:" + localStorage.getItem(elementId));
-						alert("From database:"+ canvasJson);
-					}
-					
-					if(confirm("Please read carefully and take decision to restore data: Press ok to load from localStorage or cancel it if you would like to load it from database")) {
-						dirtybit = 1;
-						lc.loadSnapshotJSON(localStorage.getItem(elementId));
-						canvasData[elementId] = localStorage.getItem(elementId);
-					} else {
-						lc.loadSnapshotJSON(canvasJson);
-						canvasData[elementId] = canvasJson;
-					}*/
-					
 				}
 				
 				lc.on('drawingChange', function() {
@@ -245,7 +227,11 @@
 					localStorage.setItem(elementId, lc.getSnapshotJSON());
 				})
 			},
-			imageURLPrefix: baseURL + 'plugins/canvas/img', imageSize: {width: null, height: null}
+			/*backgroundColor: 'whiteSmoke',*/
+			defaultStrokeWidth: 2,
+			secondaryColor: 'transparent',
+			imageURLPrefix: baseURL + 'plugins/canvas/img', 
+                        imageSize: {width: null, height: null}
 		});		
 	}
 	
