@@ -23,336 +23,395 @@ DROP TABLE IF EXISTS `access`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `access` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `admins`
+-- Table structure for table `admin`
 --
 
-DROP TABLE IF EXISTS `admins`;
+DROP TABLE IF EXISTS `admin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `admins` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `answers`
+-- Table structure for table `answer`
 --
 
-DROP TABLE IF EXISTS `answers`;
+DROP TABLE IF EXISTS `answer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `answers` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `answer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `computers`
+-- Table structure for table `audit`
 --
 
-DROP TABLE IF EXISTS `computers`;
+DROP TABLE IF EXISTS `audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `computers` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `audit` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `contributors`
+-- Table structure for table `computer`
 --
 
-DROP TABLE IF EXISTS `contributors`;
+DROP TABLE IF EXISTS `computer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `contributors` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `computer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `correctors`
+-- Table structure for table `contributor`
 --
 
-DROP TABLE IF EXISTS `correctors`;
+DROP TABLE IF EXISTS `contributor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `correctors` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `contributor` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `decoders`
+-- Table structure for table `corrector`
 --
 
-DROP TABLE IF EXISTS `decoders`;
+DROP TABLE IF EXISTS `corrector`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `decoders` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `corrector` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `exams`
+-- Table structure for table `decoder`
 --
 
-DROP TABLE IF EXISTS `exams`;
+DROP TABLE IF EXISTS `decoder`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `exams` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `decoder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `files`
+-- Table structure for table `exam`
 --
 
-DROP TABLE IF EXISTS `files`;
+DROP TABLE IF EXISTS `exam`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `files` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `exam` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `invigilators`
+-- Table structure for table `file`
 --
 
-DROP TABLE IF EXISTS `invigilators`;
+DROP TABLE IF EXISTS `file`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `invigilators` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `file` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `locks`
+-- Table structure for table `invigilator`
 --
 
-DROP TABLE IF EXISTS `locks`;
+DROP TABLE IF EXISTS `invigilator`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `locks` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `invigilator` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `questions`
+-- Table structure for table `lock`
 --
 
-DROP TABLE IF EXISTS `questions`;
+DROP TABLE IF EXISTS `lock`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `questions` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `lock` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `resources`
+-- Table structure for table `question`
 --
 
-DROP TABLE IF EXISTS `resources`;
+DROP TABLE IF EXISTS `question`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `resources` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `question` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `results`
+-- Table structure for table `resource`
 --
 
-DROP TABLE IF EXISTS `results`;
+DROP TABLE IF EXISTS `resource`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `results` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `resource` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `rooms`
+-- Table structure for table `result`
 --
 
-DROP TABLE IF EXISTS `rooms`;
+DROP TABLE IF EXISTS `result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rooms` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `result` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `sessions`
+-- Table structure for table `room`
 --
 
-DROP TABLE IF EXISTS `sessions`;
+DROP TABLE IF EXISTS `room`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sessions` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `room` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `settings`
+-- Table structure for table `session`
 --
 
-DROP TABLE IF EXISTS `settings`;
+DROP TABLE IF EXISTS `session`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `session` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `students`
+-- Table structure for table `setting`
 --
 
-DROP TABLE IF EXISTS `students`;
+DROP TABLE IF EXISTS `setting`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `students` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `setting` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `teachers`
+-- Table structure for table `student`
 --
 
-DROP TABLE IF EXISTS `teachers`;
+DROP TABLE IF EXISTS `student`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `teachers` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `student` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `topics`
+-- Table structure for table `teacher`
 --
 
-DROP TABLE IF EXISTS `topics`;
+DROP TABLE IF EXISTS `teacher`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `topics` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+CREATE TABLE `teacher` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `topic`
+--
+
+DROP TABLE IF EXISTS `topic`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `topic` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
+  `type` char(6) DEFAULT NULL,
+  `user` varchar(60) DEFAULT NULL,
+  `time` datetime DEFAULT NULL,
+  `changes` mediumblob,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -364,4 +423,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-16 17:26:23
+-- Dump completed on 2016-04-27  4:52:08

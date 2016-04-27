@@ -5,13 +5,16 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    FileTargetAudit.php
+// File:    FileTarget.php
 // Created: 2016-04-15 15:49:54
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Model\Audit;
+namespace OpenExam\Library\Model\Audit\Target;
+
+use Phalcon\Mvc\ModelInterface;
+use Phalcon\Mvc\User\Component;
 
 /**
  * Audit trail for models (file storage).
@@ -41,7 +44,7 @@ namespace OpenExam\Library\Model\Audit;
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class FileTargetAudit extends Audit
+class FileTarget extends Component implements AuditTarget
 {
 
         /**
@@ -58,54 +61,43 @@ class FileTargetAudit extends Audit
         const FORMAT_SERIALIZE = 'serialize';
 
         /**
-         * Receives notifications from the Models Manager
-         *
-         * @param string $type The event type.
+         * Target options.
+         * @var array 
+         */
+        private $_options;
+
+        /**
+         * Constructor.
+         * @param array $options The target options.
          * @param ModelInterface $model The target model.
          */
-        public function notify($type, $model)
+        public function __construct($options, $model)
         {
-                $options = $this->getOptions();
-
-                if (!isset($options)) {
-                        $options = array();
-                }
-                if (!isset($options['actions'])) {
-                        $options['actions'] = array('create', 'update', 'delete');
-                }
                 if (!isset($options['format'])) {
                         $options['format'] = self::FORMAT_SERIALIZE;
                 }
-                if (!isset($options['file'])) {
-                        $options['file'] = $this->getTargetFile($model);
+                if (!isset($options['name'])) {
+                        $options['name'] = $this->getTargetFile($model);
                 }
 
-                $actions = $options['actions'];
-
-                if (!parent::hasChanges($type, $actions)) {
-                        return false;
-                }
-                if (($changes = parent::getChanges($type, $model))) {
-                        return $this->write($changes, $options);
-                }
+                $this->_options = $options;
         }
 
         /**
          * Write changes to file.
          * 
          * @param array $changes The model changes.
-         * @param array $options The behavior options.
          * @return int 
          */
-        private function write($changes, $options, $di = null)
+        public function write($changes)
         {
-                switch ($options['format']) {
+                switch ($this->_options['format']) {
                         case self::FORMAT_EXPORT:
-                                return file_put_contents($options['file'], var_export($changes, true) . ",\n", FILE_APPEND);
+                                return file_put_contents($this->_options['name'], var_export($changes, true) . ",\n", FILE_APPEND);
                         case self::FORMAT_JSON:
-                                return file_put_contents($options['file'], json_encode($changes) . "\n", FILE_APPEND);
+                                return file_put_contents($this->_options['name'], json_encode($changes) . "\n", FILE_APPEND);
                         case self::FORMAT_SERIALIZE:
-                                return file_put_contents($options['file'], serialize($changes) . "\n", FILE_APPEND);
+                                return file_put_contents($this->_options['name'], serialize($changes) . "\n", FILE_APPEND);
                 }
         }
 
@@ -116,7 +108,7 @@ class FileTargetAudit extends Audit
          */
         private function getTargetFile($model)
         {
-                $config = $model->getDI()->get('config');
+                $config = $this->getDI()->get('config');
 
                 if (!file_exists($config->application->auditDir)) {
                         if (mkdir($config->application->auditDir)) {

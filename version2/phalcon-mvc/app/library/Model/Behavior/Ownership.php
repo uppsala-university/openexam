@@ -57,7 +57,7 @@ class Ownership extends ModelBehavior
                                 } else {
                                         $user = $caller->getPrincipalName();
                                 }
-                                
+
                                 if (!isset($user)) {
                                         return false;   // not authenticated
                                 } elseif ($options['force']) {
