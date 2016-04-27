@@ -299,10 +299,6 @@ class ExamController extends GuiController
                                                         if (is_object($correctors) && $correctors->count()) {
                                                                 foreach ($correctors as $corrector) {
 
-                                                                        if ($corrector->user == $loggedIn) {
-                                                                                continue;
-                                                                        }
-
                                                                         $newCorrector = new \OpenExam\Models\Corrector();
                                                                         $newCorrector->save(array(
                                                                                 "question_id" => $newQuest->id,
