@@ -347,7 +347,19 @@ class Result extends Component
                         $this->createArchive();
                 }
 
+                // 
+                // Disable output buffering to prevent memory exhausted fatal error 
+                // when sending large files. This also gives us chunked transfer mode 
+                // for free.
+                // 
+
                 $this->view->disable();
+                $this->view->finish();
+
+                while (ob_get_level()) {
+                        ob_end_clean();
+                        ob_end_flush();
+                }
 
                 $this->response->setContentType('application/zip', 'UTF-8');
                 $this->response->setFileToSend($source, "\"$target\"");
