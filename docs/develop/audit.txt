@@ -1,0 +1,44 @@
+Audit is by default disabled. Before enable, the database has to be prepared. See 
+docs/README-AUDIT before enable.
+
+The shared audit service exist to refrain from having to parse audit config more than once 
+per request. In fact, the config is read on demand and internal cached. 
+
+Audit is implemented as behavior on models. The class OpenExam\Library\Model\Audit\Audit is
+used in conjunction with the audit service to support user configurable audit at infrastructure 
+level. The audit configuration is applied in ModelBase for all models/actions/targets enable 
+in config.def:
+
+// 
+// class ModelBase:
+// 
+protected function initialize()
+{
+    if($this->getDI->has('audit')) {
+        $audit = $this->getDI->get('audit');                    // Get audit service
+        if($audit->hasConfig($this->getResourceName())) {
+            $this->keepSnapshots(true);                         // Required
+            $this->addBehavior(new Audit($audit->getConfig())); // Uses audit config, not array!!
+        }
+    }
+}
+
+Audit can also be enforced on a model by adding specific audit behaviors:
+
+// 
+// class ModelXxx:
+// 
+protected function initialize()
+{
+    $this->addBehavior(new AuditDataTarget(array(
+        'connection' => 'dbaudit',
+        'table'      => 'audit'
+    )));
+    $this->addBehavior(new AuditFileTarget(array(
+        'format'     => FileTarget::FORMAT_JSON,
+        'name'       => '/tmp/audit-xxx.dat'
+    )));
+    $this->keepSnapshots(true);                     // Required
+}
+
+// Anders Lövgren, 2016-04-27

@@ -21,9 +21,9 @@
 
 ** SETUP:
 
-   It's recommended to have a separate database for keeping audits, possibly on another 
-   server than the other databases. Use scheme admin/sql/openexam-audit.sql for creating a 
-   database with multiple tables (one table for each model). 
+   It's recommended to have a separate database for keeping audits, preferable on another 
+   server than the system database. Use scheme admin/sql/audit/openexam-audit.sql for creating 
+   a database with multiple tables (one table for each model). 
 
    If using files as audit target, make sure to keep them in the local file system. Don't
    even think about using SMB. Please notice that each request won't exit before the audit
@@ -40,7 +40,6 @@
         *) Audit all models.
         *) Audit all change actions (create, update and delete).
         *) Use database connection named 'dbaudit'.
-        *) Use a table named 'audit'.
 
    Use false to explicit disable an audit, see example below.
 
@@ -65,26 +64,21 @@
    (iii) The table should have these fields:
 
         CREATE TABLE `audit` (
-            `id` int(11) DEFAULT NULL,
-            `model` varchar(20) DEFAULT NULL,
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `res` varchar(20) DEFAULT NULL,
+            `rid` int(11) DEFAULT NULL,
             `type` char(6) DEFAULT NULL,
             `user` varchar(60) DEFAULT NULL,
             `time` datetime DEFAULT NULL,
-            `changes` mediumblob
-        );
-
-    The audit data will grow fast for large installations. In this case its recommended to 
-    keep audit data separated from system data, that means, a separate server with its own
-    database (not replicated). 
-
-    Preferable there should be one audit table per audited model. A SQL script for generating
-    the audit database can be found in admin/sql/audit.
+            `changes` mediumblob,
+            PRIMARY KEY (`id`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ** EXAMPLES:
 
     // 
     // Enable auditing with default options. This will audit all models for all changes and 
-    // store them using database connection 'dbaudit' and table answer.
+    // store them using database connection 'dbaudit'.
     // 
     'audit' => true
 
@@ -163,6 +157,39 @@
             'actions' => array('delete')
         ),
         'session' => false
+    )
+
+    // 
+    // Audit all models using connection dbaudit. The table name is same as the model name.
+    // 
+    'audit' => array(
+        '*' => array(
+            'data' => true
+        )
+    )
+
+    // 
+    // Audit all models using connection dbwrite and same table for all audits. This is the
+    // configuration for keeping audit information in the system database.
+    // 
+    'audit' => array(
+        '*' => array(
+            'data' => array(
+                'connection' => 'dbwrite',
+                'table'      => 'audit'
+            )
+        )
+    )
+
+    // 
+    // Audit all models using default audit connection and same table for all audits.
+    // 
+    'audit' => array(
+        '*' => array(
+            'data' => array(
+                'table'      => 'audit'
+            )
+        )
     )
 
 ** TIPS:

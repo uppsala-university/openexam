@@ -136,6 +136,16 @@ $di->set('dbaudit', function() use ($config) {
 }, true);
 
 /**
+ * The model audit service.
+ */
+$di->set('audit', function() use ($config) {
+        return
+            new OpenExam\Library\Model\Audit\Service(
+            new OpenExam\Library\Model\Audit\Config\ServiceConfig($config->audit)
+        );
+}, true);
+
+/**
  * Start the session the first time some component request the session service
  */
 $di->set('session', function() use ($config) {
