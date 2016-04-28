@@ -21,27 +21,28 @@ use Phalcon\Mvc\ModelInterface;
 /**
  * Audit trail for models (file storage).
  * 
- * To implement audit on a model:
- * 
- * 1. Enable keep snapshots in the audited model.
- * 2. Call addBehavior(new AuditFileTarget()) in model initialize.
+ * Implement audit on a model by enable snapshots and adding the database
+ * target audit.
  *
  * <code>
  * protected function initialize()
  * {
  *      $this->keepSnapshots(true);
- *      $this->addBehavior(new AuditFileTarget());
+ *      $this->addBehavior(new AuditFileTarget(array(
+ *              'afterCreate' => array(
+ *                      'format' => FileTarget::FORMAT_SERIALIZE,
+ *                      'file'   => '/tmp/audit-model.log'
+ *              ),
+ *              'afterUpdate' => array(
+ *                      'format' => FileTarget::FORMAT_SERIALIZE,
+ *                      'file'   => '/tmp/audit-model.log'
+ *              ),
+ *              'afterDelete' => array(
+ *                      'format' => FileTarget::FORMAT_SERIALIZE,
+ *                      'file'   => '/tmp/audit-model.log'
+ *              )
+ *      )));
  * }
- * </code>
- * 
- * The output format and log location can be customized by passing an options
- * array to the contructor:
- * 
- * <code>
- * $this->addBehavior(new AuditFileTarget(array(
- *      'format' => FileTarget::FORMAT_SERIALIZE,
- *      'file'   => '/tmp/output.log'
- * )));
  * </code>
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -57,11 +58,14 @@ class AuditFileTarget extends Audit
          */
         public function notify($type, $model)
         {
-                $audit = new AuditConfig($this->getOptions());
+                if (($options = $this->getOptions($type))) {
+                        $audit = new AuditConfig(array(
+                                Audit::TARGET_FILE => $options
+                        ));
 
-                if (parent::hasChanges($type, $audit->getActions())) {
                         if (($changes = parent::getChanges($type, $model))) {
-                                $target = new FileTarget($audit->getConfig(), $model);
+                                $config = $audit->getTarget(Audit::TARGET_FILE);
+                                $target = new FileTarget($config, $model);
                                 return $target->write($changes);
                         }
                 }
