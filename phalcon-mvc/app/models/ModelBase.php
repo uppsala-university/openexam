@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Audit\Audit;
+use OpenExam\Library\Model\Audit\History;
 use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
@@ -49,6 +50,15 @@ class ModelBase extends Model
                                 }
                         }
                 }
+        }
+
+        /**
+         * Get model history.
+         * @return History
+         */
+        public function getHistory()
+        {
+                return new History($this);
         }
 
         /**

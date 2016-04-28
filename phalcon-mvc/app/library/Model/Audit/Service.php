@@ -15,6 +15,8 @@ namespace OpenExam\Library\Model\Audit;
 
 use OpenExam\Library\Model\Audit\Config\AuditConfig;
 use OpenExam\Library\Model\Audit\Config\ServiceConfig;
+use OpenExam\Plugins\Security\Model\ObjectAccess;
+use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -74,6 +76,37 @@ class Service extends Component
                 } else {
                         return false;
                 }
+        }
+
+        /**
+         * Get revisions for this model object.
+         * 
+         * @param ModelInterface $model
+         * @return array
+         */
+        public function getRevisions($model)
+        {
+                $name = $model->getResourceName();
+
+                if (!($config = $this->getConfig($name))) {
+                        return false;
+                }
+                if (!$config->hasTarget(Audit::TARGET_DATA)) {
+                        return false;
+                }
+                if (!$config->hasAction(ObjectAccess::UPDATE)) {
+                        return false;
+                }
+
+                $target = $config->getTarget(Audit::TARGET_DATA);
+
+                $sql = sprintf("SELECT * FROM %s WHERE res = '%s' AND rid = %d AND type = 'update'", $target['table'], $name, $model->id);
+                $dbh = $this->getDI()->get($target['connection']);
+                $sth = $dbh->prepare($sql);
+                $res = $sth->execute();
+
+                $arr = $sth->fetchAll(\PDO::FETCH_ASSOC);
+                return $arr;
         }
 
 }
