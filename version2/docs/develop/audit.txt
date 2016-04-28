@@ -6,6 +6,27 @@ docs/README-AUDIT before enable.
     The shared audit service is initialized with the user defined audit configuration and
     provides cached config lookup to models, handlers and tasks.
 
+** History:
+
+    Models having audit behavior tracking update changes have support for revision history if
+    using data target. The history provides basic version control that supports:
+
+    1. Listing revisions (change log).
+    2. Core editing (undo/redo last change).
+    3. Reverting state back to previous revision.
+
+    Example:
+
+        $history = $model->getHistory();
+        $history->getRevisions();           // Get change log.
+        $history->undo();                   // Undo last change.
+        $history->redo();                   // Redo last change.
+        $history->revert($rev_id);          // Revert back to revision ID.
+        $history->save();                   // Apply model changes.
+
+    See notes at bottom about snapshots to fully understand computation of audit changes and
+    their limitations.
+
 ** Implementing:
 
     Audit is implemented as behavior on models. The class OpenExam\Library\Model\Audit\Audit is
@@ -62,7 +83,7 @@ docs/README-AUDIT before enable.
         $student->update();
 
         $student->endtime = "2016-04-28 13:30";
-        $student->update();     // Still using snapshot data from [1]
+        $student->update();     // Still uses snapshot data from [1]
 
     For code above to work as expected, the snapshot data must be refreshed between updates:
 
