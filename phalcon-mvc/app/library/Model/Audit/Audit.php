@@ -24,14 +24,59 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\ModelInterface;
 
 /**
- * Audit behavior.
+ * Multi target audit behavior.
  * 
- * Notice that this audit behavior should be initialized with an audit
+ * This audit supports writing model snapshot changes to multiple targets 
+ * at once. It's intended to be used together with the audit service that
+ * gets configured in app/config/config.def
+ * 
+ * When used together with the audit service, the initialization is equivalent
+ * to this example. Notice that the audit object is initialized with an
  * config object, not an array:
  * 
  * <code>
- * $config = new AuditConfig(...);
- * $object = new Audit($config);
+ * protected function initialize()
+ * {
+ *      $config = new AuditConfig(array(
+ *              'data' => array(
+ *                      'table'      => 'audit',
+ *                      'connection' => 'dbaudit'
+ *              ),
+ *              'file' => array(
+ *                      'format'     => 'serialize',
+ *                      'file'       => '/tmp/audit-model.dat'
+ *              ),
+ *              'actions' => array( 
+ *                      'create', 'update', 'delete' 
+ *              )
+ *      ));
+ *      $this->keepSnapshots(true);
+ *      $this->addBehavior(new Audit($config)); // Use defined actions.
+ * }
+ * </code>
+ * 
+ * Standard declaration explicit listing supported events are also supported:
+ * 
+ * <code>
+ * protected function initialize()
+ * {
+ *      $config = array(
+ *              'data' => array(
+ *                      'table'      => 'audit',
+ *                      'connection' => 'dbaudit'
+ *              ),
+ *              'file' => array(
+ *                      'format'     => 'serialize',
+ *                      'file'       => '/tmp/audit-model.dat'
+ *              )
+ *      ));
+ *      $this->keepSnapshots(true);
+ *      $this->addBehavior(new Audit(array(
+ *              'afterCreate' => $config,
+ *              'afterUpdate' => $config,
+ *              'afterDelete' => $config
+ *      )));
+ * }
  * </code>
  * 
  * @see AuditFileTarget
@@ -74,20 +119,26 @@ class Audit extends ModelBehavior
          */
         public function notify($type, $model)
         {
-                $options = $this->getOptions();
+                if (($options = $this->getOptions($type))) {
+                        $options = new AuditConfig($options);
+                } else {
+                        $options = $this->getOptions();
+                }
 
-                if ($this->hasChanges($type, $options->getActions())) {
-                        if (!($changes = $this->getChanges($type, $model))) {
-                                return false;
-                        }
-                        if (!($targets = $this->getTargets($options, $model))) {
-                                return false;
-                        }
+                if ($options instanceof AuditConfig) {
+                        if ($this->canHandle($type, $options->getActions())) {
+                                if (!($changes = $this->getChanges($type, $model))) {
+                                        return false;
+                                }
+                                if (!($targets = $this->getTargets($options, $model))) {
+                                        return false;
+                                }
 
-                        foreach ($targets as $target) {
-                                $target->write($changes);
+                                foreach ($targets as $target) {
+                                        $target->write($changes);
+                                }
+                                return true;
                         }
-                        return true;
                 }
         }
 
@@ -139,7 +190,7 @@ class Audit extends ModelBehavior
          * @param array $actions Array of supported actions.
          * @return boolean
          */
-        protected function hasChanges($type, $actions)
+        protected function canHandle($type, $actions)
         {
                 if (array_key_exists($type, self::$_actionmap) == false) {
                         return false;

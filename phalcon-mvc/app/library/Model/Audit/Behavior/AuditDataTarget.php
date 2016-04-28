@@ -21,27 +21,28 @@ use Phalcon\Mvc\ModelInterface;
 /**
  * Audit trail for models (database storage).
  * 
- * To implement audit on a model:
- * 
- * 1. Enable keep snapshots in the audited model.
- * 2. Call addBehavior(new AuditDataTarget()) in model initialize.
+ * Implement audit on a model by enable snapshots and adding the database
+ * target audit.
  *
  * <code>
  * protected function initialize()
  * {
  *      $this->keepSnapshots(true);
- *      $this->addBehavior(new AuditDataTarget());
+ *      $this->addBehavior(new AuditDataTarget(array(
+ *              'afterCreate' => array(
+ *                      'table'      => 'audit',
+ *                      'connection' => 'dbaudit'
+ *              ),
+ *              'afterUpdate' => array(
+ *                      'table'      => 'audit',
+ *                      'connection' => 'dbaudit'
+ *              ),
+ *              'afterDelete' => array(
+ *                      'table'      => 'audit',
+ *                      'connection' => 'dbaudit'
+ *              )
+ *      )));
  * }
- * </code>
- * 
- * The database connection name and table can be customized by passing an 
- * options array to the contructor:
- * 
- * <code>
- * $this->addBehavior(new AuditDataTarget(array(
- *      'connection' => 'dbaudit',
- *      'table'      => 'audit'
- * )));
  * </code>
  * 
  * @see Audit
@@ -58,11 +59,14 @@ class AuditDataTarget extends Audit
          */
         public function notify($type, $model)
         {
-                $audit = new AuditConfig($this->getOptions());
+                if (($options = $this->getOptions($type))) {
+                        $audit = new AuditConfig(array(
+                                Audit::TARGET_DATA => $options
+                        ));
 
-                if (parent::hasChanges($type, $audit->getActions())) {
                         if (($changes = parent::getChanges($type, $model))) {
-                                $target = new DataTarget($audit->getConfig(), $model);
+                                $config = $audit->getTarget(Audit::TARGET_DATA);
+                                $target = new DataTarget($config, $model);
                                 return $target->write($changes);
                         }
                 }
