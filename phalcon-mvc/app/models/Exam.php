@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Core\Exam\Grades;
+use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Model\Behavior\Exam as ExamBehavior;
 use OpenExam\Library\Model\Behavior\FilterText;
@@ -167,6 +168,11 @@ class Exam extends ModelBase
          * @var string[]
          */
         public $flags;
+        /**
+         * Internal cache of staff object.
+         * @var Staff 
+         */
+        private $_staff;
         /**
          * Internal cache of state object.
          * @var State 
@@ -344,6 +350,19 @@ class Exam extends ModelBase
         public function getSource()
         {
                 return 'exams';
+        }
+
+        /**
+         * Get examination staff.
+         * @return Staff
+         */
+        public function getStaff()
+        {
+                if (!isset($this->_staff)) {
+                        return $this->_staff = new Staff($this);
+                } else {
+                        return $this->_staff;
+                }                
         }
 
         /**
