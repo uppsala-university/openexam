@@ -38,16 +38,16 @@ class ResultTask extends MainTask implements TaskInterface
          * Runtime options
          * @var array 
          */
-        private $options;
+        private $_options;
         /**
          * The result directory.
          * @var string 
          */
-        private $resdir;
+        private $_resdir;
 
         public function __construct()
         {
-                $this->resdir = sprintf("%s/results", $this->config->application->cacheDir);
+                $this->_resdir = sprintf("%s/results", $this->config->application->cacheDir);
         }
 
         public function helpAction()
@@ -104,11 +104,11 @@ class ResultTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'create');
 
-                if (!file_exists($this->resdir)) {
+                if (!file_exists($this->_resdir)) {
                         $this->flash->error("The result directory is missing");
                         return false;
                 }
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->notice("Starting result file generation");
                 }
 
@@ -117,7 +117,7 @@ class ResultTask extends MainTask implements TaskInterface
                         $this->createResults($exam);
                 }
 
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->success("Finished result file generation");
                 }
         }
@@ -139,11 +139,11 @@ class ResultTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'delete');
 
-                if (!file_exists($this->resdir)) {
+                if (!file_exists($this->_resdir)) {
                         $this->flash->error("The result directory is missing");
                         return false;
                 }
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->notice("Starting result file cleanup");
                 }
 
@@ -152,7 +152,7 @@ class ResultTask extends MainTask implements TaskInterface
                         $this->deleteResults($exam);
                 }
 
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->success("Finished result file cleanup");
                 }
         }
@@ -169,31 +169,31 @@ class ResultTask extends MainTask implements TaskInterface
         private function createResults($exam)
         {
                 $result = new ResultHandler($exam);
-                $result->setForced($this->options['force']);
+                $result->setForced($this->_options['force']);
 
                 if ($result->exist() && !$result->getForced()) {
-                        if ($this->options['verbose']) {
+                        if ($this->_options['verbose']) {
                                 $this->flash->notice(sprintf("++ Skipping exam %d (result directory exists)", $exam->id));
                         }
                         return;
                 }
 
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->notice(sprintf("++ Processing exam %d", $exam->id));
                 }
 
                 foreach ($exam->students as $student) {
-                        if ($this->options['verbose']) {
+                        if ($this->_options['verbose']) {
                                 $this->flash->notice(sprintf("   Generating result for student %d (%s)", $student->id, $student->code));
                         }
-                        if (!$this->options['dry-run']) {
+                        if (!$this->_options['dry-run']) {
                                 $result->createFile($student);
                         }
                 }
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->notice(sprintf("   Creating zip-file for exam %d", $exam->id));
                 }
-                if (!$this->options['dry-run']) {
+                if (!$this->_options['dry-run']) {
                         $result->createArchive();
                 }
         }
@@ -207,27 +207,27 @@ class ResultTask extends MainTask implements TaskInterface
                 $result = new ResultHandler($exam);
 
                 if (!$result->exist()) {
-                        if ($this->options['verbose']) {
+                        if ($this->_options['verbose']) {
                                 $this->flash->notice(sprintf("++ Skipping exam %d (result directory missing)", $exam->id));
                         }
                         return;
                 }
 
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->notice(sprintf("++ Processing exam %d", $exam->id));
                 }
                 foreach ($exam->students as $student) {
-                        if ($this->options['verbose']) {
+                        if ($this->_options['verbose']) {
                                 $this->flash->notice(sprintf("   Removing result for student %d (%s)", $student->id, $student->code));
                         }
-                        if (!$this->options['dry-run']) {
+                        if (!$this->_options['dry-run']) {
                                 $result->delete($student);
                         }
                 }
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->notice(sprintf("   Cleanup of exam %d", $exam->id));
                 }
-                if (!$this->options['dry-run']) {
+                if (!$this->_options['dry-run']) {
                         $result->clean();
                 }
         }
@@ -239,30 +239,30 @@ class ResultTask extends MainTask implements TaskInterface
          */
         private function getExams()
         {
-                if ($this->options['exam']) {
+                if ($this->_options['exam']) {
                         if (($exams = Exam::find(array(
                                     'conditions' => "id = :exam: AND decoded = 'Y'",
-                                    'bind'       => array('exam' => $this->options['exam'])
+                                    'bind'       => array('exam' => $this->_options['exam'])
                             ))) == false) {
                                 throw new Exception("Failed get exam models.");
                         }
-                } elseif ($this->options['all']) {
+                } elseif ($this->_options['all']) {
                         if (($exams = Exam::find(array(
                                     'conditions' => "decoded = 'Y'"
                             ))) == false) {
                                 throw new Exception("Failed get exam models.");
                         }
-                } elseif ($this->options['create']) {
+                } elseif ($this->_options['create']) {
                         if (($exams = Exam::find(array(
                                     'conditions' => "endtime > :date: AND decoded = 'Y'",
-                                    'bind'       => array('date' => $this->options['time'])
+                                    'bind'       => array('date' => $this->_options['time'])
                             ))) == false) {
                                 throw new Exception("Failed get exam models.");
                         }
-                } elseif ($this->options['delete']) {
+                } elseif ($this->_options['delete']) {
                         if (($exams = Exam::find(array(
                                     'conditions' => "endtime < :date: AND decoded = 'Y'",
-                                    'bind'       => array('date' => $this->options['time'])
+                                    'bind'       => array('date' => $this->_options['time'])
                             ))) == false) {
                                 throw new Exception("Failed get exam models.");
                         }
@@ -281,7 +281,7 @@ class ResultTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'force' => false, 'dry-run' => false);
+                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false);
 
                 // 
                 // Supported options.
@@ -293,8 +293,8 @@ class ResultTask extends MainTask implements TaskInterface
                 // Set defaults.
                 // 
                 foreach ($options as $option) {
-                        if (!isset($this->options[$option])) {
-                                $this->options[$option] = false;
+                        if (!isset($this->_options[$option])) {
+                                $this->_options[$option] = false;
                         }
                 }
 
@@ -302,7 +302,7 @@ class ResultTask extends MainTask implements TaskInterface
                 // Include action in options (for multitarget actions).
                 // 
                 if (isset($action)) {
-                        $this->options[$action] = true;
+                        $this->_options[$action] = true;
                 }
 
                 // 
@@ -310,22 +310,22 @@ class ResultTask extends MainTask implements TaskInterface
                 // 
                 while (($option = array_shift($params))) {
                         if (in_array($option, $options)) {
-                                $this->options[$option] = true;
+                                $this->_options[$option] = true;
                                 $current = $option;
                         } elseif (in_array($current, $options)) {
-                                $this->options[$current] = $option;
+                                $this->_options[$current] = $option;
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
                 }
 
-                if (!$this->options['days'] && !$this->options['exam'] && !$this->options['all']) {
+                if (!$this->_options['days'] && !$this->_options['exam'] && !$this->_options['all']) {
                         throw new Exception("Required option '--days', '--exam' or '--all' is missing.");
                 }
 
-                if ($this->options['days']) {
-                        $this->options['time'] = strftime(
-                            "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->options['days'])
+                if ($this->_options['days']) {
+                        $this->_options['time'] = strftime(
+                            "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->_options['days'])
                         );
                 }
         }

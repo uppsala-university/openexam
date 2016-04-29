@@ -36,7 +36,7 @@ class DecoderTest extends TestModel
          */
         public function testRelations()
         {
-                $object = Decoder::findFirstById($this->sample->getSample(self::MODEL)['id']);
+                $object = Decoder::findFirstById($this->_sample->getSample(self::MODEL)['id']);
                 self::assertNotNull($object);
 
                 self::assertNotEquals(0, $object->exam->count());
@@ -63,43 +63,43 @@ class DecoderTest extends TestModel
         public function testCreate()
         {
                 $user = new User();
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ pass: primary role unset");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole(null);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $model->assign($this->_sample->getSample(self::MODEL, false));
                         self::assertTrue($this->create($model, $user, true));
                         $this->cleanup($model);
                 }
 
                 $user = new User();
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ fail: user not authenticated");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $model->assign($this->_sample->getSample(self::MODEL, false));
                         self::assertTrue($this->create($model, $user, false));
                         $this->cleanup($model);
                 }
 
                 $user = new User((new UniqueUser())->user);
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ fail: user without roles");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $model->assign($this->_sample->getSample(self::MODEL, false));
                         self::assertTrue($this->create($model, $user, false));
                         $this->cleanup($model);
                 }
 
                 $user = $this->getDI()->get('user');
-                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = $this->_capabilities->getRoles(self::MODEL);
 
                 self::info("rolemap=%s", print_r($roles, true));
 
@@ -107,7 +107,7 @@ class DecoderTest extends TestModel
                 foreach ($roles as $role => $actions) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $model->assign($this->_sample->getSample(self::MODEL, false));
                         if (in_array('create', $actions)) {
                                 self::assertTrue($this->create($model, $user, true));   // action allowed
                         } else {
@@ -124,49 +124,49 @@ class DecoderTest extends TestModel
         public function testUpdate()
         {
                 $user = new User();
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ pass: primary role unset");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole(null);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL));
+                        $model->assign($this->_sample->getSample(self::MODEL));
                         self::assertTrue($this->update($model, $user, true));
                 }
 
                 $user = new User();
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ fail: user not authenticated");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL));
+                        $model->assign($this->_sample->getSample(self::MODEL));
                         self::assertTrue($this->update($model, $user, false));
                 }
 
                 $user = new User((new UniqueUser())->user);
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ fail: user without roles");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL));
+                        $model->assign($this->_sample->getSample(self::MODEL));
                         self::assertTrue($this->update($model, $user, false));
                 }
 
                 $user = $this->getDI()->get('user');
-                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = $this->_capabilities->getRoles(self::MODEL);
 
-                self::info("sample=%s", print_r($this->sample->getSample(self::MODEL), true));
+                self::info("sample=%s", print_r($this->_sample->getSample(self::MODEL), true));
                 self::info("rolemap=%s", print_r($roles, true));
 
                 self::info("+++ pass: user has roles");
                 foreach ($roles as $role => $actions) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL));
+                        $model->assign($this->_sample->getSample(self::MODEL));
                         if (in_array('update', $actions)) {
                                 self::assertTrue($this->update($model, $user, true));   // action allowed
                         } else {
@@ -182,55 +182,55 @@ class DecoderTest extends TestModel
         public function testDelete()
         {
                 $user = new User();
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ pass: primary role unset");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole(null);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $model->assign($this->_sample->getSample(self::MODEL, false));
                         $this->persist($model);
                         self::assertTrue($this->delete($model, $user, true));
                         $this->cleanup($model);
                 }
 
                 $user = new User();
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ fail: user not authenticated");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $model->assign($this->_sample->getSample(self::MODEL, false));
                         $this->persist($model);
                         self::assertTrue($this->delete($model, $user, false));
                         $this->cleanup($model);
                 }
 
                 $user = new User((new UniqueUser())->user);
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ fail: user without roles");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $model->assign($this->_sample->getSample(self::MODEL, false));
                         $this->persist($model);
                         self::assertTrue($this->delete($model, $user, false));
                         $this->cleanup($model);
                 }
 
                 $user = $this->getDI()->get('user');
-                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = $this->_capabilities->getRoles(self::MODEL);
 
-                self::info("sample=%s", print_r($this->sample->getSample(self::MODEL), true));
+                self::info("sample=%s", print_r($this->_sample->getSample(self::MODEL), true));
                 self::info("rolemap=%s", print_r($roles, true));
 
                 self::info("+++ pass: user has roles");
                 foreach ($roles as $role => $actions) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL, false));
+                        $model->assign($this->_sample->getSample(self::MODEL, false));
                         $this->persist($model);
                         if (in_array('delete', $actions)) {
                                 self::assertTrue($this->delete($model, $user, true));   // action allowed
@@ -248,49 +248,49 @@ class DecoderTest extends TestModel
         public function testRead()
         {
                 $user = new User();
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ pass: primary role unset");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole(null);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL));
+                        $model->assign($this->_sample->getSample(self::MODEL));
                         self::assertTrue($this->read($model, $user, true));
                 }
 
                 $user = new User();
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ fail: user not authenticated");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL));
+                        $model->assign($this->_sample->getSample(self::MODEL));
                         self::assertTrue($this->read($model, $user, false));
                 }
 
                 $user = new User((new UniqueUser())->user);
-                $roles = $this->capabilities->getRoles();
+                $roles = $this->_capabilities->getRoles();
 
                 self::info("+++ fail: user without roles");
                 foreach ($roles as $role) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL));
+                        $model->assign($this->_sample->getSample(self::MODEL));
                         self::assertTrue($this->read($model, $user, false));
                 }
 
                 $user = $this->getDI()->get('user');
-                $roles = $this->capabilities->getRoles(self::MODEL);
+                $roles = $this->_capabilities->getRoles(self::MODEL);
 
-                self::info("sample=%s", print_r($this->sample->getSample(self::MODEL), true));
+                self::info("sample=%s", print_r($this->_sample->getSample(self::MODEL), true));
                 self::info("rolemap=%s", print_r($roles, true));
 
                 self::info("+++ pass: user has roles");
                 foreach ($roles as $role => $actions) {
                         $user->setPrimaryRole($role);
                         $model = new Decoder();
-                        $model->assign($this->sample->getSample(self::MODEL));
+                        $model->assign($this->_sample->getSample(self::MODEL));
                         if (in_array('read', $actions)) {
                                 self::assertTrue($this->read($model, $user, true));   // action allowed
                         } else {

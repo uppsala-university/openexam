@@ -14,7 +14,7 @@ class RenderImageTest extends TestCase
         /**
          * Checksum and file size properties:
          */
-        private static $output = array(
+        private static $_output = array(
                 'png'    => array(
                         'md5'  => 'b1242ce26730c72c91725e06adeb6cdc',
                         'size' => 1863147,
@@ -45,7 +45,7 @@ class RenderImageTest extends TestCase
         /**
          * @var RenderImage
          */
-        protected $object;
+        private $_object;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -53,7 +53,7 @@ class RenderImageTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new RenderImage;
+                $this->_object = new RenderImage;
                 $this->cwd = getcwd();
                 chdir(__DIR__);
         }
@@ -86,15 +86,15 @@ class RenderImageTest extends TestCase
                 foreach (array('png', 'jpeg', 'svg', 'bmp') as $type) {
                         $filename = sprintf("%s/render-image-test.%s", sys_get_temp_dir(), $type);
 
-                        self::assertTrue($this->object->save($filename, $globals));
+                        self::assertTrue($this->_object->save($filename, $globals));
                         self::assertTrue(file_exists($filename));
                         self::assertTrue(filesize($filename) != 0);
 
-                        if (self::$output['check']) {
-                                self::assertEquals(self::$output[$type]['size'], filesize($filename));
-                                self::assertEquals(self::$output[$type]['md5'], md5_file($filename));
+                        if (self::$_output['check']) {
+                                self::assertEquals(self::$_output[$type]['size'], filesize($filename));
+                                self::assertEquals(self::$_output[$type]['md5'], md5_file($filename));
                         }
-                        if (self::$output['unlink'] && file_exists($filename)) {
+                        if (self::$_output['unlink'] && file_exists($filename)) {
                                 unlink($filename);
                         }
                 }

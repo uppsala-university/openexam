@@ -53,7 +53,7 @@ class AccessController extends RestController
         /**
          * @var AccessHandler 
          */
-        protected $handler;
+        protected $_handler;
 
         public function initialize()
         {
@@ -66,7 +66,7 @@ class AccessController extends RestController
                                 return $arg;
                         }
                 });
-                $this->handler = new AccessHandler($request, $this->user);
+                $this->_handler = new AccessHandler($request, $this->user);
         }
 
         /**
@@ -74,7 +74,7 @@ class AccessController extends RestController
          */
         public function openAction()
         {
-                $response = $this->handler->open();
+                $response = $this->_handler->open();
                 $this->sendResponse($response);
         }
 
@@ -83,7 +83,7 @@ class AccessController extends RestController
          */
         public function closeAction()
         {
-                $response = $this->handler->close();
+                $response = $this->_handler->close();
                 $this->sendResponse($response);
         }
 
@@ -92,7 +92,7 @@ class AccessController extends RestController
          */
         public function approveAction()
         {
-                $response = $this->handler->approve();
+                $response = $this->_handler->approve();
                 $this->sendResponse($response);
         }
 
@@ -101,7 +101,7 @@ class AccessController extends RestController
          */
         public function releaseAction()
         {
-                $response = $this->handler->release();
+                $response = $this->_handler->release();
                 $this->sendResponse($response);
         }
 
@@ -111,10 +111,10 @@ class AccessController extends RestController
         public function entriesAction()
         {
                 if (($section = $this->request->getQuery('section'))) {
-                        $response = $this->handler->entries($this->location, $section);
+                        $response = $this->_handler->entries($this->location, $section);
                         $this->sendResponse($response);
                 } else {
-                        $response = $this->handler->entries($this->location);
+                        $response = $this->_handler->entries($this->location);
                         $this->sendResponse($response);
                 }
         }

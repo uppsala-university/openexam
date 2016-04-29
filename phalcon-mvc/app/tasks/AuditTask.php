@@ -25,7 +25,7 @@ class AuditTask extends MainTask implements TaskInterface
          * Runtime options
          * @var array 
          */
-        private $options;
+        private $_options;
 
         public function __construct()
         {
@@ -104,8 +104,8 @@ class AuditTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'clean');
 
-                if ($this->options['model']) {
-                        $this->dataClean($this->options['model']);
+                if ($this->_options['model']) {
+                        $this->dataClean($this->_options['model']);
                 } else {
                         foreach (self::getModels() as $model) {
                                 $this->dataClean($model);
@@ -121,8 +121,8 @@ class AuditTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'data');
 
-                if ($this->options['model']) {
-                        $this->dataQuery($this->options['model']);
+                if ($this->_options['model']) {
+                        $this->dataQuery($this->_options['model']);
                 } else {
                         foreach (self::getModels() as $model) {
                                 $this->dataQuery($model);
@@ -138,8 +138,8 @@ class AuditTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'show');
 
-                if ($this->options['model']) {
-                        $this->showModel($this->options['model']);
+                if ($this->_options['model']) {
+                        $this->showModel($this->_options['model']);
                 } else {
                         foreach (self::getModels() as $model) {
                                 $this->showModel($model);
@@ -163,20 +163,20 @@ class AuditTask extends MainTask implements TaskInterface
                         return false;
                 }
 
-                if ($this->options['id']) {
-                        $params[] = sprintf("rid = %d", $this->options['id']);
+                if ($this->_options['id']) {
+                        $params[] = sprintf("rid = %d", $this->_options['id']);
                 }
-                if ($this->options['type']) {
-                        $params[] = sprintf("type = '%s'", $this->options['type']);
+                if ($this->_options['type']) {
+                        $params[] = sprintf("type = '%s'", $this->_options['type']);
                 }
-                if ($this->options['user']) {
-                        $params[] = sprintf("user = '%s'", $this->options['user']);
+                if ($this->_options['user']) {
+                        $params[] = sprintf("user = '%s'", $this->_options['user']);
                 }
-                if ($this->options['time']) {
-                        $params[] = sprintf("time LIKE '%%%s%%'", $this->options['time']);
+                if ($this->_options['time']) {
+                        $params[] = sprintf("time LIKE '%%%s%%'", $this->_options['time']);
                 }
-                if ($this->options['fuzzy']) {
-                        $params[] = sprintf("changes LIKE '%%%s%%'", $this->options['fuzzy']);
+                if ($this->_options['fuzzy']) {
+                        $params[] = sprintf("changes LIKE '%%%s%%'", $this->_options['fuzzy']);
                 }
 
                 $sql = sprintf("SELECT * FROM %s WHERE %s", $target['table'], implode(" AND ", $params));
@@ -191,10 +191,10 @@ class AuditTask extends MainTask implements TaskInterface
 
                 $this->flash->notice($model);
                 while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
-                        if ($this->options['decode']) {
+                        if ($this->_options['decode']) {
                                 $row['changes'] = unserialize($row['changes']);
                         }
-                        if ($this->options['verbose']) {
+                        if ($this->_options['verbose']) {
                                 $this->flash->success(print_r($row, true));
                         } else {
                                 $this->flash->success(print_r($row['changes'], true));
@@ -210,7 +210,7 @@ class AuditTask extends MainTask implements TaskInterface
         {
                 if ($this->audit->hasConfig($model)) {
                         $this->flash->notice($model);
-                        if ($this->options['verbose']) {
+                        if ($this->_options['verbose']) {
                                 $config = $this->audit->getConfig($model);
                                 $this->flash->notice(sprintf("  actions: %s", implode(", ", $config->getActions())));
                                 $this->flash->notice(sprintf("  targets: %s", implode(", ", $config->getTargets())));
@@ -220,7 +220,7 @@ class AuditTask extends MainTask implements TaskInterface
                                         ));
                                 }
                         }
-                } elseif ($this->options['verbose']) {
+                } elseif ($this->_options['verbose']) {
                         $this->flash->warning($model);
                 }
         }
@@ -237,34 +237,34 @@ class AuditTask extends MainTask implements TaskInterface
                         return false;
                 }
 
-                if ($this->options['id']) {
-                        $params[] = sprintf("rid = %d", $this->options['id']);
+                if ($this->_options['id']) {
+                        $params[] = sprintf("rid = %d", $this->_options['id']);
                 }
-                if ($this->options['type']) {
-                        $params[] = sprintf("type = '%s'", $this->options['type']);
+                if ($this->_options['type']) {
+                        $params[] = sprintf("type = '%s'", $this->_options['type']);
                 }
-                if ($this->options['user']) {
-                        $params[] = sprintf("user = '%s'", $this->options['user']);
+                if ($this->_options['user']) {
+                        $params[] = sprintf("user = '%s'", $this->_options['user']);
                 }
-                if ($this->options['time']) {
-                        $params[] = sprintf("time < '%s'", $this->options['time']);
+                if ($this->_options['time']) {
+                        $params[] = sprintf("time < '%s'", $this->_options['time']);
                 }
-                if ($this->options['fuzzy']) {
-                        $params[] = sprintf("changes LIKE '%%%s%%'", $this->options['fuzzy']);
+                if ($this->_options['fuzzy']) {
+                        $params[] = sprintf("changes LIKE '%%%s%%'", $this->_options['fuzzy']);
                 }
 
                 $sql = sprintf("DELETE FROM %s WHERE %s", $target['table'], implode(" AND ", $params));
                 $dbh = $this->getDI()->get($target['connection']);
                 $sth = $dbh->prepare($sql);
                 $res = $sth->execute();
-                
+
                 if (!$res) {
                         $this->flash->error(print_f($sth->errorInfo()));
                         return false;
-                } elseif ($this->options['verbose'] && $sth->rowCount() > 0) {
-                        $this->flash->success(sprintf("Expired audit data older than %s in %s (%d rows deleted)", $this->options['time'], $model, $sth->rowCount()));
-                } elseif ($this->options['verbose']) {
-                        $this->flash->notice(sprintf("No audit data older than %s found in %s (%d rows deleted)", $this->options['time'], $model, $sth->rowCount()));
+                } elseif ($this->_options['verbose'] && $sth->rowCount() > 0) {
+                        $this->flash->success(sprintf("Expired audit data older than %s in %s (%d rows deleted)", $this->_options['time'], $model, $sth->rowCount()));
+                } elseif ($this->_options['verbose']) {
+                        $this->flash->notice(sprintf("No audit data older than %s found in %s (%d rows deleted)", $this->_options['time'], $model, $sth->rowCount()));
                 }
         }
 
@@ -304,7 +304,7 @@ class AuditTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'decode' => false);
+                $this->_options = array('verbose' => false, 'decode' => false);
 
                 // 
                 // Supported options.
@@ -316,8 +316,8 @@ class AuditTask extends MainTask implements TaskInterface
                 // Set defaults.
                 // 
                 foreach ($options as $option) {
-                        if (!isset($this->options[$option])) {
-                                $this->options[$option] = false;
+                        if (!isset($this->_options[$option])) {
+                                $this->_options[$option] = false;
                         }
                 }
 
@@ -325,7 +325,7 @@ class AuditTask extends MainTask implements TaskInterface
                 // Include action in options (for multitarget actions).
                 // 
                 if (isset($action)) {
-                        $this->options[$action] = true;
+                        $this->_options[$action] = true;
                 }
 
                 // 
@@ -333,18 +333,18 @@ class AuditTask extends MainTask implements TaskInterface
                 // 
                 while (($option = array_shift($params))) {
                         if (in_array($option, $options)) {
-                                $this->options[$option] = true;
+                                $this->_options[$option] = true;
                                 $current = $option;
                         } elseif (in_array($current, $options)) {
-                                $this->options[$current] = $option;
+                                $this->_options[$current] = $option;
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
                 }
 
-                if ($this->options['days']) {
-                        $this->options['time'] = strftime(
-                            "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->options['days'])
+                if ($this->_options['days']) {
+                        $this->_options['time'] = strftime(
+                            "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->_options['days'])
                         );
                 }
         }

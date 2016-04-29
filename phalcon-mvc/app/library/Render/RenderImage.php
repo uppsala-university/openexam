@@ -40,7 +40,7 @@ namespace OpenExam\Library\Render;
 class RenderImage extends RenderBase implements Renderer
 {
 
-        private static $mime = array(
+        private static $_mime = array(
                 'png' => 'image/png',
                 'jpg' => 'image/jpeg',
                 'bmp' => 'image/bmp',
@@ -70,7 +70,7 @@ class RenderImage extends RenderBase implements Renderer
         public function send($filename, $settings, $headers = true)
         {
                 if ($headers) {
-                        header(sprintf('Content-type: %s', self::$mime[$settings['fmt']]));
+                        header(sprintf('Content-type: %s', self::$_mime[$settings['fmt']]));
                         header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
                 }
                 return parent::render('image', array_merge($settings, array('out' => '-')));

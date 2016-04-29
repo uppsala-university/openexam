@@ -27,12 +27,12 @@ class GettextTask extends MainTask implements TaskInterface
          * Command line options.
          * @var array 
          */
-        private $options;
+        private $_options;
         /**
          * The gettext setup.
          * @var OpenExam\Library\Locale\Gettext\Setup
          */
-        private $setup;
+        private $_setup;
 
         /**
          * Initializer hook.
@@ -97,9 +97,9 @@ class GettextTask extends MainTask implements TaskInterface
         public function allAction($params = array())
         {
                 $this->setOptions($params, 'all');
-                $this->options['update'] = true;
-                $this->options['merge'] = true;
-                $this->options['compile'] = true;
+                $this->_options['update'] = true;
+                $this->_options['merge'] = true;
+                $this->_options['compile'] = true;
                 $this->perform();
         }
 
@@ -146,10 +146,10 @@ class GettextTask extends MainTask implements TaskInterface
         {
                 $translate = $this->config->translate;
 
-                if ($this->options['list']) {
+                if ($this->_options['list']) {
                         foreach ($translate as $module => $params) {
                                 $this->flash->notice(sprintf("%s (module)", $module));
-                                if ($this->options['verbose']) {
+                                if ($this->_options['verbose']) {
                                         foreach ($params as $type => $data) {
                                                 $this->flash->notice(sprintf("\t+-- %s", $type));
                                                 foreach ($data as $path) {
@@ -160,43 +160,43 @@ class GettextTask extends MainTask implements TaskInterface
                         }
                 }
 
-                if ($this->options['initialize']) {
-                        if (!$this->options['locale']) {
+                if ($this->_options['initialize']) {
+                        if (!$this->_options['locale']) {
                                 throw new Exception("Missing --locale argument");
                         }
-                        if ($this->options['module'] && $translate->get($this->options['module']) == null) {
-                                throw new Exception(sprintf("Unknown module %s, see --list", $this->options['module']));
+                        if ($this->_options['module'] && $translate->get($this->_options['module']) == null) {
+                                throw new Exception(sprintf("Unknown module %s, see --list", $this->_options['module']));
                         }
                 }
 
                 $commands = array();
                 $modules = array();
 
-                if ($this->options['initialize']) {
+                if ($this->_options['initialize']) {
                         $commands[] = 'initialize';
                 }
-                if ($this->options['clean']) {
+                if ($this->_options['clean']) {
                         $commands[] = 'clean';
                 }
-                if ($this->options['update']) {
+                if ($this->_options['update']) {
                         $commands[] = 'update';
                 }
-                if ($this->options['merge']) {
+                if ($this->_options['merge']) {
                         $commands[] = 'merge';
                 }
-                if ($this->options['compile']) {
+                if ($this->_options['compile']) {
                         $commands[] = 'compile';
                 }
 
-                if ($this->options['module']) {
-                        $modules[] = $this->options['module'];
+                if ($this->_options['module']) {
+                        $modules[] = $this->_options['module'];
                 } else {
                         foreach (array_keys($translate->toArray()) as $module) {
                                 $modules[] = $module;
                         }
                 }
 
-                $setup = new Setup($this, $this->options);
+                $setup = new Setup($this, $this->_options);
 
                 foreach ($commands as $command) {
                         foreach ($modules as $module) {
@@ -216,7 +216,7 @@ class GettextTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'force' => false, 'dry-run' => false);
+                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false);
 
                 // 
                 // Supported options.
@@ -228,14 +228,14 @@ class GettextTask extends MainTask implements TaskInterface
                 // Set defaults.
                 // 
                 foreach ($options as $option) {
-                        $this->options[$option] = false;
+                        $this->_options[$option] = false;
                 }
 
                 // 
                 // Include action in options (for multitarget actions).
                 // 
                 if (isset($action)) {
-                        $this->options[$action] = true;
+                        $this->_options[$action] = true;
                 }
 
                 // 
@@ -243,10 +243,10 @@ class GettextTask extends MainTask implements TaskInterface
                 // 
                 while (($option = array_shift($params))) {
                         if (in_array($option, $options)) {
-                                $this->options[$option] = true;
+                                $this->_options[$option] = true;
                                 $current = $option;
                         } elseif (in_array($current, $options)) {
-                                $this->options[$current] = $option;
+                                $this->_options[$current] = $option;
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }

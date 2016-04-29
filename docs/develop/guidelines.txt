@@ -36,10 +36,18 @@
        config files or in special cases. Don't use $loader->registerDirs(), its
        for non-namespace aware applications only.
 
-   o) Always surround statements in code blocks:
+    o) Always surround statements in code blocks:
 
         if ($condition) {
                 // statements...
+        }
+
+    o) Use $_xxx for private/protected member or static class variables:
+
+        class Xxx
+        {
+            private $_m1;           // Use same naming convention for protected.
+            private static $_m2;    // Use same naming convention for protected.
         }
 
     o) Use the "coding against interface" pattern when appropriate.

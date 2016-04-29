@@ -29,8 +29,8 @@ class Setup extends Component implements SetupInterface
          * Runtime options.
          * @var array 
          */
-        private $options;
-        private $consumer;
+        private $_options;
+        private $_consumer;
 
         /**
          * Constructor.
@@ -42,8 +42,8 @@ class Setup extends Component implements SetupInterface
                         throw new Exception('The gettext extension is not loaded.');
                 }
 
-                $this->consumer = $consumer;
-                $this->options = $options;
+                $this->_consumer = $consumer;
+                $this->_options = $options;
         }
 
         /**
@@ -52,36 +52,36 @@ class Setup extends Component implements SetupInterface
          */
         public function setDomain($domain)
         {
-                $this->options['module'] = $domain;
+                $this->_options['module'] = $domain;
         }
 
         public function clean()
         {
-                $command = new Command\Clean($this->consumer, $this->options);
+                $command = new Command\Clean($this->_consumer, $this->_options);
                 $command->process();
         }
 
         public function compile()
         {
-                $command = new Command\Compile($this->consumer, $this->options);
+                $command = new Command\Compile($this->_consumer, $this->_options);
                 $command->process();
         }
 
         public function initialize()
         {
-                $command = new Command\Initialize($this->consumer, $this->options);
+                $command = new Command\Initialize($this->_consumer, $this->_options);
                 $command->process();
         }
 
         public function merge()
         {
-                $command = new Command\Merge($this->consumer, $this->options);
+                $command = new Command\Merge($this->_consumer, $this->_options);
                 $command->process();
         }
 
         public function update()
         {
-                $command = new Command\Update($this->consumer, $this->options);
+                $command = new Command\Update($this->_consumer, $this->_options);
                 $command->process();
         }
 

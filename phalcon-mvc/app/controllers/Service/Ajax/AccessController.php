@@ -66,12 +66,12 @@ class AccessController extends AjaxController
         /**
          * @var AccessHandler 
          */
-        protected $handler;
+        protected $_handler;
 
         public function initialize()
         {
                 parent::initialize();
-                $this->handler = new AccessHandler($this->getRequest(), $this->user);
+                $this->_handler = new AccessHandler($this->getRequest(), $this->user);
         }
 
         /**
@@ -79,7 +79,7 @@ class AccessController extends AjaxController
          */
         public function openAction()
         {
-                $response = $this->handler->open();
+                $response = $this->_handler->open();
                 $this->sendResponse($response);
         }
 
@@ -88,7 +88,7 @@ class AccessController extends AjaxController
          */
         public function closeAction()
         {
-                $response = $this->handler->close();
+                $response = $this->_handler->close();
                 $this->sendResponse($response);
         }
 
@@ -97,7 +97,7 @@ class AccessController extends AjaxController
          */
         public function approveAction()
         {
-                $response = $this->handler->approve();
+                $response = $this->_handler->approve();
                 $this->sendResponse($response);
         }
 
@@ -106,7 +106,7 @@ class AccessController extends AjaxController
          */
         public function releaseAction()
         {
-                $response = $this->handler->release();
+                $response = $this->_handler->release();
                 $this->sendResponse($response);
         }
 
@@ -116,10 +116,10 @@ class AccessController extends AjaxController
         public function entriesAction()
         {
                 if (($section = $this->dispatcher->getParam(0))) {
-                        $response = $this->handler->entries($this->location, $section);
+                        $response = $this->_handler->entries($this->location, $section);
                         $this->sendResponse($response);
                 } else {
-                        $response = $this->handler->entries($this->location);
+                        $response = $this->_handler->entries($this->location);
                         $this->sendResponse($response);
                 }
         }

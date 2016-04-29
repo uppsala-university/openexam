@@ -14,12 +14,12 @@ class CapabilitiesTest extends TestCase
         /**
          * @var Capabilities
          */
-        protected $object;
+        private $_object;
         /**
          * Test access map.
          * @var array 
          */
-        private static $access = array(
+        private static $_access = array(
                 'permissions' => array(
                         '*'      => '*',
                         'read'   => 'read',
@@ -49,7 +49,7 @@ class CapabilitiesTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new Capabilities(self::$access);
+                $this->_object = new Capabilities(self::$_access);
         }
 
         /**
@@ -68,19 +68,19 @@ class CapabilitiesTest extends TestCase
         public function testGetRoles()
         {
                 $expect = array('teacher', 'creator', 'contributor');
-                $actual = $this->object->getRoles();
+                $actual = $this->_object->getRoles();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
 
                 $expect = array('creator', 'contributor');
-                $actual = $this->object->getRoles('question');
+                $actual = $this->_object->getRoles('question');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, array_keys($actual));
 
                 $expect = false;
-                $actual = $this->object->getRoles('missing');
+                $actual = $this->_object->getRoles('missing');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }
@@ -92,19 +92,19 @@ class CapabilitiesTest extends TestCase
         public function testGetResources()
         {
                 $expect = array('exam', 'question', 'student');
-                $actual = $this->object->getResources();
+                $actual = $this->_object->getResources();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
 
                 $expect = array('exam', 'question');
-                $actual = $this->object->getResources('contributor');
+                $actual = $this->_object->getResources('contributor');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, array_keys($actual));
 
                 $expect = false;
-                $actual = $this->object->getResources('missing');
+                $actual = $this->_object->getResources('missing');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }
@@ -116,18 +116,18 @@ class CapabilitiesTest extends TestCase
         public function testGetPermissions()
         {
                 $expect = array('read', 'update', 'delete');
-                $actual = $this->object->getPermissions('creator', 'exam');
+                $actual = $this->_object->getPermissions('creator', 'exam');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
 
                 $expect = false;
-                $actual = $this->object->getPermissions('student', 'missing');
+                $actual = $this->_object->getPermissions('student', 'missing');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
 
                 $expect = false;
-                $actual = $this->object->getPermissions('missing', 'exam');
+                $actual = $this->_object->getPermissions('missing', 'exam');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }
@@ -145,7 +145,7 @@ class CapabilitiesTest extends TestCase
                     'student'  => true,
                     'ansawer'  => false
                 ) as $resource => $expect) {
-                        $actual = $this->object->hasResource($resource);
+                        $actual = $this->_object->hasResource($resource);
                         self::assertNotNull($actual);
                         self::assertTrue(is_bool($actual));
                         self::assertEquals($expect, $actual);
@@ -165,7 +165,7 @@ class CapabilitiesTest extends TestCase
                     'delete'  => true,
                     'missing' => false
                 ) as $action => $expect) {
-                        $actual = $this->object->hasPermission('creator', 'exam', $action);
+                        $actual = $this->_object->hasPermission('creator', 'exam', $action);
                         self::assertNotNull($actual);
                         self::assertTrue(is_bool($actual));
                         self::assertEquals($expect, $actual);
@@ -187,7 +187,7 @@ class CapabilitiesTest extends TestCase
          */
         public function testGetCapabilities()
         {
-                $actual = $this->object->getCapabilities();
+                $actual = $this->_object->getCapabilities();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
         }

@@ -32,12 +32,12 @@ class ImportInsert extends Component
          * The exam ID.
          * @var int 
          */
-        protected $exam;
+        protected $_exam;
         /**
          * Database connection.
          * @var DbAdapter 
          */
-        protected $pdo;
+        protected $_pdo;
 
         /**
          * Constructor.
@@ -45,8 +45,8 @@ class ImportInsert extends Component
          */
         public function __construct($exam)
         {
-                $this->exam = $exam;
-                $this->pdo = $this->dbwrite;
+                $this->_exam = $exam;
+                $this->_pdo = $this->dbwrite;
         }
 
         /**
@@ -55,7 +55,7 @@ class ImportInsert extends Component
          */
         public function getExamID()
         {
-                return $this->exam;
+                return $this->_exam;
         }
 
         /**
@@ -66,8 +66,8 @@ class ImportInsert extends Component
         public function insert($data, $filter = Import::OPENEXAM_IMPORT_INCLUDE_ALL)
         {
                 try {
-                        $this->pdo->begin();
-                        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        $this->_pdo->begin();
+                        $this->_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                         // 
                         // Detect present data:
@@ -132,9 +132,9 @@ class ImportInsert extends Component
                                 $this->insertResults($data);
                         }
 
-                        $this->pdo->commit();
+                        $this->_pdo->commit();
                 } catch (Exception $exception) {
-                        $this->pdo->rollback();
+                        $this->_pdo->rollback();
                         throw $exception;
                 }
         }
@@ -149,7 +149,7 @@ class ImportInsert extends Component
                 //
                 // Set project properties:
                 //
-                if ($this->exam != 0) {
+                if ($this->_exam != 0) {
                         $sql = sprintf("UPDATE  exams SET
                                                 name = '%s',
                                                 description = '%s',
@@ -158,12 +158,12 @@ class ImportInsert extends Component
                                                 endtime = '%s',
                                                 created = '%s',
                                                 grades = '%s'
-                                        WHERE   id = %d", $data->project->name, $data->project->description, $data->project->orgunit, $data->project->starttime, $data->project->endtime, $data->project->created, $data->project->grades, $this->exam);
+                                        WHERE   id = %d", $data->project->name, $data->project->description, $data->project->orgunit, $data->project->starttime, $data->project->endtime, $data->project->created, $data->project->grades, $this->_exam);
                         $this->insertData($sql);
                 } else {
                         $sql = sprintf("INSERT INTO exams(name, descr, orgunit, starttime, endtime, created, creator, grades)
                                                         VALUES('%s','%s','%s','%s','%s','%s','%s','%s')", $data->project->name, $data->project->description, $data->project->orgunit, $data->project->starttime, $data->project->endtime, $data->project->created, $this->user->getPrincipalName(), $data->project->grades);
-                        $this->exam = $this->insertData($sql, "exams");
+                        $this->_exam = $this->insertData($sql, "exams");
                 }
         }
 
@@ -185,7 +185,7 @@ class ImportInsert extends Component
                                         foreach ($data->roles->$name as $role) {
                                                 foreach ($role->user as $user) {
                                                         $sql = sprintf("INSERT INTO %s(exam_id, user)
-                                                        VALUES(%d, '%s')", $table, $this->exam, $user);
+                                                        VALUES(%d, '%s')", $table, $this->_exam, $user);
                                                         $this->insertData($sql);
                                                 }
                                         }
@@ -205,7 +205,7 @@ class ImportInsert extends Component
                 if (isset($data->topics)) {
                         foreach ($data->topics->topic as $topic) {
                                 $sql = sprintf("INSERT INTO topics(exam_id, name, randomize)
-                                        VALUES(%d,'%s','%s')", $this->exam, $topic->name, $topic->randomize);
+                                        VALUES(%d,'%s','%s')", $this->_exam, $topic->name, $topic->randomize);
                                 $data->map()->topics[(int) $topic['id']] = $this->insertData($sql, "topics");
                         }
                 }
@@ -248,7 +248,7 @@ class ImportInsert extends Component
                         foreach ($data->questions->question as $question) {
                                 $question->quest = $this->db->escape($question->text);
                                 $sql = sprintf("INSERT INTO questions(exam_id, topic_id, score, name, quest, user, video, image, audio, type, status, comment)
-                                        VALUES(%d,%d,%F,'%s','%s','%s','%s','%s','%s','%s','%s','%s')", $this->exam, $data->map()->topics[(int) $question['topic']], $question->score, $question->name, $question->quest, $question->publisher, $question->video, $question->image, $question->audio, $question->type, $question->status, $question->comment);
+                                        VALUES(%d,%d,%F,'%s','%s','%s','%s','%s','%s','%s','%s','%s')", $this->_exam, $data->map()->topics[(int) $question['topic']], $question->score, $question->name, $question->quest, $question->publisher, $question->video, $question->image, $question->audio, $question->type, $question->status, $question->comment);
                                 $data->map()->questions[(int) $question['id']] = $this->insertData($sql, "questions");
                         }
                 }
@@ -265,7 +265,7 @@ class ImportInsert extends Component
                 if (isset($data->students)) {
                         foreach ($data->students->student as $student) {
                                 $sql = sprintf("INSERT INTO students(exam_id, user, code, tag)
-                                        VALUES(%d,'%s','%s','%s')", $this->exam, $student->user, $student->code, $student->tag);
+                                        VALUES(%d,'%s','%s','%s')", $this->_exam, $student->user, $student->code, $student->tag);
                                 $data->map()->students[(string) $student->user] = $this->insertData($sql, "students");
                         }
                 }
@@ -350,9 +350,9 @@ class ImportInsert extends Component
         private function insertData($sql, $table = null)
         {
                 printf(__METHOD__ . " SQL: %s'\n", $sql);
-                $sql = $this->pdo->escapeString($sql);
-                $res = $this->pdo->execute($sql);
-                return $this->pdo->lastInsertID($table);
+                $sql = $this->_pdo->escapeString($sql);
+                $res = $this->_pdo->execute($sql);
+                return $this->_pdo->lastInsertID($table);
         }
 
 }

@@ -26,12 +26,12 @@ class Setup extends Component
         /**
          * @var Exam 
          */
-        private $exam;
+        private $_exam;
         
         /**
          * @var Student 
          */
-        private $student;
+        private $_student;
 
         /**
          * Constructor.
@@ -40,8 +40,8 @@ class Setup extends Component
          */
         public function __construct($exam, $student)
         {
-                $this->exam = $exam;
-                $this->student = $student;
+                $this->_exam = $exam;
+                $this->_student = $student;
         }
 
         /**

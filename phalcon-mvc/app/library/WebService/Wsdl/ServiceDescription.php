@@ -32,20 +32,20 @@ class ServiceDescription
         /**
          * @var string 
          */
-        private $class;
+        private $_class;
         /**
          * @var string 
          */
-        private $location;
+        private $_location;
         /**
          * @var string 
          */
-        private $namespace;
+        private $_namespace;
         /**
          * The WSDL generator.
          * @var Generator 
          */
-        private $generator;
+        private $_generator;
 
         /**
          * Constructor.
@@ -55,9 +55,9 @@ class ServiceDescription
          */
         public function __construct($class, $location = null, $namespace = null)
         {
-                $this->class = $class;
-                $this->location = $location;
-                $this->namespace = $namespace;
+                $this->_class = $class;
+                $this->_location = $location;
+                $this->_namespace = $namespace;
         }
 
         /**
@@ -66,7 +66,7 @@ class ServiceDescription
          */
         public function setServiceLocation($location)
         {
-                $this->location = $location;
+                $this->_location = $location;
         }
 
         /**
@@ -75,7 +75,7 @@ class ServiceDescription
          */
         public function setNamespace($namespace)
         {
-                $this->namespace = $namespace;
+                $this->_namespace = $namespace;
         }
 
         /**
@@ -84,7 +84,7 @@ class ServiceDescription
          */
         public function getServiceLocation()
         {
-                return $this->location;
+                return $this->_location;
         }
 
         /**
@@ -93,16 +93,16 @@ class ServiceDescription
          */
         public function getGenerator()
         {
-                if (!isset($this->generator)) {
-                        $this->generator = new Generator($this->class, $this->location, $this->namespace);
+                if (!isset($this->_generator)) {
+                        $this->_generator = new Generator($this->_class, $this->_location, $this->_namespace);
                         
-                        $this->generator->addClassPath('OpenExam\Models');
-                        $this->generator->addClassPath('OpenExam\Library\Security');
-                        $this->generator->addClassPath('OpenExam\Library\WebService\Soap\Types');
+                        $this->_generator->addClassPath('OpenExam\Models');
+                        $this->_generator->addClassPath('OpenExam\Library\Security');
+                        $this->_generator->addClassPath('OpenExam\Library\WebService\Soap\Types');
                         
-                        $this->generator->discover();
+                        $this->_generator->discover();
                 }
-                return $this->generator;
+                return $this->_generator;
         }
 
         /**

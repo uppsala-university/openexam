@@ -42,7 +42,7 @@ abstract class RenderBase
          * Global settings.
          * @var array 
          */
-        protected $globals;
+        protected $_globals;
 
         /**
          * Constructor.
@@ -53,7 +53,7 @@ abstract class RenderBase
                 if (!extension_loaded('phpwkhtmltox')) {
                         throw new Exception('Extension phpwkhtmltox is not loaded.');
                 }
-                $this->globals = (array) $globals;
+                $this->_globals = (array) $globals;
         }
 
         /**
@@ -62,7 +62,7 @@ abstract class RenderBase
          */
         public function setOptions($globals)
         {
-                $this->globals = array_merge($this->globals, $globals);
+                $this->_globals = array_merge($this->_globals, $globals);
         }
 
         /**
@@ -72,7 +72,7 @@ abstract class RenderBase
          */
         public function addOption($name, $value)
         {
-                $this->globals[$name] = $value;
+                $this->_globals[$name] = $value;
         }
 
         /**
@@ -84,7 +84,7 @@ abstract class RenderBase
          */
         public function render($type, $globals, $objects = array())
         {
-                $globals = array_merge($globals, $this->globals);
+                $globals = array_merge($globals, $this->_globals);
 
                 // 
                 // Render image fail unless the output type is known:

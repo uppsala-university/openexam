@@ -47,20 +47,20 @@ class ModelTask extends MainTask implements TaskInterface
         /**
          * @var ModelSetup 
          */
-        private $setup;
+        private $_setup;
         /**
          * Command line options.
          * @var array 
          */
-        private $options;
+        private $_options;
 
         /**
          * Initializer hook.
          */
         public function initialize()
         {
-                $this->setup = new ModelSetup();
-                $this->setup->setDI($this->getDI());
+                $this->_setup = new ModelSetup();
+                $this->_setup->setDI($this->getDI());
         }
 
         public static function getUsage()
@@ -131,9 +131,9 @@ class ModelTask extends MainTask implements TaskInterface
         public function syncAction($params = array())
         {
                 $this->setOptions($params, 'sync');
-                $this->options['clean'] = true;
-                $this->options['create'] = true;
-                $this->options['update'] = true;
+                $this->_options['clean'] = true;
+                $this->_options['create'] = true;
+                $this->_options['update'] = true;
                 $this->perform();
         }
 
@@ -145,8 +145,8 @@ class ModelTask extends MainTask implements TaskInterface
         public function updateAction($params = array())
         {
                 $this->setOptions($params, 'update');
-                if ($this->options['force']) {
-                        $this->options['clean'] = $this->options['create'] = true;
+                if ($this->_options['force']) {
+                        $this->_options['clean'] = $this->_options['create'] = true;
                 }
                 $this->perform();
         }
@@ -158,8 +158,8 @@ class ModelTask extends MainTask implements TaskInterface
         public function createAction($params = array())
         {
                 $this->setOptions($params, 'create');
-                if ($this->options['force']) {
-                        $this->options['clean'] = true;
+                if ($this->_options['force']) {
+                        $this->_options['clean'] = true;
                 }
                 $this->perform();
         }
@@ -198,12 +198,12 @@ class ModelTask extends MainTask implements TaskInterface
                 $query = $params[0];
                 $this->setOptions($params, 'query');
 
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $this->flash->notice($query);
                 }
 
                 $statement = $this->modelsManager->createQuery($query);
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $parsed = $statement->parse();
                         $this->flash->notice(print_r($parsed, true));
                 }
@@ -225,17 +225,17 @@ class ModelTask extends MainTask implements TaskInterface
          */
         private function perform()
         {
-                if ($this->options['backup']) {
-                        $this->setup->backup($this->options);
+                if ($this->_options['backup']) {
+                        $this->_setup->backup($this->_options);
                 }
-                if ($this->options['clean']) {
-                        $this->setup->clean($this->options);
+                if ($this->_options['clean']) {
+                        $this->_setup->clean($this->_options);
                 }
-                if ($this->options['create']) {
-                        $this->setup->create($this->options);
+                if ($this->_options['create']) {
+                        $this->_setup->create($this->_options);
                 }
-                if ($this->options['update']) {
-                        $this->setup->update($this->options);
+                if ($this->_options['update']) {
+                        $this->_setup->update($this->_options);
                 }
         }
 
@@ -263,7 +263,7 @@ class ModelTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'force' => false);
+                $this->_options = array('verbose' => false, 'force' => false);
 
                 // 
                 // Supported options.
@@ -275,14 +275,14 @@ class ModelTask extends MainTask implements TaskInterface
                 // Set defaults.
                 // 
                 foreach ($options as $option) {
-                        $this->options[$option] = false;
+                        $this->_options[$option] = false;
                 }
 
                 // 
                 // Include action in options (for multitarget actions).
                 // 
                 if (isset($action)) {
-                        $this->options[$action] = true;
+                        $this->_options[$action] = true;
                 }
 
                 // 
@@ -290,10 +290,10 @@ class ModelTask extends MainTask implements TaskInterface
                 // 
                 while (($option = array_shift($params))) {
                         if (in_array($option, $options)) {
-                                $this->options[$option] = true;
+                                $this->_options[$option] = true;
                                 $current = $option;
                         } elseif (in_array($current, $options)) {
-                                $this->options[$current] = $option;
+                                $this->_options[$current] = $option;
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
@@ -302,13 +302,13 @@ class ModelTask extends MainTask implements TaskInterface
                 // 
                 // Some special handling for --key options taking a value:
                 // 
-                if ($this->options['backup']) {
-                        if (is_bool($this->options['backup'])) {
+                if ($this->_options['backup']) {
+                        if (is_bool($this->_options['backup'])) {
                                 $backupdir = sprintf("%s/models/backup", $this->config->application->cacheDir);
                                 $backupdir = self::getDirectory($backupdir);
-                                $this->options['backup'] = $backupdir;
-                        } elseif ($this->options['backup'][0] != DIRECTORY_SEPARATOR) {
-                                $this->options['backup'] = sprintf("%s/%s", getcwd(), $this->options['backup']);
+                                $this->_options['backup'] = $backupdir;
+                        } elseif ($this->_options['backup'][0] != DIRECTORY_SEPARATOR) {
+                                $this->_options['backup'] = sprintf("%s/%s", getcwd(), $this->_options['backup']);
                         }
                 }
         }

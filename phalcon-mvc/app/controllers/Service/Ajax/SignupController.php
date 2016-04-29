@@ -77,12 +77,12 @@ class SignupController extends AjaxController
         /**
          * @var SignupHandler 
          */
-        protected $handler;
+        protected $_handler;
 
         public function initialize()
         {
                 parent::initialize();
-                $this->handler = new SignupHandler($this->getRequest(), $this->user, $this->config->signup);
+                $this->_handler = new SignupHandler($this->getRequest(), $this->user, $this->config->signup);
         }
 
         /**
@@ -90,7 +90,7 @@ class SignupController extends AjaxController
          */
         public function indexAction()
         {
-                $response = new ServiceResponse($this->handler, ServiceHandler::SUCCESS, $this->config->signup->toArray());
+                $response = new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $this->config->signup->toArray());
                 $this->sendResponse($response);
         }
 
@@ -99,7 +99,7 @@ class SignupController extends AjaxController
          */
         public function insertAction()
         {
-                $response = $this->handler->insert();
+                $response = $this->_handler->insert();
                 $this->sendResponse($response);
         }
 
@@ -108,7 +108,7 @@ class SignupController extends AjaxController
          */
         public function removeAction()
         {
-                $response = $this->handler->remove();
+                $response = $this->_handler->remove();
                 $this->sendResponse($response);
         }
 
@@ -117,7 +117,7 @@ class SignupController extends AjaxController
          */
         public function subscribeAction()
         {
-                $response = $this->handler->subscribe();
+                $response = $this->_handler->subscribe();
                 $this->sendResponse($response);
         }
 
@@ -139,8 +139,8 @@ class SignupController extends AjaxController
 
         private function aliasAction($name)
         {
-                $request = $this->handler->getRequest();
-                $response = $this->handler->subscribe(array($name => array($request->data['id'])));
+                $request = $this->_handler->getRequest();
+                $response = $this->_handler->subscribe(array($name => array($request->data['id'])));
                 $response->result = $response->result[$name][$request->data['id']];
                 $this->sendResponse($response);
         }

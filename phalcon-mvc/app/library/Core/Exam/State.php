@@ -13,9 +13,9 @@
 
 namespace OpenExam\Library\Core\Exam;
 
+use OpenExam\Library\Database\Exception as DatabaseException;
 use OpenExam\Models\Exam;
 use Phalcon\Mvc\User\Component;
-use OpenExam\Library\Database\Exception as DatabaseException;
 
 /**
  * Represents the exam state.
@@ -132,35 +132,35 @@ class State extends Component
         /**
          * @var Exam 
          */
-        private $exam;
+        private $_exam;
         /**
          * Bit mask of examination state.
          * @var int 
          */
-        private $state;
+        private $_state;
         /**
          * State flags (e.g. contributable, editable, upcoming).
          * @var array 
          */
-        private $flags;
+        private $_flags;
         /**
          * This exam has been corrected.
          * @var bool 
          */
-        private $corrected;
+        private $_corrected;
         /**
          * This exam has at least one answer.
          * @var bool 
          */
-        private $answered;
+        private $_answered;
 
         /**
          * Constructor.
-         * @param Exam $exam The examination object.
+         * @param Exam $exam The exam object.
          */
         public function __construct($exam)
         {
-                $this->exam = $exam;
+                $this->_exam = $exam;
                 $this->refresh(false);
         }
 
@@ -179,49 +179,49 @@ class State extends Component
          */
         private function setState()
         {
-                if (isset($this->flags)) {
-                        unset($this->flags);    // Called from refresh
+                if (isset($this->_flags)) {
+                        unset($this->_flags);    // Called from refresh
                 }
 
-                if ($this->exam->decoded) {
-                        $this->state = self::DECODED | self::DECODABLE | self::FINISHED;
-                } elseif (!isset($this->exam->starttime)) {
-                        $this->state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::DRAFT;
+                if ($this->_exam->decoded) {
+                        $this->_state = self::DECODED | self::DECODABLE | self::FINISHED;
+                } elseif (!isset($this->_exam->starttime)) {
+                        $this->_state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::DRAFT;
                 } else {
-                        $this->state = 0;
+                        $this->_state = 0;
 
-                        $stime = strtotime($this->exam->starttime);
-                        $etime = strtotime($this->exam->endtime);
+                        $stime = strtotime($this->_exam->starttime);
+                        $etime = strtotime($this->_exam->endtime);
                         $ctime = time();
 
                         if ($ctime < $stime) {                  // Before exam begins
-                                $this->state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::UPCOMING;
+                                $this->_state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::UPCOMING;
                         } elseif ($etime == 0) {                // Has starttime set, but no endtime -> never ending exam
-                                $this->state = self::EXAMINATABLE | self::RUNNING;
+                                $this->_state = self::EXAMINATABLE | self::RUNNING;
                         } elseif ($ctime < $etime) {            // After exam begin, but before its finished
-                                $this->state = self::EXAMINATABLE | self::RUNNING;
-                        } elseif (!$this->answered) {           // Unseen exam can be reused
-                                $this->state = self::REUSABLE | self::DELETABLE | self::FINISHED;
-                        } elseif ($this->corrected) {           // After exam has finished
-                                $this->state = self::CORRECTABLE | self::FINISHED | self::DECODABLE;
+                                $this->_state = self::EXAMINATABLE | self::RUNNING;
+                        } elseif (!$this->_answered) {           // Unseen exam can be reused
+                                $this->_state = self::REUSABLE | self::DELETABLE | self::FINISHED;
+                        } elseif ($this->_corrected) {           // After exam has finished
+                                $this->_state = self::CORRECTABLE | self::FINISHED | self::DECODABLE;
                         } else {
-                                $this->state = self::CORRECTABLE | self::FINISHED;
+                                $this->_state = self::CORRECTABLE | self::FINISHED;
                         }
                 }
-                if ($this->exam->testcase) {
-                        $this->state |= self::TESTCASE | self::DELETABLE;
+                if ($this->_exam->testcase) {
+                        $this->_state |= self::TESTCASE | self::DELETABLE;
                 }
-                if ($this->exam->lockdown->enable) {
-                        $this->state |= self::LOCKDOWN;
+                if ($this->_exam->lockdown->enable) {
+                        $this->_state |= self::LOCKDOWN;
                 }
-                if ($this->exam->published) {
-                        $this->state |= self::PUBLISHED;
+                if ($this->_exam->published) {
+                        $this->_state |= self::PUBLISHED;
                 } else {
-                        $this->state |= self::DELETABLE;
+                        $this->_state |= self::DELETABLE;
                 }
 
-                if ($this->answered == false) {     // Contributable and resuable until first seen
-                        $this->state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::REUSABLE;
+                if ($this->_answered == false) {     // Contributable and resuable until first seen
+                        $this->_state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::REUSABLE;
                 }
         }
 
@@ -231,7 +231,7 @@ class State extends Component
          */
         public function getState()
         {
-                return $this->state;
+                return $this->_state;
         }
 
         /**
@@ -240,7 +240,7 @@ class State extends Component
          */
         public function isCorrected()
         {
-                return $this->corrected;
+                return $this->_corrected;
         }
 
         /**
@@ -249,7 +249,7 @@ class State extends Component
          */
         public function isAnswered()
         {
-                return $this->answered;
+                return $this->_answered;
         }
 
         /**
@@ -259,7 +259,7 @@ class State extends Component
          */
         public function has($flag)
         {
-                return ($this->state & $flag) != 0;
+                return ($this->_state & $flag) != 0;
         }
 
         /**
@@ -270,19 +270,19 @@ class State extends Component
          */
         public function getFlags()
         {
-                if (isset($this->flags)) {
-                        return $this->flags;
+                if (isset($this->_flags)) {
+                        return $this->_flags;
                 }
 
-                $this->flags = array();
+                $this->_flags = array();
                 $reflection = new \ReflectionObject($this);
                 foreach ($reflection->getConstants() as $name => $value) {
                         if ($this->has($value)) {
-                                $this->flags[] = strtolower($name);
+                                $this->_flags[] = strtolower($name);
                         }
                 }
 
-                return $this->flags;
+                return $this->_flags;
         }
 
         /**
@@ -292,7 +292,7 @@ class State extends Component
         private function setCorrected($nocache)
         {
                 if ($nocache) {
-                        $this->corrected = ($this->getUncorrected() == 0);
+                        $this->_corrected = ($this->getUncorrected() == 0);
                         return;
                 }
 
@@ -300,10 +300,10 @@ class State extends Component
                 $lifetime = self::CACHE_LIFETIME;
 
                 if ($this->cache->exists($cachekey, $lifetime)) {
-                        $this->corrected = $this->cache->get($cachekey, $lifetime);
+                        $this->_corrected = $this->cache->get($cachekey, $lifetime);
                 } else {
-                        $this->corrected = ($this->getUncorrected() == 0);
-                        $this->cache->save($cachekey, $this->corrected, $lifetime);
+                        $this->_corrected = ($this->getUncorrected() == 0);
+                        $this->cache->save($cachekey, $this->_corrected, $lifetime);
                 }
         }
 
@@ -314,7 +314,7 @@ class State extends Component
         private function setAnswered($nocache)
         {
                 if ($nocache) {
-                        $this->answered = ($this->getAnswered() != 0);
+                        $this->_answered = ($this->getAnswered() != 0);
                         return;
                 }
 
@@ -322,16 +322,16 @@ class State extends Component
                 $lifetime = self::CACHE_LIFETIME;
 
                 if ($this->cache->exists($cachekey, $lifetime)) {
-                        $this->answered = $this->cache->get($cachekey, $lifetime);
+                        $this->_answered = $this->cache->get($cachekey, $lifetime);
                 } else {
-                        $this->answered = ($this->getAnswered() != 0);
-                        $this->cache->save($cachekey, $this->answered, $lifetime);
+                        $this->_answered = ($this->getAnswered() != 0);
+                        $this->cache->save($cachekey, $this->_answered, $lifetime);
                 }
         }
 
         private function createCacheKey($type)
         {
-                return sprintf("state-exam-%d-%s", $this->exam->id, $type);
+                return sprintf("state-exam-%d-%s", $this->_exam->id, $type);
         }
 
         /**
@@ -340,7 +340,7 @@ class State extends Component
          */
         private function getUncorrected()
         {
-                if (!($connection = $this->exam->getReadConnection())) {
+                if (!($connection = $this->_exam->getReadConnection())) {
                         throw new DatabaseException("Failed get read connection");
                 }
 
@@ -358,7 +358,7 @@ class State extends Component
                 q.id = a.question_id AND 
                 q.status != 'removed' AND 
                 a.answered = 'Y' AND
-                r.id IS NULL", array('examid' => $this->exam->id)))) {
+                r.id IS NULL", array('examid' => $this->_exam->id)))) {
                         return $resultset->numRows();
                 } else {
                         throw new DatabaseException("Failed query uncorrected answers.");
@@ -371,7 +371,7 @@ class State extends Component
          */
         private function getAnswered()
         {
-                if (!($connection = $this->exam->getReadConnection())) {
+                if (!($connection = $this->_exam->getReadConnection())) {
                         throw new DatabaseException("Failed get read connection");
                 }
 
@@ -387,7 +387,7 @@ class State extends Component
                 s.id = a.student_id AND
                 q.id = a.question_id AND 
                 q.status != 'removed' AND 
-                a.answered = 'Y'", array('examid' => $this->exam->id)))) {
+                a.answered = 'Y'", array('examid' => $this->_exam->id)))) {
                         return $resultset->numRows();
                 } else {
                         throw new DatabaseException("Failed query answers on exam.");

@@ -31,17 +31,17 @@ abstract class ServiceAdapter extends Component implements DirectoryService
          * The service name.
          * @var string 
          */
-        protected $name;
+        protected $_name;
         /**
          * The service type.
          * @var string 
          */
-        protected $type;
+        protected $_type;
         /**
          * Set caching lifetime. 0 to disable.
          * @var long 
          */
-        protected $lifetime = 0;
+        protected $_lifetime = 0;
 
         /**
          * Set service name.
@@ -49,7 +49,7 @@ abstract class ServiceAdapter extends Component implements DirectoryService
          */
         public function setName($name)
         {
-                $this->name = $name;
+                $this->_name = $name;
         }
 
         /**
@@ -58,7 +58,7 @@ abstract class ServiceAdapter extends Component implements DirectoryService
          */
         public function setCacheLifetime($lifetime)
         {
-                $this->lifetime = $lifetime;
+                $this->_lifetime = $lifetime;
         }
 
         /**
@@ -69,11 +69,11 @@ abstract class ServiceAdapter extends Component implements DirectoryService
          */
         protected function setCacheData($key, $result)
         {
-                if ($this->lifetime == 0) {
+                if ($this->_lifetime == 0) {
                         return $result;
                 }
                 
-                $this->cache->save($key, $result, $this->lifetime);
+                $this->cache->save($key, $result, $this->_lifetime);
                 return $result;
         }
 

@@ -42,12 +42,12 @@ class Student extends SignupBase
                 parent::__construct($user);
 
                 if ($this->config->get('signup') == false) {
-                        $this->enabled = false;
+                        $this->_enabled = false;
                 } elseif ($this->config->signup->get('student') == false) {
-                        $this->enabled = false;
+                        $this->_enabled = false;
                 } else {
-                        $this->enabled = true;
-                        $this->exams = $this->config->signup->student->toArray();
+                        $this->_enabled = true;
+                        $this->_exams = $this->config->signup->student->toArray();
                 }
         }
 
@@ -58,7 +58,7 @@ class Student extends SignupBase
          */
         public function register()
         {
-                foreach ($this->exams as $index) {
+                foreach ($this->_exams as $index) {
                         $this->assign($index);
                 }
         }
@@ -71,7 +71,7 @@ class Student extends SignupBase
          */
         public function assign($index)
         {
-                if (!in_array($index, $this->exams)) {
+                if (!in_array($index, $this->_exams)) {
                         throw new SecurityException(
                         "Exam $index is not in list of available exams.", SecurityException::ACTION
                         );
@@ -83,11 +83,11 @@ class Student extends SignupBase
                                     "exam_id = :exam: AND user = :user:",
                                     "bind" => array(
                                             "exam" => $index,
-                                            "user" => $this->caller
+                                            "user" => $this->_caller
                                     )
                             ))) == 0) {
                                 $student = new StudentModel();
-                                $student->user = $this->caller;
+                                $student->user = $this->_caller;
                                 $student->exam_id = $index;
                                 $student->starttime = date('Y-m-d H:i:s');
                                 $student->tag = 'SIGNUP';
@@ -119,7 +119,7 @@ class Student extends SignupBase
                 return StudentModel::count(array(
                             "user = :user: AND tag = 'SIGNUP'",
                             "bind" => array(
-                                    "user" => $this->caller
+                                    "user" => $this->_caller
                             )
                     )) > 0;
         }

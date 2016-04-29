@@ -31,7 +31,7 @@ class CatalogHandler extends ServiceHandler
          * The catalog service.
          * @var DirectoryManager
          */
-        private $catalog;
+        private $_catalog;
 
         /**
          * Output as obejct.
@@ -59,7 +59,7 @@ class CatalogHandler extends ServiceHandler
          */
         public function __construct($request, $user, $catalog)
         {
-                $this->catalog = $catalog;
+                $this->_catalog = $catalog;
                 parent::__construct($request, $user);
         }
 
@@ -71,7 +71,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("domains");
                 
-                $result = $this->catalog->getDomains();
+                $result = $this->_catalog->getDomains();
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
 
@@ -83,7 +83,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("name");
                 
-                $result = $this->catalog->getName($this->request->data['principal']);
+                $result = $this->_catalog->getName($this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -96,7 +96,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("mail");
                 
-                $result = $this->catalog->getMail($this->request->data['principal']);
+                $result = $this->_catalog->getMail($this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -109,7 +109,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("attribute");
                 
-                $result = $this->catalog->getAttribute($this->request->data['principal'], $this->request->data['attribute']);
+                $result = $this->_catalog->getAttribute($this->_request->data['principal'], $this->_request->data['attribute']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -124,13 +124,13 @@ class CatalogHandler extends ServiceHandler
         public function groups($method = "POST", $principal = null, $output = null)
         {
                 if ($method == "GET") {
-                        $this->request->data['principal'] = $principal;
-                        $this->request->params['output'] = $output;
+                        $this->_request->data['principal'] = $principal;
+                        $this->_request->params['output'] = $output;
                 }
 
                 $this->formatRequest("groups");
                 
-                $result = $this->catalog->getGroups($this->request->data['principal'], $this->request->data['attributes']);
+                $result = $this->_catalog->getGroups($this->_request->data['principal'], $this->_request->data['attributes']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -145,13 +145,13 @@ class CatalogHandler extends ServiceHandler
         public function members($method = "POST", $group = null, $output = null)
         {
                 if ($method == "GET") {
-                        $this->request->data['group'] = $group;
-                        $this->request->params['output'] = $output;
+                        $this->_request->data['group'] = $group;
+                        $this->_request->params['output'] = $output;
                 }
 
                 $this->formatRequest("members");
                 
-                $result = $this->catalog->getMembers($this->request->data['group'], $this->request->data['domain'], $this->request->data['attributes']);
+                $result = $this->_catalog->getMembers($this->_request->data['group'], $this->_request->data['domain'], $this->_request->data['attributes']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -164,7 +164,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("principal");
 
-                $result = $this->catalog->getPrincipal(current($this->request->data), key($this->request->data), $this->request->params);
+                $result = $this->_catalog->getPrincipal(current($this->_request->data), key($this->_request->data), $this->_request->params);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -177,8 +177,8 @@ class CatalogHandler extends ServiceHandler
          */
         private function formatResult($input)
         {
-                $output = $this->request->params['output'];
-                $svcref = $this->request->params['svcref'];
+                $output = $this->_request->params['output'];
+                $svcref = $this->_request->params['svcref'];
 
                 // 
                 // Strip service references if requested:
@@ -233,39 +233,39 @@ class CatalogHandler extends ServiceHandler
         private function formatRequest($action)
         {
                 if ($action == "groups") {
-                        if (!isset($this->request->data['attributes'])) {
-                                $this->request->data['attributes'] = array(Principal::ATTR_NAME);
+                        if (!isset($this->_request->data['attributes'])) {
+                                $this->_request->data['attributes'] = array(Principal::ATTR_NAME);
                         }
                 }
 
                 if ($action == "members") {
-                        if (!isset($this->request->data['attributes'])) {
-                                $this->request->data['attributes'] = DirectoryManager::$DEFAULT_ATTR;
+                        if (!isset($this->_request->data['attributes'])) {
+                                $this->_request->data['attributes'] = DirectoryManager::$DEFAULT_ATTR;
                         }
-                        if (!isset($this->request->data['domain'])) {
-                                $this->request->data['domain'] = null;
+                        if (!isset($this->_request->data['domain'])) {
+                                $this->_request->data['domain'] = null;
                         }
                 }
 
                 if ($action == "attribute" ||
                     $action == "name" ||
                     $action == "mail") {
-                        if (!isset($this->request->params['svcref'])) {
-                                $this->request->params['svcref'] = false;
+                        if (!isset($this->_request->params['svcref'])) {
+                                $this->_request->params['svcref'] = false;
                         }
-                        if (!isset($this->request->params['output'])) {
-                                $this->request->params['output'] = self::OUTPUT_COMPACT;
+                        if (!isset($this->_request->params['output'])) {
+                                $this->_request->params['output'] = self::OUTPUT_COMPACT;
                         }
                 }
 
-                if (!isset($this->request->data['principal'])) {
-                        $this->request->data['principal'] = $this->user->getPrincipalName();
+                if (!isset($this->_request->data['principal'])) {
+                        $this->_request->data['principal'] = $this->_user->getPrincipalName();
                 }
-                if (!isset($this->request->params['output'])) {
-                        $this->request->params['output'] = self::OUTPUT_OBJECT;
+                if (!isset($this->_request->params['output'])) {
+                        $this->_request->params['output'] = self::OUTPUT_OBJECT;
                 }
-                if (!isset($this->request->params['svcref'])) {
-                        $this->request->params['svcref'] = true;
+                if (!isset($this->_request->params['svcref'])) {
+                        $this->_request->params['svcref'] = true;
                 }
         }
 

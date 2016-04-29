@@ -29,19 +29,19 @@ class TestModel extends TestCase
          * Sample data object.
          * @var SampleData
          */
-        protected $sample;
+        protected $_sample;
         /**
          * The capabilities mapper.
          * @var Capabilities 
          */
-        protected $capabilities;
+        protected $_capabilities;
 
         public function setUp()
         {
                 parent::setUp();
 
-                $this->sample = new SampleData();
-                $this->capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
+                $this->_sample = new SampleData();
+                $this->_capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
         }
 
         public function tearDown()

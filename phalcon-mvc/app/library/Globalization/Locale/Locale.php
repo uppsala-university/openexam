@@ -51,12 +51,12 @@ class Locale extends Component
          * Array of supported locales.
          * @var array 
          */
-        private $locales = array();
+        private $_locales = array();
         /**
          * Interface between web server and PHP.
          * @var type 
          */
-        protected $sapi;
+        protected $_sapi;
 
         /**
          * Constructor.
@@ -64,7 +64,7 @@ class Locale extends Component
          */
         public function __construct($locale = null)
         {
-                $this->sapi = php_sapi_name();
+                $this->_sapi = php_sapi_name();
                 $this->setLocale($locale);
         }
 
@@ -78,7 +78,7 @@ class Locale extends Component
          */
         public function setLocales($locales)
         {
-                $this->locales = $locales;
+                $this->_locales = $locales;
         }
 
         /**
@@ -91,7 +91,7 @@ class Locale extends Component
          */
         public function getLocales()
         {
-                return $this->locales;
+                return $this->_locales;
         }
 
         /**
@@ -101,7 +101,7 @@ class Locale extends Component
          */
         public function addLocale($locale, $name)
         {
-                $this->locales[$locale] = $name;
+                $this->_locales[$locale] = $name;
         }
 
         /**
@@ -163,10 +163,10 @@ class Locale extends Component
          */
         public function hasLocale($locale)
         {
-                if (!isset($this->locales)) {
+                if (!isset($this->_locales)) {
                         return false;
                 } else {
-                        return array_key_exists($locale, $this->locales);
+                        return array_key_exists($locale, $this->_locales);
                 }
         }
 
@@ -229,7 +229,7 @@ class Locale extends Component
         {
                 $locale = null;
 
-                if ($this->sapi != "cli") {
+                if ($this->_sapi != "cli") {
                         if ($this->request->has($name)) {
                                 $locale = $this->request->get($name, "string");
                         } elseif ($this->session->has($name)) {
@@ -251,7 +251,7 @@ class Locale extends Component
                         }
                 }
 
-                if (!array_key_exists($locale, $this->locales)) {
+                if (!array_key_exists($locale, $this->_locales)) {
                         if ($this->findLocale($locale) ||
                             $this->findVariant($locale) ||
                             $this->findAlias($locale)) {
@@ -307,7 +307,7 @@ class Locale extends Component
         private function findLocale(&$locale)
         {
                 if (strlen($locale) == 2) {
-                        foreach (array_keys($this->locales) as $key) {
+                        foreach (array_keys($this->_locales) as $key) {
                                 $match = substr($key, 0, 2);
                                 if ($locale == $match) {
                                         $locale = $key;
@@ -331,7 +331,7 @@ class Locale extends Component
         private function findVariant(&$locale)
         {
                 if (strlen($locale) == 2) {
-                        foreach (array_keys($this->locales) as $key) {
+                        foreach (array_keys($this->_locales) as $key) {
                                 $match = strtolower(substr($key, 3, 2));
                                 if ($locale == $match) {
                                         $locale = $key;
@@ -355,7 +355,7 @@ class Locale extends Component
         private function findAlias(&$locale)
         {
                 if (strlen($locale) > 3 && $locale[2] == '-') {
-                        foreach (array_keys($this->locales) as $key) {
+                        foreach (array_keys($this->_locales) as $key) {
                                 $match = str_replace('_', '-', $key);
                                 if (strncasecmp($locale, $match, strlen($locale)) == 0) {
                                         $locale = $key;

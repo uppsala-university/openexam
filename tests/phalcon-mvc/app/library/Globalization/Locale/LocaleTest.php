@@ -13,12 +13,12 @@ class LocaleTester extends Locale
         public function __construct($locale = null)
         {
                 parent::__construct($locale);
-                $this->sapi = __CLASS__;
+                $this->_sapi = __CLASS__;
         }
 
         public function setSapi($sapi)
         {
-                $this->sapi = $sapi;
+                $this->_sapi = $sapi;
         }
 
 }
@@ -33,8 +33,8 @@ class LocaleTest extends TestCase
         /**
          * @var Locale
          */
-        protected $object;
-        protected static $locales = array(
+        private $_object;
+        private static $_locales = array(
                 'sv_SE.UTF-8' => 'Swedish',
                 'en_US'       => 'English (US)'
         );
@@ -46,7 +46,7 @@ class LocaleTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new LocaleTester();
+                $this->_object = new LocaleTester();
         }
 
         /**
@@ -64,10 +64,10 @@ class LocaleTest extends TestCase
          */
         public function testSetLocales()
         {
-                self::assertTrue(count($this->object->getLocales()) == 0);
-                $this->object->setLocales(self::$locales);
-                self::assertTrue(count($this->object->getLocales()) != 0);
-                self::assertTrue(count($this->object->getLocales()) == count(self::$locales));
+                self::assertTrue(count($this->_object->getLocales()) == 0);
+                $this->_object->setLocales(self::$_locales);
+                self::assertTrue(count($this->_object->getLocales()) != 0);
+                self::assertTrue(count($this->_object->getLocales()) == count(self::$_locales));
         }
 
         /**
@@ -76,8 +76,8 @@ class LocaleTest extends TestCase
          */
         public function testGetLocales()
         {
-                self::assertTrue(count($this->object->getLocales()) == 0);
-                self::assertTrue(is_array($this->object->getLocales()));
+                self::assertTrue(count($this->_object->getLocales()) == 0);
+                self::assertTrue(is_array($this->_object->getLocales()));
         }
 
         /**
@@ -86,9 +86,9 @@ class LocaleTest extends TestCase
          */
         public function testAddLocale()
         {
-                self::assertTrue(count($this->object->getLocales()) == 0);
-                $this->object->addLocale('fr_FR.UTF-8', 'French');
-                self::assertTrue(count($this->object->getLocales()) == 1);
+                self::assertTrue(count($this->_object->getLocales()) == 0);
+                $this->_object->addLocale('fr_FR.UTF-8', 'French');
+                self::assertTrue(count($this->_object->getLocales()) == 1);
         }
 
         /**
@@ -103,25 +103,25 @@ class LocaleTest extends TestCase
                 $locale = setlocale(LC_ALL, "0");
 
                 $expect = null;                 // should always fail.
-                $result = $this->object->setLocale($expect);
+                $result = $this->_object->setLocale($expect);
                 self::assertTrue($result == false);
                 $actual = setlocale(LC_ALL, "0");
                 self::assertEquals($actual, $locale);
 
                 $expect = null;
-                $result = $this->object->setLocale('no_LOCALE');
+                $result = $this->_object->setLocale('no_LOCALE');
                 self::assertTrue($result == false);
                 $actual = setlocale(LC_ALL, "0");
                 self::assertEquals($actual, $locale);
 
                 $expect = "C";                  // should always work.
-                $result = $this->object->setLocale($expect);
+                $result = $this->_object->setLocale($expect);
                 self::assertTrue($result == true);
                 $actual = setlocale(LC_ALL, "0");
                 self::assertEquals($actual, $expect);
 
                 $expect = "en_US";              // a wild guess
-                $result = $this->object->setLocale($expect);
+                $result = $this->_object->setLocale($expect);
                 self::assertTrue($result == true);
                 $actual = setlocale(LC_ALL, "0");
                 self::assertEquals($actual, $expect);
@@ -135,11 +135,11 @@ class LocaleTest extends TestCase
          */
         public function testGetLocale()
         {
-                self::assertNotNull($this->object->getLocale());
+                self::assertNotNull($this->_object->getLocale());
                 $expect = "en_US";
-                $this->object->setLocale($expect);
-                $actual = $this->object->getLocale();
-                self::assertNotNull($this->object->getLocale());
+                $this->_object->setLocale($expect);
+                $actual = $this->_object->getLocale();
+                self::assertNotNull($this->_object->getLocale());
                 self::assertEquals($actual, $expect);
         }
 
@@ -149,11 +149,11 @@ class LocaleTest extends TestCase
          */
         public function testHasLocale()
         {
-                self::assertFalse($this->object->hasLocale(key(self::$locales)));
-                $this->object->setLocales(null);
-                self::assertFalse($this->object->hasLocale(key(self::$locales)));
-                $this->object->setLocales(self::$locales);
-                self::assertTrue($this->object->hasLocale(key(self::$locales)));
+                self::assertFalse($this->_object->hasLocale(key(self::$_locales)));
+                $this->_object->setLocales(null);
+                self::assertFalse($this->_object->hasLocale(key(self::$_locales)));
+                $this->_object->setLocales(self::$_locales);
+                self::assertTrue($this->_object->hasLocale(key(self::$_locales)));
         }
 
         /**
@@ -166,7 +166,7 @@ class LocaleTest extends TestCase
                         self::markTestIncomplete("Extension intl is not loaded");
                 } else {
                         $expect = "Swedish";
-                        $actual = $this->object->getDisplayLanguage('sv_SE');
+                        $actual = $this->_object->getDisplayLanguage('sv_SE');
                         self::assertEquals($actual, $expect);
                 }
         }
@@ -188,13 +188,13 @@ class LocaleTest extends TestCase
                 self::assertNotNull($actual);
                 self::assertEquals($actual, $expect);
 
-                $this->object->setLocales(self::$locales);
+                $this->_object->setLocales(self::$_locales);
                 $default = 'C';
 
                 // 
                 // Test web:
                 // 
-                $this->object->setSapi('web');
+                $this->_object->setSapi('web');
                 foreach (array(
                     'sv_SE.UTF-8' => 'sv_SE.UTF-8', // locale
                     'sv'          => 'sv_SE.UTF-8', // lang
@@ -206,7 +206,7 @@ class LocaleTest extends TestCase
                         // Match request param:
                         // 
                         $_REQUEST[$name] = $lang;
-                        $actual = $this->object->detect($name, $default);
+                        $actual = $this->_object->detect($name, $default);
                         self::info("(request): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                         self::assertNotNull($actual);
                         self::assertEquals($expect, $actual);
@@ -218,7 +218,7 @@ class LocaleTest extends TestCase
                         $this->session->start();
                         if ($this->session->isStarted()) {
                                 $this->session->set($name, $lang);
-                                $actual = $this->object->detect($name, $default);
+                                $actual = $this->_object->detect($name, $default);
                                 self::info("(session): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                                 self::assertNotNull($actual);
                                 self::assertEquals($expect, $actual);
@@ -230,7 +230,7 @@ class LocaleTest extends TestCase
                         // 
                         if (isset($this->persistent)) {
                                 $this->persistent->set($name, $lang);
-                                $actual = $this->object->detect($name, $default);
+                                $actual = $this->_object->detect($name, $default);
                                 self::info("(persistent): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                                 self::assertNotNull($actual);
                                 self::assertEquals($expect, $actual);
@@ -241,7 +241,7 @@ class LocaleTest extends TestCase
                         // Match HTTP accept language:
                         // 
                         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-                        $actual = $this->object->detect($name, $default);
+                        $actual = $this->_object->detect($name, $default);
                         self::info("(accept): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                         self::assertNotNull($actual);
                         self::assertEquals($expect, $actual);
@@ -250,7 +250,7 @@ class LocaleTest extends TestCase
                 // 
                 // Test CLI:
                 // 
-                $this->object->setSapi('cli');
+                $this->_object->setSapi('cli');
                 foreach (array(
                     'sv_SE.UTF-8' => 'sv_SE.UTF-8', // locale
                     'sv'          => 'sv_SE.UTF-8', // lang
@@ -261,7 +261,7 @@ class LocaleTest extends TestCase
                         foreach (array('LANG', 'LC_CTYPE') as $name) {
                                 putenv("$name=$lang");
                                 self::assertEquals($lang, getenv($name));
-                                $actual = $this->object->detect($name, $default);
+                                $actual = $this->_object->detect($name, $default);
                                 self::info("(cli[$name]): lang=%s, expect=%s, actual=%s", $lang, $expect, $actual);
                                 self::assertNotNull($actual);
                                 self::assertEquals($expect, $actual);
@@ -275,7 +275,7 @@ class LocaleTest extends TestCase
          */
         public function testFindLocales()
         {
-                $locales = $this->object->findLocales($this->config->application->localeDir);
+                $locales = $this->_object->findLocales($this->config->application->localeDir);
                 self::assertNotNull($locales);
                 self::assertTrue(count($locales) > 0);
         }
@@ -287,17 +287,17 @@ class LocaleTest extends TestCase
         public function testGetRegion()
         {
                 $expect = "US";
-                $actual = $this->object->getRegion('en_US');
+                $actual = $this->_object->getRegion('en_US');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
                 
                 $expect = "GB";
-                $actual = $this->object->getRegion('en_GB');
+                $actual = $this->_object->getRegion('en_GB');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
                 
                 $expect = "SE";
-                $actual = $this->object->getRegion('sv_SE.UTF-8');
+                $actual = $this->_object->getRegion('sv_SE.UTF-8');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }
@@ -309,17 +309,17 @@ class LocaleTest extends TestCase
         public function testGetLanguage()
         {
                 $expect = "en";
-                $actual = $this->object->getLanguage('en_US');
+                $actual = $this->_object->getLanguage('en_US');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
                 
                 $expect = "en";
-                $actual = $this->object->getLanguage('en_GB');
+                $actual = $this->_object->getLanguage('en_GB');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
                 
                 $expect = "sv";
-                $actual = $this->object->getLanguage('sv_SE.UTF-8');
+                $actual = $this->_object->getLanguage('sv_SE.UTF-8');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }

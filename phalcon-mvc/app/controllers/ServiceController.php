@@ -36,7 +36,7 @@ abstract class ServiceController extends ControllerBase
          * The request payload.
          * @var array 
          */
-        private $payload;
+        private $_payload;
 
         public function initialize()
         {
@@ -67,8 +67,8 @@ abstract class ServiceController extends ControllerBase
                 // 
                 // Cache payload in this class.
                 // 
-                if (isset($this->payload)) {
-                        return $this->payload;
+                if (isset($this->_payload)) {
+                        return $this->_payload;
                 }
 
                 // 
@@ -147,8 +147,8 @@ abstract class ServiceController extends ControllerBase
                         }
                 }
 
-                $this->payload = array($data, $params);
-                return $this->payload;
+                $this->_payload = array($data, $params);
+                return $this->_payload;
         }
 
 }

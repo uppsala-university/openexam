@@ -39,7 +39,7 @@ class Update extends Command
 
         private function processModule($locale, $module)
         {
-                $topdir = $this->config->application->localeDir;
+                $topdir = $this->_config->application->localeDir;
                 $template = sprintf("%s/%s.pot", $topdir, $module);
 
                 $this->processFile($template, $module, $topdir);
@@ -47,12 +47,12 @@ class Update extends Command
 
         private function processFile($template, $module, $topdir)
         {
-                if ($this->options['verbose']) {
-                        $this->flash->notice("Updating template $template");
+                if ($this->_options['verbose']) {
+                        $this->_flash->notice("Updating template $template");
                 }
 
-                $program = $this->config->gettext->program->xgettext;
-                $options = $this->config->gettext->options->xgettext;
+                $program = $this->_config->gettext->program->xgettext;
+                $options = $this->_config->gettext->options->xgettext;
 
                 $cmdopts = $this->substitute($options, array('template' => $template));
 

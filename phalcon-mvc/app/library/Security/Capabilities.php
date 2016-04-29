@@ -74,17 +74,17 @@ class Capabilities extends Component
          * Role to resource permission map.
          * @var array 
          */
-        private $rolecap = array();
+        private $_rolecap = array();
         /**
          * Resource to role permission map.
          * @var array 
          */
-        private $rescap = array();
+        private $_rescap = array();
         /**
          * All managable resources.
          * @var array 
          */
-        private static $resources = array(
+        private static $_resources = array(
                 'admin', 'answer', 'computer', 'contributor', 'corrector',
                 'decoder', 'exam', 'file', 'invigilator', 'lock', 'question',
                 'resource', 'result', 'room', 'student', 'teacher', 'topic'
@@ -125,7 +125,7 @@ class Capabilities extends Component
                 // 
                 foreach ($access['roles'] as $role => $resources) {
                         if (is_string($resources)) {
-                                foreach (self::$resources as $resource) {
+                                foreach (self::$_resources as $resource) {
                                         $this->addCapabilities($role, $resource, $permissions[$resources]);
                                 }
                         } elseif (is_array($resources)) {
@@ -144,8 +144,8 @@ class Capabilities extends Component
          */
         private function addCapabilities($role, $resource, $actions)
         {
-                $this->rolecap[$role][$resource] = $actions;
-                $this->rescap[$resource][$role] = $actions;
+                $this->_rolecap[$role][$resource] = $actions;
+                $this->_rescap[$resource][$role] = $actions;
         }
 
         /**
@@ -160,9 +160,9 @@ class Capabilities extends Component
         public function getRoles($resource = null)
         {
                 if (!isset($resource)) {
-                        return array_keys($this->rolecap);
-                } elseif (isset($this->rescap[$resource])) {
-                        return $this->rescap[$resource];
+                        return array_keys($this->_rolecap);
+                } elseif (isset($this->_rescap[$resource])) {
+                        return $this->_rescap[$resource];
                 } else {
                         return false;
                 }
@@ -180,9 +180,9 @@ class Capabilities extends Component
         public function getResources($role = null)
         {
                 if (!isset($role)) {
-                        return array_keys($this->rescap);
-                } elseif (isset($this->rolecap[$role])) {
-                        return $this->rolecap[$role];
+                        return array_keys($this->_rescap);
+                } elseif (isset($this->_rolecap[$role])) {
+                        return $this->_rolecap[$role];
                 } else {
                         return false;
                 }
@@ -206,8 +206,8 @@ class Capabilities extends Component
          */
         public function getPermissions($role, $resource)
         {
-                if (isset($this->rolecap[$role][$resource])) {
-                        return $this->rolecap[$role][$resource];
+                if (isset($this->_rolecap[$role][$resource])) {
+                        return $this->_rolecap[$role][$resource];
                 } else {
                         return false;
                 }
@@ -222,10 +222,10 @@ class Capabilities extends Component
          */
         public function hasPermission($role, $resource, $action)
         {
-                if (!isset($this->rolecap[$role][$resource])) {
+                if (!isset($this->_rolecap[$role][$resource])) {
                         return false;
                 } else {
-                        return in_array($action, $this->rolecap[$role][$resource]);
+                        return in_array($action, $this->_rolecap[$role][$resource]);
                 }
         }
 
@@ -297,7 +297,7 @@ class Capabilities extends Component
          */
         public function getCapabilities()
         {
-                return $this->rolecap;
+                return $this->_rolecap;
         }
 
         /**

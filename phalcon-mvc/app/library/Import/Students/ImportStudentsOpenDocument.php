@@ -23,19 +23,19 @@ use PHPExcel_Reader_OOCalc;
 class ImportStudentsOpenDocument extends ImportStudents
 {
 
-        private static $mimedef = array(
+        private static $_mimedef = array(
                 "application/vnd.oasis.opendocument.spreadsheet",
                 "application/vnd.oasis.opendocument.spreadsheet-template");
 
         public function __construct($accept = "")
         {
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->reader = new PHPExcel_Reader_OOCalc();
-                $this->reader->setReadDataOnly(true);
+                $this->_reader = new PHPExcel_Reader_OOCalc();
+                $this->_reader->setReadDataOnly(true);
         }
 
 }

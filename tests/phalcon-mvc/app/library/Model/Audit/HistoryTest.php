@@ -15,7 +15,7 @@ class HistoryTest extends TestCase
         /**
          * @var History
          */
-        protected $object;
+        private $_object;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -51,7 +51,7 @@ class HistoryTest extends TestCase
                 $stud->user = "user4@example.com";
                 $stud->update();
 
-                $this->object = new History($stud);
+                $this->_object = new History($stud);
         }
 
         /**
@@ -60,7 +60,7 @@ class HistoryTest extends TestCase
          */
         protected function tearDown()
         {
-                $model = $this->object->getModel();
+                $model = $this->_object->getModel();
                 $model->exam->delete();
                 $model->delete();
         }
@@ -71,7 +71,7 @@ class HistoryTest extends TestCase
          */
         public function testGetModel()
         {
-                self::assertNotNull($this->object->getModel());
+                self::assertNotNull($this->_object->getModel());
         }
 
         /**
@@ -81,7 +81,7 @@ class HistoryTest extends TestCase
         public function testGetPosition()
         {
                 $expect = 2;
-                $actual = $this->object->getPosition();
+                $actual = $this->_object->getPosition();
                 self::assertEquals($expect, $actual);
         }
 
@@ -91,7 +91,7 @@ class HistoryTest extends TestCase
          */
         public function testGetIndex()
         {
-                $actual = $this->object->getIndex();
+                $actual = $this->_object->getIndex();
                 self::assertTrue(is_int($actual));
                 self::assertTrue($actual != 0);
         }
@@ -103,7 +103,7 @@ class HistoryTest extends TestCase
         public function testGetSize()
         {
                 $expect = 3;
-                $actual = $this->object->getSize();
+                $actual = $this->_object->getSize();
                 self::assertEquals($expect, $actual);
         }
 
@@ -113,7 +113,7 @@ class HistoryTest extends TestCase
          */
         public function testGetRevision()
         {
-                $actual = $this->object->getRevision();
+                $actual = $this->_object->getRevision();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
         }
@@ -124,7 +124,7 @@ class HistoryTest extends TestCase
          */
         public function testGetChanges()
         {
-                $actual = $this->object->getChanges();
+                $actual = $this->_object->getChanges();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
         }
@@ -135,15 +135,15 @@ class HistoryTest extends TestCase
          */
         public function testHasRevision()
         {
-                $revisions = $this->object->getRevisions();
+                $revisions = $this->_object->getRevisions();
 
                 foreach ($revisions as $expect => $revision) {
-                        $actual = $this->object->hasRevision($revision['id']);
+                        $actual = $this->_object->hasRevision($revision['id']);
                         self::assertEquals($expect, $actual);
                 }
 
                 $expect = -1;
-                $actual = $this->object->hasRevision('missing');
+                $actual = $this->_object->hasRevision('missing');
                 self::assertEquals($expect, $actual);
         }
 
@@ -154,7 +154,7 @@ class HistoryTest extends TestCase
         public function testHasRevisions()
         {
                 $expect = true;
-                $actual = $this->object->hasRevisions();
+                $actual = $this->_object->hasRevisions();
                 self::assertEquals($expect, $actual);
         }
 
@@ -164,7 +164,7 @@ class HistoryTest extends TestCase
          */
         public function testGetRevisions()
         {
-                $actual = $this->object->getRevisions();
+                $actual = $this->_object->getRevisions();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertTrue(count($actual) == 3);
@@ -177,27 +177,27 @@ class HistoryTest extends TestCase
         public function testUndo()
         {
                 $expect = "user4@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
-                $this->object->undo();
+                $this->_object->undo();
                 $expect = "user3@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
-                $this->object->undo();
+                $this->_object->undo();
                 $expect = "user2@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
-                $this->object->undo();
+                $this->_object->undo();
                 $expect = "user1@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
-                $this->object->undo();
+                $this->_object->undo();
                 $expect = "user1@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
         }
 
@@ -208,22 +208,22 @@ class HistoryTest extends TestCase
         public function testRedo()
         {
                 $expect = "user4@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
-                $this->object->undo();
+                $this->_object->undo();
                 $expect = "user3@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
-                $this->object->redo();
+                $this->_object->redo();
                 $expect = "user4@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
-                $this->object->redo();
+                $this->_object->redo();
                 $expect = "user4@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
         }
 
@@ -233,47 +233,47 @@ class HistoryTest extends TestCase
          */
         public function testRevert()
         {
-                $revisions = $this->object->getRevisions();
+                $revisions = $this->_object->getRevisions();
 
                 // 
                 // Revert to current should have no effect:
                 // 
-                $rev_id = $this->object->getRevision()['id'];
-                $expect = $this->object->getModel()->user;
-                $this->object->revert($rev_id);
-                $actual = $this->object->getModel()->user;
+                $rev_id = $this->_object->getRevision()['id'];
+                $expect = $this->_object->getModel()->user;
+                $this->_object->revert($rev_id);
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
                 // 
                 // Revert to second revision in history:
                 // 
                 $rev_id = $revisions[1]['id'];
-                $this->object->revert($rev_id);
+                $this->_object->revert($rev_id);
                 $expect = "user3@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
-                $this->object->revert($rev_id);
+                $this->_object->revert($rev_id);
                 $expect = "user3@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
                 // 
                 // Revert to first revision in history:
                 // 
                 $rev_id = $revisions[0]['id'];
-                $this->object->revert($rev_id);
+                $this->_object->revert($rev_id);
                 $expect = "user2@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
 
                 // 
                 // Use previous state instead of last:
                 // 
                 $rev_id = $revisions[0]['id'];
-                $this->object->revert($rev_id, true);
+                $this->_object->revert($rev_id, true);
                 $expect = "user1@example.com";
-                $actual = $this->object->getModel()->user;
+                $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
         }
 
@@ -284,17 +284,17 @@ class HistoryTest extends TestCase
         public function testRefresh()
         {
                 $expect = 3;
-                $actual = $this->object->getSize();
+                $actual = $this->_object->getSize();
                 self::assertEquals($expect, $actual);
                 
-                $model = $this->object->getModel();
+                $model = $this->_object->getModel();
                 $model->user = "user5@example.com";
                 $model->update();
                 
-                $this->object->refresh();
+                $this->_object->refresh();
                 
                 $expect = 4;
-                $actual = $this->object->getSize();
+                $actual = $this->_object->getSize();
                 self::assertEquals($expect, $actual);
         }
 

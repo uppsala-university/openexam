@@ -39,17 +39,17 @@ class SystemLogin extends HostnameAuthenticator
          * The secret token.
          * @var string 
          */
-        private $token;
+        private $_token;
         /**
          * The HTTP request.
          * @var RequestInterface 
          */
-        private $request;
+        private $_request;
         /**
          * The authentication subject (hostname or user).
          * @var string 
          */
-        private $subject;
+        private $_subject;
 
         /**
          * Constructor.
@@ -62,21 +62,21 @@ class SystemLogin extends HostnameAuthenticator
                 parent::control(self::sufficient);
                 
                 if (file_exists($token)) {
-                        $this->token = trim(file_get_contents($token));
+                        $this->_token = trim(file_get_contents($token));
                 } elseif ($token[0] != '/') {
-                        $this->token = $token;
+                        $this->_token = $token;
                 } else {
-                        $this->token = 'T' . md5(rand(1, 1000) . time());
-                        file_put_contents($token, $this->token);
+                        $this->_token = 'T' . md5(rand(1, 1000) . time());
+                        file_put_contents($token, $this->_token);
                         chmod($token, 400);
                 }
 
-                $this->request = DI::getDefault()->get('request');
+                $this->_request = DI::getDefault()->get('request');
         }
 
         public function getSubject()
         {
-                return $this->subject;
+                return $this->_subject;
         }
 
         public function accepted()
@@ -87,9 +87,9 @@ class SystemLogin extends HostnameAuthenticator
                 // 
                 if (!parent::accepted()) {
                         return false;
-                } elseif (($token = $this->request->get('token', 'string')) == false) {
+                } elseif (($token = $this->_request->get('token', 'string')) == false) {
                         return false;
-                } elseif ($token != $this->token) {
+                } elseif ($token != $this->_token) {
                         return false;
                 }
 
@@ -97,10 +97,10 @@ class SystemLogin extends HostnameAuthenticator
                 // Accept custom subject if requested, otherwise set subject
                 // to accepted remote host.
                 // 
-                if (($user = $this->request->get('user', 'string'))) {
-                        $this->subject = $user;
+                if (($user = $this->_request->get('user', 'string'))) {
+                        $this->_subject = $user;
                 } else {
-                        $this->subject = parent::getSubject();
+                        $this->_subject = parent::getSubject();
                 }
 
                 return true;

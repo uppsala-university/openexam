@@ -14,7 +14,7 @@ class RenderPdfDocumentTest extends TestCase
         /**
          * Checksum and file size properties:
          */
-        private static $output = array(
+        private static $_output = array(
                 'pdf'    => array(
                         'md5'  => '17ee1ebfdc59a27e6c0d2c21c8626cca',
                         'size' => 28840,
@@ -27,7 +27,7 @@ class RenderPdfDocumentTest extends TestCase
         /**
          * @var RenderPdfDocument
          */
-        protected $object;
+        private $_object;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -35,7 +35,7 @@ class RenderPdfDocumentTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new RenderPdfDocument;
+                $this->_object = new RenderPdfDocument;
                 $this->cwd = getcwd();
                 chdir(__DIR__);
         }
@@ -58,7 +58,7 @@ class RenderPdfDocumentTest extends TestCase
                 $objects = array(array('page' => 'index.html'));
                 $filename = sprintf("%s/render-pdf-document-test.pdf", sys_get_temp_dir());
 
-                self::assertTrue($this->object->save($filename, $objects));
+                self::assertTrue($this->_object->save($filename, $objects));
                 self::assertTrue(file_exists($filename));
                 self::assertTrue(filesize($filename) != 0);
 
@@ -69,11 +69,11 @@ class RenderPdfDocumentTest extends TestCase
                 $content = preg_replace("/CreationDate \(.*?\)/", "CreationDate (D:20141127140623+01'00')", $content);
                 file_put_contents($filename, $content);
 
-                if (self::$output['check']) {
-                        self::assertEquals(self::$output['pdf']['size'], filesize($filename));
-                        self::assertEquals(self::$output['pdf']['md5'], md5_file($filename));
+                if (self::$_output['check']) {
+                        self::assertEquals(self::$_output['pdf']['size'], filesize($filename));
+                        self::assertEquals(self::$_output['pdf']['md5'], md5_file($filename));
                 }
-                if (self::$output['unlink'] && file_exists($filename)) {
+                if (self::$_output['unlink'] && file_exists($filename)) {
                         unlink($filename);
                 }
         }

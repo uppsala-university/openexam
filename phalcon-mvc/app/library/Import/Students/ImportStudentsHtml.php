@@ -23,17 +23,17 @@ use PHPExcel_Reader_HTML;
 class ImportStudentsHtml extends ImportStudents
 {
 
-        private static $mimedef = "text/html";
+        private static $_mimedef = "text/html";
 
         public function __construct($accept = "")
         {
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->reader = new PHPExcel_Reader_HTML();
-                $this->reader->setReadDataOnly(true);
+                $this->_reader = new PHPExcel_Reader_HTML();
+                $this->_reader->setReadDataOnly(true);
         }
 
 }

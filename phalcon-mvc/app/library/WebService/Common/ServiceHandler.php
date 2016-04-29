@@ -51,11 +51,11 @@ abstract class ServiceHandler
          * The invoking service request.
          * @var ServiceRequest 
          */
-        protected $request;
+        protected $_request;
         /**
          * @var User 
          */
-        protected $user;
+        protected $_user;
 
         /**
          * Constructor.
@@ -64,8 +64,8 @@ abstract class ServiceHandler
          */
         public function __construct($request, $user)
         {
-                $this->request = $request;
-                $this->user = $user;
+                $this->_request = $request;
+                $this->_user = $user;
         }
 
         /**
@@ -74,7 +74,7 @@ abstract class ServiceHandler
          */
         public function getRequest()
         {
-                return $this->request;
+                return $this->_request;
         }
 
 }

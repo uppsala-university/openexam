@@ -30,19 +30,19 @@ class SoapServiceTask extends MainTask implements TaskInterface
          * The capabilities object.
          * @var Capabilities 
          */
-        private $capabilities;
+        private $_capabilities;
         /**
          * Command line options.
          * @var array 
          */
-        private $options;
+        private $_options;
 
         /**
          * Initializer hook.
          */
         public function initialize()
         {
-                $this->capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
+                $this->_capabilities = new Capabilities(require(CONFIG_DIR . '/access.def'));
         }
 
         public static function getUsage()
@@ -94,15 +94,15 @@ class SoapServiceTask extends MainTask implements TaskInterface
         public function generateAction($params = array())
         {
                 $this->setOptions($params, 'generate');
-                if (!$this->options['role']) {
-                        $this->options['with-handle'] = true;
+                if (!$this->_options['role']) {
+                        $this->_options['with-handle'] = true;
                 }
-                if ($this->options['role'] == 'all') {
-                        $roles = array_keys($this->capabilities->getCapabilities());
-                        $destdir = $this->options['save'];
+                if ($this->_options['role'] == 'all') {
+                        $roles = array_keys($this->_capabilities->getCapabilities());
+                        $destdir = $this->_options['save'];
                         foreach ($roles as $role) {
-                                $this->options['role'] = $role;
-                                $this->options['save'] = sprintf("%s/%s.php", $destdir, sprintf("%sService", ucfirst($role)));
+                                $this->_options['role'] = $role;
+                                $this->_options['save'] = sprintf("%s/%s.php", $destdir, sprintf("%sService", ucfirst($role)));
                                 $this->perform();
                         }
                 } else {
@@ -115,24 +115,24 @@ class SoapServiceTask extends MainTask implements TaskInterface
          */
         private function perform()
         {
-                $generator = new ServiceGenerator(array(), $this->options);
+                $generator = new ServiceGenerator(array(), $this->_options);
                 $service = $generator->getService();
                 $service->setNamespace('OpenExam\Library\WebService\Soap\Service');
                 $service->addImplements('SoapHandler');
                 $service->addUse('OpenExam\Library\WebService\Soap\SoapHandler');
 
-                if ($this->options['role']) {
+                if ($this->_options['role']) {
                         // 
                         // Get resources for this role:
                         // 
-                        $resources = $this->capabilities->getResources($this->options['role']);
-                        $service->setName(sprintf("%sService", ucfirst($this->options['role'])));
+                        $resources = $this->_capabilities->getResources($this->_options['role']);
+                        $service->setName(sprintf("%sService", ucfirst($this->_options['role'])));
                         $generator->generate($resources);
                 } else {
                         // 
                         // Get all capabilities:
                         // 
-                        $capabilities = $this->capabilities->getCapabilities();
+                        $capabilities = $this->_capabilities->getCapabilities();
                         $service->setName("CoreService");
 
                         // 
@@ -146,8 +146,8 @@ class SoapServiceTask extends MainTask implements TaskInterface
                 // 
                 // Save to file if requested or print on stdout:
                 // 
-                if ($this->options['save']) {
-                        $service->save($this->options['save']);
+                if ($this->_options['save']) {
+                        $service->save($this->_options['save']);
                 } else {
                         $service->dump();
                 }
@@ -163,7 +163,7 @@ class SoapServiceTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'save');
+                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'save');
 
                 // 
                 // Supported options.
@@ -175,14 +175,14 @@ class SoapServiceTask extends MainTask implements TaskInterface
                 // Set defaults.
                 // 
                 foreach ($options as $option) {
-                        $this->options[$option] = false;
+                        $this->_options[$option] = false;
                 }
 
                 // 
                 // Include action in options (for multitarget actions).
                 // 
                 if (isset($action)) {
-                        $this->options[$action] = true;
+                        $this->_options[$action] = true;
                 }
 
                 // 
@@ -190,10 +190,10 @@ class SoapServiceTask extends MainTask implements TaskInterface
                 // 
                 while (($option = array_shift($params))) {
                         if (in_array($option, $options)) {
-                                $this->options[$option] = true;
+                                $this->_options[$option] = true;
                                 $current = $option;
                         } elseif (in_array($current, $options)) {
-                                $this->options[$current] = $option;
+                                $this->_options[$current] = $option;
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }

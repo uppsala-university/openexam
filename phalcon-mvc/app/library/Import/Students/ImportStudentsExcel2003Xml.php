@@ -23,17 +23,17 @@ use PHPExcel_Reader_Excel2003XML;
 class ImportStudentsExcel2003Xml extends ImportStudents
 {
 
-        private static $mimedef = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        private static $_mimedef = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
         public function __construct($accept = "")
         {
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->reader = new PHPExcel_Reader_Excel2003XML();
-                $this->reader->setReadDataOnly(true);
+                $this->_reader = new PHPExcel_Reader_Excel2003XML();
+                $this->_reader->setReadDataOnly(true);
         }
 
 }

@@ -42,7 +42,7 @@ class Merge extends Command
 
         private function processModule($locale, $module)
         {
-                $topdir = $this->config->application->localeDir;
+                $topdir = $this->_config->application->localeDir;
                 $locdir = sprintf("%s/%s/LC_MESSAGES", $topdir, $locale);
 
                 $template = sprintf("%s/%s.pot", $topdir, $module);
@@ -60,13 +60,13 @@ class Merge extends Command
 
         private function processFile($pofile, $template)
         {
-                if ($this->options['verbose']) {
-                        $this->flash->notice("Merging PO-file $pofile");
+                if ($this->_options['verbose']) {
+                        $this->_flash->notice("Merging PO-file $pofile");
                 }
-                $program = $this->config->gettext->program->msgmerge;
-                $options = $this->config->gettext->options->msgmerge;
+                $program = $this->_config->gettext->program->msgmerge;
+                $options = $this->_config->gettext->options->msgmerge;
 
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $options .= " --verbose";
                 }
 

@@ -13,11 +13,11 @@ class AuditConfigTest extends TestCase
         /**
          * @var AuditConfig
          */
-        protected $object;
+        private $_object;
         /**
          * @var array 
          */
-        private static $config = array(
+        private static $_config = array(
                 'actions' => array('create', 'delete'),
                 'file'    => array(
                         'format' => 'json',
@@ -35,7 +35,7 @@ class AuditConfigTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new AuditConfig(self::$config);
+                $this->_object = new AuditConfig(self::$_config);
         }
 
         /**
@@ -53,8 +53,8 @@ class AuditConfigTest extends TestCase
          */
         public function testGetActions()
         {
-                $expect = self::$config['actions'];
-                $actual = $this->object->getActions();
+                $expect = self::$_config['actions'];
+                $actual = $this->_object->getActions();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
@@ -67,17 +67,17 @@ class AuditConfigTest extends TestCase
         public function testHasAction()
         {
                 $expect = true;
-                $actual = $this->object->hasAction('create');
+                $actual = $this->_object->hasAction('create');
                 self::assertTrue($actual);
                 self::assertEquals($expect, $actual);
 
                 $expect = true;
-                $actual = $this->object->hasAction('delete');
+                $actual = $this->_object->hasAction('delete');
                 self::assertTrue($actual);
                 self::assertEquals($expect, $actual);
 
                 $expect = false;
-                $actual = $this->object->hasAction('update');
+                $actual = $this->_object->hasAction('update');
                 self::assertFalse($actual);
                 self::assertEquals($expect, $actual);
         }
@@ -88,8 +88,8 @@ class AuditConfigTest extends TestCase
          */
         public function testGetConfig()
         {
-                $expect = self::$config;
-                $actual = $this->object->getConfig();
+                $expect = self::$_config;
+                $actual = $this->_object->getConfig();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
@@ -101,7 +101,7 @@ class AuditConfigTest extends TestCase
          */
         public function testGetTargets()
         {
-                $actual = $this->object->getTargets();
+                $actual = $this->_object->getTargets();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertTrue(in_array('file', $actual));
@@ -115,20 +115,20 @@ class AuditConfigTest extends TestCase
          */
         public function testGetTarget()
         {
-                $expect = self::$config['file'];
-                $actual = $this->object->getTarget('file');
+                $expect = self::$_config['file'];
+                $actual = $this->_object->getTarget('file');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
 
-                $expect = self::$config['data'];
-                $actual = $this->object->getTarget('data');
+                $expect = self::$_config['data'];
+                $actual = $this->_object->getTarget('data');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
 
                 $expect = false;
-                $actual = $this->object->getTarget('http');
+                $actual = $this->_object->getTarget('http');
                 self::assertNotNull($actual);
                 self::assertTrue(is_bool($actual));
                 self::assertEquals($expect, $actual);
@@ -141,19 +141,19 @@ class AuditConfigTest extends TestCase
         public function testHasTarget()
         {
                 $expect = true;
-                $actual = $this->object->hasTarget('data');
+                $actual = $this->_object->hasTarget('data');
                 self::assertNotNull($actual);
                 self::assertTrue(is_bool($actual));
                 self::assertEquals($expect, $actual);
 
                 $expect = true;
-                $actual = $this->object->hasTarget('file');
+                $actual = $this->_object->hasTarget('file');
                 self::assertNotNull($actual);
                 self::assertTrue(is_bool($actual));
                 self::assertEquals($expect, $actual);
 
                 $expect = false;
-                $actual = $this->object->hasTarget('http');
+                $actual = $this->_object->hasTarget('http');
                 self::assertNotNull($actual);
                 self::assertTrue(is_bool($actual));
                 self::assertEquals($expect, $actual);

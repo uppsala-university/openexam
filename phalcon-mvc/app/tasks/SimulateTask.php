@@ -40,12 +40,12 @@ class SimulateTask extends MainTask implements TaskInterface
          * Runtime options
          * @var array 
          */
-        private $options;
+        private $_options;
         /**
          * Fetched exam data.
          * @var array 
          */
-        private $data;
+        private $_data;
 
         public function helpAction()
         {
@@ -147,7 +147,7 @@ class SimulateTask extends MainTask implements TaskInterface
                         $this->addSession($student);
                 }
 
-                if (!$this->options['quiet']) {
+                if (!$this->_options['quiet']) {
                         $this->flash->success(sprintf("Exam %d successful setup", $exam->id));
                 }
         }
@@ -159,13 +159,13 @@ class SimulateTask extends MainTask implements TaskInterface
         public function runAction($params = array())
         {
                 $this->setOptions($params, 'run');
-                $this->options['url'] = sprintf("%s/ajax/core", $this->options['target']);
+                $this->_options['url'] = sprintf("%s/ajax/core", $this->_options['target']);
 
-                if (!$this->options['session']) {
-                        $this->options['session'] = $this->getSession($this->options['student']);
+                if (!$this->_options['session']) {
+                        $this->_options['session'] = $this->getSession($this->_options['student']);
                 }
-                if ($this->options['verbose'] && !$this->options['quiet']) {
-                        $this->flash->notice(sprintf("Running until %s using %d sec pause between requests.", strftime("%c", $this->options['endtime']), $this->options['sleep']));
+                if ($this->_options['verbose'] && !$this->_options['quiet']) {
+                        $this->flash->notice(sprintf("Running until %s using %d sec pause between requests.", strftime("%c", $this->_options['endtime']), $this->_options['sleep']));
                 }
 
                 // 
@@ -190,9 +190,9 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Run simulation:
                 // 
-                if ($this->options['natural']) {
+                if ($this->_options['natural']) {
                         $this->runNatural($data, $stat);
-                } elseif ($this->options['torture']) {
+                } elseif ($this->_options['torture']) {
                         $this->runTorture($data, $text, $stat);
                 } else {
                         $this->runCustom($data, $text, $stat);
@@ -210,7 +210,7 @@ class SimulateTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'script');
 
-                if (!$this->options['exam']) {
+                if (!$this->_options['exam']) {
                         $this->flash->error("Required parameter --exam is missing");
                         return false;
                 }
@@ -218,12 +218,12 @@ class SimulateTask extends MainTask implements TaskInterface
                         return false;
                 }
 
-                if (!($handle = fopen($this->options['output'], "w"))) {
+                if (!($handle = fopen($this->_options['output'], "w"))) {
                         $this->flash->error("Failed open output script");
                         return false;
                 }
 
-                list($start, $wait) = explode(":", $this->options['start']);
+                list($start, $wait) = explode(":", $this->_options['start']);
 
                 fprintf($handle, "#!/bin/bash\n\n");
                 fprintf($handle, "# options=\"--verbose --debug\"\n\n");
@@ -231,7 +231,7 @@ class SimulateTask extends MainTask implements TaskInterface
                 for ($i = 0; $i < count($students); ++$i) {
                         $student = $students[$i];
                         $command = sprintf("php %s/script/simulate.php --run --student=%s", BASE_DIR, $student->user);
-                        foreach ($this->options as $key => $val) {
+                        foreach ($this->_options as $key => $val) {
                                 if ($key == 'script' || $key == 'output' ||
                                     $key == 'endtime' || $key == 'student' ||
                                     $key == 'students') {
@@ -250,8 +250,8 @@ class SimulateTask extends MainTask implements TaskInterface
 
                 fclose($handle);
 
-                if (!$this->options['quiet']) {
-                        $this->flash->success(sprintf("Created script %s", $this->options['output']));
+                if (!$this->_options['quiet']) {
+                        $this->flash->success(sprintf("Created script %s", $this->_options['output']));
                 }
         }
 
@@ -263,12 +263,12 @@ class SimulateTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'compile');
 
-                if (!file_exists($this->options['result'])) {
+                if (!file_exists($this->_options['result'])) {
                         $this->flash->error("Input file is missing");
                         return false;
                 }
 
-                if (!($data = $this->readStatistics($this->options['result']))) {
+                if (!($data = $this->readStatistics($this->_options['result']))) {
                         return false;
                 }
 
@@ -322,7 +322,7 @@ class SimulateTask extends MainTask implements TaskInterface
         public function defaultsAction()
         {
                 $this->setOptions(array(), 'defaults');
-                $this->flash->success(print_r($this->options, true));
+                $this->flash->success(print_r($this->_options, true));
         }
 
         /**
@@ -334,17 +334,17 @@ class SimulateTask extends MainTask implements TaskInterface
                 $exam = new Exam();
                 $exam->assign(array(
                         'name'    => 'Simulation',
-                        'creator' => $this->options['student'],
+                        'creator' => $this->_options['student'],
                         'orgunit' => 'Organization',
                         'grades'  => '{U:0,G:50,VG:75}'
                 ));
-                if (!$this->options['dry-run']) {
+                if (!$this->_options['dry-run']) {
                         if (!$exam->save()) {
                                 $this->flash->error(sprintf("Failed save exam: %s", current($exam->getMessages())));
                                 return false;
                         }
                 }
-                if ($this->options['debug'] && !$this->options['quiet']) {
+                if ($this->_options['debug'] && !$this->_options['quiet']) {
                         $this->flash->notice(print_r($exam->toArray(), true));
                 }
 
@@ -360,19 +360,19 @@ class SimulateTask extends MainTask implements TaskInterface
         {
                 $students = array();
 
-                for ($i = 1; $i <= $this->options['students']; ++$i) {
+                for ($i = 1; $i <= $this->_options['students']; ++$i) {
                         $student = new Student();
                         $student->assign(array(
                                 'exam_id' => $exam->id,
                                 'user'    => sprintf("user%d", $i)
                         ));
-                        if (!$this->options['dry-run']) {
+                        if (!$this->_options['dry-run']) {
                                 if (!$student->save()) {
                                         $this->flash->error(sprintf("Failed save student: %s", current($student->getMessages())));
                                         continue;
                                 }
                         }
-                        if ($this->options['debug'] && !$this->options['quiet']) {
+                        if ($this->_options['debug'] && !$this->_options['quiet']) {
                                 $this->flash->notice(print_r($student->toArray(), true));
                         }
 
@@ -394,23 +394,23 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Add questions and answers:
                 // 
-                for ($i = 0; $i < $this->options['questions']; ++$i) {
+                for ($i = 0; $i < $this->_options['questions']; ++$i) {
                         $question = new Question();
                         $question->assign(array(
                                 'exam_id'  => $exam->id,
                                 'topic_id' => $exam->topics[0]->id,
-                                'user'     => $this->options['student'],
+                                'user'     => $this->_options['student'],
                                 'score'    => 1,
                                 'name'     => sprintf("Q%d", $i + 1),
                                 'quest'    => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc.\n\nCurabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.'
                         ));
-                        if (!$this->options['dry-run']) {
+                        if (!$this->_options['dry-run']) {
                                 if (!$question->save()) {
                                         $this->flash->error(sprintf("Failed save question: %s", current($question->getMessages())));
                                         continue;
                                 }
                         }
-                        if ($this->options['debug'] && !$this->options['quiet']) {
+                        if ($this->_options['debug'] && !$this->_options['quiet']) {
                                 $this->flash->notice(print_r($question->toArray(), true));
                         }
 
@@ -433,13 +433,13 @@ class SimulateTask extends MainTask implements TaskInterface
                                 'question_id' => $question->id,
                                 'student_id'  => $student->id
                         ));
-                        if (!$this->options['dry-run']) {
+                        if (!$this->_options['dry-run']) {
                                 if (!$answer->save()) {
                                         $this->flash->error(sprintf("Failed save answer: %s", current($answer->getMessages())));
                                         continue;
                                 }
                         }
-                        if ($this->options['debug'] && !$this->options['quiet']) {
+                        if ($this->_options['debug'] && !$this->_options['quiet']) {
                                 $this->flash->notice(print_r($answer->toArray(), true));
                         }
                 }
@@ -478,7 +478,7 @@ class SimulateTask extends MainTask implements TaskInterface
                 ));
                 if (!$session->save()) {
                         $this->flash->error(sprintf("Failed save session: %s", current($session->getMessages())));
-                } elseif ($this->options['verbose'] && !$this->options['quiet']) {
+                } elseif ($this->_options['verbose'] && !$this->_options['quiet']) {
                         $this->flash->success(sprintf("%s\t%s", $student->user, $session->session_id));
                 }
         }
@@ -495,12 +495,12 @@ class SimulateTask extends MainTask implements TaskInterface
                 if (!($student = Student::findFirst(array(
                             'conditions' => 'exam_id = :exam: and user = :user:',
                             'bind'       => array(
-                                    'exam' => $this->options['exam'],
-                                    'user' => $this->options['student']
+                                    'exam' => $this->_options['exam'],
+                                    'user' => $this->_options['student']
                             )
                         )
                     ))) {
-                        $this->flash->error(sprintf("Failed find student, exiting now (pid=%d, stud=%s)", getmypid(), $this->options['student']));
+                        $this->flash->error(sprintf("Failed find student, exiting now (pid=%d, stud=%s)", getmypid(), $this->_options['student']));
                         exit(1);
                 }
 
@@ -511,19 +511,19 @@ class SimulateTask extends MainTask implements TaskInterface
                         'e' => $this->sendRequest(array(
                                 'role' => 'student',
                                 'path' => 'exam/read',
-                                'data' => array('id' => $this->options['exam'])
+                                'data' => array('id' => $this->_options['exam'])
                             )
                         ),
                         't' => $this->sendRequest(array(
                                 'role' => 'student',
                                 'path' => 'topic/read',
-                                'data' => array('exam_id' => $this->options['exam'])
+                                'data' => array('exam_id' => $this->_options['exam'])
                             )
                         ),
                         'q' => $this->sendRequest(array(
                                 'role' => 'student',
                                 'path' => 'question/read',
-                                'data' => array('exam_id' => $this->options['exam'])
+                                'data' => array('exam_id' => $this->_options['exam'])
                             )
                         ),
                         'a' => $this->sendRequest(array(
@@ -552,7 +552,7 @@ class SimulateTask extends MainTask implements TaskInterface
                         unset($data['a'][$key]);
                 }
 
-                $this->data = $data;
+                $this->_data = $data;
                 return $data;
         }
 
@@ -576,7 +576,7 @@ class SimulateTask extends MainTask implements TaskInterface
          */
         private function getStudents()
         {
-                if (!($students = Student::find(sprintf("exam_id = %d", $this->options['exam'])))) {
+                if (!($students = Student::find(sprintf("exam_id = %d", $this->_options['exam'])))) {
                         $this->flash->error("failed get students");
                 } else {
                         return $students;
@@ -627,7 +627,7 @@ class SimulateTask extends MainTask implements TaskInterface
          */
         private function showStatistics($stat)
         {
-                if (!$this->options['quiet']) {
+                if (!$this->_options['quiet']) {
                         $this->flash->success(print_r($this->getStatistics($stat), true));
                 }
         }
@@ -663,8 +663,8 @@ class SimulateTask extends MainTask implements TaskInterface
          */
         private function saveStatistics($stat)
         {
-                $file = $this->options['result'];
-                $user = $this->options['student'];
+                $file = $this->_options['result'];
+                $user = $this->_options['student'];
                 $stat = $this->getStatistics($stat);
 
                 // 
@@ -716,7 +716,7 @@ class SimulateTask extends MainTask implements TaskInterface
                 $qind = 0;
                 $tind = 0;
 
-                while (time() < $this->options['endtime']) {
+                while (time() < $this->_options['endtime']) {
                         if ($qind == $qmax) {
                                 $tind = 0;
                                 $qind = 0;
@@ -743,23 +743,23 @@ class SimulateTask extends MainTask implements TaskInterface
          */
         private function runCustom($data, $text, &$stat)
         {
-                while (time() < $this->options['endtime']) {
+                while (time() < $this->_options['endtime']) {
                         $index = rand(0, count($data['q']) - 1);
                         $tsize = rand(0, count($text) - 1);
 
                         $answer = $data['a'][$data['q'][$index]->id];
                         $answer->answer = $text[$tsize]['str'];
 
-                        if ($this->options['write']) {
+                        if ($this->_options['write']) {
                                 $this->saveAnswer($answer, $text[$tsize], $stat);
                         }
 
-                        if ($this->options['read']) {
+                        if ($this->_options['read']) {
                                 $this->readAnswer($answer, $text[$tsize], $stat);
                         }
 
-                        if ($this->options['sleep'] != 0) {
-                                sleep($this->options['sleep']);
+                        if ($this->_options['sleep'] != 0) {
+                                sleep($this->_options['sleep']);
                         }
                 }
         }
@@ -790,7 +790,7 @@ class SimulateTask extends MainTask implements TaskInterface
                 $qdat = null;
                 $adat = null;
 
-                while (time() < $this->options['endtime']) {
+                while (time() < $this->_options['endtime']) {
                         // 
                         // Switch question after $smax savings:
                         // 
@@ -835,7 +835,7 @@ class SimulateTask extends MainTask implements TaskInterface
                         $ttime = $etime - $stime;       // total
                         $this->setStatistics($stat, strlen($adat->answer), $ttime, 'w', 'avarage');
 
-                        sleep($this->options['sleep']);
+                        sleep($this->_options['sleep']);
                 }
         }
 
@@ -925,7 +925,7 @@ class SimulateTask extends MainTask implements TaskInterface
                         $this->flash->error("cURL failed initilize");
                         return false;
                 }
-                curl_setopt($this->curl, CURLOPT_COOKIE, sprintf("PHPSESSID=%s", $this->options['session']));
+                curl_setopt($this->curl, CURLOPT_COOKIE, sprintf("PHPSESSID=%s", $this->_options['session']));
                 curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 
@@ -939,7 +939,7 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Set AJAX request options:
                 // 
-                curl_setopt($this->curl, CURLOPT_URL, sprintf("%s/%s/%s", $this->options['url'], $params['role'], $params['path']));
+                curl_setopt($this->curl, CURLOPT_URL, sprintf("%s/%s/%s", $this->_options['url'], $params['role'], $params['path']));
                 curl_setopt($this->curl, CURLOPT_POST, 1);
                 curl_setopt($this->curl, CURLOPT_POSTFIELDS, $params['data']);
 
@@ -955,9 +955,9 @@ class SimulateTask extends MainTask implements TaskInterface
                         $result = json_decode($result);
                 }
 
-                if ($this->options['debug'] && !$this->options['quiet']) {
+                if ($this->_options['debug'] && !$this->_options['quiet']) {
                         $this->flash->notice(print_r($result, true));
-                } else if ($this->options['verbose'] && !$this->options['quiet']) {
+                } else if ($this->_options['verbose'] && !$this->_options['quiet']) {
                         $this->flash->notice("Requested $params[path] using role $params[role]");
                 }
 
@@ -981,7 +981,7 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'target' => false, 'questions' => 12, 'start' => '30:1', 'sleep' => 10, 'duration' => 120, 'students' => 1);
+                $this->_options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'target' => false, 'questions' => 12, 'start' => '30:1', 'sleep' => 10, 'duration' => 120, 'students' => 1);
 
                 // 
                 // Supported options.
@@ -993,8 +993,8 @@ class SimulateTask extends MainTask implements TaskInterface
                 // Set defaults.
                 // 
                 foreach ($options as $option) {
-                        if (!isset($this->options[$option])) {
-                                $this->options[$option] = false;
+                        if (!isset($this->_options[$option])) {
+                                $this->_options[$option] = false;
                         }
                 }
 
@@ -1002,7 +1002,7 @@ class SimulateTask extends MainTask implements TaskInterface
                 // Include action in options (for multitarget actions).
                 // 
                 if (isset($action)) {
-                        $this->options[$action] = true;
+                        $this->_options[$action] = true;
                 }
 
                 // 
@@ -1010,25 +1010,25 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 while (($option = array_shift($params))) {
                         if (in_array($option, $options)) {
-                                $this->options[$option] = true;
+                                $this->_options[$option] = true;
                                 $current = $option;
                         } elseif (in_array($current, $options)) {
-                                $this->options[$current] = $option;
+                                $this->_options[$current] = $option;
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
                 }
 
-                if (!$this->options['student']) {
-                        $this->options['student'] = $this->getDI()->getUser()->getPrincipalName();
+                if (!$this->_options['student']) {
+                        $this->_options['student'] = $this->getDI()->getUser()->getPrincipalName();
                 } else {
-                        $this->options['impersonate'] = true;
+                        $this->_options['impersonate'] = true;
                 }
-                if (!$this->options['target']) {
-                        $this->options['target'] = sprintf("http://localhost/%s", $this->config->application->baseUri);
+                if (!$this->_options['target']) {
+                        $this->_options['target'] = sprintf("http://localhost/%s", $this->config->application->baseUri);
                 }
 
-                $this->options['endtime'] = time() + $this->options['duration'];
+                $this->_options['endtime'] = time() + $this->_options['duration'];
         }
 
 }

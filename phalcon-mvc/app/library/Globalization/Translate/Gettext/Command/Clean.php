@@ -39,7 +39,7 @@ class Clean extends Command
 
         private function processModule($locale, $module)
         {
-                $file = sprintf("%s/%s/%s.mo", $this->config->application->localeDir, $locale, $module);
+                $file = sprintf("%s/%s/%s.mo", $this->_config->application->localeDir, $locale, $module);
                 if (file_exists($file)) {
                         $this->processFile($file);
                 }
@@ -47,12 +47,12 @@ class Clean extends Command
 
         private function processFile($file)
         {
-                if ($this->options['verbose']) {
-                        $this->flash->notice("Deleting $file");
+                if ($this->_options['verbose']) {
+                        $this->_flash->notice("Deleting $file");
                 }
-                if (!$this->options['dry-run']) {
+                if (!$this->_options['dry-run']) {
                         if (!unlink($file)) {
-                                $this->flash->error("Failed unlink $file");
+                                $this->_flash->error("Failed unlink $file");
                         }
                 }
         }

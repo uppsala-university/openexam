@@ -17,11 +17,11 @@ class ServiceConfigTest extends TestCase
          * All test cases.
          * @var PhalconConfig 
          */
-        private static $audit;
+        private static $_audit;
 
         protected function setUp()
         {
-                self::$audit = new PhalconConfig(array(
+                self::$_audit = new PhalconConfig(array(
                         'c1'  => false,
                         'c2'  => true,
                         'c3'  => array(
@@ -109,7 +109,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit disabled case (for all):
                 // 
-                $config = new ServiceConfig(self::$audit['c1']);
+                $config = new ServiceConfig(self::$_audit['c1']);
                 $expect = false;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -120,7 +120,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit enabled case (for all):
                 // 
-                $config = new ServiceConfig(self::$audit['c2']);
+                $config = new ServiceConfig(self::$_audit['c2']);
                 $expect = true;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -131,7 +131,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit disabled case (by wildcard):
                 // 
-                $config = new ServiceConfig(self::$audit['c3']);
+                $config = new ServiceConfig(self::$_audit['c3']);
                 $expect = false;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -142,7 +142,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit enabled case (by wildcard):
                 // 
-                $config = new ServiceConfig(self::$audit['c4']);
+                $config = new ServiceConfig(self::$_audit['c4']);
                 $expect = true;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -153,7 +153,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit disabled case (for model1):
                 // 
-                $config = new ServiceConfig(self::$audit['c5']);
+                $config = new ServiceConfig(self::$_audit['c5']);
                 $expect = false;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -164,7 +164,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit enabled case (for model1):
                 // 
-                $config = new ServiceConfig(self::$audit['c6']);
+                $config = new ServiceConfig(self::$_audit['c6']);
                 $expect = true;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -181,7 +181,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check '*' => true, 'model1' => false:
                 // 
-                $config = new ServiceConfig(self::$audit['c7']);
+                $config = new ServiceConfig(self::$_audit['c7']);
                 $expect = false;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -198,7 +198,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check '*' => false, 'model1' => true:
                 // 
-                $config = new ServiceConfig(self::$audit['c8']);
+                $config = new ServiceConfig(self::$_audit['c8']);
                 $expect = true;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -215,7 +215,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check 'model1' => array(...):
                 // 
-                $config = new ServiceConfig(self::$audit['c9']);
+                $config = new ServiceConfig(self::$_audit['c9']);
                 $expect = true;
                 $actual = $config->hasAudit('model1');
                 self::assertNotNull($actual);
@@ -243,7 +243,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit disabled case (for all):
                 // 
-                $config = new ServiceConfig(self::$audit['c1']);
+                $config = new ServiceConfig(self::$_audit['c1']);
                 $expect = false;
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
@@ -254,7 +254,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit enabled case (for all):
                 // 
-                $config = new ServiceConfig(self::$audit['c2']);
+                $config = new ServiceConfig(self::$_audit['c2']);
                 $expect = ServiceConfig::getDefault('model1');
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
@@ -264,7 +264,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit disabled case (by wildcard):
                 // 
-                $config = new ServiceConfig(self::$audit['c3']);
+                $config = new ServiceConfig(self::$_audit['c3']);
                 $expect = false;
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
@@ -275,7 +275,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit enabled case (by wildcard):
                 // 
-                $config = new ServiceConfig(self::$audit['c4']);
+                $config = new ServiceConfig(self::$_audit['c4']);
                 $expect = ServiceConfig::getDefault('model1');
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
@@ -285,7 +285,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit disabled case (for model1):
                 // 
-                $config = new ServiceConfig(self::$audit['c5']);
+                $config = new ServiceConfig(self::$_audit['c5']);
                 $expect = false;
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
@@ -296,7 +296,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check audit enabled case (for model1):
                 // 
-                $config = new ServiceConfig(self::$audit['c6']);
+                $config = new ServiceConfig(self::$_audit['c6']);
                 $expect = ServiceConfig::getDefault('model1');
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
@@ -312,7 +312,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check '*' => true, 'model1' => false:
                 // 
-                $config = new ServiceConfig(self::$audit['c7']);
+                $config = new ServiceConfig(self::$_audit['c7']);
                 $expect = false;
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
@@ -328,7 +328,7 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check '*' => false, 'model1' => true:
                 // 
-                $config = new ServiceConfig(self::$audit['c8']);
+                $config = new ServiceConfig(self::$_audit['c8']);
                 $expect = ServiceConfig::getDefault('model1');
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
@@ -344,8 +344,8 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check 'model1' => array(...):
                 // 
-                $config = new ServiceConfig(self::$audit['c9']);
-                $expect = self::$audit->c9->model1->toArray();
+                $config = new ServiceConfig(self::$_audit['c9']);
+                $expect = self::$_audit->c9->model1->toArray();
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -360,8 +360,8 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check 'model1' => array(...):
                 // 
-                $config = new ServiceConfig(self::$audit['c10']);
-                $expect = self::$audit->c10->model1->toArray();
+                $config = new ServiceConfig(self::$_audit['c10']);
+                $expect = self::$_audit->c10->model1->toArray();
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -376,8 +376,8 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check 'model1' => array(...):
                 // 
-                $config = new ServiceConfig(self::$audit['c11']);
-                $expect = self::$audit->c11->model1->toArray();
+                $config = new ServiceConfig(self::$_audit['c11']);
+                $expect = self::$_audit->c11->model1->toArray();
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -392,8 +392,8 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check 'model1' => array(...):
                 // 
-                $config = new ServiceConfig(self::$audit['c12']);
-                $expect = self::$audit->c12->model1->toArray();
+                $config = new ServiceConfig(self::$_audit['c12']);
+                $expect = self::$_audit->c12->model1->toArray();
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -408,8 +408,8 @@ class ServiceConfigTest extends TestCase
                 // 
                 // Check 'model1' => array(...), 'model2' => false, 'model3' => true
                 // 
-                $config = new ServiceConfig(self::$audit['c13']);
-                $expect = self::$audit->c13->model1->toArray();
+                $config = new ServiceConfig(self::$_audit['c13']);
+                $expect = self::$_audit->c13->model1->toArray();
                 $actual = $config->getConfig('model1');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -433,7 +433,7 @@ class ServiceConfigTest extends TestCase
          */
         public function testHasTarget()
         {
-                $config = new ServiceConfig(self::$audit['c13']);
+                $config = new ServiceConfig(self::$_audit['c13']);
 
                 $expect = true;
                 $actual = $config->hasTarget('model1', Audit::TARGET_FILE);
@@ -470,9 +470,9 @@ class ServiceConfigTest extends TestCase
          */
         public function testGetTarget()
         {
-                $config = new ServiceConfig(self::$audit['c13']);
+                $config = new ServiceConfig(self::$_audit['c13']);
 
-                $expect = self::$audit->c13->model1->file->toArray();
+                $expect = self::$_audit->c13->model1->file->toArray();
                 $actual = $config->getTarget('model1', Audit::TARGET_FILE);
                 self::assertEquals($expect, $actual);
                 $expect = false;

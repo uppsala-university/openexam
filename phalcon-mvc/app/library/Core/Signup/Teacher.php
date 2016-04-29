@@ -52,12 +52,12 @@ class Teacher extends SignupBase
                 parent::__construct($user);
 
                 if ($this->config->get('signup') == false) {
-                        $this->enabled = false;
+                        $this->_enabled = false;
                 } elseif ($this->config->signup->get('teacher') == false) {
-                        $this->enabled = false;
+                        $this->_enabled = false;
                 } else {
-                        $this->enabled = true;
-                        $this->exams = $this->config->signup->teacher->toArray();
+                        $this->_enabled = true;
+                        $this->_exams = $this->config->signup->teacher->toArray();
                 }
         }
 
@@ -77,10 +77,10 @@ class Teacher extends SignupBase
                 try {
                         if (($found = TeacherModel::count(array(
                                     "user = :user:",
-                                    "bind" => array('user' => $this->caller)
+                                    "bind" => array('user' => $this->_caller)
                             ))) == 0) {
                                 $teacher = new TeacherModel();
-                                $teacher->user = $this->caller;
+                                $teacher->user = $this->_caller;
                                 if ($teacher->save() == false) {
                                         throw new ModelException($teacher->getMessages()[0]);
                                 }
@@ -110,7 +110,7 @@ class Teacher extends SignupBase
                 try {
                         if (($teacher = TeacherModel::findFirst(array(
                                     "user = :user:",
-                                    "bind" => array('user' => $this->caller)
+                                    "bind" => array('user' => $this->_caller)
                             ))) != false) {
                                 if ($teacher->delete() == false) {
                                         throw new ModelException($teacher->getMessages()[0]);
@@ -136,7 +136,7 @@ class Teacher extends SignupBase
          */
         public function assign($index)
         {
-                if (!in_array($index, $this->exams)) {
+                if (!in_array($index, $this->_exams)) {
                         throw new SecurityException(
                         "Exam $index is not in list of available exams.", SecurityException::ACTION
                         );
@@ -172,7 +172,7 @@ class Teacher extends SignupBase
                 $exam = new Exam();
                 $exam->name = $curr->name;
                 $exam->descr = $curr->descr;
-                $exam->creator = $this->caller;
+                $exam->creator = $this->_caller;
                 $exam->details = $curr->details;
                 $exam->orgunit = $curr->orgunit;
                 $exam->grades = $curr->grades;
@@ -196,7 +196,7 @@ class Teacher extends SignupBase
                                 $question->id = null;
                                 $question->exam_id = $exam->id;
                                 $question->topic_id = $topic->id;
-                                $question->user = $this->caller;
+                                $question->user = $this->_caller;
                                 if ($question->create() == false) {
                                         throw new ModelException($question->getMessages()[0]);
                                 }
@@ -206,7 +206,7 @@ class Teacher extends SignupBase
                 foreach ($curr->resources as $resource) {
                         $resource->id = null;
                         $resource->exam_id = $exam->id;
-                        $resource->user = $this->caller;
+                        $resource->user = $this->_caller;
                         if ($resource->create() == false) {
                                 throw new ModelException($question->getMessages()[0]);
                         }
@@ -231,7 +231,7 @@ class Teacher extends SignupBase
                 return Exam::count(array(
                             "creator = :user: AND code = 'SIGNUP'",
                             "bind" => array(
-                                    "user" => $this->caller
+                                    "user" => $this->_caller
                             )
                     )) > 0;
         }

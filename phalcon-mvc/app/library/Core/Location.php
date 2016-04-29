@@ -30,7 +30,7 @@ class Location extends Component
          * The locations information.
          * @var array 
          */
-        private $locations;
+        private $_locations;
 
         /**
          * Constructor.
@@ -38,7 +38,7 @@ class Location extends Component
          */
         public function __construct($locations = array())
         {
-                $this->locations = $locations;
+                $this->_locations = $locations;
         }
 
         /**
@@ -69,7 +69,7 @@ class Location extends Component
          */
         public function getEntry($address, $default = false)
         {
-                foreach ($this->locations as $okey => $oval) {
+                foreach ($this->_locations as $okey => $oval) {
                         foreach ($oval as $ckey => $cval) {
                                 foreach ($cval as $pkey => $pval) {
                                         if (is_numeric($pval['addr'][0])) {
@@ -155,7 +155,7 @@ class Location extends Component
                 // Build tree array structure:
                 // 
                 if (isset($filter['system']) && $filter['system']) {
-                        $result['system'] = $this->locations;
+                        $result['system'] = $this->_locations;
                 }
                 if (isset($filter['recent']) && $filter['recent']) {
                         $result['recent'] = $this->user->settings->get(Settings::KEY_ACCESS);

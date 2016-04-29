@@ -14,6 +14,7 @@
 namespace OpenExam\Library\WebService\Soap;
 
 use OpenExam\Library\WebService\Wsdl\ServiceDescription;
+use Phalcon\Mvc\User\Component;
 use SoapServer;
 
 /**
@@ -56,34 +57,34 @@ use SoapServer;
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class SoapService extends \Phalcon\Mvc\User\Component
+class SoapService extends Component
 {
 
         /**
          * The SOAP service class.
          * @var string 
          */
-        protected $class;
+        protected $_class;
         /**
          * The SOAP service instance.
          * @var SoapHandler
          */
-        protected $handler;
+        protected $_handler;
         /**
          * The service location.
          * @var string
          */
-        protected $location;
+        protected $_location;
         /**
          * The service namespace.
          * @var string 
          */
-        protected $namespace;
+        protected $_namespace;
         /**
          * The WSDL schema directory.
          * @var string  
          */
-        protected $schemas;
+        protected $_schemas;
 
         /**
          * Constructor.
@@ -96,9 +97,9 @@ class SoapService extends \Phalcon\Mvc\User\Component
                 if (!extension_loaded('soap')) {
                         throw new \SoapFault("Receiver", "Server can't handle SOAP request.");
                 }
-                $this->class = $class;
-                $this->location = $location;
-                $this->namespace = $namespace;
+                $this->_class = $class;
+                $this->_location = $location;
+                $this->_namespace = $namespace;
         }
 
         /**
@@ -107,7 +108,7 @@ class SoapService extends \Phalcon\Mvc\User\Component
          */
         public function setLocation($location)
         {
-                $this->location = $location;
+                $this->_location = $location;
         }
 
         /**
@@ -116,7 +117,7 @@ class SoapService extends \Phalcon\Mvc\User\Component
          */
         public function setNamespace($namespace)
         {
-                $this->namespace = $namespace;
+                $this->_namespace = $namespace;
         }
 
         /**
@@ -125,7 +126,7 @@ class SoapService extends \Phalcon\Mvc\User\Component
          */
         public function setHandler($handler)
         {
-                $this->handler = $handler;
+                $this->_handler = $handler;
         }
 
         /**
@@ -134,7 +135,7 @@ class SoapService extends \Phalcon\Mvc\User\Component
          */
         public function setSchemaDirectory($schemas)
         {
-                $this->schemas = $schemas;
+                $this->_schemas = $schemas;
         }
 
         /**
@@ -161,8 +162,8 @@ class SoapService extends \Phalcon\Mvc\User\Component
          */
         public function getServiceDescription()
         {
-                $description = new ServiceDescription($this->class, $this->location, $this->namespace);
-                $description->setNamespace($this->namespace);
+                $description = new ServiceDescription($this->_class, $this->_location, $this->_namespace);
+                $description->setNamespace($this->_namespace);
                 return $description;
         }
 
@@ -181,11 +182,11 @@ class SoapService extends \Phalcon\Mvc\User\Component
          */
         private function getDescriptionFilename()
         {
-                if (!isset($this->schemas)) {
+                if (!isset($this->_schemas)) {
                         return null;
                 }
-                $name = strtolower(trim(strrchr($this->class, '\\'), '\\'));
-                $path = sprintf("%s/%s.wsdl", $this->schemas, $name);
+                $name = strtolower(trim(strrchr($this->_class, '\\'), '\\'));
+                $path = sprintf("%s/%s.wsdl", $this->_schemas, $name);
 
                 return $path;
         }
@@ -212,13 +213,13 @@ class SoapService extends \Phalcon\Mvc\User\Component
                 if ($filename != null && file_exists($filename)) {
                         $this->description = $filename;
                 } else {
-                        $this->description = $this->location . '?wsdl';
+                        $this->description = $this->_location . '?wsdl';
                 }
 
                 // 
                 // Turn off WSDL cache when not using schema directory:
                 // 
-                if (!isset($this->schemas)) {
+                if (!isset($this->_schemas)) {
                         ini_set("soap.wsdl_cache_enabled", "0");
                 }
 
@@ -227,7 +228,7 @@ class SoapService extends \Phalcon\Mvc\User\Component
                 // 
                 $options = array(
                         'uri'      => $this->description,
-                        'location' => $this->location,
+                        'location' => $this->_location,
                         'style'    => SOAP_DOCUMENT,
                         'use'      => SOAP_LITERAL,
                         'classmap' => $description->getGenerator()->getClassMap()
@@ -242,10 +243,10 @@ class SoapService extends \Phalcon\Mvc\User\Component
                 // Handle request using handler object (if set) or the SOAP
                 // service class.
                 // 
-                if (isset($this->handler)) {
-                        $server->setObject($this->handler);
+                if (isset($this->_handler)) {
+                        $server->setObject($this->_handler);
                 } else {
-                        $server->setClass($this->class);
+                        $server->setClass($this->_class);
                 }
 
                 // 

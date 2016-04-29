@@ -23,17 +23,17 @@ use PHPExcel_Reader_Excel5;
 class ImportStudentsExcel97 extends ImportStudents
 {
 
-        private static $mimedef = "application/vnd.ms-excel";
+        private static $_mimedef = "application/vnd.ms-excel";
 
         public function __construct($accept = "")
         {
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->reader = new PHPExcel_Reader_Excel5();
-                $this->reader->setReadDataOnly(true);
+                $this->_reader = new PHPExcel_Reader_Excel5();
+                $this->_reader->setReadDataOnly(true);
         }
 
 }

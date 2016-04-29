@@ -23,16 +23,16 @@ use PHPExcel_Reader_SYLK;
 class ImportStudentsSylk extends ImportStudents
 {
 
-        private static $mimedef = "text/spreadsheet";
+        private static $_mimedef = "text/spreadsheet";
 
         public function __construct($accept = "")
         {
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->reader = new PHPExcel_Reader_SYLK();
-                $this->reader->setReadDataOnly(true);
+                $this->_reader = new PHPExcel_Reader_SYLK();
+                $this->_reader->setReadDataOnly(true);
         }
 }
