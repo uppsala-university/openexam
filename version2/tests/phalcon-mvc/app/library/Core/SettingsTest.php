@@ -13,7 +13,7 @@ class SettingsTest extends TestCase
         /**
          * @var Settings
          */
-        protected $object;
+        private $_object;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -21,8 +21,8 @@ class SettingsTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new Settings();
-                $this->object->clear();
+                $this->_object = new Settings();
+                $this->_object->clear();
         }
 
         /**
@@ -31,7 +31,7 @@ class SettingsTest extends TestCase
          */
         protected function tearDown()
         {
-                $this->object->delete();
+                $this->_object->delete();
         }
         
         /**
@@ -41,17 +41,17 @@ class SettingsTest extends TestCase
         public function test__destruct()
         {
                 $expect = time();
-                self::assertNotNull($this->object);
+                self::assertNotNull($this->_object);
 
                 // 
                 // Update user setting and read back:
                 // 
-                $this->object->set('destruct', $expect);
-                $this->object = null;   // Save to persistent storage.
-                $this->object = new Settings();
-                self::assertNotNull($this->object);
+                $this->_object->set('destruct', $expect);
+                $this->_object = null;   // Save to persistent storage.
+                $this->_object = new Settings();
+                self::assertNotNull($this->_object);
 
-                $actual = $this->object->get('destruct');
+                $actual = $this->_object->get('destruct');
                 self::assertEquals($expect, $actual);
         }
 
@@ -62,8 +62,8 @@ class SettingsTest extends TestCase
         public function testSet()
         {
                 $expect = array('key' => 'val');
-                $this->object->set('data', $expect);
-                $actual = $this->object->get('data');
+                $this->_object->set('data', $expect);
+                $actual = $this->_object->get('data');
 
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
@@ -75,11 +75,11 @@ class SettingsTest extends TestCase
          */
         public function testHas()
         {
-                self::assertFalse($this->object->has('key'));
-                $this->object->set('key', true);
-                self::assertTrue($this->object->has('key'));
-                $this->object->set('key', false);
-                self::assertTrue($this->object->has('key'));
+                self::assertFalse($this->_object->has('key'));
+                $this->_object->set('key', true);
+                self::assertTrue($this->_object->has('key'));
+                $this->_object->set('key', false);
+                self::assertTrue($this->_object->has('key'));
         }
 
         /**
@@ -88,10 +88,10 @@ class SettingsTest extends TestCase
          */
         public function testGet()
         {
-                self::assertNull($this->object->get('key'));
-                $this->object->set('key', true);
-                self::assertNotNull($this->object->get('key'));
-                self::assertTrue(is_bool($this->object->get('key')));
+                self::assertNull($this->_object->get('key'));
+                $this->_object->set('key', true);
+                self::assertNotNull($this->_object->get('key'));
+                self::assertTrue(is_bool($this->_object->get('key')));
         }
 
         /**
@@ -100,11 +100,11 @@ class SettingsTest extends TestCase
          */
         public function testSave()
         {
-                $this->object->set('key', true);
-                $this->object->save();
-                $this->object->read();
-                self::assertNotNull($this->object->get('key'));
-                self::assertTrue(is_bool($this->object->get('key')));
+                $this->_object->set('key', true);
+                $this->_object->save();
+                $this->_object->read();
+                self::assertNotNull($this->_object->get('key'));
+                self::assertTrue(is_bool($this->_object->get('key')));
         }
 
         /**
@@ -113,8 +113,8 @@ class SettingsTest extends TestCase
          */
         public function testRead()
         {
-                $this->object->read();
-                $actual = $this->object->data();
+                $this->_object->read();
+                $actual = $this->_object->data();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
         }
@@ -125,14 +125,14 @@ class SettingsTest extends TestCase
          */
         public function testClear()
         {
-                $this->object->set('key', true);
-                $actual = $this->object->data();
+                $this->_object->set('key', true);
+                $actual = $this->_object->data();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertTrue(count($actual) == 1);
 
-                $this->object->clear();
-                $actual = $this->object->data();
+                $this->_object->clear();
+                $actual = $this->_object->data();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertTrue(count($actual) == 0);
@@ -144,9 +144,9 @@ class SettingsTest extends TestCase
          */
         public function testDelete()
         {
-                $expect = $this->object->data();
-                $this->object->delete();
-                $actual = $this->object->data();
+                $expect = $this->_object->data();
+                $this->_object->delete();
+                $actual = $this->_object->data();
                 
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -160,7 +160,7 @@ class SettingsTest extends TestCase
          */
         public function testData()
         {
-                $actual = $this->object->data();
+                $actual = $this->_object->data();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertTrue(count($actual) == 0);

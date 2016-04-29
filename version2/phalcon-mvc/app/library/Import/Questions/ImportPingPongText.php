@@ -30,7 +30,7 @@ class ImportPingPongText extends ImportPingPong
         const ACCEPT = "text/plain";
         const DELIMITER = "\t";
 
-        private $stream;
+        private $_stream;
 
         public function __construct($accept = "")
         {
@@ -39,12 +39,12 @@ class ImportPingPongText extends ImportPingPong
 
         public function open()
         {
-                $this->stream = fopen($this->file, "r");
+                $this->_stream = fopen($this->_file, "r");
         }
 
         private function next()
         {
-                if (!($str = fgets($this->stream))) {
+                if (!($str = fgets($this->_stream))) {
                         return null;
                 } else {
                         return explode(self::DELIMITER, $str);
@@ -76,7 +76,7 @@ class ImportPingPongText extends ImportPingPong
 
         public function close()
         {
-                fclose($this->stream);
+                fclose($this->_stream);
         }
 
 }

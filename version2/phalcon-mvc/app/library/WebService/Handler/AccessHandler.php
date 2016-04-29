@@ -34,15 +34,15 @@ class AccessHandler extends ServiceHandler
         /**
          * @var Exam 
          */
-        private $exam;
+        private $_exam;
         /**
          * @var Lock 
          */
-        private $lock;
+        private $_lock;
         /**
          * @var Access 
          */
-        private $access;
+        private $_access;
 
         /**
          * Constructor.
@@ -54,17 +54,17 @@ class AccessHandler extends ServiceHandler
                 parent::__construct($request, $user);
 
                 if (isset($request->data['exam_id'])) {
-                        if (($this->exam = Exam::findFirstById($request->data['exam_id'])) == false) {
+                        if (($this->_exam = Exam::findFirstById($request->data['exam_id'])) == false) {
                                 throw new SecurityException("No exam found!", self::UNDEFINED);
                         }
                 }
                 if (isset($request->data['lock_id'])) {
-                        if (($this->lock = Lock::findFirstById($request->data['lock_id'])) == false) {
+                        if (($this->_lock = Lock::findFirstById($request->data['lock_id'])) == false) {
                                 throw new SecurityException("No lock found!", self::UNDEFINED);
                         }
                 }
 
-                $this->access = new Access($this->exam);
+                $this->_access = new Access($this->_exam);
         }
 
         /**
@@ -73,12 +73,12 @@ class AccessHandler extends ServiceHandler
          */
         public function open()
         {
-                if (!isset($this->exam)) {
+                if (!isset($this->_exam)) {
                         return new ServiceResponse($this, self::UNDEFINED, "Undefined exam object.");
                 }
 
-                $this->user->setPrimaryRole(Roles::STUDENT);
-                $status = $this->access->open($this->exam);
+                $this->_user->setPrimaryRole(Roles::STUDENT);
+                $status = $this->_access->open($this->_exam);
 
                 if ($status == Access::OPEN_APPROVED) {
                         return new ServiceResponse($this, self::SUCCESS, true);
@@ -97,12 +97,12 @@ class AccessHandler extends ServiceHandler
          */
         public function close()
         {
-                if (!isset($this->exam)) {
+                if (!isset($this->_exam)) {
                         return new ServiceResponse($this, self::UNDEFINED, "Undefined exam object.");
                 }
 
-                $this->user->setPrimaryRole(Roles::STUDENT);
-                $status = $this->access->close($this->exam);
+                $this->_user->setPrimaryRole(Roles::STUDENT);
+                $status = $this->_access->close($this->_exam);
 
                 if ($status == true) {
                         return new ServiceResponse($this, self::SUCCESS, true);
@@ -117,12 +117,12 @@ class AccessHandler extends ServiceHandler
          */
         public function approve()
         {
-                if (!isset($this->lock)) {
+                if (!isset($this->_lock)) {
                         return new ServiceResponse($this, self::UNDEFINED, "Undefined lock object.");
                 }
 
-                $this->user->setPrimaryRole(Roles::INVIGILATOR);
-                $this->access->approve($this->lock);
+                $this->_user->setPrimaryRole(Roles::INVIGILATOR);
+                $this->_access->approve($this->_lock);
 
                 return new ServiceResponse($this, self::SUCCESS, true);
         }
@@ -133,12 +133,12 @@ class AccessHandler extends ServiceHandler
          */
         public function release()
         {
-                if (!isset($this->lock)) {
+                if (!isset($this->_lock)) {
                         return new ServiceResponse($this, self::UNDEFINED, "Undefined lock object.");
                 }
 
-                $this->user->setPrimaryRole(Roles::INVIGILATOR);
-                $this->access->release($this->lock);
+                $this->_user->setPrimaryRole(Roles::INVIGILATOR);
+                $this->_access->release($this->_lock);
 
                 return new ServiceResponse($this, self::SUCCESS, true);
         }
@@ -151,29 +151,29 @@ class AccessHandler extends ServiceHandler
          */
         public function entries($location, $section = null)
         {
-                if (!isset($this->request->data['exam_id'])) {
-                        $this->request->data['exam_id'] = 0;
+                if (!isset($this->_request->data['exam_id'])) {
+                        $this->_request->data['exam_id'] = 0;
                 }
                 if (isset($section)) {
-                        $this->request->params['filter'] = array(
+                        $this->_request->params['filter'] = array(
                                 $section => true
                         );
                 }
-                if (!isset($this->request->params['filter'])) {
-                        $this->request->params['filter'] = array(
+                if (!isset($this->_request->params['filter'])) {
+                        $this->_request->params['filter'] = array(
                                 'system' => true,
                                 'recent' => true,
                                 'active' => true
                         );
                 }
-                if (!isset($this->request->params['flat'])) {
-                        $this->request->params['flat'] = false;
+                if (!isset($this->_request->params['flat'])) {
+                        $this->_request->params['flat'] = false;
                 }
                 
-                print_r($this->request);
+                print_r($this->_request);
 
                 $result = $location->getEntries(
-                    $this->request->data['exam_id'], $this->request->params['filter'], $this->request->params['flat']
+                    $this->_request->data['exam_id'], $this->_request->params['filter'], $this->_request->params['flat']
                 );
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }

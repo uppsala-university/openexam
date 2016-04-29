@@ -32,17 +32,17 @@ class Authentication implements Authenticator, Restrictor
          * The array of service groups and authenticator chains.
          * @var array 
          */
-        private $chains = array('soap' => array(), 'rest' => array(), 'web' => array(), '*' => array());
+        private $_chains = array('soap' => array(), 'rest' => array(), 'web' => array(), '*' => array());
         /**
          * Current selected authenticator.
          * @var AuthenticatorBase 
          */
-        private $authenticator;
+        private $_authenticator;
         /**
          * Currently selected service group.
          * @var string 
          */
-        private $service;
+        private $_service;
 
         /**
          * Constructor.
@@ -50,9 +50,9 @@ class Authentication implements Authenticator, Restrictor
          */
         public function __construct($chains = array())
         {
-                $this->chains = array_merge($this->chains, $chains);
-                $this->authenticator = new NullAuthenticator();
-                $this->service = null;
+                $this->_chains = array_merge($this->_chains, $chains);
+                $this->_authenticator = new NullAuthenticator();
+                $this->_service = null;
         }
 
         /**
@@ -85,7 +85,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function add($name, $auth, $service = "*")
         {
-                $this->chains[$service][$name] = $auth;
+                $this->_chains[$service][$name] = $auth;
         }
 
         /**
@@ -95,7 +95,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function remove($name, $service)
         {
-                unset($this->chains[$service][$name]);
+                unset($this->_chains[$service][$name]);
         }
 
         /**
@@ -105,7 +105,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function getChain($service = "*")
         {
-                return new Config(array_merge($this->chains[$service], $this->chains['*']));
+                return new Config(array_merge($this->_chains[$service], $this->_chains['*']));
         }
 
         /**
@@ -114,7 +114,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function getAuthenticator()
         {
-                return $this->authenticator;
+                return $this->_authenticator;
         }
 
         /**
@@ -123,7 +123,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function getService()
         {
-                return $this->service;
+                return $this->_service;
         }
 
         /**
@@ -132,7 +132,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function getSubject()
         {
-                return $this->authenticator->getSubject();
+                return $this->_authenticator->getSubject();
         }
 
         /**
@@ -140,7 +140,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function login()
         {
-                $this->authenticator->login();
+                $this->_authenticator->login();
         }
 
         /**
@@ -148,7 +148,7 @@ class Authentication implements Authenticator, Restrictor
          */
         public function logout()
         {
-                $this->authenticator->logout();
+                $this->_authenticator->logout();
         }
 
         /**
@@ -158,12 +158,12 @@ class Authentication implements Authenticator, Restrictor
          */
         public function activate($name, $service = '*')
         {
-                if (!isset($this->chains[$service])) {
+                if (!isset($this->_chains[$service])) {
                         $service = '*';
                 }
-                if (isset($this->chains[$service][$name])) {
+                if (isset($this->_chains[$service][$name])) {
                         $this->enable(
-                            $name, $service, $this->chains[$service][$name]['desc'], $this->chains[$service][$name]['method']()
+                            $name, $service, $this->_chains[$service][$name]['desc'], $this->_chains[$service][$name]['method']()
                         );
                 }
         }
@@ -177,10 +177,10 @@ class Authentication implements Authenticator, Restrictor
          */
         private function enable($name, $service, $desc, $auth)
         {
-                $this->authenticator = $auth;
-                $this->authenticator->name($name);
-                $this->authenticator->description($desc);
-                $this->service = $service;
+                $this->_authenticator = $auth;
+                $this->_authenticator->name($name);
+                $this->_authenticator->description($desc);
+                $this->_service = $service;
         }
 
         /**
@@ -190,12 +190,12 @@ class Authentication implements Authenticator, Restrictor
          */
         public function accepted($service = null)
         {
-                if (!$this->authenticator->accepted()) {
+                if (!$this->_authenticator->accepted()) {
                         $this->authenticate('*');
                         $this->authenticate($service);
                 }
 
-                return $this->authenticator->accepted();
+                return $this->_authenticator->accepted();
         }
 
         /**
@@ -205,18 +205,18 @@ class Authentication implements Authenticator, Restrictor
          */
         private function authenticate($service)
         {
-                if (isset($this->chains[$service])) {
-                        foreach ($this->chains[$service] as $name => $plugin) {
+                if (isset($this->_chains[$service])) {
+                        foreach ($this->_chains[$service] as $name => $plugin) {
                                 $authenticator = $plugin['method']();
                                 $authenticator->name($name);
                                 if ($authenticator->control === Authenticator::required) {
                                         if (!$authenticator->accepted()) {
-                                                throw new AuthenticatorRequiredException($authenticator->authenticator);
+                                                throw new AuthenticatorRequiredException($authenticator->_authenticator);
                                         }
                                 }
                                 if ($authenticator->control === Authenticator::sufficient) {
                                         if ($authenticator->accepted() &&
-                                            $this->authenticator instanceof NullAuthenticator) {
+                                            $this->_authenticator instanceof NullAuthenticator) {
                                                 $this->activate($name, $service);
                                         }
                                 }

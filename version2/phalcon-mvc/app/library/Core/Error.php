@@ -77,7 +77,7 @@ class Error
          * The wrapped exception.
          * @var \Exception 
          */
-        private $exception;
+        private $_exception;
 
         /**
          * Constructor
@@ -85,7 +85,7 @@ class Error
          */
         public function __construct($exception)
         {
-                $this->exception = $exception;
+                $this->_exception = $exception;
         }
 
         /**
@@ -94,7 +94,7 @@ class Error
          */
         public function getException()
         {
-                return $this->exception;
+                return $this->_exception;
         }
 
         /**
@@ -103,7 +103,7 @@ class Error
          */
         public function getMessage()
         {
-                return $this->exception->getMessage();
+                return $this->_exception->getMessage();
         }
 
         /**
@@ -112,7 +112,7 @@ class Error
          */
         public function getCode()
         {
-                return $this->exception->getCode();
+                return $this->_exception->getCode();
         }
 
         /**
@@ -121,7 +121,7 @@ class Error
          */
         public function getString()
         {
-                return self::lookup($this->exception->getCode());
+                return self::lookup($this->_exception->getCode());
         }
 
         /**

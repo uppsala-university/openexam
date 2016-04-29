@@ -42,7 +42,7 @@ class Initialize extends Command
 
         private function processModule($locale, $module)
         {
-                $topdir = $this->config->application->localeDir;
+                $topdir = $this->_config->application->localeDir;
                 $locdir = sprintf("%s/%s/LC_MESSAGES", $topdir, $locale);
 
                 // 
@@ -56,7 +56,7 @@ class Initialize extends Command
                 $template = $this->createTemplateFile($topdir, $module);
                 
                 if(!file_exists($template)) {
-                        $this->flash->warning("Failed create $template");
+                        $this->_flash->warning("Failed create $template");
                         return;
                 }
 
@@ -69,10 +69,10 @@ class Initialize extends Command
         private function createLocaleDirectory($locdir)
         {
                 if (!file_exists($locdir)) {
-                        if ($this->options['verbose']) {
-                                $this->flash->notice("Creating directory $locdir");
+                        if ($this->_options['verbose']) {
+                                $this->_flash->notice("Creating directory $locdir");
                         }
-                        if (!$this->options['dry-run']) {
+                        if (!$this->_options['dry-run']) {
                                 if (!mkdir($locdir, 0755, true)) {
                                         throw new Exception("Failed create directory $locdir");
                                 }
@@ -84,16 +84,16 @@ class Initialize extends Command
         {
                 $pofile = sprintf("%s/%s.po", $locdir, $module);
                 if (!file_exists($pofile)) {
-                        if ($this->options['verbose']) {
-                                $this->flash->notice("Creating PO-file $pofile");
+                        if ($this->_options['verbose']) {
+                                $this->_flash->notice("Creating PO-file $pofile");
                         }
-                        $program = $this->config->gettext->program->msginit;
-                        $options = $this->config->gettext->options->msginit;
+                        $program = $this->_config->gettext->program->msginit;
+                        $options = $this->_config->gettext->options->msginit;
 
                         $cmdopts = $this->substitute($options, array('template' => $template, 'output' => $pofile, 'locale' => $locale));
                         $this->execute($program, $cmdopts);
                 } else {
-                        $this->flash->warning("Cowardly refused to overwrite existing $pofile");
+                        $this->_flash->warning("Cowardly refused to overwrite existing $pofile");
                 }
         }
 
@@ -102,11 +102,11 @@ class Initialize extends Command
                 $template = sprintf("%s/%s.pot", $topdir, $module);
 
                 if (!file_exists($template)) {
-                        if ($this->options['verbose']) {
-                                $this->flash->notice("Creating template $template");
+                        if ($this->_options['verbose']) {
+                                $this->_flash->notice("Creating template $template");
                         }
-                        $program = $this->config->gettext->program->xgettext;
-                        $options = $this->config->gettext->options->xgettext;
+                        $program = $this->_config->gettext->program->xgettext;
+                        $options = $this->_config->gettext->options->xgettext;
 
                         $cmdopts = $this->substitute($options, array('template' => $template));
 

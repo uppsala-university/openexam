@@ -46,17 +46,17 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          * The object access callable.
          * @var callable 
          */
-        private $callable;
+        private $_callable;
         /**
          * Register of object access callable.
          * @var array 
          */
-        private $register;
+        private $_register;
         /**
          * Lifetime of cached model access.
          * @var long 
          */
-        private $lifetime;
+        private $_lifetime;
 
         /**
          * Constructor.
@@ -65,9 +65,9 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         public function __construct($callable, $register = array(), $lifetime = 60)
         {
-                $this->callable = $callable;
-                $this->register = $register;
-                $this->lifetime = $lifetime;
+                $this->_callable = $callable;
+                $this->_register = $register;
+                $this->_lifetime = $lifetime;
         }
 
         /**
@@ -76,7 +76,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         public function setGrantLifetime($lifetime)
         {
-                $this->lifetime = $lifetime;
+                $this->_lifetime = $lifetime;
         }
 
         /**
@@ -85,7 +85,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         public function getGrantLifetime()
         {
-                return $this->lifetime;
+                return $this->_lifetime;
         }
 
         /**
@@ -99,7 +99,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
         private function getGrantAccess($user, $model, $action)
         {
                 return $this->cache->exists(
-                        self::createCacheKey($user, $model, $action), $this->lifetime
+                        self::createCacheKey($user, $model, $action), $this->_lifetime
                 );
         }
 
@@ -114,7 +114,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
         private function setGrantAccess($user, $model, $action)
         {
                 $this->cache->save(
-                    self::createCacheKey($user, $model, $action), true, $this->lifetime
+                    self::createCacheKey($user, $model, $action), true, $this->_lifetime
                 );
 
                 return true;
@@ -127,11 +127,11 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          */
         private function getObjectAccess($name)
         {
-                if (!isset($this->register[$name])) {
-                        $loader = $this->callable;
-                        $this->register[$name] = $loader($name);
+                if (!isset($this->_register[$name])) {
+                        $loader = $this->_callable;
+                        $this->_register[$name] = $loader($name);
                 }
-                return $this->register[$name];
+                return $this->_register[$name];
         }
 
         /**

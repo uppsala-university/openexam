@@ -29,7 +29,7 @@ class CacheTask extends MainTask implements TaskInterface
          * Runtime options
          * @var array 
          */
-        private $options;
+        private $_options;
 
         public function helpAction()
         {
@@ -80,18 +80,18 @@ class CacheTask extends MainTask implements TaskInterface
                 $this->setOptions($params, 'query');
 
                 foreach ($this->cache->getBackends() as $backend) {
-                        if ($this->options['key'] == false) {
+                        if ($this->_options['key'] == false) {
                                 $backend->flush();
                                 continue;
                         }
 
-                        if ($this->options['prefix']) {
-                                $prefix = $this->options['prefix'];
+                        if ($this->_options['prefix']) {
+                                $prefix = $this->_options['prefix'];
                         } else {
                                 $prefix = $backend->getOptions()['prefix'];
                         }
 
-                        $find = sprintf("%s%s", $prefix, $this->options['key']);
+                        $find = sprintf("%s%s", $prefix, $this->_options['key']);
                         $keys = $backend->queryKeys($find);
 
                         foreach ($keys as $key) {
@@ -109,14 +109,14 @@ class CacheTask extends MainTask implements TaskInterface
                 $this->setOptions($params, 'query');
 
                 foreach ($this->cache->getBackends() as $backend) {
-                        if ($this->options['prefix']) {
-                                $prefix = $this->options['prefix'];
+                        if ($this->_options['prefix']) {
+                                $prefix = $this->_options['prefix'];
                         } else {
                                 $prefix = $backend->getOptions()['prefix'];
                         }
 
-                        if ($this->options['key']) {
-                                $find = sprintf("%s%s", $prefix, $this->options['key']);
+                        if ($this->_options['key']) {
+                                $find = sprintf("%s%s", $prefix, $this->_options['key']);
                                 $name = get_class($backend);
                                 $keys = $backend->queryKeys($find);
                         } else {
@@ -124,13 +124,13 @@ class CacheTask extends MainTask implements TaskInterface
                                 $keys = $backend->queryKeys();
                         }
 
-                        if ($this->options['count']) {
+                        if ($this->_options['count']) {
                                 $this->flash->success(sprintf("%s:\t%d", $name, count($keys)));
                         } else {
                                 $this->flash->success(sprintf("%s:\t%s", $name, print_r($keys, true)));
                         }
 
-                        if ($this->options['verbose']) {
+                        if ($this->_options['verbose']) {
                                 foreach ($keys as $key) {
                                         $data = $backend->get(substr($key, strlen($prefix)));
                                         $this->flash->success(sprintf("%s: %s\n", $key, print_r($data, true)));
@@ -173,7 +173,7 @@ class CacheTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false);
+                $this->_options = array('verbose' => false);
 
                 // 
                 // Supported options.
@@ -185,8 +185,8 @@ class CacheTask extends MainTask implements TaskInterface
                 // Set defaults.
                 // 
                 foreach ($options as $option) {
-                        if (!isset($this->options[$option])) {
-                                $this->options[$option] = false;
+                        if (!isset($this->_options[$option])) {
+                                $this->_options[$option] = false;
                         }
                 }
 
@@ -194,7 +194,7 @@ class CacheTask extends MainTask implements TaskInterface
                 // Include action in options (for multitarget actions).
                 // 
                 if (isset($action)) {
-                        $this->options[$action] = true;
+                        $this->_options[$action] = true;
                 }
 
                 // 
@@ -202,10 +202,10 @@ class CacheTask extends MainTask implements TaskInterface
                 // 
                 while (($option = array_shift($params))) {
                         if (in_array($option, $options)) {
-                                $this->options[$option] = true;
+                                $this->_options[$option] = true;
                                 $current = $option;
                         } elseif (in_array($current, $options)) {
-                                $this->options[$current] = $option;
+                                $this->_options[$current] = $option;
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }

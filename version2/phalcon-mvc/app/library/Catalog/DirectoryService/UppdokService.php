@@ -66,7 +66,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  * The record data.
                  * @var array 
                  */
-                private $data = array();
+                private $_data = array();
 
                 /**
                  * Constructor.
@@ -74,7 +74,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function __construct($data)
                 {
-                        $this->data = array_map('utf8_encode', $data);
+                        $this->_data = array_map('utf8_encode', $data);
                 }
 
                 /**
@@ -83,7 +83,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function getUser()
                 {
-                        return $this->data[INFO_CGI_FIELD_USER];
+                        return $this->_data[INFO_CGI_FIELD_USER];
                 }
 
                 /**
@@ -92,7 +92,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function getName()
                 {
-                        return $this->data[INFO_CGI_FIELD_NAME];
+                        return $this->_data[INFO_CGI_FIELD_NAME];
                 }
 
                 /**
@@ -101,7 +101,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function getData()
                 {
-                        return $this->data;
+                        return $this->_data;
                 }
 
                 /**
@@ -115,25 +115,25 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                         $principal = new Principal();
 
                         if (in_array(Principal::ATTR_NAME, $attributes)) {
-                                $principal->name = $this->data[INFO_CGI_FIELD_NAME];
+                                $principal->name = $this->_data[INFO_CGI_FIELD_NAME];
                         }
                         if (in_array(Principal::ATTR_MAIL, $attributes)) {
-                                $principal->mail[] = $this->data[INFO_CGI_FIELD_MAIL];
+                                $principal->mail[] = $this->_data[INFO_CGI_FIELD_MAIL];
                         }
                         if (in_array(Principal::ATTR_PN, $attributes)) {
-                                $principal->principal = $this->data[INFO_CGI_FIELD_USER] . '@' . $domain;
+                                $principal->principal = $this->_data[INFO_CGI_FIELD_USER] . '@' . $domain;
                         }
                         if (in_array(Principal::ATTR_PNR, $attributes)) {
-                                $principal->pnr = $this->data[INFO_CGI_FIELD_SOCIAL_NUMBER];
+                                $principal->pnr = $this->_data[INFO_CGI_FIELD_SOCIAL_NUMBER];
                         }
                         if (in_array(Principal::ATTR_UID, $attributes)) {
-                                $principal->uid = $this->data[INFO_CGI_FIELD_USER];
+                                $principal->uid = $this->_data[INFO_CGI_FIELD_USER];
                         }
                         if (in_array(Principal::ATTR_GN, $attributes)) {
-                                $principal->gn = trim(strstr($this->data[INFO_CGI_FIELD_NAME], ' ', true));
+                                $principal->gn = trim(strstr($this->_data[INFO_CGI_FIELD_NAME], ' ', true));
                         }
                         if (in_array(Principal::ATTR_SN, $attributes)) {
-                                $principal->sn = trim(strstr($this->data[INFO_CGI_FIELD_NAME], ' ', false));
+                                $principal->sn = trim(strstr($this->_data[INFO_CGI_FIELD_NAME], ' ', false));
                         }
 
                         return $principal;
@@ -146,8 +146,8 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function getField($index)
                 {
-                        if ($index < count($this->data)) {
-                                return $this->data[$index];
+                        if ($index < count($this->_data)) {
+                                return $this->_data[$index];
                         } else {
                                 return null;
                         }
@@ -171,37 +171,37 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  * Requested year.
                  * @var int 
                  */
-                private $year;
+                private $_year;
                 /**
                  * Requested termin (semester).
                  * @var int 
                  */
-                private $termin;
+                private $_termin;
                 /**
                  * Compact output.
                  * @var bool 
                  */
-                private $compact = true;
+                private $_compact = true;
                 /**
                  * The InfoCGI service username.
                  * @var string 
                  */
-                private $user;
+                private $_user;
                 /**
                  * The InfoCGI service password.
                  * @var string 
                  */
-                private $pass;
+                private $_pass;
                 /**
                  * The InfoCGI service hostname.
                  * @var string 
                  */
-                private $host;
+                private $_host;
                 /**
                  * The InfoCGI service port.
                  * @var int 
                  */
-                private $port;
+                private $_port;
 
                 /**
                  * Constructor.
@@ -217,13 +217,13 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                                 throw new Exception("Missing username, password or server name.");
                         }
 
-                        $this->user = $user;
-                        $this->pass = $pass;
-                        $this->host = $host;
-                        $this->port = $port;
+                        $this->_user = $user;
+                        $this->_pass = $pass;
+                        $this->_host = $host;
+                        $this->_port = $port;
 
-                        $this->year = self::getCurrentYear();
-                        $this->termin = self::getCurrentSemester();
+                        $this->_year = self::getCurrentYear();
+                        $this->_termin = self::getCurrentSemester();
                 }
 
                 /**
@@ -254,7 +254,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function setYear($year)
                 {
-                        $this->year = $year;
+                        $this->_year = $year;
                 }
 
                 /**
@@ -263,7 +263,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function getYear()
                 {
-                        return $this->year;
+                        return $this->_year;
                 }
 
                 /**
@@ -272,7 +272,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function setSemester($termin)
                 {
-                        $this->termin = $termin;
+                        $this->_termin = $termin;
                 }
 
                 /**
@@ -281,7 +281,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function getSemester()
                 {
-                        return $this->termin;
+                        return $this->_termin;
                 }
 
                 /**
@@ -290,7 +290,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                  */
                 public function setCompactMode($enable = true)
                 {
-                        $this->compact = $enable;
+                        $this->_compact = $enable;
                 }
 
                 /**
@@ -319,14 +319,14 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                         }
 
                         if ($year == 0) {
-                                $year = $this->year;
+                                $year = $this->_year;
                         }
                         if ($termin == 0) {
-                                $termin = $this->termin;
+                                $termin = $this->_termin;
                         }
 
 
-                        $url = sprintf(self::url, $this->host, $this->port, $course, $year, $termin, $this->user, $this->pass);
+                        $url = sprintf(self::url, $this->_host, $this->_port, $course, $year, $termin, $this->_user, $this->_pass);
 
                         if (INFO_CGI_DEBUG) {
                                 curl_setopt($curl, CURLOPT_HEADER, 1);
@@ -358,7 +358,7 @@ if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
                         foreach ($lines as $line) {
                                 $arr = explode(INFO_CGI_FIELD_SEPARATOR, $line);
                                 if ($arr[0] == 1) {
-                                        if ($this->compact) {
+                                        if ($this->_compact) {
                                                 array_push($result, $arr[INFO_CGI_FIELD_USER]);
                                         } else {
                                                 array_push($result, new UppdokRecord($arr));
@@ -389,7 +389,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  * The UPPDOK data service.
                  * @var UppdokData 
                  */
-                private $uppdok;
+                private $_uppdok;
 
                 /**
                  * Constructor.
@@ -400,9 +400,9 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function __construct($user, $pass, $host = INFO_CGI_SERVER, $port = INFO_CGI_PORT)
                 {
-                        $this->uppdok = new UppdokData($user, $pass, $host, $port);
-                        $this->uppdok->setCompactMode(false);
-                        $this->type = 'uppdok';
+                        $this->_uppdok = new UppdokData($user, $pass, $host, $port);
+                        $this->_uppdok->setCompactMode(false);
+                        $this->_type = 'uppdok';
                 }
 
                 /**
@@ -417,26 +417,26 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return entry from cache if existing:
                         // 
-                        if ($this->lifetime) {
-                                $cachekey = sprintf("catalog-%s-members-%s", $this->name, md5(serialize(array($group, $domain, $attributes))));
-                                if ($this->cache->exists($cachekey, $this->lifetime)) {
-                                        return $this->cache->get($cachekey, $this->lifetime);
+                        if ($this->_lifetime) {
+                                $cachekey = sprintf("catalog-%s-members-%s", $this->_name, md5(serialize(array($group, $domain, $attributes))));
+                                if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                        return $this->cache->get($cachekey, $this->_lifetime);
                                 }
                         }
 
                         $result = array();
                         $group = trim($group, '*');
 
-                        foreach ($this->uppdok->members($group) as $member) {
+                        foreach ($this->_uppdok->members($group) as $member) {
                                 $principal = $member->getPrincipal($domain, $attributes);
                                 $principal->attr = array(
                                         'svc' => array(
-                                                'name' => $this->name,
-                                                'type' => $this->type,
+                                                'name' => $this->_name,
+                                                'type' => $this->_type,
                                                 'ref'  => array(
                                                         'group'    => $group,
-                                                        'year'     => $this->uppdok->getYear(),
-                                                        'semester' => $this->uppdok->getSemester()
+                                                        'year'     => $this->_uppdok->getYear(),
+                                                        'semester' => $this->_uppdok->getSemester()
                                                 )
                                         )
                                 );

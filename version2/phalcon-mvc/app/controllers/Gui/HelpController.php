@@ -29,7 +29,7 @@ class HelpController extends GuiController
          * Supported MIME types.
          * @var array 
          */
-        private static $mime = array(
+        private static $_mime = array(
                 "pdf"  => "application/pdf",
                 "docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 "odt"  => "application/vnd.oasis.opendocument.text"
@@ -38,7 +38,7 @@ class HelpController extends GuiController
          * Help content description.
          * @var array 
          */
-        private static $help = array(
+        private static $_help = array(
                 "manual" => array(
                         "name" => "User Manuals",
                         "data" => array(
@@ -76,7 +76,7 @@ class HelpController extends GuiController
          */
         public function indexAction()
         {
-                $this->view->setVar("help", self::$help);
+                $this->view->setVar("help", self::$_help);
         }
 
         /**
@@ -122,7 +122,7 @@ class HelpController extends GuiController
                         return;
                 }
 
-                $this->view->setVar("manual", self::$help['manual']['data']);
+                $this->view->setVar("manual", self::$_help['manual']['data']);
         }
 
         /**
@@ -181,12 +181,12 @@ class HelpController extends GuiController
                 if (!file_exists($path)) {
                         throw new Exception("Can't locate requested manual", Error::FORBIDDEN);
                 }
-                if (!isset(self::$mime[$format])) {
+                if (!isset(self::$_mime[$format])) {
                         throw new Exception("Unsupported media format requested", Error::NOT_ACCEPTABLE);
                 }
 
                 $this->view->disable();
-                $this->response->setContentType(self::$mime[$format]);
+                $this->response->setContentType(self::$_mime[$format]);
                 $this->response->setHeader("content-disposition", "attachment; filename=\"$name\"");
                 readfile($path);
         }

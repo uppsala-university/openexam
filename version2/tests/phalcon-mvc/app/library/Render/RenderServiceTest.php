@@ -19,7 +19,7 @@ class RenderServiceTest extends TestCase
         /**
          * @var RenderService
          */
-        protected $object;
+        private $_object;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -27,7 +27,7 @@ class RenderServiceTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new RenderService;
+                $this->_object = new RenderService;
         }
 
         /**
@@ -48,27 +48,27 @@ class RenderServiceTest extends TestCase
                 // 
                 // Test that correct object is returned:
                 // 
-                $render1 = $this->object->getRender(Renderer::FORMAT_PDF);
+                $render1 = $this->_object->getRender(Renderer::FORMAT_PDF);
                 self::assertNotNull($render1);
                 self::assertEquals(get_class($render1), __NAMESPACE__ . '\\RenderPdfDocument');
 
                 // 
                 // Test that same object is returned:
                 // 
-                $render2 = $this->object->getRender(Renderer::FORMAT_PDF);
+                $render2 = $this->_object->getRender(Renderer::FORMAT_PDF);
                 self::assertSame($render2, $render1);
 
                 // 
                 // Test that correct object is returned:
                 // 
-                $render1 = $this->object->getRender(Renderer::FORMAT_IMAGE);
+                $render1 = $this->_object->getRender(Renderer::FORMAT_IMAGE);
                 self::assertNotNull($render1);
                 self::assertEquals(get_class($render1), __NAMESPACE__ . '\\RenderImage');
 
                 // 
                 // Test that same object is returned:
                 // 
-                $render2 = $this->object->getRender(Renderer::FORMAT_IMAGE);
+                $render2 = $this->_object->getRender(Renderer::FORMAT_IMAGE);
                 self::assertSame($render2, $render1);
         }
 
@@ -78,9 +78,9 @@ class RenderServiceTest extends TestCase
          */
         public function testSetRender()
         {
-                $this->object->setRender('dom', new DomTreeRender());
+                $this->_object->setRender('dom', new DomTreeRender());
 
-                $render1 = $this->object->getRender('dom');
+                $render1 = $this->_object->getRender('dom');
                 self::assertNotNull($render1);
                 self::assertEquals(get_class($render1), __NAMESPACE__ . '\\DomTreeRender');
         }
@@ -92,7 +92,7 @@ class RenderServiceTest extends TestCase
         public function testService()
         {
                 self::assertNotNull($this->render);
-                self::assertEquals(get_class($this->render), get_class($this->object));
+                self::assertEquals(get_class($this->render), get_class($this->_object));
         }
 
 }

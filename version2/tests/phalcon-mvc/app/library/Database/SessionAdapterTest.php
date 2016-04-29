@@ -15,7 +15,7 @@ class SessionAdapterTest extends TestCase
         /**
          * @var SessionAdapter
          */
-        protected $object;
+        private $_object;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -23,7 +23,7 @@ class SessionAdapterTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new SessionAdapter();
+                $this->_object = new SessionAdapter();
         }
 
         /**
@@ -41,7 +41,7 @@ class SessionAdapterTest extends TestCase
          */
         public function testOpen()
         {
-                self::assertTrue($this->object->open());
+                self::assertTrue($this->_object->open());
         }
 
         /**
@@ -50,7 +50,7 @@ class SessionAdapterTest extends TestCase
          */
         public function testClose()
         {
-                self::assertFalse($this->object->close());
+                self::assertFalse($this->_object->close());
         }
 
         /**
@@ -67,19 +67,19 @@ class SessionAdapterTest extends TestCase
                 self::assertTrue($session->save());
 
                 $expect = "";
-                $actual = $this->object->read(null);
+                $actual = $this->_object->read(null);
                 self::assertEquals($actual, $expect);
 
                 $expect = "";
-                $actual = $this->object->read("");
+                $actual = $this->_object->read("");
                 self::assertEquals($actual, $expect);
                 
                 $expect = $session->data;
-                $actual = $this->object->read($session->session_id);
+                $actual = $this->_object->read($session->session_id);
                 self::assertEquals($actual, $expect);
 
                 $expect = "";
-                $actual = $this->object->read(null);
+                $actual = $this->_object->read(null);
                 self::assertEquals($actual, $expect);
 
                 self::assertTrue($session->delete());    // cleanup
@@ -95,12 +95,12 @@ class SessionAdapterTest extends TestCase
                 $session->data = "";
                 $session->session_id = md5(time());
 
-                self::assertFalse($this->object->write($session->session_id, $session->data));
+                self::assertFalse($this->_object->write($session->session_id, $session->data));
 
                 $session->data = "data1";       // insert
                 $session->created = time();
                 $session->updated = null;
-                self::assertTrue($this->object->write($session->session_id, $session->data));
+                self::assertTrue($this->_object->write($session->session_id, $session->data));
                 $actual = Session::findFirstBySessionId($session->session_id);
                 self::assertEquals($actual->created, $session->created);
                 self::assertEquals($actual->updated, $session->updated);
@@ -109,7 +109,7 @@ class SessionAdapterTest extends TestCase
 
                 $session->data = "data2";       // update
                 $session->updated = time();
-                self::assertTrue($this->object->write($session->session_id, $session->data));
+                self::assertTrue($this->_object->write($session->session_id, $session->data));
                 $actual = Session::findFirstBySessionId($session->session_id);
                 self::assertEquals($actual->created, $session->created);
                 self::assertEquals($actual->updated, $session->updated);
@@ -117,7 +117,7 @@ class SessionAdapterTest extends TestCase
                 sleep(1);
 
                 $session->data = "data2";       // noop
-                self::assertTrue($this->object->write($session->session_id, $session->data));
+                self::assertTrue($this->_object->write($session->session_id, $session->data));
                 $actual = Session::findFirstBySessionId($session->session_id);
                 self::assertEquals($actual->created, $session->created);
                 self::assertEquals($actual->updated, $session->updated);
@@ -147,25 +147,25 @@ class SessionAdapterTest extends TestCase
                 $session->created = time() - $maxlifetime;
                 $session->session_id = md5(time());
 
-                self::assertFalse($this->object->gc(0));        // no gc
+                self::assertFalse($this->_object->gc(0));        // no gc
                 self::assertTrue($session->save());             // insert                
-                self::assertFalse($this->object->gc(0));        // no gc
+                self::assertFalse($this->_object->gc(0));        // no gc
 
                 // 
                 // Fetch session object onto $this->object:
                 // 
-                self::assertEquals($session->data, $this->object->read($session->session_id));
+                self::assertEquals($session->data, $this->_object->read($session->session_id));
 
                 // 
                 // Cleanup old stale sessions:
                 // 
-                self::assertTrue($this->object->gc($maxlifetime));
+                self::assertTrue($this->_object->gc($maxlifetime));
 
                 $count = Session::count();
-                self::assertTrue($this->object->gc($maxlifetime + 1));  // not yet...
+                self::assertTrue($this->_object->gc($maxlifetime + 1));  // not yet...
                 self::assertEquals($count, (int) Session::count());
 
-                self::assertTrue($this->object->gc($maxlifetime - 1));  // ...but now
+                self::assertTrue($this->_object->gc($maxlifetime - 1));  // ...but now
                 self::assertEquals($count - 1, (int) Session::count());
 
                 self::assertTrue($session->delete());   // cleanup

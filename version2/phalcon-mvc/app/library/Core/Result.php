@@ -49,12 +49,12 @@ class Result extends Component
         /**
          * @var Exam 
          */
-        private $exam;
+        private $_exam;
         /**
          * Force generate files even if existing.
          * @var bool 
          */
-        private $forced = false;
+        private $_forced = false;
 
         /**
          * Constructor.
@@ -64,12 +64,12 @@ class Result extends Component
         public function __construct($eid)
         {
                 if (!is_numeric($eid)) {
-                        $this->exam = $eid;
-                } elseif (!($this->exam = Exam::findFirst($eid))) {
+                        $this->_exam = $eid;
+                } elseif (!($this->_exam = Exam::findFirst($eid))) {
                         throw new ModelException("Failed find target exam.", Error::PRECONDITION_FAILED);
                 }
 
-                if ($this->exam->decoded == false) {
+                if ($this->_exam->decoded == false) {
                         throw new ModelException("Result can't be downloaded before exam has been decoded.", Error::LOCKED);
                 }
         }
@@ -80,7 +80,7 @@ class Result extends Component
          */
         public function getForced()
         {
-                return $this->forced;
+                return $this->_forced;
         }
 
         /**
@@ -89,7 +89,7 @@ class Result extends Component
          */
         public function setForced($enable = true)
         {
-                $this->forced = $enable;
+                $this->_forced = $enable;
         }
 
         /**
@@ -98,7 +98,7 @@ class Result extends Component
          */
         public function exist()
         {
-                return file_exists(self::getPath($this->exam->id));
+                return file_exists(self::getPath($this->_exam->id));
         }
 
         /**
@@ -106,25 +106,25 @@ class Result extends Component
          */
         public function clean()
         {
-                foreach ($this->exam->students as $student) {
+                foreach ($this->_exam->students as $student) {
                         $this->delete($student);
                 }
 
-                $target = sprintf("%s.zip", self::getPath($this->exam->id));
+                $target = sprintf("%s.zip", self::getPath($this->_exam->id));
                 if (file_exists($target)) {
                         if (!unlink($target)) {
                                 throw new \Exception("Failed unlink result archive.");
                         }
                 }
 
-                $target = sprintf("%s.xls", self::getPath($this->exam->id));
+                $target = sprintf("%s.xls", self::getPath($this->_exam->id));
                 if (file_exists($target)) {
                         if (!unlink($target)) {
                                 throw new \Exception("Failed unlink result spreadsheet.");
                         }
                 }
 
-                $target = sprintf("%s", self::getPath($this->exam->id));
+                $target = sprintf("%s", self::getPath($this->_exam->id));
                 if (file_exists($target)) {
                         if (!rmdir($target)) {
                                 throw new \Exception("Failed delete result directory.");
@@ -144,7 +144,7 @@ class Result extends Component
                         $student = $sid;
                 }
 
-                $target = sprintf("%s.pdf", self::getPath($this->exam->id, $student->id));
+                $target = sprintf("%s.pdf", self::getPath($this->_exam->id, $student->id));
                 if (file_exists($target)) {
                         if (!unlink($target)) {
                                 throw new \Exception("Failed unlink student result.");
@@ -170,13 +170,13 @@ class Result extends Component
                 // 
                 // Destination file:
                 // 
-                $target = sprintf("%s.pdf", self::getPath($this->exam->id, $student->id));
+                $target = sprintf("%s.pdf", self::getPath($this->_exam->id, $student->id));
 
                 // 
                 // Check existing file.
                 // 
                 if (file_exists($target)) {
-                        if ($this->forced) {
+                        if ($this->_forced) {
                                 unlink($target);
                         } else {
                                 return false;
@@ -234,7 +234,7 @@ class Result extends Component
          */
         public function createFiles()
         {
-                foreach ($this->exam->students->fi as $student) {
+                foreach ($this->_exam->students->fi as $student) {
                         $this->createFile($student);
                 }
         }
@@ -244,13 +244,13 @@ class Result extends Component
          */
         public function createArchive()
         {
-                $target = sprintf("%s.zip", self::getPath($this->exam->id));
+                $target = sprintf("%s.zip", self::getPath($this->_exam->id));
 
                 // 
                 // Check that all files exist and generate missing.
                 // 
-                foreach ($this->exam->students as $student) {
-                        $filename = sprintf("%s.pdf", self::getPath($this->exam->id, $student->id));
+                foreach ($this->_exam->students as $student) {
+                        $filename = sprintf("%s.pdf", self::getPath($this->_exam->id, $student->id));
                         if (!file_exists($filename)) {
                                 $this->createFile($student);
                         }
@@ -271,8 +271,8 @@ class Result extends Component
                 if (!($zip->open($target, ZipArchive::CREATE))) {
                         throw new \Exception($zip->getStatusString());
                 }
-                foreach ($this->exam->students as $student) {
-                        $input = sprintf("%s.pdf", self::getPath($this->exam->id, $student->id));
+                foreach ($this->_exam->students as $student) {
+                        $input = sprintf("%s.pdf", self::getPath($this->_exam->id, $student->id));
                         $local = sprintf("%s-%s.pdf", $student->code, $student->user);
 
                         if (!$zip->addFile($input, $local)) {
@@ -320,7 +320,7 @@ class Result extends Component
                         $student = $sid;
                 }
 
-                $source = sprintf("%s.pdf", self::getPath($this->exam->id, $student->id));
+                $source = sprintf("%s.pdf", self::getPath($this->_exam->id, $student->id));
                 $target = sprintf("%s-%s.pdf", $student->code, $student->user);
 
                 if (!file_exists($source)) {
@@ -340,8 +340,8 @@ class Result extends Component
          */
         public function downloadArchive()
         {
-                $source = sprintf("%s.zip", self::getPath($this->exam->id));
-                $target = sprintf("%s.zip", $this->exam->name);
+                $source = sprintf("%s.zip", self::getPath($this->_exam->id));
+                $target = sprintf("%s.zip", $this->_exam->name);
 
                 if (!file_exists($source)) {
                         $this->createArchive();
@@ -382,7 +382,7 @@ class Result extends Component
                 // Admins and staff can always access student result.
                 // 
                 if ($this->user->roles->isAdmin() ||
-                    $this->user->roles->isStaff($this->exam->id)) {
+                    $this->user->roles->isStaff($this->_exam->id)) {
                         return true;
                 }
 
@@ -390,13 +390,13 @@ class Result extends Component
                 // Find student in students on this exam.
                 // 
                 if (!isset($sid)) {
-                        $found = $this->exam->students->filter(function($student) {
+                        $found = $this->_exam->students->filter(function($student) {
                                 if ($student->user == $this->user->getPrincipalName()) {
                                         return $student;
                                 }
                         });
                 } else {
-                        $found = $this->exam->students->filter(function($student) use($sid) {
+                        $found = $this->_exam->students->filter(function($student) use($sid) {
                                 if ($student->id == $sid) {
                                         return $student;
                                 }
@@ -475,7 +475,7 @@ class Result extends Component
          */
         private function getResultUrl($token, $student)
         {
-                $expand = $this->url->get(sprintf("result/%d/view/%d", $this->exam->id, $student->id));
+                $expand = $this->url->get(sprintf("result/%d/view/%d", $this->_exam->id, $student->id));
                 $source = sprintf("http://localhost/%s?token=%s&user=%s", $expand, $token, $student->user);
                 return $source;
         }

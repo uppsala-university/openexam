@@ -52,7 +52,7 @@ class DocumentLiteral implements SoapHandler
          * The target SOAP service.
          * @var SoapHandler 
          */
-        private $service;
+        private $_service;
 
         /**
          * Constructor.
@@ -60,13 +60,13 @@ class DocumentLiteral implements SoapHandler
          */
         public function __construct($service)
         {
-                $this->service = $service;
+                $this->_service = $service;
         }
 
         public function __call($name, $arguments)
         {
                 $response = call_user_func_array(
-                    array($this->service, $name), (array) ($arguments[0])
+                    array($this->_service, $name), (array) ($arguments[0])
                 );
                 return array('return' => $response);
         }

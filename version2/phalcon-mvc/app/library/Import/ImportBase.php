@@ -29,37 +29,37 @@ abstract class ImportBase extends Component implements Import
          * The sections to import.
          * @var int
          */
-        protected $filter;
+        protected $_filter;
         /**
          * Accepted MIME-types.
          * @var string|array
          */
-        protected $accept;
+        protected $_accept;
         /**
          * Name of file.
          * @var string
          */
-        protected $name;
+        protected $_name;
         /**
          * File path
          * @var string 
          */
-        protected $file;
+        protected $_file;
         /**
          * MIME type.
          * @var string 
          */
-        protected $mime;
+        protected $_mime;
         /**
          * File size.
          * @var int 
          */
-        protected $size;
+        protected $_size;
         /**
          * The data to import.
          * @var ImportData 
          */
-        protected $data;
+        protected $_data;
 
         /**
          * Constructor.
@@ -68,8 +68,8 @@ abstract class ImportBase extends Component implements Import
          */
         public function __construct($accept, $filter = Import::OPENEXAM_IMPORT_INCLUDE_ALL)
         {
-                $this->accept = $accept;
-                $this->filter = $filter;
+                $this->_accept = $accept;
+                $this->_filter = $filter;
         }
 
         /**
@@ -84,10 +84,10 @@ abstract class ImportBase extends Component implements Import
          */
         public function setFile($file)
         {
-                $this->file = $file->getTempName();
-                $this->mime = $file->getType();
-                $this->name = $file->getName();
-                $this->size = $file->getSize();
+                $this->_file = $file->getTempName();
+                $this->_mime = $file->getType();
+                $this->_name = $file->getName();
+                $this->_size = $file->getSize();
 
                 if (isset($_FILES['file']['error'])) {
                         switch ($_FILES['file']['error']) {
@@ -107,38 +107,38 @@ abstract class ImportBase extends Component implements Import
                                         throw new ImportException(_("A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help."), Error::INTERNAL_SERVER_ERROR);
                         }
                 }
-                if (!is_uploaded_file($this->file)) {
+                if (!is_uploaded_file($this->_file)) {
                         throw new ImportException(_("The file don't reference an uploaded file, possible file attack."), Error::BAD_REQUEST);
                 }
-                if ($this->mime == FileImport::OCTET_STREAM) {
-                        $this->mime = FileImport::getMimeType($this->mime);
+                if ($this->_mime == FileImport::OCTET_STREAM) {
+                        $this->_mime = FileImport::getMimeType($this->_mime);
                 }
 
                 $accepted = false;
-                $expected = is_array($this->accept) ? implode("|", $this->accept) : $this->accept;
+                $expected = is_array($this->_accept) ? implode("|", $this->_accept) : $this->_accept;
 
-                if (!isset($this->mime)) {
+                if (!isset($this->_mime)) {
                         $accepted = true;       // Give it a try
                 } else {
-                        if (is_array($this->accept)) {
-                                foreach ($this->accept as $type) {
-                                        if ($type == $this->mime) {
+                        if (is_array($this->_accept)) {
+                                foreach ($this->_accept as $type) {
+                                        if ($type == $this->_mime) {
                                                 $accepted = true;
                                                 break;
                                         }
                                 }
                         } else {
-                                if ($this->mime == $this->accept) {
+                                if ($this->_mime == $this->_accept) {
                                         $accepted = true;
                                 }
                         }
                 }
 
                 if (!$accepted) {
-                        throw new ImportException(sprintf(_("Wrong MIME type (%s) on uploaded file %s (expected %s)"), $this->mime, $this->name, $expected), Error::NOT_ACCEPTABLE);
+                        throw new ImportException(sprintf(_("Wrong MIME type (%s) on uploaded file %s (expected %s)"), $this->_mime, $this->_name, $expected), Error::NOT_ACCEPTABLE);
                 }
-                if ($this->size == 0) {
-                        throw new ImportException(sprintf(_("Empty file %s uploaded"), $this->name), Error::BAD_REQUEST);
+                if ($this->_size == 0) {
+                        throw new ImportException(sprintf(_("Empty file %s uploaded"), $this->_name), Error::BAD_REQUEST);
                 }
         }
 
@@ -148,7 +148,7 @@ abstract class ImportBase extends Component implements Import
          */
         public function setFilter($filter)
         {
-                $this->filter = $filter;
+                $this->_filter = $filter;
         }
 
         /**
@@ -157,7 +157,7 @@ abstract class ImportBase extends Component implements Import
          */
         public function getFilter()
         {
-                return $this->filter;
+                return $this->_filter;
         }
 
         /**
@@ -192,7 +192,7 @@ abstract class ImportBase extends Component implements Import
 
         public function insert($inserter)
         {
-                $inserter->insert($this->data, $this->filter);
+                $inserter->insert($this->_data, $this->_filter);
                 return $inserter->getExamID();
         }
 
@@ -203,7 +203,7 @@ abstract class ImportBase extends Component implements Import
 
         public function getData()
         {
-                return $this->data;
+                return $this->_data;
         }
 
 }

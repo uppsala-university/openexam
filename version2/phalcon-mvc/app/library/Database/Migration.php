@@ -28,7 +28,7 @@ class Migration
          * Defines the upgrade order between database tables.
          * @var array 
          */
-        private static $order = array(
+        private static $_order = array(
                 'admins', 'teachers', 'schemainfo',
                 'rooms', 'computers',
                 'exams', 'contributors', 'decoders', 'examinators', 'invigilators',
@@ -63,7 +63,7 @@ class Migration
 
                 $exception = null;
 
-                foreach (self::$order as $table) {
+                foreach (self::$_order as $table) {
                         try {
                                 $options['tableName'] = $table;
                                 \Phalcon\Migrations::run($options);

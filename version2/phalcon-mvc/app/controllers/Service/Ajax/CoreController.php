@@ -145,12 +145,12 @@ class CoreController extends AjaxController
         /**
          * @var CoreHandler 
          */
-        protected $handler;
+        protected $_handler;
 
         public function initialize()
         {
                 parent::initialize();
-                $this->handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
+                $this->_handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
         }
 
         /**
@@ -160,7 +160,7 @@ class CoreController extends AjaxController
          */
         public function createAction($role, $type)
         {
-                $response = $this->handler->create($role, $type);
+                $response = $this->_handler->create($role, $type);
                 $this->sendResponse($response);
         }
 
@@ -171,7 +171,7 @@ class CoreController extends AjaxController
          */
         public function readAction($role, $type)
         {
-                $response = $this->handler->read($role, $type);
+                $response = $this->_handler->read($role, $type);
                 $this->sendResponse($response);
         }
 
@@ -182,7 +182,7 @@ class CoreController extends AjaxController
          */
         public function updateAction($role, $type)
         {
-                $response = $this->handler->update($role, $type);
+                $response = $this->_handler->update($role, $type);
                 $this->sendResponse($response);
         }
 
@@ -193,7 +193,7 @@ class CoreController extends AjaxController
          */
         public function deleteAction($role, $type)
         {
-                $response = $this->handler->delete($role, $type);
+                $response = $this->_handler->delete($role, $type);
                 $this->sendResponse($response);
         }
 
@@ -202,7 +202,7 @@ class CoreController extends AjaxController
          */
         public function capabilityAction()
         {
-                $response = $this->handler->capability();
+                $response = $this->_handler->capability();
                 $this->sendResponse($response);
         }
 
@@ -226,7 +226,7 @@ class CoreController extends AjaxController
                         )
                 );
 
-                $this->sendResponse(new ServiceResponse($this->handler, ServiceHandler::SUCCESS, $content));
+                $this->sendResponse(new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $content));
         }
         
 }

@@ -27,7 +27,7 @@ class RenderTask extends MainTask implements TaskInterface
          * Command line options.
          * @var array 
          */
-        private $options;
+        private $_options;
 
         public static function getUsage()
         {
@@ -80,17 +80,17 @@ class RenderTask extends MainTask implements TaskInterface
         public function imageAction($params = array())
         {
                 $this->setOptions($params, 'image');
-                if ($this->options['type']) {
-                        $this->options['globals']['fmt'] = $this->options['type'];
+                if ($this->_options['type']) {
+                        $this->_options['globals']['fmt'] = $this->_options['type'];
                 } else {
                         foreach (array('png', 'jpg', 'jpeg', 'bmp', 'svg') as $type) {
-                                if ($this->options[$type]) {
-                                        $this->options['globals']['fmt'] = $type;
+                                if ($this->_options[$type]) {
+                                        $this->_options['globals']['fmt'] = $type;
                                 }
                         }
                 }
-                $render = new RenderImage($this->options['globals']);
-                $render->save($this->options['output'], array('in' => $this->options['page'][0]['page']));
+                $render = new RenderImage($this->_options['globals']);
+                $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
         }
 
         /**
@@ -100,8 +100,8 @@ class RenderTask extends MainTask implements TaskInterface
         public function pdfAction($params = array())
         {
                 $this->setOptions($params, 'pdf');
-                $render = new RenderPdfDocument($this->options['globals']);
-                $render->save($this->options['output'], $this->options['page']);
+                $render = new RenderPdfDocument($this->_options['globals']);
+                $render->save($this->_options['output'], $this->_options['page']);
         }
 
         /**
@@ -114,7 +114,7 @@ class RenderTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array());
+                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array());
 
                 // 
                 // Supported options.
@@ -126,8 +126,8 @@ class RenderTask extends MainTask implements TaskInterface
                 // Set defaults.
                 // 
                 foreach ($options as $option) {
-                        if (!isset($this->options[$option])) {
-                                $this->options[$option] = false;
+                        if (!isset($this->_options[$option])) {
+                                $this->_options[$option] = false;
                         }
                 }
 
@@ -135,7 +135,7 @@ class RenderTask extends MainTask implements TaskInterface
                 // Include action in options (for multitarget actions).
                 // 
                 if (isset($action)) {
-                        $this->options[$action] = true;
+                        $this->_options[$action] = true;
                 }
 
                 // 
@@ -143,17 +143,17 @@ class RenderTask extends MainTask implements TaskInterface
                 // 
                 while (($option = array_shift($params))) {
                         if (in_array($option, $options)) {
-                                if (!is_array($this->options[$option])) {
-                                        $this->options[$option] = true;
+                                if (!is_array($this->_options[$option])) {
+                                        $this->_options[$option] = true;
                                 }
                                 $current = $option;
                         } elseif (in_array($current, $options)) {
                                 if ($current == 'page') {
-                                        $this->options[$current][][$current] = $option;
+                                        $this->_options[$current][][$current] = $option;
                                 } elseif ($current == 'globals') {
-                                        $this->options[$current][$option] = array_shift($params);
+                                        $this->_options[$current][$option] = array_shift($params);
                                 } else {
-                                        $this->options[$current] = $option;
+                                        $this->_options[$current] = $option;
                                 }
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");

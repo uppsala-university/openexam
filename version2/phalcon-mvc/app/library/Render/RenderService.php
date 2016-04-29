@@ -26,7 +26,7 @@ class RenderService extends Component
          * The registered render objects.
          * @var Renderer[] 
          */
-        private $render = array();
+        private $_render = array();
 
         /**
          * Get render object for type.
@@ -35,10 +35,10 @@ class RenderService extends Component
          */
         public function getRender($type)
         {
-                if (!isset($this->render[$type])) {
+                if (!isset($this->_render[$type])) {
                         $this->createRender($type);
                 }
-                return $this->render[$type];
+                return $this->_render[$type];
         }
 
         /**
@@ -48,7 +48,7 @@ class RenderService extends Component
          */
         public function setRender($type, $render)
         {
-                $this->render[$type] = $render;
+                $this->_render[$type] = $render;
         }
 
         /**
@@ -60,10 +60,10 @@ class RenderService extends Component
         {
                 switch ($type) {
                         case Renderer::FORMAT_IMAGE:
-                                $this->render[$type] = new RenderImage($this->config->render->image);
+                                $this->_render[$type] = new RenderImage($this->config->render->image);
                                 break;
                         case Renderer::FORMAT_PDF:
-                                $this->render[$type] = new RenderPdfDocument($this->config->render->pdf);
+                                $this->_render[$type] = new RenderPdfDocument($this->config->render->pdf);
                                 break;
                         default:
                                 throw new Exception($this->tr->_("Unknown format type %s", array($type)));

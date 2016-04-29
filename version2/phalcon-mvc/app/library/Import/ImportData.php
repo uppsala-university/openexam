@@ -45,7 +45,7 @@ class ImportData extends SimpleXMLElement
         /**
          * @var stdClass
          */
-        private static $mmap;   // Must be static
+        private static $_mmap;   // Must be static
 
         /**
          * Get mapping object.
@@ -53,10 +53,10 @@ class ImportData extends SimpleXMLElement
          */
         public function map()
         {
-                if (!isset(self::$mmap)) {
-                        self::$mmap = new stdClass();
+                if (!isset(self::$_mmap)) {
+                        self::$_mmap = new stdClass();
                 }
-                return self::$mmap;
+                return self::$_mmap;
         }
 
 }

@@ -36,7 +36,7 @@ use Phalcon\Logger\Adapter\File as FileAdapter;
 class LoggingCallback extends FileAdapter
 {
 
-        private $options;
+        protected $_options;
 
         /**
          * Constructor.
@@ -52,13 +52,13 @@ class LoggingCallback extends FileAdapter
         ))
         {
                 if (is_array($options)) {
-                        $this->options = (object) $options;
+                        $this->_options = (object) $options;
                 } else {
-                        $this->options = (object) $options->toArray();
+                        $this->_options = (object) $options->toArray();
                 }
 
-                $this->options->logfile = $name;
-                $this->options->process = false;
+                $this->_options->logfile = $name;
+                $this->_options->process = false;
 
                 if ($this->detect()) {
                         $this->apply();
@@ -84,25 +84,25 @@ class LoggingCallback extends FileAdapter
          */
         private function detect()
         {
-                if (!file_exists($this->options->logfile)) {
+                if (!file_exists($this->_options->logfile)) {
                         return false;
                 }
-                if (!($stat = stat($this->options->logfile))) {
+                if (!($stat = stat($this->_options->logfile))) {
                         return false;
                 }
 
-                if ($this->options->maxsize != 0) {
-                        if ($this->options->maxsize < $stat['size']) {
-                                $this->options->process = true;
+                if ($this->_options->maxsize != 0) {
+                        if ($this->_options->maxsize < $stat['size']) {
+                                $this->_options->process = true;
                         }
                 }
-                if ($this->options->maxage != 0) {
-                        if ((time() - $this->options->maxage) > $stat['mtime']) {
-                                $this->options->process = true;
+                if ($this->_options->maxage != 0) {
+                        if ((time() - $this->_options->maxage) > $stat['mtime']) {
+                                $this->_options->process = true;
                         }
                 }
 
-                return $this->options->process;
+                return $this->_options->process;
         }
 
         /**
@@ -110,18 +110,18 @@ class LoggingCallback extends FileAdapter
          */
         private function apply()
         {
-                if (!($stat = stat($this->options->logfile))) {
+                if (!($stat = stat($this->_options->logfile))) {
                         return false;
                 }
-                
-                if ($this->options->truncate) {
-                        unlink($this->options->logfile);
-                } elseif ($this->options->rotate) {
-                        $this->options->rotdate = date('Ymd', $stat['mtime']);
-                        $this->options->rotfile = sprintf("%s_%s", $this->options->logfile, $this->options->rotdate);
+
+                if ($this->_options->truncate) {
+                        unlink($this->_options->logfile);
+                } elseif ($this->_options->rotate) {
+                        $this->_options->rotdate = date('Ymd', $stat['mtime']);
+                        $this->_options->rotfile = sprintf("%s_%s", $this->_options->logfile, $this->_options->rotdate);
                         $this->rotate();
                 }
-                if ($this->options->compress) {
+                if ($this->_options->compress) {
                         $this->compress();
                 }
         }
@@ -132,15 +132,15 @@ class LoggingCallback extends FileAdapter
         private function rotate()
         {
                 for ($i = 1;; $i++) {
-                        $filename = sprintf("%s.%d", $this->options->rotfile, $i);
+                        $filename = sprintf("%s.%d", $this->_options->rotfile, $i);
                         $compfile = sprintf("%s.gz", $filename);
                         if (!file_exists($filename) && !file_exists($compfile)) {
                                 break;
                         }
                 }
-                if (rename($this->options->logfile, $filename)) {
-                        $this->options->rotfile = $filename;
-                        $this->options->compfile = $compfile;
+                if (rename($this->_options->logfile, $filename)) {
+                        $this->_options->rotfile = $filename;
+                        $this->_options->compfile = $compfile;
                 }
         }
 
@@ -150,18 +150,18 @@ class LoggingCallback extends FileAdapter
          */
         private function compress()
         {
-                if (!isset($this->options->compfile)) {
+                if (!isset($this->_options->compfile)) {
                         return false;
                 }
 
-                $compfile = sprintf("compress.zlib://%s", $this->options->compfile);
+                $compfile = sprintf("compress.zlib://%s", $this->_options->compfile);
                 if (!($handle = fopen($compfile, "w"))) {
                         return false;
                 }
 
-                fwrite($handle, file_get_contents($this->options->rotfile));
+                fwrite($handle, file_get_contents($this->_options->rotfile));
                 fclose($handle);
-                unlink($this->options->rotfile);
+                unlink($this->_options->rotfile);
                 return true;
         }
 

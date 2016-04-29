@@ -46,17 +46,17 @@ class SignupController extends GuiController
          * The teacher signup object.
          * @var Teacher
          */
-        private $teacher;
+        private $_teacher;
         /**
          * The student signup object.
          * @var Student
          */
-        private $student;
+        private $_student;
         /**
          * Should signup be enabled or not?
          * @var boolean
          */
-        private $enabled = false;
+        private $_enabled = false;
 
         public function initialize()
         {
@@ -64,15 +64,15 @@ class SignupController extends GuiController
 
                 $this->view->setVar('icon', $this->url->get('img/tools-wizard.png'));
 
-                $this->teacher = new Teacher($this->user->getPrincipalName());
-                $this->student = new Student($this->user->getPrincipalName());
+                $this->_teacher = new Teacher($this->user->getPrincipalName());
+                $this->_student = new Student($this->user->getPrincipalName());
 
-                if ($this->config->signup->enabled == false) {
+                if ($this->config->signup->_enabled == false) {
                         $this->view->pick(array("signup/disabled"));
                 }
 
-                if ($this->student->isEnabled() == false &&
-                    $this->teacher->isEnabled() == false) {
+                if ($this->_student->isEnabled() == false &&
+                    $this->_teacher->isEnabled() == false) {
                         $this->view->pick(array("signup/disabled"));
                 }
         }
@@ -129,32 +129,32 @@ class SignupController extends GuiController
         public function removeAction()
         {
                 $this->view->setVar('employee', $this->user->affiliation->isEmployee());
-                $this->teacher->remove();
+                $this->_teacher->remove();
         }
 
         private function setViewData()
         {
                 if ($this->user->getUser() == null) {
                         $this->view->setVar('reload', $this->url->get('/signup/reload'));
-                        return $this->enabled = true;
+                        return $this->_enabled = true;
                 }
 
                 if ($this->user->affiliation->isEmployee()) {
-                        $this->enabled = true;
-                        $this->view->setVar('teacher', $this->teacher);
+                        $this->_enabled = true;
+                        $this->view->setVar('teacher', $this->_teacher);
                         $this->view->setVar('texams', Exam::find(
-                                sprintf("id IN (%s)", implode(",", $this->teacher->getExams()))
+                                sprintf("id IN (%s)", implode(",", $this->_teacher->getExams()))
                         ));
                 }
                 if ($this->user->affiliation->isStudent()) {
-                        $this->enabled = true;
-                        $this->view->setVar('student', $this->student);
+                        $this->_enabled = true;
+                        $this->view->setVar('student', $this->_student);
                         $this->view->setVar('sexams', Exam::find(
-                                sprintf("id IN (%s)", implode(",", $this->student->getExams()))
+                                sprintf("id IN (%s)", implode(",", $this->_student->getExams()))
                         ));
                 }
 
-                return $this->enabled;
+                return $this->_enabled;
         }
 
 }

@@ -23,17 +23,17 @@ use PHPExcel_Reader_CSV;
 class ImportStudentsTextCsv extends ImportStudents
 {
 
-        private static $mimedef = "text/csv";
+        private static $_mimedef = "text/csv";
 
         public function __construct($accept = "")
         {
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->reader = new PHPExcel_Reader_CSV();
-                $this->reader->setReadDataOnly(true);
+                $this->_reader = new PHPExcel_Reader_CSV();
+                $this->_reader->setReadDataOnly(true);
         }
 
 }

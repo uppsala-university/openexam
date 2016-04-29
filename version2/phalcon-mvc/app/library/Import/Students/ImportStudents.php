@@ -39,23 +39,23 @@ class ImportStudents extends ImportBase
         const PNR = 'pnr';
         const ROW = 'row';
 
-        private static $pnrhpatt = "/^personnummer|pers.?nr|p.?nr|pnum$/";
-        private static $pnrvpatt = "/^\d{6,8}-?(\d{4}|[a-zA-Z]\d{3}|\d{3}[a-zA-Z])$/";
-        protected $students = array();
-        protected $opts;
-        protected $reader;
-        private $excel;         // the excel object
-        private $sheet;         // active sheet
-        private $cols;          // columns in active sheet
-        private $rows;          // rows in active sheet
-        private $sdat;          // php array (0-based) of sheet data
-        private $first = 0;     // first row
+        private static $_pnrhpatt = "/^personnummer|pers.?nr|p.?nr|pnum$/";
+        private static $_pnrvpatt = "/^\d{6,8}-?(\d{4}|[a-zA-Z]\d{3}|\d{3}[a-zA-Z])$/";
+        protected $_students = array();
+        protected $_opts;
+        protected $_reader;
+        private $_excel;         // the excel object
+        private $_sheet;         // active sheet
+        private $_cols;          // columns in active sheet
+        private $_rows;          // rows in active sheet
+        private $_sdat;          // php array (0-based) of sheet data
+        private $_first = 0;     // first row
 
         public function __construct($accept)
         {
                 parent::__construct($accept);
-                $this->data = new ImportData(self::XMLDOC);
-                $this->opts = new stdClass();
+                $this->_data = new ImportData(self::XMLDOC);
+                $this->_opts = new stdClass();
         }
 
         /**
@@ -70,11 +70,11 @@ class ImportStudents extends ImportBase
         public function setTagging($tag)
         {
                 if (is_numeric($tag)) {
-                        $this->opts->coltag = $tag;
+                        $this->_opts->coltag = $tag;
                 } elseif (is_string($tag) && strlen($tag) == 1) {
-                        $this->opts->coltag = $tag - ord('A');
+                        $this->_opts->coltag = $tag - ord('A');
                 } else {
-                        $this->opts->tagstr = $tag;
+                        $this->_opts->tagstr = $tag;
                 }
         }
 
@@ -96,16 +96,16 @@ class ImportStudents extends ImportBase
         {
                 switch ($type) {
                         case self::TAG:
-                                $this->opts->coltag = $index;
+                                $this->_opts->coltag = $index;
                                 break;
                         case self::USER:
-                                $this->opts->coluser = $index;
+                                $this->_opts->coluser = $index;
                                 break;
                         case self::PNR:
-                                $this->opts->colpnr = $index;
+                                $this->_opts->colpnr = $index;
                                 break;
                         case self::CODE:
-                                $this->opts->colcode = $index;
+                                $this->_opts->colcode = $index;
                 }
         }
 
@@ -115,44 +115,44 @@ class ImportStudents extends ImportBase
          */
         public function setStartRow($row)
         {
-                $this->first = $row;
+                $this->_first = $row;
         }
 
         public function read()
         {
-                $this->excel = $this->reader->load($this->file);
-                $this->sheet = $this->excel->setActiveSheetIndex(0);
+                $this->_excel = $this->_reader->load($this->_file);
+                $this->_sheet = $this->_excel->setActiveSheetIndex(0);
 
-                $this->cols = ord($this->sheet->getHighestColumn()) - ord('A');
-                $this->rows = $this->sheet->getHighestRow();
-                $this->sdat = $this->sheet->toArray();
+                $this->_cols = ord($this->_sheet->getHighestColumn()) - ord('A');
+                $this->_rows = $this->_sheet->getHighestRow();
+                $this->_sdat = $this->_sheet->toArray();
 
-                if (isset($this->opts->coluser)) {
-                        $this->readAccounts($this->opts->coluser);
-                } elseif (isset($this->opts->colpnr)) {
-                        $this->readPersNr($this->opts->colpnr);
+                if (isset($this->_opts->coluser)) {
+                        $this->readAccounts($this->_opts->coluser);
+                } elseif (isset($this->_opts->colpnr)) {
+                        $this->readPersNr($this->_opts->colpnr);
                         $this->lookupPersNr();
                 } else {
                         $this->readDetect();    // try to detect pers.nr.
                         $this->lookupPersNr();
                 }
 
-                if (count($this->students) == 0) {
+                if (count($this->_students) == 0) {
                         throw new ImportException("No account information in import file.", Error::PRECONDITION_FAILED);
                 }
 
-                if (isset($this->opts->coltag)) {
-                        $this->readTag($this->opts->coltag);
+                if (isset($this->_opts->coltag)) {
+                        $this->readTag($this->_opts->coltag);
                 }
-                if (isset($this->opts->tagstr)) {
-                        $this->assignTag($this->opts->tagstr);
+                if (isset($this->_opts->tagstr)) {
+                        $this->assignTag($this->_opts->tagstr);
                 }
-                if (isset($this->opts->colcode)) {
-                        $this->readCode($this->opts->colcode);
+                if (isset($this->_opts->colcode)) {
+                        $this->readCode($this->_opts->colcode);
                 }
 
-                $pnode = $this->data->addChild('students');
-                foreach ($this->students as $user => $val) {
+                $pnode = $this->_data->addChild('students');
+                foreach ($this->_students as $user => $val) {
                         $snode = $pnode->addChild('student');
                         $snode->addChild('user', $user);
                         $snode->addChild('code', $val[self::CODE]);
@@ -170,7 +170,7 @@ class ImportStudents extends ImportBase
          */
         public function getStudents()
         {
-                return $this->students;
+                return $this->_students;
         }
 
         /**
@@ -179,7 +179,7 @@ class ImportStudents extends ImportBase
          */
         public function getSheet()
         {
-                return $this->sdat;
+                return $this->_sdat;
         }
 
         // 
@@ -187,8 +187,8 @@ class ImportStudents extends ImportBase
         // 
         private function readAccounts($column)
         {
-                for ($r = $this->first; $r < $this->rows; ++$r) {
-                        $value = $this->sdat[$r][$column];
+                for ($r = $this->_first; $r < $this->_rows; ++$r) {
+                        $value = $this->_sdat[$r][$column];
                         $this->setValue(null, self::USER, $value);
                         $this->setValue($value, self::ROW, $r);
                 }
@@ -199,14 +199,14 @@ class ImportStudents extends ImportBase
         // 
         private function readPersNr($column)
         {
-                for ($r = $this->first; $r < $this->rows; ++$r) {
-                        $value = trim($this->sdat[$r][$column]);
+                for ($r = $this->_first; $r < $this->_rows; ++$r) {
+                        $value = trim($this->_sdat[$r][$column]);
                         if (empty($value)) {
                                 continue;
-                        } elseif (preg_match(self::$pnrvpatt, $value)) {
+                        } elseif (preg_match(self::$_pnrvpatt, $value)) {
                                 $this->setValue(null, self::USER, $value);
                                 $this->setValue($value, self::ROW, $r);
-                        } elseif ($r != $this->first) {
+                        } elseif ($r != $this->_first) {
                                 throw new ImportException(sprintf("Unmatched personal number in cell '%d,%d' (%s)", $r, $column, $value), Error::NOT_ACCEPTABLE);
                         }
                 }
@@ -221,16 +221,16 @@ class ImportStudents extends ImportBase
                 // 
                 // Try to detect an header matching one of the hpattern.
                 // 
-                for ($c = 0; $c < $this->cols; ++$c) {
-                        $value = $this->sdat[0][$c];
-                        if (preg_match(self::$pnrhpatt, strtolower($value))) {
+                for ($c = 0; $c < $this->_cols; ++$c) {
+                        $value = $this->_sdat[0][$c];
+                        if (preg_match(self::$_pnrhpatt, strtolower($value))) {
                                 // 
                                 // Check if row below actually contains a 
                                 // personal number.
                                 // 
-                                $value = $this->sdat[1][$c];
-                                if (preg_match(self::$pnrvpatt, $value)) {
-                                        $this->first = 1;
+                                $value = $this->_sdat[1][$c];
+                                if (preg_match(self::$_pnrvpatt, $value)) {
+                                        $this->_first = 1;
                                         $this->readPersNr($c);
                                         return;
                                 }
@@ -240,10 +240,10 @@ class ImportStudents extends ImportBase
                 // 
                 // Try to detect an personal number in each cell.
                 // 
-                for ($r = $this->first; $r < $this->rows; ++$r) {
-                        for ($c = 0; $c < $this->cols; ++$c) {
-                                $value = $this->sdat[$r][$c];
-                                if (preg_match(self::$pnrvpatt, $value)) {
+                for ($r = $this->_first; $r < $this->_rows; ++$r) {
+                        for ($c = 0; $c < $this->_cols; ++$c) {
+                                $value = $this->_sdat[$r][$c];
+                                if (preg_match(self::$_pnrvpatt, $value)) {
                                         $this->setValue(null, self::USER, $value);
                                         $this->setValue($value, self::ROW, $r);
                                 }
@@ -256,8 +256,8 @@ class ImportStudents extends ImportBase
         // 
         private function readCode($column)
         {
-                foreach (array_keys($this->students) as $user) {
-                        $value = $this->sdat[$this->getValue($user, self::ROW)][$column];
+                foreach (array_keys($this->_students) as $user) {
+                        $value = $this->_sdat[$this->getValue($user, self::ROW)][$column];
                         $this->setValue($user, self::CODE, $value);
                 }
         }
@@ -267,8 +267,8 @@ class ImportStudents extends ImportBase
         // 
         private function readTag($column)
         {
-                foreach (array_keys($this->students) as $user) {
-                        $value = $this->sdat[$this->getValue($user, self::ROW)][$column];
+                foreach (array_keys($this->_students) as $user) {
+                        $value = $this->_sdat[$this->getValue($user, self::ROW)][$column];
                         $this->setValue($user, self::TAG, $value);
                 }
         }
@@ -278,7 +278,7 @@ class ImportStudents extends ImportBase
         // 
         private function assignTag($tag)
         {
-                foreach (array_keys($this->students) as $user) {
+                foreach (array_keys($this->_students) as $user) {
                         $this->setValue($user, self::TAG, $tag);
                 }
         }
@@ -288,14 +288,14 @@ class ImportStudents extends ImportBase
         // 
         private function lookupPersNr()
         {
-                foreach ($this->students as $key => $val) {
+                foreach ($this->_students as $key => $val) {
                         if (is_numeric($key[0])) {
                                 $principal = $this->catalog->getPrincipal($key, Principal::ATTR_PNR, array('attr' => Principal::ATTR_PN));
                                 if (count($principal) != 0) {
                                         $user = $principal[0]->principal;
-                                        $val = $this->students[$key];
-                                        unset($this->students[$key]);
-                                        $this->students[$user] = $val;
+                                        $val = $this->_students[$key];
+                                        unset($this->_students[$key]);
+                                        $this->_students[$user] = $val;
                                         $this->setvalue($user, self::PNR, $key);
                                 }
                         }
@@ -305,19 +305,19 @@ class ImportStudents extends ImportBase
         private function setValue($key, $name, $val)
         {
                 if ($name == self::USER) {
-                        if (!isset($this->students[$val])) {
-                                $this->students[$val] = array(
+                        if (!isset($this->_students[$val])) {
+                                $this->_students[$val] = array(
                                         self::TAG  => '', self::CODE => ''
                                 );
                         }
                 } else {
-                        $this->students[$key][$name] = $val;
+                        $this->_students[$key][$name] = $val;
                 }
         }
 
         private function getValue($key, $name)
         {
-                return $this->students[$key][$name];
+                return $this->_students[$key][$name];
         }
 
 }

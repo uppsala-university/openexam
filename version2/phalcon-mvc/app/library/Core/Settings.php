@@ -56,17 +56,17 @@ class Settings extends Component
          * The user principal.
          * @var string 
          */
-        private $principal;
+        private $_principal;
         /**
          * Dirty flag.
          * @var boolean 
          */
-        private $dirty = false;
+        private $_dirty = false;
         /**
          * The setting model.
          * @var Setting 
          */
-        private $settings;
+        private $_settings;
 
         /**
          * Constructor.
@@ -75,9 +75,9 @@ class Settings extends Component
         public function __construct($principal = null)
         {
                 if (isset($principal)) {
-                        $this->principal = $principal;
+                        $this->_principal = $principal;
                 } else {
-                        $this->principal = $this->user->getPrincipalName();
+                        $this->_principal = $this->user->getPrincipalName();
                 }
                 $this->read();
         }
@@ -116,8 +116,8 @@ class Settings extends Component
          */
         public function set($key, $val = null, $sect = null)
         {
-                $this->dirty = true;
-                $this->settings->set($key, $val, $sect);
+                $this->_dirty = true;
+                $this->_settings->set($key, $val, $sect);
         }
 
         /**
@@ -136,7 +136,7 @@ class Settings extends Component
          */
         public function get($key, $sect = null)
         {
-                return $this->settings->get($key, $sect);
+                return $this->_settings->get($key, $sect);
         }
 
         /**
@@ -147,7 +147,7 @@ class Settings extends Component
          */
         public function has($key, $sect = null)
         {
-                return $this->settings->has($key, $sect);
+                return $this->_settings->has($key, $sect);
         }
 
         /**
@@ -156,13 +156,13 @@ class Settings extends Component
          */
         public function save()
         {
-                if ($this->dirty) {
-                        if ($this->settings->save() == false) {
-                                throw new Exception($this->settings->getMessages()[0]);
+                if ($this->_dirty) {
+                        if ($this->_settings->save() == false) {
+                                throw new Exception($this->_settings->getMessages()[0]);
                         }
                 }
                 
-                $this->dirty = false;
+                $this->_dirty = false;
         }
 
         /**
@@ -170,12 +170,12 @@ class Settings extends Component
          */
         public function read()
         {
-                if (($this->settings = Setting::findFirstByUser($this->principal)) == false) {
-                        $this->settings = new Setting();
-                        $this->settings->user = $this->principal;
+                if (($this->_settings = Setting::findFirstByUser($this->_principal)) == false) {
+                        $this->_settings = new Setting();
+                        $this->_settings->user = $this->_principal;
                 }
                 
-                $this->dirty = false;
+                $this->_dirty = false;
         }
 
         /**
@@ -183,9 +183,9 @@ class Settings extends Component
          */
         public function clear()
         {
-                $this->settings->data = array();
-                $this->settings->save();
-                $this->dirty = false;
+                $this->_settings->data = array();
+                $this->_settings->save();
+                $this->_dirty = false;
         }
 
         /**
@@ -194,11 +194,11 @@ class Settings extends Component
          */
         public function delete()
         {
-                if ($this->settings->delete() == false) {
-                        throw new Exception($this->settings->getMessages()[0]);
+                if ($this->_settings->delete() == false) {
+                        throw new Exception($this->_settings->getMessages()[0]);
                 }
                 
-                $this->dirty = false;
+                $this->_dirty = false;
         }
 
         /**
@@ -207,7 +207,7 @@ class Settings extends Component
          */
         public function data()
         {
-                return $this->settings->data;
+                return $this->_settings->data;
         }
 
 }

@@ -15,10 +15,10 @@ class UserTest extends TestCase
         /**
          * @var User
          */
-        protected $object;
-        private static $user = 'user1';
-        private static $domain = 'domain1';
-        private static $role = 'role1';
+        private $_object;
+        private static $_user = 'user1';
+        private static $_domain = 'domain1';
+        private static $_role = 'role1';
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -26,7 +26,7 @@ class UserTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new User(self::$user, self::$domain, self::$role);
+                $this->_object = new User(self::$_user, self::$_domain, self::$_role);
         }
 
         /**
@@ -49,40 +49,40 @@ class UserTest extends TestCase
                 // 
                 // test User(user, domain):
                 // 
-                $user = self::$user;
-                $domain = self::$domain;
-                $this->object = new User($user, $domain);
+                $user = self::$_user;
+                $domain = self::$_domain;
+                $this->_object = new User($user, $domain);
                 $expect = sprintf("%s@%s", $user, $domain);
-                $actual = $this->object->getPrincipalName();
+                $actual = $this->_object->getPrincipalName();
                 self::assertEquals($expect, $actual);
 
                 // 
                 // test User(principal):
                 // 
-                $user = sprintf("%s@%s", self::$user, self::$domain);
-                $this->object = new User($user);
+                $user = sprintf("%s@%s", self::$_user, self::$_domain);
+                $this->_object = new User($user);
                 $expect = $user;
-                $actual = $this->object->getPrincipalName();
+                $actual = $this->_object->getPrincipalName();
                 self::assertEquals($expect, $actual);
 
                 // 
                 // test User(user): -> using default domain
                 // 
-                $user = self::$user;
+                $user = self::$_user;
                 $domain = $this->config->user->domain;
-                $this->object = new User($user);
-                $expect = sprintf("%s@%s", self::$user, $domain);
-                $actual = $this->object->getPrincipalName();
+                $this->_object = new User($user);
+                $expect = sprintf("%s@%s", self::$_user, $domain);
+                $actual = $this->_object->getPrincipalName();
                 self::assertEquals($expect, $actual);
 
                 // 
                 // test User(user): -> without default domain (throws)
                 // 
-                $user = self::$user;
+                $user = self::$_user;
                 $domain = $this->config->user->domain;
                 $this->config->user->domain = null;
                 $this->setExpectedExceptionFromAnnotation();
-                $this->object = new User($user);
+                $this->_object = new User($user);
                 $this->setExpectedException(null);
                 $this->config->user->domain = $domain;
 
@@ -90,7 +90,7 @@ class UserTest extends TestCase
                 // test User(null): -> empty user
                 // 
                 try {
-                        $this->object = new User();
+                        $this->_object = new User();
                 } catch (Exception $exception) {
                         self::error($exception);
                 }
@@ -101,16 +101,16 @@ class UserTest extends TestCase
                 $domain = $this->config->user->domain;
                 $this->config->user->domain = null;
 
-                $user = sprintf("%s@%s", self::$user, self::$domain);
+                $user = sprintf("%s@%s", self::$_user, self::$_domain);
                 try {
-                        $this->object = new User($user);
+                        $this->_object = new User($user);
                 } catch (Exception $exception) {
                         self::error($exception);
                 }
 
-                $user = self::$user;
+                $user = self::$_user;
                 $this->setExpectedExceptionFromAnnotation();
-                $this->object = new User($user);
+                $this->_object = new User($user);
                 $this->setExpectedException(null);
 
                 $this->config->user->domain = $domain;
@@ -124,24 +124,24 @@ class UserTest extends TestCase
                         2 => array(Roles::DECODER, Roles::INVIGILATOR),
                         3 => array(Roles::INVIGILATOR)
                 );
-                $this->object = new User(self::$user, self::$domain, null, $roles);
-                self::assertTrue(count($this->object->roles->getRoles(0)) == 5);
-                self::assertTrue(count($this->object->roles->getRoles(1)) == 1);
-                self::assertTrue(count($this->object->roles->getRoles(2)) == 2);
-                self::assertTrue(count($this->object->roles->getRoles(3)) == 1);
-                self::assertTrue(count($this->object->roles->getRoles(4)) == 0);
-                self::assertTrue(count($this->object->roles->getAllRoles()) == 4);
-                self::assertTrue(count($this->object->roles->getAllRoles()[1]) == 1);
+                $this->_object = new User(self::$_user, self::$_domain, null, $roles);
+                self::assertTrue(count($this->_object->roles->getRoles(0)) == 5);
+                self::assertTrue(count($this->_object->roles->getRoles(1)) == 1);
+                self::assertTrue(count($this->_object->roles->getRoles(2)) == 2);
+                self::assertTrue(count($this->_object->roles->getRoles(3)) == 1);
+                self::assertTrue(count($this->_object->roles->getRoles(4)) == 0);
+                self::assertTrue(count($this->_object->roles->getAllRoles()) == 4);
+                self::assertTrue(count($this->_object->roles->getAllRoles()[1]) == 1);
 
-                self::assertTrue($this->object->roles->hasRole(Roles::ADMIN));
-                self::assertTrue($this->object->roles->hasRole(Roles::TEACHER));
-                self::assertTrue($this->object->roles->hasRole(Roles::CONTRIBUTOR));
-                self::assertTrue($this->object->roles->hasRole(Roles::DECODER));
-                self::assertTrue($this->object->roles->hasRole(Roles::INVIGILATOR));
+                self::assertTrue($this->_object->roles->hasRole(Roles::ADMIN));
+                self::assertTrue($this->_object->roles->hasRole(Roles::TEACHER));
+                self::assertTrue($this->_object->roles->hasRole(Roles::CONTRIBUTOR));
+                self::assertTrue($this->_object->roles->hasRole(Roles::DECODER));
+                self::assertTrue($this->_object->roles->hasRole(Roles::INVIGILATOR));
 
-                self::assertTrue($this->object->roles->hasRole(Roles::DECODER, 2));
-                self::assertTrue($this->object->roles->hasRole(Roles::INVIGILATOR, 2));
-                self::assertFalse($this->object->roles->hasRole(Roles::DECODER, 3));
+                self::assertTrue($this->_object->roles->hasRole(Roles::DECODER, 2));
+                self::assertTrue($this->_object->roles->hasRole(Roles::INVIGILATOR, 2));
+                self::assertFalse($this->_object->roles->hasRole(Roles::DECODER, 3));
         }
 
         /**
@@ -151,7 +151,7 @@ class UserTest extends TestCase
          */
         public function testRolesProperty()
         {
-                $roles = $this->object->roles;
+                $roles = $this->_object->roles;
                 self::assertNotNull($roles);
                 self::assertInstanceOf('\OpenExam\Library\Security\Roles', $roles);
         }
@@ -162,13 +162,13 @@ class UserTest extends TestCase
          */
         public function testGetPrincipalName()
         {
-                $principal = sprintf("%s@%s", self::$user, self::$domain);
-                self::assertNotNull($this->object->getPrincipalName());
-                self::assertNotEmpty($this->object->getPrincipalName());
-                self::assertTrue($this->object->getPrincipalName() == $principal);
+                $principal = sprintf("%s@%s", self::$_user, self::$_domain);
+                self::assertNotNull($this->_object->getPrincipalName());
+                self::assertNotEmpty($this->_object->getPrincipalName());
+                self::assertTrue($this->_object->getPrincipalName() == $principal);
 
-                $this->object = new User();
-                self::assertNull($this->object->getPrincipalName());
+                $this->_object = new User();
+                self::assertNull($this->_object->getPrincipalName());
         }
 
         /**
@@ -177,12 +177,12 @@ class UserTest extends TestCase
          */
         public function testGetDomain()
         {
-                self::assertNotNull($this->object->getDomain());
-                self::assertNotEmpty($this->object->getDomain());
-                self::assertTrue($this->object->getDomain() == self::$domain);
+                self::assertNotNull($this->_object->getDomain());
+                self::assertNotEmpty($this->_object->getDomain());
+                self::assertTrue($this->_object->getDomain() == self::$_domain);
 
-                $this->object = new User();
-                self::assertNull($this->object->getDomain());
+                $this->_object = new User();
+                self::assertNull($this->_object->getDomain());
         }
 
         /**
@@ -191,12 +191,12 @@ class UserTest extends TestCase
          */
         public function testGetUser()
         {
-                self::assertNotNull($this->object->getUser());
-                self::assertNotEmpty($this->object->getUser());
-                self::assertTrue($this->object->getUser() == self::$user);
+                self::assertNotNull($this->_object->getUser());
+                self::assertNotEmpty($this->_object->getUser());
+                self::assertTrue($this->_object->getUser() == self::$_user);
 
-                $this->object = new User();
-                self::assertNull($this->object->getUser());
+                $this->_object = new User();
+                self::assertNull($this->_object->getUser());
         }
 
         /**
@@ -205,12 +205,12 @@ class UserTest extends TestCase
          */
         public function testGetPrimaryRole()
         {
-                self::assertNotNull($this->object->getPrimaryRole());
-                self::assertNotEmpty($this->object->getPrimaryRole());
-                self::assertTrue($this->object->getPrimaryRole() == self::$role);
+                self::assertNotNull($this->_object->getPrimaryRole());
+                self::assertNotEmpty($this->_object->getPrimaryRole());
+                self::assertTrue($this->_object->getPrimaryRole() == self::$_role);
 
-                $this->object = new User();
-                self::assertNull($this->object->getPrimaryRole());
+                $this->_object = new User();
+                self::assertNull($this->_object->getPrimaryRole());
         }
 
         /**
@@ -219,19 +219,19 @@ class UserTest extends TestCase
          */
         public function testSetPrimaryRole()
         {
-                self::assertNotNull($this->object->getPrimaryRole());
+                self::assertNotNull($this->_object->getPrimaryRole());
 
-                $this->object->setPrimaryRole(null);
-                self::assertNull($this->object->getPrimaryRole());
+                $this->_object->setPrimaryRole(null);
+                self::assertNull($this->_object->getPrimaryRole());
 
                 $expect = 'somerole';
-                $this->object->setPrimaryRole($expect);
-                $actual = $this->object->getPrimaryRole();
+                $this->_object->setPrimaryRole($expect);
+                $actual = $this->_object->getPrimaryRole();
                 self::assertEquals($expect, $actual);
 
                 $expect = 'somerole';
-                $this->object->setPrimaryRole($expect);
-                $actual = $this->object->setPrimaryRole(null);
+                $this->_object->setPrimaryRole($expect);
+                $actual = $this->_object->setPrimaryRole(null);
                 self::assertEquals($expect, $actual);
         }
 
@@ -241,9 +241,9 @@ class UserTest extends TestCase
          */
         public function testHasPrimaryRole()
         {
-                self::assertTrue($this->object->hasPrimaryRole());
-                $this->object->setPrimaryRole(null);
-                self::assertFalse($this->object->hasPrimaryRole());
+                self::assertTrue($this->_object->hasPrimaryRole());
+                $this->_object->setPrimaryRole(null);
+                self::assertFalse($this->_object->hasPrimaryRole());
         }
 
         /**
@@ -252,8 +252,8 @@ class UserTest extends TestCase
          */
         public function testToString()
         {
-                $expect = sprintf("%s@%s", self::$user, self::$domain);
-                $actual = (string) $this->object;
+                $expect = sprintf("%s@%s", self::$_user, self::$_domain);
+                $actual = (string) $this->_object;
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }
@@ -276,12 +276,12 @@ class UserTest extends TestCase
                 // object. This saves us from having to insert all related
                 // database records.
                 // 
-                $this->object = new User(self::$user, self::$domain, null, array($id => $expect));
+                $this->_object = new User(self::$_user, self::$_domain, null, array($id => $expect));
 
                 // 
                 // Test aquire global:
                 // 
-                $actual = $this->object->aquire($expect);
+                $actual = $this->_object->aquire($expect);
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
@@ -289,7 +289,7 @@ class UserTest extends TestCase
                 // 
                 // Test aquire object specific:
                 // 
-                $actual = $this->object->aquire($expect, $id);
+                $actual = $this->_object->aquire($expect, $id);
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);

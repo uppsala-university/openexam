@@ -45,12 +45,12 @@ class DirectoryManager extends Component implements DirectoryService
          * The collection of directory services.
          * @var array 
          */
-        private $services;
+        private $_services;
         /**
          * Default search domain.
          * @var string 
          */
-        private $domain;
+        private $_domain;
 
         /**
          * Constructor.
@@ -58,7 +58,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function __construct($services = array())
         {
-                $this->services = $services;
+                $this->_services = $services;
         }
 
         /**
@@ -66,7 +66,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function __destruct()
         {
-                foreach ($this->services as $domain => $services) {
+                foreach ($this->_services as $domain => $services) {
                         foreach ($services as $name => $service) {
                                 if (($backend = $service->getConnection()) != null) {
                                         if ($backend->connected()) {
@@ -100,13 +100,13 @@ class DirectoryManager extends Component implements DirectoryService
                         $service->setName($name);
                 }
                 foreach ($domains as $domain) {
-                        if (!isset($this->services[$domain])) {
-                                $this->services[$domain] = array();
+                        if (!isset($this->_services[$domain])) {
+                                $this->_services[$domain] = array();
                         }
                         if (isset($name)) {
-                                $this->services[$domain][$name] = $service;
+                                $this->_services[$domain][$name] = $service;
                         } else {
-                                $this->services[$domain][] = $service;
+                                $this->_services[$domain][] = $service;
                         }
                 }
         }
@@ -117,7 +117,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getDomains()
         {
-                return array_keys($this->services);
+                return array_keys($this->_services);
         }
 
         /**
@@ -127,7 +127,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getServices($domain)
         {
-                return $this->services[$domain];
+                return $this->_services[$domain];
         }
 
         /**
@@ -136,7 +136,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function setDefaultDomain($domain)
         {
-                $this->domain = $domain;
+                $this->_domain = $domain;
         }
 
         /**
@@ -159,8 +159,8 @@ class DirectoryManager extends Component implements DirectoryService
                 $domain = $this->getDomain($principal);
                 $result = array();
 
-                if (isset($this->services[$domain])) {
-                        foreach ($this->services[$domain] as $name => $service) {
+                if (isset($this->_services[$domain])) {
+                        foreach ($this->_services[$domain] as $name => $service) {
                                 try {
                                         if (($groups = $service->getGroups($principal, $attributes)) != null) {
                                                 $result = array_merge($result, $groups);
@@ -185,7 +185,7 @@ class DirectoryManager extends Component implements DirectoryService
         {
                 $result = array();
 
-                foreach ($this->services as $dom => $services) {
+                foreach ($this->_services as $dom => $services) {
                         if (!isset($domain) || $dom == $domain) {
                                 foreach ($services as $name => $service) {
                                         try {
@@ -222,8 +222,8 @@ class DirectoryManager extends Component implements DirectoryService
                 $domain = $this->getDomain($principal);
                 $result = array();
 
-                if (isset($this->services[$domain])) {
-                        foreach ($this->services[$domain] as $name => $service) {
+                if (isset($this->_services[$domain])) {
+                        foreach ($this->_services[$domain] as $name => $service) {
                                 try {
                                         if (($attributes = $service->getAttribute($principal, $attribute)) != null) {
                                                 $result = array_merge($result, $attributes);
@@ -282,7 +282,7 @@ class DirectoryManager extends Component implements DirectoryService
                         $options['limit'] = self::DEFAULT_LIMIT;
                 }
                 if (!isset($options['domain'])) {
-                        $options['domain'] = $this->domain;
+                        $options['domain'] = $this->_domain;
                 }
                 if (!is_array($options['attr'])) {
                         $options['attr'] = array($options['attr']);
@@ -290,7 +290,7 @@ class DirectoryManager extends Component implements DirectoryService
 
                 $result = array();
 
-                foreach ($this->services as $domain => $services) {
+                foreach ($this->_services as $domain => $services) {
                         if (!isset($options['domain']) || $domain == $options['domain']) {
                                 foreach ($services as $name => $service) {
                                         try {
@@ -345,7 +345,7 @@ class DirectoryManager extends Component implements DirectoryService
                 if (($pos = strpos($principal, '@'))) {
                         return substr($principal, ++$pos);
                 } else {
-                        return $this->domain;   // Use default domain.
+                        return $this->_domain;   // Use default domain.
                 }
         }
 

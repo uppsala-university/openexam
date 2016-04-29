@@ -12,7 +12,7 @@ class CustomRender extends RenderBase
 
         public function getOptions()
         {
-                return $this->globals;
+                return $this->_globals;
         }
 
 }
@@ -26,7 +26,7 @@ class RenderBaseTest extends TestCase
         /**
          * Checksum and file size properties:
          */
-        private static $output = array(
+        private static $_output = array(
                 'png'    => array(
                         'md5'  => 'b1242ce26730c72c91725e06adeb6cdc',
                         'size' => 1863147,
@@ -63,7 +63,7 @@ class RenderBaseTest extends TestCase
         /**
          * @var CustomRender
          */
-        protected $object;
+        private $_object;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -71,7 +71,7 @@ class RenderBaseTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new CustomRender();
+                $this->_object = new CustomRender();
                 $this->cwd = getcwd();
                 chdir(__DIR__);
         }
@@ -91,13 +91,13 @@ class RenderBaseTest extends TestCase
          */
         public function testSetOptions()
         {
-                $actual = $this->object->getOptions();
+                $actual = $this->_object->getOptions();
                 self::assertTrue(is_array($actual));
                 self::assertNotNull($actual);
 
                 $expect = array('opt1' => 'val1', 'opt2' => 'val2');
-                $this->object->setOptions($expect);
-                $actual = $this->object->getOptions();
+                $this->_object->setOptions($expect);
+                $actual = $this->_object->getOptions();
                 self::assertTrue(is_array($actual));
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
@@ -109,15 +109,15 @@ class RenderBaseTest extends TestCase
          */
         public function testAddOption()
         {
-                $actual = $this->object->getOptions();
+                $actual = $this->_object->getOptions();
                 self::assertTrue(is_array($actual));
                 self::assertNotNull($actual);
 
                 $expect = array('opt1' => 'val1', 'opt2' => 'val2');
                 foreach ($expect as $key => $val) {
-                        $this->object->addOption($key, $val);
+                        $this->_object->addOption($key, $val);
                 }
-                $actual = $this->object->getOptions();
+                $actual = $this->_object->getOptions();
                 self::assertTrue(is_array($actual));
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
@@ -146,7 +146,7 @@ class RenderBaseTest extends TestCase
                         $globals['out'] = sprintf("%s/render-base-test.%s", sys_get_temp_dir(), $type);
 
                         $stime = microtime(true);
-                        self::assertTrue($this->object->render('image', $globals));
+                        self::assertTrue($this->_object->render('image', $globals));
                         $etime = microtime(true);
                         
                         self::assertTrue(file_exists($globals['out']));
@@ -154,14 +154,14 @@ class RenderBaseTest extends TestCase
 
                         self::info("%s: %.04f sec", basename($globals['out']), $etime - $stime);
                         
-                        self::assertEquals(self::$output[$type]['mime'], finfo_file($finfo, $globals['out'], FILEINFO_MIME_TYPE));
-                        self::assertEquals(self::$output[$type]['type'], finfo_file($finfo, $globals['out'], FILEINFO_RAW));
+                        self::assertEquals(self::$_output[$type]['mime'], finfo_file($finfo, $globals['out'], FILEINFO_MIME_TYPE));
+                        self::assertEquals(self::$_output[$type]['type'], finfo_file($finfo, $globals['out'], FILEINFO_RAW));
 
-                        if (self::$output['check']) {
-                                self::assertEquals(self::$output[$type]['size'], filesize($globals['out']));
-                                self::assertEquals(self::$output[$type]['md5'], md5_file($globals['out']));
+                        if (self::$_output['check']) {
+                                self::assertEquals(self::$_output[$type]['size'], filesize($globals['out']));
+                                self::assertEquals(self::$_output[$type]['md5'], md5_file($globals['out']));
                         }
-                        if (self::$output['unlink'] && file_exists($globals['out'])) {
+                        if (self::$_output['unlink'] && file_exists($globals['out'])) {
                                 unlink($globals['out']);
                         }
                 }
@@ -180,7 +180,7 @@ class RenderBaseTest extends TestCase
                         $globals['out'] = sprintf("%s/render-base-test.%s", sys_get_temp_dir(), $type);
 
                         $stime = microtime(true);
-                        self::assertTrue($this->object->render('pdf', $globals, $objects));
+                        self::assertTrue($this->_object->render('pdf', $globals, $objects));
                         $etime = microtime(true);
                         
                         self::assertTrue(file_exists($globals['out']));
@@ -188,8 +188,8 @@ class RenderBaseTest extends TestCase
 
                         self::info("%s: %.04f sec", basename($globals['out']), $etime - $stime);
                         
-                        self::assertEquals(self::$output[$type]['mime'], finfo_file($finfo, $globals['out'], FILEINFO_MIME_TYPE));
-                        self::assertEquals(self::$output[$type]['type'], finfo_file($finfo, $globals['out'], FILEINFO_RAW));
+                        self::assertEquals(self::$_output[$type]['mime'], finfo_file($finfo, $globals['out'], FILEINFO_MIME_TYPE));
+                        self::assertEquals(self::$_output[$type]['type'], finfo_file($finfo, $globals['out'], FILEINFO_RAW));
 
                         // 
                         // Replace timestamp:
@@ -198,11 +198,11 @@ class RenderBaseTest extends TestCase
                         $content = preg_replace("/CreationDate \(.*?\)/", "CreationDate (D:20141127140623+01'00')", $content);
                         file_put_contents($globals['out'], $content);
 
-                        if (self::$output['check']) {
-                                self::assertEquals(self::$output[$type]['size'], filesize($globals['out']));
-                                self::assertEquals(self::$output[$type]['md5'], md5_file($globals['out']));
+                        if (self::$_output['check']) {
+                                self::assertEquals(self::$_output[$type]['size'], filesize($globals['out']));
+                                self::assertEquals(self::$_output[$type]['md5'], md5_file($globals['out']));
                         }
-                        if (self::$output['unlink'] && file_exists($globals['out'])) {
+                        if (self::$_output['unlink'] && file_exists($globals['out'])) {
                                 unlink($globals['out']);
                         }
                 }

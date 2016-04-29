@@ -34,7 +34,7 @@ class SourceFileFilter extends FilterIterator
          * Accepted file extensions.
          * @var array
          */
-        private $filter;
+        private $_filter;
 
         /**
          * Constructor.
@@ -44,13 +44,13 @@ class SourceFileFilter extends FilterIterator
         public function __construct($iterator, $filter)
         {
                 parent::__construct($iterator);
-                $this->filter = $filter;
+                $this->_filter = $filter;
         }
 
         public function accept()
         {
                 $file = $this->current();
-                return in_array($file->getExtension(), $this->filter, true);
+                return in_array($file->getExtension(), $this->_filter, true);
         }
 
 }
@@ -66,25 +66,25 @@ abstract class Command
          * Runtime options.
          * @var array 
          */
-        protected $options;
+        protected $_options;
         /**
          * @var Flash 
          */
-        protected $flash;
+        protected $_flash;
         /**
          * @var Config
          */
-        protected $config;
+        protected $_config;
         /**
          * The text domain.
          * @var string 
          */
-        protected $domain;
+        protected $_domain;
         /**
          * The locale name.
          * @var string 
          */
-        protected $locale;
+        protected $_locale;
 
         /**
          * Constructor.
@@ -93,11 +93,11 @@ abstract class Command
          */
         public function __construct($setup, $options = array())
         {
-                $this->flash = $setup->flash;
-                $this->config = $setup->config;
-                $this->options = $options;
-                $this->domain = $options['module'];
-                $this->locale = $options['locale'];
+                $this->_flash = $setup->flash;
+                $this->_config = $setup->config;
+                $this->_options = $options;
+                $this->_domain = $options['module'];
+                $this->_locale = $options['locale'];
         }
 
         /**
@@ -111,10 +111,10 @@ abstract class Command
         {
                 $command = sprintf("%s %s", $program, $options);
 
-                if ($this->options['verbose'] || $this->options['dry-run']) {
-                        $this->flash->notice($command);
+                if ($this->_options['verbose'] || $this->_options['dry-run']) {
+                        $this->_flash->notice($command);
                 }
-                if (!$this->options['dry-run']) {
+                if (!$this->_options['dry-run']) {
                         $descr = array(
                                 0 => array("pipe", "r"),
                                 1 => array("pipe", "w"),
@@ -138,14 +138,14 @@ abstract class Command
                         $exited = $status['running'] ? $result : $status['exitcode'];
 
                         if ($exited != 0) {
-                                $this->flash->error(sprintf("Failed run %s", basename($program)));
+                                $this->_flash->error(sprintf("Failed run %s", basename($program)));
                                 throw new Exception($stderr);
-                        } elseif ($this->options['verbose']) {
+                        } elseif ($this->_options['verbose']) {
                                 if (strlen($stdout) != 0) {
-                                        $this->flash->success($stdout);
+                                        $this->_flash->success($stdout);
                                 }
                                 if (strlen($stderr) != 0) {
-                                        $this->flash->success($stderr);
+                                        $this->_flash->success($stderr);
                                 }
                         }
                 }
@@ -163,7 +163,7 @@ abstract class Command
                 $search = array();
                 $replace = array();
 
-                $subst = array_merge($this->config->gettext->package->toArray(), $search, $extra);
+                $subst = array_merge($this->_config->gettext->package->toArray(), $search, $extra);
 
                 foreach ($subst as $key => $val) {
                         $search[] = "@$key@";
@@ -205,7 +205,7 @@ abstract class Command
         protected function getSourceFiles()
         {
                 $files = array();
-                $input = $this->config->translate->get($this->options['module'])->toArray();
+                $input = $this->_config->translate->get($this->_options['module'])->toArray();
 
                 if (isset($input['directories'])) {
                         $files = $this->findFiles($input['directories']);
@@ -225,10 +225,10 @@ abstract class Command
         {
                 $locales = array();
 
-                if ($this->locale) {
-                        $locales[] = $this->locale;
+                if ($this->_locale) {
+                        $locales[] = $this->_locale;
                 } else {
-                        $iterator = new \DirectoryIterator($this->config->application->localeDir);
+                        $iterator = new \DirectoryIterator($this->_config->application->localeDir);
                         foreach ($iterator as $file) {
                                 if (preg_match("/[a-z]{2}_[A-Z]{2}/", $file)) {
                                         $locales[] = basename($file);
@@ -246,10 +246,10 @@ abstract class Command
         {
                 $modules = array();
 
-                if ($this->domain) {
-                        $modules[] = $this->domain;
+                if ($this->_domain) {
+                        $modules[] = $this->_domain;
                 } else {
-                        foreach (array_keys($this->config->translate) as $module) {
+                        foreach (array_keys($this->_config->translate) as $module) {
                                 $modules[] = $module;
                         }
                 }

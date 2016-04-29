@@ -39,7 +39,7 @@ class CoreController extends SoapController
          * The SOAP service handler.
          * @var SoapService 
          */
-        private $service;
+        private $_service;
 
         public function initialize()
         {
@@ -54,7 +54,7 @@ class CoreController extends SoapController
         private function createService($action)
         {
                 $request = new SoapRequest($this->request, $action, $this->url->get($this->request->getQuery('_url')));
-                $this->service = $request->createService();
+                $this->_service = $request->createService();
         }
 
         /**
@@ -62,7 +62,7 @@ class CoreController extends SoapController
          */
         public function apiAction()
         {
-                $this->service->sendDocumentation();
+                $this->_service->sendDocumentation();
         }
 
         /**
@@ -71,7 +71,7 @@ class CoreController extends SoapController
         public function wsdlAction()
         {
                 $this->response->setContentType('application/wsdl+xml', 'utf-8');
-                $this->service->sendDescription();
+                $this->_service->sendDescription();
         }
 
         /**
@@ -172,9 +172,9 @@ class CoreController extends SoapController
                 }
                 if ($this->request->isSoapRequested()) {
                         $service = new CoreService($this->user);
-                        $this->service->setHandler(new DocumentLiteralWrapper($service));
-                        $this->service->setSchemaDirectory($this->config->application->schemasDir . 'soap');
-                        $this->service->handleRequest();
+                        $this->_service->setHandler(new DocumentLiteralWrapper($service));
+                        $this->_service->setSchemaDirectory($this->config->application->schemasDir . 'soap');
+                        $this->_service->handleRequest();
                         return;
                 }
         }

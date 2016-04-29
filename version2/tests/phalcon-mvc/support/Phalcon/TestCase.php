@@ -158,16 +158,16 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
         /**
          * @var PhalconDI 
          */
-        protected $di;
+        protected $_di;
         /**
          * The username (principal) of test runner.
          * @var string 
          */
-        protected $caller;
+        protected $_caller;
         /**
          * @var TestLogger 
          */
-        private static $logger;
+        private static $_logger;
 
         public function __construct($name = NULL, array $data = array(), $dataName = '')
         {
@@ -176,7 +176,7 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
                 $this->setupContext();
                 $this->setupLogging();
 
-                $this->caller = $this->di->get('user')->getPrincipalName();
+                $this->_caller = $this->_di->get('user')->getPrincipalName();
         }
         
         /**
@@ -185,7 +185,7 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
         private function setupLogging()
         {
                 $logging = new TestLogging($this);
-                self::$logger = $logging->setup();
+                self::$_logger = $logging->setup();
         }
 
         /**
@@ -202,7 +202,7 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
          */
         public function getDI()
         {
-                return $this->di;
+                return $this->_di;
         }
 
         /**
@@ -211,13 +211,13 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
          */
         public function setDI($dependencyInjector)
         {
-                $this->di = $dependencyInjector;
+                $this->_di = $dependencyInjector;
         }
 
         public function __get($name)
         {
-                if ($this->di->has($name)) {
-                        return $this->di->get($name);
+                if ($this->_di->has($name)) {
+                        return $this->_di->get($name);
                 }
         }
 
@@ -229,7 +229,7 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
          */
         private static function output($trace, $status, $args)
         {
-                self::$logger->output($trace, $status, $args);
+                self::$_logger->output($trace, $status, $args);
         }
 
         /**

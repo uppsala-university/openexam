@@ -69,12 +69,12 @@ class SignupController extends RestController
         /**
          * @var SignupHandler 
          */
-        protected $handler;
+        protected $_handler;
 
         public function initialize()
         {
                 parent::initialize();
-                $this->handler = new SignupHandler($this->getRequest(), $this->user, $this->config->signup);
+                $this->_handler = new SignupHandler($this->getRequest(), $this->user, $this->config->signup);
         }
 
         public function indexAction()
@@ -82,20 +82,20 @@ class SignupController extends RestController
                 switch ($this->request->getMethod()) {
                         case "GET":
                                 $response = new ServiceResponse(
-                                    $this->handler, ServiceHandler::SUCCESS, $this->config->signup->toArray()
+                                    $this->_handler, ServiceHandler::SUCCESS, $this->config->signup->toArray()
                                 );
                                 $this->sendResponse($response);
                                 break;
                         case "PUT":
-                                $response = $this->handler->subscribe();
+                                $response = $this->_handler->subscribe();
                                 $this->sendResponse($response);
                                 break;
                         case "POST":
-                                $response = $this->handler->insert();
+                                $response = $this->_handler->insert();
                                 $this->sendResponse($response);
                                 break;
                         case "DELETE":
-                                $response = $this->handler->remove();
+                                $response = $this->_handler->remove();
                                 $this->sendResponse($response);
                                 break;
                 }
@@ -106,12 +106,12 @@ class SignupController extends RestController
                 switch ($this->request->getMethod()) {
                         case "GET":
                                 $response = new ServiceResponse(
-                                    $this->handler, ServiceHandler::SUCCESS, $this->config->signup->teacher->toArray()
+                                    $this->_handler, ServiceHandler::SUCCESS, $this->config->signup->teacher->toArray()
                                 );
                                 $this->sendResponse($response);
                                 break;
                         case "PUT":
-                                $response = $this->handler->subscribe($this->getData());
+                                $response = $this->_handler->subscribe($this->getData());
                                 $this->sendResponse($response);
                                 break;
                 }
@@ -122,12 +122,12 @@ class SignupController extends RestController
                 switch ($this->request->getMethod()) {
                         case "GET":
                                 $response = new ServiceResponse(
-                                    $this->handler, ServiceHandler::SUCCESS, $this->config->signup->student->toArray()
+                                    $this->_handler, ServiceHandler::SUCCESS, $this->config->signup->student->toArray()
                                 );
                                 $this->sendResponse($response);
                                 break;
                         case "PUT":
-                                $response = $this->handler->subscribe($this->getData());
+                                $response = $this->_handler->subscribe($this->getData());
                                 $this->sendResponse($response);
                                 break;
                 }
@@ -144,7 +144,7 @@ class SignupController extends RestController
                 $action = $this->dispatcher->getActionName();
                 $idname = $this->dispatcher->getParam(0);
 
-                $data = $this->handler->getRequest()->data;
+                $data = $this->_handler->getRequest()->data;
 
                 if (isset($idname)) {
                         // 

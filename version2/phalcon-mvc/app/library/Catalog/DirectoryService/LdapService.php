@@ -35,12 +35,12 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  * The LDAP connection object.
                  * @var LdapConnection 
                  */
-                private $ldap;
+                private $_ldap;
                 /**
                  * Attribute map.
                  * @var array 
                  */
-                private $attrmap = array(
+                private $_attrmap = array(
                         'person' => array(
                                 Principal::ATTR_UID   => 'uid',
                                 Principal::ATTR_SN    => 'sn',
@@ -63,12 +63,12 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  * The search base DN.
                  * @var string 
                  */
-                private $basedn;
+                private $_basedn;
                 /**
                  * The affiliation callback.
                  * @var closure 
                  */
-                private $affiliation;
+                private $_affiliation;
 
                 /**
                  * Constructor.
@@ -80,9 +80,9 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function __construct($host, $port = 636, $user = null, $pass = null, $options = array())
                 {
-                        $this->ldap = new LdapConnection($host, $port, $user, $pass, $options);
-                        $this->type = 'ldap';
-                        $this->affiliation = function($attrs) {
+                        $this->_ldap = new LdapConnection($host, $port, $user, $pass, $options);
+                        $this->_type = 'ldap';
+                        $this->_affiliation = function($attrs) {
                                 return $attrs;
                         };
                 }
@@ -93,7 +93,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function getConnection()
                 {
-                        return $this->ldap;
+                        return $this->_ldap;
                 }
 
                 /**
@@ -118,7 +118,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                 public function setAttributeMap($attrmap)
                 {
                         foreach ($attrmap as $class => $attributes) {
-                                $this->attrmap[$class] = array_merge($this->attrmap[$class], $attributes);
+                                $this->_attrmap[$class] = array_merge($this->_attrmap[$class], $attributes);
                         }
                 }
 
@@ -128,7 +128,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function getAttributeMap()
                 {
-                        return $this->attrmap;
+                        return $this->_attrmap;
                 }
 
                 /**
@@ -137,7 +137,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function setAffiliationCallback($callback)
                 {
-                        $this->affiliation = $callback;
+                        $this->_affiliation = $callback;
                 }
 
                 /**
@@ -156,7 +156,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function setAffiliationMap($map)
                 {
-                        $this->affiliation = function($attrs) use($map) {
+                        $this->_affiliation = function($attrs) use($map) {
                                 $result = array();
                                 foreach ($map as $key => $values) {
                                         if (!is_array($values)) {
@@ -180,7 +180,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                  */
                 public function setBase($basedn)
                 {
-                        $this->basedn = $basedn;
+                        $this->_basedn = $basedn;
                 }
 
                 /**
@@ -197,17 +197,17 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return entry from cache if existing:
                         // 
-                        if ($this->lifetime) {
-                                $cachekey = sprintf("catalog-%s-search-%s-%s-%s", $this->name, $class, $type, md5(serialize(array($value, $attributes, $limit))));
-                                if ($this->cache->exists($cachekey, $this->lifetime)) {
-                                        return $this->cache->get($cachekey, $this->lifetime);
+                        if ($this->_lifetime) {
+                                $cachekey = sprintf("catalog-%s-search-%s-%s-%s", $this->_name, $class, $type, md5(serialize(array($value, $attributes, $limit))));
+                                if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                        return $this->cache->get($cachekey, $this->_lifetime);
                                 }
                         }
 
                         // 
                         // Select attribute map:
                         // 
-                        $attrmap = $this->attrmap[$class];
+                        $attrmap = $this->_attrmap[$class];
 
                         // 
                         // Prepare attribute map:
@@ -225,21 +225,21 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Create search filter restricted by object class:
                         // 
-                        $filter = sprintf("(&(objectClass=%s)(%s=%s))", $class, $this->attrmap[$class][$type], $value);
+                        $filter = sprintf("(&(objectClass=%s)(%s=%s))", $class, $this->_attrmap[$class][$type], $value);
 
                         // 
                         // Search directory tree and return entries:
                         // 
-                        if (($result = ldap_search($this->ldap->connection, $this->basedn, $filter, array_values($attrmap), 0, $limit)) == false) {
-                                throw new Exception(ldap_error($this->ldap->connection), ldap_errno($this->ldap->connection));
+                        if (($result = ldap_search($this->_ldap->connection, $this->_basedn, $filter, array_values($attrmap), 0, $limit)) == false) {
+                                throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
                         }
 
-                        if (($entries = ldap_get_entries($this->ldap->connection, $result)) == false) {
-                                throw new Exception(ldap_error($this->ldap->connection), ldap_errno($this->ldap->connection));
+                        if (($entries = ldap_get_entries($this->_ldap->connection, $result)) == false) {
+                                throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
                         }
 
                         if (ldap_free_result($result) == false) {
-                                throw new Exception(ldap_error($this->ldap->connection), ldap_errno($this->ldap->connection));
+                                throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
                         }
 
                         // 
@@ -262,17 +262,17 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return entry from cache if existing:
                         // 
-                        if ($this->lifetime) {
-                                $cachekey = sprintf("catalog-%s-read-%s-%s", $this->name, $class, md5(serialize(array($path, $attributes))));
-                                if ($this->cache->exists($cachekey, $this->lifetime)) {
-                                        return $this->cache->get($cachekey, $this->lifetime);
+                        if ($this->_lifetime) {
+                                $cachekey = sprintf("catalog-%s-read-%s-%s", $this->_name, $class, md5(serialize(array($path, $attributes))));
+                                if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                        return $this->cache->get($cachekey, $this->_lifetime);
                                 }
                         }
 
                         // 
                         // Select attribute map:
                         // 
-                        $attrmap = $this->attrmap[$class];
+                        $attrmap = $this->_attrmap[$class];
 
                         // 
                         // Prepare attribute map:
@@ -292,20 +292,20 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Find directory entry:
                         // 
-                        if (($result = ldap_read($this->ldap->connection, $path, $filter, array_values($attrmap))) == false) {
-                                throw new Exception(ldap_error($this->ldap->connection), ldap_errno($this->ldap->connection));
+                        if (($result = ldap_read($this->_ldap->connection, $path, $filter, array_values($attrmap))) == false) {
+                                throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
                         }
 
-                        if (($entry = ldap_first_entry($this->ldap->connection, $result)) == false) {
-                                throw new Exception(ldap_error($this->ldap->connection), ldap_errno($this->ldap->connection));
+                        if (($entry = ldap_first_entry($this->_ldap->connection, $result)) == false) {
+                                throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
                         }
 
-                        if (($data = ldap_get_attributes($this->ldap->connection, $entry)) == false) {
-                                throw new Exception(ldap_error($this->ldap->connection), ldap_errno($this->ldap->connection));
+                        if (($data = ldap_get_attributes($this->_ldap->connection, $entry)) == false) {
+                                throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
                         }
 
                         if (ldap_free_result($result) == false) {
-                                throw new Exception(ldap_error($this->ldap->connection), ldap_errno($this->ldap->connection));
+                                throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
                         }
 
                         // 
@@ -355,22 +355,22 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return entry from cache if existing:
                         // 
-                        if ($this->lifetime) {
-                                $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->name, $attribute, md5($principal));
-                                if ($this->cache->exists($cachekey, $this->lifetime)) {
-                                        return $this->cache->get($cachekey, $this->lifetime);
+                        if ($this->_lifetime) {
+                                $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->_name, $attribute, md5($principal));
+                                if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                        return $this->cache->get($cachekey, $this->_lifetime);
                                 }
                         }
 
                         $search = $this->search(Principal::ATTR_PN, $principal, array($attribute));
 
                         $result = new LdapResult(array_flip($search['attrmap']));
-                        $result->setName($this->name);
+                        $result->setName($this->_name);
                         $result->insert($search['entries']);
 
                         $output = $result->getResult();
                         if ($attribute == Principal::ATTR_AFFIL) {
-                                $affilation = $this->affiliation;
+                                $affilation = $this->_affiliation;
                                 foreach ($output as $index => $array) {
                                         $output[$index][$attribute] = $affilation($array[$attribute]);
                                 }
@@ -398,17 +398,17 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return entry from cache if existing:
                         // 
-                        if ($this->lifetime) {
-                                $cachekey = sprintf("catalog-%s-groups-%s", $this->name, md5(serialize(array($principal, $attributes))));
-                                if ($this->cache->exists($cachekey, $this->lifetime)) {
-                                        return $this->cache->get($cachekey, $this->lifetime);
+                        if ($this->_lifetime) {
+                                $cachekey = sprintf("catalog-%s-groups-%s", $this->_name, md5(serialize(array($principal, $attributes))));
+                                if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                        return $this->cache->get($cachekey, $this->_lifetime);
                                 }
                         }
 
                         // 
                         // Get distinguished names for all user principal groups:
                         // 
-                        $member = strtolower($this->attrmap['group'][Group::ATTR_PARENT]);
+                        $member = strtolower($this->_attrmap['group'][Group::ATTR_PARENT]);
                         $mapped = $this->getAttribute($principal, $member);
                         $groups = array();
 
@@ -434,7 +434,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Collect group data in result object:
                         // 
                         $result = new LdapResult(array_flip($search['attrmap']));
-                        $result->setName($this->name);
+                        $result->setName($this->_name);
                         $result->append($groups);
 
                         return $this->setCacheData($cachekey, $result->getResult());
@@ -476,10 +476,10 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return entry from cache if existing:
                         // 
-                        if ($this->lifetime) {
-                                $cachekey = sprintf("catalog-%s-principal-%s-%s", $this->name, $attribute, md5(serialize(array($needle, $options))));
-                                if ($this->cache->exists($cachekey, $this->lifetime)) {
-                                        return $this->cache->get($cachekey, $this->lifetime);
+                        if ($this->_lifetime) {
+                                $cachekey = sprintf("catalog-%s-principal-%s-%s", $this->_name, $attribute, md5(serialize(array($needle, $options))));
+                                if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                        return $this->cache->get($cachekey, $this->_lifetime);
                                 }
                         }
 
@@ -492,7 +492,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Collect group data in result object:
                         // 
                         $result = new LdapResult(array_flip($search['attrmap']));
-                        $result->setName($this->name);
+                        $result->setName($this->_name);
                         $result->insert($search['entries']);
                         $data = $result->getResult();
 
@@ -512,7 +512,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                                                         $principal->mail = $attrs;
                                                         unset($d[$attr]);
                                                 } elseif ($attr == Principal::ATTR_AFFIL) {
-                                                        $affilation = $this->affiliation;
+                                                        $affilation = $this->_affiliation;
                                                         $principal->affiliation = $affilation($attrs);
                                                         unset($d[$attr]);
                                                 } else {
@@ -552,17 +552,17 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // 
                         // Return entry from cache if existing:
                         // 
-                        if ($this->lifetime) {
-                                $cachekey = sprintf("catalog-%s-members-%s", $this->name, md5(serialize(array($group, $domain, $attributes))));
-                                if ($this->cache->exists($cachekey, $this->lifetime)) {
-                                        return $this->cache->get($cachekey, $this->lifetime);
+                        if ($this->_lifetime) {
+                                $cachekey = sprintf("catalog-%s-members-%s", $this->_name, md5(serialize(array($group, $domain, $attributes))));
+                                if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                        return $this->cache->get($cachekey, $this->_lifetime);
                                 }
                         }
 
                         // 
                         // Search in group member attribute:
                         // 
-                        $member = $this->attrmap['group'][Group::ATTR_MEMBER];
+                        $member = $this->_attrmap['group'][Group::ATTR_MEMBER];
                         $search = $this->search(Group::ATTR_NAME, $group, array($member), 'group');
                         $users = array();
 
@@ -570,7 +570,7 @@ namespace OpenExam\Library\Catalog\DirectoryService {
                         // Load members into result:
                         // 
                         $result = new LdapResult(array_flip($search['attrmap']));
-                        $result->setName($this->name);
+                        $result->setName($this->_name);
                         $result->insert($search['entries']);
                         $data = $result->getResult();
 
@@ -656,32 +656,32 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  * The LDAP connection.
                  * @var resource 
                  */
-                private $ldap;
+                private $_ldap;
                 /**
                  * The LDAP server hostname.
                  * @var string 
                  */
-                private $host;
+                private $_host;
                 /**
                  * The LDAP server port.
                  * @var int 
                  */
-                private $port;
+                private $_port;
                 /**
                  * The LDAP bind username.
                  * @var string 
                  */
-                private $user;
+                private $_user;
                 /**
                  * The LDAP bind password.
                  * @var string 
                  */
-                private $pass;
+                private $_pass;
                 /**
                  * LDAP_OPT_XXX options.
                  * @var array 
                  */
-                private $options;
+                private $_options;
 
                 /**
                  * Constructor.
@@ -693,11 +693,11 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function __construct($host, $port, $user, $pass, $options)
                 {
-                        $this->host = $host;
-                        $this->port = $port;
-                        $this->user = $user;
-                        $this->pass = $pass;
-                        $this->options = $options;
+                        $this->_host = $host;
+                        $this->_port = $port;
+                        $this->_user = $user;
+                        $this->_pass = $pass;
+                        $this->_options = $options;
                 }
 
                 public function __get($name)
@@ -715,7 +715,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                         if (!$this->connected()) {
                                 $this->open();
                         }
-                        return $this->ldap;
+                        return $this->_ldap;
                 }
 
                 /**
@@ -725,7 +725,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function setOption($name, $value)
                 {
-                        $this->options[$name] = $value;
+                        $this->_options[$name] = $value;
                 }
 
                 /**
@@ -733,20 +733,20 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function open()
                 {
-                        if (($this->ldap = ldap_connect($this->host, $this->port)) == false) {
+                        if (($this->_ldap = ldap_connect($this->_host, $this->_port)) == false) {
                                 throw new Exception(sprintf(
-                                    "Failed connect to LDAP server %s:%d", $this->host, $this->port
+                                    "Failed connect to LDAP server %s:%d", $this->_host, $this->_port
                                 ));
                         }
 
-                        foreach ($this->options as $name => $value) {
-                                if (ldap_set_option($this->ldap, $name, $value) == false) {
-                                        throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
+                        foreach ($this->_options as $name => $value) {
+                                if (ldap_set_option($this->_ldap, $name, $value) == false) {
+                                        throw new Exception(ldap_error($this->_ldap), ldap_errno($this->_ldap));
                                 }
                         }
 
-                        if (@ldap_bind($this->ldap, $this->user, $this->pass) == false) {
-                                throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
+                        if (@ldap_bind($this->_ldap, $this->_user, $this->_pass) == false) {
+                                throw new Exception(ldap_error($this->_ldap), ldap_errno($this->_ldap));
                         }
                 }
 
@@ -755,8 +755,8 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function close()
                 {
-                        if (ldap_unbind($this->ldap) == false) {
-                                throw new Exception(ldap_error($this->ldap), ldap_errno($this->ldap));
+                        if (ldap_unbind($this->_ldap) == false) {
+                                throw new Exception(ldap_error($this->_ldap), ldap_errno($this->_ldap));
                         }
                 }
 
@@ -766,7 +766,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function connected()
                 {
-                        return is_resource($this->ldap);
+                        return is_resource($this->_ldap);
                 }
 
         }
@@ -781,21 +781,21 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  * The reverse attribute map.
                  * @var array 
                  */
-                private $attrmap;
+                private $_attrmap;
                 /**
                  * The result array.
                  * @var array 
                  */
-                private $result = array();
+                private $_result = array();
                 /**
                  * The service name.
                  * @var type 
                  */
-                private $name;
+                private $_name;
                 /**
                  * The service type.
                  */
-                private $type;
+                private $_type;
 
                 /**
                  * Constructor.
@@ -805,9 +805,9 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function __construct($attrmap, $name = null, $type = 'ldap')
                 {
-                        $this->attrmap = array_change_key_case($attrmap);
-                        $this->name = $name;
-                        $this->type = $type;
+                        $this->_attrmap = array_change_key_case($attrmap);
+                        $this->_name = $name;
+                        $this->_type = $type;
                 }
 
                 /**
@@ -816,7 +816,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function setName($name)
                 {
-                        $this->name = $name;
+                        $this->_name = $name;
                 }
 
                 /**
@@ -825,7 +825,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function setType($type)
                 {
-                        $this->type = $type;
+                        $this->_type = $type;
                 }
 
                 /**
@@ -834,7 +834,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function getResult()
                 {
-                        return $this->result;
+                        return $this->_result;
                 }
 
                 /**
@@ -843,7 +843,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function count()
                 {
-                        return count($this->result);
+                        return count($this->_result);
                 }
 
                 /**
@@ -852,8 +852,8 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function reset($attrmap)
                 {
-                        $this->result = array();
-                        $this->attrmap = array_change_key_case($attrmap);
+                        $this->_result = array();
+                        $this->_attrmap = array_change_key_case($attrmap);
                 }
 
                 /**
@@ -873,7 +873,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                  */
                 public function insert($entries)
                 {
-                        $this->result = array();
+                        $this->_result = array();
                         $this->append($entries);
                 }
 
@@ -897,9 +897,9 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                         // 
                         // Set service data reference:
                         // 
-                        $this->result[$index]['svc'] = array(
-                                'name' => $this->name,
-                                'type' => $this->type,
+                        $this->_result[$index]['svc'] = array(
+                                'name' => $this->_name,
+                                'type' => $this->_type,
                                 'ref'  => $entry['dn']
                         );
                         // 
@@ -930,22 +930,22 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap {
                         // 
                         // Get reverse mapped attribute name:
                         // 
-                        if (isset($this->attrmap[$name])) {
-                                $name = $this->attrmap[$name];
+                        if (isset($this->_attrmap[$name])) {
+                                $name = $this->_attrmap[$name];
                         }
 
                         // 
                         // Add attribute data to result:
                         // 
                         for ($i = 0; $i < $attr['count']; $i++) {
-                                if (!isset($this->result[$index][$name])) {
-                                        $this->result[$index][$name] = array();
+                                if (!isset($this->_result[$index][$name])) {
+                                        $this->_result[$index][$name] = array();
                                 }
-                                if (!in_array($attr[$i], $this->result[$index][$name])) {
-                                        $this->result[$index][$name][] = $attr[$i];
+                                if (!in_array($attr[$i], $this->_result[$index][$name])) {
+                                        $this->_result[$index][$name][] = $attr[$i];
                                 }
                                 if (isset($type)) {
-                                        $this->result[$index][$name][$type] = $attr[$i];
+                                        $this->_result[$index][$name][$type] = $attr[$i];
                                 }
                         }
                 }

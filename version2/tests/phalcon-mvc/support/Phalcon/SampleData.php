@@ -25,7 +25,7 @@ class SampleData
         /**
          * @var array 
          */
-        private $sample;
+        private $_sample;
 
         /**
          * @param string|array $sample The sample data file or array.
@@ -39,12 +39,12 @@ class SampleData
                 }
 
                 if (is_array($sample)) {
-                        $this->sample = $sample;
+                        $this->_sample = $sample;
                 } elseif (file_exists($sample)) {
-                        $this->sample = unserialize(file_get_contents($sample));
+                        $this->_sample = unserialize(file_get_contents($sample));
                 }
 
-                if (!isset($this->sample)) {
+                if (!isset($this->_sample)) {
                         throw new \Exception("The sample data is missing. Please run 'php phalcon-mvc/script/unittest.php --setup'");
                 }
         }
@@ -57,7 +57,7 @@ class SampleData
          */
         public function getSample($resource, $object = true)
         {
-                $data = (array) $this->sample[$resource];
+                $data = (array) $this->_sample[$resource];
 
                 foreach ($data as $key => $val) {
                         if (is_object($val)) {

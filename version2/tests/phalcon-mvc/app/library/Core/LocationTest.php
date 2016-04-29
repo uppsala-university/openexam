@@ -14,12 +14,12 @@ class LocationTest extends TestCase
         /**
          * @var Location
          */
-        protected $object;
+        private $_object;
         /**
          * Test locations.
          * @var array 
          */
-        private static $locations = array(
+        private static $_locations = array(
                 'O1' => array(
                         'C1' => array(
                                 'P1' => array(
@@ -57,7 +57,7 @@ class LocationTest extends TestCase
          * Sample data object.
          * @var SampleData 
          */
-        private $sample;
+        private $_sample;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -65,8 +65,8 @@ class LocationTest extends TestCase
          */
         protected function setUp()
         {
-                $this->object = new Location(self::$locations);
-                $this->sample = new SampleData();
+                $this->_object = new Location(self::$_locations);
+                $this->_sample = new SampleData();
         }
 
         /**
@@ -88,70 +88,70 @@ class LocationTest extends TestCase
                 // Test existing entries:
                 // 
 
-                $actual = $this->object->getEntry('192.168.1.1');
+                $actual = $this->_object->getEntry('192.168.1.1');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O1');
                 self::assertEquals($actual['ckey'], 'C1');
                 self::assertEquals($actual['pkey'], 'P1');
 
-                $actual = $this->object->getEntry('192.168.1.2');
+                $actual = $this->_object->getEntry('192.168.1.2');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O1');
                 self::assertEquals($actual['ckey'], 'C1');
                 self::assertEquals($actual['pkey'], 'P2');
 
-                $actual = $this->object->getEntry('192.168.2.78');
+                $actual = $this->_object->getEntry('192.168.2.78');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O1');
                 self::assertEquals($actual['ckey'], 'C2');
                 self::assertEquals($actual['pkey'], 'P3');
 
-                $actual = $this->object->getEntry('10.1.0.1');
+                $actual = $this->_object->getEntry('10.1.0.1');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O1');
                 self::assertEquals($actual['ckey'], 'C2');
                 self::assertEquals($actual['pkey'], 'P4');
 
-                $actual = $this->object->getEntry('10.1.255.255');
+                $actual = $this->_object->getEntry('10.1.255.255');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O1');
                 self::assertEquals($actual['ckey'], 'C2');
                 self::assertEquals($actual['pkey'], 'P4');
 
-                $actual = $this->object->getEntry('169.254.37.50');
+                $actual = $this->_object->getEntry('169.254.37.50');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O2');
                 self::assertEquals($actual['ckey'], 'C3');
                 self::assertEquals($actual['pkey'], 'P5');
 
-                $actual = $this->object->getEntry('169.255.1.1');
+                $actual = $this->_object->getEntry('169.255.1.1');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O2');
                 self::assertEquals($actual['ckey'], 'C3');
                 self::assertEquals($actual['pkey'], 'P5');
 
-                $actual = $this->object->getEntry('169.255.255.254');
+                $actual = $this->_object->getEntry('169.255.255.254');
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O2');
                 self::assertEquals($actual['ckey'], 'C3');
                 self::assertEquals($actual['pkey'], 'P5');
 
-                $actual = $this->object->getEntry('130.238.7.135');    // live.webb.uu.se
+                $actual = $this->_object->getEntry('130.238.7.135');    // live.webb.uu.se
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O2');
                 self::assertEquals($actual['ckey'], 'C3');
                 self::assertEquals($actual['pkey'], 'P6');
 
-                $actual = $this->object->getEntry('130.238.55.23');    // it.bmc.uu.se
+                $actual = $this->_object->getEntry('130.238.55.23');    // it.bmc.uu.se
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($actual['okey'], 'O2');
@@ -162,11 +162,11 @@ class LocationTest extends TestCase
                 // Test non-existing entries:
                 // 
 
-                $actual = $this->object->getEntry('10.0.0.1');
+                $actual = $this->_object->getEntry('10.0.0.1');
                 self::assertNotNull($actual);
                 self::assertFalse($actual);
 
-                $actual = $this->object->getEntry('192.168.3.1');
+                $actual = $this->_object->getEntry('192.168.3.1');
                 self::assertNotNull($actual);
                 self::assertFalse($actual);
         }
@@ -177,19 +177,19 @@ class LocationTest extends TestCase
          */
         public function testGetEntries()
         {
-                $access = $this->sample->getSample('access');
+                $access = $this->_sample->getSample('access');
 
-                $entries = $this->object->getEntries();
+                $entries = $this->_object->getEntries();
                 self::assertTrue(array_key_exists('system', $entries));
                 self::assertTrue(array_key_exists('recent', $entries));
                 self::assertFalse(array_key_exists('active', $entries));
 
-                $entries = $this->object->getEntries($access['exam_id']);
+                $entries = $this->_object->getEntries($access['exam_id']);
                 self::assertTrue(array_key_exists('system', $entries));
                 self::assertTrue(array_key_exists('recent', $entries));
                 self::assertTrue(array_key_exists('active', $entries));
 
-                $entries = $this->object->getEntries($access['exam_id'], array(
+                $entries = $this->_object->getEntries($access['exam_id'], array(
                         'system' => false,
                         'recent' => false,
                         'active' => false
@@ -198,7 +198,7 @@ class LocationTest extends TestCase
                 self::assertFalse(array_key_exists('recent', $entries));
                 self::assertFalse(array_key_exists('active', $entries));
 
-                $entries = $this->object->getEntries($access['exam_id'], array(
+                $entries = $this->_object->getEntries($access['exam_id'], array(
                         'system' => true,
                         'recent' => false,
                         'active' => false
@@ -207,7 +207,7 @@ class LocationTest extends TestCase
                 self::assertFalse(array_key_exists('recent', $entries));
                 self::assertFalse(array_key_exists('active', $entries));
 
-                $entries = $this->object->getEntries($access['exam_id'], array(
+                $entries = $this->_object->getEntries($access['exam_id'], array(
                         'system' => false,
                         'recent' => true,
                         'active' => false
@@ -216,7 +216,7 @@ class LocationTest extends TestCase
                 self::assertTrue(array_key_exists('recent', $entries));
                 self::assertFalse(array_key_exists('active', $entries));
 
-                $entries = $this->object->getEntries($access['exam_id'], array(
+                $entries = $this->_object->getEntries($access['exam_id'], array(
                         'system' => false,
                         'recent' => false,
                         'active' => true
@@ -238,15 +238,15 @@ class LocationTest extends TestCase
          */
         public function testGetActive()
         {
-                $access = $this->sample->getSample('access');
+                $access = $this->_sample->getSample('access');
 
-                $entries = $this->object->getEntries($access['exam_id'], array('active' => true), false);
+                $entries = $this->_object->getEntries($access['exam_id'], array('active' => true), false);
                 self::assertNotNull($entries);
                 self::assertNotNull($entries['active']);
                 $path = explode(";", $access['name']);
                 self::assertEquals($access, $entries['active'][$path[0]][$path[1]][$path[2]]);
                 
-                $entries = $this->object->getActive($access['exam_id']);
+                $entries = $this->_object->getActive($access['exam_id']);
                 self::assertNotNull($entries);
                 $path = explode(";", $access['name']);
                 $path = sprintf("%s -> %s -> %s", $path[0], $path[1], $path[2]);
@@ -270,11 +270,11 @@ class LocationTest extends TestCase
          */
         public function testGetSystem()
         {
-                $entries = $this->object->getEntries(0, array('system' => true), false);
+                $entries = $this->_object->getEntries(0, array('system' => true), false);
                 self::assertNotNull($entries);
                 self::assertNotNull($entries['system']);
-                self::assertEquals($entries['system'], self::$locations);
-                self::assertEquals($entries['system'], self::$locations);
+                self::assertEquals($entries['system'], self::$_locations);
+                self::assertEquals($entries['system'], self::$_locations);
         }
 
 }

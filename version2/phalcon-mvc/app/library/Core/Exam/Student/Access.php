@@ -73,7 +73,7 @@ class Access extends Component
          * The current exam.
          * @var Exam 
          */
-        private $exam;
+        private $_exam;
 
         /**
          * Constructor.
@@ -81,7 +81,7 @@ class Access extends Component
          */
         public function __construct($exam)
         {
-                $this->exam = $exam;
+                $this->_exam = $exam;
         }
 
         /**
@@ -117,7 +117,7 @@ class Access extends Component
                         if (($student = Student::findFirst(array(
                                     'conditions' => 'exam_id = :exam: AND user = :user:',
                                     'bind'       => array(
-                                            'exam' => $this->exam->id,
+                                            'exam' => $this->_exam->id,
                                             'user' => $this->user->getPrincipalName()
                                     )
                             ))) == false) {
@@ -127,7 +127,7 @@ class Access extends Component
                         // 
                         // Check student access:
                         // 
-                        $lockdown = new Lockdown($this->exam, $student);
+                        $lockdown = new Lockdown($this->_exam, $student);
                         if (($status = $lockdown->accepted()) != self::OPEN_APPROVED) {
                                 return $status;
                         }
@@ -135,7 +135,7 @@ class Access extends Component
                         // 
                         // Prepare exam for first use if needed:
                         // 
-                        $setup = new Setup($this->exam, $student);
+                        $setup = new Setup($this->_exam, $student);
                         $setup->prepare();
                 } catch (Exception $exception) {
                         $this->user->setPrimaryRole($role);
@@ -171,7 +171,7 @@ class Access extends Component
                         if (($student = Student::findFirst(array(
                                     'conditions' => 'exam_id = :exam: AND user = :user:',
                                     'bind'       => array(
-                                            'exam' => $this->exam->id,
+                                            'exam' => $this->_exam->id,
                                             'user' => $this->user->getPrincipalName()
                                     )
                             ))) == false) {
@@ -196,7 +196,7 @@ class Access extends Component
                                     'bind'       => array(
                                             'stud' => $student->id,
                                             'comp' => $computer->id,
-                                            'exam' => $this->exam->id
+                                            'exam' => $this->_exam->id
                                     )
                             ))) == false) {
                                 throw new SecurityException("Failed lookup exam lock", SecurityException::ACCESS);

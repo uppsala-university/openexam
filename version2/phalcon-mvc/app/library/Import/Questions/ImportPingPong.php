@@ -27,67 +27,67 @@ abstract class ImportPingPong extends ImportBase
         const EXPECT = "Exported from the questionbank in PING PONG";
         const XMLDOC = '<openexam/>';
 
-        private $questions = array();
-        private $question = null;
-        private $category = null;
+        private $_questions = array();
+        private $_question = null;
+        private $_category = null;
 
         public function __construct($accept = "")
         {
                 parent::__construct($accept);
-                $this->data = new ImportData(self::XMLDOC);
+                $this->_data = new ImportData(self::XMLDOC);
         }
 
         protected function append($key, $val)
         {
                 printf("(key, val) = (%s, %s)\n", $key, $val);
                 if ($key == "Question") {
-                        if (isset($this->question)) {
+                        if (isset($this->_question)) {
                                 // 
                                 // Map multiple choice with a single alternative to freetext.
                                 // 
-                                if (isset($this->question['choice']) && count($this->question['choice']) <= 1) {
-                                        $this->question['type'] = "freetext";
-                                        unset($this->question['choice']);
+                                if (isset($this->_question['choice']) && count($this->_question['choice']) <= 1) {
+                                        $this->_question['type'] = "freetext";
+                                        unset($this->_question['choice']);
                                 }
 
-                                $this->questions[$this->category][] = $this->question;
+                                $this->_questions[$this->_category][] = $this->_question;
                         }
-                        $this->question = array("comment" => "", "score" => 1.0, "user" => $this->user->getPrincipalName());
+                        $this->_question = array("comment" => "", "score" => 1.0, "user" => $this->user->getPrincipalName());
                 }
                 if ($key == "Category") {
-                        $this->category = self::cleanup($val);
+                        $this->_category = self::cleanup($val);
                 }
                 if ($key == "Name") {
-                        $this->question['name'] = self::cleanup($val);
+                        $this->_question['name'] = self::cleanup($val);
                 }
                 if ($key == "Description") {
-                        $this->question['comment'] = self::cleanup($val);
+                        $this->_question['comment'] = self::cleanup($val);
                 }
                 if ($key == "Text") {
-                        $this->question['body'] = self::cleanup($val);
+                        $this->_question['body'] = self::cleanup($val);
                 }
                 if ($key == "Max points") {
-                        $this->question['score'] = $val;
+                        $this->_question['score'] = $val;
                 }
                 if ($key == "Type") {
                         if ($val == "Multiple choice") {
-                                $this->question['type'] = "multiple";
-                                $this->question['choice'] = array();
+                                $this->_question['type'] = "multiple";
+                                $this->_question['choice'] = array();
                         } elseif ($val == "Single choice") {
-                                $this->question['type'] = "single";
-                                $this->question['choice'] = array();
+                                $this->_question['type'] = "single";
+                                $this->_question['choice'] = array();
                         } elseif ($val == "Free writing") {
-                                $this->question['type'] = "freetext";
+                                $this->_question['type'] = "freetext";
                         }
                 }
                 if ($key == "Correct") {
-                        $this->question['choice'][self::cleanup($val)] = true;
+                        $this->_question['choice'][self::cleanup($val)] = true;
                 }
                 if ($key == "Incorrect") {
-                        $this->question['choice'][self::cleanup($val)] = false;
+                        $this->_question['choice'][self::cleanup($val)] = false;
                 }
                 if ($key == "Marking guide") {   // TOOD: what to do with this?
-                        $this->question['guide'] = $val;
+                        $this->_question['guide'] = $val;
                 }
         }
 
@@ -121,13 +121,13 @@ abstract class ImportPingPong extends ImportBase
 
         public function read()
         {
-                $tnode = $this->data->addChild("topics");
-                $qnode = $this->data->addChild("questions");
+                $tnode = $this->_data->addChild("topics");
+                $qnode = $this->_data->addChild("questions");
 
                 $tindex = 0;
                 $qindex = 0;
 
-                foreach ($this->questions as $category => $questions) {
+                foreach ($this->_questions as $category => $questions) {
                         $child = $tnode->addChild("topic");
                         $child->addAttribute("id", ++$tindex);
                         $child->addChild("name", $category);

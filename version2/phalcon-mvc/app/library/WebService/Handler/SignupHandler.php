@@ -34,17 +34,17 @@ class SignupHandler extends ServiceHandler
          * The teacher signup object.
          * @var Teacher 
          */
-        private $teacher;
+        private $_teacher;
         /**
          * The student signup object.
          * @var Student
          */
-        private $student;
+        private $_student;
         /**
          * The signup config.
          * @var Config 
          */
-        private $config;
+        private $_config;
 
         /**
          * Constructor.
@@ -56,10 +56,10 @@ class SignupHandler extends ServiceHandler
         {
                 parent::__construct($request, $user);
 
-                $this->teacher = new Teacher($user->getPrincipalName());
-                $this->student = new Student($user->getPrincipalName());
+                $this->_teacher = new Teacher($user->getPrincipalName());
+                $this->_student = new Student($user->getPrincipalName());
 
-                $this->config = $config;
+                $this->_config = $config;
         }
 
         /**
@@ -73,8 +73,8 @@ class SignupHandler extends ServiceHandler
          */
         public function insert()
         {
-                if ($this->user->affiliation->isEmployee()) {
-                        return new ServiceResponse($this, self::SUCCESS, $this->teacher->insert());
+                if ($this->_user->affiliation->isEmployee()) {
+                        return new ServiceResponse($this, self::SUCCESS, $this->_teacher->insert());
                 } else {
                         throw new SecurityException("Only employees can subscribe as teachers", SecurityException::ACTION);
                 }
@@ -91,8 +91,8 @@ class SignupHandler extends ServiceHandler
          */
         public function remove()
         {
-                if ($this->user->affiliation->isEmployee()) {
-                        return new ServiceResponse($this, self::SUCCESS, $this->teacher->remove());
+                if ($this->_user->affiliation->isEmployee()) {
+                        return new ServiceResponse($this, self::SUCCESS, $this->_teacher->remove());
                 } else {
                         throw new SecurityException("Only employees can subscribe as teachers", SecurityException::ACTION);
                 }
@@ -149,30 +149,30 @@ class SignupHandler extends ServiceHandler
                 // Use service request if argument is missing:
                 // 
                 if (!isset($data)) {
-                        $data = $this->request->data;
+                        $data = $this->_request->data;
                 }
 
                 // 
                 // Handle 'teacher' => true or 'student' => true:
                 // 
                 if (isset($data['teacher']) && is_bool($data['teacher'])) {
-                        $data['teacher'] = $this->config->teacher->toArray();
+                        $data['teacher'] = $this->_config->teacher->toArray();
                 }
                 if (isset($data['student']) && is_bool($data['student'])) {
-                        $data['student'] = $this->config->student->toArray();
+                        $data['student'] = $this->_config->student->toArray();
                 }
 
                 // 
                 // Assign all available exams if called without params:
                 // 
                 if (count($data) == 0) {
-                        $data = $this->config->toArray();
+                        $data = $this->_config->toArray();
                 }
 
                 // 
                 // Strip teacher exams if caller is not employee:
                 // 
-                if ($this->user->affiliation->isEmployee() == false) {
+                if ($this->_user->affiliation->isEmployee() == false) {
                         if (isset($data['teacher'])) {
                                 unset($data['teacher']);
                         }
@@ -181,10 +181,10 @@ class SignupHandler extends ServiceHandler
                 // 
                 // Check that requested subscription is enabled:
                 // 
-                if (isset($data['teacher']) && $this->teacher->isEnabled() == false) {
+                if (isset($data['teacher']) && $this->_teacher->isEnabled() == false) {
                         throw new SecurityException("Teacher subscription has been disabled", SecurityException::ACTION);
                 }
-                if (isset($data['student']) && $this->student->isEnabled() == false) {
+                if (isset($data['student']) && $this->_student->isEnabled() == false) {
                         throw new SecurityException("Student subscription has been disabled", SecurityException::ACTION);
                 }
 
@@ -193,7 +193,7 @@ class SignupHandler extends ServiceHandler
                 // 
                 if (isset($data['teacher'])) {
                         foreach ($data['teacher'] as $index) {
-                                $result['teacher'][$index] = $this->teacher->assign($index);
+                                $result['teacher'][$index] = $this->_teacher->assign($index);
                         }
                 }
 
@@ -202,7 +202,7 @@ class SignupHandler extends ServiceHandler
                 // 
                 if (isset($data['student'])) {
                         foreach ($data['student'] as $index) {
-                                $result['student'][$index] = $this->student->assign($index);
+                                $result['student'][$index] = $this->_student->assign($index);
                         }
                 }
 

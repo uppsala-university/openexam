@@ -33,7 +33,7 @@ class CoreHandler extends ServiceHandler
         /**
          * @var Capabilities 
          */
-        private $capabilities;
+        private $_capabilities;
 
         /**
          * Constructor.
@@ -44,7 +44,7 @@ class CoreHandler extends ServiceHandler
         public function __construct($request, $user, $capabilities)
         {
                 parent::__construct($request, $user);
-                $this->capabilities = $capabilities;
+                $this->_capabilities = $capabilities;
         }
 
         /**
@@ -108,13 +108,13 @@ class CoreHandler extends ServiceHandler
                 // Set primary role before capabilities check for better error
                 // reporting.
                 // 
-                $this->user->setPrimaryRole($role);
+                $this->_user->setPrimaryRole($role);
                 
                 // 
                 // Static check if capabilities allow this action:
                 // 
-                if (!isset($this->request->params['capability'])) {
-                        if ($this->capabilities->hasPermission($role, $type, $action) == false) {
+                if (!isset($this->_request->params['capability'])) {
+                        if ($this->_capabilities->hasPermission($role, $type, $action) == false) {
                                 throw new SecurityException("You don't have permissions to perform this action.", SecurityException::ACTION);
                         }
                 }
@@ -127,24 +127,24 @@ class CoreHandler extends ServiceHandler
                 // 
                 // Handle single or multiple models:
                 // 
-                if (is_numeric(key($this->request->data))) {
-                        foreach ($this->request->data as $data) {
+                if (is_numeric(key($this->_request->data))) {
+                        foreach ($this->_request->data as $data) {
                                 $models[] = $handler->build($type, (array) $data);
                         }
                 } else {
-                        $models[] = $handler->build($type, $this->request->data);
+                        $models[] = $handler->build($type, $this->_request->data);
                 }
 
                 // 
                 // Perform requested action:
                 // 
-                if (isset($this->request->params['capability'])) {
+                if (isset($this->_request->params['capability'])) {
                         // 
                         // Handle dynamic capability checks:
                         // 
-                        $filter = Capabilities::getFilter($this->request->params['capability']);
+                        $filter = Capabilities::getFilter($this->_request->params['capability']);
                         foreach ($models as $model) {
-                                if (($result = $this->capabilities->hasCapability($model, $action, $filter)) == false) {
+                                if (($result = $this->_capabilities->hasCapability($model, $action, $filter)) == false) {
                                         break;
                                 }
                         }
@@ -153,7 +153,7 @@ class CoreHandler extends ServiceHandler
                         // 
                         // Perform action on model(s):
                         // 
-                        $result = $handler->action($models, $action, $this->request->params);
+                        $result = $handler->action($models, $action, $this->_request->params);
                         return new ServiceResponse($this, self::SUCCESS, $result);
                 }
         }
@@ -169,18 +169,18 @@ class CoreHandler extends ServiceHandler
                 'action'   => false
         ))
         {
-                $filter = array_merge($filter, $this->request->params);
+                $filter = array_merge($filter, $this->_request->params);
 
                 if ($filter['role'] && $filter['resource'] && $filter['action']) {
-                        $result = $this->capabilities->hasPermission($filter['role'], $filter['resource'], $filter['action']);
+                        $result = $this->_capabilities->hasPermission($filter['role'], $filter['resource'], $filter['action']);
                 } elseif ($filter['role'] && $filter['resource']) {
-                        $result = $this->capabilities->getPermissions($filter['role'], $filter['resource']);
+                        $result = $this->_capabilities->getPermissions($filter['role'], $filter['resource']);
                 } elseif ($filter['role']) {
-                        $result = $this->capabilities->getResources($filter['role']);
+                        $result = $this->_capabilities->getResources($filter['role']);
                 } elseif ($filter['resource']) {
-                        $result = $this->capabilities->getRoles($filter['resource']);
+                        $result = $this->_capabilities->getRoles($filter['resource']);
                 } else {
-                        $result = $this->capabilities->getCapabilities();
+                        $result = $this->_capabilities->getCapabilities();
                 }
 
                 return new ServiceResponse($this, self::SUCCESS, $result);

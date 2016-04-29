@@ -22,11 +22,11 @@ class ExampleModel extends ModelBase
 class ModelBaseTest extends TestCase
 {
 
-        private $object;
+        private $_object;
 
         public function setUp()
         {
-                $this->object = new ExampleModel();
+                $this->_object = new ExampleModel();
         }
 
         /**
@@ -35,7 +35,7 @@ class ModelBaseTest extends TestCase
          */
         public function testInitialize()
         {
-                $this->object->initialize();
+                $this->_object->initialize();
         }
 
         /**
@@ -45,7 +45,7 @@ class ModelBaseTest extends TestCase
         public function testGetResourceName()
         {
                 $expect = 'examplemodel';
-                $actual = $this->object->getResourceName();
+                $actual = $this->_object->getResourceName();
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }

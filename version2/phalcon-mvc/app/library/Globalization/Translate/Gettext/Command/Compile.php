@@ -44,7 +44,7 @@ class Compile extends Command
         {
                 $mmerge = array();
 
-                $topdir = $this->config->application->localeDir;
+                $topdir = $this->_config->application->localeDir;
                 $locdir = sprintf("%s/%s/LC_MESSAGES", $topdir, $locale);
 
                 $mofile = sprintf("%s/%s.mo", $locdir, $module);
@@ -64,13 +64,13 @@ class Compile extends Command
 
         private function processFile($pofile, $mofile)
         {
-                if ($this->options['verbose']) {
-                        $this->flash->notice("Compiling PO-file $pofile");
+                if ($this->_options['verbose']) {
+                        $this->_flash->notice("Compiling PO-file $pofile");
                 }
-                $program = $this->config->gettext->program->msgfmt;
-                $options = $this->config->gettext->options->msgfmt;
+                $program = $this->_config->gettext->program->msgfmt;
+                $options = $this->_config->gettext->options->msgfmt;
 
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $options .= " --verbose";
                 }
 
@@ -82,16 +82,16 @@ class Compile extends Command
 
         private function hasMergeModules($module)
         {
-                return isset($this->config->translate->$module->merge);
+                return isset($this->_config->translate->$module->merge);
         }
 
         private function getMergeModules($module, $locale)
         {
-                $topdir = $this->config->application->localeDir;
+                $topdir = $this->_config->application->localeDir;
                 $locdir = sprintf("%s/%s/LC_MESSAGES", $topdir, $locale);
                 $mmerge = array();
 
-                foreach ($this->config->translate->$module->merge as $merge) {
+                foreach ($this->_config->translate->$module->merge as $merge) {
                         $mmerge[] = sprintf("%s/%s.po", $locdir, $merge);
                 }
 
@@ -100,13 +100,13 @@ class Compile extends Command
 
         private function getConcatFile($pofile, $merge)
         {
-                if ($this->options['verbose']) {
-                        $this->flash->notice("Concatenating PO-files");
+                if ($this->_options['verbose']) {
+                        $this->_flash->notice("Concatenating PO-files");
                 }
-                $program = $this->config->gettext->program->msgcat;
-                $options = $this->config->gettext->options->msgcat;
+                $program = $this->_config->gettext->program->msgcat;
+                $options = $this->_config->gettext->options->msgcat;
 
-                if ($this->options['verbose']) {
+                if ($this->_options['verbose']) {
                         $options .= " --verbose";
                 }
 

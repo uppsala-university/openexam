@@ -32,20 +32,20 @@ class UnittestTask extends MainTask implements TaskInterface
          * The sample data location.
          * @var string 
          */
-        private $sample;
+        private $_sample;
         /**
          * Backup copy of existing file.
          * @var string 
          */
-        private $backup;
+        private $_backup;
 
         /**
          * Initializer hook.
          */
         public function initialize()
         {
-                $this->sample = sprintf("%s/unittest/sample.dat", $this->config->application->cacheDir);
-                $this->backup = sprintf("%s_%s", $this->sample, time());
+                $this->_sample = sprintf("%s/unittest/sample.dat", $this->config->application->cacheDir);
+                $this->_backup = sprintf("%s_%s", $this->_sample, time());
         }
 
         public static function getUsage()
@@ -103,14 +103,14 @@ class UnittestTask extends MainTask implements TaskInterface
                         if ($params[$i] == 'verbose') {
                                 $options['verbose'] = true;
                         } else {
-                                $this->sample = $params[$i];
+                                $this->_sample = $params[$i];
                         }
                 }
 
                 if ($options['verbose']) {
-                        $this->flash->notice("Using sample data " . $this->sample);
+                        $this->flash->notice("Using sample data " . $this->_sample);
                 }
-                if (!file_exists($this->sample)) {
+                if (!file_exists($this->_sample)) {
                         $this->flash->error("Sample data is missing.\n");
                         return;
                 }
@@ -120,7 +120,7 @@ class UnittestTask extends MainTask implements TaskInterface
                         $this->flash->notice("-------------------------------");
                 }
 
-                $data = array_reverse(unserialize(file_get_contents($this->sample)));
+                $data = array_reverse(unserialize(file_get_contents($this->_sample)));
                 foreach ($data as $m => $a) {
                         $class = sprintf("OpenExam\Models\%s", ucfirst($m));
                         $model = $class::findFirst(array('id' => $a['id']));
@@ -306,23 +306,23 @@ class UnittestTask extends MainTask implements TaskInterface
                         }
                 }
 
-                if (!file_exists(dirname($this->sample))) {
+                if (!file_exists(dirname($this->_sample))) {
                         if ($options['verbose']) {
-                                $this->flash->notice("Creating sample data directory " . dirname($this->sample));
+                                $this->flash->notice("Creating sample data directory " . dirname($this->_sample));
                         }
-                        if (!mkdir(dirname($this->sample), 0755, true)) {
+                        if (!mkdir(dirname($this->_sample), 0755, true)) {
                                 $this->flash->error("Failed create sample directory.");
                         }
                 }
 
-                if (file_exists($this->sample)) {
-                        copy($this->sample, $this->backup);
+                if (file_exists($this->_sample)) {
+                        copy($this->_sample, $this->_backup);
                 }
 
-                if (!file_put_contents($this->sample, serialize($data))) {
+                if (!file_put_contents($this->_sample, serialize($data))) {
                         $this->flash->error("Failed save sample data");
                 } elseif ($options['verbose']) {
-                        $this->flash->success("Wrote sample data to " . $this->sample);
+                        $this->flash->success("Wrote sample data to " . $this->_sample);
                 }
         }
 

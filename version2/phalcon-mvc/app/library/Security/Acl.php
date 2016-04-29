@@ -19,12 +19,12 @@ class Acl extends Component
          * Access list configuration.
          * @var array 
          */
-        private $access;
+        private $_access;
         /**
          * The ACL object.
          * @var AclAdapter 
          */
-        private $acl;
+        private $_acl;
 
         /**
          * Constructor.
@@ -32,7 +32,7 @@ class Acl extends Component
          */
         public function __construct($access = array())
         {
-                $this->access = $access;
+                $this->_access = $access;
         }
 
         /**
@@ -41,15 +41,15 @@ class Acl extends Component
          */
         public function getAcl()
         {
-                if (!isset($this->acl)) {
+                if (!isset($this->_acl)) {
                         if ($this->cache->exists('acl-access')) {
-                                $this->acl = $this->cache->get('acl-access');
+                                $this->_acl = $this->cache->get('acl-access');
                         } else {
-                                $this->acl = $this->rebuild();
-                                $this->cache->save('acl-access', $this->acl);
+                                $this->_acl = $this->rebuild();
+                                $this->cache->save('acl-access', $this->_acl);
                         }
                 }
-                return $this->acl;
+                return $this->_acl;
         }
 
         /**
@@ -94,13 +94,13 @@ class Acl extends Component
         public function getAccess($controller, $action)
         {
                 foreach (array('public', 'protected') as $protection) {
-                        if (isset($this->access[$protection][$controller])) {
-                                if (is_string($this->access[$protection][$controller])) {
-                                        $this->access[$protection][$controller] = array($this->access[$protection][$controller]);
+                        if (isset($this->_access[$protection][$controller])) {
+                                if (is_string($this->_access[$protection][$controller])) {
+                                        $this->_access[$protection][$controller] = array($this->_access[$protection][$controller]);
                                 }
-                                if (in_array($action, $this->access[$protection][$controller])) {
+                                if (in_array($action, $this->_access[$protection][$controller])) {
                                         return $protection;
-                                } elseif ($this->access[$protection][$controller][0] == "*") {
+                                } elseif ($this->_access[$protection][$controller][0] == "*") {
                                         return $protection;
                                 }
                         }
@@ -117,12 +117,12 @@ class Acl extends Component
                 // 
                 // Use roles map:
                 // 
-                $roles = $this->access['roles'];
+                $roles = $this->_access['roles'];
 
                 // 
                 // Use permissions map:
                 // 
-                $permissions = $this->access['permissions'];
+                $permissions = $this->_access['permissions'];
 
                 // 
                 // Add roles:

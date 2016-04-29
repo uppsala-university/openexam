@@ -26,17 +26,17 @@ class SoapRequest
          * The SOAP action.
          * @var string 
          */
-        private $action;
+        private $_action;
         /**
          * The service location.
          * @var string 
          */
-        private $location;
+        private $_location;
         /**
          * The handler class.
          * @var string 
          */
-        private $handler;
+        private $_handler;
 
         /**
          * Constructor.
@@ -46,9 +46,9 @@ class SoapRequest
          */
         public function __construct($request, $action, $path)
         {
-                $this->action = $action;
-                $this->handler = sprintf("%s\Service\%sService", __NAMESPACE__, ucfirst($action));
-                $this->location = sprintf("%s://%s%s", $request->getScheme(), $request->getServerName(), $path);
+                $this->_action = $action;
+                $this->_handler = sprintf("%s\Service\%sService", __NAMESPACE__, ucfirst($action));
+                $this->_location = sprintf("%s://%s%s", $request->getScheme(), $request->getServerName(), $path);
         }
 
         /**
@@ -57,7 +57,7 @@ class SoapRequest
          */
         public function getAction()
         {
-                return $this->action;
+                return $this->_action;
         }
 
         /**
@@ -66,7 +66,7 @@ class SoapRequest
          */
         public function setAction($action)
         {
-                $this->action = $action;
+                $this->_action = $action;
         }
 
         /**
@@ -75,7 +75,7 @@ class SoapRequest
          */
         public function setHandler($class)
         {
-                $this->handler = $class;
+                $this->_handler = $class;
         }
 
         /**
@@ -84,9 +84,9 @@ class SoapRequest
          */
         public function createService()
         {
-                $service = new SoapService($this->handler);
-                $service->setLocation($this->location);
-                $service->setNamespace(sprintf("http://bmc.uu.se/soap/openexam/%s", $this->action));
+                $service = new SoapService($this->_handler);
+                $service->setLocation($this->_location);
+                $service->setNamespace(sprintf("http://bmc.uu.se/soap/openexam/%s", $this->_action));
                 return $service;
         }
 

@@ -23,18 +23,18 @@ use PHPExcel_Reader_CSV;
 class ImportStudentsTextTab extends ImportStudents
 {
 
-        private static $mimedef = array("text/tab-separated-values", "text/plain");
+        private static $_mimedef = array("text/tab-separated-values", "text/plain");
 
         public function __construct($accept = "")
         {
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->reader = new PHPExcel_Reader_CSV();
-                $this->reader->setDelimiter("\t");
-                $this->reader->setReadDataOnly(true);
+                $this->_reader = new PHPExcel_Reader_CSV();
+                $this->_reader->setDelimiter("\t");
+                $this->_reader->setReadDataOnly(true);
         }
 
 }

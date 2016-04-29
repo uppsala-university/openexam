@@ -137,12 +137,12 @@ class CoreController extends RestController
         /**
          * @var CoreHandler
          */
-        protected $handler;
+        protected $_handler;
 
         public function initialize()
         {
                 parent::initialize();
-                $this->handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
+                $this->_handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
         }
 
         public function apiAction()
@@ -165,7 +165,7 @@ class CoreController extends RestController
                         )
                 );
 
-                $this->sendResponse(new ServiceResponse($this->handler, ServiceHandler::SUCCESS, $content));
+                $this->sendResponse(new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $content));
         }
 
         /**
@@ -182,20 +182,20 @@ class CoreController extends RestController
                         throw new ServiceException("Invalid request (missing target)");
                 }
                                 
-                $request = $this->handler->getRequest();
+                $request = $this->_handler->getRequest();
 
                 switch ($request->action) {
                         case ObjectAccess::CREATE:
-                                $this->sendResponse($this->handler->create($request->role, $request->model));
+                                $this->sendResponse($this->_handler->create($request->role, $request->model));
                                 break;
                         case ObjectAccess::READ:
-                                $this->sendResponse($this->handler->read($request->role, $request->model));
+                                $this->sendResponse($this->_handler->read($request->role, $request->model));
                                 break;
                         case ObjectAccess::UPDATE:
-                                $this->sendResponse($this->handler->update($request->role, $request->model));
+                                $this->sendResponse($this->_handler->update($request->role, $request->model));
                                 break;
                         case ObjectAccess::DELETE:
-                                $this->sendResponse($this->handler->delete($request->role, $request->model));
+                                $this->sendResponse($this->_handler->delete($request->role, $request->model));
                                 break;
                 }
         }
@@ -205,7 +205,7 @@ class CoreController extends RestController
          */
         public function capabilityAction()
         {
-                $response = $this->handler->capability();
+                $response = $this->_handler->capability();
                 $this->sendResponse($response);
         }
 

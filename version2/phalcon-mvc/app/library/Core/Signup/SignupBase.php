@@ -28,17 +28,17 @@ abstract class SignupBase extends Component implements Signup
          * Signup of teacher is enabled in config.
          * @var boolean 
          */
-        protected $enabled;
+        protected $_enabled;
         /**
          * The exams available for assignment.
          * @var array 
          */
-        protected $exams;
+        protected $_exams;
         /**
          * The user to register and assign exams.
          * @var string 
          */
-        protected $caller;
+        protected $_caller;
 
         /**
          * Constructor.
@@ -47,9 +47,9 @@ abstract class SignupBase extends Component implements Signup
         public function __construct($user = null)
         {
                 if (!isset($user)) {
-                        $this->caller = $this->user->getPrincipalName();
+                        $this->_caller = $this->user->getPrincipalName();
                 } else {
-                        $this->caller = $user;
+                        $this->_caller = $user;
                 }
         }
 
@@ -59,7 +59,7 @@ abstract class SignupBase extends Component implements Signup
          */
         public function setUser($user)
         {
-                $this->caller = $user;
+                $this->_caller = $user;
         }
 
         /**
@@ -68,7 +68,7 @@ abstract class SignupBase extends Component implements Signup
          */
         public function isEnabled()
         {
-                return $this->enabled;
+                return $this->_enabled;
         }
 
         /**
@@ -77,7 +77,7 @@ abstract class SignupBase extends Component implements Signup
          */
         public function getExams()
         {
-                return $this->exams;
+                return $this->_exams;
         }
 
 }

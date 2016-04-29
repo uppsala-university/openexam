@@ -54,12 +54,12 @@ class Affiliation extends Component
          * All user affiliations.
          * @var array 
          */
-        private $affiliations;
+        private $_affiliations;
         /**
          * The affected principal name.
          * @var string 
          */
-        private $principal;
+        private $_principal;
 
         /**
          * Constructor.
@@ -72,9 +72,9 @@ class Affiliation extends Component
         public function __construct($principal = null)
         {
                 if (isset($principal)) {
-                        $this->principal = $principal;
+                        $this->_principal = $principal;
                 } else {
-                        $this->principal = $this->user->getPrincipalName();
+                        $this->_principal = $this->user->getPrincipalName();
                 }
         }
 
@@ -129,11 +129,11 @@ class Affiliation extends Component
          */
         public function hasFunction($role)
         {
-                if (!isset($this->affiliations)) {
+                if (!isset($this->_affiliations)) {
                         $this->setAffilations();
                 }
 
-                return in_array($role, $this->affiliations);
+                return in_array($role, $this->_affiliations);
         }
 
         /**
@@ -142,11 +142,11 @@ class Affiliation extends Component
          */
         public function getAffiliations()
         {
-                if (!isset($this->affiliations)) {
+                if (!isset($this->_affiliations)) {
                         $this->setAffilations();
                 }
 
-                return $this->affiliations;
+                return $this->_affiliations;
         }
 
         /**
@@ -154,14 +154,14 @@ class Affiliation extends Component
          */
         private function setAffilations()
         {
-                $this->affiliations = array();
-                $affiliations = $this->catalog->getAttribute($this->principal, Principal::ATTR_AFFIL);
+                $this->_affiliations = array();
+                $affiliations = $this->catalog->getAttribute($this->_principal, Principal::ATTR_AFFIL);
 
                 foreach ($affiliations as $data) {
-                        $this->affiliations = array_merge($this->affiliations, $data[Principal::ATTR_AFFIL]);
+                        $this->_affiliations = array_merge($this->_affiliations, $data[Principal::ATTR_AFFIL]);
                 }
 
-                $this->affiliations = array_unique($this->affiliations);
+                $this->_affiliations = array_unique($this->_affiliations);
         }
 
 }

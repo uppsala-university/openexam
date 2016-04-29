@@ -83,11 +83,11 @@ namespace OpenExam\Library\Globalization\Translate\Gettext {
                  * Using version from incubator.
                  * @var bool 
                  */
-                private $incubator = false;
+                private $_incubator = false;
                 /**
                  * @var Gettext
                  */
-                private $gettext;
+                private $_gettext;
 
                 /**
                  * Constructor.
@@ -99,20 +99,20 @@ namespace OpenExam\Library\Globalization\Translate\Gettext {
                                 throw new Exception('The gettext extension is not loaded.');
                         }
 
-                        if ($this->incubator == false) {
-                                $this->gettext = new Gettext(array(
+                        if ($this->_incubator == false) {
+                                $this->_gettext = new Gettext(array(
                                         'locale'        => $this->locale->getLocale(),
                                         'defaultDomain' => $domain,
                                         'directory'     => $this->config->application->localeDir
                                 ));
                         } elseif (is_string($domain)) {
-                                $this->gettext = new Gettext(array(
+                                $this->_gettext = new Gettext(array(
                                         'locale'    => $this->locale->getLocale(),
                                         'file'      => $domain,
                                         'directory' => $this->config->application->localeDir
                                 ));
                         } else {
-                                $this->gettext = new Gettext(array(
+                                $this->_gettext = new Gettext(array(
                                         'locale'  => $this->locale->getLocale(),
                                         'domains' => $domain
                                 ));
@@ -121,27 +121,27 @@ namespace OpenExam\Library\Globalization\Translate\Gettext {
 
                 public function exists($index)
                 {
-                        return $this->gettext->exists($index);
+                        return $this->_gettext->exists($index);
                 }
 
                 public function query($index, $placeholders = null)
                 {
-                        return $this->gettext->query($index, $placeholders);
+                        return $this->_gettext->query($index, $placeholders);
                 }
 
                 public function _($msgid, $params = null)
                 {
-                        return $this->gettext->_($msgid, $params);
+                        return $this->_gettext->_($msgid, $params);
                 }
 
                 public function gettext($msgid, $params = null)
                 {
-                        return $this->gettext->_($msgid, $params);
+                        return $this->_gettext->_($msgid, $params);
                 }
 
                 public function ngettext($msgid1, $msgid2, $count, $params = null)
                 {
-                        return $this->gettext->nquery($msgid1, $msgid2, $count, $params);
+                        return $this->_gettext->nquery($msgid1, $msgid2, $count, $params);
                 }
 
         }

@@ -13,8 +13,8 @@ class AclTest extends TestCase
         /**
          * @var Acl
          */
-        protected $object;
-        protected $access;
+        private $_object;
+        private $_access;
 
         /**
          * Sets up the fixture, for example, opens a network connection.
@@ -22,8 +22,8 @@ class AclTest extends TestCase
          */
         protected function setUp()
         {
-                $this->access = require(CONFIG_DIR . '/access.def');
-                $this->object = new Acl($this->access);
+                $this->_access = require(CONFIG_DIR . '/access.def');
+                $this->_object = new Acl($this->_access);
         }
 
         /**
@@ -41,7 +41,7 @@ class AclTest extends TestCase
          */
         public function testGetAcl()
         {
-                $actual = $this->object->getAcl();
+                $actual = $this->_object->getAcl();
                 self::assertNotNull($actual);
                 self::assertInstanceOf('Phalcon\Acl\Adapter\Memory', $actual);
         }
@@ -51,11 +51,11 @@ class AclTest extends TestCase
          */
         public function testConfig()
         {
-                self::assertTrue(is_array($this->access));
-                self::assertTrue(isset($this->access['roles']));
-                self::assertTrue(isset($this->access['permissions']));
-                self::assertTrue(count($this->access['roles']) > 0);
-                self::assertTrue(count($this->access['permissions']) > 0);
+                self::assertTrue(is_array($this->_access));
+                self::assertTrue(isset($this->_access['roles']));
+                self::assertTrue(isset($this->_access['permissions']));
+                self::assertTrue(count($this->_access['roles']) > 0);
+                self::assertTrue(count($this->_access['permissions']) > 0);
         }
 
         /**
@@ -67,7 +67,7 @@ class AclTest extends TestCase
                 // 
                 // These should all succeed:
                 // 
-                foreach ($this->access['roles'] as $role => $resources) {
+                foreach ($this->_access['roles'] as $role => $resources) {
                         if (is_array($resources)) {
                                 $this->checkResources($role, $resources);
                         } elseif (is_string($resources)) {
@@ -96,7 +96,7 @@ class AclTest extends TestCase
         private function checkResources($role, $resources)
         {
                 foreach ($resources as $resource => $action) {
-                        $actions = $this->access['permissions'][$action];
+                        $actions = $this->_access['permissions'][$action];
                         if (is_array($actions)) {
                                 $this->checkActions($role, $resource, $actions);
                         } elseif (is_string($actions)) {
@@ -128,7 +128,7 @@ class AclTest extends TestCase
          */
         private function checkPermission($role, $resource, $action, $expect)
         {
-                $actual = $this->object->isAllowed($role, $resource, $action);
+                $actual = $this->_object->isAllowed($role, $resource, $action);
                 self::info("role=%s, resource=%s, action=%s: allowed=%s", $role, $resource, $action, $actual ? 'yes' : 'no');
                 self::assertEquals($expect, $actual);
         }

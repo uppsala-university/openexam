@@ -28,12 +28,12 @@ class ImportOpenExamXml extends ImportBase
          * Supported format versions.
          * @var int[]
          */
-        private static $supported = array(6071, 6072, 6073);
+        private static $_supported = array(6071, 6072, 6073);
         /**
          * Supported MIME types.
          * @var string[] 
          */
-        private static $mimedef = array("application/xml", "text/xml");
+        private static $_mimedef = array("application/xml", "text/xml");
 
         /**
          * Constructor.
@@ -48,12 +48,12 @@ class ImportOpenExamXml extends ImportBase
                 if (!extension_loaded("dom")) {
                         throw new ImportException("The DOM Document extension (dom) is not loaded", Error::SERVICE_UNAVAILABLE);
                 }
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->data = simplexml_load_file($this->file, 'ImportData');
+                $this->_data = simplexml_load_file($this->_file, 'ImportData');
                 $this->verify();
         }
 
@@ -63,12 +63,12 @@ class ImportOpenExamXml extends ImportBase
          */
         private function verify()
         {
-                if (!isset($this->data['format'])) {
+                if (!isset($this->_data['format'])) {
                         $message = _("Missing XML format attribute. This don't look like an OpenExam project data file.");
                         throw new ImportException($message, Error::NOT_ACCEPTABLE);
                 }
-                if (!in_array($this->data['format'], self::$supported)) {
-                        $message = sprintf(_("Unsupported XML format version: %d. This file can not be imported."), $this->data['@attributes']['format']);
+                if (!in_array($this->_data['format'], self::$_supported)) {
+                        $message = sprintf(_("Unsupported XML format version: %d. This file can not be imported."), $this->_data['@attributes']['format']);
                         throw new ImportException($message, Error::NOT_ACCEPTABLE);
                 }
         }

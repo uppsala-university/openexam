@@ -28,27 +28,27 @@ use stdClass;
 class ImportPingPongExcel extends ImportPingPong
 {
 
-        private static $mimedef = array("application/vnd.ms-excel", "application/vnd.ms-office");
-        private $reader;
+        private static $_mimedef = array("application/vnd.ms-excel", "application/vnd.ms-office");
+        private $_reader;
 
         public function __construct($accept = "")
         {
-                parent::__construct(self::$mimedef);
+                parent::__construct(self::$_mimedef);
         }
 
         public function open()
         {
-                $this->reader = new Spreadsheet_Excel_Reader();
+                $this->_reader = new Spreadsheet_Excel_Reader();
         }
 
         public function read()
         {
-                $this->reader->read($this->file);
+                $this->_reader->read($this->_file);
 
                 $sheet = new stdClass();
-                $sheet->rows = $this->reader->sheets[0]['numRows'];
-                $sheet->cols = $this->reader->sheets[0]['numCols'];
-                $sheet->cell = $this->reader->sheets[0]['cells'];
+                $sheet->rows = $this->_reader->sheets[0]['numRows'];
+                $sheet->cols = $this->_reader->sheets[0]['numCols'];
+                $sheet->cell = $this->_reader->sheets[0]['cells'];
 
                 if ($sheet->cell[1][1] != self::EXPECT) {
                         $message = sprintf(_("Expected header '%s' at index (1,1)"), self::EXPECT);

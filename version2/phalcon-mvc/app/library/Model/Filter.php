@@ -40,7 +40,7 @@ class Filter
          * The filter parameters.
          * @var array 
          */
-        private $params;
+        private $_params;
 
         /**
          * Constructor.
@@ -48,7 +48,7 @@ class Filter
          */
         public function __construct($params)
         {
-                $this->params = $params;
+                $this->_params = $params;
         }
 
         /**
@@ -57,7 +57,7 @@ class Filter
          */
         public function setFilter($params)
         {
-                $this->params = $params;
+                $this->_params = $params;
         }
 
         /**
@@ -67,7 +67,7 @@ class Filter
          */
         public function accept($model)
         {
-                foreach ($this->params as $key => $val) {
+                foreach ($this->_params as $key => $val) {
                         if (isset($model->$key)) {
                                 $k = $model->$key;
                                 $v = $val;
