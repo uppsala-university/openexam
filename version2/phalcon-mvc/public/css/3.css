@@ -246,3 +246,8 @@ ul.menuLevel4 li a.selectedMenuItem, ul.menuLevel4 li a:hover {
 }
 /*********** Sluttagg som ska finnas med ************/
 }
+
+td a.fill, th a.fill {
+    display:block;
+    width:100%;
+}
