@@ -93,7 +93,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                         <?php foreach($questions as $qNo => $question):?>
                                                                 <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
                                                                   <div style="text-align: center">
-                                                                        <a class="fb fancybox.ajax" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->slot?$question->slot:$question->name?><br>Max. <?=$question->score?></a>
+                                                                        <a class="fb fancybox.ajax fill" href="<?=$this->url->get('exam/'.$exam->id.'/correction/question/'.$question->id)?>">Q<?=$question->slot?$question->slot:$question->name?><br>Max. <?=$question->score?></a>
                                                                   </div>
                                                                   <!--<div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?=sprintf("%1.1f", $question->score)?></div>-->
 
@@ -187,9 +187,9 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                                 ?>
                                                                 <td class="cc <?=$cc?>">
                                                                         <?php if($cLink):?>
-                                                                        <a class="fb fancybox.ajax" ans-id="<?=$answer->getFirst()->id?>" 
+                                                                        <a class="fb fancybox.ajax fill" ans-id="<?=$answer->getFirst()->id?>" 
                                                                         href="<?=$this->url->get('exam/'.$exam->id.'/correction/answer/'.$answer->getFirst()->id)?>">
-                                                                                <?=(is_object($result) && $result->count())?$qScore:'<i class="fa fa-check-square-o" style="font-size: 1.3em"></i>'?>
+                                                                                <?=(is_object($result) && $result->count())?$qScore:'<i class="fa fa-check-square-o"></i>'?>
                                                                         </a>
                                                                         <?php else:?>
                                                                         <i class="fa fa-ban"></i>
