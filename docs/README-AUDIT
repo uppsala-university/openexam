@@ -194,12 +194,21 @@
 
 ** TIPS:
 
-   Use file as audit target and logtail to push changes to other hosts. This could be done
-   using e.g. SSH, netcat or curl:
+   1. Use file as audit target and logtail to push changes to other hosts. This could be done
+      using e.g. SSH, netcat or curl:
 
-    bash$> tail -f /var/data/openexam/exam-changelog.json | \
-           while read line; do \
-                curl -XPOST http://www.example.com/audit-receiver.php -d '$line' \
-           done
+        bash$> tail -f /var/data/openexam/exam-changelog.json | \
+               while read line; do \
+                    curl -XPOST http://www.example.com/audit-receiver.php -d '$line' \
+               done
+
+   2. If the RDBMS supports views, then it might be preferable to create a single audit table
+      and add one view per model. Example for student model:
+
+        mysql> CREATE VIEW student AS
+               SELECT * FROM audit WHERE res = 'student'
+
+      The code or supplied SQL-script in admin/sql/audit don't enforce support for views for
+      compatibility reasons.
 
 // Anders Lövgren, 2016-04-15
