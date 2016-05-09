@@ -80,6 +80,10 @@ class HistoryTest extends TestCase
          */
         public function testGetPosition()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+
                 $expect = 2;
                 $actual = $this->_object->getPosition();
                 self::assertEquals($expect, $actual);
@@ -91,6 +95,10 @@ class HistoryTest extends TestCase
          */
         public function testGetIndex()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $actual = $this->_object->getIndex();
                 self::assertTrue(is_int($actual));
                 self::assertTrue($actual != 0);
@@ -102,6 +110,10 @@ class HistoryTest extends TestCase
          */
         public function testGetSize()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $expect = 3;
                 $actual = $this->_object->getSize();
                 self::assertEquals($expect, $actual);
@@ -113,6 +125,10 @@ class HistoryTest extends TestCase
          */
         public function testGetRevision()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $actual = $this->_object->getRevision();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -124,6 +140,10 @@ class HistoryTest extends TestCase
          */
         public function testGetChanges()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $actual = $this->_object->getChanges();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -135,6 +155,10 @@ class HistoryTest extends TestCase
          */
         public function testHasRevision()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $revisions = $this->_object->getRevisions();
 
                 foreach ($revisions as $expect => $revision) {
@@ -153,6 +177,10 @@ class HistoryTest extends TestCase
          */
         public function testHasRevisions()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $expect = true;
                 $actual = $this->_object->hasRevisions();
                 self::assertEquals($expect, $actual);
@@ -164,6 +192,10 @@ class HistoryTest extends TestCase
          */
         public function testGetRevisions()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $actual = $this->_object->getRevisions();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -176,6 +208,10 @@ class HistoryTest extends TestCase
          */
         public function testUndo()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $expect = "user4@example.com";
                 $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
@@ -207,6 +243,10 @@ class HistoryTest extends TestCase
          */
         public function testRedo()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $expect = "user4@example.com";
                 $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
@@ -233,6 +273,10 @@ class HistoryTest extends TestCase
          */
         public function testRevert()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $revisions = $this->_object->getRevisions();
 
                 // 
@@ -283,16 +327,20 @@ class HistoryTest extends TestCase
          */
         public function testRefresh()
         {
+                if ($this->_object->hasRevisions() == false) {
+                        self::markTestSkipped('Audit is not enabled');
+                }
+                
                 $expect = 3;
                 $actual = $this->_object->getSize();
                 self::assertEquals($expect, $actual);
-                
+
                 $model = $this->_object->getModel();
                 $model->user = "user5@example.com";
                 $model->update();
-                
+
                 $this->_object->refresh();
-                
+
                 $expect = 4;
                 $actual = $this->_object->getSize();
                 self::assertEquals($expect, $actual);
