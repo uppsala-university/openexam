@@ -206,6 +206,7 @@ class Audit extends ModelBehavior
          * 
          * @param string $type The event type.
          * @param ModelInterface $model The target model.
+         * @return array|boolean Return changes or false if not changed.
          */
         protected function getChanges($type, $model)
         {
@@ -223,6 +224,7 @@ class Audit extends ModelBehavior
         /**
          * Called in response to model create event.
          * @param ModelInterface $model The target model.
+         * @return array|boolean Return changes or false if not changed.
          */
         private function afterCreate($model)
         {
@@ -235,12 +237,18 @@ class Audit extends ModelBehavior
                                 'new' => $value
                         );
                 }
-                return $data;
+                
+                if (count($data['changes']) == 0) {
+                        return false;
+                } else {
+                        return $data;
+                }
         }
 
         /**
          * Called in response to model update event.
          * @param ModelInterface $model The target model.
+         * @return array|boolean Return changes or false if not changed.
          */
         private function afterUpdate($model)
         {
@@ -261,12 +269,18 @@ class Audit extends ModelBehavior
                                 );
                         }
                 }
-                return $data;
+                
+                if (count($data['changes']) == 0) {
+                        return false;
+                } else {
+                        return $data;
+                }
         }
 
         /**
          * Called in response to model delete event.
          * @param ModelInterface $model The target model.
+         * @return array|boolean Return changes or false if not changed.
          */
         private function afterDelete($model)
         {
@@ -279,7 +293,12 @@ class Audit extends ModelBehavior
                                 'new' => null
                         );
                 }
-                return $data;
+                
+                if (count($data['changes']) == 0) {
+                        return false;
+                } else {
+                        return $data;
+                }
         }
 
         /**
