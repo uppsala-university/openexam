@@ -66,15 +66,15 @@ class DataTarget extends Component implements AuditTarget
          */
         public function write($changes)
         {
-                $changes['changes'] = serialize($changes['changes']);
-
                 if ($this->getDI()->has('dbaudit')) {
                         if (!($dbh = $this->getDI()->get('dbaudit'))) {
                                 throw new DatabaseException("Failed get audit database connection");
                         }
 
+                        $changes['changes'] = serialize($changes['changes']);
+                        
                         $tbl = $this->_options['table'];
-                        $sql = "INSERT INTO $tbl(type, res, rid, user, time, changes) VALUES(?,?,?,?,?,?)";
+                        $sql = "INSERT INTO `$tbl`(type, res, rid, user, time, changes) VALUES(?,?,?,?,?,?)";
                         $sth = $dbh->prepare($sql);
                         $res = $sth->execute(array_values($changes));
 
