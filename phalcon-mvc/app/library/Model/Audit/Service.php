@@ -100,7 +100,7 @@ class Service extends Component
 
                 $target = $config->getTarget(Audit::TARGET_DATA);
 
-                $sql = sprintf("SELECT * FROM %s WHERE res = '%s' AND rid = %d AND type = 'update'", $target['table'], $name, $model->id);
+                $sql = sprintf("SELECT * FROM `%s` WHERE res = '%s' AND rid = %d AND type = 'update'", $target['table'], $name, $model->id);
                 $dbh = $this->getDI()->get($target['connection']);
                 $sth = $dbh->prepare($sql);
                 $res = $sth->execute();
