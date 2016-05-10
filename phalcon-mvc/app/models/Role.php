@@ -15,8 +15,10 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\Principal;
+use OpenExam\Library\Core\Pattern;
 use OpenExam\Models\ModelBase;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
 
 /**
  * Base class for all role models.
@@ -80,6 +82,15 @@ class Role extends ModelBase
                             )
                         ));
                 }
+
+                $this->validate(new RegexValidator(
+                    array(
+                        "field"   => "user",
+                        "message" => "The username '$this->user' is not matching expected format",
+                        "pattern" => Pattern::USER
+                    )
+                ));
+
                 return $this->validationHasFailed() != true;
         }
 
