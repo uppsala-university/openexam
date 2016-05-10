@@ -69,7 +69,7 @@ class Pattern
         /**
          * User or principal name.
          */
-        const USER = "/^([\w-_]{1,20})@?([\w-_\.]{1,40})?$/";
+        const USER = "/^([\w-_]{1,15})@?([\w-_\.]{1,45})?$/";
         /**
          * Match anonymous code.
          */
