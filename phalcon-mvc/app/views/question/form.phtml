@@ -7,7 +7,7 @@
 <!-- Add / Edit question form that appears in light box -->
 
 <div  id="question-form" style="padding-top:20px; ">
-        <div id="qPartTabs">
+        <div id="qPartTabs" style="<?=(in_array("published", $exam->flags))?'display:none':'';?>">
                 <?php $tabCounter = 1?>
                 <ul id="q-part-tabs" style=" <?=($totalQParts <= 1 ? "display:none" : "")?>">
                         <li><a href="#q-part-<?=$tabCounter?>">Part a</a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
@@ -157,7 +157,7 @@
                                 <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "id" => "uu-id4")); ?>
                                 </a> <br>
                                 <div class="q-corrector-area">
-                                        <ul class="menuLevel1 q_corrector_list" style="list-style:none; margin:0px">
+                                        <ul class="q_corrector_list" style="list-style:none; margin:0px">
                                                 <?php foreach($correctors as $k => $corrector):?>
                                                 <li>
                                                         <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class"=>'del-corrector')); ?>
@@ -177,6 +177,7 @@
                                         </ul>
                                 </div>
                         </div>
+                        
                 </article>
         </div>
         <?php $topics = $exam->getTopics();?>
@@ -199,5 +200,6 @@
 <script language="javascript">
 	var tabId = tabCounter = <?=($totalQParts ? $totalQParts+1 : 2)?>;
 	var qId = <?=$question->id ? $question->id : 0?>;
+        var isExamPublished = <?=(in_array("published", $exam->flags))?"1":"0";?>
 </script>
 <?= Phalcon\Tag::javascriptInclude('js/views/question/form.js')?>
