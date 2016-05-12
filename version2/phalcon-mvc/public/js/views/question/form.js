@@ -83,10 +83,33 @@ $(document).ready(function () {
             tmp += '<option value="' + $(element).attr('data-user') + '">' + $(element).html() + '</option>';
         }
     });
+    
     // show list in openTip
     new Opentip('#uu-id4',
-            '<select class="q-correctors" isfor="uu-id4box"> ' + tmp + ' </select>',
+            'Search by name: <input type="text" class="uu-user-search q-correctors" isfor="uu-id4box">',
             {style: "drops", tipJoint: "top left"});
+    
+    
+    setTimeout(
+      function() 
+      {
+        if(isExamPublished) {
+
+            $( "#question-form-dialog-wrap" ).dialog( "option", "buttons", 
+              [
+                {
+                  text: "Cancel",
+                  click: function() {
+                        close_tooltips();
+                        $(this).dialog('destroy');
+                  }
+                }
+              ]
+            );        
+
+        }
+      }, 500);
+    
     
     if(formJs == 'loaded') {
     	return;

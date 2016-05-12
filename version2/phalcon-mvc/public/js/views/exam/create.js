@@ -184,12 +184,12 @@ $(document).ready(function () {
 		userList = [];
 		ajax(
 			baseURL+'ajax/catalog/principal', 
-			{"data":{"name":request.term+"*"},"params":{"attr":["name","uid","principal"],"limit":10}}, 
+			{"data":{"name":request.term+"*"},"params":{"attr":["name","uid","principal"],"limit":10}},
 			function (json) {
 				
 				$.each(json, function(i, result) {
 					if(userList.indexOf(result.principal) < 0) {
-						respObj.push({"id":result.principal,"label":result.name,"value":result.uid})
+						respObj.push({"id":result.principal,"label":result.name+" ["+result.uid+"]","value":result.uid})
 						userList.push(result.principal);
 					}
 				});
@@ -224,54 +224,88 @@ $(document).ready(function () {
                 addBtnId = $(this).attr('isfor');
 		
 		var alreadyExists = false;
-		$("#" + addBtnId).closest('li').find('.menuLevel1').find('.left-col-user').each(function(index, element) {
-                        if($(element).attr('data-user') == ui.item.id) {
-				alreadyExists = true;
-			}
-                });
-		
+                if($(this).hasClass('q-correctors')) {
+                    $(".q_corrector_list").find('li').each(function(index, element) {
+                            if($(element).find('span').attr('data-user') == ui.item.id) {
+                                    alreadyExists = true;
+                            }
+                    });
+                } else {
+                    $("#" + addBtnId).closest('li').find('.menuLevel1').find('.left-col-user').each(function(index, element) {
+                            if($(element).attr('data-user') == ui.item.id) {
+                                    alreadyExists = true;
+                            }
+                    });
+                }
+                
 		if(!alreadyExists) {
 			
-			// send ajax request to save added role
-			model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
-			ajax(
-				baseURL + 'core/ajax/creator/' + model + '/create',
-				{"exam_id": examId, "user": ui.item.id},
-				function (userData) {
-		
-				    // prepare item to be added
-				    tempItem = $("#" + addBtnId)
-					    .closest('li')
-					    // hide default message, if it was visible
-					    .find('.menuLevel1')
-					    .find('.left-col-def-msg')
-					    .hide()
-					    .end()
-		
-					    // find template item and prepare it to add
-					    .find('li:first')
-					    .clone()
-		
-					    // update data-ref attribute; helpful in deletion
-					    .find('.deluuid')
-					    .attr('data-ref', userData.id)
-					    .end()
-					    .show()
-					    //update username data
-					    .find('.left-col-user')
-					    .attr('data-user', ui.item.id)
-					    .html(usernameText)
-					    .show()
-					    .end();
-		
-				    // add item to the menu
-				    $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
-		
-		
-				    // close all tooltips
-				    //closeTooltips();
-				}
-			);
+                        if($(this).hasClass('q-correctors')) {
+                                cloned = $('.q_corrector_list > li:first').clone()
+                                        .find('.left-col-user')
+                                        .attr('data-user', ui.item.id)
+                                        .html(usernameText)
+                                        .end();
+
+                                if (qId) {
+                                        
+                                        // send ajax request to add selected corrector in question
+                                        ajax(
+                                                baseURL + 'core/ajax/creator/corrector/create',
+                                                {"question_id": qId, "user": ui.item.id},
+                                                function (status) {
+                                                    $('.q_corrector_list').append(cloned);
+                                                }
+                                        );
+
+                                } else {
+                                    //alert("no qid");
+                                    $('.q_corrector_list').append(cloned);
+                                }
+                                
+                        } else {
+
+                                // send ajax request to save added role
+                                model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
+                                ajax(
+                                        baseURL + 'core/ajax/creator/' + model + '/create',
+                                        {"exam_id": examId, "user": ui.item.id},
+                                        function (userData) {
+
+                                            // prepare item to be added
+                                            tempItem = $("#" + addBtnId)
+                                                    .closest('li')
+                                                    // hide default message, if it was visible
+                                                    .find('.menuLevel1')
+                                                    .find('.left-col-def-msg')
+                                                    .hide()
+                                                    .end()
+
+                                                    // find template item and prepare it to add
+                                                    .find('li:first')
+                                                    .clone()
+
+                                                    // update data-ref attribute; helpful in deletion
+                                                    .find('.deluuid')
+                                                    .attr('data-ref', userData.id)
+                                                    .end()
+                                                    .show()
+                                                    //update username data
+                                                    .find('.left-col-user')
+                                                    .attr('data-user', ui.item.id)
+                                                    .html(usernameText)
+                                                    .show()
+                                                    .end();
+
+                                            // add item to the menu
+                                            $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
+
+
+                                            // close all tooltips
+                                            //closeTooltips();
+                                        }
+                                );
+                        }
 		}
 
                 return false;
