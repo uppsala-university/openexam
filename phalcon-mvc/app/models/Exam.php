@@ -19,6 +19,7 @@ use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Model\Behavior\Exam as ExamBehavior;
 use OpenExam\Library\Model\Behavior\FilterText;
 use OpenExam\Library\Model\Behavior\Ownership;
+use OpenExam\Library\Model\Exception;
 use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
@@ -133,6 +134,21 @@ class Exam extends ModelBase
          * @var string
          */
         public $orgunit;
+        /**
+         * The organization division (parent of department).
+         * @var string 
+         */
+        public $division;
+        /**
+         * The organization department (parent of group).
+         * @var string 
+         */
+        public $department;
+        /**
+         * The organization group.
+         * @var string 
+         */
+        public $group;
         /**
          * The exam grades.
          * @var string
@@ -290,6 +306,9 @@ class Exam extends ModelBase
                 if (!isset($this->lockdown)) {
                         $this->lockdown = (object) array('enable' => true);
                 }
+                if (!isset($this->orgunit) || !isset($this->division)) {
+                        $this->setOrganization();
+                }
         }
 
         /**
@@ -362,7 +381,7 @@ class Exam extends ModelBase
                         return $this->_staff = new Staff($this);
                 } else {
                         return $this->_staff;
-                }                
+                }
         }
 
         /**
@@ -658,7 +677,7 @@ class Exam extends ModelBase
          * table allowing to have per student (individual) start/end different
          * than the exam default.
          * 
-         * @throws \OpenExam\Library\Model\Exception
+         * @throws Exception
          */
         private function setStudentDatetime()
         {
@@ -676,7 +695,7 @@ class Exam extends ModelBase
                                             'exam' => $this->id
                                 )))) == false) {
                                 $user->setPrimaryRole($role);
-                                throw new \OpenExam\Library\Model\Exception("Failed lookup student by behavior");
+                                throw new Exception("Failed lookup student by behavior");
                         }
 
                         if (isset($student->starttime)) {
@@ -687,6 +706,29 @@ class Exam extends ModelBase
                         }
                 }
                 $user->setPrimaryRole($role);
+        }
+
+        /**
+         * Set organization data.
+         */
+        private function setOrganization()
+        {
+                if (!isset($this->orgunit)) {
+                        $this->orgunit = $this->getDI()->get('user')->getDepartment();
+                }
+
+                $parts = explode(";", $this->orgunit);
+                $parts = array_pad($parts, 3, null);
+
+                if (!isset($this->division) && isset($parts[0])) {
+                        $this->division = trim($parts[0]);
+                }
+                if (!isset($this->department) && isset($parts[1])) {
+                        $this->department = trim($parts[1]);
+                }
+                if (!isset($this->group) && isset($parts[2])) {
+                        $this->group = trim($parts[2]);
+                }
         }
 
 }

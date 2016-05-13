@@ -41,18 +41,18 @@ class GuiController extends ControllerBase
                 // Normal exception handling is not working at dispatch time.
                 // We need to use try/catch with forward to error page.
                 // 
-                
+
                 try {
                         if ($this->request->isAjax()) {
                                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                         } else {
                                 $this->view->setLayout('main');
                         }
-                        
+
                         $this->checkAccess(
                             $this->dispatcher->getControllerName(), $this->dispatcher->getActionName()
                         );
-                        
+
                         $this->view->setVar("authenticators", $this->auth->getChain("web"));
                 } catch (\Exception $exception) {
                         return $this->exceptionAction($exception);

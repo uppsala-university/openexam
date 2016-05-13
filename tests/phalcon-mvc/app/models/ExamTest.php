@@ -171,6 +171,31 @@ class ExamTest extends TestModel
                         self::assertEquals($expect, $actual);
                 }
 
+                // 
+                // Test organization data:
+                // 
+                $object = new Exam();
+                $object->assign($this->_sample->getSample('exam', false));
+                $object->division = null;
+                $object->orgunit = "Division;Department;Group";
+                $object->create();
+                
+                $expect = "Division";
+                $actual = $object->division;
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+                
+                $expect = "Department";
+                $actual = $object->department;
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+                
+                $expect = "Group";
+                $actual = $object->group;
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+                
+                $object->delete();
         }
 
         /**

@@ -14,10 +14,13 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
-use OpenExam\Models\Exam;
-use OpenExam\Models\Student;
-use OpenExam\Library\Security\Capabilities;
 use OpenExam\Library\Security\Roles;
+use OpenExam\Models\Corrector;
+use OpenExam\Models\Exam;
+use OpenExam\Models\Question;
+use OpenExam\Models\Student;
+use OpenExam\Models\Topic;
+use Phalcon\Mvc\View;
 
 //use  OpenExam\Library\Globalization\Translate;
 
@@ -156,19 +159,19 @@ class ExamController extends GuiController
         public function createAction()
         {
                 // create a new exam
-                $exam = new \OpenExam\Models\Exam();
+                $exam = new Exam();
                 $examSaved = $exam->save(array(
                         'name'    => ' ',
                         'descr'   => ' ',
                         'creator' => $this->user->getPrincipalName(),
-                        'orgunit' => $this->catalog->getAttribute($this->user->getPrincipalName(), 'department')[0]['department'][0],
                         'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75',
                         'details' => 7
                 ));
 
                 if (!$examSaved) {
-                        $errorMsg = 'Failed to initialize exam';
-                        throw new \Exception($errorMsg);
+                        throw new \Exception(
+                        sprintf("Failed to initialize exam (%s)", $exam->getMessages()[0])
+                        );
                 }
 
                 return $this->response->redirect('exam/update/' . $exam->id . '/creator/new-exam');
@@ -233,7 +236,7 @@ class ExamController extends GuiController
                                 return $this->response->setJsonContent(array("status" => "failed"));
 
                         // create exam by replicating exam data
-                        $newExam = new \OpenExam\Models\Exam();
+                        $newExam = new Exam();
                         $examSaved = $newExam->save(array(
                                 "name"    => $exam->name,
                                 "descr"   => $exam->descr,
@@ -253,10 +256,10 @@ class ExamController extends GuiController
                                 ## replicate topics if selected
                                 $topicMap = array();
                                 if (in_array('topics', $replicateOpts)) {
-                                        $topics = \OpenExam\Models\Topic::find('exam_id = ' . $exam->id);
+                                        $topics = Topic::find('exam_id = ' . $exam->id);
                                         if (is_object($topics) && $topics->count()) {
                                                 foreach ($topics as $topic) {
-                                                        $newTopic = new \OpenExam\Models\Topic();
+                                                        $newTopic = new Topic();
                                                         $topicSaved = $newTopic->save(array(
                                                                 "exam_id"   => $newExam->id,
                                                                 "name"      => $topic->name,
@@ -266,7 +269,7 @@ class ExamController extends GuiController
                                                         ));
 
                                                         if (!$topicSaved) {
-                                                                $newTopic = \OpenExam\Models\Topic::findFirst('exam_id = ' . $newExam->id);
+                                                                $newTopic = Topic::findFirst('exam_id = ' . $newExam->id);
                                                         }
                                                         $topicMap[$newTopic->id] = $topic->id;
                                                 }
@@ -276,13 +279,13 @@ class ExamController extends GuiController
                                 ## replicate questions and correctors if selected
                                 if (in_array('questions', $replicateOpts)) {
 
-                                        $questions = \OpenExam\Models\Question::find('exam_id = ' . $exam->id);
+                                        $questions = Question::find('exam_id = ' . $exam->id);
                                         if (is_object($questions) && $questions->count()) {
 
                                                 foreach ($questions as $quest) {
 
                                                         // replicate questions
-                                                        $newQuest = new \OpenExam\Models\Question();
+                                                        $newQuest = new Question();
                                                         $newQuest->save(array(
                                                                 "exam_id"  => $newExam->id,
                                                                 "topic_id" => array_search($quest->topic_id, $topicMap),
@@ -299,7 +302,7 @@ class ExamController extends GuiController
                                                         if (is_object($correctors) && $correctors->count()) {
                                                                 foreach ($correctors as $corrector) {
 
-                                                                        $newCorrector = new \OpenExam\Models\Corrector();
+                                                                        $newCorrector = new Corrector();
                                                                         $newCorrector->save(array(
                                                                                 "question_id" => $newQuest->id,
                                                                                 "user"        => $corrector->user
@@ -406,7 +409,7 @@ class ExamController extends GuiController
          */
         public function studentsAction()
         {
-                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
                 // sanitize
 
@@ -436,7 +439,7 @@ class ExamController extends GuiController
          */
         public function settingsAction()
         {
-                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
                 // sanitize
                 $examId = $this->filter->sanitize($this->request->getPost("exam_id"), "int");
@@ -460,7 +463,7 @@ class ExamController extends GuiController
          */
         public function securityAction()
         {
-                $this->view->setRenderLevel(\Phalcon\Mvc\View::LEVEL_ACTION_VIEW);
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
                 if (($examId = $this->request->getPost("exam_id", "int")) == null) {
                         throw new \Exception("Missing exam ID");
