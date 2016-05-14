@@ -117,6 +117,34 @@ class Resource extends ModelBase
         }
 
         /**
+         * Get source table name.
+         * @return string
+         */
+        public function getSource()
+        {
+                return 'resources';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'      => 'id',
+                        'exam_id' => 'exam_id',
+                        'name'    => 'name',
+                        'descr'   => 'descr',
+                        'path'    => 'path',
+                        'type'    => 'type',
+                        'subtype' => 'subtype',
+                        'user'    => 'user',
+                        'shared'  => 'shared'
+                );
+        }
+
+        /**
          * Validates business rules.
          * @return boolean
          */
@@ -139,11 +167,6 @@ class Resource extends ModelBase
                 if (!isset($this->shared)) {
                         $this->shared = self::SHARED_EXAM;
                 }
-        }
-
-        public function getSource()
-        {
-                return 'resources';
         }
 
 }

@@ -34,9 +34,25 @@ class Teacher extends Role
          */
         public $user;
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'teachers';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'   => 'id',
+                        'user' => 'user'
+                );
         }
 
 }

@@ -63,9 +63,26 @@ class Room extends ModelBase
                 ));
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'rooms';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'          => 'id',
+                        'name'        => 'name',
+                        'description' => 'description'
+                );
         }
 
 }

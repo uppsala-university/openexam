@@ -121,7 +121,7 @@ class Question extends ModelBase
                 parent::initialize();
 
                 $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array(
-                        'alias'    => 'answers'
+                        'alias' => 'answers'
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array(
                         'alias'    => 'correctors',
@@ -176,6 +176,38 @@ class Question extends ModelBase
         }
 
         /**
+         * Get source table name.
+         * @return string
+         */
+        public function getSource()
+        {
+                return 'questions';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'       => 'id',
+                        'exam_id'  => 'exam_id',
+                        'topic_id' => 'topic_id',
+                        'slot'     => 'slot',
+                        'uuid'     => 'uuid',
+                        'user'     => 'user',
+                        'score'    => 'score',
+                        'name'     => 'name',
+                        'quest'    => 'quest',
+                        'answer'   => 'answer',
+                        'status'   => 'status',
+                        'comment'  => 'comment',
+                        'grades'   => 'grades'
+                );
+        }
+
+        /**
          * Validates business rules.
          * @return boolean
          */
@@ -201,11 +233,6 @@ class Question extends ModelBase
                 if (!isset($this->slot)) {
                         $this->slot = self::count(sprintf("exam_id = %d", $this->exam_id)) + 1;
                 }
-        }
-
-        public function getSource()
-        {
-                return 'questions';
         }
 
         /**

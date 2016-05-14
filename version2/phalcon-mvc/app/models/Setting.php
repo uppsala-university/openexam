@@ -74,6 +74,28 @@ class Setting extends ModelBase
                 )));
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
+        public function getSource()
+        {
+                return 'settings';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'   => 'id',
+                        'user' => 'user',
+                        'data' => 'data'
+                );
+        }
+
         protected function beforeSave()
         {
                 $this->data = serialize($this->data);
@@ -164,23 +186,6 @@ class Setting extends ModelBase
                 } else {
                         return isset($this->data[$key]);
                 }
-        }
-
-        public function getSource()
-        {
-                return 'settings';
-        }
-
-        /**
-         * Independent Column Mapping.
-         */
-        public function columnMap()
-        {
-                return array(
-                        'id'   => 'id',
-                        'user' => 'user',
-                        'data' => 'data'
-                );
         }
 
 }

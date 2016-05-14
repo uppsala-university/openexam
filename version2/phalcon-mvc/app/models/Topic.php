@@ -137,9 +137,31 @@ class Topic extends ModelBase
                 }
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'topics';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'        => 'id',
+                        'exam_id'   => 'exam_id',
+                        'slot'      => 'slot',
+                        'uuid'      => 'uuid',
+                        'name'      => 'name',
+                        'randomize' => 'randomize',
+                        'grades'    => 'grades',
+                        'depend'    => 'depend'
+                );
         }
 
 }

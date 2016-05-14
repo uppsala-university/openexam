@@ -145,10 +145,10 @@ class Exam extends ModelBase
          */
         public $department;
         /**
-         * The organization group.
+         * The organization group (department group).
          * @var string 
          */
-        public $group;
+        public $workgroup;
         /**
          * The exam grades.
          * @var string
@@ -287,6 +287,45 @@ class Exam extends ModelBase
         }
 
         /**
+         * Get source table name.
+         * @return string
+         */
+        public function getSource()
+        {
+                return 'exams';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'        => 'id',
+                        'name'      => 'name',
+                        'descr'     => 'descr',
+                        'starttime' => 'starttime',
+                        'endtime'   => 'endtime',
+                        'created'   => 'created',
+                        'updated'   => 'updated',
+                        'creator'   => 'creator',
+                        'details'   => 'details',
+                        'decoded'   => 'decoded',
+                        'published' => 'published',
+                        'orgunit'   => 'orgunit',
+                        'orgdiv'    => 'division',
+                        'orgdep'    => 'department',
+                        'orggrp'    => 'workgroup',
+                        'grades'    => 'grades',
+                        'course'    => 'course',
+                        'code'      => 'code',
+                        'testcase'  => 'testcase',
+                        'lockdown'  => 'lockdown'
+                );
+        }
+
+        /**
          * Called before model is created.
          */
         protected function beforeValidationOnCreate()
@@ -364,11 +403,6 @@ class Exam extends ModelBase
                 if ($this->getDI()->get('cache')->exists($cachekey)) {
                         $this->getDI()->get('cache')->delete($cachekey);
                 }
-        }
-
-        public function getSource()
-        {
-                return 'exams';
         }
 
         /**

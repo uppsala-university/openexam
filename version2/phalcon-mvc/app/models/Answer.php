@@ -93,6 +93,31 @@ class Answer extends ModelBase
         }
 
         /**
+         * Get source table name.
+         * @return string
+         */
+        public function getSource()
+        {
+                return 'answers';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'          => 'id',
+                        'question_id' => 'question_id',
+                        'student_id'  => 'student_id',
+                        'answered'    => 'answered',
+                        'answer'      => 'answer',
+                        'comment'     => 'comment'
+                );
+        }
+
+        /**
          * Called before model is created.
          */
         protected function beforeValidationOnCreate()
@@ -125,11 +150,6 @@ class Answer extends ModelBase
         {
                 $this->answered = $this->answered == 'Y';
                 parent::afterFetch();
-        }
-
-        public function getSource()
-        {
-                return 'answers';
         }
 
 }

@@ -55,9 +55,26 @@ class Corrector extends Role
                 ));
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'correctors';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'          => 'id',
+                        'question_id' => 'question_id',
+                        'user'        => 'user'
+                );
         }
 
 }

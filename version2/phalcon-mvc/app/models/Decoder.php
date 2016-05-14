@@ -54,9 +54,26 @@ class Decoder extends Role
                 ));
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'decoders';
         }
 
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'      => 'id',
+                        'exam_id' => 'exam_id',
+                        'user'    => 'user'
+                );
+        }
+        
 }
