@@ -35,12 +35,24 @@ class Admin extends Role
         public $user;
 
         /**
-         * Return source table name.
+         * Get source table name.
          * @return string
          */
         public function getSource()
         {
                 return 'admins';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'   => 'id',
+                        'user' => 'user'
+                );
         }
 
 }

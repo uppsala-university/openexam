@@ -101,9 +101,31 @@ class Computer extends ModelBase
                 )));
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'computers';
+        }
+
+        /**
+         * Get table column map.
+         * @return type
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'       => 'id',
+                        'room_id'  => 'room_id',
+                        'hostname' => 'hostname',
+                        'ipaddr'   => 'ipaddr',
+                        'port'     => 'port',
+                        'password' => 'password',
+                        'created'  => 'created',
+                        'updated'  => 'updated'
+                );
         }
 
 }

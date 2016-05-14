@@ -79,13 +79,18 @@ class Access extends ModelBase
                 ));
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'access';
         }
 
         /**
-         * Independent Column Mapping.
+         * Get table column map.
+         * @return array
          */
         public function columnMap()
         {

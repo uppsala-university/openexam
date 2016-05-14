@@ -103,6 +103,33 @@ class Student extends Role
                 )));
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
+        public function getSource()
+        {
+                return 'students';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'        => 'id',
+                        'exam_id'   => 'exam_id',
+                        'user'      => 'user',
+                        'code'      => 'code',
+                        'tag'       => 'tag',
+                        'starttime' => 'starttime',
+                        'endtime'   => 'endtime',
+                        'finished'  => 'finished'
+                );
+        }
+
         public function validation()
         {
                 if (parent::validation() == false) {
@@ -130,11 +157,6 @@ class Student extends Role
         {
                 $this->persnr = $this->getAttribute(Principal::ATTR_PNR);
                 parent::afterFetch();
-        }
-
-        public function getSource()
-        {
-                return 'students';
         }
 
 }

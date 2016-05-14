@@ -97,6 +97,31 @@ class Lock extends ModelBase
         }
 
         /**
+         * Get source table name.
+         * @return string
+         */
+        public function getSource()
+        {
+                return 'locks';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'          => 'id',
+                        'student_id'  => 'student_id',
+                        'computer_id' => 'computer_id',
+                        'exam_id'     => 'exam_id',
+                        'aquired'     => 'aquired',
+                        'status'      => 'status'
+                );
+        }
+
+        /**
          * Validates business rules.
          * @return boolean
          */
@@ -119,11 +144,6 @@ class Lock extends ModelBase
                 if (!isset($this->status)) {
                         $this->status = self::STATUS_APPROVED;
                 }
-        }
-
-        public function getSource()
-        {
-                return 'locks';
         }
 
 }

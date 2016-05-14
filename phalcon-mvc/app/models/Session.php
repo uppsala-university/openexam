@@ -49,9 +49,28 @@ class Session extends ModelBase
          */
         public $updated;
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'sessions';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'         => 'id',
+                        'session_id' => 'session_id',
+                        'data'       => 'data',
+                        'created'    => 'created',
+                        'updated'    => 'updated'
+                );
         }
 
 }

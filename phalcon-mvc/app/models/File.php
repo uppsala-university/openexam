@@ -65,9 +65,29 @@ class File extends ModelBase
                 ));
         }
 
+        /**
+         * Get source table name.
+         * @return string
+         */
         public function getSource()
         {
                 return 'files';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'        => 'id',
+                        'answer_id' => 'answer_id',
+                        'name'      => 'name',
+                        'path'      => 'path',
+                        'type'      => 'type',
+                        'subtype'   => 'subtype'
+                );
         }
 
 }

@@ -103,6 +103,31 @@ class Result extends ModelBase
         }
 
         /**
+         * Get source table name.
+         * @return string
+         */
+        public function getSource()
+        {
+                return 'results';
+        }
+
+        /**
+         * Get table column map.
+         * @return array
+         */
+        public function columnMap()
+        {
+                return array(
+                        'id'           => 'id',
+                        'answer_id'    => 'answer_id',
+                        'corrector_id' => 'corrector_id',
+                        'correction'   => 'correction',
+                        'score'        => 'score',
+                        'comment'      => 'comment'
+                );
+        }
+
+        /**
          * Validates business rules.
          * @return boolean
          */
@@ -125,11 +150,6 @@ class Result extends ModelBase
                 if (!isset($this->correction)) {
                         $this->correction = self::CORRECTION_WAITING;
                 }
-        }
-
-        public function getSource()
-        {
-                return 'results';
         }
 
 }
