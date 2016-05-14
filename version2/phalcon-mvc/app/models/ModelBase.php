@@ -215,20 +215,38 @@ class ModelBase extends Model
         }
 
         /**
-         * Merge this model with the existing model (having same ID). 
+         * Called before validation on update.
          * 
-         * Allowing us to save sparse model object (not having all required
-         * attributes set). Any missing required attribute in this model is
-         * set to previous value. For complete model objects, this is an noop
-         * with minimal performance hit.
+         * This function allowes update of sparse model objects (not having
+         * all required attributes) as these are fetched from existing model
+         * if reuired.
+         * 
+         * If this model has all required attributes, then except for overhead
+         * of validating this is a noop with minimal performance hit.
          */
         protected function beforeValidationOnUpdate()
         {
                 // 
-                // Check that required attributes are set:
+                // Get required fields:
                 // 
-                $required = $this->getModelsMetaData()->getNotNullAttributes($this);
+                $notNullAttributes = $this->getModelsMetaData()->getNotNullAttributes($this);
 
+                // 
+                // Get reverse column map (field -> attr):
+                // 
+                $columnMap = $this->getModelsMetaData()->getColumnMap($this);
+
+                // 
+                // Create array of required attributes:
+                // 
+                $required = array_map(
+                    function($field) use($columnMap) {
+                        return $columnMap[$field];
+                }, $notNullAttributes);
+
+                // 
+                // Check if this model need to be populated:
+                // 
                 foreach ($required as $attr) {
                         if (!isset($this->$attr)) {
                                 $populate = true;
@@ -236,13 +254,22 @@ class ModelBase extends Model
                         }
                 }
 
+                // 
+                // Nothing to do:
+                // 
                 if (!isset($populate)) {
                         return;
                 }
 
+                // 
+                // Find existing model (same ID):
+                // 
                 $class = get_class($this);
                 $model = $class::findFirst("id = $this->id");
 
+                // 
+                // Merge this model with the existing:
+                // 
                 foreach ($required as $attr) {
                         if (!isset($this->$attr)) {
                                 $this->$attr = $model->$attr;
@@ -253,7 +280,7 @@ class ModelBase extends Model
                 // Now it gets even more ugly:
                 // 
                 $attributes = get_object_vars($this);
-                foreach ($attributes as $attr => $value) {
+                foreach (array_keys($attributes) as $attr) {
                         if (!isset($this->$attr) && isset($model->$attr)) {
                                 $this->$attr = $model->$attr;
                         }
