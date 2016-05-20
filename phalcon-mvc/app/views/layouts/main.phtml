@@ -119,6 +119,18 @@ $actionName = $this->dispatcher->getActionName();
                     </ul>
                 </li>
             </ul>
+            <ul id="menucontainer" style="float:right;" class="tools-menu">
+                <li id="tools">
+                    <?=
+                    Phalcon\Tag::linkTo(array("#", "Tools"));
+                    ?>
+                    <ul class="tools-menu" style="visibility:hidden">
+                        <li>
+                            <?= Phalcon\Tag::linkTo('utility/statistics', 'Statistics') ?>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 

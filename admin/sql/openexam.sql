@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.26, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.28, for Linux (x86_64)
 --
 -- Host: localhost    Database: openexam2prod
 -- ------------------------------------------------------
--- Server version	5.6.26-log
+-- Server version	5.6.28-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -67,6 +67,23 @@ CREATE TABLE `answers` (
   CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE,
   CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `audit`
+--
+
+DROP TABLE IF EXISTS `audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `audit` (
+  `id` int(11) DEFAULT NULL,
+  `model` varchar(20) DEFAULT NULL,
+  `type` char(6) DEFAULT NULL,
+  `user` varchar(60) DEFAULT NULL,
+  `time` datetime DEFAULT NULL,
+  `changes` mediumblob
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,6 +179,9 @@ CREATE TABLE `exams` (
   `decoded` enum('Y','N') NOT NULL DEFAULT 'N',
   `published` enum('Y','N') DEFAULT 'N',
   `orgunit` varchar(150) NOT NULL,
+  `orgdiv` varchar(100) NOT NULL,
+  `orgdep` varchar(100) DEFAULT NULL,
+  `orggrp` varchar(100) DEFAULT NULL,
   `grades` varchar(200) NOT NULL,
   `course` varchar(20) DEFAULT NULL,
   `code` varchar(20) DEFAULT NULL,
@@ -188,7 +208,7 @@ CREATE TABLE `files` (
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
   CONSTRAINT `files_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -421,4 +441,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-20 11:21:46
+-- Dump completed on 2016-05-20  7:48:04

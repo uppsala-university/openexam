@@ -1,0 +1,72 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    index.phtml
+// Created: 2016-04-28 18:17:09
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+?>
+
+<style>
+    div.mbox {
+        padding: 12px;
+        margin: 10px;
+        margin-top: 50px;
+        box-shadow: 1px 1px 6px #999999;
+        border-radius: 10px 10px 10px 10px;
+        background: #ffffff;
+        max-width: 1024px;
+    }
+    dt {
+        float: left;
+        clear: left;
+        width: 10%;
+        margin: 0;
+        padding: 0 .5em 0 0;
+        text-align: right;
+    }
+    dd {
+        margin: 0;
+        padding: 0;
+    }
+    dt:after {
+        content: ":";
+    }    
+    td.name {
+            font-weight: bold;
+    }
+    td.datetime {
+            font-style: italic;
+    }
+    a dt {
+            color: graytext;
+    }
+</style>
+
+<div class="mbox">
+    <h1>Statistics - <span id="statistics-organization"></span></h1>
+    <div class="statistics-charts">
+        <div id="organization-pie-legend" class="pie-legend"></div>
+        <canvas id="organization-pie-chart" width="400" height="300"></canvas>
+    </div>
+    <div id="statistics-summary">
+        <div class="organization-roles">
+            <dl id="organization-roles-list"></dl>
+        </div>
+        <div class="organization-exams">
+            <dl id="organization-exams-list"></dl>
+        </div>
+        <div class="organization-users">
+            <dl id="organization-users-list"></dl>
+        </div>
+    </div>
+    <div id="statistics-data"></div>
+</div>
+<script src="<?= $this->url->get('js/chart.js') ?>"></script>
+<script src="<?= $this->url->get('js/views/statistics/chart.js') ?>"></script>
+<script src="<?= $this->url->get('js/views/statistics/roles.js') ?>"></script>
