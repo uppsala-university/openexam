@@ -271,7 +271,7 @@ class ModelBase extends Model
                 // Merge this model with the existing:
                 // 
                 foreach ($required as $attr) {
-                        if (!isset($this->$attr)) {
+                        if (!isset($this->$attr) && isset($model->$attr)) {
                                 $this->$attr = $model->$attr;
                         }
                 }
