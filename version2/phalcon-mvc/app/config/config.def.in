@@ -62,11 +62,15 @@ return array(
                 /**
                  * The default user domain.
                  */
-                'domain' => 'example.com',
+                'domain'  => 'example.com',
                 /**
                  * Default set of roles for all users.
                  */
-                'roles'  => array()
+                'roles'   => array(),
+                /**
+                 * Default organization name.
+                 */
+                'orgname' => 'This Organization'
         ),
         /**
          * Default application settings.
