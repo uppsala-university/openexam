@@ -25,7 +25,7 @@
     dt {
         float: left;
         clear: left;
-        width: 10%;
+        width: 60%;
         margin: 0;
         padding: 0 .5em 0 0;
         text-align: right;
@@ -38,31 +38,42 @@
         content: ":";
     }    
     td.name {
-            font-weight: bold;
+        font-weight: bold;
     }
     td.datetime {
-            font-style: italic;
+        font-style: italic;
     }
     a dt {
-            color: graytext;
+        color: graytext;
+    }
+    div #statistics-wrapper {
+        display:flex;
+    }
+    div.statistics-charts {
+        flex: 0 0 70%;
+    }
+    div.statistics-summary {
+        flex: 0 0 20%;
     }
 </style>
 
 <div class="mbox">
     <h1>Statistics - <span id="statistics-organization"></span></h1>
-    <div class="statistics-charts">
-        <div id="organization-pie-legend" class="pie-legend"></div>
-        <canvas id="organization-pie-chart" width="400" height="300"></canvas>
-    </div>
-    <div id="statistics-summary">
-        <div class="organization-roles">
-            <dl id="organization-roles-list"></dl>
+    <div id="statistics-wrapper">
+        <div class="statistics-summary">
+            <div class="organization-roles">
+                <dl id="organization-roles-list"></dl>
+            </div>
+            <div class="organization-exams">
+                <dl id="organization-exams-list"></dl>
+            </div>
+            <div class="organization-users">
+                <dl id="organization-users-list"></dl>
+            </div>
         </div>
-        <div class="organization-exams">
-            <dl id="organization-exams-list"></dl>
-        </div>
-        <div class="organization-users">
-            <dl id="organization-users-list"></dl>
+        <div class="statistics-charts">
+            <div id="organization-pie-legend" class="pie-legend"></div>
+            <canvas id="organization-pie-chart" width="400" height="300"></canvas>
         </div>
     </div>
     <div id="statistics-data"></div>
