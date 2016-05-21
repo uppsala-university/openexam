@@ -16,6 +16,7 @@ namespace OpenExam\Models;
 use OpenExam\Library\Core\Exam\Grades;
 use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
+use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Model\Behavior\Exam as ExamBehavior;
 use OpenExam\Library\Model\Behavior\FilterText;
 use OpenExam\Library\Model\Behavior\Ownership;
@@ -26,6 +27,7 @@ use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Query\Builder;
+use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
 
 /**
  * The exam model.
@@ -323,6 +325,24 @@ class Exam extends ModelBase
                         'testcase'  => 'testcase',
                         'lockdown'  => 'lockdown'
                 );
+        }
+
+        /**
+         * Validates business rules.
+         * @return boolean
+         */
+        protected function validation()
+        {
+                $this->validate(new RegexValidator(
+                    array(
+                        "field"   => "creator",
+                        "message" => "The username '$this->creator' is not matching expected format",
+                        "pattern" => Pattern::USER
+                    )
+                ));
+                if ($this->validationHasFailed() == true) {
+                        return false;
+                }
         }
 
         /**
