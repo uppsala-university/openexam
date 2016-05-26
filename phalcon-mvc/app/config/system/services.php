@@ -75,12 +75,28 @@ $di->set('modelsMetadata', function() use($config) {
  * Setup the models cache service.
  */
 $di->set('modelsCache', function() use($di, $config) {
-        return new Phalcon\Cache\Backend\Apc(
-            new Phalcon\Cache\Frontend\Data(
-            array(
-                "lifetime" => $config->cache->lifetime->model
-            )
-        ));
+        if (extension_loaded('xcache')) {
+                return new Phalcon\Cache\Backend\Xcache(
+                    new Phalcon\Cache\Frontend\Data(
+                    array(
+                        "lifetime" => $config->cache->lifetime->model
+                    )
+                ));
+        } elseif (extension_loaded('apc')) {
+                return new Phalcon\Cache\Backend\Apc(
+                    new Phalcon\Cache\Frontend\Data(
+                    array(
+                        "lifetime" => $config->cache->lifetime->model
+                    )
+                ));
+        } else {
+                return new Phalcon\Cache\Backend\Memory(
+                    new Phalcon\Cache\Frontend\Data(
+                    array(
+                        "lifetime" => $config->cache->lifetime->model
+                    )
+                ));
+        }
 }, true);
 
 /**
