@@ -178,7 +178,7 @@ class ServiceConfig extends Component
         public function setDisabled($model)
         {
                 if (isset($this->_cache[$model])) {
-                        unset($this->_cache[$model]);
+                        $this->_cache[$model] = false;
                 }
         }
 
