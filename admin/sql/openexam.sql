@@ -253,6 +253,26 @@ CREATE TABLE `locks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `performance`
+--
+
+DROP TABLE IF EXISTS `performance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `performance` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mode` enum('vm','disk','part','slab','io') NOT NULL,
+  `source` varchar(15) DEFAULT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `host` varchar(60) NOT NULL,
+  `addr` varchar(60) NOT NULL,
+  `milestone` enum('minute','hour','day','week','month','year') DEFAULT NULL,
+  `data` varchar(1024) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `questions`
 --
 
@@ -441,4 +461,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-20  7:48:04
+-- Dump completed on 2016-05-29  2:20:37

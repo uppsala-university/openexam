@@ -130,6 +130,18 @@
 		<key Table="locks" Non_unique="1" Key_name="student_id" Seq_in_index="1" Column_name="student_id" Collation="A" Cardinality="4354" Null="" Index_type="BTREE" Comment="" Index_comment="" />
 		<options Name="locks" Engine="InnoDB" Version="10" Row_format="Compact" Rows="4354" Avg_row_length="48" Data_length="212992" Max_data_length="0" Index_length="376832" Data_free="0" Auto_increment="1" Create_time="2016-05-12 00:58:31" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
+	<table_structure name="performance">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+		<field Field="mode" Type="enum('vm','disk','part','slab','io')" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="source" Type="varchar(15)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="time" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="on update CURRENT_TIMESTAMP" Comment="" />
+		<field Field="host" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="addr" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="milestone" Type="enum('minute','hour','day','week','month','year')" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="data" Type="varchar(1024)" Null="NO" Key="" Extra="" Comment="" />
+		<key Table="performance" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="12920" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="performance" Engine="InnoDB" Version="10" Row_format="Compact" Rows="12920" Avg_row_length="609" Data_length="7880704" Max_data_length="0" Index_length="0" Data_free="4194304" Auto_increment="1" Create_time="2016-05-23 23:05:33" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
 	<table_structure name="questions">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
@@ -188,16 +200,16 @@
 		<field Field="data" Type="text" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="created" Type="int(15) unsigned" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="updated" Type="int(15) unsigned" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="sessions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="sessions" Non_unique="1" Key_name="session_id" Seq_in_index="1" Column_name="session_id" Collation="A" Cardinality="2" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="sessions" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="2" Avg_row_length="272" Data_length="12044" Max_data_length="281474976710655" Index_length="5120" Data_free="11500" Auto_increment="1" Create_time="2016-05-12 00:58:47" Update_time="2016-05-20 03:16:45" Check_time="2016-05-12 00:58:48" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="sessions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="1" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="sessions" Non_unique="1" Key_name="session_id" Seq_in_index="1" Column_name="session_id" Collation="A" Cardinality="1" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="sessions" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="1" Avg_row_length="272" Data_length="12044" Max_data_length="281474976710655" Index_length="5120" Data_free="11772" Auto_increment="1" Create_time="2016-05-12 00:58:47" Update_time="2016-05-29 00:12:00" Check_time="2016-05-12 00:58:48" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="settings">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="data" Type="text" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="settings" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="28302" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="settings" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="28302" Avg_row_length="112" Data_length="3169936" Max_data_length="281474976710655" Index_length="292864" Data_free="112" Auto_increment="1" Create_time="2016-05-12 00:58:48" Update_time="2016-05-14 14:28:48" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="settings" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="45" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="settings" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="45" Avg_row_length="112" Data_length="3169936" Max_data_length="281474976710655" Index_length="292864" Data_free="3164896" Auto_increment="1" Create_time="2016-05-12 00:58:48" Update_time="2016-05-25 00:09:20" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="students">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
