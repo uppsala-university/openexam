@@ -58,16 +58,28 @@ class VirtualMemoryCounter extends PerformanceCounter implements Counter
                 parent::__construct($data, array(
                         'label'   => $this->tr->_("Virtual Memory Counters"),
                         'descr'   => $this->tr->_("Information about processes, memory, paging, block I/O and CPU activity."),
-                        'process' => array(
-                                'label'    => $this->tr->_("Processes"),
-                                'descr'    => $this->tr->_("Information about running processes."),
-                                'runnable' => array(
-                                        'label' => $this->tr->_("Runnable"),
-                                        'descr' => $this->tr->_("The number of runnable processes (running or waiting for run time)."),
+                        'cpu'     => array(
+                                'label'  => $this->tr->_("Processor (CPU)"),
+                                'descr'  => $this->tr->_("These are percentages of total CPU time."),
+                                'user'   => array(
+                                        'label' => $this->tr->_("User Mode"),
+                                        'descr' => $this->tr->_("Time spent running non-kernel code."),
                                 ),
-                                'sleeping' => array(
-                                        'label' => $this->tr->_("Sleeping"),
-                                        'descr' => $this->tr->_("The number of processes in uninterruptible sleep."),
+                                'system' => array(
+                                        'label' => $this->tr->_("Kernel Mode"),
+                                        'descr' => $this->tr->_("Time spent running kernel code."),
+                                ),
+                                'idle'   => array(
+                                        'label' => $this->tr->_("Idle"),
+                                        'descr' => $this->tr->_("Time spent idle."),
+                                ),
+                                'wait'   => array(
+                                        'label' => $this->tr->_("I/O Wait"),
+                                        'descr' => $this->tr->_("Time spent waiting for IO."),
+                                ),
+                                'stolen' => array(
+                                        'label' => $this->tr->_("Stolen"),
+                                        'descr' => $this->tr->_("Time stolen from a virtual machine."),
                                 )
                         ),
                         'memory'  => array(
@@ -102,6 +114,18 @@ class VirtualMemoryCounter extends PerformanceCounter implements Counter
                                         'descr' => $this->tr->_("Amount of memory swapped to disk (/s)."),
                                 )
                         ),
+                        'process' => array(
+                                'label'    => $this->tr->_("Processes"),
+                                'descr'    => $this->tr->_("Information about running processes."),
+                                'runnable' => array(
+                                        'label' => $this->tr->_("Runnable"),
+                                        'descr' => $this->tr->_("The number of runnable processes (running or waiting for run time)."),
+                                ),
+                                'sleeping' => array(
+                                        'label' => $this->tr->_("Sleeping"),
+                                        'descr' => $this->tr->_("The number of processes in uninterruptible sleep."),
+                                )
+                        ),
                         'io'      => array(
                                 'label' => $this->tr->_("Block I/O"),
                                 'descr' => $this->tr->_("Read/write for block devices."),
@@ -124,30 +148,6 @@ class VirtualMemoryCounter extends PerformanceCounter implements Counter
                                 'context'    => array(
                                         'label' => $this->tr->_("Context Switches"),
                                         'descr' => $this->tr->_("The number of context switches per second."),
-                                )
-                        ),
-                        'cpu'     => array(
-                                'label'  => $this->tr->_("Processor (CPU)"),
-                                'descr'  => $this->tr->_("These are percentages of total CPU time."),
-                                'user'   => array(
-                                        'label' => $this->tr->_("User Mode"),
-                                        'descr' => $this->tr->_("Time spent running non-kernel code."),
-                                ),
-                                'system' => array(
-                                        'label' => $this->tr->_("Kernel Mode"),
-                                        'descr' => $this->tr->_("Time spent running kernel code."),
-                                ),
-                                'idle'   => array(
-                                        'label' => $this->tr->_("Idle"),
-                                        'descr' => $this->tr->_("Time spent idle."),
-                                ),
-                                'wait'   => array(
-                                        'label' => $this->tr->_("I/O Wait"),
-                                        'descr' => $this->tr->_("Time spent waiting for IO."),
-                                ),
-                                'stolen' => array(
-                                        'label' => $this->tr->_("Stolen"),
-                                        'descr' => $this->tr->_("Time stolen from a virtual machine."),
                                 )
                         )
                     )
