@@ -79,6 +79,15 @@ class Service extends Component
         }
 
         /**
+         * Disable audit for this model.
+         * @param string $model The resource name.
+         */
+        public function setDisabled($model)
+        {
+                $this->_config->setDisabled($model);
+        }
+
+        /**
          * Get revisions for this model object.
          * 
          * @param ModelInterface $model

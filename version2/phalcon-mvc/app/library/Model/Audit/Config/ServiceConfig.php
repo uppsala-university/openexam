@@ -172,6 +172,17 @@ class ServiceConfig extends Component
         }
 
         /**
+         * Disable audit for this model.
+         * @param string $model The resource name.
+         */
+        public function setDisabled($model)
+        {
+                if (isset($this->_cache[$model])) {
+                        unset($this->_cache[$model]);
+                }
+        }
+
+        /**
          * Check if cached configuration exist for this model.
          * 
          * @param string $model
