@@ -5,24 +5,23 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    VirtualMemoryCollector.php
+// File:    Server.php
 // Created: 2016-05-23 01:35:44
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Monitor\Performance\Collector\Server;
+namespace OpenExam\Library\Monitor\Performance\Collector;
 
 use OpenExam\Library\Console\Process;
-use OpenExam\Library\Monitor\Performance\Collector\PerformanceCollector;
-use OpenExam\Models\Performance as PerformanceModel;
+use OpenExam\Models\Performance;
 
 /**
- * Performance collector for virtual memory.
+ * Server performance collector. 
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class VirtualMemoryCollector extends PerformanceCollector
+class Server extends CollectorProcess
 {
 
         /**
@@ -85,9 +84,9 @@ class VirtualMemoryCollector extends PerformanceCollector
                         )
                 );
 
-                $model = new PerformanceModel();
+                $model = new Performance();
                 $model->data = $data;
-                $model->mode = PerformanceModel::MODE_VM;
+                $model->mode = Performance::MODE_SERVER;
                 $model->host = $this->_host;
                 $model->addr = $this->_addr;
 

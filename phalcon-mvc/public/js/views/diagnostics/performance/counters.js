@@ -23,28 +23,60 @@
 var colors = {
     _curr: 0, _colors: [
         [
-            "rgb(255, 165, 0)", "rgb(255, 165, 0)", "rgb(255, 165, 0)",
-            "rgb(255, 255, 255)", "rgb(255, 165, 0)", "rgb(192, 255, 255)"
+            "rgb(255, 64, 0)", "rgb(255, 64, 0)", "rgb(255, 64, 0)",
+            "rgb(255, 255, 255)", "rgb(255, 64, 0)", "rgb(192, 255, 255)"
+        ],
+        [
+            "rgb(0, 255, 255)", "rgb(0, 255, 255)", "rgb(0, 255, 255)",
+            "rgb(255, 255, 255)", "rgb(0, 255, 255)", "rgb(192, 255, 255)"
+        ],
+        [
+            "rgb(191, 255, 0)", "rgb(191, 255, 0)", "rgb(191, 255, 0)",
+            "rgb(255, 255, 255)", "rgb(191, 255, 0)", "rgb(192, 255, 255)"
+        ],
+        [
+            "rgb(128, 255, 0)", "rgb(128, 255, 0)", "rgb(128, 255, 0)",
+            "rgb(255, 255, 255)", "rgb(128, 255, 0)", "rgb(192, 255, 255)"
+        ],
+        [
+            "rgb(255, 255, 0)", "rgb(255, 255, 0)", "rgb(255, 255, 0)",
+            "rgb(255, 255, 255)", "rgb(255, 255, 0)", "rgb(192, 255, 255)"
+        ],
+        [
+            "rgb(0, 191, 255)", "rgb(0, 191, 255)", "rgb(0, 191, 255)",
+            "rgb(255, 255, 255)", "rgb(0, 191, 255)", "rgb(192, 255, 255)"
+        ],
+        [
+            "rgb(255, 128, 0)", "rgb(255, 128, 0)", "rgb(255, 128, 0)",
+            "rgb(255, 255, 255)", "rgb(255, 128, 0)", "rgb(192, 255, 255)"
+        ],
+        [
+            "rgb(0, 255, 0)", "rgb(0, 255, 0)", "rgb(0, 255, 0)",
+            "rgb(255, 255, 255)", "rgb(0, 255, 0)", "rgb(192, 255, 255)"
         ],
         [
             "rgb(255, 0, 255)", "rgb(255, 0, 255)", "rgb(255, 0, 255)",
             "rgb(255, 255, 255)", "rgb(255, 0, 255)", "rgb(192, 255, 255)"
         ],
         [
-            "rgb(64, 255, 0)", "rgb(64, 255, 0)", "rgb(64, 255, 0)",
-            "rgb(255, 255, 255)", "rgb(64, 255, 0)", "rgb(192, 255, 255)"
+            "rgb(0, 255, 191)", "rgb(0, 255, 191)", "rgb(0, 255, 191)",
+            "rgb(255, 255, 255)", "rgb(0, 255, 191)", "rgb(192, 255, 255)"
         ],
         [
             "rgb(128, 0, 255)", "rgb(128, 0, 255)", "rgb(128, 0, 255)",
-            "rgb(255, 255, 255)", "rgb(128, 0, 255)", "rgb(255, 255, 255)"
+            "rgb(255, 255, 255)", "rgb(128, 0, 255)", "rgb(192, 255, 255)"
         ],
         [
-            "rgb(0, 191, 255)", "rgb(0, 191, 255)", "rgb(0, 191, 255)",
-            "rgb(255, 255, 255)", "rgb(0, 191, 255)", "rgb(255, 255, 255)"
+            "rgb(0, 128, 255)", "rgb(0, 128, 255)", "rgb(0, 128, 255)",
+            "rgb(255, 255, 255)", "rgb(0, 128, 255)", "rgb(192, 255, 255)"
         ],
         [
-            "rgb(0, 255, 191)", "rgb(0, 255, 191)", "rgb(0, 255, 191)",
-            "rgb(255, 255, 255)", "rgb(0, 255, 191)", "rgb(255, 255, 255)"
+            "rgb(191, 0, 255)", "rgb(191, 0, 255)", "rgb(191, 0, 255)",
+            "rgb(255, 255, 255)", "rgb(191, 0, 255)", "rgb(192, 255, 255)"
+        ],
+        [
+            "rgb(255, 0, 128)", "rgb(255, 0, 128)", "rgb(255, 0, 128)",
+            "rgb(255, 255, 255)", "rgb(255, 0, 128)", "rgb(192, 255, 255)"
         ]
     ],
     next: function () {
@@ -83,7 +115,6 @@ function Timeline(key, parent) {
             _data = _data.slice(0, _data.length - _max)
         }
         if (chart !== undefined) {
-            console.log(insert);
             chart.data.datasets[index].data[_max - 1] = insert.shift();
         }
     };
@@ -183,7 +214,8 @@ function Counter(key, parent) {
 
     this.remove = function () {
         _chart.destroy();
-        _parent.removeChild(_context);
+        _parent.find("div").remove();
+        _timelines = [];
     };
 }
 
@@ -191,7 +223,7 @@ function Counter(key, parent) {
 // The mnitor (counter container) object.
 // 
 counters = (function () {
-    var _url, _limit = 20, _interval = 5, _monitor, _context, _counters = {}, _timer, _label, _descr;
+    var _url, _limit = 20, _interval = 5, _monitor, _context, _counters = {}, _timer = null, _label, _descr;
 
     // 
     // Parse keys data. Set label, descr and create counters.
@@ -268,8 +300,6 @@ counters = (function () {
             _monitor = monitor;
             _context = context;
 
-            console.log(_context);
-
             var url = _url + '/' + _monitor + '?limit=' + _limit + '&keys=1';
             fetch(url, create);
         },
@@ -280,11 +310,13 @@ counters = (function () {
             if (_timer) {
                 this.stop();
             }
-            if (_counters.length > 0) {
-                for (var k in _counters) {
-                    _counters[k].remove();
-                }
-                _counters = {};
+
+            for (var k in _counters) {
+                _counters[k].remove();
+            }
+            _counters = {};
+
+            if (_context) {
                 _context.innerHTML = "";
             }
         },
@@ -292,7 +324,7 @@ counters = (function () {
         // Start all counters.
         // 
         start: function () {
-            timer = setInterval(function () {
+            _timer = setInterval(function () {
                 var url = _url + '/' + _monitor + '?limit=1';
                 fetch(url, update);
             }, _interval * 1000);
@@ -301,7 +333,8 @@ counters = (function () {
         // Stop all counters.
         // 
         stop: function () {
-            clearInterval(timer);
+            clearInterval(_timer);
+            _timer = null;
         },
         // 
         // Restart all counters.
@@ -309,6 +342,9 @@ counters = (function () {
         restart: function () {
             this.stop();
             this.start();
+        },
+        running: function () {
+            return _timer !== null;
         },
         // 
         // Set base URL (excluding the monitor name).

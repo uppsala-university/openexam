@@ -28,9 +28,9 @@ class Performance extends ModelBase
 {
 
         /**
-         * Virtual memory performance counter mode.
+         * Server performance counter mode.
          */
-        const MODE_VM = 'vm';
+        const MODE_SERVER = 'server';
         /**
          * Disk performance counter mode.
          */
@@ -38,7 +38,7 @@ class Performance extends ModelBase
         /**
          * Partition performance counter mode.
          */
-        const MODE_PART = 'part';
+        const MODE_PARTITION = 'part';
         /**
          * Slab data performance counter mode.
          */
@@ -47,6 +47,22 @@ class Performance extends ModelBase
          * I/O performance counter mode.
          */
         const MODE_IO = 'io';
+        /**
+         * System performance counter mode.
+         */
+        const MODE_SYSTEM = 'system';
+        /**
+         * Apache performance counter mode.
+         */
+        const MODE_APACHE = 'apache';
+        /**
+         * MySQL performance counter mode.
+         */
+        const MODE_MYSQL = 'mysql';
+        /**
+         * Network performance counter mode.
+         */
+        const MODE_NETWORK = 'net';
         /**
          * This counter is a minute milestone.
          */
@@ -170,11 +186,15 @@ class Performance extends ModelBase
                         $this->validate(new Inclusionin(array(
                                 'field'  => 'mode',
                                 'domain' => array(
+                                        self::MODE_APACHE,
                                         self::MODE_DISK,
                                         self::MODE_IO,
-                                        self::MODE_PART,
+                                        self::MODE_MYSQL,
+                                        self::MODE_NETWORK,
+                                        self::MODE_PARTITION,
+                                        self::MODE_SERVER,
                                         self::MODE_SLAB,
-                                        self::MODE_VM
+                                        self::MODE_SYSTEM
                                 )
                         )));
                 }

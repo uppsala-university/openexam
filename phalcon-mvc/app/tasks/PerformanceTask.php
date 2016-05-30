@@ -14,9 +14,11 @@
 namespace OpenExam\Console\Tasks;
 
 use OpenExam\Library\Monitor\Performance;
-use OpenExam\Library\Monitor\Performance\Collector\Server\DiskStatisticsCollector;
-use OpenExam\Library\Monitor\Performance\Collector\Server\PartitionStatisticsCollector;
-use OpenExam\Library\Monitor\Performance\Collector\Server\VirtualMemoryCollector;
+use OpenExam\Library\Monitor\Performance\Collector\Apache as ApachePerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\Disk as DiskPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\MySQL as MySQLPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\Partition as PartitionPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\Server as ServerPerformanceCollector;
 
 /**
  * System performance task.
@@ -43,17 +45,30 @@ class PerformanceTask extends MainTask implements TaskInterface
                         'header'   => 'System performance tool',
                         'action'   => '--performance',
                         'usage'    => array(
-                                '--collect --server|--disk[=name]|--part=dev [--rate=sec]',
-                                '--query [--server] [--disk] [--part=device]'
+                                '--collect --counter=name|--disk=name|--part=name [--rate=sec] [--user=str]',
+                                '--query   --counter=name|--disk=name|--part=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=str] [--limit=num]'
                         ),
                         'options'  => array(
-                                '--collect' => 'Collect performance statistics.',
-                                '--query'   => 'Check performance counters.',
-                                '--server'  => 'Show server performance.',
-                                '--disk'    => 'Show disk performace.',
-                                '--part'    => 'Show partition performance.',
-                                '--rate'    => 'The sample rate.',
-                                '--verbose' => 'Be more verbose.'
+                                '--collect'       => 'Collect performance statistics.',
+                                '--query'         => 'Check performance counters.',
+                                '--counter=name'  => 'The counter name.',
+                                '--disk=name'     => 'Disk performace counter.',
+                                '--part=name'     => 'Partition performance counter.',
+                                '--rate=sec'      => 'The sample rate (colleting).',
+                                '--user=str'      => 'The service process user (e.g. apache).',
+                                '--time=str'      => 'Match on datetime.',
+                                '--host=str'      => 'Match on hostname (FQHN).',
+                                '--addr=str'      => 'Match on IP-address.',
+                                '--milestone=str' => "Match milestorn ('minute','hour','day','week','month','year')'",
+                                '--source=str'    => 'Match on source.',
+                                '--limit=num'     => 'Limit number of returned records.',
+                                '--export'        => 'Export data instead of displaying.',
+                                '--server'        => 'Alias for --counter=server.',
+                                '--system'        => 'Alias for --counter=system.',
+                                '--net'           => 'Alias for --counter=net.',
+                                '--apache'        => 'Alias for --counter=apache.',
+                                '--mysql'         => 'Alias for --counter=mysql.',
+                                '--verbose'       => 'Be more verbose.'
                         ),
                         'examples' => array(
                                 array(
@@ -65,8 +80,12 @@ class PerformanceTask extends MainTask implements TaskInterface
                                         'command' => '--collect --server --rate=2'
                                 ),
                                 array(
+                                        'descr'   => 'Collect Apache performance using default sample rate',
+                                        'command' => '--collect --apache'
+                                ),
+                                array(
                                         'descr'   => 'Show all performance counters',
-                                        'command' => '--performance'
+                                        'command' => '--query'
                                 )
                         )
                 );
@@ -80,17 +99,23 @@ class PerformanceTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'collect');
 
-                if ($this->_options['server']) {
-                        $performance = new VirtualMemoryCollector($this->_options['rate']);
+                if ($this->_options['apache']) {
+                        $performance = new ApachePerformanceCollector($this->_options['user'], $this->_options['rate']);
+                        $performance->start();
+                } elseif ($this->_options['mysql']) {
+                        $performance = new MySQLPerformanceCollector($this->_options['rate']);
+                        $performance->start();
+                } elseif ($this->_options['server']) {
+                        $performance = new ServerPerformanceCollector($this->_options['rate']);
                         $performance->start();
                 } elseif ($this->_options['disk']) {
-                        $performance = new DiskStatisticsCollector($this->_options['disk'], $this->_options['rate']);
+                        $performance = new DiskPerformanceCollector($this->_options['disk'], $this->_options['rate']);
                         $performance->start();
                 } elseif ($this->_options['part']) {
-                        $performance = new PartitionStatisticsCollector($this->_options['part'], $this->_options['rate']);
+                        $performance = new PartitionPerformanceCollector($this->_options['part'], $this->_options['rate']);
                         $performance->start();
                 } else {
-                        $this->flash->error("Collection mode was missing, see --help");
+                        $this->flash->error("Requested counter was not found, see --help");
                 }
         }
 
@@ -102,8 +127,29 @@ class PerformanceTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'query');
 
-                $performance = new Performance();
-                print_r($performance->getSystemCounter()->getKeys());
+
+                if ($this->_options['counter']) {
+                        $performance = new Performance($this->_options['limit'], $this->_options);
+                        $counter = $performance->getCounter($this->_options['counter']);
+
+                        if ($this->_options['export']) {
+                                var_export($counter->getData());
+                        } else {
+                                $this->flash->success(sprintf("%s [%s] (%s)", $counter->getName(), $counter->getType(), $counter->getTitle()));
+                                $this->flash->success(print_r($counter->getData(), true));
+                        }
+                } else {
+                        $performance = new Performance();
+                        $counters = $performance->getCounters();
+
+                        $this->flash->success("*** Availible performance counters: ***");
+                        $this->flash->success("");
+
+                        foreach ($counters as $counter) {
+                                $this->flash->success(sprintf("%s [%s] (%s)", $counter->getName(), $counter->getType(), $counter->getTitle()));
+                                $this->flash->success(sprintf("\t%s", $counter->getDescription()));
+                        }
+                }
         }
 
         /**
@@ -116,12 +162,12 @@ class PerformanceTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'rate' => 10);
+                $this->_options = array('verbose' => false, 'rate' => 10, 'user' => 'apache', 'limit' => 20);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'collect', 'query', 'server', 'disk', 'part', 'rate');
+                $options = array('verbose', 'collect', 'query', 'counter', 'disk', 'part', 'rate', 'user', 'time', 'host', 'addr', 'milestone', 'source', 'limit', 'export', 'server', 'system', 'net', 'apache', 'mysql');
                 $current = $action;
 
                 // 
@@ -152,6 +198,31 @@ class PerformanceTask extends MainTask implements TaskInterface
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
+                }
+
+                // 
+                // Fix up aliases:
+                // 
+                if ($this->_options['disk']) {
+                        $this->_options['counter'] = 'disk';
+                }
+                if ($this->_options['part']) {
+                        $this->_options['counter'] = 'part';
+                }
+                if ($this->_options['server']) {
+                        $this->_options['counter'] = 'server';
+                }
+                if ($this->_options['system']) {
+                        $this->_options['counter'] = 'system';
+                }
+                if ($this->_options['net']) {
+                        $this->_options['counter'] = 'net';
+                }
+                if ($this->_options['apache']) {
+                        $this->_options['counter'] = 'apache';
+                }
+                if ($this->_options['mysql']) {
+                        $this->_options['counter'] = 'mysql';
                 }
         }
 

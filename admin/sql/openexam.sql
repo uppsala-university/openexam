@@ -261,7 +261,7 @@ DROP TABLE IF EXISTS `performance`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `performance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `mode` enum('vm','disk','part','slab','io') NOT NULL,
+  `mode` enum('server','disk','part','slab','system','apache','mysql','net','io') NOT NULL,
   `source` varchar(15) DEFAULT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `host` varchar(60) NOT NULL,
@@ -461,4 +461,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-29  2:20:37
+-- Dump completed on 2016-05-31  0:27:09

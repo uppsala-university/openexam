@@ -5,25 +5,29 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    VirtualMemoryCounter.php
+// File:    Server.php
 // Created: 2016-05-24 02:23:31
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Monitor\Performance\Counter\Server;
+namespace OpenExam\Library\Monitor\Performance\Counter;
 
+use OpenExam\Library\Monitor\Performance;
 use OpenExam\Library\Monitor\Performance\Counter;
-use OpenExam\Library\Monitor\Performance\Counter\PerformanceCounter;
 
 /**
- * Virtual memory performance counter.
+ * Server performance counter.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class VirtualMemoryCounter extends PerformanceCounter implements Counter
+class Server extends CounterBase implements Counter
 {
 
+        /**
+         * The counter name.
+         */
+        const TYPE = 'server';
         /**
          * The process counter.
          */
@@ -51,13 +55,49 @@ class VirtualMemoryCounter extends PerformanceCounter implements Counter
 
         /**
          * Constructor.
-         * @param array $data The performance data.
+         * @param Performance $performance The performance object.
          */
-        public function __construct($data = null)
+        public function __construct($performance)
         {
-                parent::__construct($data, array(
-                        'label'   => $this->tr->_("Virtual Memory Counters"),
-                        'descr'   => $this->tr->_("Information about processes, memory, paging, block I/O and CPU activity."),
+                parent::__construct(self::TYPE, $performance);
+        }
+
+        /**
+         * Get counter name (short name).
+         * @return string
+         */
+        public function getName()
+        {
+                return $this->tr->_("Server");
+        }
+
+        /**
+         * Get counter title (longer name).
+         * @return string
+         */
+        public function getTitle()
+        {
+                return $this->tr->_("Virtual Memory Counters");
+        }
+
+        /**
+         * Get counter description.
+         * @return string
+         */
+        public function getDescription()
+        {
+                return $this->tr->_("Information about processes, memory, paging, block I/O and CPU activity.");
+        }
+
+        /**
+         * Get translated performance counter keys.
+         * @return array
+         */
+        public function getKeys()
+        {
+                return array(
+                        'label'   => $this->getTitle(),
+                        'descr'   => $this->getDescription(),
                         'cpu'     => array(
                                 'label'  => $this->tr->_("Processor (CPU)"),
                                 'descr'  => $this->tr->_("These are percentages of total CPU time."),
@@ -150,62 +190,23 @@ class VirtualMemoryCounter extends PerformanceCounter implements Counter
                                         'descr' => $this->tr->_("The number of context switches per second."),
                                 )
                         )
-                    )
                 );
         }
 
         /**
-         * Get CPU counter.
-         * @return array
+         * Check if sub counter type exist.
+         * @param string $type The sub counter type.
+         * @return boolean
          */
-        public function getCpuCounter()
+        public function hasCounter($type)
         {
-                return parent::getCounter(self::CPU);
-        }
-
-        /**
-         * Get I/O counter.
-         * @return array
-         */
-        public function getIOCounter()
-        {
-                return parent::getCounter(self::IO);
-        }
-
-        /**
-         * Get memory counter.
-         * @return array
-         */
-        public function getMemoryCounter()
-        {
-                return parent::getCounter(self::MEMORY);
-        }
-
-        /**
-         * Get process counter.
-         * @return array
-         */
-        public function getProcessCounter()
-        {
-                return parent::getCounter(self::PROCESS);
-        }
-
-        /**
-         * Get swap counter.
-         * @return array
-         */
-        public function getSwapCounter()
-        {
-                return parent::getCounter(self::SWAP);
-        }
-
-        /**
-         * Get system counter.
-         * @return array
-         */
-        public function getSystemCounter()
-        {
-                return parent::getCounter(self::SYSTEM);
+                return
+                    $type == self::CPU ||
+                    $type == self::IO ||
+                    $type == self::MEMORY ||
+                    $type == self::PROCESS ||
+                    $type == self::SWAP ||
+                    $type == self::SYSTEM;
         }
 
 }

@@ -15,39 +15,59 @@ namespace OpenExam\Library\Monitor\Performance;
 
 /**
  * Interface for performance counters.
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 interface Counter
 {
+
         /**
-         * Set performance counter data.
-         * @param array $data The performance data.
+         * Get counter type.
+         * @return string
          */
-        function setData($data);
-        
+        function getType();
+
+        /**
+         * Get counter name.
+         * @return string
+         */
+        function getName();
+
+        /**
+         * Get counter title.
+         * @return string
+         */
+        function getTitle();
+
+        /**
+         * Get counter description.
+         * @return string
+         */
+        function getDescription();
+
         /**
          * Get performance data.
          * @return array
          */
         function getData();
-        
+
         /**
          * Get performance counter keys.
          * @return array
          */
         function getKeys();
-        
+
         /**
-         * Check if performance caounter exists.
-         * @param string $type The counter type.
+         * Check if performance counter for sub type exists.
+         * @param string $type The counter sub type.
          * @return boolean
          */
         function hasCounter($type);
-        
+
         /**
-         * Get sub counter data.
+         * Get sub type counter.
          * @param string $type The counter type.
-         * @return array 
+         * @return Counter 
          */
         function getCounter($type);
 }

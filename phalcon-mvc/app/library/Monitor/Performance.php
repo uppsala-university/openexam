@@ -14,10 +14,12 @@
 namespace OpenExam\Library\Monitor;
 
 use OpenExam\Library\Monitor\Performance\Counter;
-use OpenExam\Library\Monitor\Performance\Counter\Server\DiskStatisticsCounter;
-use OpenExam\Library\Monitor\Performance\Counter\Server\PartitionStatisticsCounter;
-use OpenExam\Library\Monitor\Performance\Counter\Server\VirtualMemoryCounter;
-use OpenExam\Models\Performance as PerformanceModel;
+use OpenExam\Library\Monitor\Performance\Counter\Apache as ApachePerformanceCounter;
+use OpenExam\Library\Monitor\Performance\Counter\Disk as DiskPerformanceCounter;
+use OpenExam\Library\Monitor\Performance\Counter\Partition as PartitionPerformanceCounter;
+use OpenExam\Library\Monitor\Performance\Counter\Server as ServerPerformanceCounter;
+use OpenExam\Library\Monitor\Performance\Counter\MySQL as MySQLPerformanceCounter;
+use Phalcon\Mvc\User\Component;
 
 /**
  * System performance diagnostics.
@@ -38,32 +40,24 @@ use OpenExam\Models\Performance as PerformanceModel;
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Performance
+class Performance extends Component
 {
-
-        /**
-         * The system performance counter.
-         */
-        const COUNTER_SERVER = 'server';
-        /**
-         * The disk performance counter.
-         */
-        const COUNTER_DISK = 'disk';
-        /**
-         * The partition performance counter.
-         */
-        const COUNTER_PARTITION = 'partition';
 
         /**
          * Number of objects to return.
          * @var int 
          */
-        private $_limit;
+        private $_limits;
         /**
          * Search filter.
          * @var array 
          */
         private $_filter;
+        /**
+         * The available counters.
+         * @var array 
+         */
+        private $_counters = array();
 
         /**
          * Constructor.
@@ -72,8 +66,30 @@ class Performance
          */
         public function __construct($limit = 20, $filter = array())
         {
-                $this->_limit = $limit;
+                $this->_limits = $limit;
                 $this->_filter = $filter;
+
+                if ($this->config->monitor->get('server')) {
+                        $this->register('server', ServerPerformanceCounter::class);
+                }
+                if ($this->config->monitor->get('disk')) {
+                        $this->register('disk', DiskPerformanceCounter::class);
+                }
+                if ($this->config->monitor->get('part')) {
+                        $this->register('part', PartitionPerformanceCounter::class);
+                }
+//                if ($this->config->monitor->get('system')) {
+//                        $this->register('system', SystemPerformanceCounter::class);
+//                }
+                if ($this->config->monitor->get('apache')) {
+                        $this->register('apache', ApachePerformanceCounter::class);
+                }
+                if ($this->config->monitor->get('mysql')) {
+                        $this->register('mysql', MySQLPerformanceCounter::class);
+                }
+//                if ($this->config->monitor->get('net')) {
+//                        $this->register('net', NetworkPerformanceCounter::class);
+//                }
         }
 
         /**
@@ -82,7 +98,16 @@ class Performance
          */
         public function setLimit($limit)
         {
-                $this->_limit = $limit;
+                $this->_limits = $limit;
+        }
+
+        /**
+         * Get limit on returned records.
+         * @return int
+         */
+        public function getLimits()
+        {
+                return $this->_limits;
         }
 
         /**
@@ -103,6 +128,15 @@ class Performance
         }
 
         /**
+         * Get query filter.
+         * @return array
+         */
+        public function getFilter()
+        {
+                return $this->_filter;
+        }
+
+        /**
          * Add filter option.
          * @param string $key The filter key (e.g. time).
          * @param string|int $val The filter value.
@@ -114,80 +148,73 @@ class Performance
 
         /**
          * Check if counter exist.
-         * @param string $type The counter name (one of COUNTER_XXX constants).
+         * 
+         * The type argument has to be one of the MODE_XXX constants defined 
+         * by the performance model.
+         * 
+         * @param string $type The counter name.
          * @return boolean
          */
         public function hasCounter($type)
         {
-                return
-                    $type == self::COUNTER_DISK ||
-                    $type == self::COUNTER_PARTITION ||
-                    $type == self::COUNTER_SERVER;
+                return isset($this->_counters[$type]);
+        }
+
+        /**
+         * Get array of all counters.
+         * 
+         * <code>
+         * array(
+         *      'disk'   => Counter,
+         *      'server' => Counter,
+         *       ...
+         * )
+         * </code>
+         * @return Counter[]
+         */
+        public function getCounters()
+        {
+                $counters = array();
+
+                foreach (array_keys($this->_counters) as $type) {
+                        $counters[$type] = $this->getCounter($type);
+                }
+
+                return $counters;
         }
 
         /**
          * Get performance counter.
-         * @param string $type The counter name (one of COUNTER_XXX constants).
-         * @return Counter
+         * 
+         * The type argument has to be one of the MODE_XXX constants defined 
+         * by the performance model.
+         * 
+         * @param string $type The counter name.
+         * @return Counter|boolean
          */
         public function getCounter($type)
         {
-                switch ($type) {
-                        case self::COUNTER_DISK:
-                                return new DiskStatisticsCounter($this->getData('disk'));
-                        case self::COUNTER_PARTITION:
-                                return new PartitionStatisticsCounter($this->getData('part'));
-                        case self::COUNTER_SERVER:
-                                return new VirtualMemoryCounter($this->getData('vm'));
-                        default:
-                                return false;
+                if (!isset($this->_counters[$type])) {
+                        return false;
                 }
+                if (!$this->_counters[$type]['inst']) {
+                        $this->_counters[$type]['inst'] = new $this->_counters[$type]['type']($this);
+                }
+
+                return $this->_counters[$type]['inst'];
         }
 
         /**
-         * Get performance counter data.
-         * 
-         * @param string $mode The performance data type.
-         * @return array
-         * @throws Exception
+         * Register performance counter.
+         * @param string $name The performance counter name.
+         * @param string $type The type name (class).
          */
-        public function getData($mode)
+        public function register($name, $type)
         {
-                $filter = $this->_filter;
-                $limits = $this->_limit;
-
-                if (!isset($filter['addr']) && !isset($filter['host'])) {
-                        $filter['addr'] = gethostbyname(gethostname());
-                }
-                if (isset($mode)) {
-                        $filter['mode'] = $mode;
-                }
-
-                $conditions = array();
-
-                foreach ($filter as $key => $val) {
-                        if ($key == 'time') {
-                                $conditions[] = "$key LIKE \"$val%\"";
-                                unset($filter['time']);
-                        } else {
-                                $conditions[] = "$key = :$key:";
-                        }
-                }
-
-                if (($result = PerformanceModel::find(array(
-                            'conditions' => implode(" AND ", $conditions),
-                            'bind'       => $filter,
-                            'order'      => 'time DESC',
-                            'limit'      => $limits
-                    )))) {
-                        $data = array();
-                        foreach ($result as $model) {
-                                $data[] = $model->toArray();
-                        }
-                        return array_reverse($data);
-                } else {
-                        throw new Exception("Failed query performance model");
-                }
+                $this->_counters[$name] = array(
+                        'type' => $type,
+                        'inst' => false
+                );
         }
 
 }

@@ -26,6 +26,12 @@
 
 <div class="mbox">
     <h1>System Diagnostics</h1>
-    
-    <button>Monitor...</button>
+
+    <button id="monitor" class="btn btn-primary">Monitors...</button>
 </div>
+
+<script>
+        $("#monitor").click(function () {
+            location.href = "diagnostics/monitor";
+        })
+</script>

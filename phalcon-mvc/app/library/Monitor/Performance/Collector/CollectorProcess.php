@@ -5,8 +5,8 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    PerformanceCollector.php
-// Created: 2016-05-23 23:08:00
+// File:    CollectorProcess.php
+// Created: 2016-05-29 23:54:33
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
@@ -14,14 +14,16 @@
 namespace OpenExam\Library\Monitor\Performance\Collector;
 
 use OpenExam\Library\Console\Process;
-use OpenExam\Library\Monitor\Performance\Collector;
 
 /**
- * Abstract base class for performance collectors.
+ * Process runner.
+ * 
+ * Abstract base class for performance collectors based on commands that
+ * periodical output data for capture.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-abstract class PerformanceCollector implements Collector
+abstract class CollectorProcess extends CollectorBase
 {
 
         /**
@@ -29,16 +31,6 @@ abstract class PerformanceCollector implements Collector
          * @var Process 
          */
         protected $_process;
-        /**
-         * The address for this server.
-         * @var string
-         */
-        protected $_addr;
-        /**
-         * The hostname for this server.
-         * @var string 
-         */
-        protected $_host;
 
         /**
          * Constructor.
@@ -46,10 +38,17 @@ abstract class PerformanceCollector implements Collector
          */
         protected function __construct($process)
         {
-                $this->_addr = gethostbyname(gethostname());
-                $this->_host = gethostbyaddr($this->_addr);
-
+                parent::__construct();
                 $this->_process = $process;
+        }
+
+        /**
+         * Get process object.
+         * @return Process
+         */
+        public function getProcess()
+        {
+                return $this->_process;
         }
 
         /**
@@ -84,9 +83,4 @@ abstract class PerformanceCollector implements Collector
                 }
         }
 
-        /**
-         * Save performance data.
-         * @return boolean
-         */
-        abstract protected function save();
 }

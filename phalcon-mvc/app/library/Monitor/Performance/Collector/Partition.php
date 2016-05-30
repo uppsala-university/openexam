@@ -5,24 +5,23 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    PartitionStatisticsCollector.php
+// File:    Partition.php
 // Created: 2016-05-23 23:44:08
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Monitor\Performance\Collector\Server;
+namespace OpenExam\Library\Monitor\Performance\Collector;
 
 use OpenExam\Library\Console\Process;
-use OpenExam\Library\Monitor\Performance\Collector\PerformanceCollector;
-use OpenExam\Models\Performance as PerformanceModel;
+use OpenExam\Models\Performance;
 
 /**
- * Partition statistics collector.
+ * Partition performance collector.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class PartitionStatisticsCollector extends PerformanceCollector
+class Partition extends CollectorProcess
 {
 
         /**
@@ -75,9 +74,9 @@ class PartitionStatisticsCollector extends PerformanceCollector
                         'wrreq'  => $vals[3]
                 );
 
-                $model = new PerformanceModel();
+                $model = new Performance();
                 $model->data = $data;
-                $model->mode = PerformanceModel::MODE_PART;
+                $model->mode = Performance::MODE_PART;
                 $model->host = $this->_host;
                 $model->addr = $this->_addr;
                 $model->source = $this->_part;

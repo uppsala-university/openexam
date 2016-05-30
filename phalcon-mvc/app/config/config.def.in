@@ -214,5 +214,18 @@ return array(
         /**
          * See docs/README-AUDIT before enabling/configure this option.
          */
-        'audit'       => false
+        'audit'       => false,
+        /**
+         * Performance monitors to enable. The keys should be either one of
+         * the counters registered with the performance monitor class.
+         */
+        'monitor'     => array(
+                'server' => true,
+                'system' => true,
+                'apache' => true,
+                'mysql'  => true,
+                'net'    => true,
+                'disk'   => false,
+                'part'   => false
+        )
 );

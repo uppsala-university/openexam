@@ -5,25 +5,29 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    DiskStatisticsCounter.php
+// File:    Disk.php
 // Created: 2016-05-24 02:35:16
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Monitor\Performance\Counter\Server;
+namespace OpenExam\Library\Monitor\Performance\Counter;
 
+use OpenExam\Library\Monitor\Performance;
 use OpenExam\Library\Monitor\Performance\Counter;
-use OpenExam\Library\Monitor\Performance\Counter\PerformanceCounter;
 
 /**
- * Disk statistics performance counter.
+ * Disk performance counter.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class DiskStatisticsCounter extends PerformanceCounter implements Counter
+class Disk extends CounterBase implements Counter
 {
 
+        /**
+         * The counter type.
+         */
+        const TYPE = 'disk';
         /**
          * The read counter.
          */
@@ -39,13 +43,49 @@ class DiskStatisticsCounter extends PerformanceCounter implements Counter
 
         /**
          * Constructor.
-         * @param array $data The performance data.
+         * @param Performance $performance The performance object.
          */
-        public function __construct($data = null)
+        public function __construct($performance)
         {
-                parent::__construct($data, array(
-                        'label' => $this->tr->_("Disk Performance Counters"),
-                        'descr' => $this->tr->_("Disk I/O (read/write) statistics."),
+                parent::__construct(self::TYPE, $performance);
+        }
+
+        /**
+         * Get counter name (short name).
+         * @return string
+         */
+        public function getName()
+        {
+                return $this->tr->_("Disk");
+        }
+
+        /**
+         * Get counter title (longer name).
+         * @return string
+         */
+        public function getTitle()
+        {
+                return $this->tr->_("Disk Performance (%s)");
+        }
+
+        /**
+         * Get counter description.
+         * @return string
+         */
+        public function getDescription()
+        {
+                return $this->tr->_("Disk I/O (read/write) statistics.");
+        }
+
+        /**
+         * Get translated performance counter keys.
+         * @return array
+         */
+        public function getKeys()
+        {
+                return array(
+                        'label' => $this->getTitle(),
+                        'descr' => $this->getDescription(),
                         'read'  => array(
                                 'label'   => $this->tr->_("Reads"),
                                 'descr'   => $this->tr->_("Statistics for read operation."),
@@ -98,34 +138,17 @@ class DiskStatisticsCounter extends PerformanceCounter implements Counter
                                         'descr' => $this->tr->_("Seconds spent for I/O.")
                                 )
                         )
-                ));
+                );
         }
 
         /**
-         * Get disk read counter.
-         * @return array
+         * Check if sub counter type exist.
+         * @param string $type The sub counter type.
+         * @return boolean
          */
-        public function getReadCounter()
+        public function hasCounter($type)
         {
-                return parent::getCounter(self::READ);
-        }
-
-        /**
-         * Get disk write counter.
-         * @return array
-         */
-        public function getWriteCounter()
-        {
-                return parent::getCounter(self::WRITE);
-        }
-
-        /**
-         * Get disk I/O counter.
-         * @return array
-         */
-        public function getIOCounter()
-        {
-                return parent::getCounter(self::IO);
+                return $type == self::IO || $type == self::READ || $type == self::WRITE;
         }
 
 }

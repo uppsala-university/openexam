@@ -50,7 +50,46 @@ class DiagnosticsController extends GuiController
          * 
          * @param string $type The performance counter (e.g. system).
          */
-        public function performanceAction($type)
+        public function performanceAction($type = null)
+        {
+                if (!isset($type)) {
+                        $this->sendCounters();
+                } else {
+                        $this->sendCounterData($type);
+                }
+        }
+
+        /**
+         * Send enabled performance counter list.
+         */
+        private function sendCounters()
+        {
+                $diagnostics = new Diagnostics();
+                $performance = $diagnostics->getPerformanceStatus();
+
+                $content = array();
+
+                foreach ($performance->getCounters() as $counter) {
+                        $type = $counter->getType();
+                        $name = $counter->getName();
+                        $desc = $counter->getDescription();
+
+                        $content[$type] = array(
+                                'name' => $name,
+                                'desc' => $desc
+                        );
+                }
+
+                $this->view->disable();
+                $this->response->setJsonContent($content);
+                $this->response->send();
+        }
+
+        /**
+         * Set performance counter data and/or keys.
+         * @param string $type The counter type.
+         */
+        private function sendCounterData($type)
         {
                 $diagnostics = new Diagnostics();
                 $performance = $diagnostics->getPerformanceStatus();

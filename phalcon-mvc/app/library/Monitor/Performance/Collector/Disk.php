@@ -5,24 +5,23 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    DiskStatisticsCollector.php
+// File:    Disk.php
 // Created: 2016-05-23 23:06:52
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Monitor\Performance\Collector\Server;
+namespace OpenExam\Library\Monitor\Performance\Collector;
 
 use OpenExam\Library\Console\Process;
-use OpenExam\Library\Monitor\Performance\Collector\PerformanceCollector;
-use OpenExam\Models\Performance as PerformanceModel;
+use OpenExam\Models\Performance;
 
 /**
- * Disk statistics collector.
+ * Disk performance collector.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class DiskStatisticsCollector extends PerformanceCollector
+class Disk extends CollectorProcess
 {
 
         /**
@@ -44,12 +43,13 @@ class DiskStatisticsCollector extends PerformanceCollector
         /**
          * Constructor.
          * @param string $disk The disk name (e.g sda).
+         * @param int $rate The sample rate.
          */
         public function __construct($disk = "sda", $rate = 10)
         {
                 $this->_rate = $rate;
                 $this->_disk = $disk;
-                
+
                 $command = sprintf(self::COMMAND, $rate, $disk);
                 parent::__construct(new Process($command));
         }
@@ -89,9 +89,9 @@ class DiskStatisticsCollector extends PerformanceCollector
                         )
                 );
 
-                $model = new PerformanceModel();
+                $model = new Performance();
                 $model->data = $data;
-                $model->mode = PerformanceModel::MODE_DISK;
+                $model->mode = Performance::MODE_DISK;
                 $model->host = $this->_host;
                 $model->addr = $this->_addr;
                 $model->source = $this->_disk;
