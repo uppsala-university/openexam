@@ -236,6 +236,11 @@ class Command
                 }
 
                 // 
+                // Wipe output from previous exec.
+                // 
+                unset($this->_output);
+                
+                // 
                 // Execute program.
                 // 
                 exec($cmd, $this->_output, $this->_status);
