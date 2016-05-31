@@ -57,6 +57,7 @@ abstract class CollectorProcess extends CollectorBase
         public function start()
         {
                 $this->_process->open();
+                $this->_process->setBlocking(false);
 
                 while (true) {
                         switch ($this->_process->wait()) {
