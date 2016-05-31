@@ -16,9 +16,10 @@ namespace OpenExam\Library\Monitor;
 use OpenExam\Library\Monitor\Performance\Counter;
 use OpenExam\Library\Monitor\Performance\Counter\Apache as ApachePerformanceCounter;
 use OpenExam\Library\Monitor\Performance\Counter\Disk as DiskPerformanceCounter;
+use OpenExam\Library\Monitor\Performance\Counter\MySQL as MySQLPerformanceCounter;
+use OpenExam\Library\Monitor\Performance\Counter\Network as NetworkPerformanceCounter;
 use OpenExam\Library\Monitor\Performance\Counter\Partition as PartitionPerformanceCounter;
 use OpenExam\Library\Monitor\Performance\Counter\Server as ServerPerformanceCounter;
-use OpenExam\Library\Monitor\Performance\Counter\MySQL as MySQLPerformanceCounter;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -87,9 +88,9 @@ class Performance extends Component
                 if ($this->config->monitor->get('mysql')) {
                         $this->register('mysql', MySQLPerformanceCounter::class);
                 }
-//                if ($this->config->monitor->get('net')) {
-//                        $this->register('net', NetworkPerformanceCounter::class);
-//                }
+                if ($this->config->monitor->get('net')) {
+                        $this->register('net', NetworkPerformanceCounter::class);
+                }
         }
 
         /**
@@ -108,6 +109,17 @@ class Performance extends Component
         public function getLimits()
         {
                 return $this->_limits;
+        }
+
+        /**
+         * Get performance counter source (e.g. eth0).
+         * @return string
+         */
+        public function getSource()
+        {
+                if (isset($this->_filter['source'])) {
+                        return $this->_filter['source'];
+                }
         }
 
         /**

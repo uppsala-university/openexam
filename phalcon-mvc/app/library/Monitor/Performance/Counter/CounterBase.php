@@ -34,7 +34,7 @@ abstract class CounterBase extends Component implements Counter
          * The performance object.
          * @var Performance 
          */
-        private $_performance;
+        protected $_performance;
 
         /**
          * Constructor.
