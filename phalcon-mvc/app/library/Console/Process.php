@@ -146,6 +146,21 @@ class Process
         }
 
         /**
+         * Set blocking mode on input/output stream.
+         * @param boolean $read Set blocking mode on read.
+         * @param boolean $write Set blocking mode on write.
+         */
+        public function setBlocking($read = true, $write = true)
+        {
+                if (!stream_set_blocking($this->_pipes[1], $read)) {
+                        throw new \Exception("Failed set blocking mode $read on read stream");
+                }
+                if (!stream_set_blocking($this->_pipes[0], $write)) {
+                        throw new \Exception("Failed set blocking mode $read on write stream");
+                }
+        }
+
+        /**
          * Get command string.
          * @return string
          */
@@ -263,6 +278,15 @@ class Process
         public function read()
         {
                 return fgets($this->_pipes[1]);
+        }
+
+        /**
+         * Return number of bytes readable on input stream before blocking.
+         * @return int
+         */
+        public function available()
+        {
+                return stream_get_meta_data($this->_pipes[1])['unread_bytes'];
         }
 
         /**
