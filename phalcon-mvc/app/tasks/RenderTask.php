@@ -43,14 +43,16 @@ class RenderTask extends MainTask implements TaskInterface
                                 '--output'  => 'Save output to file.',
                                 '--page'    => 'Render local file or URL (can be used multiple times if --type=pdf).',
                                 '--type'    => 'Type of image (png, jpg, bmp or svg).',
-                                '--png'     => 'Alias for --type=png',
-                                '--jpg'     => 'Alias for --type=jpg',
-                                '--jpeg'    => 'Alias for --type=jpg',
-                                '--bmp'     => 'Alias for --type=bmp',
-                                '--svg'     => 'Alias for --type=svg',
                                 '--force'   => 'Force action even if already applied.',
                                 '--verbose' => 'Be more verbose.',
                                 '--dry-run' => 'Just print whats going to be done.'
+                        ),
+                        'aliases' => array(
+                                '--png'     => 'Same as --type=png',
+                                '--jpg'     => 'Same as --type=jpg',
+                                '--jpeg'    => 'Same as --type=jpg',
+                                '--bmp'     => 'Same as --type=bmp',
+                                '--svg'     => 'Same as --type=svg',                                
                         ),
                         'examples' => array(
                                 array(

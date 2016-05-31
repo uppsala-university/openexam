@@ -60,7 +60,6 @@ class GettextTask extends MainTask implements TaskInterface
                                 '--merge'       => 'Merge message catalog and template.',
                                 '--compile'     => 'Compile message catalog to binary format.',
                                 '--clean'       => 'Clean compiled binary files.',
-                                '--all'         => 'Alias for --update, --merge and --compile',
                                 '--initialize'  => 'Initialize new locale directory.',
                                 '--list'        => 'Show modules defined in configuration.',
                                 '--locale=name' => 'The locale name (e.g. sv_SE).',
@@ -68,6 +67,9 @@ class GettextTask extends MainTask implements TaskInterface
                                 '--force'       => 'Force action even if already applied.',
                                 '--verbose'     => 'Be more verbose.',
                                 '--dry-run'     => 'Just print whats going to be done.'
+                        ),
+                        'aliases'  => array(
+                                '--all' => 'Same as --update --merge --compile together.'
                         ),
                         'examples' => array(
                                 array(

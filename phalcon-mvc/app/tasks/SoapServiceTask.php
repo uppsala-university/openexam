@@ -59,8 +59,10 @@ class SoapServiceTask extends MainTask implements TaskInterface
                                 '--with-handle' => 'Use handle object in method calls.',
                                 '--save=path'   => 'Write class to file or directory.',
                                 '--verbose'     => 'Be more verbose.',
-                                '--dry-run'     => 'Just print whats going to be done.',
-                                '--all'         => 'Alias for --role=all'
+                                '--dry-run'     => 'Just print whats going to be done.'
+                        ),
+                        'aliases' => array(
+                                '--all'         => 'Alias for --role=all'                                
                         ),
                         'examples' => array(
                                 array(

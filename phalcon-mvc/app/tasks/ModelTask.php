@@ -78,10 +78,12 @@ class ModelTask extends MainTask implements TaskInterface
                                 '--create'        => 'Create new models.',
                                 '--clean'         => 'Cleanup in models.',
                                 '--backup[=path]' => 'Backup model to directory path or cache directory.',
-                                '--sync'          => 'Alias for --update --clean --create',
                                 '--query=str'     => 'Run PHQL query against models.',
                                 '--force'         => 'Force model update.',
                                 '--verbose'       => 'Be more verbose.'
+                        ),
+                        'aliases'  => array(
+                                '--sync' => 'Same as --update --clean --create'
                         ),
                         'examples' => array(
                                 array(

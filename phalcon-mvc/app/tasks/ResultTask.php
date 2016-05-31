@@ -70,11 +70,13 @@ class ResultTask extends MainTask implements TaskInterface
                                 '--days=num' => 'Work on exams older/newer than num days.',
                                 '--exam=num' => 'Use this exam instead of using --days.',
                                 '--all'      => 'Process all exams.',
-                                '--generate' => 'Alias for --create.',
-                                '--remove'   => 'Alias for --delete',
                                 '--force'    => 'Force generate files.',
                                 '--verbose'  => 'Be more verbose.',
                                 '--dry-run'  => 'Just print whats going to be done.'
+                        ),
+                        'aliases' => array(
+                                '--generate' => 'Alias for --create.',
+                                '--remove'   => 'Alias for --delete'                                
                         ),
                         'examples' => array(
                                 array(

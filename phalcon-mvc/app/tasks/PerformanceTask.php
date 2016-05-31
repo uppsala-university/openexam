@@ -19,6 +19,7 @@ use OpenExam\Library\Monitor\Performance\Collector\Disk as DiskPerformanceCollec
 use OpenExam\Library\Monitor\Performance\Collector\MySQL as MySQLPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Partition as PartitionPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Server as ServerPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\Network as NetworkPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Counter;
 
 abstract class ExportFormatter
@@ -197,39 +198,41 @@ class PerformanceTask extends MainTask implements TaskInterface
                         'header'   => 'System performance tool',
                         'action'   => '--performance',
                         'usage'    => array(
-                                '--collect --counter=name|--disk=name|--part=name [--rate=sec] [--user=str]',
-                                '--query   --counter=name|--disk=name|--part=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=str] [--limit=num] [--export=fmt]'
+                                '--collect --counter=name [--rate=sec] [--user=str] [--source=name]',
+                                '--query   --counter=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=name] [--limit=num] [--export=fmt]'
                         ),
                         'options'  => array(
                                 '--collect'       => 'Collect performance statistics.',
                                 '--query'         => 'Check performance counters.',
                                 '--counter=name'  => 'The counter name.',
-                                '--disk=name'     => 'Disk performace counter.',
-                                '--part=name'     => 'Partition performance counter.',
+                                '--source=name'   => 'Match on source (use ":" to match multiple).',
                                 '--rate=sec'      => 'The sample rate (colleting).',
                                 '--user=str'      => 'The service process user (e.g. apache).',
                                 '--time=str'      => 'Match on datetime.',
                                 '--host=str'      => 'Match on hostname (FQHN).',
                                 '--addr=str'      => 'Match on IP-address.',
                                 '--milestone=str' => "Match milestorn ('minute','hour','day','week','month','year')'",
-                                '--source=str'    => 'Match on source.',
                                 '--limit=num'     => 'Limit number of returned records.',
                                 '--export[=fmt]'  => 'Export data for external analyze.',
-                                '--server'        => 'Alias for --counter=server.',
-                                '--system'        => 'Alias for --counter=system.',
-                                '--net'           => 'Alias for --counter=net.',
-                                '--apache'        => 'Alias for --counter=apache.',
-                                '--mysql'         => 'Alias for --counter=mysql.',
-                                '--php'           => 'Alias for --export=php (export as PHP array).',
-                                '--csv'           => 'Alias for --export=csv (export in CSV-format).',
-                                '--tab'           => 'Alias for --export=tab (export in TAB-format).',
-                                '--xml'           => 'Alias for --export=xml (export in XML-format).',
                                 '--verbose'       => 'Be more verbose.'
+                        ),
+                        'aliases'  => array(
+                                '--server' => 'Same as --counter=server (server performance).',
+                                '--system' => 'Same as --counter=system (system performance).',
+                                '--net'    => 'Same as --counter=net (network performance).',
+                                '--apache' => 'Same as --counter=apache (web server performance).',
+                                '--mysql'  => 'Same as --counter=mysql (database performance).',
+                                '--disk'   => 'Same as --counter=disk (harddrive performance).',
+                                '--part'   => 'Same as --counter=part (partition/file system performance).',
+                                '--php'    => 'Same as --export=php (export as PHP array).',
+                                '--csv'    => 'Same as --export=csv (export in CSV-format).',
+                                '--tab'    => 'Same as --export=tab (export in TAB-format).',
+                                '--xml'    => 'Same as --export=xml (export in XML-format).'
                         ),
                         'examples' => array(
                                 array(
                                         'descr'   => 'Collect disk performance statistics',
-                                        'command' => '--collect --disk=sda --rate=5'
+                                        'command' => '--collect --disk --source==sda --rate=5'
                                 ),
                                 array(
                                         'descr'   => 'Collect system performance statistics',
@@ -240,7 +243,11 @@ class PerformanceTask extends MainTask implements TaskInterface
                                         'command' => '--collect --apache'
                                 ),
                                 array(
-                                        'descr'   => 'Show all performance counters',
+                                        'descr'   => 'Collect network performance for multiple interfaces',
+                                        'command' => '--collect --net --rate=2 --source=eth0:eth1'
+                                ),
+                                array(
+                                        'descr'   => 'Display all available performance counters',
                                         'command' => '--query'
                                 ),
                                 array(
@@ -265,11 +272,14 @@ class PerformanceTask extends MainTask implements TaskInterface
                 } elseif ($this->_options['mysql']) {
                         $performance = new MySQLPerformanceCollector($this->_options['rate']);
                         $performance->start();
+                } elseif ($this->_options['net']) {
+                        $performance = new NetworkPerformanceCollector($this->_options['rate'], $this->_options['source']);
+                        $performance->start();
                 } elseif ($this->_options['server']) {
                         $performance = new ServerPerformanceCollector($this->_options['rate']);
                         $performance->start();
                 } elseif ($this->_options['disk']) {
-                        $performance = new DiskPerformanceCollector($this->_options['disk'], $this->_options['rate']);
+                        $performance = new DiskPerformanceCollector($this->_options['rate'], $this->_options['source']);
                         $performance->start();
                 } elseif ($this->_options['part']) {
                         $performance = new PartitionPerformanceCollector($this->_options['part'], $this->_options['rate']);
@@ -329,9 +339,9 @@ class PerformanceTask extends MainTask implements TaskInterface
                 // 
                 $options = array(
                         'verbose', 'collect', 'query', 'counter',
-                        'disk', 'part', 'time', 'host', 'addr', 'milestone', 'source',
+                        'time', 'host', 'addr', 'milestone', 'source',
                         'rate', 'user', 'limit', 'export',
-                        'server', 'system', 'net', 'apache', 'mysql',
+                        'disk', 'part', 'server', 'system', 'net', 'apache', 'mysql',
                         'php', 'xml', 'csv', 'tab'
                 );
                 $current = $action;
@@ -402,6 +412,13 @@ class PerformanceTask extends MainTask implements TaskInterface
                 }
                 if ($this->_options['tab']) {
                         $this->_options['export'] = 'tab';
+                }
+
+                // 
+                // The source parameter is either string or array.
+                // 
+                if (strstr($this->_options['source'], ':')) {
+                        $this->_options['source'] = explode(":", $this->_options['source']);
                 }
         }
 

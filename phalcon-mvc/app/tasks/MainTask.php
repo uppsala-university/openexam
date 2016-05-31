@@ -54,6 +54,13 @@ class MainTask extends PhalconTask implements TaskInterface
                         }
                         printf("\n");
                 }
+                if (isset($usage['aliases'])) {
+                        printf("Aliases:\n");
+                        foreach ($usage['aliases'] as $key => $val) {
+                                printf("  %-20s: %s\n", $key, $val);
+                        }
+                        printf("\n");
+                }
                 if (isset($usage['examples'])) {
                         printf("Examples:\n");
                         foreach ($usage['examples'] as $data) {
