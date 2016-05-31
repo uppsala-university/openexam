@@ -45,7 +45,7 @@ class Partition extends CollectorProcess
          * @param string $part The source partition.
          * @param int $rate The sample rate.
          */
-        public function __construct($part = "/dev/sda1", $rate = 60)
+        public function __construct($rate = 60, $part = "/dev/sda1")
         {
                 $this->_rate = $rate;
                 $this->_part = $part;

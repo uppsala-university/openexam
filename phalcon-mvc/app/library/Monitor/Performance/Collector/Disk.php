@@ -27,7 +27,7 @@ class Disk extends CollectorProcess
         /**
          * The command to execute.
          */
-        const COMMAND = "vmstat -d -n %d | grep --line-buffered %s";
+        const COMMAND = "vmstat -d -n %d";
 
         /**
          * Sample rate.
@@ -36,21 +36,21 @@ class Disk extends CollectorProcess
         private $_rate;
         /**
          * Source disk.
-         * @var string 
+         * @var string|array
          */
         private $_disk;
 
         /**
          * Constructor.
-         * @param string $disk The disk name (e.g sda).
          * @param int $rate The sample rate.
+         * @param string|array $disk The disk name (e.g sda).
          */
-        public function __construct($disk = "sda", $rate = 10)
+        public function __construct($rate = 10, $disk = null)
         {
                 $this->_rate = $rate;
                 $this->_disk = $disk;
 
-                $command = sprintf(self::COMMAND, $rate, $disk);
+                $command = sprintf(self::COMMAND, $rate);
                 parent::__construct(new Process($command));
         }
 
@@ -60,47 +60,57 @@ class Disk extends CollectorProcess
          */
         protected function save()
         {
-                $line = $this->_process->read();
-                $vals = preg_split("/\s+/", trim($line));
+                while (($line = $this->_process->read()) !== false) {
+                        
+                        $vals = preg_split("/\s+/", trim($line));
 
-                if (count($vals) != 11) {
-                        return false;
-                }
-                if (!is_numeric($vals[1])) {
-                        return false;
-                }
-
-                $data = array(
-                        'read'  => array(
-                                'total'   => $vals[1],
-                                'merged'  => $vals[2],
-                                'sectors' => $vals[3],
-                                'ms'      => $vals[4]
-                        ),
-                        'write' => array(
-                                'total'   => $vals[5],
-                                'merged'  => $vals[6],
-                                'sectors' => $vals[7],
-                                'ms'      => $vals[8]
-                        ),
-                        'io'    => array(
-                                'current' => $vals[9],
-                                'seconds' => $vals[10]
-                        )
-                );
-
-                $model = new Performance();
-                $model->data = $data;
-                $model->mode = Performance::MODE_DISK;
-                $model->host = $this->_host;
-                $model->addr = $this->_addr;
-                $model->source = $this->_disk;
-
-                if (!$model->save()) {
-                        foreach ($model->getMessages() as $message) {
-                                trigger_error($message, E_USER_ERROR);
+                        if (count($vals) != 11) {
+                                continue;
                         }
-                        return false;
+                        if (!is_numeric($vals[1])) {
+                                continue;
+                        }
+                        if (isset($this->_disk)) {
+                                if (is_string($this->_disk) && $vals[0] != $this->_disk) {
+                                        continue;
+                                }
+                                if (is_array($this->_disk) && !in_array($vals[0], $this->_disk)) {
+                                        continue;
+                                }
+                        }
+                        
+                        $data = array(
+                                'read'  => array(
+                                        'total'   => $vals[1],
+                                        'merged'  => $vals[2],
+                                        'sectors' => $vals[3],
+                                        'ms'      => $vals[4]
+                                ),
+                                'write' => array(
+                                        'total'   => $vals[5],
+                                        'merged'  => $vals[6],
+                                        'sectors' => $vals[7],
+                                        'ms'      => $vals[8]
+                                ),
+                                'io'    => array(
+                                        'current' => $vals[9],
+                                        'seconds' => $vals[10]
+                                )
+                        );
+
+                        $model = new Performance();
+                        $model->data = $data;
+                        $model->mode = Performance::MODE_DISK;
+                        $model->host = $this->_host;
+                        $model->addr = $this->_addr;
+                        $model->source = $vals[0];
+
+                        if (!$model->save()) {
+                                foreach ($model->getMessages() as $message) {
+                                        trigger_error($message, E_USER_ERROR);
+                                }
+                                return false;
+                        }
                 }
 
                 return true;
