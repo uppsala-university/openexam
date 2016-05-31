@@ -19,6 +19,158 @@ use OpenExam\Library\Monitor\Performance\Collector\Disk as DiskPerformanceCollec
 use OpenExam\Library\Monitor\Performance\Collector\MySQL as MySQLPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Partition as PartitionPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Server as ServerPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Counter;
+
+abstract class ExportFormatter
+{
+
+        /**
+         * The performance counter.
+         * @var Counter 
+         */
+        protected $_counter;
+
+        /**
+         * Contructor.
+         * @param Counter $counter The performance counter.
+         */
+        protected function __construct($counter)
+        {
+                $this->_counter = $counter;
+        }
+
+        /**
+         * Create export formatter.
+         * 
+         * @param string $format The export format.
+         * @param Counter $counter The performance counter.
+         * @return ExportFormatter
+         * @throws Exception
+         */
+        public static function create($format, $counter)
+        {
+                switch ($format) {
+                        case 'xml':
+                                return new ExportFormatterXML($counter);
+                        case 'php':
+                                return new ExportFormatterPHP($counter);
+                        case 'csv':
+                                return new ExportFormatterCSV($counter);
+                        case 'tab':
+                                return new ExportFormatterTAB($counter);
+                        default:
+                                throw new Exception("Unknown export format $format");
+                }
+        }
+
+        /**
+         * Export data to standard output.
+         */
+        abstract public function export();
+}
+
+/**
+ * Export data in XML format.
+ */
+class ExportFormatterXML extends ExportFormatter
+{
+
+        public function export()
+        {
+                $xmlstr = sprintf("<?xml version=\"1.0\" encoding=\"UTF-8\"?><counters type=\"%s\"></counters>", $this->_counter->getType());
+                $xmldoc = new \SimpleXMLElement($xmlstr);
+
+                foreach ($this->_counter->getData() as $data) {
+                        $counter = $xmldoc->addChild("counter");
+                        foreach ($data as $ckey => $cval) {
+                                if (is_array($cval)) {
+                                        $dnode = $counter->addChild("data");
+                                        foreach ($cval as $dkey => $dval) {
+                                                $cnode = $dnode->addChild($dkey);
+                                                foreach ($dval as $skey => $sval) {
+                                                        $cnode->addChild($skey, $sval);
+                                                }
+                                        }
+                                } else {
+                                        $counter->addAttribute($ckey, $cval);
+                                }
+                        }
+                }
+
+                echo $xmldoc->asXML();
+        }
+
+}
+
+/**
+ * Export data in TAB-separated format.
+ * 
+ * The data is hierachal, but we can't represent that in TAB-separated 
+ * foramt. The solution is to use indention instead.
+ */
+class ExportFormatterTAB extends ExportFormatter
+{
+
+        private static function printArray($key, $arr, $indent = 0)
+        {
+                printf("%s%s\n", str_repeat("\t", $indent++), $key);
+                foreach ($arr as $key => $val) {
+                        if (is_array($val)) {
+                                self::printArray($key, $val, $indent);
+                        } else {
+                                printf("%s%s\t%s\n", str_repeat("\t", $indent), $key, $val);
+                        }
+                }
+        }
+
+        public function export()
+        {
+                foreach ($this->_counter->getData() as $data) {
+                        self::printArray("counter", $data, 0);
+                }
+        }
+
+}
+
+/**
+ * Export data in CSV format.
+ */
+class ExportFormatterCSV extends ExportFormatter
+{
+
+        private static function printArray($key, $arr, $indent = 0)
+        {
+                printf("%s\"%s\"\n", str_repeat("\"\",", $indent++), $key);
+                foreach ($arr as $key => $val) {
+                        if (is_array($val)) {
+                                self::printArray($key, $val, $indent);
+                        } else {
+                                printf("%s\"%s\",\"%s\"\n", str_repeat("\"\",", $indent), $key, $val);
+                        }
+                }
+        }
+
+        public function export()
+        {
+                foreach ($this->_counter->getData() as $data) {
+                        self::printArray("counter", $data, 0);
+                }
+        }
+
+}
+
+/**
+ * Export data in PHP format.
+ */
+class ExportFormatterPHP extends ExportFormatter
+{
+
+        public function export()
+        {
+                echo var_export($this->_counter->getData(), true);
+        }
+
+}
 
 /**
  * System performance task.
@@ -46,7 +198,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                         'action'   => '--performance',
                         'usage'    => array(
                                 '--collect --counter=name|--disk=name|--part=name [--rate=sec] [--user=str]',
-                                '--query   --counter=name|--disk=name|--part=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=str] [--limit=num]'
+                                '--query   --counter=name|--disk=name|--part=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=str] [--limit=num] [--export=fmt]'
                         ),
                         'options'  => array(
                                 '--collect'       => 'Collect performance statistics.',
@@ -62,12 +214,16 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 '--milestone=str' => "Match milestorn ('minute','hour','day','week','month','year')'",
                                 '--source=str'    => 'Match on source.',
                                 '--limit=num'     => 'Limit number of returned records.',
-                                '--export'        => 'Export data instead of displaying.',
+                                '--export[=fmt]'  => 'Export data for external analyze.',
                                 '--server'        => 'Alias for --counter=server.',
                                 '--system'        => 'Alias for --counter=system.',
                                 '--net'           => 'Alias for --counter=net.',
                                 '--apache'        => 'Alias for --counter=apache.',
                                 '--mysql'         => 'Alias for --counter=mysql.',
+                                '--php'           => 'Alias for --export=php (export as PHP array).',
+                                '--csv'           => 'Alias for --export=csv (export in CSV-format).',
+                                '--tab'           => 'Alias for --export=tab (export in TAB-format).',
+                                '--xml'           => 'Alias for --export=xml (export in XML-format).',
                                 '--verbose'       => 'Be more verbose.'
                         ),
                         'examples' => array(
@@ -86,6 +242,10 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Show all performance counters',
                                         'command' => '--query'
+                                ),
+                                array(
+                                        'descr'   => 'Get last 100 Apache performance counters in XML format',
+                                        'command' => '--query --counter=apache --limit=100 --export=xml'
                                 )
                         )
                 );
@@ -127,13 +287,13 @@ class PerformanceTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'query');
 
-
                 if ($this->_options['counter']) {
                         $performance = new Performance($this->_options['limit'], $this->_options);
                         $counter = $performance->getCounter($this->_options['counter']);
 
                         if ($this->_options['export']) {
-                                var_export($counter->getData());
+                                $formatter = ExportFormatter::create($this->_options['export'], $counter);
+                                $formatter->export();
                         } else {
                                 $this->flash->success(sprintf("%s [%s] (%s)", $counter->getName(), $counter->getType(), $counter->getTitle()));
                                 $this->flash->success(print_r($counter->getData(), true));
@@ -167,7 +327,13 @@ class PerformanceTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'collect', 'query', 'counter', 'disk', 'part', 'rate', 'user', 'time', 'host', 'addr', 'milestone', 'source', 'limit', 'export', 'server', 'system', 'net', 'apache', 'mysql');
+                $options = array(
+                        'verbose', 'collect', 'query', 'counter',
+                        'disk', 'part', 'time', 'host', 'addr', 'milestone', 'source',
+                        'rate', 'user', 'limit', 'export',
+                        'server', 'system', 'net', 'apache', 'mysql',
+                        'php', 'xml', 'csv', 'tab'
+                );
                 $current = $action;
 
                 // 
@@ -223,6 +389,19 @@ class PerformanceTask extends MainTask implements TaskInterface
                 }
                 if ($this->_options['mysql']) {
                         $this->_options['counter'] = 'mysql';
+                }
+
+                if ($this->_options['php']) {
+                        $this->_options['export'] = 'php';
+                }
+                if ($this->_options['xml']) {
+                        $this->_options['export'] = 'xml';
+                }
+                if ($this->_options['csv']) {
+                        $this->_options['export'] = 'csv';
+                }
+                if ($this->_options['tab']) {
+                        $this->_options['export'] = 'tab';
                 }
         }
 
