@@ -91,10 +91,29 @@ var colors = {
 // The timeline object:
 // 
 function Timeline(key, parent) {
-    var _data = [], _max = 20, _parent = parent, _key = key, _colors = colors.next()
+    var _data = [], _last, _max = 20, _parent = parent, _key = key, _colors = colors.next(), _delta = false;
 
     this.label = "";
     this.descr = "";
+
+    function delta(insert, last) {
+        var length = insert.length, next, prev;
+
+        if (last === undefined) {
+            last = insert[length - 1];
+            prev = insert[0];
+        } else {
+            prev = last;
+        }
+
+        for (var i = 0; i < length; ++i) {
+            next = insert[i];
+            insert[i] = insert[i] - prev;
+            prev = next;
+        }
+
+        return last;
+    }
 
     this.setKeys = function (keys) {
         this.label = keys.label;
@@ -105,6 +124,9 @@ function Timeline(key, parent) {
         var insert = data.map(function (d) {
             return d.data[_parent][_key];
         });
+        if (_delta) {
+            _last = delta(insert, _last);
+        }
         if (_data.length === 0) {
             _data = insert;
         } else {
@@ -112,10 +134,10 @@ function Timeline(key, parent) {
             _data.push(insert);
         }
         if (_data.length > _max) {
-            _data = _data.slice(0, _data.length - _max)
+            _data = _data.slice(0, _data.length - _max);
         }
         if (chart !== undefined) {
-            chart.data.datasets[index].data[_max - 1] = insert.shift();
+            chart.data.datasets[index].data[_data.length - 1] = insert.shift();
         }
     };
 
@@ -144,6 +166,10 @@ function Timeline(key, parent) {
     this.getSize = function () {
         return _max;
     };
+
+    this.setDelta = function (enable) {
+        _delta = enable;
+    }
 }
 
 // 
@@ -204,6 +230,12 @@ function Counter(key, parent) {
         }
     };
 
+    this.setDelta = function (enable) {
+        for (var i = 0; i < _timelines.length; ++i) {
+            _timelines[i].setDelta(enable);
+        }
+    }
+
     this.update = function () {
         if (_chart === undefined) {
             create(this.label, this.descr);
@@ -223,7 +255,7 @@ function Counter(key, parent) {
 // The mnitor (counter container) object.
 // 
 counters = (function () {
-    var _url, _limit = 20, _interval = 5, _source = 0, _monitor, _context, _counters = {}, _timer = null, _label, _descr;
+    var _url, _limit = 20, _interval = 5, _source = 0, _monitor, _context, _counters = {}, _timer = null, _label, _descr, _delta = true;
 
     // 
     // Parse keys data. Set label, descr and create counters.
@@ -261,6 +293,7 @@ counters = (function () {
         var counter = new Counter(name, _context);
         counter.setKeys(keys);
         counter.setSize(_limit);
+        counter.setDelta(_delta);
         _counters[name] = counter;
     }
 
@@ -363,6 +396,14 @@ counters = (function () {
             _limit = num;
         },
         // 
+        // Set delta mode.
+        // 
+        setDelta: function (enable) {
+            if (enable !== undefined) {
+                _delta = enable;
+            }
+        },
+        // 
         // Set update interval.
         // 
         setInterval: function (interval) {
@@ -371,6 +412,9 @@ counters = (function () {
                 this.restart();
             }
         },
+        // 
+        // Set source name.
+        // 
         setSource: function (name) {
             if (_source !== name) {
                 _source = name;

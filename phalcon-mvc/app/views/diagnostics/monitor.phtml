@@ -37,8 +37,9 @@
         padding-left: 10px;
         padding-top: 7px;
     }
-    div.sources {
+    div.sources, div.delta {
         float: right;
+        padding-left: 20px;
     }
     span.title {
         font-weight: bold;
@@ -92,11 +93,15 @@
                     $("div.monitor-buttons").append("<button id=\"" + type + "\" class=\"btn btn-primary\">" + content[type].name + "</button>");
                 }
 
+                $("div.monitor-buttons").append("<div class=\"delta selectpicker\"><input type=\"checkbox\" id=\"delta\" checked> Delta Mode</input></div>");
                 $("div.monitor-buttons").append("<div class=\"sources\"></div>");
 
                 var first = Object.keys(content)[0];
                 activate(first, $("div ." + first));
 
+                // 
+                // On monitor change:
+                // 
                 $("button").click(function () {
                     var monitor = $(this).attr('id');
                     var context = $("div ." + monitor);
@@ -104,6 +109,15 @@
                     $("button").addClass("btn-primary");
 
                     activate(monitor, context);
+                });
+                
+                // 
+                // On delta mode change:
+                // 
+                $("#delta").click(function () {
+                        counters.setDelta($(this).prop('checked'));
+                        counters.reopen();
+                        counters.start();
                 });
             }
 
@@ -120,6 +134,7 @@
 
                 counters.close();
                 counters.open(monitor, context);
+                counters.setDelta($(this).prop('checked'));
                 counters.start();
 
                 fetch(baseURL + 'utility/diagnostics/performance/' + monitor + '?name=1', sources);
