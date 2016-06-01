@@ -201,11 +201,13 @@ class PerformanceTask extends MainTask implements TaskInterface
                         'action'   => '--performance',
                         'usage'    => array(
                                 '--collect --counter=name [--rate=sec] [--user=str] [--source=name]',
-                                '--query   --counter=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=name] [--limit=num] [--export=fmt]'
+                                '--query   --counter=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=name] [--limit=num] [--export=fmt]',
+                                '--clean  [--counter=name] [--days=num|--hours=num|--time=str] [--host=str] [--addr=str] [--source=name]'
                         ),
                         'options'  => array(
                                 '--collect'       => 'Collect performance statistics.',
                                 '--query'         => 'Check performance counters.',
+                                '--clean'         => 'Cleanup performance statistics.',
                                 '--counter=name'  => 'The counter name.',
                                 '--source=name'   => 'Match on source (use ":" to match multiple).',
                                 '--rate=sec'      => 'The sample rate (colleting).',
@@ -216,6 +218,8 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 '--milestone=str' => "Match milestorn ('minute','hour','day','week','month','year')'",
                                 '--limit=num'     => 'Limit number of returned records.',
                                 '--export[=fmt]'  => 'Export data for external analyze.',
+                                '--days=num'      => 'Expire records older than num days (clean).',
+                                '--hours=num'     => 'Expire records older than num hours (clean).',
                                 '--verbose'       => 'Be more verbose.'
                         ),
                         'aliases'  => array(
@@ -242,15 +246,11 @@ class PerformanceTask extends MainTask implements TaskInterface
                                         'command' => '--collect --server --rate=2'
                                 ),
                                 array(
-                                        'descr'   => 'Collect Apache performance using default sample rate',
-                                        'command' => '--collect --apache'
-                                ),
-                                array(
                                         'descr'   => 'Collect file system performance (usage) on home directories',
                                         'command' => '--collect --fs --source=/home'
                                 ),
                                 array(
-                                        'descr'   => 'Collect file system performance (usage) on all mount points',
+                                        'descr'   => 'Collect file system performance (usage) on all mount points using default sample rate',
                                         'command' => '--collect --fs'
                                 ),
                                 array(
@@ -264,6 +264,14 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Get last 100 Apache performance counters in XML format',
                                         'command' => '--query --counter=apache --limit=100 --export=xml'
+                                ),
+                                array(
+                                        'descr'   => 'Cleanup collected MySQL statistics older than 5 days',
+                                        'command' => '--clean --mysql --days=5'
+                                ),
+                                array(
+                                        'descr'   => 'Cleanup file system statistics for /data collected from server.example.com',
+                                        'command' => '--clean --fs --source=/data --host=server.example.com'
                                 )
                         )
                 );
@@ -337,6 +345,56 @@ class PerformanceTask extends MainTask implements TaskInterface
         }
 
         /**
+         * Performace counter cleanup action.
+         * @param array $params
+         */
+        public function cleanAction($params = array())
+        {
+                $this->setOptions($params, 'clean');
+
+                if ($this->_options['milestone']) {
+                        $this->flash->error("Cowardly refusing to clean milestones. Please handle that manual from the command line.");
+                        return false;
+                }
+                if (!$this->_options['time']) {
+                        $this->flash->error("The mandatory time argument is missing. May I suggest using the --days=num option?");
+                        return false;
+                }
+
+                $params = array();      // Cleanup
+
+                if ($this->_options['counter']) {
+                        $params[] = sprintf("mode = '%s'", $this->_options['counter']);
+                }
+                if ($this->_options['source']) {
+                        $params[] = sprintf("source = '%s'", $this->_options['source']);
+                }
+                if ($this->_options['host']) {
+                        $params[] = sprintf("host = '%s'", $this->_options['host']);
+                }
+                if ($this->_options['addr']) {
+                        $params[] = sprintf("addr = '%s'", $this->_options['addr']);
+                }
+                if ($this->_options['time']) {
+                        $params[] = sprintf("time < '%s'", $this->_options['time']);
+                }
+
+                $sql = sprintf("DELETE FROM performance WHERE %s", implode(" AND ", $params));
+                $dbh = $this->getDI()->get('dbwrite');
+                $sth = $dbh->prepare($sql);
+                $res = $sth->execute();
+
+                if (!$res) {
+                        $this->flash->error(print_f($sth->errorInfo()));
+                        return false;
+                } elseif ($this->_options['verbose'] && $sth->rowCount() > 0) {
+                        $this->flash->success(sprintf("Cleaned up performance data older than %s (%d rows deleted)", $this->_options['time'], $sth->rowCount()));
+                } elseif ($this->_options['verbose']) {
+                        $this->flash->notice(sprintf("No performance data older than older than %s found (%d rows deleted)", $this->_options['time'], $sth->rowCount()));
+                }
+        }
+
+        /**
          * Set options from task action parameters.
          * @param array $params The task action parameters.
          * @param string $action The calling action.
@@ -352,9 +410,9 @@ class PerformanceTask extends MainTask implements TaskInterface
                 // Supported options.
                 // 
                 $options = array(
-                        'verbose', 'collect', 'query', 'counter',
+                        'verbose', 'collect', 'query', 'clean', 'counter',
                         'time', 'host', 'addr', 'milestone', 'source',
-                        'rate', 'user', 'limit', 'export',
+                        'rate', 'user', 'limit', 'export', 'days', 'hours',
                         'disk', 'part', 'fs', 'server', 'system', 'net', 'apache', 'mysql',
                         'php', 'xml', 'csv', 'tab'
                 );
@@ -436,6 +494,20 @@ class PerformanceTask extends MainTask implements TaskInterface
                 // 
                 if (strstr($this->_options['source'], ':')) {
                         $this->_options['source'] = explode(":", $this->_options['source']);
+                }
+
+                // 
+                // Calculate time stamp for number of hours or days (clean).
+                // 
+                if ($this->_options['hours']) {
+                        $this->_options['time'] = strftime(
+                            "%Y-%m-%d %H:%M:%S", time() - 3600 * intval($this->_options['hours'])
+                        );
+                }
+                if ($this->_options['days']) {
+                        $this->_options['time'] = strftime(
+                            "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->_options['days'])
+                        );
                 }
         }
 
