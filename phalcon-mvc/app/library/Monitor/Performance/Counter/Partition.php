@@ -29,21 +29,9 @@ class Partition extends CounterBase implements Counter
          */
         const TYPE = 'part';
         /**
-         * Number of reads.
+         * The I/O counter.
          */
-        const READS = 'reads';
-        /**
-         * Number of sector reads.
-         */
-        const RDSECT = 'rdsect';
-        /**
-         * Number of writes.
-         */
-        const WRITES = 'writes';
-        /**
-         * Number of write requests.
-         */
-        const WRREQ = 'wrreq';
+        const IO = 'io';
 
         /**
          * Constructor.
@@ -88,23 +76,27 @@ class Partition extends CounterBase implements Counter
         public function getKeys()
         {
                 return array(
-                        'label'  => $this->getTitle(),
-                        'descr'  => $this->getDescription(),
-                        'reads'  => array(
-                                'label' => $this->tr->_("Reads"),
-                                'descr' => $this->tr->_("Total number of reads issued to this partition."),
-                        ),
-                        'rdsect' => array(
-                                'label' => $this->tr->_("Sectors (Read)"),
-                                'descr' => $this->tr->_("Total read sectors for partition."),
-                        ),
-                        'writes' => array(
-                                'label' => $this->tr->_("Writes"),
-                                'descr' => $this->tr->_("Total number of writes issued to this partition."),
-                        ),
-                        'wrreq'  => array(
-                                'label' => $this->tr->_("Requests (Write)"),
-                                'descr' => $this->tr->_("Total number of write requests made for partition."),
+                        'label' => $this->getTitle(),
+                        'descr' => $this->getDescription(),
+                        'io'    => array(
+                                'label'  => $this->tr->_("I/O"),
+                                'descr'  => $this->tr->_("Total request and sector I/O for this partition."),
+                                'reads'  => array(
+                                        'label' => $this->tr->_("Reads"),
+                                        'descr' => $this->tr->_("Total number of reads issued to this partition."),
+                                ),
+                                'rdsect' => array(
+                                        'label' => $this->tr->_("Sectors (Read)"),
+                                        'descr' => $this->tr->_("Total read sectors for partition."),
+                                ),
+                                'writes' => array(
+                                        'label' => $this->tr->_("Writes"),
+                                        'descr' => $this->tr->_("Total number of writes issued to this partition."),
+                                ),
+                                'wrreq'  => array(
+                                        'label' => $this->tr->_("Requests (Write)"),
+                                        'descr' => $this->tr->_("Total number of write requests made for partition."),
+                                )
                         )
                 );
         }
@@ -120,7 +112,7 @@ class Partition extends CounterBase implements Counter
          */
         public function hasCounter($type)
         {
-                return false;   // No sub counters.
+                return $type == self::IO;
         }
 
         /**

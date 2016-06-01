@@ -25,6 +25,14 @@ class Partition extends CollectorProcess
 {
 
         /**
+         * Suggested default sample rate.
+         */
+        const SAMPLE_RATE = 5;
+        /**
+         * Default partition to use.
+         */
+        const DEFAULT_PART = '/dev/sda1';
+        /**
          * The command to execute.
          */
         const COMMAND = "vmstat -p %s -n %d";
@@ -45,8 +53,15 @@ class Partition extends CollectorProcess
          * @param string $part The source partition.
          * @param int $rate The sample rate.
          */
-        public function __construct($rate = 60, $part = "/dev/sda1")
+        public function __construct($rate = self::SAMPLE_RATE, $part = self::DEFAULT_PART)
         {
+                if (!$rate) {
+                        $rate = self::SAMPLE_RATE;
+                }
+                if (!$part) {
+                        $part = self::DEFAULT_PART;
+                }
+
                 $this->_rate = $rate;
                 $this->_part = $part;
 
@@ -68,15 +83,17 @@ class Partition extends CollectorProcess
                 }
 
                 $data = array(
-                        'reads'  => $vals[0],
-                        'rdsect' => $vals[1],
-                        'writes' => $vals[2],
-                        'wrreq'  => $vals[3]
+                        'io' => array(
+                                'reads'  => $vals[0],
+                                'rdsect' => $vals[1],
+                                'writes' => $vals[2],
+                                'wrreq'  => $vals[3]
+                        )
                 );
 
                 $model = new Performance();
                 $model->data = $data;
-                $model->mode = Performance::MODE_PART;
+                $model->mode = Performance::MODE_PARTITION;
                 $model->host = $this->_host;
                 $model->addr = $this->_addr;
                 $model->source = $this->_part;
