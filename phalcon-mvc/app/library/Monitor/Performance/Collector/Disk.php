@@ -25,6 +25,10 @@ class Disk extends CollectorProcess
 {
 
         /**
+         * Suggested default sample rate.
+         */
+        const SAMPLE_RATE = 30;
+        /**
          * The command to execute.
          */
         const COMMAND = "vmstat -d -n %d";
@@ -45,7 +49,7 @@ class Disk extends CollectorProcess
          * @param int $rate The sample rate.
          * @param string|array $disk The disk name (e.g sda).
          */
-        public function __construct($rate = 10, $disk = null)
+        public function __construct($rate = self::SAMPLE_RATE, $disk = null)
         {
                 $this->_rate = $rate;
                 $this->_disk = $disk;
@@ -61,7 +65,7 @@ class Disk extends CollectorProcess
         protected function save()
         {
                 while (($line = $this->_process->read()) !== false) {
-                        
+
                         $vals = preg_split("/\s+/", trim($line));
 
                         if (count($vals) != 11) {
@@ -78,7 +82,7 @@ class Disk extends CollectorProcess
                                         continue;
                                 }
                         }
-                        
+
                         $data = array(
                                 'read'  => array(
                                         'total'   => $vals[1],

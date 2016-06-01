@@ -24,6 +24,11 @@ class MySQL extends CollectorBase
 {
 
         /**
+         * Suggested default sample rate.
+         */
+        const SAMPLE_RATE = 10;
+
+        /**
          * Exit flag.
          * @var boolean 
          */
@@ -43,7 +48,7 @@ class MySQL extends CollectorBase
          * Constructor.
          * @param int $rate The sample rate.
          */
-        public function __construct($rate = 10)
+        public function __construct($rate = self::SAMPLE_RATE)
         {
                 $this->_rate = $rate;
                 parent::__construct();

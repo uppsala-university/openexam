@@ -267,7 +267,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                 $this->setOptions($params, 'collect');
 
                 if ($this->_options['apache']) {
-                        $performance = new ApachePerformanceCollector($this->_options['user'], $this->_options['rate']);
+                        $performance = new ApachePerformanceCollector($this->_options['rate'], $this->_options['user']);
                         $performance->start();
                 } elseif ($this->_options['mysql']) {
                         $performance = new MySQLPerformanceCollector($this->_options['rate']);
@@ -282,7 +282,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                         $performance = new DiskPerformanceCollector($this->_options['rate'], $this->_options['source']);
                         $performance->start();
                 } elseif ($this->_options['part']) {
-                        $performance = new PartitionPerformanceCollector($this->_options['part'], $this->_options['rate']);
+                        $performance = new PartitionPerformanceCollector($this->_options['rate'], $this->_options['source']);
                         $performance->start();
                 } else {
                         $this->flash->error("Requested counter was not found, see --help");

@@ -23,6 +23,10 @@ use OpenExam\Models\Performance;
  */
 class Server extends CollectorProcess
 {
+        /**
+         * Suggested default sample rate.
+         */
+        const SAMPLE_RATE = 10;
 
         /**
          * The command to execute.

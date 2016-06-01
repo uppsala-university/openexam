@@ -27,6 +27,11 @@ class Apache extends CollectorBase
 {
 
         /**
+         * Suggested default sample rate.
+         */
+        const SAMPLE_RATE = 10;
+
+        /**
          * Apache server connections.
          * @var Connections 
          */
@@ -62,7 +67,7 @@ class Apache extends CollectorBase
          * @param string $user The apache user.
          * @param int $rate The sample rate.
          */
-        public function __construct($user = 'apache', $rate = 10)
+        public function __construct($rate = self::SAMPLE_RATE, $user = 'apache')
         {
                 parent::__construct();
 

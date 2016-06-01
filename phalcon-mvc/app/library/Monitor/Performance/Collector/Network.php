@@ -28,6 +28,10 @@ class Network extends CollectorBase
 {
 
         /**
+         * Suggested default sample rate.
+         */
+        const SAMPLE_RATE = 5;
+        /**
          * The /proc file system file.
          */
         const PROCFILE = '/proc/net/dev';
@@ -63,7 +67,7 @@ class Network extends CollectorBase
          * @param int $rate The sample rate.
          * @param string|array $name The NIC name.
          */
-        public function __construct($rate = 10, $name = null)
+        public function __construct($rate = self::SAMPLE_RATE, $name = null)
         {
                 $this->_rate = $rate;
                 $this->_name = $name;
