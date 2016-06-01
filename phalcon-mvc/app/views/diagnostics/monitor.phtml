@@ -37,13 +37,16 @@
         padding-left: 10px;
         padding-top: 7px;
     }
+    div.sources {
+        float: right;
+    }
     span.title {
         font-weight: bold;
         font-size: 1.2em;
         margin-left: 10px;
     }
     div.monitor-buttons button {
-            margin-left: 10px;
+        margin-left: 10px;
     }
     button.counter {
         min-width: 100px;
@@ -89,6 +92,8 @@
                     $("div.monitor-buttons").append("<button id=\"" + type + "\" class=\"btn btn-primary\">" + content[type].name + "</button>");
                 }
 
+                $("div.monitor-buttons").append("<div class=\"sources\"></div>");
+
                 var first = Object.keys(content)[0];
                 activate(first, $("div ." + first));
 
@@ -116,6 +121,35 @@
                 counters.close();
                 counters.open(monitor, context);
                 counters.start();
+
+                fetch(baseURL + 'utility/diagnostics/performance/' + monitor + '?name=1', sources);
+            }
+
+            // 
+            // Load counter sources. This is an array of availible names 
+            // within this monitor.
+            // 
+            function sources(content) {
+                $("div.sources").empty();
+
+                if (content.name === false) {
+                    counters.setSource(0);
+                } else {
+                    var length = content.name.length, select;
+
+                    select = "<select class=\"sources\" id=\"sources\">";
+                    for (var i = 0; i < length; ++i) {
+                        select += "<option name=\"" + content.name[i] + "\">" + content.name[i] + "</option>";
+                    }
+                    select += "</select>";
+
+                    $("div.sources").append(select);
+                    $("#sources").change(function () {
+                        counters.setSource($(this).val());
+                    });
+
+                    counters.setSource(content.name[0]);
+                }
             }
 
             counters.setUrl(baseURL + 'utility/diagnostics/performance');

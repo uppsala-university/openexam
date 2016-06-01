@@ -223,7 +223,7 @@ function Counter(key, parent) {
 // The mnitor (counter container) object.
 // 
 counters = (function () {
-    var _url, _limit = 20, _interval = 5, _monitor, _context, _counters = {}, _timer = null, _label, _descr;
+    var _url, _limit = 20, _interval = 5, _source = 0, _monitor, _context, _counters = {}, _timer = null, _label, _descr;
 
     // 
     // Parse keys data. Set label, descr and create counters.
@@ -300,7 +300,7 @@ counters = (function () {
             _monitor = monitor;
             _context = context;
 
-            var url = _url + '/' + _monitor + '?limit=' + _limit + '&keys=1';
+            var url = _url + '/' + _monitor + '?limit=' + _limit + '&keys=1&source=' + _source;
             fetch(url, create);
         },
         // 
@@ -320,12 +320,16 @@ counters = (function () {
                 _context.innerHTML = "";
             }
         },
+        reopen: function () {
+            this.close();
+            this.open(_monitor, _context);
+        },
         // 
         // Start all counters.
         // 
         start: function () {
             _timer = setInterval(function () {
-                var url = _url + '/' + _monitor + '?limit=1';
+                var url = _url + '/' + _monitor + '?limit=1&source=' + _source;
                 fetch(url, update);
             }, _interval * 1000);
         },
@@ -365,6 +369,13 @@ counters = (function () {
             if (_interval !== interval) {
                 _interval = interval;
                 this.restart();
+            }
+        },
+        setSource: function (name) {
+            if (_source !== name) {
+                _source = name;
+                this.reopen();
+                this.start();
             }
         }
     }

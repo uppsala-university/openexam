@@ -70,4 +70,21 @@ interface Counter
          * @return Counter 
          */
         function getCounter($type);
+
+        /**
+         * Check if counter uses source field.
+         * 
+         * The returned value is an array containing all available source
+         * names (from the source field). If counter don't support source,
+         * then they should return null.
+         * 
+         * @return boolean
+         */
+        function hasSource();
+
+        /**
+         * Get all source names for this counter.
+         * @return array
+         */
+        function getSources();
 }

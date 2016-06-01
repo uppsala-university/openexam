@@ -78,4 +78,30 @@ abstract class CounterBase extends Component implements Counter
                 return new CounterSubType($this, $type);
         }
 
+        /**
+         * Check if counter uses source field.
+         * 
+         * The standard behavior is to not supports sources and always 
+         * return null.
+         * 
+         * @return array
+         */
+        public function getSources()
+        {
+                return null;
+        }
+
+        /**
+         * Check if counter uses source field.
+         * 
+         * The standard behavior is to not supports sources and always 
+         * return false.
+         * 
+         * @return boolean
+         */
+        public function hasSource()
+        {
+                return false;
+        }
+
 }

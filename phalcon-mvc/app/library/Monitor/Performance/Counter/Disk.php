@@ -151,4 +151,30 @@ class Disk extends CounterBase implements Counter
                 return $type == self::IO || $type == self::READ || $type == self::WRITE;
         }
 
+        /**
+         * Check if counter uses source field.
+         * 
+         * The disk counter supports multiple sources. The returned list is
+         * a variable length list of all disks that has performance data.
+         * 
+         * @return array
+         */
+        public function getSources()
+        {
+                return CounterQuery::getSources($this->getType());
+        }
+
+        /**
+         * Check if counter uses source field.
+         * 
+         * The disk counter supports multiple sources and will always return
+         * true.
+         * 
+         * @return boolean
+         */
+        public function hasSource()
+        {
+                return true;
+        }
+
 }

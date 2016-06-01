@@ -89,4 +89,31 @@ class CounterQuery
                 }
         }
 
+        /**
+         * Return an array of distinct source names.
+         * @param string $mode The counter name.
+         */
+        public static function getSources($mode)
+        {
+                if (($result = Performance::find(array(
+                            'columns'    => "source",
+                            'conditions' => "mode = :mode:",
+                            'group'      => "source",
+                            'order'      => "source",
+                            'bind'       => array(
+                                    'mode' => $mode
+                            )
+                    )))) {
+                        $sources = array();
+                        foreach ($result as $row) {
+                                if ($row['source'] != 'lo' && strlen($row['source']) != 0) {
+                                        $sources[] = $row['source'];
+                                }
+                        }
+                        return $sources;
+                } else {
+                        throw new Exception("Failed query performance model");
+                }
+        }
+
 }

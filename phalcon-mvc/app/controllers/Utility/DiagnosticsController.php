@@ -100,8 +100,7 @@ class DiagnosticsController extends GuiController
                 if ($this->request->has('filter')) {
                         $performance->setFilter($this->request->get('filter', 'string'));
                 }
-
-                if ($this->request->has('source')) {
+                if ($this->request->has('source') && $this->request->get('source')) {
                         $performance->addFilter('source', $this->request->get('source', 'string'));
                 }
                 if ($this->request->has('time')) {
@@ -123,7 +122,8 @@ class DiagnosticsController extends GuiController
 
                 $content = array(
                         'keys' => false,
-                        'data' => true
+                        'data' => true,
+                        'name' => false
                 );
 
                 if ($this->request->has('keys') && $this->request->get('keys', 'int') == 1) {
@@ -132,12 +132,21 @@ class DiagnosticsController extends GuiController
                 if ($this->request->has('data') && $this->request->get('data', 'int') == 0) {
                         $content['data'] = false;
                 }
+                if ($this->request->has('name')) {
+                        $content['name'] = true;
+                }
+                if ($content['name'] && !$counter->hasSource()) {
+                        $content['name'] = false;
+                }
 
                 if ($content['keys']) {
                         $content['keys'] = $counter->getKeys();
                 }
                 if ($content['data']) {
                         $content['data'] = $counter->getData();
+                }
+                if ($content['name']) {
+                        $content['name'] = $counter->getSources();
                 }
 
                 $this->view->disable();

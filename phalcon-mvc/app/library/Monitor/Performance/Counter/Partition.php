@@ -123,4 +123,30 @@ class Partition extends CounterBase implements Counter
                 return false;   // No sub counters.
         }
 
+        /**
+         * Check if counter uses source field.
+         * 
+         * The partition performance counter supports multiple sources. The 
+         * returned list is a variable length list of all partition names.
+         * 
+         * @return array
+         */
+        public function getSources()
+        {
+                return CounterQuery::getSources($this->getType());
+        }
+
+        /**
+         * Check if counter uses source field.
+         * 
+         * The partition performance counter supports multiple sources and will 
+         * always return true.
+         * 
+         * @return boolean
+         */
+        public function hasSource()
+        {
+                return true;
+        }
+
 }
