@@ -60,7 +60,9 @@ class Network extends CounterBase implements Counter
          */
         public function getTitle()
         {
-                return $this->tr->_(sprintf("Network Interface %s", $this->_performance->getSource()));
+                return $this->tr->_("Network Interface (%nic%)", array(
+                            'nic' => $this->_performance->getSource()
+                ));
         }
 
         /**

@@ -66,7 +66,7 @@ class RenderService extends Component
                                 $this->_render[$type] = new RenderPdfDocument($this->config->render->pdf);
                                 break;
                         default:
-                                throw new Exception($this->tr->_("Unknown format type %s", array($type)));
+                                throw new Exception($this->tr->_("Unknown format type %format%", array('format' => $type)));
                 }
         }
 

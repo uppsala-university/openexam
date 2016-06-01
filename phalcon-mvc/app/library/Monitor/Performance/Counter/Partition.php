@@ -57,7 +57,9 @@ class Partition extends CounterBase implements Counter
          */
         public function getTitle()
         {
-                return $this->tr->_(sprintf("Partition Statistics (%s)", $this->_performance->getSource()));
+                return $this->tr->_("Partition Statistics (%part%)", array(
+                            'part' => $this->_performance->getSource()
+                ));
         }
 
         /**

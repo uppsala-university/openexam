@@ -65,7 +65,9 @@ class Disk extends CounterBase implements Counter
          */
         public function getTitle()
         {
-                return $this->tr->_(sprintf("Disk Performance (%s)", $this->_performance->getSource()));
+                return $this->tr->_("Disk Performance (%disk%)", array(
+                            'disk' => $this->_performance->getSource()
+                ));
         }
 
         /**
