@@ -221,11 +221,12 @@ return array(
          */
         'monitor'     => array(
                 'server' => true,
-                'system' => true,
+                'system' => false,
                 'apache' => true,
                 'mysql'  => true,
                 'net'    => true,
                 'disk'   => false,
-                'part'   => false
+                'part'   => false,
+                'fs'     => true
         )
 );

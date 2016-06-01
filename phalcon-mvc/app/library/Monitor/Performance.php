@@ -20,6 +20,7 @@ use OpenExam\Library\Monitor\Performance\Counter\MySQL as MySQLPerformanceCounte
 use OpenExam\Library\Monitor\Performance\Counter\Network as NetworkPerformanceCounter;
 use OpenExam\Library\Monitor\Performance\Counter\Partition as PartitionPerformanceCounter;
 use OpenExam\Library\Monitor\Performance\Counter\Server as ServerPerformanceCounter;
+use OpenExam\Library\Monitor\Performance\Counter\FileSystem as FileSystemPerformanceCounter;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -90,6 +91,9 @@ class Performance extends Component
                 }
                 if ($this->config->monitor->get('net')) {
                         $this->register('net', NetworkPerformanceCounter::class);
+                }
+                if ($this->config->monitor->get('fs')) {
+                        $this->register('fs', FileSystemPerformanceCounter::class);
                 }
         }
 

@@ -16,11 +16,13 @@ namespace OpenExam\Console\Tasks;
 use OpenExam\Library\Monitor\Performance;
 use OpenExam\Library\Monitor\Performance\Collector\Apache as ApachePerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Disk as DiskPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\FileSystem as FileSystemPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\MySQL as MySQLPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\Network as NetworkPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Partition as PartitionPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Server as ServerPerformanceCollector;
-use OpenExam\Library\Monitor\Performance\Collector\Network as NetworkPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Counter;
+use SimpleXMLElement;
 
 abstract class ExportFormatter
 {
@@ -79,7 +81,7 @@ class ExportFormatterXML extends ExportFormatter
         public function export()
         {
                 $xmlstr = sprintf("<?xml version=\"1.0\" encoding=\"UTF-8\"?><counters type=\"%s\"></counters>", $this->_counter->getType());
-                $xmldoc = new \SimpleXMLElement($xmlstr);
+                $xmldoc = new SimpleXMLElement($xmlstr);
 
                 foreach ($this->_counter->getData() as $data) {
                         $counter = $xmldoc->addChild("counter");
@@ -223,7 +225,8 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 '--apache' => 'Same as --counter=apache (web server performance).',
                                 '--mysql'  => 'Same as --counter=mysql (database performance).',
                                 '--disk'   => 'Same as --counter=disk (harddrive performance).',
-                                '--part'   => 'Same as --counter=part (partition/file system performance).',
+                                '--part'   => 'Same as --counter=part (partition performance).',
+                                '--fs'     => 'Same as --counter=fs (file system performance).',
                                 '--php'    => 'Same as --export=php (export as PHP array).',
                                 '--csv'    => 'Same as --export=csv (export in CSV-format).',
                                 '--tab'    => 'Same as --export=tab (export in TAB-format).',
@@ -241,6 +244,14 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Collect Apache performance using default sample rate',
                                         'command' => '--collect --apache'
+                                ),
+                                array(
+                                        'descr'   => 'Collect file system performance (usage) on home directories',
+                                        'command' => '--collect --fs --source=/home'
+                                ),
+                                array(
+                                        'descr'   => 'Collect file system performance (usage) on all mount points',
+                                        'command' => '--collect --fs'
                                 ),
                                 array(
                                         'descr'   => 'Collect network performance for multiple interfaces',
@@ -283,6 +294,9 @@ class PerformanceTask extends MainTask implements TaskInterface
                         $performance->start();
                 } elseif ($this->_options['part']) {
                         $performance = new PartitionPerformanceCollector($this->_options['rate'], $this->_options['source']);
+                        $performance->start();
+                } elseif ($this->_options['fs']) {
+                        $performance = new FileSystemPerformanceCollector($this->_options['rate'], $this->_options['source']);
                         $performance->start();
                 } else {
                         $this->flash->error("Requested counter was not found, see --help");
@@ -341,7 +355,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                         'verbose', 'collect', 'query', 'counter',
                         'time', 'host', 'addr', 'milestone', 'source',
                         'rate', 'user', 'limit', 'export',
-                        'disk', 'part', 'server', 'system', 'net', 'apache', 'mysql',
+                        'disk', 'part', 'fs', 'server', 'system', 'net', 'apache', 'mysql',
                         'php', 'xml', 'csv', 'tab'
                 );
                 $current = $action;
@@ -384,6 +398,9 @@ class PerformanceTask extends MainTask implements TaskInterface
                 }
                 if ($this->_options['part']) {
                         $this->_options['counter'] = 'part';
+                }
+                if ($this->_options['fs']) {
+                        $this->_options['counter'] = 'fs';
                 }
                 if ($this->_options['server']) {
                         $this->_options['counter'] = 'server';

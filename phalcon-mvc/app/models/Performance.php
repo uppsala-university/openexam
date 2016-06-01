@@ -40,6 +40,10 @@ class Performance extends ModelBase
          */
         const MODE_PARTITION = 'part';
         /**
+         * File system performance counter mode.
+         */
+        const MODE_FILESYS = 'fs';
+        /**
          * Slab data performance counter mode.
          */
         const MODE_SLAB = 'slab';
@@ -188,6 +192,7 @@ class Performance extends ModelBase
                                 'domain' => array(
                                         self::MODE_APACHE,
                                         self::MODE_DISK,
+                                        self::MODE_FILESYS,
                                         self::MODE_IO,
                                         self::MODE_MYSQL,
                                         self::MODE_NETWORK,
