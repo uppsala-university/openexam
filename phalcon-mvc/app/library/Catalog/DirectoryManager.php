@@ -372,4 +372,18 @@ class DirectoryManager extends Component implements DirectoryService
                 $this->logger->system->commit();
         }
 
+        /**
+         * Get service connection.
+         * 
+         * This method will always return null as the service connection is not
+         * unique withing the manager, its a container for multiple directory 
+         * services delivering catalog data for one or more domains.
+         * 
+         * @return ServiceConnection
+         */
+        public function getConnection()
+        {
+                return null;
+        }
+
 }

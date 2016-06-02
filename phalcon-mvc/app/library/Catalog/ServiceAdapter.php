@@ -72,7 +72,7 @@ abstract class ServiceAdapter extends Component implements DirectoryService
                 if ($this->_lifetime == 0) {
                         return $result;
                 }
-                
+
                 $this->cache->save($key, $result, $this->_lifetime);
                 return $result;
         }
@@ -101,9 +101,5 @@ abstract class ServiceAdapter extends Component implements DirectoryService
          * Get service connection.
          * @return ServiceConnection
          */
-        public function getConnection()
-        {
-                return null;
-        }
-
+        abstract public function getConnection();
 }

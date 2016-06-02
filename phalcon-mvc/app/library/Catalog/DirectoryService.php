@@ -95,4 +95,10 @@ interface DirectoryService
          * @return Principal[] Matching user principal objects.
          */
         function getPrincipal($needle, $search, $options);
+
+        /**
+         * Get service connection.
+         * @return ServiceConnection 
+         */
+        function getConnection();
 }

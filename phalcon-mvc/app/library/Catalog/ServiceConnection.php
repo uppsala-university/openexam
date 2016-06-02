@@ -14,7 +14,7 @@
 namespace OpenExam\Library\Catalog;
 
 /**
- * The service bacekend connection.
+ * The service backend connection.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 interface ServiceConnection
@@ -36,4 +36,16 @@ interface ServiceConnection
          * @return bool True if already connected.
          */
         public function connected();
+
+        /**
+         * Get service hostname.
+         * @return string 
+         */
+        public function hostname();
+
+        /**
+         * Get service port.
+         * @return int
+         */
+        public function port();
 }
