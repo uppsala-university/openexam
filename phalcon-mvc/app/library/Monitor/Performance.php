@@ -21,22 +21,35 @@ use OpenExam\Library\Monitor\Performance\Counter\Network as NetworkPerformanceCo
 use OpenExam\Library\Monitor\Performance\Counter\Partition as PartitionPerformanceCounter;
 use OpenExam\Library\Monitor\Performance\Counter\Server as ServerPerformanceCounter;
 use OpenExam\Library\Monitor\Performance\Counter\FileSystem as FileSystemPerformanceCounter;
+use OpenExam\Library\Monitor\Performance\Counter\Test as TestPerformanceCounter;
 use Phalcon\Mvc\User\Component;
 
 /**
- * System performance diagnostics.
+ * System performance monitoring.
+ * 
+ * This class is the unified frontend against performance counters. The counters 
+ * represents various type of performance data collected by the performance
+ * collectors (runned by the performance task).
+ * 
+ * This class uses the system config to maintain the registry of performance
+ * counters that should be exposed. The counter data itself is stored in the 
+ * performance model.
  * 
  * Performs search against performance model. The filter can be used to 
  * zoom in on data:
  * 
  * <code>
  * // 
- * // Get virtual memory counter for this week:
+ * // Give us last 30 records collected from www.example.com:
  * // 
- * $performance = new Performance();
+ * $performance = new Performance(30);
  * $performance->setFilter(array(
- *      'milestone' => 'week'
+ *      'host' => 'www.example.com'
  * ));
+ * 
+ * // 
+ * // Get collected disk statistics:
+ * // 
  * $counter = $performance->getCounter('disk');
  * </code>
  * 
@@ -94,6 +107,9 @@ class Performance extends Component
                 }
                 if ($this->config->monitor->get('fs')) {
                         $this->register('fs', FileSystemPerformanceCounter::class);
+                }
+                if ($this->config->monitor->get('test')) {
+                        $this->register('test', TestPerformanceCounter::class);
                 }
         }
 
@@ -153,7 +169,8 @@ class Performance extends Component
         }
 
         /**
-         * Add filter option.
+         * Add filter option (replaces previous setting).
+         * 
          * @param string $key The filter key (e.g. time).
          * @param string|int $val The filter value.
          */
@@ -203,7 +220,19 @@ class Performance extends Component
          * Get performance counter.
          * 
          * The type argument has to be one of the MODE_XXX constants defined 
-         * by the performance model.
+         * by the performance model. By default, performance data will be
+         * returned for same server as invoking this method.
+         * 
+         * The counter returned keeps an reference to this performance object 
+         * so filter can be dynamic modified later:
+         * 
+         * <code>
+         * $performance = new Performance();
+         * $counter = $performance->getCounter('disk');
+         * 
+         * $performance->addFilter('addr', '192.168.1.2');      // Override
+         * $data = $counter->getData();
+         * </code>
          * 
          * @param string $type The counter name.
          * @return Counter|boolean

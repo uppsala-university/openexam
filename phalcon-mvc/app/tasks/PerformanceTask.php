@@ -21,6 +21,7 @@ use OpenExam\Library\Monitor\Performance\Collector\MySQL as MySQLPerformanceColl
 use OpenExam\Library\Monitor\Performance\Collector\Network as NetworkPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Partition as PartitionPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Collector\Server as ServerPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\Test as TestPerformanceCollector;
 use OpenExam\Library\Monitor\Performance\Counter;
 use SimpleXMLElement;
 
@@ -306,6 +307,9 @@ class PerformanceTask extends MainTask implements TaskInterface
                 } elseif ($this->_options['fs']) {
                         $performance = new FileSystemPerformanceCollector($this->_options['rate'], $this->_options['source']);
                         $performance->start();
+                } elseif ($this->_options['test']) {
+                        $performance = new TestPerformanceCollector($this->_options['rate']);
+                        $performance->start();
                 } else {
                         $this->flash->error("Requested counter was not found, see --help");
                 }
@@ -413,7 +417,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                         'verbose', 'collect', 'query', 'clean', 'counter',
                         'time', 'host', 'addr', 'milestone', 'source',
                         'rate', 'user', 'limit', 'export', 'days', 'hours',
-                        'disk', 'part', 'fs', 'server', 'system', 'net', 'apache', 'mysql',
+                        'disk', 'part', 'fs', 'server', 'system', 'net', 'apache', 'mysql', 'test',
                         'php', 'xml', 'csv', 'tab'
                 );
                 $current = $action;
@@ -474,6 +478,9 @@ class PerformanceTask extends MainTask implements TaskInterface
                 }
                 if ($this->_options['mysql']) {
                         $this->_options['counter'] = 'mysql';
+                }
+                if ($this->_options['test']) {
+                        $this->_options['counter'] = 'test';
                 }
 
                 if ($this->_options['php']) {

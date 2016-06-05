@@ -52,6 +52,10 @@ class Performance extends ModelBase
          */
         const MODE_IO = 'io';
         /**
+         * Test performance counter mode (use only for debug/test).
+         */
+        const MODE_TEST = 'test';
+        /**
          * System performance counter mode.
          */
         const MODE_SYSTEM = 'system';
@@ -199,7 +203,8 @@ class Performance extends ModelBase
                                         self::MODE_PARTITION,
                                         self::MODE_SERVER,
                                         self::MODE_SLAB,
-                                        self::MODE_SYSTEM
+                                        self::MODE_SYSTEM,
+                                        self::MODE_TEST
                                 )
                         )));
                 }
