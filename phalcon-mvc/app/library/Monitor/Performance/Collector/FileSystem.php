@@ -176,8 +176,8 @@ class FileSystem extends CollectorBase
         private function collect()
         {
                 $data = array();
-
-                foreach ($this->_path as $dev => $dir) {
+                
+                foreach ($this->_path as $dir) {
                         $avail = intval(disk_free_space($dir) / (1024 * 1024));
                         $total = intval(disk_total_space($dir) / (1024 * 1024));
                         $data[$dir] = array(
