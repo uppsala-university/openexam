@@ -104,4 +104,13 @@ abstract class CounterBase extends Component implements Counter
                 return false;
         }
 
+        /**
+         * Get all addresses for this counter grouped by address and hostname.
+         * @return array
+         */
+        public function getAddresses()
+        {
+                return CounterQuery::getAddresses($this->_type);
+        }
+
 }

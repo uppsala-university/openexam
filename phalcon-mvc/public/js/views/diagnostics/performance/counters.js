@@ -21,7 +21,8 @@
 // Colors.
 // 
 var colors = {
-    _curr: 0, _colors: [
+    _curr: 0,
+    _colors: [
         [
             "rgb(255, 64, 0)", "rgb(255, 64, 0)", "rgb(255, 64, 0)",
             "rgb(255, 255, 255)", "rgb(255, 64, 0)", "rgb(192, 255, 255)"
@@ -88,22 +89,36 @@ var colors = {
 }
 
 // 
-// The timeline object:
+// Natural numbers sequence generator.
 // 
-function Timeline(key, parent) {
-    var _data = [], _last, _max = 20, _parent = parent, _key = key, _colors = colors.next(), _delta = false;
+var natnum = (function () {
+    var id = 0;
+    return function () {
+        return ++id;
+    };
+})();
+
+// 
+// The timeline object.
+// 
+function Timeline(addr, key, parent) {
+    var _last, _max = 20, _colors = colors.next(), _delta = false;
 
     this.label = "";
     this.descr = "";
 
+    // 
+    // Apply delta mode on insert array.
+    // 
     function delta(insert, last) {
         var length = insert.length, next, prev;
 
         if (last === undefined) {
-            last = insert[length - 1];
             prev = insert[0];
+            last = insert[length - 1];
         } else {
             prev = last;
+            last = insert[length - 1];
         }
 
         for (var i = 0; i < length; ++i) {
@@ -118,32 +133,33 @@ function Timeline(key, parent) {
     this.setKeys = function (keys) {
         this.label = keys.label;
         this.descr = keys.descr;
-    }
+    };
 
     this.setData = function (data, index, chart) {
+        // 
+        // Extract data for this timeline (based on key + addr):
+        // 
         var insert = data.map(function (d) {
-            return d.data[_parent][_key];
+            if (d.addr === addr) {
+                return d.data[parent][key];
+            }
+        }).filter(function (d) {
+            return d !== undefined;
         });
+
         if (_delta) {
             _last = delta(insert, _last);
         }
-        if (_data.length === 0) {
-            _data = insert;
-        } else {
-            _data.shift();
-            _data.push(insert);
-        }
-        if (_data.length > _max) {
-            _data = _data.slice(0, _data.length - _max);
-        }
-        if (chart !== undefined) {
-            chart.data.datasets[index].data[_data.length - 1] = insert.shift();
-        }
-    };
 
-    this.getData = function (index) {
-        return _data[index];
-    }
+        var prev = chart.data.datasets[index].data.concat(insert);
+        var size = prev.length;
+
+        if (size > _max) {
+            prev.splice(0, size - _max);
+        }
+
+        chart.data.datasets[index].data = prev;
+    };
 
     this.getDataSet = function () {
         return {
@@ -155,7 +171,7 @@ function Timeline(key, parent) {
             pointBackgroundColor: _colors[3],
             pointHoverBackgroundColor: _colors[4],
             pointHoverBorderColor: _colors[5],
-            data: _data
+            data: []
         };
     };
 
@@ -169,21 +185,30 @@ function Timeline(key, parent) {
 
     this.setDelta = function (enable) {
         _delta = enable;
-    }
+    };
 }
 
 // 
 // The counter object.
 // 
-function Counter(key, parent) {
-    var _key = key, _parent = parent, _timelines = [], _context, _chart;
+function Counter(addr, key, parent) {
+    var _timelines = [], _context, _chart, _unique = natnum();
 
     this.label = "";
     this.descr = "";
 
     function create(label, descr) {
-        _parent.append("<div class='counter " + _key + "'><div class='header'><button class='btn btn-default counter " + key + "' title='" + descr + "'>" + label + "</button></div><hr/><canvas class='" + _key + "'/></div>");
-        _context = _parent.find("canvas." + _key);
+        parent.append("<div class='counter " + key + "'><div class='header'><button id='" + _unique + "' class='btn btn-default counter' title='" + descr + "'>" + label + "</button></div><hr/><canvas class='" + key + "' id='" + _unique + "'/><div class='counter-date'></div><div class='counter-host'>" + addr + "</div></div>");
+        _context = parent.find("canvas#" + _unique);
+
+        // 
+        // On counter clicked:
+        // 
+        $("button#" + _unique).click(function () {
+            counters.setCounter(key);
+            counters.reopen();
+            counters.start();
+        });
 
         var datasets = [];
         for (var set in _timelines) {
@@ -200,6 +225,12 @@ function Counter(key, parent) {
         });
     }
 
+    function addTimeline(type, keys) {
+        var timeline = new Timeline(addr, type, key);
+        timeline.setKeys(keys[type]);
+        _timelines.push(timeline);
+    }
+
     this.setKeys = function (keys) {
         for (var key in keys) {
             switch (key) {
@@ -210,12 +241,11 @@ function Counter(key, parent) {
                     this.descr = keys[key];
                     break;
                 default:
-                    var timeline = new Timeline(key, _key);
-                    timeline.setKeys(keys[key]);
-                    _timelines.push(timeline);
-
+                    addTimeline(key, keys);
             }
         }
+
+        create(this.label, this.descr);
     };
 
     this.setData = function (data) {
@@ -234,82 +264,118 @@ function Counter(key, parent) {
         for (var i = 0; i < _timelines.length; ++i) {
             _timelines[i].setDelta(enable);
         }
-    }
+    };
+
+    this.setLast = function (date) {
+        $(".counter-date").html(date.toString());
+    };
 
     this.update = function () {
-        if (_chart === undefined) {
-            create(this.label, this.descr);
-        } else {
-            _chart.update();
-        }
-    }
+        _chart.update();
+    };
 
     this.remove = function () {
         _chart.destroy();
-        _parent.find("div").remove();
         _timelines = [];
+        parent.find("div").remove();
     };
 }
 
 // 
-// The mnitor (counter container) object.
+// The monitor (counter container) object.
 // 
 counters = (function () {
-    var _url, _limit = 20, _interval = 5, _source = 0, _monitor, _context, _counters = {}, _timer = null, _label, _descr, _delta = true;
+    var _url, _limit = 20, _interval = 5, _source = '', _counter = '', _monitor, _context, _counters = [], _timer = null, _delta = true, _last;
 
     // 
-    // Parse keys data. Set label, descr and create counters.
+    // Check if counters need to be updated.
     // 
-    function setKeys(keys) {
-        for (var key in keys) {
-            switch (key) {
-                case 'label':
-                    _label = keys[key];
-                    break;
-                case 'descr':
-                    _descr = keys[key];
-                    break;
-                default:
-                    add(key, keys[key]);
-                    break;
-            }
+    function redraw(data) {
+        if (data === undefined) {
+            _last = new Date();
+            return true;
         }
+        if (_last === undefined) {
+            _last = new Date(data.time.split(" ").join("T"));
+            return true;
+        }
+
+        var time = new Date(data.time.split(" ").join("T"));
+
+        if (_last < time) {
+            _last = time;
+            return true;
+        }
+
+        return false;   // No update of chart needed.
     }
 
     // 
-    // Set data for all counters.
+    // Reset internal state.
     // 
-    function setData(data) {
-        for (var key in _counters) {
-            _counters[key].setData(data);
-            _counters[key].update();
+    function reset() {
+        if (_counters.length > 0) {
+            _counters = [];
+        }
+        if (_context) {
+            _context.innerHTML = "";
+        }
+        if (_last) {
+            _last = null;
         }
     }
 
     // 
     // Add counter.
     // 
-    function add(name, keys) {
-        var counter = new Counter(name, _context);
+    function add(addr, name, keys) {
+        var counter = new Counter(addr, name, _context);
+
         counter.setKeys(keys);
         counter.setSize(_limit);
         counter.setDelta(_delta);
-        _counters[name] = counter;
+        _counters.push(counter);
+
+        return counter;
     }
 
     // 
     // Called on initialize (open).
     // 
     function create(content) {
-        setKeys(content.keys);
-        setData(content.data);
+        var keys = content.keys, data = content.data, used = {};
+
+        for (var i = 0; i < data.length; ++i) {
+            for (var name in data[i].data) {
+                var addr = data[i].addr;
+                if (used[addr] === undefined) {
+                    used[addr] = {};
+                }
+                if (used[addr][name] === undefined) {
+                    used[addr][name] = add(addr, name, keys[name]);
+                }
+            }
+        }
+
+        for (var i = 0; i < _counters.length; ++i) {
+            _counters[i].setData(data);
+            _counters[i].update();
+        }
     }
 
     // 
     // Called on update.
     // 
     function update(content) {
-        setData(content.data);
+        var data = content.data, size = data.length;
+
+        if (redraw(data[size - 1])) {
+            for (var i = 0; i < _counters.length; ++i) {
+                _counters[i].setData(data);
+                _counters[i].update();
+                _counters[i].setLast(_last);
+            }
+        }
     }
 
     // 
@@ -333,7 +399,7 @@ counters = (function () {
             _monitor = monitor;
             _context = context;
 
-            var url = _url + '/' + _monitor + '?limit=' + _limit + '&keys=1&source=' + _source;
+            var url = _url + '/' + _monitor + '/' + _counter + '?limit=' + _limit + '&keys=1&source=' + _source;
             fetch(url, create);
         },
         // 
@@ -344,15 +410,15 @@ counters = (function () {
                 this.stop();
             }
 
-            for (var k in _counters) {
-                _counters[k].remove();
+            for (var i = 0; i < _counters.length; ++i) {
+                _counters[i].remove();
             }
-            _counters = {};
 
-            if (_context) {
-                _context.innerHTML = "";
-            }
+            reset();
         },
+        // 
+        // Reopen monitor using current settings.
+        // 
         reopen: function () {
             this.close();
             this.open(_monitor, _context);
@@ -362,7 +428,7 @@ counters = (function () {
         // 
         start: function () {
             _timer = setInterval(function () {
-                var url = _url + '/' + _monitor + '?limit=1&source=' + _source;
+                var url = _url + '/' + _monitor + '/' + _counter + '?limit=1&source=' + _source;
                 fetch(url, update);
             }, _interval * 1000);
         },
@@ -380,6 +446,9 @@ counters = (function () {
             this.stop();
             this.start();
         },
+        // 
+        // Check if timer is running.
+        // 
         running: function () {
             return _timer !== null;
         },
@@ -416,10 +485,22 @@ counters = (function () {
         // Set source name.
         // 
         setSource: function (name) {
+            if (name === undefined) {
+                name = '';
+            }
             if (_source !== name) {
                 _source = name;
-                this.reopen();
-                this.start();
+            }
+        },
+        // 
+        // Set counter name.
+        // 
+        setCounter: function (name) {
+            if (name === undefined) {
+                name = '';
+            }
+            if (_counter !== name) {
+                _counter = name;
             }
         }
     }

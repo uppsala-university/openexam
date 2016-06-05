@@ -87,4 +87,10 @@ interface Counter
          * @return array
          */
         function getSources();
+
+        /**
+         * Get all addresses for this counter grouped by address and hostname.
+         * @return array
+         */
+        function getAddresses();
 }

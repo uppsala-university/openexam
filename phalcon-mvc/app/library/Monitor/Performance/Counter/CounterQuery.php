@@ -38,8 +38,8 @@ class CounterQuery
          * @param string $mode The counter name.
          * @param array $filter The query filter.
          * @param int $limits Limit on returned records.
-         * 
          * @return array
+         * 
          * @throws Exception
          */
         public static function getData($mode, $filter, $limits)
@@ -55,9 +55,12 @@ class CounterQuery
                         }
                 }
 
-                if (!isset($filter['addr']) && !isset($filter['host'])) {
+                if (!isset($filter['addr'])) {
                         $filter['addr'] = gethostbyname(gethostname());
+                } elseif ($filter['addr'] == '*') {
+                        unset($filter['addr']);
                 }
+
                 if (isset($mode)) {
                         $filter['mode'] = $mode;
                 }
@@ -91,7 +94,11 @@ class CounterQuery
 
         /**
          * Return an array of distinct source names.
+         * 
          * @param string $mode The counter name.
+         * @return array
+         * 
+         * @throws Exception
          */
         public static function getSources($mode)
         {
@@ -111,6 +118,31 @@ class CounterQuery
                                 }
                         }
                         return $sources;
+                } else {
+                        throw new Exception("Failed query performance model");
+                }
+        }
+
+        /**
+         * Return an array of address and hostnames.
+         * 
+         * @param string $mode The counter name.
+         * @return array
+         * 
+         * @throws Exception
+         */
+        public static function getAddresses($mode)
+        {
+                if (($result = Performance::find(array(
+                            'columns'    => "host,addr",
+                            'conditions' => "mode = :mode:",
+                            'order'      => "addr",
+                            'group'      => array("addr", "host"),
+                            'bind'       => array(
+                                    'mode' => $mode
+                            )
+                    )))) {
+                        return $result->toArray();
                 } else {
                         throw new Exception("Failed query performance model");
                 }

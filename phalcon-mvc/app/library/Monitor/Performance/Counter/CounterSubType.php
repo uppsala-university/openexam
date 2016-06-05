@@ -38,6 +38,11 @@ class CounterSubType implements Counter
          * @var array 
          */
         private $_data;
+        /**
+         * The parent counter.
+         * @var Counter
+         */
+        private $_parent;
 
         /**
          * Constructor.
@@ -64,6 +69,8 @@ class CounterSubType implements Counter
                 $this->_type = $type;
                 $this->_keys = $keys;
                 $this->_data = $data;
+
+                $this->_parent = $parent;
         }
 
         public function getType()
@@ -104,6 +111,21 @@ class CounterSubType implements Counter
         public function getCounter($type)
         {
                 return new CounterSubType($this, $type);
+        }
+
+        public function getSources()
+        {
+                return $this->_parent->getSources();
+        }
+
+        public function hasSource()
+        {
+                return $this->_parent->hasSource();
+        }
+
+        public function getAddresses()
+        {
+                return $this->_parent->getAddresses();
         }
 
 }

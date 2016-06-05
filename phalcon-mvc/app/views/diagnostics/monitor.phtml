@@ -52,6 +52,16 @@
     button.counter {
         min-width: 100px;
     }
+    div.counter-host {
+        float: right;
+        margin-right: 10px;
+        color: #c6c6c6;
+    }
+    div.counter-date {
+        float: left;
+        margin-left: 10px;
+        color: #c6c6c6;
+    }
 </style>
 
 <div class="mbox">
@@ -69,6 +79,8 @@
 
 <script>
         $(document).ready(function () {
+
+            var monitor, context;
 
             // 
             // Fetch bootstrap data using AJAX.
@@ -96,29 +108,31 @@
                 $("div.monitor-buttons").append("<div class=\"delta selectpicker\"><input type=\"checkbox\" id=\"delta\" checked> Delta Mode</input></div>");
                 $("div.monitor-buttons").append("<div class=\"sources\"></div>");
 
-                var first = Object.keys(content)[0];
-                activate(first, $("div ." + first));
+                monitor = Object.keys(content)[0];
+                context = $("div ." + monitor);
+                activate();
 
                 // 
                 // On monitor change:
                 // 
                 $("button").click(function () {
-                    var monitor = $(this).attr('id');
-                    var context = $("div ." + monitor);
+                    monitor = $(this).attr('id');
+                    context = $("div ." + monitor);
 
                     $("button").addClass("btn-primary");
 
-                    activate(monitor, context);
+                    activate();
                 });
-                
+
                 // 
                 // On delta mode change:
                 // 
                 $("#delta").click(function () {
-                        counters.setDelta($(this).prop('checked'));
-                        counters.reopen();
-                        counters.start();
+                    counters.setDelta($(this).prop('checked'));
+                    counters.reopen();
+                    counters.start();
                 });
+
             }
 
             // 
@@ -126,18 +140,16 @@
             // and initialize itself with performance counter data for
             // selected monitor.
             // 
-            function activate(monitor, context) {
+            function activate() {
                 $("div .monitor").hide();
                 $("div ." + monitor).show();
 
                 $("button#" + monitor).toggleClass("btn-primary");
 
-                counters.close();
-                counters.open(monitor, context);
+                counters.setCounter();
                 counters.setDelta($(this).prop('checked'));
-                counters.start();
 
-                fetch(baseURL + 'utility/diagnostics/performance/' + monitor + '?name=1', sources);
+                fetch(baseURL + 'utility/diagnostics/performance/' + monitor + '?name=1&data=0', sources);
             }
 
             // 
@@ -147,9 +159,7 @@
             function sources(content) {
                 $("div.sources").empty();
 
-                if (content.name === false) {
-                    counters.setSource(0);
-                } else {
+                if (content.name !== false) {
                     var length = content.name.length, select;
 
                     select = "<select class=\"sources\" id=\"sources\">";
@@ -161,10 +171,18 @@
                     $("div.sources").append(select);
                     $("#sources").change(function () {
                         counters.setSource($(this).val());
+                        counters.reopen();
+                        counters.start();
                     });
 
                     counters.setSource(content.name[0]);
+                } else {
+                    counters.setSource();
                 }
+                
+                counters.close();
+                counters.open(monitor, context);
+                counters.start();
             }
 
             counters.setUrl(baseURL + 'utility/diagnostics/performance');
