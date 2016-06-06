@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    DiagnosticsController.php
+// File:    MonitorController.php
 // Created: 2016-04-19 01:55:38
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -17,18 +17,21 @@ use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Diagnostics;
 
 /**
- * System diagnostics controller.
+ * System monitor controller.
  * 
- * Get performance counters (examples):
- * ---------------------------------------
- * curl -XGET ${BASEURL}/utility/diagnostics/performance
- * curl -XGET ${BASEURL}/utility/diagnostics/performance/server?limit=20&keys=1
- * curl -XGET ${BASEURL}/utility/diagnostics/performance/server?limit=1
- * curl -XGET ${BASEURL}/utility/diagnostics/performance/server/cpu?limit=1
+ * This controller provides access to system diagnostics and performance
+ * monitoring. The data is sent in JSON encoded format,
+ * 
+ * Get performance counter data (examples):
+ * -------------------------------------------
+ * curl -XGET ${BASEURL}/utility/monitor/counters
+ * curl -XGET ${BASEURL}/utility/monitor/counter/server?limit=20&keys=1
+ * curl -XGET ${BASEURL}/utility/monitor/counter/server?limit=1
+ * curl -XGET ${BASEURL}/utility/monitor/counter/server/cpu?limit=1
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class DiagnosticsController extends GuiController
+class MonitorController extends GuiController
 {
 
         public function indexAction()
@@ -36,76 +39,15 @@ class DiagnosticsController extends GuiController
                 
         }
 
-        public function monitorAction()
+        public function performanceAction()
         {
                 
         }
 
         /**
-         * Send performance data as JSON.
-         * 
-         * The performance counters are accessed in REST style:
-         * 
-         * <code>
-         * /utility/diagnostics/performance             (GET - all counter)
-         * /utility/diagnostics/performance/server      (GET - the server counter)
-         * /utility/diagnostics/performance/server/cpu  (GET - the cpu sub counter)
-         * </code>
-         * 
-         * Request parameters can be passed to filter on data fields and
-         * pseudo matches like (name=bool, keys=bool, limit=num or data=bool).
-         * 
-         * Use this request to fetch keys for all enabled perfomance counters:
-         * 
-         * <code>
-         * /utility/diagnostics/performance?keys=1
-         * </code>
-         * 
-         * Use either key to request performance data. By default, this request 
-         * is going to return data too (20 records by default) along with the
-         * translated keys:
-         * 
-         * <code>
-         * /utility/diagnostics/performance/server?keys=1
-         * </code>
-         * 
-         * To get sub-sequent data for graph update, pass a limit on returned
-         * records:
-         * 
-         * <code>
-         * /utility/diagnostics/performance/server?limit=1
-         * </code>
-         * 
-         * By default, only data for this server is returned. To get data
-         * for all servers pass 'addr=*' as request param:
-         * 
-         * <code>
-         * /utility/diagnostics/performance/server?limit=1&addr=*
-         * </code>
-         * 
-         * Sub counters can also be queried. In this mode, data for all servers
-         * are returned, while still applying any filtering (e.g. on date):
-         * 
-         * <code>
-         * /utility/diagnostics/performance/server/cpu
-         * </code>
-         * 
-         * @param string $type The performance counter (e.g. system).
-         * @param string $subtype The counter sub type (e.g. cpu).
-         */
-        public function performanceAction($type = null, $subtype = null)
-        {
-                if (!isset($type)) {
-                        $this->sendCounters();
-                } else {
-                        $this->sendCounterData($type, $subtype);
-                }
-        }
-
-        /**
          * Send enabled performance counter list.
          */
-        private function sendCounters()
+        public function countersAction()
         {
                 $diagnostics = new Diagnostics();
                 $performance = $diagnostics->getPerformanceStatus();
@@ -130,10 +72,22 @@ class DiagnosticsController extends GuiController
 
         /**
          * Send performance counter data and/or keys.
+         * 
+         * This action accepts column filters (source, time, host, addr and
+         * milestone). The number of returned records can be limited by passing
+         * limit=num.
+         * 
+         * By default, performance data is matched against this server. This
+         * can be overridden by passing addr=* to get performance data for all
+         * servers.
+         * 
+         * Three special request parameters can be passed: data=bool, keys=bool
+         * and/or name=bool.
+         * 
          * @param string $type The counter type.
          * @param string $subtype The counter sub type (e.g. cpu).
          */
-        private function sendCounterData($type, $subtype = null)
+        public function counterAction($type, $subtype = null)
         {
                 $diagnostics = new Diagnostics();
                 $performance = $diagnostics->getPerformanceStatus();
@@ -142,7 +96,7 @@ class DiagnosticsController extends GuiController
                         $performance->setLimit($this->request->get('limit', 'int'));
                 }
                 if ($this->request->has('filter')) {
-                        $performance->setFilter($this->request->get('filter', 'string'));
+                        $performance->setFilter($this->request->get('filter', 'array'));
                 }
                 if ($this->request->has('source') && $this->request->get('source')) {
                         $performance->addFilter('source', $this->request->get('source', 'string'));
@@ -161,7 +115,7 @@ class DiagnosticsController extends GuiController
                 }
 
                 if (!($counter = $performance->getCounter($type))) {
-                        return;
+                        return false;
                 }
 
                 $content = array(

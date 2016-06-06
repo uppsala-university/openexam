@@ -4,7 +4,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    monitor.phtml
+// File:    performance.phtml
 // Created: 2016-05-25 14:26:46
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -75,7 +75,7 @@
 </div>
 
 <script src="<?= $this->url->get('js/chart.js') ?>"></script>
-<script src="<?= $this->url->get('js/views/diagnostics/performance/counters.js') ?>"></script>
+<script src="<?= $this->url->get('js/views/monitor/performance/counters.js') ?>"></script>
 
 <script>
         $(document).ready(function () {
@@ -149,7 +149,7 @@
                 counters.setCounter();
                 counters.setDelta($(this).prop('checked'));
 
-                fetch(baseURL + 'utility/diagnostics/performance/' + monitor + '?name=1&data=0', sources);
+                fetch(baseURL + 'utility/monitor/counter/' + monitor + '?name=1&data=0', sources);
             }
 
             // 
@@ -185,10 +185,10 @@
                 counters.start();
             }
 
-            counters.setUrl(baseURL + 'utility/diagnostics/performance');
+            counters.setUrl(baseURL + 'utility/monitor/counter');
             counters.setLimit(20);
             counters.setInterval(5);
 
-            fetch(baseURL + 'utility/diagnostics/performance', initialize);
+            fetch(baseURL + 'utility/monitor/counters', initialize);
         })
 </script>
