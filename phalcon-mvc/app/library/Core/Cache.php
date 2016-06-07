@@ -101,6 +101,13 @@ class Cache extends Multiple
                 return $this->_backends;
         }
 
+        /**
+         * Returns a cached content reading the internal backends.
+         * 
+         * @param string $keyName The cache key.
+         * @param long $lifetime The cache entry lifetime.
+         * @return mixed
+         */
         public function get($keyName, $lifetime = null)
         {
                 // 
@@ -135,6 +142,28 @@ class Cache extends Multiple
                 $this->_fastest->save($keyName, $content, $lifetime);
 
                 return $content;
+        }
+
+        /**
+         * Stores cached content into all backends and stops the frontend.
+         * 
+         * If current memory usage is close to the limit, then the entry is discarded
+         * from caching. This prevents process memory exhausted fatal error in cache
+         * intensive routines.
+         * 
+         * @param string $keyName The cache key.
+         * @param string $content Description
+         * @param long $lifetime The cache entry lifetime.
+         * @param boolean $stopBuffer
+         */
+        public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = null)
+        {
+                $usage = memory_get_usage();
+                $limit = substr(ini_get('memory_limit'), 0, -1) * 1024 * 1024;
+
+                if ($usage < $limit) {
+                        parent::save($keyName, $content, $lifetime, $stopBuffer);
+                }
         }
 
 }
