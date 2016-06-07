@@ -129,7 +129,7 @@ abstract class RoleData extends Component
         protected $_cond;
         protected $_type;
         private $_data;
-        private $_decorate = true;
+        private $_decorate = false;
 
         protected function __construct($role, $cond, $type)
         {
@@ -143,7 +143,7 @@ abstract class RoleData extends Component
                 if ($this->cache->exists($this->_cachekey, $this->_lifetime)) {
                         $this->_data = $this->cache->get($this->_cachekey, $this->_lifetime);
                 } else {
-                        $this->_data = array('size' => null, 'data' => null);
+                        $this->_data = array('size' => null, 'data' => null, 'decorated' => $this->_decorate);
                 }
         }
 
@@ -201,6 +201,10 @@ abstract class RoleData extends Component
 
         protected function findData($sql, $role)
         {
+                if ($this->_data['decorated'] != $this->_decorate) {
+                        $this->_data = array('size' => null, 'data' => null, 'decorated' => $this->_decorate);
+                }
+
                 if (!isset($this->_data['data'])) {
                         if (($resultset = $this->dbread->query($sql))) {
                                 $this->_data['data'] = $this->filterResults($resultset->fetchAll());

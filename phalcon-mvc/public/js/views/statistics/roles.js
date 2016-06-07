@@ -77,15 +77,13 @@ $(document).ready(function () {
         function showUsers(data) {
             var dest = $("#organization-users-list");
 
-            console.log(data);
-
             dest.empty();
             dest.append("<h2>" + data.label + "</h2>");
 
             delete data.label;
 
             for (var r in data) {
-                if (r == 'label') {
+                if (r === 'label') {
                     continue;
                 }
                 var id = "organization-user-" + r;
@@ -206,12 +204,12 @@ $(document).ready(function () {
         // Get users data making an AJAX request.
         // 
         function loadUsers(type) {
-            if (type == 'total') {
+            if (type === 'total') {
                 $.ajax({
                     type: "GET",
                     url: getUrl('users'),
                     success: function (content) {
-                        showUserList()(JSON.parse(content));
+                        showUserList(JSON.parse(content));
                     }
                 });
             } else {
@@ -238,8 +236,6 @@ $(document).ready(function () {
             if (division !== null) {
                 url += '/' + division;
             }
-
-            console.log("URL: " + url);
 
             return url;
         }

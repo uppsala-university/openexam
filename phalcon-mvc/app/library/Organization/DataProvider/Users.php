@@ -132,6 +132,15 @@ class Users extends Component
         }
 
         /**
+         * Get object name (translated).
+         * @return string
+         */
+        public function getName()
+        {
+                return $this->tr->_("Users");
+        }
+
+        /**
          * Get employees data provider.
          * @return Employees
          */

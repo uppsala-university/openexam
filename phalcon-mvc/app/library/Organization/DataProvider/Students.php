@@ -13,12 +13,14 @@
 
 namespace OpenExam\Library\Organization\DataProvider;
 
+use Phalcon\Mvc\User\Component;
+
 /**
  * Students data provider.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Students
+class Students extends Component
 {
 
         /**
@@ -57,6 +59,15 @@ class Students
         public function getData()
         {
                 return $this->getUsers();
+        }
+
+        /**
+         * Get object name (translated).
+         * @return string
+         */
+        public function getName()
+        {
+                return $this->tr->_('Students');
         }
 
         /**

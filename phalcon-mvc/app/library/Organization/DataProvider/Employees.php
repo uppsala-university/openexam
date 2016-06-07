@@ -13,12 +13,14 @@
 
 namespace OpenExam\Library\Organization\DataProvider;
 
+use Phalcon\Mvc\User\Component;
+
 /**
  * Employees data provider.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Employees
+class Employees extends Component
 {
 
         /**
@@ -57,6 +59,15 @@ class Employees
         public function getData()
         {
                 return $this->getUsers();
+        }
+
+        /**
+         * Get object name (translated).
+         * @return string
+         */
+        public function getName()
+        {
+                return $this->tr->_('Employees');
         }
 
         /**

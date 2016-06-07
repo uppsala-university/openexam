@@ -88,6 +88,7 @@ class StatisticsController extends GuiController
 
                 $statistics = new Statistics($division);
                 $users = $statistics->getRole($role);
+                $users->addDecoration();
 
                 $content = array(
                         'size' => $users->getSize(),
@@ -130,11 +131,13 @@ class StatisticsController extends GuiController
                 }
 
                 $statistics = new Statistics($division);
-
                 $users = $statistics->getUsers();
+                $users->addDecoration();
+
                 $content = array(
                         'size' => $users->getSize(),
-                        'data' => $users->getData()
+                        'data' => $users->getData(),
+                        'name' => $users->getName()
                 );
 
                 $this->view->disable();
@@ -153,11 +156,13 @@ class StatisticsController extends GuiController
                 }
 
                 $statistics = new Statistics($division);
-
                 $users = $statistics->getUsers()->getEmployees();
+                $users->getProvider()->addDecoration();
+
                 $content = array(
                         'size' => $users->getSize(),
-                        'data' => $users->getData()
+                        'data' => $users->getData(),
+                        'name' => $users->getName()
                 );
 
                 $this->view->disable();
@@ -176,11 +181,13 @@ class StatisticsController extends GuiController
                 }
 
                 $statistics = new Statistics($division);
-
                 $users = $statistics->getUsers()->getStudents();
+                $users->getProvider()->addDecoration();
+
                 $content = array(
                         'size' => $users->getSize(),
-                        'data' => $users->getData()
+                        'data' => $users->getData(),
+                        'name' => $users->getName()
                 );
 
                 $this->view->disable();
