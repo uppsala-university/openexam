@@ -121,6 +121,8 @@ class LdapConnection implements ServiceConnection
                 if (@ldap_bind($this->_ldap, $this->_user, $this->_pass) == false) {
                         throw new Exception(ldap_error($this->_ldap), ldap_errno($this->_ldap));
                 }
+                
+                return true;
         }
 
         /**
