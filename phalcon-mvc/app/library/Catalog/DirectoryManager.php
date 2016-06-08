@@ -143,7 +143,7 @@ class DirectoryManager extends Component implements DirectoryService
          * Get array of default attributes for user principal searches.
          * @return array
          */
-        public function getdefaultAttributes()
+        public function getDefaultAttributes()
         {
                 return self::$DEFAULT_ATTR;
         }
@@ -320,7 +320,7 @@ class DirectoryManager extends Component implements DirectoryService
          * @param string $principal The user principal.
          * @return array
          */
-        public function getMail($principal)
+        public function getAttributeMail($principal)
         {
                 return $this->getAttribute($principal, Principal::ATTR_MAIL);
         }
@@ -330,7 +330,7 @@ class DirectoryManager extends Component implements DirectoryService
          * @param string $principal The user principal.
          * @return array
          */
-        public function getName($principal)
+        public function getAttributeName($principal)
         {
                 return $this->getAttribute($principal, Principal::ATTR_NAME);
         }
@@ -384,6 +384,15 @@ class DirectoryManager extends Component implements DirectoryService
         public function getConnection()
         {
                 return null;
+        }
+
+        /**
+         * Get service name.
+         * @return string
+         */
+        public function getName()
+        {
+                return 'manager';
         }
 
 }

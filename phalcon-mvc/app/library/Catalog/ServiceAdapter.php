@@ -51,6 +51,15 @@ abstract class ServiceAdapter extends Component implements DirectoryService
         {
                 $this->_name = $name;
         }
+        
+        /**
+         * Get service name.
+         * @return string
+         */
+        public function getName()
+        {
+                return $this->_name;
+        }
 
         /**
          * Set caching lifetime (0 to disable).

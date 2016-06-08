@@ -101,4 +101,10 @@ interface DirectoryService
          * @return ServiceConnection 
          */
         function getConnection();
+        
+        /**
+         * Get service name.
+         * @return string
+         */
+        function getName();
 }
