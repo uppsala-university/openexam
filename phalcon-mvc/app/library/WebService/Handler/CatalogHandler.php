@@ -83,7 +83,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("name");
                 
-                $result = $this->_catalog->getName($this->_request->data['principal']);
+                $result = $this->_catalog->getAttributeName($this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -96,7 +96,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("mail");
                 
-                $result = $this->_catalog->getMail($this->_request->data['principal']);
+                $result = $this->_catalog->getAttributeMail($this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
