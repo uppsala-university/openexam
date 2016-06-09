@@ -25,13 +25,27 @@
 </style>
 
 <div class="mbox">
-    <h1>System Diagnostics</h1>
+    <h1>System Monitoring</h1>
 
-    <button id="monitor" class="btn btn-primary">Performance...</button>
+    <p>Click on one of the buttons below to start.</p>
+
+    <ul><li>The performance page displays various counters useful for diagnostic bottlenecks in the system (like CPU, memory or network utilization).</li>
+        <li>The diagnostics page is used to monitor health of system services (for example authentication or directory services).</li>
+    </ul>
+    <br/>
+    <p><i class="fa fa-exclamation"></i> These tools are strictly for system monitoring and are probably of zero to none interest for ordinary users.</p>
+    <br/>
+    <div>
+        <button id="performance" class="btn btn-primary">Performance</button>
+        <button id="diagnostics" class="btn btn-primary">Diagnostics</button>
+    </div>
 </div>
 
 <script>
-        $("#monitor").click(function () {
+        $("#performance").click(function () {
             location.href = "performance";
-        })
+        });
+        $("#diagnostics").click(function () {
+            location.href = "diagnostics";
+        });
 </script>

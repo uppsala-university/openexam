@@ -14,7 +14,10 @@
 namespace OpenExam\Controllers\Utility;
 
 use OpenExam\Controllers\GuiController;
-use OpenExam\Library\Core\Diagnostics;
+use OpenExam\Library\Core\Error;
+use OpenExam\Library\Monitor\Diagnostics;
+use OpenExam\Library\Monitor\Exception;
+use OpenExam\Library\Monitor\Performance;
 
 /**
  * System monitor controller.
@@ -34,12 +37,44 @@ use OpenExam\Library\Core\Diagnostics;
 class MonitorController extends GuiController
 {
 
+        /**
+         * Send details only on failures.
+         */
+        const HEALTH_DYNAMIC = 0;
+        /**
+         * Boolean (success or failure).
+         */
+        const HEALTH_LEVEL_MIN = 1;
+        /**
+         * Health status be test (online and working).
+         */
+        const HEALTH_LEVEL_TEST = 2;
+        /**
+         * Health status by service.
+         */
+        const HEALTH_LEVEL_SERVICE = 3;
+        /**
+         * Allways send all details.
+         */
+        const HEALTH_FULL_STATUS = 4;
+        /**
+         * Number of seconds to keep health check data in cache.
+         */
+        const HEALTH_CHECK_LIFETIME = 30;
+
         public function indexAction()
         {
                 
         }
 
         public function performanceAction()
+        {
+                if ($this->user->affiliation->isEmployee() == false) {
+                        throw new SecurityException("Only available for employees", Error::FORBIDDEN);
+                }
+        }
+
+        public function diagnosticsAction()
         {
                 
         }
@@ -49,8 +84,7 @@ class MonitorController extends GuiController
          */
         public function countersAction()
         {
-                $diagnostics = new Diagnostics();
-                $performance = $diagnostics->getPerformanceStatus();
+                $performance = new Performance();
 
                 $content = array();
 
@@ -89,8 +123,11 @@ class MonitorController extends GuiController
          */
         public function counterAction($type, $subtype = null)
         {
-                $diagnostics = new Diagnostics();
-                $performance = $diagnostics->getPerformanceStatus();
+                if ($this->user->affiliation->isEmployee() == false) {
+                        throw new SecurityException("Only available for employees", Error::FORBIDDEN);
+                }
+
+                $performance = new Performance();
 
                 if ($this->request->has('limit')) {
                         $performance->setLimit($this->request->get('limit', 'int'));
@@ -165,6 +202,75 @@ class MonitorController extends GuiController
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();
+        }
+
+        /**
+         * Send system health status.
+         */
+        public function healthAction($details = self::HEALTH_DYNAMIC)
+        {
+                if ($this->request->has('details')) {
+                        $details = $this->request->get('details', 'int');
+                }
+                if ($details < 0 || $details > self::HEALTH_FULL_STATUS) {
+                        throw new Exception("Invalid details level $details requested", Error::NOT_ACCEPTABLE);
+                }
+
+                $content = $this->getHealth($details);
+
+                $this->view->disable();
+                $this->response->setJsonContent(array('status' => $content));
+                $this->response->send();
+        }
+
+        /**
+         * Get system health status.
+         * 
+         * @param int $details The details level.
+         * @return array
+         */
+        private function getHealth($details)
+        {
+                $cachekey = sprintf("health-level-%d", $details);
+                $lifetime = self::HEALTH_CHECK_LIFETIME;
+
+                if ($this->cache->exists($cachekey, $lifetime)) {
+                        return $this->cache->get($cachekey, $lifetime);
+                }
+
+                $diag = new Diagnostics();
+
+                $status = array('status' => array());
+
+                $status['online'] = $diag->isOnline();
+                $status['status']['online'] = $diag->hasFailed() == false;
+
+                $status['working'] = $diag->isWorking();
+                $status['status']['working'] = $diag->hasFailed() == false;
+
+                $status['result'] = $diag->getResult();
+
+                if ($details == self::HEALTH_DYNAMIC) {
+                        if ($status['status']['online'] && $status['status']['working']) {
+                                $content = true;
+                        } else {
+                                $content = $status['result'];
+                        }
+                } elseif ($details == self::HEALTH_LEVEL_MIN) {
+                        $content = $status['status']['online'] && $status['status']['working'];
+                } elseif ($details == self::HEALTH_LEVEL_TEST) {
+                        $content = $status['status'];
+                } elseif ($details == self::HEALTH_LEVEL_SERVICE) {
+                        $content = array(
+                                'online'  => $status['online'],
+                                'working' => $status['working']
+                        );
+                } elseif ($details == self::HEALTH_FULL_STATUS) {
+                        $content = $status['result'];
+                }
+
+                $this->cache->save($cachekey, $content, $lifetime);
+                return $content;
         }
 
 }
