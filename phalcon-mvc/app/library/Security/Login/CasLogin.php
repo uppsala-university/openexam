@@ -33,9 +33,36 @@ class CasLogin extends CasAuthenticator implements RemoteLogin
         public function __construct($config, $host, $port = 443, $path = '/cas')
         {
                 parent::__construct($host, $port, $path);
-                parent::control(self::sufficient);
+                parent::control(self::SUFFICIENT);
                 parent::visible(true);
                 $this->return = $config->application->baseUri . "auth/logout";
+        }
+
+        /**
+         * Get CAS server name or IP-address.
+         * @return string
+         */
+        public function hostname()
+        {
+                return $this->host;
+        }
+
+        /**
+         * Get CAS sever port.
+         * @return string
+         */
+        public function port()
+        {
+                return $this->port;
+        }
+
+        /**
+         * Get CAS server path.
+         * @return string
+         */
+        public function path()
+        {
+                return $this->path;
         }
 
 }

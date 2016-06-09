@@ -56,10 +56,10 @@ class SystemLogin extends HostnameAuthenticator
          * @param string $token The security token, either absolute file path or string.
          * @param string $accept The accepted remote host.
          */
-        public function __construct($token, $accept = self::localhost)
+        public function __construct($token, $accept = self::LOCALHOST)
         {
                 parent::__construct($accept);
-                parent::control(self::sufficient);
+                parent::control(self::SUFFICIENT);
                 
                 if (file_exists($token)) {
                         $this->_token = trim(file_get_contents($token));

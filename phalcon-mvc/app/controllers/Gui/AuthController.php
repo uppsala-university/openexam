@@ -126,11 +126,21 @@ class AuthController extends GuiController
                                 $result[$name] = $chain[$name];
                                 $result[$name]['method'] = "remote";
                                 $result[$name]['login'] = $this->url->get(sprintf('/auth/login/%s', $name));
+                                $result[$name]['params'] = array(
+                                        'host' => $auth->hostname(),
+                                        'port' => $auth->port(),
+                                        'path' => $auth->path()
+                                );
                         }
                         if ($auth instanceof FormLogin) {
                                 $result[$name] = $chain[$name];
                                 $result[$name]['method'] = "form";
                                 $result[$name]['login'] = $this->url->get(sprintf('/auth/login/%s', $name));
+                                $result[$name]['params'] = array(
+                                        'form' => $auth->form(),
+                                        'user' => $auth->user(),
+                                        'pass' => $auth->pass()
+                                );
                         }
                 }
 

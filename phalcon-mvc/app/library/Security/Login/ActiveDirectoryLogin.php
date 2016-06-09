@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Security\Login;
 
 use OpenExam\Library\Security\Login\Base\FormLogin;
+use OpenExam\Library\Security\Login\Base\RemoteLogin;
 use Phalcon\Config;
 use UUP\Authentication\Authenticator\RequestAuthenticator;
 use UUP\Authentication\Validator\LdapBindValidator;
@@ -38,8 +39,19 @@ use UUP\Authentication\Validator\LdapBindValidator;
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin
+class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin, RemoteLogin
 {
+
+        /**
+         * The server name.
+         * @var string 
+         */
+        private $_server;
+        /**
+         * The server port.
+         * @var int 
+         */
+        private $_port;
 
         /**
          * Constructor.
@@ -57,6 +69,12 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin
                 )
         ))
         {
+                // 
+                // Keep for future reference:
+                // 
+                $this->_server = $server;
+                $this->_port = $port;
+
                 // 
                 // These are the default options:
                 // 
@@ -99,8 +117,65 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin
 
                 $validator = new LdapBindValidator($server, $port, $options['ldap']);
                 parent::__construct($validator, $options['form']);
-                parent::control(self::sufficient);
+                parent::control(self::SUFFICIENT);
                 parent::visible(true);
+        }
+
+        /**
+         * The form name or null.
+         * @return string
+         */
+        public function form()
+        {
+                return $this->name;
+        }
+
+        /**
+         * The password request parameter name.
+         * @return string
+         */
+        public function pass()
+        {
+                return $this->pass;
+        }
+
+        /**
+         * The username request parameter name.
+         * @return string
+         */
+        public function user()
+        {
+                return $this->user;
+        }
+
+        /**
+         * Get hostname of remote login server.
+         * @return string
+         */
+        public function hostname()
+        {
+                return $this->_server;
+        }
+
+        /**
+         * Get port of remote login server.
+         * @return string
+         */
+        public function port()
+        {
+                return $this->_port;
+        }
+
+        /**
+         * Get remote path.
+         * 
+         * LDAP don't uses path and will allways return null.
+         * 
+         * @return string
+         */
+        public function path()
+        {
+                return null;
         }
 
 }
