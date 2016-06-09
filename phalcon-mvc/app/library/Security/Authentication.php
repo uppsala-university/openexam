@@ -99,9 +99,18 @@ class Authentication implements Authenticator, Restrictor
         }
 
         /**
+         * Get all authenticator chains.
+         * @return array
+         */
+        public function getChains()
+        {
+                return $this->_chains;
+        }
+
+        /**
          * Get chain of authenticators for service group.
          * @param string $service The service group (e.g. soap).
-         * @return array
+         * @return Config
          */
         public function getChain($service = "*")
         {
@@ -153,18 +162,28 @@ class Authentication implements Authenticator, Restrictor
 
         /**
          * Activate this authentication plugin for next call to login().
+         * 
          * @param string $name The identifier for the authenticator plugin.
          * @param string $service The service group associated with this plugin.
+         * @return boolean
          */
         public function activate($name, $service = '*')
         {
                 if (!isset($this->_chains[$service])) {
                         $service = '*';
                 }
-                if (isset($this->_chains[$service][$name])) {
-                        $this->enable(
-                            $name, $service, $this->_chains[$service][$name]['desc'], $this->_chains[$service][$name]['method']()
-                        );
+                if (!isset($this->_chains[$service][$name])) {
+                        return false;
+                }
+
+                $auth = $this->_chains[$service][$name]['method']();
+                $desc = $this->_chains[$service][$name]['desc'];
+
+                if (!isset($auth)) {
+                        return false;
+                } else {
+                        $this->enable($name, $service, $desc, $auth);
+                        return true;
                 }
         }
 
@@ -209,12 +228,12 @@ class Authentication implements Authenticator, Restrictor
                         foreach ($this->_chains[$service] as $name => $plugin) {
                                 $authenticator = $plugin['method']();
                                 $authenticator->name($name);
-                                if ($authenticator->control === Authenticator::required) {
+                                if ($authenticator->control === Authenticator::REQUIRED) {
                                         if (!$authenticator->accepted()) {
                                                 throw new AuthenticatorRequiredException($authenticator->_authenticator);
                                         }
                                 }
-                                if ($authenticator->control === Authenticator::sufficient) {
+                                if ($authenticator->control === Authenticator::SUFFICIENT) {
                                         if ($authenticator->accepted() &&
                                             $this->_authenticator instanceof NullAuthenticator) {
                                                 $this->activate($name, $service);

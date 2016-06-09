@@ -60,7 +60,7 @@ return array(
                 'from' => array(
                         'method' => function() {
                                 $restriction = new AddressRestrictor('192.168.34.0/24');
-                                $restriction->control(Authenticator::required);
+                                $restriction->control(Authenticator::REQUIRED);
                                 $restriction->visible(false);
                                 return $restriction;
                         },
