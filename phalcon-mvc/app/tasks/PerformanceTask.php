@@ -13,15 +13,9 @@
 
 namespace OpenExam\Console\Tasks;
 
+use OpenExam\Library\Monitor\Config as MonitorConfig;
 use OpenExam\Library\Monitor\Performance;
-use OpenExam\Library\Monitor\Performance\Collector\Apache as ApachePerformanceCollector;
-use OpenExam\Library\Monitor\Performance\Collector\Disk as DiskPerformanceCollector;
-use OpenExam\Library\Monitor\Performance\Collector\FileSystem as FileSystemPerformanceCollector;
-use OpenExam\Library\Monitor\Performance\Collector\MySQL as MySQLPerformanceCollector;
-use OpenExam\Library\Monitor\Performance\Collector\Network as NetworkPerformanceCollector;
-use OpenExam\Library\Monitor\Performance\Collector\Partition as PartitionPerformanceCollector;
-use OpenExam\Library\Monitor\Performance\Collector\Server as ServerPerformanceCollector;
-use OpenExam\Library\Monitor\Performance\Collector\Test as TestPerformanceCollector;
+use OpenExam\Library\Monitor\Performance\Collector\CollectorFactory;
 use OpenExam\Library\Monitor\Performance\Counter;
 use SimpleXMLElement;
 
@@ -203,12 +197,14 @@ class PerformanceTask extends MainTask implements TaskInterface
                         'usage'    => array(
                                 '--collect --counter=name [--rate=sec] [--user=str] [--source=name]',
                                 '--query   --counter=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=name] [--limit=num] [--export=fmt]',
-                                '--clean  [--counter=name] [--days=num|--hours=num|--time=str] [--host=str] [--addr=str] [--source=name]'
+                                '--clean  [--counter=name] [--days=num|--hours=num|--time=str] [--host=str] [--addr=str] [--source=name]',
+                                '--show [--counter=name]'
                         ),
                         'options'  => array(
                                 '--collect'       => 'Collect performance statistics.',
                                 '--query'         => 'Check performance counters.',
                                 '--clean'         => 'Cleanup performance statistics.',
+                                '--show'          => 'Display current monitor configuration.',
                                 '--counter=name'  => 'The counter name.',
                                 '--source=name'   => 'Match on source (use ":" to match multiple).',
                                 '--rate=sec'      => 'The sample rate (colleting).',
@@ -286,33 +282,26 @@ class PerformanceTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'collect');
 
-                if ($this->_options['apache']) {
-                        $performance = new ApachePerformanceCollector($this->_options['rate'], $this->_options['user']);
-                        $performance->start();
-                } elseif ($this->_options['mysql']) {
-                        $performance = new MySQLPerformanceCollector($this->_options['rate']);
-                        $performance->start();
-                } elseif ($this->_options['net']) {
-                        $performance = new NetworkPerformanceCollector($this->_options['rate'], $this->_options['source']);
-                        $performance->start();
-                } elseif ($this->_options['server']) {
-                        $performance = new ServerPerformanceCollector($this->_options['rate']);
-                        $performance->start();
-                } elseif ($this->_options['disk']) {
-                        $performance = new DiskPerformanceCollector($this->_options['rate'], $this->_options['source']);
-                        $performance->start();
-                } elseif ($this->_options['part']) {
-                        $performance = new PartitionPerformanceCollector($this->_options['rate'], $this->_options['source']);
-                        $performance->start();
-                } elseif ($this->_options['fs']) {
-                        $performance = new FileSystemPerformanceCollector($this->_options['rate'], $this->_options['source']);
-                        $performance->start();
-                } elseif ($this->_options['test']) {
-                        $performance = new TestPerformanceCollector($this->_options['rate']);
-                        $performance->start();
-                } else {
-                        $this->flash->error("Requested counter was not found, see --help");
+                $config = new MonitorConfig();
+                $params = $config->getConfig($this->_options['counter']);
+
+                if (!$params) {
+                        $this->flash->error("The requested performance counter is disabled");
+                        return false;
                 }
+
+                if ($this->_options['rate']) {
+                        $params['params']['rate'] = $this->_options['rate'];
+                }
+                if ($this->_options['user']) {
+                        $params['params']['user'] = $this->_options['user'];
+                }
+                if ($this->_options['source']) {
+                        $params['params']['source'] = $this->_options['source'];
+                }
+
+                $performance = CollectorFactory::create($this->_options['counter'], $params);
+                $performance->start();
         }
 
         /**
@@ -389,12 +378,32 @@ class PerformanceTask extends MainTask implements TaskInterface
                 $res = $sth->execute();
 
                 if (!$res) {
-                        $this->flash->error(print_f($sth->errorInfo()));
+                        $this->flash->error(print_r($sth->errorInfo()));
                         return false;
                 } elseif ($this->_options['verbose'] && $sth->rowCount() > 0) {
                         $this->flash->success(sprintf("Cleaned up performance data older than %s (%d rows deleted)", $this->_options['time'], $sth->rowCount()));
                 } elseif ($this->_options['verbose']) {
                         $this->flash->notice(sprintf("No performance data older than older than %s found (%d rows deleted)", $this->_options['time'], $sth->rowCount()));
+                }
+        }
+
+        /**
+         * Show performance counter config action.
+         * @param array $params
+         */
+        public function showAction($params = array())
+        {
+                $this->setOptions($params, 'show');
+
+                $config = new MonitorConfig();
+                if (!$config->hasCounters()) {
+                        $this->flash->error("Performance counters are disabled");
+                        return;
+                } elseif ($this->_options['verbose']) {
+                        $this->flash->success("Monitor configuration:");
+                        $this->flash->success(print_r($config->getConfig($this->_options['counter']), true));
+                } else {
+                        $this->flash->success(sprintf("Monitors enabled: %s", implode(", ", $config->getCounters())));
                 }
         }
 
@@ -408,13 +417,13 @@ class PerformanceTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'rate' => 10, 'user' => 'apache', 'limit' => 20);
+                $this->_options = array('verbose' => false, 'limit' => 20);
 
                 // 
                 // Supported options.
                 // 
                 $options = array(
-                        'verbose', 'collect', 'query', 'clean', 'counter',
+                        'verbose', 'collect', 'query', 'clean', 'counter', 'show',
                         'time', 'host', 'addr', 'milestone', 'source',
                         'rate', 'user', 'limit', 'export', 'days', 'hours',
                         'disk', 'part', 'fs', 'server', 'system', 'net', 'apache', 'mysql', 'test',

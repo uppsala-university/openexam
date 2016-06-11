@@ -216,17 +216,9 @@ return array(
          */
         'audit'       => false,
         /**
-         * Performance monitors to enable. The keys should be either one of
-         * the counters registered with the performance monitor class.
+         * Performance monitor. Most people could say 'monitor' => {true|false} 
+         * here and stick with the default options. See docs/README-MONITOR for
+         * further information or tweaks.
          */
-        'monitor'     => array(
-                'server' => true,
-                'system' => false,
-                'apache' => true,
-                'mysql'  => true,
-                'net'    => true,
-                'disk'   => false,
-                'part'   => false,
-                'fs'     => true
-        )
+        'monitor'     => false
 );
