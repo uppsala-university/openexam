@@ -147,7 +147,8 @@ class MonitorController extends GuiController
                 if ($this->request->has('addr')) {
                         $performance->addFilter('addr', $this->request->get('addr', 'string'));
                 }
-                if ($this->request->has('milestone')) {
+                if ($this->request->has('milestone') && $this->request->get('milestone')) {
+                        error_log($this->request->get('milestone', 'string'));
                         $performance->addFilter('milestone', $this->request->get('milestone', 'string'));
                 }
 
