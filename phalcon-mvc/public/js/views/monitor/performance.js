@@ -256,6 +256,7 @@ function Counter(addr, key, parent) {
     };
 
     this.setSize = function (max) {
+        _chart.data.labels = new Array(max);
         for (var i = 0; i < _timelines.length; ++i) {
             _timelines[i].setSize(max);
         }
