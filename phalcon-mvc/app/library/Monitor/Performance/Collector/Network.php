@@ -32,6 +32,10 @@ class Network extends CollectorBase
          */
         const SAMPLE_RATE = 5;
         /**
+         * Default interface name.
+         */
+        const DEFAULT_NAME = null;
+        /**
          * The /proc file system file.
          */
         const PROCFILE = '/proc/net/dev';
@@ -67,7 +71,7 @@ class Network extends CollectorBase
          * @param int $rate The sample rate.
          * @param string|array $name The NIC name.
          */
-        public function __construct($rate = self::SAMPLE_RATE, $name = null)
+        public function __construct($rate = 5, $name = null)
         {
                 $this->_rate = $rate;
                 $this->_name = $name;
@@ -101,6 +105,10 @@ class Network extends CollectorBase
                                         trigger_error($message, E_USER_ERROR);
                                 }
                                 return false;
+                        }
+
+                        foreach ($this->_triggers as $trigger) {
+                                $trigger->process($model);
                         }
                 }
 

@@ -26,7 +26,7 @@ class MySQL extends CollectorBase
         /**
          * Suggested default sample rate.
          */
-        const SAMPLE_RATE = 10;
+        const SAMPLE_RATE = 5;
 
         /**
          * Exit flag.
@@ -48,7 +48,7 @@ class MySQL extends CollectorBase
          * Constructor.
          * @param int $rate The sample rate.
          */
-        public function __construct($rate = self::SAMPLE_RATE)
+        public function __construct($rate = 5)
         {
                 $this->_rate = $rate;
                 parent::__construct();
@@ -70,6 +70,10 @@ class MySQL extends CollectorBase
                                 trigger_error($message, E_USER_ERROR);
                         }
                         return false;
+                }
+
+                foreach ($this->_triggers as $trigger) {
+                        $trigger->process($model);
                 }
 
                 return true;

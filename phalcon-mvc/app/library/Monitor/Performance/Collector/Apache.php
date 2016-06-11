@@ -30,6 +30,10 @@ class Apache extends CollectorBase
          * Suggested default sample rate.
          */
         const SAMPLE_RATE = 10;
+        /**
+         * The default user for apache process.
+         */
+        const DEFAULT_USER = 'apache';
 
         /**
          * Apache server connections.
@@ -67,7 +71,7 @@ class Apache extends CollectorBase
          * @param string $user The apache user.
          * @param int $rate The sample rate.
          */
-        public function __construct($rate = self::SAMPLE_RATE, $user = 'apache')
+        public function __construct($rate = 10, $user = 'apache')
         {
                 parent::__construct();
 
@@ -95,6 +99,10 @@ class Apache extends CollectorBase
                                 trigger_error($message, E_USER_ERROR);
                         }
                         return false;
+                }
+
+                foreach ($this->_triggers as $trigger) {
+                        $trigger->process($model);
                 }
 
                 return true;

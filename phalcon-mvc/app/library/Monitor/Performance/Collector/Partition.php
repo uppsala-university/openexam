@@ -53,7 +53,7 @@ class Partition extends CollectorProcess
          * @param string $part The source partition.
          * @param int $rate The sample rate.
          */
-        public function __construct($rate = self::SAMPLE_RATE, $part = self::DEFAULT_PART)
+        public function __construct($rate = 5, $part = self::DEFAULT_PART)
         {
                 if (!$rate) {
                         $rate = self::SAMPLE_RATE;
@@ -75,34 +75,40 @@ class Partition extends CollectorProcess
          */
         protected function save()
         {
-                $line = $this->_process->read();
-                $vals = preg_split("/\s+/", trim($line));
+                while (($line = $this->_process->read()) !== false) {
 
-                if (count($vals) != 4) {
-                        return false;
-                }
+                        $vals = preg_split("/\s+/", trim($line));
 
-                $data = array(
-                        'io' => array(
-                                'reads'  => $vals[0],
-                                'rdsect' => $vals[1],
-                                'writes' => $vals[2],
-                                'wrreq'  => $vals[3]
-                        )
-                );
-
-                $model = new Performance();
-                $model->data = $data;
-                $model->mode = Performance::MODE_PARTITION;
-                $model->host = $this->_host;
-                $model->addr = $this->_addr;
-                $model->source = $this->_part;
-
-                if (!$model->save()) {
-                        foreach ($model->getMessages() as $message) {
-                                trigger_error($message, E_USER_ERROR);
+                        if (count($vals) != 4) {
+                                continue;
                         }
-                        return false;
+
+                        $data = array(
+                                'io' => array(
+                                        'reads'  => $vals[0],
+                                        'rdsect' => $vals[1],
+                                        'writes' => $vals[2],
+                                        'wrreq'  => $vals[3]
+                                )
+                        );
+
+                        $model = new Performance();
+                        $model->data = $data;
+                        $model->mode = Performance::MODE_PARTITION;
+                        $model->host = $this->_host;
+                        $model->addr = $this->_addr;
+                        $model->source = $this->_part;
+
+                        if (!$model->save()) {
+                                foreach ($model->getMessages() as $message) {
+                                        trigger_error($message, E_USER_ERROR);
+                                }
+                                return false;
+                        }
+
+                        foreach ($this->_triggers as $trigger) {
+                                $trigger->process($model);
+                        }
                 }
 
                 return true;

@@ -41,6 +41,14 @@ class FileSystem extends CollectorBase
          * Suggested default sample rate.
          */
         const SAMPLE_RATE = 60;
+        /**
+         * Default file system path.
+         */
+        const DEFAULT_PATH = null;
+        /**
+         * Default file system type.
+         */
+        const DEFAULT_TYPE = null;
 
         /**
          * Exit flag.
@@ -75,8 +83,19 @@ class FileSystem extends CollectorBase
          * @param string|array $path The file system path (e.g. '/home').
          * @param string|array $type The type of file systems (e.g. 'ext4').
          */
-        public function __construct($rate = self::SAMPLE_RATE, $path = null, $type = null)
+        public function __construct($rate = 60, $path = null, $type = null)
         {
+                if (isset($path)) {
+                        if (is_string($path) && strstr($path, ':')) {
+                                $path = explode(':', $path);
+                        }
+                }
+                if (isset($type)) {
+                        if (is_string($type) && strstr($type, ':')) {
+                                $type = explode(':', $type);
+                        }
+                }
+
                 $this->_rate = $rate;
                 $this->_path = $path;
                 $this->_type = $type;
@@ -103,6 +122,10 @@ class FileSystem extends CollectorBase
                                         trigger_error($message, E_USER_ERROR);
                                 }
                                 return false;
+                        }
+
+                        foreach ($this->_triggers as $trigger) {
+                                $trigger->process($model);
                         }
                 }
 
@@ -176,7 +199,7 @@ class FileSystem extends CollectorBase
         private function collect()
         {
                 $data = array();
-                
+
                 foreach ($this->_path as $dir) {
                         $avail = intval(disk_free_space($dir) / (1024 * 1024));
                         $total = intval(disk_total_space($dir) / (1024 * 1024));

@@ -29,6 +29,10 @@ class Disk extends CollectorProcess
          */
         const SAMPLE_RATE = 30;
         /**
+         * Default option for disk name.
+         */
+        const DEFAULT_DISK = null;
+        /**
          * The command to execute.
          */
         const COMMAND = "vmstat -d -n %d";
@@ -49,8 +53,14 @@ class Disk extends CollectorProcess
          * @param int $rate The sample rate.
          * @param string|array $disk The disk name (e.g sda).
          */
-        public function __construct($rate = self::SAMPLE_RATE, $disk = null)
+        public function __construct($rate = 30, $disk = null)
         {
+                if (isset($disk)) {
+                        if (is_string($disk) && strstr($disk, ':')) {
+                                $disk = explode(':', $disk);
+                        }
+                }
+
                 $this->_rate = $rate;
                 $this->_disk = $disk;
 
@@ -114,6 +124,10 @@ class Disk extends CollectorProcess
                                         trigger_error($message, E_USER_ERROR);
                                 }
                                 return false;
+                        }
+
+                        foreach ($this->_triggers as $trigger) {
+                                $trigger->process($model);
                         }
                 }
 

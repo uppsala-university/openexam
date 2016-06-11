@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Monitor\Performance\Collector;
 
 use OpenExam\Library\Monitor\Performance\Collector;
+use OpenExam\Library\Monitor\Performance\Trigger;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -34,6 +35,11 @@ abstract class CollectorBase extends Component implements Collector
          * @var string 
          */
         protected $_host;
+        /**
+         * The collection of triggers.
+         * @var Trigger[] 
+         */
+        protected $_triggers = array();
 
         /**
          * Constructor.
@@ -60,6 +66,15 @@ abstract class CollectorBase extends Component implements Collector
         public function getHostname()
         {
                 return $this->_host;
+        }
+
+        /**
+         * Add trigger for this collector.
+         * @param Trigger $trigger The trigger object.
+         */
+        public function addTrigger($trigger)
+        {
+                $this->_triggers[] = $trigger;
         }
 
         /**
