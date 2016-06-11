@@ -129,7 +129,7 @@
                     switch (counters.getMilestone()) {
                         case 'minute':
                             counters.setInterval(60);
-                            counters.setLimit(60);      // last hour
+                            counters.setLimit(30);      // last 30 minutes
                             $("#milestone").text("Minute");
                             break;
                         case 'hour':
