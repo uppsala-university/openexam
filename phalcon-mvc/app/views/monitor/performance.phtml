@@ -21,6 +21,7 @@
         border-radius: 10px 10px 10px 10px;
         background: #ffffff;
         max-width: 1024px;
+        min-height: 200px;
     }
     div.monitor {
         display: none;
@@ -62,13 +63,22 @@
         margin-left: 10px;
         color: #c6c6c6;
     }
+    div.zoom-buttons {
+        float: right;
+        color: white;
+        margin-top: 10px;
+    }
 </style>
 
 <div class="mbox">
-    <h1>Performance Monitor</h1>
+    <h1>Performance Monitor (<span id="milestone">Live</span>)</h1>
     <div id="monitor-wrapper">
         <!-- navigation buttons -->
         <div class="monitor-buttons"></div>
+        <div class="zoom-buttons">
+            <button class="btn btn-default" id="zoom-out"><i class="icon-zoom-out"></i></button>
+            <button class="btn btn-default disabled" id="zoom-in"><i class="icon-zoom-in"></i></button>
+        </div>
         <!-- monitor panels -->
         <div class="monitor-content"></div>
     </div>
@@ -102,24 +112,72 @@
             function initialize(content) {
                 for (var type in content) {
                     $("div.monitor-content").append("<div class=\"monitor " + type + "\"></div>");
-                    $("div.monitor-buttons").append("<button id=\"" + type + "\" class=\"btn btn-primary\">" + content[type].name + "</button>");
+                    $("div.monitor-buttons").append("<button id=\"" + type + "\" class=\"btn btn-primary counter\">" + content[type].name + "</button>");
                 }
 
-                $("div.monitor-buttons").append("<div class=\"delta selectpicker\"><input type=\"checkbox\" id=\"delta\" checked> Delta Mode</input></div>");
-                $("div.monitor-buttons").append("<div class=\"sources\"></div>");
+                $("div.monitor-buttons").append("<div class=\"selectpicker delta\"><input type=\"checkbox\" id=\"delta\" checked> Delta Mode</input></div>");
+                $("div.monitor-buttons").append("<div class=\"selectpicker sources\"></div>");
 
                 monitor = Object.keys(content)[0];
                 context = $("div ." + monitor);
                 activate();
 
+                var onMilestoneChanged = function () {
+                    // 
+                    // Change details level and update interval.
+                    // 
+                    switch (counters.getMilestone()) {
+                        case 'minute':
+                            counters.setInterval(60);
+                            counters.setLimit(60);      // last hour
+                            $("#milestone").text("Minute");
+                            break;
+                        case 'hour':
+                            counters.setInterval(3600);
+                            counters.setLimit(24);      // last day
+                            $("#milestone").text("Hourly");
+                            break;
+                        case 'day':
+                            counters.setInterval(3600);
+                            counters.setLimit(14);      // last two weeks
+                            $("#milestone").text("Daily");
+                            break;
+                        case 'week':
+                            counters.setInterval(3600);
+                            counters.setLimit(24);      // last six month
+                            $("#milestone").text("Weekly");
+                            break;
+                        case 'month':
+                            counters.setInterval(3600);
+                            counters.setLimit(12);      // last year
+                            $("#milestone").text("Montly");
+                            break;
+                        case 'year':
+                            counters.setInterval(3600);
+                            counters.setLimit(10);      // last ten years
+                            $("#milestone").text("Yearly");
+                            break;
+                        default:
+                            counters.setInterval(5);
+                            counters.setLimit(20);
+                            $("#milestone").text("Live");
+                    }
+
+                    // 
+                    // Restart counters:
+                    // 
+                    counters.reopen();
+                    counters.start();
+                };
+
                 // 
                 // On monitor change:
                 // 
-                $("button").click(function () {
+                $("button.counter").click(function () {
                     monitor = $(this).attr('id');
                     context = $("div ." + monitor);
 
-                    $("button").addClass("btn-primary");
+                    $("button.counter").addClass("btn-primary");
 
                     activate();
                 });
@@ -133,6 +191,27 @@
                     counters.start();
                 });
 
+                // 
+                // On milestone zoom in:
+                // 
+                $("#zoom-in").click(function () {
+                    $("#zoom-out").removeClass('disabled');
+                    if (!counters.decrementMilestone()) {
+                        $(this).addClass('disabled');
+                    }
+                    onMilestoneChanged();
+                });
+
+                // 
+                // On milestone zoom out:
+                // 
+                $("#zoom-out").click(function () {
+                    $("#zoom-in").removeClass('disabled');
+                    if (!counters.incrementMilestone()) {
+                        $(this).addClass('disabled');
+                    }
+                    onMilestoneChanged();
+                });
             }
 
             // 
@@ -179,7 +258,7 @@
                 } else {
                     counters.setSource();
                 }
-                
+
                 counters.close();
                 counters.open(monitor, context);
                 counters.start();

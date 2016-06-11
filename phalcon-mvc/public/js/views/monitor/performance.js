@@ -11,10 +11,11 @@
 // 
 
 // 
-// The counters object contains one or more counter objects. Each counter object is
+// The counters object contains an array of counter objects. Each counter object is
 // built up on one or more timelines. Each object got a label and description. 
 // 
-// The parent context is passed into each child object. 
+// The parent context is passed into each child object. The counter class is responsible
+// for initialize the drawing canvas.
 // 
 
 // 
@@ -285,7 +286,7 @@ function Counter(addr, key, parent) {
 // The monitor (counter container) object.
 // 
 counters = (function () {
-    var _url, _limit = 20, _interval = 5, _source = '', _counter = '', _monitor, _context, _counters = [], _timer = null, _delta = true, _last;
+    var _url, _limit = 20, _interval = 5, _source = '', _counter = '', _milestone = '', _monitor, _context, _counters = [], _timer = null, _delta = true, _last;
 
     // 
     // Check if counters need to be updated.
@@ -399,7 +400,7 @@ counters = (function () {
             _monitor = monitor;
             _context = context;
 
-            var url = _url + '/' + _monitor + '/' + _counter + '?limit=' + _limit + '&keys=1&source=' + _source;
+            var url = _url + '/' + _monitor + '/' + _counter + '?limit=' + _limit + '&keys=1&source=' + _source + '&milestone=' + _milestone;
             fetch(url, create);
         },
         // 
@@ -428,7 +429,7 @@ counters = (function () {
         // 
         start: function () {
             _timer = setInterval(function () {
-                var url = _url + '/' + _monitor + '/' + _counter + '?limit=1&source=' + _source;
+                var url = _url + '/' + _monitor + '/' + _counter + '?limit=1&source=' + _source + '&milestone=' + _milestone;
                 fetch(url, update);
             }, _interval * 1000);
         },
@@ -502,6 +503,44 @@ counters = (function () {
             if (_counter !== name) {
                 _counter = name;
             }
+        },
+        // 
+        // Increment milestone (zoom out).
+        // 
+        incrementMilestone: function () {
+            var
+                    accept = ['', 'minute', 'hour', 'day', 'week', 'month', 'year'],
+                    index = accept.indexOf(_milestone),
+                    endpos = accept.length - 1;
+
+            if (index === endpos) {
+                return false;
+            } else {
+                _milestone = accept[++index];
+                return index !== endpos;
+            }
+        },
+        // 
+        // Decrement milestone (zoom in).
+        // 
+        decrementMilestone: function () {
+            var
+                    accept = ['', 'minute', 'hour', 'day', 'week', 'month', 'year'],
+                    index = accept.indexOf(_milestone),
+                    endpos = 0;
+
+            if (index === endpos) {
+                return false;
+            } else {
+                _milestone = accept[--index];
+                return index !== endpos;
+            }
+        },
+        // 
+        // Get current milestone.
+        // 
+        getMilestone: function() {
+            return _milestone;
         }
-    }
+    };
 }());
