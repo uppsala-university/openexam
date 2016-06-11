@@ -59,6 +59,11 @@ class Performance extends Component
 {
 
         /**
+         * The performance monitor config.
+         * @var Config 
+         */
+        private $_config;
+        /**
          * Number of objects to return.
          * @var int 
          */
@@ -84,31 +89,33 @@ class Performance extends Component
                 $this->_limits = $limit;
                 $this->_filter = $filter;
 
-                if ($this->config->monitor->get('server')) {
+                $this->_config = new Config();
+
+                if ($this->_config->hasConfig('server')) {
                         $this->register('server', ServerPerformanceCounter::class);
                 }
-                if ($this->config->monitor->get('disk')) {
+                if ($this->_config->hasConfig('disk')) {
                         $this->register('disk', DiskPerformanceCounter::class);
                 }
-                if ($this->config->monitor->get('part')) {
+                if ($this->_config->hasConfig('part')) {
                         $this->register('part', PartitionPerformanceCounter::class);
                 }
-//                if ($this->config->monitor->get('system')) {
+//                if ($this->_config->hasConfig('system')) {
 //                        $this->register('system', SystemPerformanceCounter::class);
 //                }
-                if ($this->config->monitor->get('apache')) {
+                if ($this->_config->hasConfig('apache')) {
                         $this->register('apache', ApachePerformanceCounter::class);
                 }
-                if ($this->config->monitor->get('mysql')) {
+                if ($this->_config->hasConfig('mysql')) {
                         $this->register('mysql', MySQLPerformanceCounter::class);
                 }
-                if ($this->config->monitor->get('net')) {
+                if ($this->_config->hasConfig('net')) {
                         $this->register('net', NetworkPerformanceCounter::class);
                 }
-                if ($this->config->monitor->get('fs')) {
+                if ($this->_config->hasConfig('fs')) {
                         $this->register('fs', FileSystemPerformanceCounter::class);
                 }
-                if ($this->config->monitor->get('test')) {
+                if ($this->_config->hasConfig('test')) {
                         $this->register('test', TestPerformanceCounter::class);
                 }
         }
@@ -140,6 +147,15 @@ class Performance extends Component
                 if (isset($this->_filter['source'])) {
                         return $this->_filter['source'];
                 }
+        }
+
+        /**
+         * Get monitor configuration object.
+         * @return Config
+         */
+        public function getConfig()
+        {
+                return $this->_config;
         }
 
         /**
