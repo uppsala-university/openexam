@@ -99,7 +99,7 @@ class CollectorFactory
 
                         case Performance::MODE_MYSQL:
                                 if (!isset($params['rate'])) {
-                                        $params['rate'] = FileSystem::SAMPLE_RATE;
+                                        $params['rate'] = MySQL::SAMPLE_RATE;
                                 }
                                 $collector = new MySQL($params['rate']);
                                 break;
