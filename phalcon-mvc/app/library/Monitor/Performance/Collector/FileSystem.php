@@ -101,7 +101,9 @@ class FileSystem extends CollectorBase
                 $this->_type = $type;
 
                 parent::__construct();
-                $this->prepare();
+
+                $this->detect();
+                $this->validate();
         }
 
         /**
@@ -154,10 +156,22 @@ class FileSystem extends CollectorBase
         }
 
         /**
+         * Validate array of mounted file systems.
+         */
+        private function validate()
+        {
+                foreach ($this->_path as $dev => $dir) {
+                        if (!file_exists($dir)) {
+                                unset($this->_path[$dev]);
+                        }
+                }
+        }
+
+        /**
          * Prepare for data collection. If path is null, then dynamic discover
          * file systems using mount.
          */
-        private function prepare()
+        private function detect()
         {
                 if (is_string($this->_path)) {
                         $this->_path = array($this->_path);
