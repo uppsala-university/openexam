@@ -283,12 +283,16 @@ class PerformanceTask extends MainTask implements TaskInterface
                 $this->setOptions($params, 'collect');
 
                 $config = new MonitorConfig();
-                $params = $config->getConfig($this->_options['counter']);
+                $params = $config->hasConfig($this->_options['counter']);
 
                 if (!$params) {
-                        $this->flash->error("The requested performance counter is disabled");
+                        $this->flash->error(
+                            sprintf("The requested performance counter '%s' is disabled", $this->_options['counter'])
+                        );
                         return false;
                 }
+
+                $params = $config->getConfig($this->_options['counter']);
 
                 if ($this->_options['rate']) {
                         $params['params']['rate'] = $this->_options['rate'];
