@@ -208,7 +208,6 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 '--counter=name'  => 'The counter name.',
                                 '--source=name'   => 'Match on source (use ":" to match multiple).',
                                 '--rate=sec'      => 'The sample rate (colleting).',
-                                '--user=str'      => 'The service process user (e.g. apache).',
                                 '--time=str'      => 'Match on datetime.',
                                 '--host=str'      => 'Match on hostname (FQHN).',
                                 '--addr=str'      => 'Match on IP-address.',
@@ -225,7 +224,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 '--net'    => 'Same as --counter=net (network performance).',
                                 '--apache' => 'Same as --counter=apache (web server performance).',
                                 '--mysql'  => 'Same as --counter=mysql (database performance).',
-                                '--disk'   => 'Same as --counter=disk (harddrive performance).',
+                                '--disk'   => 'Same as --counter=disk (hard drive performance).',
                                 '--part'   => 'Same as --counter=part (partition performance).',
                                 '--fs'     => 'Same as --counter=fs (file system performance).',
                                 '--php'    => 'Same as --export=php (export as PHP array).',
@@ -253,6 +252,10 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Collect network performance for multiple interfaces',
                                         'command' => '--collect --net --rate=2 --source=eth0:eth1'
+                                ),
+                                array(
+                                        'descr'   => 'Custom params can be passed to collector (--user, --disk, --path, --type, --name or --part)',
+                                        'command' => '--collect --fs --path=/var/data:/home --type=ext4:btrfs'
                                 ),
                                 array(
                                         'descr'   => 'Display all available performance counters',
@@ -294,14 +297,36 @@ class PerformanceTask extends MainTask implements TaskInterface
 
                 $params = $config->getConfig($this->_options['counter']);
 
+                // 
+                // Inject standard options:
+                // 
                 if ($this->_options['rate']) {
                         $params['params']['rate'] = $this->_options['rate'];
                 }
+                if ($this->_options['source']) {
+                        $params['params']['source'] = $this->_options['source'];
+                }
+
+                // 
+                // Inject custom options:
+                // 
                 if ($this->_options['user']) {
                         $params['params']['user'] = $this->_options['user'];
                 }
-                if ($this->_options['source']) {
-                        $params['params']['source'] = $this->_options['source'];
+                if ($this->_options['disk']) {
+                        $params['params']['disk'] = $this->_options['disk'];
+                }
+                if ($this->_options['path']) {
+                        $params['params']['path'] = $this->_options['path'];
+                }
+                if ($this->_options['type']) {
+                        $params['params']['type'] = $this->_options['type'];
+                }
+                if ($this->_options['name']) {
+                        $params['params']['name'] = $this->_options['name'];
+                }
+                if ($this->_options['part']) {
+                        $params['params']['part'] = $this->_options['part'];
                 }
 
                 $performance = CollectorFactory::create($this->_options['counter'], $params);
@@ -412,6 +437,20 @@ class PerformanceTask extends MainTask implements TaskInterface
         }
 
         /**
+         * List performance counter config action.
+         * @param array $params
+         */
+        public function listAction($params = array())
+        {
+                $this->setOptions($params, 'list');
+
+                $config = new MonitorConfig();
+                if ($config->hasCounters()) {
+                        printf("%s\n", implode(" ", $config->getCounters()));
+                }
+        }
+
+        /**
          * Set options from task action parameters.
          * @param array $params The task action parameters.
          * @param string $action The calling action.
@@ -427,9 +466,10 @@ class PerformanceTask extends MainTask implements TaskInterface
                 // Supported options.
                 // 
                 $options = array(
-                        'verbose', 'collect', 'query', 'clean', 'counter', 'show',
+                        'verbose', 'collect', 'query', 'clean', 'counter', 'show', 'list',
                         'time', 'host', 'addr', 'milestone', 'source',
-                        'rate', 'user', 'limit', 'export', 'days', 'hours',
+                        'rate', 'limit', 'export', 'days', 'hours',
+                        'user', 'disk', 'path', 'type', 'name', 'part',
                         'disk', 'part', 'fs', 'server', 'system', 'net', 'apache', 'mysql', 'test',
                         'php', 'xml', 'csv', 'tab'
                 );
