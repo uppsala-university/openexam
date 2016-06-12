@@ -55,14 +55,18 @@ function run_perf_monitors()
 
 function start_perf_monitor()
 {
+    echo -n "Starting OpenExam performance collectors:"
     counters=$(/usr/bin/php $script --performance --list)
     for c in $counters; do 
+        echo -n " $c"
         /usr/bin/php $script --performance --collect --$c --uid=${users[$c]} $options &
     done
+    echo
 }
 
 function stop_perf_monitor()
 {
+    echo "Stopping OpenExam performance collectors"
     counters=$(/usr/bin/php $script --performance --list)
     for c in $counters; do 
         pkill -xf "/usr/bin/php $script --performance --collect --$c.*"
@@ -75,6 +79,10 @@ case "$1" in
         ;;
     stop)
         stop_perf_monitor
+        ;;
+    restart)
+        stop_perf_monitor
+        start_perf_monitor
         ;;
     *)
         echo "usage: $0 start|stop"
