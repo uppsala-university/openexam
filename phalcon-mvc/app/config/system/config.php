@@ -270,7 +270,11 @@ $config = new Phalcon\Config(
         /**
          * Audit is disabled by default.
          */
-        'audit'       => false
+        'audit'       => false,
+        /**
+         * Performance monitoring is disabled by default.
+         */
+        'monitor'     => false
     )
 );
 
