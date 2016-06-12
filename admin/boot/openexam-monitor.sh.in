@@ -44,20 +44,20 @@ fi
 
 function run_perf_monitors()
 {
-    /usr/bin/sudo -u $user /usr/bin/php $script --performance --collect --server --rate=10
-    /usr/bin/sudo -u $user /usr/bin/php $script --performance --collect --apache --rate=15  --user=apache
-    /usr/bin/sudo -u $user /usr/bin/php $script --performance --collect --mysql  --rate=10 
-    /usr/bin/sudo -u $user /usr/bin/php $script --performance --collect --net    --rate=5   --name=eth0:br0
-    /usr/bin/sudo -u $user /usr/bin/php $script --performance --collect --fs     --rate=60  --path=/var/data:/home --type=ext4:btrfs:xfs
-    /usr/bin/sudo -u $user /usr/bin/php $script --performance --collect --disk   --rate=300 --disk=sda
-    /usr/bin/sudo -u $user /usr/bin/php $script --performance --collect --part   --rate=300 --part=/dev/sda1:/dev/md0
+    /usr/bin/php $script --performance --collect --server --uid=$user --rate=10
+    /usr/bin/php $script --performance --collect --apache --uid=root  --rate=15  --user=apache
+    /usr/bin/php $script --performance --collect --mysql  --uid=$user --rate=10 
+    /usr/bin/php $script --performance --collect --net    --uid=$user --rate=5   --name=eth0:br0
+    /usr/bin/php $script --performance --collect --fs     --uid=$user --rate=60  --path=/var/data:/home --type=ext4:btrfs:xfs
+    /usr/bin/php $script --performance --collect --disk   --uid=$user --rate=300 --disk=sda
+    /usr/bin/php $script --performance --collect --part   --uid=$user --rate=300 --part=/dev/sda1:/dev/md0
 }
 
 function start_perf_monitor()
 {
     counters=$(/usr/bin/php $script --performance --list)
     for c in $counters; do 
-        /usr/bin/sudo -u ${users[$c]} /usr/bin/php $script --performance --collect --$c $options &
+        /usr/bin/php $script --performance --collect --$c --uid=${users[$c]} $options &
     done
 }
 
@@ -65,7 +65,7 @@ function stop_perf_monitor()
 {
     counters=$(/usr/bin/php $script --performance --list)
     for c in $counters; do 
-        pkill -xf "/usr/bin/php $script --performance --collect --$c*"
+        pkill -xf "/usr/bin/php $script --performance --collect --$c.*"
     done
 }
 

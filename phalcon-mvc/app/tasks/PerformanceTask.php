@@ -195,7 +195,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                         'header'   => 'System performance tool',
                         'action'   => '--performance',
                         'usage'    => array(
-                                '--collect --counter=name [--rate=sec] [--user=str] [--source=name]',
+                                '--collect --counter=name [--rate=sec] [--source=name] [--uid={str|num}]',
                                 '--query   --counter=name [--time=str] [--host=str] [--addr=str] [--milestone=str] [--source=name] [--limit=num] [--export=fmt]',
                                 '--clean  [--counter=name] [--days=num|--hours=num|--time=str] [--host=str] [--addr=str] [--source=name]',
                                 '--show [--counter=name]'
@@ -205,9 +205,10 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 '--query'         => 'Check performance counters.',
                                 '--clean'         => 'Cleanup performance statistics.',
                                 '--show'          => 'Display current monitor configuration.',
+                                '--uid={str|num}' => 'Run task as this used or UID.',
                                 '--counter=name'  => 'The counter name.',
-                                '--source=name'   => 'Match on source (use ":" to match multiple).',
                                 '--rate=sec'      => 'The sample rate (colleting).',
+                                '--source=name'   => 'Match on source (use ":" to match multiple).',
                                 '--time=str'      => 'Match on datetime.',
                                 '--host=str'      => 'Match on hostname (FQHN).',
                                 '--addr=str'      => 'Match on IP-address.',
@@ -234,8 +235,8 @@ class PerformanceTask extends MainTask implements TaskInterface
                         ),
                         'examples' => array(
                                 array(
-                                        'descr'   => 'Collect disk performance statistics',
-                                        'command' => '--collect --disk --source==sda --rate=5'
+                                        'descr'   => 'Collect disk performance statistics, drop root privileges (if any)',
+                                        'command' => '--collect --disk --source==sda --rate=5 --uid=daemon'
                                 ),
                                 array(
                                         'descr'   => 'Collect system performance statistics',
@@ -327,6 +328,17 @@ class PerformanceTask extends MainTask implements TaskInterface
                 }
                 if ($this->_options['part']) {
                         $params['params']['part'] = $this->_options['part'];
+                }
+
+                // 
+                // Drop privileges if requested:
+                // 
+                if ($this->_options['uid']) {
+                        if (!extension_loaded('posix')) {
+                                $this->flash->warning("The posix extension is not loaded. Can't drop user privileges.");
+                        } else {
+                                $this->setProcessOwner($this->_options['uid']);
+                        }
                 }
 
                 $performance = CollectorFactory::create($this->_options['counter'], $params);
@@ -451,6 +463,32 @@ class PerformanceTask extends MainTask implements TaskInterface
         }
 
         /**
+         * Set UID of current process.
+         * 
+         * @params string|int $uid The requested user.
+         * @return boolean True if user privileges were dropped to requested uid.
+         */
+        private function setProcessOwner($uid)
+        {
+                if (is_string($uid)) {
+                        if (!($pwd = posix_getpwnam($uid))) {
+                                $this->flash->warning("Failed get passwd info for $uid");
+                                return false;
+                        } else {
+                                $uid = $pwd['uid'];
+                        }
+                }
+
+                if ($uid == posix_getuid()) {
+                        return true;
+                } elseif (!(posix_setuid($uid))) {
+                        $this->flash->warning("Failed set UID to $uid");
+                } else {
+                        return true;
+                }
+        }
+
+        /**
          * Set options from task action parameters.
          * @param array $params The task action parameters.
          * @param string $action The calling action.
@@ -466,7 +504,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                 // Supported options.
                 // 
                 $options = array(
-                        'verbose', 'collect', 'query', 'clean', 'counter', 'show', 'list',
+                        'verbose', 'collect', 'query', 'clean', 'counter', 'show', 'list', 'uid',
                         'time', 'host', 'addr', 'milestone', 'source',
                         'rate', 'limit', 'export', 'days', 'hours',
                         'user', 'disk', 'path', 'type', 'name', 'part',
