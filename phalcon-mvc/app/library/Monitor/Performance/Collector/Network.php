@@ -62,7 +62,7 @@ class Network extends CollectorBase
         private $_head;
         /**
          * The NIC name.
-         * @var string 
+         * @var string|array
          */
         private $_name;
 
@@ -107,7 +107,7 @@ class Network extends CollectorBase
                                 return false;
                         }
 
-                        foreach ($this->_triggers as $trigger) {
+                        foreach ($this->getTriggers($model->source) as $trigger) {
                                 $trigger->process($model);
                         }
                 }

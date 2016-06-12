@@ -101,7 +101,7 @@ class Apache extends CollectorBase
                         return false;
                 }
 
-                foreach ($this->_triggers as $trigger) {
+                foreach ($this->getTriggers() as $trigger) {
                         $trigger->process($model);
                 }
 

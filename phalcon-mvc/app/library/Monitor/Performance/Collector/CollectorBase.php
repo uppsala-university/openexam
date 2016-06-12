@@ -40,6 +40,11 @@ abstract class CollectorBase extends Component implements Collector
          * @var Trigger[] 
          */
         protected $_triggers = array();
+        /**
+         * Per source shadowed triggers.
+         * @var Trigger[]  
+         */
+        private $_call;
 
         /**
          * Constructor.
@@ -75,6 +80,30 @@ abstract class CollectorBase extends Component implements Collector
         public function addTrigger($trigger)
         {
                 $this->_triggers[] = $trigger;
+        }
+
+        /**
+         * Get cloned triggers.
+         * @param string $name The source name.
+         * @return Trigger[]
+         */
+        protected function getTriggers($name = null)
+        {
+                if (!isset($name)) {
+                        return $this->_triggers;
+                }
+                if (!isset($this->_call)) {
+                        $this->_call = array();
+                }
+
+                if (!isset($this->_call[$name])) {
+                        $this->_call[$name] = array();
+                        foreach ($this->_triggers as $trigger) {
+                                $this->_call[$name][] = clone $trigger;
+                        }
+                }
+
+                return $this->_call[$name];
         }
 
         /**

@@ -105,7 +105,7 @@ class Server extends CollectorProcess
                                 return false;
                         }
 
-                        foreach ($this->_triggers as $trigger) {
+                        foreach ($this->getTriggers() as $trigger) {
                                 $trigger->process($model);
                         }
                 }

@@ -106,7 +106,7 @@ class Partition extends CollectorProcess
                                 return false;
                         }
 
-                        foreach ($this->_triggers as $trigger) {
+                        foreach ($this->getTriggers($model->source) as $trigger) {
                                 $trigger->process($model);
                         }
                 }

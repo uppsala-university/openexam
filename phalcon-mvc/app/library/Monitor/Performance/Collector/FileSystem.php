@@ -124,7 +124,7 @@ class FileSystem extends CollectorBase
                                 return false;
                         }
 
-                        foreach ($this->_triggers as $trigger) {
+                        foreach ($this->getTriggers($model->source) as $trigger) {
                                 $trigger->process($model);
                         }
                 }
