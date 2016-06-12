@@ -79,8 +79,6 @@ class CounterQuery
                 if (!isset($filter['milestone'])) {
                         $conditions[] = "milestone IS NULL";
                 }
-                
-                error_log(implode(" AND ", $conditions));
 
                 if (($result = Performance::find(array(
                             'conditions' => implode(" AND ", $conditions),
