@@ -51,7 +51,7 @@ abstract class ServiceAdapter extends Component implements DirectoryService
         {
                 $this->_name = $name;
         }
-        
+
         /**
          * Get service name.
          * @return string
@@ -72,6 +72,11 @@ abstract class ServiceAdapter extends Component implements DirectoryService
 
         /**
          * Update cached entry and return passed in data.
+         * 
+         * This method will update cache if:
+         * 1. Using cache is enabled (lifetime != 0)
+         * 2. The cache key don't exists.
+         * 
          * @param string $key The cache key.
          * @param array $result The result data.
          * @return array
@@ -81,8 +86,9 @@ abstract class ServiceAdapter extends Component implements DirectoryService
                 if ($this->_lifetime == 0) {
                         return $result;
                 }
-
-                $this->cache->save($key, $result, $this->_lifetime);
+                if (!$this->cache->exists($key, $this->_lifetime)) {
+                        $this->cache->save($key, $result, $this->_lifetime);
+                }
                 return $result;
         }
 
