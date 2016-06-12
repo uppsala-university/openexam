@@ -7,10 +7,10 @@
    These are the requirements. Tested versions within brackets, but other
    versions might work just OK.
    
-        *) PHP >= 5.2.x (need to support the new object model). [5.2.13]
-        *) An SQL database (RDBS) supported by PDO. [MySQL 5.1.70]
-        *) Apache web server [2.2.27]
-        *) Composer [2014-08-11]
+        *) PHP >= 5.4.x (need to support the new object model). [5.6.29]
+        *) An SQL database (RDBS) supported by PDO. [MySQL 5.6.28]
+        *) Apache web server [2.4.28]
+        *) Composer [2016-06-12]
 	 
    PECL Extensions (including those builtin in PHP):
 	    
@@ -20,6 +20,9 @@
         *) zip.so      - For bundling results for download (recommended).
         *) curl.so     - For downloading UPPDOK data (optional).
         *) fileinfo.so - For detection of MIME type for uploaded files.
+
+   The script admin/compat/check.sh will check the code and display a list of all 
+   required extensions.
 
 ** CONFIGURATION:
 
