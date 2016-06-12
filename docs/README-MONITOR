@@ -103,6 +103,15 @@
     For the cleanup trigger its possible to disable cleanup of live data or milestones by passing
     false, see example below.
 
+** FAIRNESS:
+
+    All performance collectors are implemented to have minimal footprint. Running the full set 
+    should consume ~0.1% of CPU. 
+
+    However, because performance data is saved in the database it will add up in the ordinary SQL 
+    counter. It could be solved using a separate instance (not a separate database), but for a
+    busy system this disturbance should only be marginal.
+    
 ** EXAMPLES:
 
     // 
