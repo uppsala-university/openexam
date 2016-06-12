@@ -219,36 +219,38 @@ class Cleanup implements Trigger
          */
         private function expired($time, $type)
         {
+                $last = $this->_gc[$type];
+                
                 switch ($type) {
                         case 'live':
                                 if ($this->_live == false) {
                                         return false;
                                 } else {
-                                        return ($time - $this->_live) > $this->_gc['live'];
+                                        return $last < ($time - $this->_live);
                                 }
                         case 'minute':
                                 if ($this->_minute == false) {
                                         return false;
                                 } else {
-                                        return ($time - $this->_minute) > $this->_gc['minute'];
+                                        return $last < ($time - $this->_minute);
                                 }
                         case 'hour':
                                 if ($this->_hour == false) {
                                         return false;
                                 } else {
-                                        return ($time - $this->_hour) > $this->_gc['hour'];
+                                        return $last < ($time - $this->_hour);
                                 }
                         case 'day':
                                 if ($this->_day == false) {
                                         return false;
                                 } else {
-                                        return ($time - $this->_day) > $this->_gc['day'];
+                                        return $last < ($time - $this->_day);
                                 }
                         case 'week':
                                 if ($this->_week == false) {
                                         return false;
                                 } else {
-                                        return ($time - $this->_week) > $this->_gc['week'];
+                                        return $last < ($time - $this->_week);
                                 }
                 }
         }
