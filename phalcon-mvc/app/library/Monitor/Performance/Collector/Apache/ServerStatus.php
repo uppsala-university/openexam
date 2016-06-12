@@ -26,7 +26,7 @@ class ServerStatus
         /**
          * Get server status from localhost.
          */
-        const TARGET = "http://localhost/server-status?auto";
+        const TARGET = "http://127.0.0.1/server-status?auto";
         /**
          * Load during 1 minute.
          */
