@@ -21,13 +21,11 @@ cwd="$(dirname $(realpath $0))"
 # The phalcon directory:
 root="$(realpath $cwd/../../phalcon-mvc)"
 
-# The user to run 
-
 # Script to run:
 script="$root/script/openexam.php"
 
-# Standard user for running each counter:
-user="andlov"
+# Standard user for running counters:
+user="daemon"
 
 # The mapping between collector and process user:
 declare -A users=([system]=$user [server]=$user [apache]=root [mysql]=$user [net]=$user [fs]=$user [part]=$user [disk]=$user)
