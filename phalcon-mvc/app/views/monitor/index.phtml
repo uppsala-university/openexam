@@ -1,0 +1,51 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    index.phtml
+// Created: 2016-05-25 14:26:27
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+?>
+
+<style>
+    div.mbox {
+        padding: 12px;
+        margin: 10px;
+        margin-top: 50px;
+        box-shadow: 1px 1px 6px #999999;
+        border-radius: 10px 10px 10px 10px;
+        background: #ffffff;
+        max-width: 1024px;
+    }
+</style>
+
+<div class="mbox">
+    <h1>System Monitoring</h1>
+
+    <p>Click on one of the buttons below to start.</p>
+
+    <ul><li>The performance page displays various counters useful for diagnostic bottlenecks in the system (like CPU, memory or network utilization).</li>
+        <li>The diagnostics page is used to monitor health of system services (for example authentication or directory services).</li>
+    </ul>
+    <br/>
+    <p><i class="fa fa-exclamation"></i> These tools are strictly for system monitoring and are probably of zero to none interest for ordinary users.</p>
+    <br/>
+    <div>
+        <button id="performance" class="btn btn-primary">Performance</button>
+        <button id="diagnostics" class="btn btn-primary">Diagnostics</button>
+    </div>
+</div>
+
+<script>
+        $("#performance").click(function () {
+            location.href = "performance";
+        });
+        $("#diagnostics").click(function () {
+            location.href = "diagnostics";
+        });
+</script>

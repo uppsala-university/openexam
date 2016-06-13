@@ -1,0 +1,224 @@
+<?php
+
+use OpenExam\Models\Exam;
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    config.def
+// Created: 2014-08-20 02:45:56
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+/**
+ * User defined settings.
+ * 
+ * You can override any system settings (see system/config.php) by providing
+ * a re-definition here. 
+ * 
+ * For database configuration, see docs/README-DATABASE.
+ */
+return array(
+        /**
+         * The write-only/master database connection (for load balancing).
+         */
+        'dbwrite'     => array(
+                'adapter'    => 'Mysql',
+                'host'       => 'localhost',
+                'username'   => 'openexam',
+                'password'   => '',
+                'dbname'     => 'openexam',
+                'persistent' => true   // Required for uniqueness validation
+        ),
+        /**
+         * The read-only/slave database connection (for load balancing).
+         */
+        'dbread'      => array(
+                'adapter'    => 'Mysql',
+                'host'       => 'localhost',
+                'username'   => 'openexam',
+                'password'   => '',
+                'dbname'     => 'openexam',
+                'persistent' => true   // Required for uniqueness validation
+        ),
+        /**
+         * The audit trail database connection (for model change tracking).
+         */
+        'dbaudit'      => array(
+                'adapter'    => 'Mysql',
+                'host'       => 'localhost',
+                'username'   => 'openexam',
+                'password'   => '',
+                'dbname'     => 'openexam',
+                'persistent' => true   // Required for uniqueness validation
+        ),
+        /**
+         * User service configuration.
+         */
+        'user'        => array(
+                /**
+                 * The default user domain.
+                 */
+                'domain'  => 'example.com',
+                /**
+                 * Default set of roles for all users.
+                 */
+                'roles'   => array(),
+                /**
+                 * Default organization name.
+                 */
+                'orgname' => 'This Organization'
+        ),
+        /**
+         * Default application settings.
+         */
+        'application' => array(
+                /**
+                 * Enable/disable development mode.
+                 */
+                'release'  => true,
+                /**
+                 * Cache directory.
+                 */
+                'cacheDir' => BASE_DIR . '/cache/',
+                /**
+                 * Media files upload directory.
+                 */
+                'mediaDir' => BASE_DIR . '/cache/media/',
+                /**
+                 * Logs directory.
+                 */
+                'logsDir'  => BASE_DIR . '/logs',
+                /**
+                 * The base URI of this application. 
+                 */
+                'baseUri'  => '/phalcon-mvc/'
+        ),
+        /**
+         * Student result settings.
+         */
+        'result'      => array(
+                /**
+                 * The amount of details to expose to students by default in
+                 * the exam result. This is a bitmask of zero of more:
+                 * 
+                 * Expose correcting teacher:
+                 * Exam::result_expose_employees        (1)
+                 * 
+                 * Expose statistics for other students:
+                 * Exam::result_others_statistics       (2)
+                 */
+                'details' => 3
+        ),
+        /**
+         * SMTP settings.
+         */
+        'smtp'        => array(
+                /**
+                 * The sender host.
+                 */
+                'sender' => 'localhost',
+                /**
+                 * SMTP server and port.
+                 */
+                'host'   => 'smtp.example.com',
+                'port'   => 25,
+                /**
+                 * SMTP login.
+                 */
+                'auth'   => false,
+                'user'   => null,
+                'pass'   => null
+        ),
+        /**
+         * Contact information.
+         */
+        'contact'     => array(
+                'name' => 'System Manager',
+                'addr' => 'openexam@example.com'
+        ),
+        /**
+         * Locale settings.
+         */
+        'locale'      => array(
+                'default' => 'sv_SE.UTF-8'
+        ),
+        /**
+         * Options for GNU gettext (I18N).
+         */
+        'gettext'     => array(
+                'programs' => array(
+                        'xgettext' => '/usr/bin/xgettext',
+                        'msgmerge' => '/usr/bin/msgmerge',
+                        'msgfmt'   => '/usr/bin/msgfmt',
+                        'msgcat'   => '/usr/bin/msgcat',
+                        'msgconv'  => '/usr/bin/msgconv',
+                        'msginit'  => '/usr/bin/msginit'
+                )
+        ),
+        /**
+         * Static data for unit test.
+         */
+        'phpunit' => array(
+                'username'  => null,
+                'persnr'    => null
+        ),
+        /**
+         * System user signup. 
+         */
+        'signup'      => array(
+                /**
+                 * Enable user signup.
+                 */
+                'enabled'   => false,
+                /**
+                 * Register students on these exams or false to disable.
+                 * Example: 'student' => array(1, 54)
+                 */
+                'student'   => false,
+                /**
+                 * Clone these exams to signed up teachers or false to disable.
+                 * Example: 'teacher' => array(59)
+                 */
+                'teacher'   => false,
+                /**
+                 * Automatic signup at first login.
+                 */
+                'automatic' => false,
+                /**
+                 * Use wizard mode during signup (on /signup).
+                 */
+                'wizard'    => true,
+                /**
+                 * Display remove option.
+                 */
+                'remove'    => false
+        ),
+        /**
+         * Multi level object cache (See system/config.php).
+         */
+        'cache'       => array(
+                /**
+                 * Enable these extensions (if available):
+                 */
+                'enable'   => array(
+                        'xcache'   => true,
+                        'apc'      => true,
+                        'memcache' => true,
+                        'file'     => true
+                )
+        ),
+        /**
+         * See docs/README-AUDIT before enabling/configure this option.
+         */
+        'audit'       => false,
+        /**
+         * Performance monitor. Most people could say 'monitor' => {true|false} 
+         * here and stick with the default options. See docs/README-MONITOR for
+         * further information or tweaks.
+         */
+        'monitor'     => false
+);

@@ -1,0 +1,144 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    diagnostics.phtml
+// Created: 2016-06-06 23:04:34
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+?>
+
+<style>
+    div.mbox {
+        padding: 12px;
+        margin: 10px;
+        margin-top: 50px;
+        box-shadow: 1px 1px 6px #999999;
+        border-radius: 10px 10px 10px 10px;
+        background: #ffffff;
+        max-width: 1024px;
+    }
+    div #summary {
+        display: none;
+    }
+    div #details {
+        display: flex;
+        margin-top: 20px;
+    }
+    .hide {
+        display: none!important;
+    }
+    div.status {
+        padding: 20px;
+        margin-bottom: 10px;
+        max-width: 400px;
+        font-size: 1.2em;
+        border-radius: 5px;
+    }
+    div #status-success {
+        display: none;
+        background-color: #eeffdd;
+        border: 1px solid greenyellow;
+    }
+    div #status-failure {
+        display: none;
+        background-color: #fffedd;
+        border: 1px dashed #ff9d00;
+    }
+    #success-icon {
+        color: green;
+    }
+    #failure-icon {
+        color: orange;
+    }
+    button {
+        min-width: 130px;
+    }
+    div.card {
+        border: 1px solid #eeeeff;
+        border-radius: 8px;
+        margin-right: 15px;
+        min-width: 250px;
+        background-color: #fefeff;
+        padding-bottom: 10px;
+    }
+    div.card .title {
+        color: #9999bb;
+        border-radius: 8px;
+        background-color: #ffffff;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 1px solid #eeeeff;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+    span.head {
+        margin-left: 20px;
+        font-weight: bold;
+    }
+    span.sect {
+        margin-left: 40px;
+        font-weight: bold;
+        font-style: italic;
+    }
+    span.item {
+        margin-left: 60px;
+    }
+    span.failed {
+        color: red;
+    }
+</style>
+
+<div class="mbox">
+    <h1>System Diagnostics</h1>
+    <div id="summary">
+        <div id="status-success" class="status"><i id="success-icon" class="fa fa-thumbs-up"></i> No problem detected</div>
+        <div id="status-failure" class="status"><i id="failure-icon" class="fa fa-thumbs-down"></i> Problem detected!</div>
+        <button class="btn btn-primary timer">Pause Update</button>
+        <button class="btn btn-success details">Show Details</button>
+    </div>
+    <div id="details" class="hide"></div>
+</div>
+
+<script src="<?= $this->url->get('js/views/monitor/diagnostics.js') ?>"></script>
+
+<script>
+        $(document).ready(function () {
+            // 
+            // Handle pause/resume update event:
+            // 
+            $("button.timer").click(function () {
+                if (diagnostics.isRunning()) {
+                    diagnostics.stop();
+                } else {
+                    diagnostics.start();
+                }
+            });
+
+            // 
+            // Handle show details event:
+            // 
+            $("button.details").click(function () {
+                $("#details").toggleClass('hide');
+                if ($("#details").is(":visible")) {
+                    $("button.details").html("Hide Details");
+                    diagnostics.useDetails(true);
+                } else {
+                    $("button.details").html("Show Details");
+                    diagnostics.useDetails(false);
+                }
+                if (diagnostics.hasDetails() && diagnostics.isRunning()) {
+                    diagnostics.update();
+                }
+            });
+
+            // 
+            // Begin update using default settings.
+            // 
+            diagnostics.start();
+        });
+</script>

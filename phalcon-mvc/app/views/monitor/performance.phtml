@@ -1,0 +1,273 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    performance.phtml
+// Created: 2016-05-25 14:26:46
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+?>
+
+<style>
+    div.mbox {
+        padding: 12px;
+        margin: 10px;
+        margin-top: 50px;
+        box-shadow: 1px 1px 6px #999999;
+        border-radius: 10px 10px 10px 10px;
+        background: #ffffff;
+        max-width: 1024px;
+        min-height: 200px;
+    }
+    div.monitor {
+        display: none;
+    }
+    div.counter {
+        margin: 10px;
+        width: 420px;
+        height: 300px;
+        border: 2px solid #eeeeee;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    div.counter .header {
+        padding-left: 10px;
+        padding-top: 7px;
+    }
+    div.sources, div.delta {
+        float: right;
+        padding-left: 20px;
+    }
+    span.title {
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-left: 10px;
+    }
+    div.monitor-buttons button {
+        margin-left: 10px;
+    }
+    button.counter {
+        min-width: 100px;
+    }
+    div.counter-host {
+        float: right;
+        margin-right: 10px;
+        color: #c6c6c6;
+    }
+    div.counter-date {
+        float: left;
+        margin-left: 10px;
+        color: #c6c6c6;
+    }
+    div.zoom-buttons {
+        float: right;
+        color: white;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="mbox">
+    <h1>Performance Monitor (<span id="milestone">Live</span>)</h1>
+    <div id="monitor-wrapper">
+        <!-- navigation buttons -->
+        <div class="monitor-buttons"></div>
+        <div class="zoom-buttons">
+            <button class="btn btn-default" id="zoom-out"><i class="icon-zoom-out"></i></button>
+            <button class="btn btn-default disabled" id="zoom-in"><i class="icon-zoom-in"></i></button>
+        </div>
+        <!-- monitor panels -->
+        <div class="monitor-content"></div>
+    </div>
+</div>
+
+<script src="<?= $this->url->get('js/chart.js') ?>"></script>
+<script src="<?= $this->url->get('js/views/monitor/performance.js') ?>"></script>
+
+<script>
+        $(document).ready(function () {
+
+            var monitor, context;
+
+            // 
+            // Fetch bootstrap data using AJAX.
+            // 
+            function fetch(url, callback) {
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: function (resp) {
+                        callback(JSON.parse(resp));
+                    }
+                });
+            }
+
+            // 
+            // Called to dynamic initialize buttons and activate first
+            // performance counter.
+            // 
+            function initialize(content) {
+                for (var type in content) {
+                    $("div.monitor-content").append("<div class=\"monitor " + type + "\"></div>");
+                    $("div.monitor-buttons").append("<button id=\"" + type + "\" class=\"btn btn-primary counter\">" + content[type].name + "</button>");
+                }
+
+                $("div.monitor-buttons").append("<div class=\"selectpicker delta\"><input type=\"checkbox\" id=\"delta\" checked> Delta Mode</input></div>");
+                $("div.monitor-buttons").append("<div class=\"selectpicker sources\"></div>");
+
+                monitor = Object.keys(content)[0];
+                context = $("div ." + monitor);
+                activate();
+
+                var onMilestoneChanged = function () {
+                    // 
+                    // Change details level and update interval.
+                    // 
+                    switch (counters.getMilestone()) {
+                        case 'minute':
+                            counters.setInterval(60);
+                            counters.setLimit(30);      // last 30 minutes
+                            $("#milestone").text("Minute");
+                            break;
+                        case 'hour':
+                            counters.setInterval(3600);
+                            counters.setLimit(24);      // last day
+                            $("#milestone").text("Hourly");
+                            break;
+                        case 'day':
+                            counters.setInterval(3600);
+                            counters.setLimit(14);      // last two weeks
+                            $("#milestone").text("Daily");
+                            break;
+                        case 'week':
+                            counters.setInterval(3600);
+                            counters.setLimit(24);      // last six month
+                            $("#milestone").text("Weekly");
+                            break;
+                        case 'month':
+                            counters.setInterval(3600);
+                            counters.setLimit(12);      // last year
+                            $("#milestone").text("Montly");
+                            break;
+                        case 'year':
+                            counters.setInterval(3600);
+                            counters.setLimit(10);      // last ten years
+                            $("#milestone").text("Yearly");
+                            break;
+                        default:
+                            counters.setInterval(5);
+                            counters.setLimit(20);
+                            $("#milestone").text("Live");
+                    }
+
+                    // 
+                    // Restart counters:
+                    // 
+                    counters.reopen();
+                    counters.start();
+                };
+
+                // 
+                // On monitor change:
+                // 
+                $("button.counter").click(function () {
+                    monitor = $(this).attr('id');
+                    context = $("div ." + monitor);
+
+                    $("button.counter").addClass("btn-primary");
+
+                    activate();
+                });
+
+                // 
+                // On delta mode change:
+                // 
+                $("#delta").click(function () {
+                    counters.setDelta($(this).prop('checked'));
+                    counters.reopen();
+                    counters.start();
+                });
+
+                // 
+                // On milestone zoom in:
+                // 
+                $("#zoom-in").click(function () {
+                    $("#zoom-out").removeClass('disabled');
+                    if (!counters.decrementMilestone()) {
+                        $(this).addClass('disabled');
+                    }
+                    onMilestoneChanged();
+                });
+
+                // 
+                // On milestone zoom out:
+                // 
+                $("#zoom-out").click(function () {
+                    $("#zoom-in").removeClass('disabled');
+                    if (!counters.incrementMilestone()) {
+                        $(this).addClass('disabled');
+                    }
+                    onMilestoneChanged();
+                });
+            }
+
+            // 
+            // Tell counters object to close/destroy any opened counters
+            // and initialize itself with performance counter data for
+            // selected monitor.
+            // 
+            function activate() {
+                $("div .monitor").hide();
+                $("div ." + monitor).show();
+
+                $("button#" + monitor).toggleClass("btn-primary");
+
+                counters.setCounter();
+                counters.setDelta($(this).prop('checked'));
+
+                fetch(baseURL + 'utility/monitor/counter/' + monitor + '?name=1&data=0', sources);
+            }
+
+            // 
+            // Load counter sources. This is an array of availible names 
+            // within this monitor.
+            // 
+            function sources(content) {
+                $("div.sources").empty();
+
+                if (content.name !== false) {
+                    var length = content.name.length, select;
+
+                    select = "<select class=\"sources\" id=\"sources\">";
+                    for (var i = 0; i < length; ++i) {
+                        select += "<option name=\"" + content.name[i] + "\">" + content.name[i] + "</option>";
+                    }
+                    select += "</select>";
+
+                    $("div.sources").append(select);
+                    $("#sources").change(function () {
+                        counters.setSource($(this).val());
+                        counters.reopen();
+                        counters.start();
+                    });
+
+                    counters.setSource(content.name[0]);
+                } else {
+                    counters.setSource();
+                }
+
+                counters.close();
+                counters.open(monitor, context);
+                counters.start();
+            }
+
+            counters.setUrl(baseURL + 'utility/monitor/counter');
+            counters.setLimit(20);
+            counters.setInterval(5);
+
+            fetch(baseURL + 'utility/monitor/counters', initialize);
+        })
+</script>

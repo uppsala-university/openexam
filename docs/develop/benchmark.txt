@@ -1,0 +1,40 @@
+
+    **********************************
+     About benchmarking the system.
+    **********************************
+
+
+** Apache (AB test):
+
+   Use the ab* test tools bundled with Apache web server for simple performance test. First login 
+   using a web browser, open the cookies manager and copy the session cookie value. Then use it to 
+   run various test:
+
+   o) Measure answer updates. The payload is in post.txt:
+
+        bash$> ab2-ssl -n 1000 -c 20 -C PHPSESSID=hebdam42udmo63i9caaqp4l7u6 -p post.txt \
+                https://localhost/openexam/core/ajax/student/answer/update 
+
+   o) Measure index page loading:
+
+        bash$> ab2-ssl -n 1000 -c 20 -C PHPSESSID=hebdam42ud15t63i9caaqp4l7u6 \
+                https://lcoalhost/openexam/exam/index
+
+   Use standard tools to observe effect (e.g open sockets, memory usage, database threads).
+
+** Simulation:
+
+   Compile the tool under admin/simulate to run real world simulations on the system. While
+   ab*-test measure connection statistics, the simulate tool has intrinsic knowledge and can
+   simulate normal work seen on the system (e.g. someone reading all questions before going
+   on to answer one of them). 
+
+   As it knows the system, it can also parse response and detect errors, giving a more complete
+   view of overall performance.
+
+        bash$> cd admin/simulate
+        bash$> make
+        bash$> ./simulate -f clients.txt
+
+   
+// Anders Lövgren, 2016-05-29

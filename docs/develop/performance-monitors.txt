@@ -1,0 +1,43 @@
+
+    **********************************
+     Performance monitors.
+    **********************************
+    
+
+** General:
+
+    Performance monitors are implemented in two pieces: 
+
+        1. Collectors are the backend that feeds data to the performance table.
+        2. Counters are the front that queries the performance table.
+
+    If performance data is expected to be useful except as live data (e.g. for tuning system
+    performance), then store data in the performance table. The performance table is excluded
+    from audit (unconditionally by overriding system configuration).
+
+    The counters can be plugged in to act as the data source for controllers serving data. Its
+    important that counters are fast and low on resources. A counter is not required to have a
+    collector, it could be all live data, possibly gathered from some network service.
+
+** Extending:
+
+    The performance monitor framework are located under app/library/Monitor/Performance
+
+** Collectors:
+
+    Register the collector in the Performance model if it's going to save performance data. 
+    Collectors don't have to save data, one exception could be a collector that is sending
+    live data using a socket connection.
+
+** Counters:
+
+    New counters can be added in app/library/Monitor/Performance/Counter. To make the counter 
+    available, register it in the Performance class.
+
+** Other:
+
+    Consider install a resource monitoring tool like Munin: 
+    http://munin-monitoring.org/
+
+
+// Anders Lövgren, 2016-05-30

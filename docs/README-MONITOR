@@ -1,0 +1,198 @@
+
+    ************************************
+     README FOR PERFORMANCE MONITORING
+    ************************************
+
+** INTRODUCTION:
+
+    Performance monitors consists of collectors, counters and triggers. The collectors is 
+    responsible for collecting data from various sources (e.g. disk or network) and store data 
+    in the performance table.
+
+    Triggers are attached to collectors and can have various functionality depending on their
+    hosting collector. Two generic trigger are 'timeline' and 'cleanup' that can be attached 
+    to any performance collector.
+
+    Collected data is accessed through performance counters (one for each collector) either using 
+    the performance task or viewed in a web browser (from utility/monitor/). Collection of data is 
+    done by running the performance task:
+
+        # Collect server performance:
+        bash$> php openexam.php --performance --server
+
+        # Collect Apache statistics:
+        bash$> php openexam.php --performance --apache
+
+    Think of collectors as the backend and counters as the frontend for performance monitoring.
+    The triggers acts as a delegates between the collector data storage and perform various 
+    actions based on observed data.
+
+** CONFIGURATION:
+
+    Configuration is done in app/config/config.def. The key is 'monitor', possibly containing
+    the sub keys 'trigger' and 'counter'. 
+
+    The 'trigger' key defines default options for triggers. It can contain one or more triggers
+    having an array of options or a boolean value. Triggers listed here are applied to all 
+    counters, but can be specialized per counter.
+
+    If an trigger is not listed under 'trigger', then it can not be applied on any counter.
+
+** COUNTERS/COLLECTORS:
+
+    The counters and collectors share the same name. When configuring a counter, its actually
+    the collector for that counter that is configured.
+
+    All collectors accepts an optional rate parameter. For parameters accepting an array, use
+    a colon (':') to separate values. These are all collectors and their values:
+
+    array(
+        'apache' => array(      // Apache web server:
+            'rate' => num,      // - The sample rate
+            'user' => string    // - Web server user
+        ),
+        'disk' => array(        // Disk statistics
+            'rate' => num,      // - The sample rate
+            'disk' => string    // - The disk name, e.g. sda
+        ),
+        'fs' => array(          // File system statistics
+            'rate' => num,      // - The sample rate
+            'path' => string,   // - The path (e.g. /home or /home:/var)
+            'type' => string    // - The filesystem type (e.g. ext4 or ext4:btrfs)
+        ),
+        'mysql' => array(       // MySQL database
+            'rate' => num       // - The sample rate
+        ),
+        'net' => array(         // Network
+            'rate' => num,      // - The sample rate
+            'name' => string    // - The NIC name(s) (e.g. eth0 or eth1:br0)
+        ),
+        'part' => array(        // Disk partition
+            'rate' => num,      // - The sample rate
+            'part' => string    // - The partition name (e.g. /dev/sda1 or /dev/md0)
+        ),
+        'server' => array(      // Linux server
+            'rate' => num       // - The sample rate
+        )
+    )
+    
+** TRIGGERS:
+
+    The cleanup and timeline triggers is used to manage performance data stored in the 
+    database. If these are not run, then either the database will grow in size or browse 
+    data will be missing. Its fine to tweak values from their default settings though.
+
+    array(
+        'cleanup' => array(     // Periodical cleanup of performance data
+            'live'   => num,    // - Cleanup live data older than num seconds
+            'minute' => num,    // - Cleanup minute milestones older than num seconds
+            'hour'   => num,    // - Cleanup hourly milestones older than num seconds
+            'day'    => num,    // - Cleanup daily milestones older than num seconds
+            'week'   => num     // - Cleanup weekly milestones older than num seconds
+        ),
+        'timeline' => array(    // Generate milestones
+            'minute' => bool,   // - Insert minute milestones.
+            'hour'   => bool,   // - Insert hourly milestones.
+            'day'    => bool,   // - Insert daily milestones.
+            'week'   => bool,   // - Insert weekly milestones.
+            'month'  => bool,   // - Insert monthly milestones.
+            'year'   => bool    // - Insert yearly milestones.
+        )
+    )
+
+    For the cleanup trigger its possible to disable cleanup of live data or milestones by passing
+    false, see example below.
+
+** FAIRNESS:
+
+    All performance collectors are implemented to have minimal footprint. Running the full set 
+    should consume ~0.1% of CPU. 
+
+    However, because performance data is saved in the database it will add up in the ordinary SQL 
+    counter. It could be solved using a separate instance (not a separate database), but for a
+    busy system this disturbance should only be marginal.
+    
+** EXAMPLES:
+
+    // 
+    // Disable performance counters:
+    // 
+    'monitor' => false
+
+    // 
+    // Enable default set of performance counters and triggers:
+    // 
+    'monitor' => true
+
+    // 
+    // Enable default set of performance counters, but only enable the timeline trigger (that is
+    // responsible for periodical insert of milestones (average for a period of time):
+    // 
+    'monitor' => array(
+            'trigger' => array(
+                    'timeline' => true
+            )
+    )
+
+    // 
+    // Enable only the 'net' and 'server' performance counters. Use default sample rate and
+    // triggers:
+    // 
+    'monitor' => array(
+            'counter' => array(
+                    'net'    => true,
+                    'server' => true
+
+            )
+    )
+
+    // 
+    // Only enable the Apache performance counter using 20 sec sample rate. The timeline trigger
+    // will generate milestones each hour:
+    // 
+    'monitor' => array(
+            'trigger' => array(
+                    'timeline' => array(
+                            'hour' => true
+                    )
+            ),
+            'counter' => array(
+                    'apache' => array(
+                            'params' => array(
+                                    'rate' => 20
+                            )
+                    )
+            )
+    )
+
+    // 
+    // Enable/disable triggers individual on an counter:
+    // 
+    'monitor' => array(
+            'counter' => array(
+                    'apache' => array(
+                            'trigger' => array(
+                                    'timeline' => true,
+                                    'cleanup'  => false
+                            )
+                    )
+            )
+    )
+
+    // 
+    // Enable trigger warning if more than 90% of disk space is in use:
+    // 
+    'monitor' => array(
+            'counter' => array(
+                    'disk' => array(
+                            'trigger' => array(
+                                    'diskspace' => array(
+                                        'used' => 90
+                                    )
+                            )
+                    )
+            )
+    )
+
+
+// Anders Lövgren, 2016-06-10
