@@ -14,7 +14,9 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Catalog\Principal;
+use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
+use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
@@ -144,6 +146,14 @@ class Student extends Role
                     array(
                         "field"   => array("code", "exam_id"),
                         "message" => "The code '$this->code' is already in use on this exam"
+                    )
+                ));
+
+                $this->validate(new RegexValidator(
+                    array(
+                        "field"   => "code",
+                        "message" => "The anonymous code '$this->code' is not matching expected format",
+                        "pattern" => Pattern::CODE
                     )
                 ));
 
