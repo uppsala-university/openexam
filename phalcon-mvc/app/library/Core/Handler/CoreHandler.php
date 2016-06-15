@@ -68,7 +68,7 @@ class CoreHandler extends Component
                 if ($role == Roles::TRUSTED || $role == Roles::SYSTEM) {
                         throw new SecurityException("The trusted role is not permitted here.", SecurityException::ACTION);
                 }
-                
+
                 $this->user->setPrimaryRole($role);
         }
 
@@ -385,12 +385,11 @@ class CoreHandler extends Component
          */
         private function error($model, $action)
         {
-                $this->logger->system->begin();
                 foreach ($model->getMessages() as $message) {
-                        $this->logger->system->error($message);
+                        $this->logger->system->error(print_r($message, true));
                 }
-                $this->logger->system->commit();
 
+                $message = $model->getMessages()[0]->getMessage();
                 throw new Exception("Failed $action object ($message).");
         }
 
@@ -401,7 +400,6 @@ class CoreHandler extends Component
          */
         private function report($exception, $model, $action)
         {
-                $this->logger->system->begin();
                 $this->logger->system->error(
                     print_r(array(
                         'Exception' => get_class($exception),
@@ -412,7 +410,6 @@ class CoreHandler extends Component
                         ), true
                     )
                 );
-                $this->logger->system->commit();
         }
 
 }
