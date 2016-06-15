@@ -16,7 +16,7 @@ namespace OpenExam\Controllers\Service;
 use OpenExam\Controllers\ServiceController;
 
 /**
- * Description of SoapController
+ * Common base class for SOAP controllers.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
