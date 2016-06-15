@@ -240,7 +240,7 @@ $config = new Config(
                         'xcache'   => true,
                         'apc'      => true,
                         'memcache' => true,
-                        'file'     => true
+                        'file'     => false
                 ),
                 /**
                  * Cached object lifetime:
@@ -270,14 +270,18 @@ $config = new Config(
                         'cacheDir' => BASE_DIR . '/cache/app/'
                 )
         ),
+        /*
+         * System performance profiler config. 
+         */
+        'profile' => false,
         /**
          * Audit is disabled by default.
          */
-        'audit'       => false,
+        'audit'   => false,
         /**
          * Performance monitoring is disabled by default.
          */
-        'monitor'     => false
+        'monitor' => false
     )
 );
 

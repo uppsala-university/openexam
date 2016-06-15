@@ -112,6 +112,12 @@
     counter. It could be solved using a separate instance (not a separate database), but for a
     busy system this disturbance should only be marginal.
     
+** PROFILING:
+
+    System profiling can be enabled in config.def. This is kind of a development option, so the
+    complete story is documented in docs/develop/profiler.txt. The default option is that profiling 
+    is disabled.
+
 ** EXAMPLES:
 
     // 

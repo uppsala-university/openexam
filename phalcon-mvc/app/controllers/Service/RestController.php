@@ -58,6 +58,13 @@ class RestController extends ServiceController
         {
                 $this->response->setStatusCode($response->status, null);
                 $this->response->setJsonContent($response->result);
+                
+                if ($this->profiler->enabled()) {
+                        $this->response->setHeader(Profiler::HEADER, sprintf(
+                                "%f:%f:%f", $this->request->getHeader(Profiler::HEADER), $this->profiler->initial(), microtime(true)
+                        ));
+                }
+                
                 $this->response->send();
         }
 

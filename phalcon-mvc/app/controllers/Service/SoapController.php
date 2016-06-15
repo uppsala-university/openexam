@@ -30,7 +30,11 @@ class SoapController extends ServiceController
 
         protected function sendResponse($response)
         {
-                // Ignore
+                if ($this->profiler->enabled()) {
+                        $this->response->setHeader(Profiler::HEADER, sprintf(
+                                "%f:%f:%f", $this->request->getHeader(Profiler::HEADER), $this->profiler->initial(), microtime(true)
+                        ));
+                }
         }
 
         /**

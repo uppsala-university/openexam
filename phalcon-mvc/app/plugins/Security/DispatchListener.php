@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security;
 
+use OpenExam\Library\Monitor\Performance\Profiler;
 use OpenExam\Plugins\Security\Dispatcher\DispatchHandler;
 use Phalcon\Events\Event;
 use Phalcon\Mvc\Dispatcher;
@@ -69,6 +70,12 @@ class DispatchListener extends Plugin
                                 ));
                                 return true;
                         } else {
+                                // 
+                                // Add profiling checkpoints:
+                                // 
+                                $this->profiler->add("request", $this->request->getHeader(Profiler::HEADER));
+                                $this->profiler->add("dispatch");
+
                                 // 
                                 // Get target information:
                                 // 

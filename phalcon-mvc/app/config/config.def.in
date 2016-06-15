@@ -212,6 +212,19 @@ return array(
                 )
         ),
         /**
+         * System performance profiler config. Use 'profile' => false or 
+         * profile->start => 0 to disable.
+         */
+        'profile'     => array(
+                'gc'     => true, // Run garbage collection
+                'memory' => true, // Track memory usage
+                'time'   => true, // Track time spent
+                'start'  => 0,    // Start mode (0 == disable, 1 == on demand, 2 == always)
+                'tlimit' => 0,    // Execution time threshold value (sec as float).
+                'mlimit' => 0,    // Memory usage threshold value (in bytes).
+                'atexit' => true  // Time 
+        ),
+        /**
          * See docs/README-AUDIT before enabling/configure this option.
          */
         'audit'       => false,

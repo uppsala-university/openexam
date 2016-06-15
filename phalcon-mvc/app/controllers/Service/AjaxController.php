@@ -14,6 +14,7 @@
 namespace OpenExam\Controllers\Service;
 
 use OpenExam\Controllers\ServiceController;
+use OpenExam\Library\Monitor\Performance\Profiler;
 use OpenExam\Library\WebService\Common\Exception as ServiceException;
 use OpenExam\Library\WebService\Common\ServiceHandler;
 use OpenExam\Library\WebService\Common\ServiceRequest;
@@ -92,6 +93,13 @@ class AjaxController extends ServiceController
                                 'action' => $action,
                                 'return' => $response->result
                 )));
+
+                if ($this->profiler->enabled()) {
+                        $this->response->setHeader(Profiler::HEADER, sprintf(
+                                "%f:%f:%f", $this->request->getHeader(Profiler::HEADER), $this->profiler->initial(), microtime(true)
+                        ));
+                }
+
                 $this->response->send();
         }
 

@@ -1,0 +1,56 @@
+Use the profiler to measure time spent at various checkpoints in the system. The profiler can
+be enabled always, manual or on demand. If disabled, then all calls are noop.
+
+** Naming:
+
+The default name is profile. It's possible to have multiple profiler by adding an separate
+service or creating a profile object for some class:
+
+    $profiler = new profiler(new Config(array(...)));
+    $profiler->setName("myprofiler");
+
+** Checkpoints:
+
+Add checkpoints at various places:
+
+    $this->profiler->add("dispatch");   // Log dispatch time/memory
+
+** Measure:
+
+It also possible to measure some system call. The measure is keyed by the name, so its possible
+to have multiple active at same time:
+
+    $this->profiler->start("name");
+    // ... Some function call taking long time or consuming memory
+    $this->profiler->stop("name");
+
+    $result = $this->profiler->getResult("name");
+
+** Throttling:
+
+Client side throttling is supported by passing "X-Profile: <float>" in the HTTP header in 
+the request. The response will contain three values (all colon separated): Initial passed value, 
+the start serving time and the finished serving time.
+
+These values can be used on client side to either warn about network latency or high system
+load. Other possible applications is to dynamic adapt the request rate to refrain from overloading
+the server.
+
+Example:
+
+    bash$> curl -b PHPSESSID=eqj6v4d31f4dm171tn5unubo76 \
+            -H "X-Profile: 1465872028.5135" \
+            http://localhost/phalcon-svn/exam/index -v
+    *   Trying ::1...
+    * Connected to localhost (::1) port 80 (#0)
+    > GET /phalcon-svn/exam/index HTTP/1.1
+    > Host: localhost
+    > User-Agent: curl/7.45.0
+    > Accept: */*
+    > Cookie: PHPSESSID=eqj6v4d31f4dm171tn5unubo76
+    > X-Profile: 1465872028.5135
+
+The profiler has to be enabled for profile data to be sent back. If disabled, then only the time
+before sending response is returned.
+
+// Anders Lövgren, 2016-06-14

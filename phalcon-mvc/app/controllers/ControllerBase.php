@@ -36,6 +36,8 @@ abstract class ControllerBase extends Controller
                 $errormask = (E_COMPILE_ERROR | E_CORE_ERROR | E_ERROR | E_RECOVERABLE_ERROR | E_USER_ERROR);
                 set_error_handler(array($this, 'error_handler'), $errormask);
                 set_exception_handler(array($this, 'exceptionAction'));
+                
+                $this->profiler->add("controller");
         }
 
         /**
