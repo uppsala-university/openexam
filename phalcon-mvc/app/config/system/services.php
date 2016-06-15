@@ -75,28 +75,12 @@ $di->set('modelsMetadata', function() use($config) {
  * Setup the models cache service.
  */
 $di->set('modelsCache', function() use($di, $config) {
-        if (extension_loaded('xcache')) {
-                return new Phalcon\Cache\Backend\Xcache(
-                    new Phalcon\Cache\Frontend\Data(
-                    array(
-                        "lifetime" => $config->cache->lifetime->model
-                    )
-                ));
-        } elseif (extension_loaded('apc')) {
-                return new Phalcon\Cache\Backend\Apc(
-                    new Phalcon\Cache\Frontend\Data(
-                    array(
-                        "lifetime" => $config->cache->lifetime->model
-                    )
-                ));
-        } else {
-                return new Phalcon\Cache\Backend\Memory(
-                    new Phalcon\Cache\Frontend\Data(
-                    array(
-                        "lifetime" => $config->cache->lifetime->model
-                    )
-                ));
-        }
+        return new Phalcon\Cache\Backend\Memory(
+            new Phalcon\Cache\Frontend\Data(
+            array(
+                "lifetime" => $config->cache->lifetime->model
+            )
+        ));
 }, true);
 
 /**
@@ -307,7 +291,8 @@ $di->set('location', function() {
  * Multi-level backend binary cache.
  */
 $di->set('cache', function() use($config) {
-        return new OpenExam\Library\Core\Cache($config);
+        return (new OpenExam\Library\Core\Cache($config))
+                ->getInstance();
 }, true);
 
 /**

@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Model\Behavior;
 
+use Phalcon\Mvc\ModelInterface;
+
 /**
  * Filter text fields.
  * 
@@ -31,7 +33,7 @@ class FilterText extends ModelBehavior
          */
         const PATTERN_OPENXML_COMMENT = "/<\!--\[if gte mso \d+\]>.*<\!\[endif\]-->/smU";
 
-        public function notify($type, $model)
+        public function notify($type, ModelInterface $model)
         {
                 // 
                 // Strip comments from text fields:

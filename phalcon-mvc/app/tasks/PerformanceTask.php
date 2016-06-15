@@ -340,7 +340,7 @@ class PerformanceTask extends MainTask implements TaskInterface
                                 $this->setProcessOwner($this->_options['uid']);
                         }
                 }
-
+                
                 $performance = CollectorFactory::create($this->_options['counter'], $params);
                 $performance->start();
         }

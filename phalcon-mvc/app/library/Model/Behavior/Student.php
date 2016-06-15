@@ -16,6 +16,8 @@ namespace OpenExam\Library\Model\Behavior;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Model\Exception;
+use OpenExam\Models\Student as StudentModel;
+use Phalcon\Mvc\ModelInterface;
 
 /**
  * Behavior for the student model.
@@ -28,9 +30,9 @@ class Student extends ModelBehavior
          * Receives notifications from the Models Manager
          *
          * @param string $type The event type.
-         * @param \OpenExam\Models\Student $model The target model.
+         * @param StudentModel $model The target model.
          */
-        public function notify($type, $model)
+        public function notify($type, ModelInterface $model)
         {
                 if (($options = $this->getOptions($type))) {
                         // 

@@ -22,8 +22,6 @@ use OpenExam\Models\Student;
 use OpenExam\Models\Topic;
 use Phalcon\Mvc\View;
 
-//use  OpenExam\Library\Globalization\Translate;
-
 /**
  * Controller for loading Exam pages
  *

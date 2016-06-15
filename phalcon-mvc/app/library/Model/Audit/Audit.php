@@ -117,7 +117,7 @@ class Audit extends ModelBehavior
          * @param string $type The event type.
          * @param ModelInterface $model The target model.
          */
-        public function notify($type, $model)
+        public function notify($type, ModelInterface $model)
         {
                 if (($options = $this->getOptions($type))) {
                         $options = new AuditConfig($options);

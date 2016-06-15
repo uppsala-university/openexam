@@ -1,17 +1,17 @@
 <!-- Main area -->
 
-<?=Phalcon\Tag::stylesheetLink('css/tablesorter.default.css'); ?>
-<?=Phalcon\Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
+<?= Phalcon\Tag::stylesheetLink('css/tablesorter.default.css'); ?>
+<?= Phalcon\Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
 
 <?php
 $i = 0;
 $stList = array();
-$students = $exam->getStudents();
-foreach ($students as $student):
+
+foreach ($exam->students as $student) {
         $stList[$i]["id"] = $student->id;
         $stList[$i]["value"] = $student->user . " - " . $student->code;
         $i++;
-endforeach;
+}
 
 ?>
 <div id="st-mng-wrapper" exam-id="<?= $this->request->getPost('exam_id') ?>">
@@ -116,162 +116,147 @@ endforeach;
         </div>
         <div id="tabs-2">
             <h4 style="float:left">Registered students in this exam</h4>
-            
+
             <div style="clear:both"></div>
-            
-            <?php if(!count($students)):?>
-            <div id="no-student-msg">
-                <em>No students have been added to the exam yet.</em>
-            </div>
-            <?php else:?>
-            <div id="print-students-list" style="float:left; display: inline; margin-bottom: 10px; margin-right: 5px;">        
-                <span class="btn btn-success">
-                        <i class="fa fa-print"></i>
-                        <span>Download</span>
-                </span>
-            </div>                                
 
-            <div style="float:left; margin-bottom: 10px;">
-                <span id='del-st-btn' class="btn btn-danger" style="display: none">
-                        <i class="fa fa-trash-o"></i>
-                        <span></span>
-                </span>
-            </div>
-            <div style="float:right">
-                <input id="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
-                <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
-            </div>
-            <table style="width:100%" class="tablesorter">
-                <thead>
-                    <tr>
-                        <th class="no-sort"><input id="select_all_students" type="checkbox" value="1"></th>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Person no.</th>
-                        <th>Start time</th>
-                        <th>End time</th>
-                        <th>Code</th>
-                        <th>Tag</th>
-                    </tr>    
-                </thead>
-                <tbody>
-                <?php foreach ($students as $student): ?>
-                <tr style="background-color:#D9ECF2;">
-                        <td><input name="students[]" type="checkbox" value="<?= $student->id ?>"></td>
-                        <td>
-                            <a href="#" data-id="<?=$student->id?>" class="st-exam-detail" style="color:blue">
-                                <?=$this->helper->getCatalogAttribute($student->user, 'name')?>
-                            </a>
-                        </td>
-                        <td><?=$student->user?></td>
-                        <td><?=$this->helper->getCatalogAttribute($student->user, 'pnr')?></td>
-                        <td>
-                            <span style="color:blue; cursor: pointer" class="st-exam-time" for="starttime" exam-date="<?=!empty($exam->starttime)?date("Y-m-d", strtotime($exam->starttime)):"";?>">
-                                <?=!empty($student->starttime)?date("H:i", strtotime($student->starttime)):"---"?>
-                            </span>
-                        </td>
-                        <td>
-                            <span style="color:blue; cursor: pointer" class="st-exam-time" for="endtime" exam-date="<?=!empty($exam->starttime)?date("Y-m-d", strtotime($exam->endtime)):"";?>">
-                                <?=!empty($student->endtime)?date("H:i", strtotime($student->endtime)):"---"?>
-                            </span>
-                        </td> 
-                        <td><?=$student->code?></td>
-                        <td><?=$student->tag?></td>
-                </tr>
-                <tr class="st-detail-rows" style="display:none;" id="st-detail-row<?=$student->id?>">
-                    <td colspan="10" style="background-color:#D9ECF2;">
-                        <?php $studentLocks = $student->getLocks();?>
-                        <h2>Connection</h2>
-                        <div id="st-conn-details">
-                            <?php 
-                            foreach($studentLocks as $lock):
-                                $computer   = $lock->getComputer();
-                                $room       = $computer->getRoom();
-                                print "<b>FQHN:</b> " .$computer->hostname." (".$computer->ipaddr.")<br>";
-                                print "<b>Place:</b> ".$room->name." (".$room->description.")";
-                            endforeach;
-                            
-                            if(!count($studentLocks)):
-                                print "Student has not logged in to the OpenExam yet so no connections found.";
-                            endif;
-                            ?>
-                        </div>
-                        <br>
-                        <div>
-                            <?php if(count($studentLocks)):?>
-                                <?php if($studentLocks[0]->status == 'approved'):?>
-                                <input id="unlock-student" data-id="<?=$studentLocks[0]->id?>" type="button" value="Unlock"> 
-                                <?php else:?>
-                                <input id="approve-student" data-id="<?=$studentLocks[0]->id?>" type="button" value="Approve">
-                                <?php endif;?>
-                            <?php endif;?>
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-            <?php endif;?>
-<!--  
+            <?php if (!count($exam->students)): ?>
+                    <div id="no-student-msg">
+                        <em>No students have been added to the exam yet.</em>
+                    </div>
+            <?php else: ?>
+                    <div id="print-students-list" style="float:left; display: inline; margin-bottom: 10px; margin-right: 5px;">        
+                        <span class="btn btn-success">
+                            <i class="fa fa-print"></i>
+                            <span>Download</span>
+                        </span>
+                    </div>                                
 
-            <ul class="student-list" style="list-style:none; max-height:500px; overflow:auto; margin-left:0px" >
-                <li style="float: left; background-color: #FEFF99; border: 1px solid rgb(222, 222, 222); padding: 5px; margin:2px; display:none">
-                    <a href="#" class="prevent del-student" data-id=""><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
-                    <span></span>
-                </li>
-                <?php foreach ($students as $student): ?>
-                        <li style="float: left; background-color: #F5F5F5; border: 1px solid #dedede; padding: 5px; margin:2px">
-                            <a href="#" class="prevent del-student" data-id="<?= $student->id ?>"><i class="fa fa-trash" style="color:#C02E3C"></i></a> 
-                            <span><?= $student->user . " - " . $student->code ?></span>
-                        </li>
-                <?php endforeach; ?>
-            </ul>
--->
+                    <div style="float:left; margin-bottom: 10px;">
+                        <span id='del-st-btn' class="btn btn-danger" style="display: none">
+                            <i class="fa fa-trash-o"></i>
+                            <span></span>
+                        </span>
+                    </div>
+                    <div style="float:right">
+                        <input id="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
+                        <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
+                    </div>
+                    <table style="width:100%" class="tablesorter">
+                        <thead>
+                            <tr>
+                                <th class="no-sort"><input id="select_all_students" type="checkbox" value="1"></th>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Person no.</th>
+                                <th>Start time</th>
+                                <th>End time</th>
+                                <th>Code</th>
+                                <th>Tag</th>
+                            </tr>    
+                        </thead>
+                        <tbody>
+                            <?php foreach ($exam->students as $student): ?>
+                                    <tr style="background-color:#D9ECF2;">
+                                        <td><input name="students[]" type="checkbox" value="<?= $student->id ?>"></td>
+                                        <td>
+                                            <a href="#" data-id="<?= $student->id ?>" class="st-exam-detail" style="color:blue">
+                                                <?= $this->helper->getCatalogAttribute($student->user, 'name') ?>
+                                            </a>
+                                        </td>
+                                        <td><?= $student->user ?></td>
+                                        <td><?= $this->helper->getCatalogAttribute($student->user, 'pnr') ?></td>
+                                        <td>
+                                            <span style="color:blue; cursor: pointer" class="st-exam-time" for="starttime" exam-date="<?= !empty($exam->starttime) ? date("Y-m-d", strtotime($exam->starttime)) : ""; ?>">
+                                                <?= !empty($student->starttime) ? date("H:i", strtotime($student->starttime)) : "---" ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span style="color:blue; cursor: pointer" class="st-exam-time" for="endtime" exam-date="<?= !empty($exam->starttime) ? date("Y-m-d", strtotime($exam->endtime)) : ""; ?>">
+                                                <?= !empty($student->endtime) ? date("H:i", strtotime($student->endtime)) : "---" ?>
+                                            </span>
+                                        </td> 
+                                        <td><?= $student->code ?></td>
+                                        <td><?= $student->tag ?></td>
+                                    </tr>
+                                    <tr class="st-detail-rows" style="display:none;" id="st-detail-row<?= $student->id ?>">
+                                        <td colspan="10" style="background-color:#D9ECF2;">
+                                            <?php $studentLocks = $student->getLocks(); ?>
+                                            <h2>Connection</h2>
+                                            <div id="st-conn-details">
+                                                <?php
+                                                foreach ($studentLocks as $lock):
+                                                        $computer = $lock->getComputer();
+                                                        $room = $computer->getRoom();
+                                                        print "<b>FQHN:</b> " . $computer->hostname . " (" . $computer->ipaddr . ")<br>";
+                                                        print "<b>Place:</b> " . $room->name . " (" . $room->description . ")";
+                                                endforeach;
 
+                                                if (!count($studentLocks)):
+                                                        print "Student has not logged in to the OpenExam yet so no connections found.";
+                                                endif;
+
+                                                ?>
+                                            </div>
+                                            <br>
+                                            <div>
+                                                <?php if (count($studentLocks)): ?>
+                                                        <?php if ($studentLocks[0]->status == 'approved'): ?>
+                                                                <input id="unlock-student" data-id="<?= $studentLocks[0]->id ?>" type="button" value="Unlock"> 
+                                                        <?php else: ?>
+                                                                <input id="approve-student" data-id="<?= $studentLocks[0]->id ?>" type="button" value="Approve">
+                                                        <?php endif; ?>
+                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+<?php endif; ?>
             <div style="clear:both"></div>
         </div>
     </div>
 </div>
 
 <script language="javascript">
-        console.log("<?=$_SERVER['SERVER_ADDR'];?>");
+        console.log("<?= $_SERVER['SERVER_ADDR']; ?>");
         var studentList = <?= json_encode($stList) ?>;
 
         $(function () {
 
             $('.tablesorter').tablesorter({
-                    widgets        : ['zebra', 'columns'],
-                    usNumberFormat : false,
-                    sortReset      : true,
-                    sortRestart    : true,
-                    sortList: [[0,0],[1,0]],
-                    headers: {
-                        '.no-sort' : {
-                            sorter: false
-                        }
-                  }
-            });	
+                widgets: ['zebra', 'columns'],
+                usNumberFormat: false,
+                sortReset: true,
+                sortRestart: true,
+                sortList: [[0, 0], [1, 0]],
+                headers: {
+                    '.no-sort': {
+                        sorter: false
+                    }
+                }
+            });
 
             $('.tabs').tabs();
-            
+
             $(".accordion").accordion({
                 heightStyle: "content"
             });
-/*
-            $(".search-students").autocomplete({
-                source: studentList,
-                select: function (event, ui) {
-                    newItem = $('.student-list > li:first').clone();
-                    newItem.find('span').html(ui.item.value).end()
-                            .find('a').attr('data-id', ui.item.id).end()
-                            .show();
-                    $('.student-list').empty();
-                    $('.student-list').append(newItem);
-                    $('.ui-autocomplete-input').val('');
-                }
-
-            });
-*/
+            /*
+             $(".search-students").autocomplete({
+             source: studentList,
+             select: function (event, ui) {
+             newItem = $('.student-list > li:first').clone();
+             newItem.find('span').html(ui.item.value).end()
+             .find('a').attr('data-id', ui.item.id).end()
+             .show();
+             $('.student-list').empty();
+             $('.student-list').append(newItem);
+             $('.ui-autocomplete-input').val('');
+             }
+             
+             });
+             */
 
             if (stEvents == 'loaded') {
                 return;
@@ -330,44 +315,44 @@ endforeach;
              $('.student-list').show();
              
              });*/
-            
+
             var updatingStExamTime = false;
-            
+
             $(document).on('click', '.st-exam-time', function () {
-                    var field   = $(this).attr('for');
-                    var currVal = jQuery.trim($(this).html());
-                    if(currVal.indexOf('<input') == -1 && !updatingStExamTime) {
-                        
-                        $('.st-exam-time-input').each(function(i, elem) {
-                                $(elem).parent().html($(elem).val()===''?'---':$(elem).val());
-                        });
-                        
-                        $(this).html(
-                                '<input class="st-exam-time-input" name="'+field+'" type="text" value="'+(currVal == '---' ? '' : currVal)+'" placeholder="HH:MM" style="height:13px; width:38px">'+ 
-                                '<input type="button" value="ok" class="st-exam-time-save">'
-                                );
-                        $(this).find('input[type=text]').focus();
-                    }
-                    updatingStExamTime = false;
-                    return false;
+                var field = $(this).attr('for');
+                var currVal = jQuery.trim($(this).html());
+                if (currVal.indexOf('<input') == -1 && !updatingStExamTime) {
+
+                    $('.st-exam-time-input').each(function (i, elem) {
+                        $(elem).parent().html($(elem).val() === '' ? '---' : $(elem).val());
+                    });
+
+                    $(this).html(
+                            '<input class="st-exam-time-input" name="' + field + '" type="text" value="' + (currVal == '---' ? '' : currVal) + '" placeholder="HH:MM" style="height:13px; width:38px">' +
+                            '<input type="button" value="ok" class="st-exam-time-save">'
+                            );
+                    $(this).find('input[type=text]').focus();
+                }
+                updatingStExamTime = false;
+                return false;
             });
-            
+
             $(document).on('click', '.st-exam-time-save', function () {
-                
+
                 var stData = [];
                 var stId = $(this).closest('tr').find('td>input[type=checkbox]').val();
                 var currVal = $(this).parent().find('input[type=text]').val();
                 var inputElem = $(this).parent().find("input[type=text]");
 
-                if($(inputElem).parent().attr('exam-date') == "") {
+                if ($(inputElem).parent().attr('exam-date') == "") {
                     alert("Failed to save data. Please set start date and time for the exam first.");
                     currVal = '';
                 } else {
 
-                    if($(inputElem).prop('name') === 'starttime') {
-                        stData.push({'id': stId, 'starttime' : $(inputElem).parent().attr('exam-date')+" "+currVal});
-                    } else if($(inputElem).prop('name') === 'endtime') {
-                        stData.push({'id': stId,  'endtime'  : $(inputElem).parent().attr('exam-date')+" "+currVal});
+                    if ($(inputElem).prop('name') === 'starttime') {
+                        stData.push({'id': stId, 'starttime': $(inputElem).parent().attr('exam-date') + " " + currVal});
+                    } else if ($(inputElem).prop('name') === 'endtime') {
+                        stData.push({'id': stId, 'endtime': $(inputElem).parent().attr('exam-date') + " " + currVal});
                     } else {
                         alert("Sorry, failed to save data");
                         return false;
@@ -377,48 +362,48 @@ endforeach;
                             baseURL + 'core/ajax/invigilator/student/update',
                             JSON.stringify(stData),
                             function (userData) {
-                                    //console.log(userData);
-                                    //onStudentInserted(userData);
+                                //console.log(userData);
+                                //onStudentInserted(userData);
                             }
                     );
                 }
-                
-                $(this).parent().html(currVal===''?'---':currVal);
+
+                $(this).parent().html(currVal === '' ? '---' : currVal);
                 updatingStExamTime = true;
-                
+
             });
 
-            $(document).on("click", "#unlock-student", function() {
+            $(document).on("click", "#unlock-student", function () {
                 ajax(
-                    baseURL + 'core/ajax/invigilator/lock/delete',
-                    {"id": $(this).attr('data-id')},
-                    function (status) {
-                       $("#unlock-student").hide(); 
-                       $("#st-conn-details").html("No connection found.");
-                    }
+                        baseURL + 'core/ajax/invigilator/lock/delete',
+                        {"id": $(this).attr('data-id')},
+                function (status) {
+                    $("#unlock-student").hide();
+                    $("#st-conn-details").html("No connection found.");
+                }
                 );
             });
-            
-            $(document).on("click", "#approve-student", function() {
+
+            $(document).on("click", "#approve-student", function () {
                 ajax(
-                    baseURL + 'core/ajax/invigilator/lock/update',
-                    {"id": $(this).attr('data-id'), "status": "approved"},
-                    function (status) {
-                       $("#unlock-student").show(); 
-                       $("#approve-student").hide();
-                    }
+                        baseURL + 'core/ajax/invigilator/lock/update',
+                        {"id": $(this).attr('data-id'), "status": "approved"},
+                function (status) {
+                    $("#unlock-student").show();
+                    $("#approve-student").hide();
+                }
                 );
             });
-            
-            
-            $(document).on("keyup", "#search-students", function() {
+
+
+            $(document).on("keyup", "#search-students", function () {
                 var value = jQuery.trim($(this).val());
 
-                $("table tr").each(function(index) {
+                $("table tr").each(function (index) {
                     if (index != 0 && !$(this).hasClass('st-detail-rows')) {
 
                         $row = $(this);
-                        $row.find("td").each(function(i, elem) {
+                        $row.find("td").each(function (i, elem) {
                             if (jQuery.trim($(elem).text()).indexOf(value) != 0) {
                                 $row.hide();
                             } else {
@@ -426,30 +411,30 @@ endforeach;
                                 $row.show();
                                 return false;
                             }
-                        });    
+                        });
                     }
                 });
-                
-                $(".tablesorter").trigger("update"); 
-                var sorting = [[0,0],[1,0]]; 
-                $(".tablesorter").trigger("sorton",[sorting]);                
+
+                $(".tablesorter").trigger("update");
+                var sorting = [[0, 0], [1, 0]];
+                $(".tablesorter").trigger("sorton", [sorting]);
             });
-            
+
             $(document).on('click', '.st-exam-detail', function () {
                 $('.st-detail-rows').hide();
                 var row = $(this).closest("tr");
-                $('#st-detail-row'+$(this).attr('data-id')).show(500).insertAfter(row);
+                $('#st-detail-row' + $(this).attr('data-id')).show(500).insertAfter(row);
                 return false;
             });
-            
-            $(".tablesorter").bind("sortBegin",function(e, table) {
+
+            $(".tablesorter").bind("sortBegin", function (e, table) {
                 $('.st-detail-rows').hide();
             });
-            
+
             $(document).on('change', '#select_all_students', function () {
-                $('input[name="students[]"]').prop("checked" , this.checked);
+                $('input[name="students[]"]').prop("checked", this.checked);
             });
-            
+
             $(document).on('click', '.del-student', function () {
                 var student = $(this);
                 if (confirm("Are you sure you want to delete this student?")) {
@@ -605,7 +590,7 @@ endforeach;
                                 if ($(this).text() !== "") {
                                     stuobj.tag = $(this).text();
                                 }
-                                break; 
+                                break;
                             case 'pnr':
                                 if ($(this).text() !== "" && stuobj.user === undefined) {
                                     stuobj.user = $(this).text();
@@ -630,45 +615,45 @@ endforeach;
                         JSON.stringify(stdata),
                         function (result) {
                             onStudentInserted(result)
-                        }); 
+                        });
             });
-            
+
             //Attach event for student deletion button
             $(document).on('change', 'input[name="students[]"], #select_all_students', function () {
                 //console.log($('input[name="students[]"]:checked').length);
-                if($('input[name="students[]"]:checked').length) {
-                        $('#del-st-btn > span').html("delete selected "+$('input[name="students[]"]:checked').length+ " students").parent().show();
+                if ($('input[name="students[]"]:checked').length) {
+                    $('#del-st-btn > span').html("Delete selected students (" + $('input[name="students[]"]:checked').length + ")").parent().show();
                 } else {
-                        $('#del-st-btn').hide();
+                    $('#del-st-btn').hide();
                 }
             });
-            
+
             //Delete selected student
-            $(document).on('click', '#del-st-btn', function() {
-                    if(confirm("Are you sure you want to "+$('#del-st-btn > span').html()+"?")) {
-                        
-                        var delStudent = [];
-                        $('input[name="students[]"]:checked').each(function(i, elem) {
-                                delStudent.push({'id': $(this).val()});
-                        });
-                        
-                        ajax(
+            $(document).on('click', '#del-st-btn', function () {
+                if (confirm("Are you sure you want to " + $('#del-st-btn > span').html() + "?")) {
+
+                    var delStudent = [];
+                    $('input[name="students[]"]:checked').each(function (i, elem) {
+                        delStudent.push({'id': $(this).val()});
+                    });
+
+                    ajax(
                             baseURL + 'core/ajax/invigilator/student/delete',
                             JSON.stringify(delStudent),
                             function (status) {
-                                    $('input[name="students[]"]:checked').closest('tr').remove();
+                                $('input[name="students[]"]:checked').closest('tr').remove();
                             }
-                        );
-                    }
+                    );
+                }
             });
-            
+
             // 
             // Handle print student list.
             // 
-            $(document).on("click", "#print-students-list", function() {
-                    var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
-                    window.location.href = baseURL + 'utility/export/students/' + examId + '/download'
+            $(document).on("click", "#print-students-list", function () {
+                var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
+                window.location.href = baseURL + 'utility/export/students/' + examId + '/download'
             });
-            
-        }); 
+
+        });
 </script>

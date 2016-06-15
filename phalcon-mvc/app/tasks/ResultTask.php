@@ -45,7 +45,7 @@ class ResultTask extends MainTask implements TaskInterface
          */
         private $_resdir;
 
-        public function __construct()
+        public function initialize()
         {
                 $this->_resdir = sprintf("%s/results", $this->config->application->cacheDir);
         }

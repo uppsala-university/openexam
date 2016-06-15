@@ -41,21 +41,41 @@ class PrefixRoute extends Phalcon\Mvc\Router\Group
 
 }
 
-/**
- * Route Gui - Public pages (e.g. "/index")
- */
 $router->add(
     "/", array(
-        "controller" => "public",
-        "action"     => "index",
-        "namespace"  => "OpenExam\Controllers\Gui",
+        "controller" => "index",
+        "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
 
 $router->add(
-    "/:action", array(
-        "controller" => "public",
-        "action"     => 1,
+    "/:controller", array(
+        "controller" => 1,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+$router->add(
+    "/:controller/:action", array(
+        "controller" => 1,
+        "action"     => 2,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+$router->add(
+    "/:controller/:action/:params", array(
+        "controller" => 1,
+        "action"     => 2,
+        "params"     => 3,
+        "namespace"  => "OpenExam\Controllers\Gui"
+    )
+);
+
+$router->add(
+    "/about", array(
+        "controller" => "index",
+        "action"     => "about",
         "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
@@ -98,20 +118,6 @@ $router->add(
         "action"     => 1,
         "namespace"  => "OpenExam\Controllers\Utility"
     )
-);
-
-$router->mount(
-    new PrefixRoute(array(
-        "prefix"    => "/",
-        "namespace" => "OpenExam\Controllers\Gui"
-    ))
-);
-
-$router->mount(
-    new PrefixRoute(array(
-        "prefix"    => "/utility",
-        "namespace" => "OpenExam\Controllers\Utility"
-    ))
 );
 
 $router->add(
@@ -159,6 +165,13 @@ $router->add(
         "questId"    => 2,
         "namespace"  => "OpenExam\Controllers\Gui"
     )
+);
+
+$router->mount(
+    new PrefixRoute(array(
+        "prefix"    => "/utility",
+        "namespace" => "OpenExam\Controllers\Utility"
+    ))
 );
 
 /**

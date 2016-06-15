@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Model;
 
 use Phalcon\Mvc\Model\Manager;
+use Phalcon\Mvc\ModelInterface;
 
 /**
  * Custom model manager.
@@ -80,9 +81,9 @@ class ModelManager extends Manager
         /**
          * Handle model events.
          * @param string $eventName
-         * @param \Phalcon\Mvc\ModelInterface $model
+         * @param ModelInterface $model
          */
-        public function notifyEvent($eventName, $model)
+        public function notifyEvent($eventName, ModelInterface $model)
         {
                 if ($eventName == 'afterCreate' ||
                     $eventName == 'afterUpdate' ||

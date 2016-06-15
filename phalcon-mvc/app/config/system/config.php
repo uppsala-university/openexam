@@ -1,5 +1,8 @@
 <?php
 
+use Phalcon\Config;
+use Phalcon\Logger;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -52,7 +55,7 @@ if (!defined('EXTERN_DIR')) {
  * These are the system default settings. Site local configuration can 
  * be done in app/config/config.def.
  */
-$config = new Phalcon\Config(
+$config = new Config(
     array(
         'application' => array(
                 'controllersDir' => APP_DIR . '/controllers/',
@@ -161,31 +164,31 @@ $config = new Phalcon\Config(
         'logging'     => array(
                 'debug'  => array(
                         'file'  => 'debug.log',
-                        'level' => Phalcon\Logger::DEBUG
+                        'level' => Logger::DEBUG
                 ),
                 'system' => array(
                         'syslog'   => 'openexam',
-                        'level'    => Phalcon\Logger::NOTICE,
+                        'level'    => Logger::NOTICE,
                         'option'   => LOG_NDELAY,
                         'facility' => LOG_LOCAL0
                 ),
                 'access' => array(
                         'file'  => 'access.log',
-                        'level' => Phalcon\Logger::INFO
+                        'level' => Logger::INFO
                 ),
                 'cache'  => array(
                         'file'  => 'cache.log',
-                        'level' => Phalcon\Logger::INFO
+                        'level' => Logger::INFO
                 ),
                 'auth'   => array(
                         'syslog'   => 'openexam',
-                        'level'    => Phalcon\Logger::INFO,
+                        'level'    => Logger::INFO,
                         'option'   => LOG_NDELAY,
                         'facility' => LOG_AUTH
                 ),
                 'test'   => array(
                         'file'  => 'phpunit.log',
-                        'level' => Phalcon\Logger::DEBUG
+                        'level' => Logger::DEBUG
                 )
         ),
         /**
@@ -281,21 +284,23 @@ $config = new Phalcon\Config(
 /**
  * Read the config protected configuration file:
  */
-$config->merge(
+$config->merge(new Config(
     include(CONFIG_DIR . '/config.def')
-);
+));
 
 /**
  * Merge user defined settings with system settings:
  */
-$config->merge(array(
+$config->merge(new Config(
+    array(
         'database' => array(
                 'adapter'  => $config->dbwrite->adapter,
                 'host'     => $config->dbwrite->host,
                 'username' => $config->dbwrite->username,
                 'password' => $config->dbwrite->password,
                 'dbname'   => $config->dbwrite->dbname
-        ),
+        )
+    )
 ));
 
 return $config;

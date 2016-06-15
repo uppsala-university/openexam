@@ -94,7 +94,11 @@ class UppdokService extends ServiceAdapter
                         $result[] = $principal;
                 }
 
-                return $this->setCacheData($cachekey, $result);
+                if (isset($cachekey)) {
+                        return $this->setCacheData($cachekey, $result);
+                } else {
+                        return $result;
+                }
         }
 
         /**

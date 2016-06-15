@@ -86,6 +86,9 @@ abstract class ServiceAdapter extends Component implements DirectoryService
                 if ($this->_lifetime == 0) {
                         return $result;
                 }
+                if (!isset($key)) {
+                        return $result;
+                }
                 if (!$this->cache->exists($key, $this->_lifetime)) {
                         $this->cache->save($key, $result, $this->_lifetime);
                 }

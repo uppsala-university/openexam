@@ -144,6 +144,11 @@ namespace OpenExam\Library\Globalization\Translate\Gettext {
                         return $this->_gettext->nquery($msgid1, $msgid2, $count, $params);
                 }
 
+                public function t($msgid, $params = null)
+                {
+                        return $this->_gettext->t($msgid, $params);
+                }
+
         }
 
 }

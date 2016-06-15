@@ -13,6 +13,11 @@
 
 namespace OpenExam\Library\Model\Behavior;
 
+use OpenExam\Library\Model\Exception;
+use OpenExam\Models\Corrector;
+use OpenExam\Models\Question as QuestionModel;
+use Phalcon\Mvc\ModelInterface;
+
 /**
  * Behavior for question model.
  * @author Anders Lövgren (QNET/BMC CompDept)
@@ -24,9 +29,9 @@ class Question extends ModelBehavior
          * Receives notifications from the Models Manager
          *
          * @param string $type The event type.
-         * @param \OpenExam\Models\Question $model The target model.
+         * @param QuestionModel $model The target model.
          */
-        public function notify($type, $model)
+        public function notify($type, ModelInterface $model)
         {
                 if ($type == 'afterCreate') {
                         $this->trustedContextCall(function($user) use($model) {
@@ -40,11 +45,11 @@ class Question extends ModelBehavior
                                 // 
                                 // Add caller as question corrector:
                                 // 
-                                $corrector = new \OpenExam\Models\Corrector();
+                                $corrector = new Corrector();
                                 $corrector->user = $model->user;
                                 $corrector->question_id = $model->id;
                                 if ($corrector->save() == false) {
-                                        throw new \OpenExam\Library\Model\Exception("Failed add corrector by behavior (" . $corrector->getMessages()[0] . ")");
+                                        throw new Exception("Failed add corrector by behavior (" . $corrector->getMessages()[0] . ")");
                                 }
                         }, $model->getDI());
                 }

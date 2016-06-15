@@ -15,6 +15,7 @@ namespace OpenExam\Library\Core;
 
 use Phalcon\DI\Injectable as PhalconDI;
 use Phalcon\DI\InjectionAwareInterface;
+use Phalcon\DiInterface;
 use Phalcon\Logger\Formatter\Line as LineFormatter;
 
 /**
@@ -79,7 +80,7 @@ class Formatter extends LineFormatter implements InjectionAwareInterface
                 return $this->_msgfmt;
         }
 
-        public function format($message, $type, $timestamp, $context)
+        public function format($message, $type, $timestamp, $context = null)
         {
                 if (isset($this->_di)) {
                         if (!$this->_user) {
@@ -99,7 +100,7 @@ class Formatter extends LineFormatter implements InjectionAwareInterface
                 return $this->_di;
         }
 
-        public function setDI($dependencyInjector)
+        public function setDI(DiInterface $dependencyInjector)
         {
                 $this->_di = $dependencyInjector;
         }

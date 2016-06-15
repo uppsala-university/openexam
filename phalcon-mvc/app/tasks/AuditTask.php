@@ -26,8 +26,8 @@ class AuditTask extends MainTask implements TaskInterface
          * @var array 
          */
         private $_options;
-
-        public function __construct()
+        
+        public function initialize()
         {
                 if (!$this->getDI()->has('audit')) {
                         throw new Exception("The audit service is missing");

@@ -245,9 +245,11 @@ class LdapService extends ServiceAdapter
                 // 
                 // Return entries and attribute map:
                 // 
-                return $this->setCacheData(
-                        $cachekey, array('entries' => $entries, 'attrmap' => $attrmap)
-                );
+                if (isset($cachekey)) {
+                        return $this->setCacheData($cachekey, array('entries' => $entries, 'attrmap' => $attrmap));
+                } else {
+                        return array('entries' => $entries, 'attrmap' => $attrmap);
+                }
         }
 
         /**
@@ -267,6 +269,8 @@ class LdapService extends ServiceAdapter
                         if ($this->cache->exists($cachekey, $this->_lifetime)) {
                                 return $this->cache->get($cachekey, $this->_lifetime);
                         }
+                } else {
+                        $cachekey = null;
                 }
 
                 // 
@@ -330,9 +334,11 @@ class LdapService extends ServiceAdapter
                 // 
                 // Return entry data and attribute map:
                 //                         
-                return $this->setCacheData(
-                        $cachekey, array('entry' => $data, 'attrmap' => $attrmap)
-                );
+                if (isset($cachekey)) {
+                        return $this->setCacheData($cachekey, array('entry' => $data, 'attrmap' => $attrmap));
+                } else {
+                        return array('entry' => $data, 'attrmap' => $attrmap);
+                }
         }
 
         /**
@@ -380,11 +386,17 @@ class LdapService extends ServiceAdapter
                 // Filter out related entries not containing the
                 // requested attribute:
                 // 
-                return $this->setCacheData(
-                        $cachekey, array_filter($output, function($entry) use($attribute) {
+                if (isset($cachekey)) {
+                        return $this->setCacheData(
+                                $cachekey, array_filter($output, function($entry) use($attribute) {
+                                        return isset($entry[$attribute]);
+                                })
+                        );
+                } else {
+                        return array_filter($output, function($entry) use($attribute) {
                                 return isset($entry[$attribute]);
-                        })
-                );
+                        });
+                }
         }
 
         /**
@@ -437,7 +449,11 @@ class LdapService extends ServiceAdapter
                 $result->setName($this->_name);
                 $result->append($groups);
 
-                return $this->setCacheData($cachekey, $result->getResult());
+                if (isset($cachekey)) {
+                        return $this->setCacheData($cachekey, $result->getResult());
+                } else {
+                        return $result->getResult();
+                }
         }
 
         /**
@@ -537,7 +553,11 @@ class LdapService extends ServiceAdapter
                 // 
                 // Return user principals:
                 // 
-                return $this->setCacheData($cachekey, $principals);
+                if (isset($cachekey)) {
+                        return $this->setCacheData($cachekey, $principals);
+                } else {
+                        return $principals;
+                }
         }
 
         /**
@@ -631,7 +651,11 @@ class LdapService extends ServiceAdapter
                 // 
                 // Return user principals:
                 // 
-                return $this->setCacheData($cachekey, $principals);
+                if (isset($cachekey)) {
+                        return $this->setCacheData($cachekey, $principals);
+                } else {
+                        return $principals;
+                }
         }
 
 }

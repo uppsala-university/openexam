@@ -295,7 +295,7 @@ class ModelBase extends Model
          * @param ModelInterface[] $related
          * @return bool 
          */
-        protected function _preSaveRelatedRecords($connection, $related)
+        protected function _preSaveRelatedRecords(AdapterInterface $connection, $related)
         {
                 // 
                 // Only perform access control on the master record. Bypass

@@ -13,10 +13,10 @@
 
 namespace OpenExam\Tests\Phalcon;
 
-use OpenExam\Library\Security\User;
 use Phalcon\Config;
 use Phalcon\DI as PhalconDI;
 use Phalcon\DI\InjectionAwareInterface;
+use Phalcon\DiInterface;
 use Phalcon\Logger;
 
 /**
@@ -207,9 +207,9 @@ class TestCase extends \PHPUnit_Framework_TestCase implements InjectionAwareInte
 
         /**
          * Set dependency injector.
-         * @param PhalconDI $dependencyInjector
+         * @param DiInterface $dependencyInjector
          */
-        public function setDI($dependencyInjector)
+        public function setDI(DiInterface $dependencyInjector)
         {
                 $this->_di = $dependencyInjector;
         }
