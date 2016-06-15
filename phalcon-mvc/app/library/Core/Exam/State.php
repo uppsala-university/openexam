@@ -120,15 +120,12 @@ class State extends Component
          * Lifetime of cached answered and corrected state.
          */
         const CACHE_LIFETIME = 30;
-        /**
-         * Correction status cache key.
-         */
-        const CACHE_SUB_KEY_CORRECTED = 'corrected';
-        /**
-         * Answer status cache key.
-         */
-        const CACHE_SUB_KEY_ANSWERED = 'answered';
 
+        /**
+         * The cache key.
+         * @var string
+         */
+        private $_ckey;
         /**
          * @var Exam 
          */
@@ -161,17 +158,145 @@ class State extends Component
         public function __construct($exam)
         {
                 $this->_exam = $exam;
-                $this->refresh(false);
+                $this->_ckey = $this->createCacheKey();
+
+                if ($this->hasCache()) {
+                        $this->getCache();
+                } else {
+                        $this->setCache();
+                }
+        }
+
+        /**
+         * Check if cached data exists.
+         * @return boolean
+         */
+        private function hasCache()
+        {
+                return $this->modelsCache->exists($this->_ckey, self::CACHE_LIFETIME);
+        }
+
+        /**
+         * Get data from cache.
+         */
+        private function getCache()
+        {
+                $data = $this->modelsCache->get($this->_ckey, self::CACHE_LIFETIME);
+
+                $this->_state = $data['state'];
+                $this->_flags = $data['flags'];
+
+                $this->_corrected = $data['corrected'];
+                $this->_answered = $data['answered'];
+
+                $data = null;
+        }
+
+        /**
+         * Update object state and refresh cache.
+         */
+        private function setCache()
+        {
+                $this->refresh();
+
+                $this->modelsCache->save($this->_ckey, array(
+                        'state'     => $this->_state,
+                        'flags'     => $this->_flags,
+                        'corrected' => $this->_corrected,
+                        'answered'  => $this->_answered
+                    ), self::CACHE_LIFETIME);
         }
 
         /**
          * Refresh examination state.
          */
-        public function refresh($nocache = true)
+        public function refresh()
         {
-                $this->setAnswered($nocache);
-                $this->setCorrected($nocache);
+                $this->setAnswered();
+                $this->setCorrected();
                 $this->setState();
+                $this->setFlags();
+        }
+
+        /**
+         * Get examination state.
+         * @return int
+         */
+        public function getState()
+        {
+                return $this->_state;
+        }
+
+        /**
+         * Get examination flags.
+         * @return array
+         */
+        public function getFlags()
+        {
+                return $this->_flags;
+        }
+
+        /**
+         * Check correction status.
+         * @return bool True if exam is fully corrected.
+         */
+        public function isCorrected()
+        {
+                return $this->_corrected;
+        }
+
+        /**
+         * Check answer status
+         * @return bool True if examination has answers.
+         */
+        public function isAnswered()
+        {
+                return $this->_answered;
+        }
+
+        /**
+         * Test if flag is set.
+         * @param int $flag One of the class constants.
+         * @return bool
+         */
+        public function has($flag)
+        {
+                return ($this->_state & $flag) != 0;
+        }
+
+        /**
+         * Set exam corrected status.
+         */
+        private function setCorrected()
+        {
+                $this->_corrected = ($this->getUncorrected() == 0);
+        }
+
+        /**
+         * Set exam answered status.
+         */
+        private function setAnswered()
+        {
+                $this->_answered = ($this->getAnswered() != 0);
+        }
+
+        /**
+         * Set exam state.
+         */
+        private function setFlags()
+        {
+                if (isset($this->_flags)) {
+                        return $this->_flags;
+                }
+
+                $this->_flags = array();
+                $reflection = new \ReflectionObject($this);
+                foreach ($reflection->getConstants() as $name => $value) {
+                        if ($this->has($value)) {
+                                $this->_flags[] = strtolower($name);
+                        }
+                }
+                $reflection = null;
         }
 
         /**
@@ -207,6 +332,10 @@ class State extends Component
                         } else {
                                 $this->_state = self::CORRECTABLE | self::FINISHED;
                         }
+
+                        $stime = null;
+                        $etime = null;
+                        $ctime = null;
                 }
                 if ($this->_exam->testcase) {
                         $this->_state |= self::TESTCASE | self::DELETABLE;
@@ -223,115 +352,6 @@ class State extends Component
                 if ($this->_answered == false) {     // Contributable and resuable until first seen
                         $this->_state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::REUSABLE;
                 }
-        }
-
-        /**
-         * Get examination state.
-         * @return int
-         */
-        public function getState()
-        {
-                return $this->_state;
-        }
-
-        /**
-         * Check correction status.
-         * @return bool True if exam is fully corrected.
-         */
-        public function isCorrected()
-        {
-                return $this->_corrected;
-        }
-
-        /**
-         * Check answer status
-         * @return bool True if examination has answers.
-         */
-        public function isAnswered()
-        {
-                return $this->_answered;
-        }
-
-        /**
-         * Test if flag is set.
-         * @param int $flag One of the class constants.
-         * @return bool
-         */
-        public function has($flag)
-        {
-                return ($this->_state & $flag) != 0;
-        }
-
-        /**
-         * Get exam state as array.
-         * 
-         * Returns the string
-         * @return array 
-         */
-        public function getFlags()
-        {
-                if (isset($this->_flags)) {
-                        return $this->_flags;
-                }
-
-                $this->_flags = array();
-                $reflection = new \ReflectionObject($this);
-                foreach ($reflection->getConstants() as $name => $value) {
-                        if ($this->has($value)) {
-                                $this->_flags[] = strtolower($name);
-                        }
-                }
-
-                return $this->_flags;
-        }
-
-        /**
-         * Set exam corrected status.
-         * @param bool $nocache Use cached status if false.
-         */
-        private function setCorrected($nocache)
-        {
-                if ($nocache) {
-                        $this->_corrected = ($this->getUncorrected() == 0);
-                        return;
-                }
-
-                $cachekey = $this->createCacheKey(self::CACHE_SUB_KEY_CORRECTED);
-                $lifetime = self::CACHE_LIFETIME;
-
-                if ($this->cache->exists($cachekey, $lifetime)) {
-                        $this->_corrected = $this->cache->get($cachekey, $lifetime);
-                } else {
-                        $this->_corrected = ($this->getUncorrected() == 0);
-                        $this->cache->save($cachekey, $this->_corrected, $lifetime);
-                }
-        }
-
-        /**
-         * Set exam answered status.
-         * @param bool $nocache Use cached status if false.
-         */
-        private function setAnswered($nocache)
-        {
-                if ($nocache) {
-                        $this->_answered = ($this->getAnswered() != 0);
-                        return;
-                }
-
-                $cachekey = $this->createCacheKey(self::CACHE_SUB_KEY_ANSWERED);
-                $lifetime = self::CACHE_LIFETIME;
-
-                if ($this->cache->exists($cachekey, $lifetime)) {
-                        $this->_answered = $this->cache->get($cachekey, $lifetime);
-                } else {
-                        $this->_answered = ($this->getAnswered() != 0);
-                        $this->cache->save($cachekey, $this->_answered, $lifetime);
-                }
-        }
-
-        private function createCacheKey($type)
-        {
-                return sprintf("state-exam-%d-%s", $this->_exam->id, $type);
         }
 
         /**
@@ -392,6 +412,11 @@ class State extends Component
                 } else {
                         throw new DatabaseException("Failed query answers on exam.");
                 }
+        }
+
+        private function createCacheKey()
+        {
+                return sprintf("state-exam-%d", $this->_exam->id);
         }
 
 }

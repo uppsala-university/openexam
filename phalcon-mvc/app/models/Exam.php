@@ -186,21 +186,6 @@ class Exam extends ModelBase
          * @var string[]
          */
         public $flags;
-        /**
-         * Internal cache of staff object.
-         * @var Staff 
-         */
-        private $_staff;
-        /**
-         * Internal cache of state object.
-         * @var State 
-         */
-        private $_state;
-        /**
-         * Internal cache of grades object.
-         * @var Grades 
-         */
-        private $_grades;
 
         protected function initialize()
         {
@@ -431,11 +416,7 @@ class Exam extends ModelBase
          */
         public function getStaff()
         {
-                if (!isset($this->_staff)) {
-                        return $this->_staff = new Staff($this);
-                } else {
-                        return $this->_staff;
-                }
+                return new Staff($this);
         }
 
         /**
@@ -444,11 +425,7 @@ class Exam extends ModelBase
          */
         public function getState()
         {
-                if (!isset($this->_state)) {
-                        return $this->_state = new State($this);
-                } else {
-                        return $this->_state;
-                }
+                return new State($this);
         }
 
         /**
@@ -457,11 +434,7 @@ class Exam extends ModelBase
          */
         public function getGrades()
         {
-                if (!isset($this->_grades)) {
-                        return $this->_grades = new Grades($this);
-                } else {
-                        return $this->_grades;
-                }
+                return new Grades($this);
         }
 
         /**
