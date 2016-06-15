@@ -81,11 +81,20 @@ abstract class ServiceController extends ControllerBase
                         $stdin = file_get_contents("php://input");
                         $input = key($this->request->getPut());
                 }
-                
+
                 if (isset($input) && $input == false) {
                         $input = file_get_contents("php://input");
                 } elseif (is_null($input) && isset($stdin)) {
                         $input = $stdin;
+                }
+
+                // 
+                // Data is encoded in array key:
+                // 
+                if (is_array($input) && count($input) == 1) {
+                        if (empty(current($input)) && !empty(key($input))) {
+                                $input = key($input);
+                        }
                 }
 
                 // 
