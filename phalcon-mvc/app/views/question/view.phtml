@@ -62,10 +62,20 @@
         </div>        
         <?php endif;?>
 
-	<?php $questionNo = 0;?>
+
+	<?php 
+	// 
+	// This is a mess: The $quest parameter is sometimes an object and sometimes an array depending 
+	// on from where the view is used :-( (AL).
+	// 
+	$qSize = count($quest); 
+	$questionNo = 0; 
+	?>
+	
 	<?php foreach($quest as $qKey => $qObj):
-		if(!$qObj->id)
+		if(!$qObj->id) {
 			continue;
+		}
 		
 		// calculate question number
 		$prevQuestId = $nextQuestId = 0;
@@ -259,7 +269,12 @@
 						
 			</div>
 		</div>
-        <?php endforeach;?>
+        <?php 
+	if($qSize == 1) {
+	    break;
+	}
+	endforeach;
+	?>
 </div>
 
 <div class="ans-sync-msg">Saving ... </div>
