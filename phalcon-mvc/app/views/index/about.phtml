@@ -53,6 +53,9 @@
         .no-print {
             display: none;
         }
+        .pagebreak { 
+            page-break-before: always; 
+        }
         /*        
         ul.card a:after {
                     content:" (" attr(href) ") ";
@@ -102,7 +105,7 @@
     <p>OpenExam can be used for different types of questions, such as open end questions (short answers, essays, chemical structures, formulas, calculations etc), automatically corrected multiple choice questions, simple drawings (only on specific computers in the B1:3 exam hall).</p>
     <p>Supplementary material such as PDF files, images, movies, formularies etc is uploaded to a library and displayed during the exam.</p>
 
-    <h2>Organisation</h2>
+    <h2 class="pagebreak">Organisation</h2>
 
     <?php
     $organization = array(
