@@ -46,4 +46,12 @@ $(document).ready(function () {
         }
     });
 
+    // 
+    // Remove first row if first column contains 'user':
+    // 
+    var row = $("#table-import-students > tbody > tr:first");
+    if (row.find("td:first").text() === 'user') {
+        row.remove();
+    }
+
 });
