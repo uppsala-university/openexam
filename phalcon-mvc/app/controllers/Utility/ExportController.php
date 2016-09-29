@@ -71,18 +71,16 @@ class ExportController extends GuiController
                 }
 
                 // 
-                // Sort student list on lastname.
+                // Sort student list on lastname. We need to access each
+                // student to get lastname decoration.
                 // 
                 $students = array();
                 foreach ($stud as $s) {
-                        if (count($students) == 0) {
-                                $students[] = $s;
-                        } elseif (strcmp($students[0]->lname, $s->lname) < 0) { 
-                                array_push($students, $s);
-                        } else {
-                                array_unshift($students, $s);
-                        }
+                        $students[] = $s;
                 }
+                usort($students, function($s1, $s2) {
+                        return strcmp($s1->lname, $s2->lname);
+                });
 
                 // 
                 // Exam contact information.
