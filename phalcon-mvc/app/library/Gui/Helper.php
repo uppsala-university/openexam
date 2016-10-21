@@ -26,12 +26,13 @@ class Helper extends Component
 
         /**
          * Format data returned from catalog service to make it useable in views,
-         * in a better and clean way
+         * in a better and clean way. 
          *
          * @param string $principal
          * @param string $attribute
          * @param string $firstOnly Return only first record, if set true
          * @return array
+         * @deprecated since version 2.0.0
          */
         public function getCatalogAttribute($principal, $attribute, $firstOnly = TRUE)
         {
@@ -57,23 +58,23 @@ class Helper extends Component
          */
         public function downloadFile($filePath)
         {
-                
                 if (!empty($filePath)) {
-                        
+
                         $fileInfo = pathinfo($filePath);
                         $fileName = $fileInfo['basename'];
                         $fileExtnesion = $fileInfo['extension'];
                         $contentType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filePath);
-                        
+
                         if (file_exists($filePath)) {
-                                
+                                $this->view->disable();
+
                                 $size = filesize($filePath);
                                 $offset = 0;
                                 $length = $size;
 
                                 //headers for partial download
                                 if (isset($_SERVER['HTTP_RANGE'])) {
-                                        
+
                                         preg_match('/bytes=(\d+)-(\d+)?/', $_SERVER['HTTP_RANGE'], $matches);
                                         $offset = intval($matches[1]);
                                         $length = intval($matches[2]) - $offset;
@@ -94,9 +95,9 @@ class Helper extends Component
                                 header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
                                 header("Content-Length: " . filesize($filePath));
                                 $chunksize = 8 * (1024 * 1024); //8MB (highest possible fread length) 
-                                
+
                                 if ($size > $chunksize) {
-                                        
+
                                         $handle = fopen($filePath, 'rb');
                                         $buffer = '';
                                         while (!feof($handle) && (connection_status() === CONNECTION_NORMAL)) {
@@ -105,24 +106,21 @@ class Helper extends Component
                                                 ob_flush();
                                                 flush();
                                         }
-                                        
+
                                         if (connection_status() !== CONNECTION_NORMAL) {
                                                 echo "Connection aborted";
                                         }
-                                        
+
                                         fclose($handle);
-                                        
                                 } else {
-                                        
+
                                         ob_clean();
                                         flush();
                                         readfile($filePath);
                                 }
-                                
                         } else {
                                 echo 'File does not exist!';
                         }
-                        
                 } else {
                         echo 'There is no file to download!';
                 }
