@@ -117,6 +117,10 @@ class State extends Component
          */
         const PUBLISHED = 0x4000;
         /**
+         * Examination has been answered.
+         */
+        const ANSWERED = 0x8000;
+        /**
          * Lifetime of cached answered and corrected state.
          */
         const CACHE_LIFETIME = 30;
@@ -292,6 +296,9 @@ class State extends Component
                 $this->_flags = array();
                 $reflection = new \ReflectionObject($this);
                 foreach ($reflection->getConstants() as $name => $value) {
+                        if ($name == 'CACHE_LIFETIME') {
+                                continue;
+                        }
                         if ($this->has($value)) {
                                 $this->_flags[] = strtolower($name);
                         }
@@ -337,20 +344,31 @@ class State extends Component
                         $etime = null;
                         $ctime = null;
                 }
+
+                if ($this->_exam->published) {          // Contributable until published
+                        $this->_state |= self::PUBLISHED;
+                        $this->_state &= ~self::CONTRIBUTABLE;
+                } else {
+                        $this->_state |= self::CONTRIBUTABLE | self::DELETABLE;
+                }
+
+                if ($this->_answered == false) {        // Resuable until first seen
+                        $this->_state |= self::EXAMINATABLE | self::EDITABLE | self::REUSABLE;
+                        $this->_state &= ~self::CORRECTABLE;
+                } else {
+                        $this->_state |= self::ANSWERED;
+                        $this->_state &= ~self::DELETABLE;
+                }
+
                 if ($this->_exam->testcase) {
                         $this->_state |= self::TESTCASE | self::DELETABLE;
                 }
                 if ($this->_exam->lockdown->enable) {
                         $this->_state |= self::LOCKDOWN;
                 }
-                if ($this->_exam->published) {
-                        $this->_state |= self::PUBLISHED;
-                } else {
-                        $this->_state |= self::DELETABLE;
-                }
 
-                if ($this->_answered == false) {     // Contributable and resuable until first seen
-                        $this->_state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::REUSABLE;
+                if ($this->_state & self::FINISHED) {
+                        $this->_state &= ~self::CONTRIBUTABLE;
                 }
         }
 
