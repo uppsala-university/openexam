@@ -10,6 +10,7 @@
 <?php
 
 use OpenExam\Library\Core\Exam\State;
+use OpenExam\Library\Gui\Component\DateTime;
 use OpenExam\Library\Security\Roles;
 
 /**
@@ -302,22 +303,26 @@ $examsPerPage = 5;
 
                                                                 ?>
                                                             </span>
-                                                            <a href = "#" class = "exam-name prevent" style = "cursor:default">
-                                                                <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam'
+
+                                                            <div style="min-width:180px;display:inline-block">
+                                                                <?php
+                                                                $component = new DateTime($exam->starttime, $exam->endtime);
+                                                                $component->class = "exam-date-time";
+                                                                $component->style = "font-size:10px; padding-left:10px; padding-right:10px;";
+                                                                $component->render();
 
                                                                 ?>
-                                                                <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
-                                                            </a>
-                                                            <span class="exam-date-time" style="font-size:10px; padding-left:15px; <?= (empty($exam->starttime) ? 'display:none' : '') ?>">
-                                                                <i class="fa fa-clock-o"></i>
-                                                                <span class="exam-date">
-                                                                    <span><?= date("Y-m-d", strtotime($exam->starttime)); ?></span>
-                                                                </span>
-                                                                <span class="exam-starts"><?= date("H:i", strtotime($exam->starttime)) ?></span>
-                                                                &#8594;
-                                                                <span class="exam-ends"><?= !empty($exam->endtime) ? date("H:i", strtotime($exam->endtime)) : '' ?></span>
-                                                            </span>
+                                                            </div>
+                                                            <a href="#" 
+                                                               class="exam-state-show"
+                                                               state="<?= $exam->state ?>"
+                                                               title="Click to display exam state"
+                                                               style="cursor: hand">
+                                                                   <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam'
 
+                                                                   ?>
+                                                                   <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
+                                                            </a>
 
                                                             <?php /*
                                                               <div class="exam-descr" style="color: grey; font-size: 9px;">
@@ -354,7 +359,11 @@ $examsPerPage = 5;
                                                                 </span> 
                                                             </div>
                                                         </div>
-                                                        <div style="clear:both"></div>
+                                                        <div style="clear:both" class="exam-state-view">
+                                                            <span style="display: none">
+<!-- TODO: Display state in box-->
+                                                            </span>
+                                                        </div>
                                                     </li>
                                                     <?php if ($count == $examsPerPage) break; ?>
                                                     <?php $count++; ?>
@@ -446,7 +455,8 @@ $examsPerPage = 5;
 
     <!-- container -->
 </div>
-<script language="javascript">
+<script>
+
         $(function () {
             $('.datepicker').datepicker({"dateFormat": "yy-mm-dd"});
             $('.timepicker').timepicker();
