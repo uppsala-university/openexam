@@ -309,14 +309,19 @@ $examsPerPage = 5;
                                                                 ?>
                                                             </span>
 
-                                                            <a href="#" 
-                                                               class="exam-name exam-state-show"
-                                                               exam="<?= $exam->id ?>"
-                                                               title="Click to display exam details"
-                                                               style="cursor: pointer">
-                                                                   <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam'
+                                                            <a href="#">
+                                                                <span class="exam-date label label-primary" style="margin-right: 10px; margin-left: 5px">
+                                                                    <i class="fa fa-clock-o"></i> 
+                                                                    <?= strftime("%x", strtotime($exam->starttime)); ?>
+                                                                </span>
+                                                            </a>
 
-                                                                   ?>
+                                                            <a href = "#"
+                                                               class = "exam-name exam-state-show"
+                                                               exam = "<?= $exam->id ?>"
+                                                               title = "Click to display exam details"
+                                                               style = "cursor: pointer">
+                                                                   <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam' ?>
                                                                    <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
                                                             </a>
 
