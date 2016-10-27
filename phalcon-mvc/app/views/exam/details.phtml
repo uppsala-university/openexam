@@ -1,0 +1,87 @@
+<?php
+
+use OpenExam\Library\Core\Exam\State;
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    details.phtml
+// Created: 2016-10-27 22:41:32
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+?>
+
+<div class="exam-details">
+    <div class="exam-phase" style="display: inline">
+        <?php $phase->render() ?>
+    </div>
+    <div class="exam-date" style="display: inline; padding-left: 10px">
+        <?php $datetime->render() ?>
+    </div>
+
+    <div class="exam-properties">
+        <ul>
+            <?php
+            $state = $exam->getState();
+
+            if ($state->has(State::DRAFT)) {
+                    printf("<li>%s</li>\n", "This exam is an draft (not yet scheduled)");
+            }
+
+            if ($state->has(State::UPCOMING)) {
+                    printf("<li>%s</li>\n", "This exam is scheduled, but has not yet started");
+            } elseif ($state->has(State::RUNNING)) {
+                    printf("<li>%s</li>\n", "This exam is currently ongoing");
+            } elseif ($state->has(State::FINISHED)) {
+                    printf("<li>%s</li>\n", "This exam has been finished");
+            }
+
+            if ($state->has(State::ANSWERED)) {
+                    printf("<li>%s</li>\n", "This exam has answers from students");
+            }
+            if ($state->has(State::CONTRIBUTABLE)) {
+                    printf("<li>%s</li>\n", "Questions can still be contributed");
+            }
+            if ($state->has(State::CORRECTABLE)) {
+                    printf("<li>%s</li>\n", "Answers can still be corrected on this exam");
+            }
+            if ($state->has(State::CORRECTED)) {
+                    printf("<li>%s</li>\n", "All answers has been fully corrected");
+            }
+
+            if ($state->has(State::DECODED)) {
+                    printf("<li>%s</li>\n", "This exam has been decoded");
+            } elseif ($state->has(State::DECODABLE)) {
+                    printf("<li>%s</li>\n", "This exam can be decoded");
+            }
+
+            if ($state->has(State::DELETABLE)) {
+                    printf("<li>%s</li>\n", "Can be deleted (no answers exist or exam is flagged as testcase)");
+            }
+            if ($state->has(State::EDITABLE)) {
+                    printf("<li>%s</li>\n", "The exam can still be edited");
+            }
+            if ($state->has(State::EXAMINATABLE)) {
+                    printf("<li>%s</li>\n", "Student can be registered and start/endtime can be changed");
+            }
+            if ($state->has(State::LOCKDOWN)) {
+                    printf("<li>%s</li>\n", "Lockdown mode is enabled on this exam");
+            }
+            if ($state->has(State::PUBLISHED)) {
+                    printf("<li>%s</li>\n", "Exam has been published");
+            }
+            if ($state->has(State::REUSABLE)) {
+                    printf("<li>%s</li>\n", "Can be reused as new exam (not seen by students)");
+            }
+            if ($state->has(State::TESTCASE)) {
+                    printf("<li>%s</li>\n", "Marked as testcase (always deletable)");
+            }
+
+            ?>
+        </ul>
+    </div>
+</div>
