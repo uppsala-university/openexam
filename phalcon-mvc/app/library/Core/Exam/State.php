@@ -246,8 +246,18 @@ class State extends Component
         }
 
         /**
-         * Test if flag is set.
-         * @param int $flag One of the class constants.
+         * Check if flag is set.
+         * 
+         * Pass a bitmask of one or more of the class constants to check
+         * their state.
+         * 
+         * <code>
+         * if ($state->has(State::UPCOMING | State::RUNNING)) {
+         *      // ...
+         * }
+         * </code>
+         * 
+         * @param int $flag The bitmask.
          * @return bool
          */
         public function has($flag)
