@@ -309,7 +309,11 @@ $examsPerPage = 5;
                                                                 ?>
                                                             </span>
 
-                                                            <a href="#">
+                                                            <a href="#"
+                                                               class = "exam-state-show"
+                                                               exam = "<?= $exam->id ?>"
+                                                               title = "Click to display exam details"
+                                                               style = "cursor: pointer">
                                                                 <span class="exam-date label label-blue-outline" style="margin-right: 10px; margin-left: 5px; min-width: 200px;">
                                                                     <i class="fa fa-clock-o"></i> 
                                                                     <?php
@@ -321,15 +325,10 @@ $examsPerPage = 5;
 
                                                                     ?>
                                                                 </span>
-                                                            </a>
-
-                                                            <a href = "#"
-                                                               class = "exam-name exam-state-show"
-                                                               exam = "<?= $exam->id ?>"
-                                                               title = "Click to display exam details"
-                                                               style = "cursor: pointer">
-                                                                   <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam' ?>
-                                                                   <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
+                                                                <span class="exam-name">
+                                                                    <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam' ?>
+                                                                    <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
+                                                                </span>
                                                             </a>
 
                                                             <?php /*
