@@ -7,10 +7,22 @@
 <?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/ui/jquery-ui-timepicker.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/index.js') ?>
 
+<style>
+    .exam-details {
+        border: 1px solid #eeeeee;
+        border-radius: 5px;
+        margin-top: 25px;
+        padding: 15px;
+        background-color: #ffffff;
+    }
+    .exam-properties {
+        margin-top: 10px;
+    }
+</style>
+
 <?php
 
 use OpenExam\Library\Core\Exam\State;
-use OpenExam\Library\Gui\Component\DateTime;
 use OpenExam\Library\Security\Roles;
 
 /**
@@ -226,14 +238,7 @@ $examsPerPage = 5;
     <div class="hero-unit" style="margin:15px">
         <h1>Hej <?= explode(" ", $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name'))[0] ?>!</h1>
         <div style="padding:10px 0px">
-            The content of this page depends on your level of access (‘role’) in OpenExam. 
-            Information about the different roles (creator, contributor, corrector, invigilator, student) can be found <a href="#">here</a>.  
-        </div>
-        <div style="padding-bottom:5px">
-            If you do not yet have full access, but would like to create your own online exam, <a href="#">contact us</a>.
-        </div>
-        <div>
-            Consult <a href="#">Help</a> for information on how to use OpenExam.
+            The content of this page depends on the different roles you have. Information about the different roles (creator, contributor, corrector, invigilator, student) can be found <a href="<?= $this->url->get('/help/manual/teacher') ?>">teacher manual</a>.  
         </div>
     </div>
     <section class="ac-container">
@@ -284,7 +289,7 @@ $examsPerPage = 5;
                                             <?php $count = 1; ?>
                                             <?php foreach ($exams as $exam): ?>
                                                     <li class="list-group-item" data-id="<?= $exam->id ?>" style=" <?= $exam->published && $role == Roles::CREATOR ? 'background-color:#feffd5' : '' ?>">
-                                                        <div style="float:left"> 
+                                                        <div style="float:left;margin-top: 0px"> 
                                                             <span class="exam-status">
                                                                 <?php
                                                                 if ($exam->state & State::PUBLISHED) {
@@ -304,20 +309,11 @@ $examsPerPage = 5;
                                                                 ?>
                                                             </span>
 
-                                                            <div style="min-width:180px;display:inline-block">
-                                                                <?php
-                                                                $component = new DateTime($exam->starttime, $exam->endtime);
-                                                                $component->class = "exam-date-time";
-                                                                $component->style = "font-size:10px; padding-left:10px; padding-right:10px;";
-                                                                $component->render();
-
-                                                                ?>
-                                                            </div>
                                                             <a href="#" 
-                                                               class="exam-state-show"
-                                                               state="<?= $exam->state ?>"
-                                                               title="Click to display exam state"
-                                                               style="cursor: hand">
+                                                               class="exam-name exam-state-show"
+                                                               exam="<?= $exam->id ?>"
+                                                               title="Click to display exam details"
+                                                               style="cursor: pointer">
                                                                    <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam'
 
                                                                    ?>
@@ -360,8 +356,8 @@ $examsPerPage = 5;
                                                             </div>
                                                         </div>
                                                         <div style="clear:both" class="exam-state-view">
+                                                            <!-- exam details (phase, datetime and state) -->
                                                             <span style="display: none">
-<!-- TODO: Display state in box-->
                                                             </span>
                                                         </div>
                                                     </li>

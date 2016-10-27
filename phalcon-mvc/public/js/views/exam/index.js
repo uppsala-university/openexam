@@ -7,6 +7,28 @@ var stEvents = '';
 /*-- Event handlers --*/
 $(document).ready(function () {
 
+    // 
+    // Toggle display of exam details.
+    // 
+    $(document).on('click', '.exam-state-show', function () {
+        var exam = $(this).attr('exam');
+        var target = $(this).closest('li').children('.exam-state-view').children('span');
+        target.toggle();
+
+        if (target.is(":visible")) {
+            $.ajax({
+                type: "GET",
+                data: null,
+                url: baseURL + 'exam/details/' + exam,
+                success: function (response) {
+                    target.html(response);
+                }
+            });
+        }
+
+        return false;
+    });
+
     $(document).on('click', '.manage-students', function () {
 
         $.ajax({

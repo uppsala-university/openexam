@@ -14,6 +14,8 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
+use OpenExam\Library\Gui\Component\DateTime;
+use OpenExam\Library\Gui\Component\Phase;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;
@@ -485,6 +487,17 @@ class ExamController extends GuiController
                 $this->view->setVar('exam', $exam);
                 $this->view->setVar('icon', $this->url->get('/img/clock.png'));
                 $this->view->setVar('retry', $this->url->get('/exam/' . $exam->id . '/question/1'));
+        }
+
+        public function detailsAction($examId)
+        {
+                if (($exam = Exam::findFirst($examId)) == false) {
+                        throw new \Exception("Unable to load exam settings.");
+                }
+
+                $this->view->setVar('exam', $exam);
+                $this->view->setVar('phase', new Phase($exam->getState()));
+                $this->view->setVar('datetime', new DateTime($exam->starttime, $exam->endtime));
         }
 
 }
