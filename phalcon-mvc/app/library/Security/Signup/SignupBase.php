@@ -17,7 +17,7 @@ use OpenExam\Library\Security\Signup;
 use Phalcon\Mvc\User\Component;
 
 /**
- * Description of SignupBase
+ * Base class for signup.
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
