@@ -160,6 +160,9 @@ class StateTest extends TestCase
                 self::assertTrue($this->_state->getState() != 0);
 
                 // 
+                // Common flags:
+                // 
+                // 
                 // Before examination started (unpublished):
                 // 
                 $this->_exam->published = false;
@@ -183,6 +186,8 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) != 0);
+                self::assertTrue(($this->_state->getState() & State::ANSWERED) == 0);
+                self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
 
                 // 
                 // Before examination started (published):
@@ -195,7 +200,7 @@ class StateTest extends TestCase
                 $this->_exam->update();
                 $this->_state->refresh();
 
-                self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) != 0);
+                self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::DECODABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::DECODED) == 0);
@@ -206,6 +211,8 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) != 0);
+                self::assertTrue(($this->_state->getState() & State::ANSWERED) == 0);
+                self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
 
                 // 
                 // Ongoing examination (unseen):
@@ -216,7 +223,7 @@ class StateTest extends TestCase
                 $this->_exam->update();
                 $this->_state->refresh();
 
-                self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) != 0);
+                self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::DECODABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::DECODED) == 0);
@@ -227,6 +234,8 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) != 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
+                self::assertTrue(($this->_state->getState() & State::ANSWERED) == 0);
+                self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
 
                 // 
                 // Ongoing examination (seen):
@@ -250,6 +259,8 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) != 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
+                self::assertTrue(($this->_state->getState() & State::ANSWERED) != 0);
+                self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
 
                 // 
                 // Finished examination (not yet corrected):
@@ -271,6 +282,8 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
+                self::assertTrue(($this->_state->getState() & State::ANSWERED) != 0);
+                self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
 
                 // 
                 // Finished examination (corrected):
@@ -294,6 +307,8 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
+                self::assertTrue(($this->_state->getState() & State::ANSWERED) != 0);
+                self::assertTrue(($this->_state->getState() & State::CORRECTED) != 0);
 
                 // 
                 // Finished examination (decoded):
@@ -313,17 +328,29 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
+                self::assertTrue(($this->_state->getState() & State::ANSWERED) != 0);
+                self::assertTrue(($this->_state->getState() & State::CORRECTED) != 0);
 
                 // 
                 // Test custom state:
-                // 
+                //                 
                 self::assertTrue(($this->_state->getState() & State::TESTCASE) == 0);
                 self::assertTrue(($this->_state->getState() & State::LOCKDOWN) != 0);
                 self::assertTrue(($this->_state->getState() & State::PUBLISHED) != 0);
+                self::assertTrue(($this->_state->getState() & State::DRAFT) == 0);
+
+                $this->_exam->starttime = null;
+                $this->_exam->decoded = false;
+
+                $this->_exam->update();
+                $this->_state->refresh();
+
+                self::assertTrue(($this->_state->getState() & State::DRAFT) != 0);
 
                 $this->_exam->lockdown = array('enable' => true);
                 $this->_exam->testcase = true;
                 $this->_exam->published = true;
+                $this->_exam->starttime = null;
 
                 $this->_exam->update();
                 $this->_state->refresh();
@@ -363,6 +390,8 @@ class StateTest extends TestCase
                 self::assertTrue($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertTrue($this->_state->has(State::UPCOMING));
+                self::assertFalse($this->_state->has(State::ANSWERED));
+                self::assertFalse($this->_state->has(State::CORRECTED));
 
                 // 
                 // Before examination started (published):
@@ -375,7 +404,7 @@ class StateTest extends TestCase
                 $this->_exam->update();
                 $this->_state->refresh();
 
-                self::assertTrue($this->_state->has(State::CONTRIBUTABLE));
+                self::assertFalse($this->_state->has(State::CONTRIBUTABLE));
                 self::assertFalse($this->_state->has(State::CORRECTABLE));
                 self::assertFalse($this->_state->has(State::DECODABLE));
                 self::assertFalse($this->_state->has(State::DECODED));
@@ -386,6 +415,8 @@ class StateTest extends TestCase
                 self::assertTrue($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertTrue($this->_state->has(State::UPCOMING));
+                self::assertFalse($this->_state->has(State::ANSWERED));
+                self::assertFalse($this->_state->has(State::CORRECTED));
 
                 // 
                 // Ongoing examination (unseen):
@@ -396,7 +427,7 @@ class StateTest extends TestCase
                 $this->_exam->update();
                 $this->_state->refresh();
 
-                self::assertTrue($this->_state->has(State::CONTRIBUTABLE));
+                self::assertFalse($this->_state->has(State::CONTRIBUTABLE));
                 self::assertFalse($this->_state->has(State::CORRECTABLE));
                 self::assertFalse($this->_state->has(State::DECODABLE));
                 self::assertFalse($this->_state->has(State::DECODED));
@@ -407,6 +438,8 @@ class StateTest extends TestCase
                 self::assertTrue($this->_state->has(State::REUSABLE));
                 self::assertTrue($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
+                self::assertFalse($this->_state->has(State::ANSWERED));
+                self::assertFalse($this->_state->has(State::CORRECTED));
 
                 // 
                 // Ongoing examination (seen):
@@ -430,6 +463,8 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::REUSABLE));
                 self::assertTrue($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
+                self::assertTrue($this->_state->has(State::ANSWERED));
+                self::assertFalse($this->_state->has(State::CORRECTED));
 
                 // 
                 // Finished examination (not yet corrected):
@@ -451,6 +486,8 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
+                self::assertTrue($this->_state->has(State::ANSWERED));
+                self::assertFalse($this->_state->has(State::CORRECTED));
 
                 // 
                 // Finished examination (corrected):
@@ -474,6 +511,8 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
+                self::assertTrue($this->_state->has(State::ANSWERED));
+                self::assertTrue($this->_state->has(State::CORRECTED));
 
                 // 
                 // Finished examination (decoded):
@@ -493,6 +532,8 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
+                self::assertTrue($this->_state->has(State::ANSWERED));
+                self::assertTrue($this->_state->has(State::CORRECTED));
 
                 // 
                 // Test custom state:
@@ -500,7 +541,16 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::TESTCASE));
                 self::assertTrue($this->_state->has(State::LOCKDOWN));
                 self::assertTrue($this->_state->has(State::PUBLISHED));
+                self::assertFalse($this->_state->has(State::DRAFT));
 
+                $this->_exam->starttime = null;
+                $this->_exam->decoded = false;
+
+                $this->_exam->update();
+                $this->_state->refresh();
+
+                self::assertTrue($this->_state->has(State::DRAFT));
+                
                 $this->_exam->lockdown = array('enable' => true);
                 $this->_exam->testcase = true;
                 $this->_exam->published = true;
@@ -547,6 +597,8 @@ class StateTest extends TestCase
                 self::assertTrue(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertTrue(in_array('upcoming', $flags));
+                self::assertFalse(in_array('answered', $flags));
+                self::assertFalse(in_array('corrected', $flags));
 
                 // 
                 // Before examination started (published):
@@ -563,7 +615,7 @@ class StateTest extends TestCase
                 printf("Before examination started (published):\n");
                 print_r($flags);
 
-                self::assertTrue(in_array('contributable', $flags));
+                self::assertFalse(in_array('contributable', $flags));
                 self::assertFalse(in_array('correctable', $flags));
                 self::assertFalse(in_array('decodable', $flags));
                 self::assertFalse(in_array('decoded', $flags));
@@ -574,6 +626,8 @@ class StateTest extends TestCase
                 self::assertTrue(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertTrue(in_array('upcoming', $flags));
+                self::assertFalse(in_array('answered', $flags));
+                self::assertFalse(in_array('corrected', $flags));
 
                 // 
                 // Ongoing examination (unseen):
@@ -588,7 +642,7 @@ class StateTest extends TestCase
                 printf("Ongoing examination (unseen):\n");
                 print_r($flags);
 
-                self::assertTrue(in_array('contributable', $flags));
+                self::assertFalse(in_array('contributable', $flags));
                 self::assertFalse(in_array('correctable', $flags));
                 self::assertFalse(in_array('decodable', $flags));
                 self::assertFalse(in_array('decoded', $flags));
@@ -599,6 +653,8 @@ class StateTest extends TestCase
                 self::assertTrue(in_array('reusable', $flags));
                 self::assertTrue(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
+                self::assertFalse(in_array('answered', $flags));
+                self::assertFalse(in_array('corrected', $flags));
 
                 // 
                 // Ongoing examination (seen):
@@ -626,6 +682,8 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('reusable', $flags));
                 self::assertTrue(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
+                self::assertTrue(in_array('answered', $flags));
+                self::assertFalse(in_array('corrected', $flags));
 
                 // 
                 // Finished examination (not yet corrected):
@@ -651,6 +709,8 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
+                self::assertTrue(in_array('answered', $flags));
+                self::assertFalse(in_array('corrected', $flags));
 
                 // 
                 // Finished examination (corrected):
@@ -678,6 +738,8 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
+                self::assertTrue(in_array('answered', $flags));
+                self::assertTrue(in_array('corrected', $flags));
 
                 // 
                 // Finished examination (decoded):
@@ -701,6 +763,8 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
+                self::assertTrue(in_array('answered', $flags));
+                self::assertTrue(in_array('corrected', $flags));
 
                 // 
                 // Test custom state:
@@ -708,7 +772,17 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('testcase', $flags));
                 self::assertTrue(in_array('lockdown', $flags));
                 self::assertTrue(in_array('published', $flags));
+                self::assertFalse(in_array('draft', $flags));
 
+                $this->_exam->starttime = null;
+                $this->_exam->decoded = false;
+
+                $this->_exam->update();
+                $this->_state->refresh();
+                $flags = $this->_state->getFlags();
+                
+                self::assertTrue(in_array('draft', $flags));
+                
                 $this->_exam->lockdown = array('enable' => true);
                 $this->_exam->testcase = true;
                 $this->_exam->published = true;

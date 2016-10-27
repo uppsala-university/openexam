@@ -121,6 +121,10 @@ class State extends Component
          */
         const ANSWERED = 0x8000;
         /**
+         * Examination has been fully corrected.
+         */
+        const CORRECTED = 0x10000;
+        /**
          * Lifetime of cached answered and corrected state.
          */
         const CACHE_LIFETIME = 30;
@@ -144,16 +148,6 @@ class State extends Component
          * @var array 
          */
         private $_flags;
-        /**
-         * This exam has been corrected.
-         * @var bool 
-         */
-        private $_corrected;
-        /**
-         * This exam has at least one answer.
-         * @var bool 
-         */
-        private $_answered;
 
         /**
          * Constructor.
@@ -190,9 +184,6 @@ class State extends Component
                 $this->_state = $data['state'];
                 $this->_flags = $data['flags'];
 
-                $this->_corrected = $data['corrected'];
-                $this->_answered = $data['answered'];
-
                 $data = null;
         }
 
@@ -204,10 +195,8 @@ class State extends Component
                 $this->refresh();
 
                 $this->modelsCache->save($this->_ckey, array(
-                        'state'     => $this->_state,
-                        'flags'     => $this->_flags,
-                        'corrected' => $this->_corrected,
-                        'answered'  => $this->_answered
+                        'state' => $this->_state,
+                        'flags' => $this->_flags
                     ), self::CACHE_LIFETIME);
         }
 
@@ -216,8 +205,6 @@ class State extends Component
          */
         public function refresh()
         {
-                $this->setAnswered();
-                $this->setCorrected();
                 $this->setState();
                 $this->setFlags();
         }
@@ -246,7 +233,7 @@ class State extends Component
          */
         public function isCorrected()
         {
-                return $this->_corrected;
+                return $this->has(self::CORRECTED);
         }
 
         /**
@@ -255,7 +242,7 @@ class State extends Component
          */
         public function isAnswered()
         {
-                return $this->_answered;
+                return $this->has(self::ANSWERED);
         }
 
         /**
@@ -273,7 +260,14 @@ class State extends Component
          */
         private function setCorrected()
         {
-                $this->_corrected = ($this->getUncorrected() == 0);
+                if ($this->getUncorrected() == 0) {
+                        $this->_state |= self::CORRECTED;
+                } else {
+                        $this->_state &= ~self::CORRECTED;
+                }
+                if (!$this->isAnswered()) {
+                        $this->_state &= ~self::CORRECTED;
+                }
         }
 
         /**
@@ -281,7 +275,11 @@ class State extends Component
          */
         private function setAnswered()
         {
-                $this->_answered = ($this->getAnswered() != 0);
+                if ($this->getAnswered() != 0) {
+                        $this->_state |= self::ANSWERED;
+                } else {
+                        $this->_state &= ~self::ANSWERED;
+                }
         }
 
         /**
@@ -315,29 +313,35 @@ class State extends Component
                         unset($this->_flags);    // Called from refresh
                 }
 
-                if ($this->_exam->decoded) {
-                        $this->_state = self::DECODED | self::DECODABLE | self::FINISHED;
-                } elseif (!isset($this->_exam->starttime)) {
-                        $this->_state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::DRAFT;
-                } else {
-                        $this->_state = 0;
+                // 
+                // Reset state and query answered and corrected state.
+                // 
+                $this->_state = 0;
 
+                $this->setAnswered();
+                $this->setCorrected();
+
+                if ($this->_exam->decoded) {
+                        $this->_state |= self::DECODED | self::DECODABLE | self::FINISHED;
+                } elseif (!isset($this->_exam->starttime)) {
+                        $this->_state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::DRAFT;
+                } else {
                         $stime = strtotime($this->_exam->starttime);
                         $etime = strtotime($this->_exam->endtime);
                         $ctime = time();
 
                         if ($ctime < $stime) {                  // Before exam begins
-                                $this->_state = self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::UPCOMING;
+                                $this->_state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::UPCOMING;
                         } elseif ($etime == 0) {                // Has starttime set, but no endtime -> never ending exam
-                                $this->_state = self::EXAMINATABLE | self::RUNNING;
+                                $this->_state |= self::EXAMINATABLE | self::RUNNING;
                         } elseif ($ctime < $etime) {            // After exam begin, but before its finished
-                                $this->_state = self::EXAMINATABLE | self::RUNNING;
-                        } elseif (!$this->_answered) {           // Unseen exam can be reused
-                                $this->_state = self::REUSABLE | self::DELETABLE | self::FINISHED;
-                        } elseif ($this->_corrected) {           // After exam has finished
-                                $this->_state = self::CORRECTABLE | self::FINISHED | self::DECODABLE;
+                                $this->_state |= self::EXAMINATABLE | self::RUNNING;
+                        } elseif (!$this->isAnswered()) {       // Unseen exam can be reused
+                                $this->_state |= self::REUSABLE | self::DELETABLE | self::FINISHED;
+                        } elseif ($this->isCorrected()) {       // After exam has finished
+                                $this->_state |= self::CORRECTABLE | self::FINISHED | self::DECODABLE;
                         } else {
-                                $this->_state = self::CORRECTABLE | self::FINISHED;
+                                $this->_state |= self::CORRECTABLE | self::FINISHED;
                         }
 
                         $stime = null;
@@ -352,12 +356,12 @@ class State extends Component
                         $this->_state |= self::CONTRIBUTABLE | self::DELETABLE;
                 }
 
-                if ($this->_answered == false) {        // Resuable until first seen
+                if (!$this->isAnswered()) {             // Resuable until first seen
                         $this->_state |= self::EXAMINATABLE | self::EDITABLE | self::REUSABLE;
                         $this->_state &= ~self::CORRECTABLE;
                 } else {
-                        $this->_state |= self::ANSWERED;
                         $this->_state &= ~self::DELETABLE;
+                        $this->_state &= ~self::EDITABLE;
                 }
 
                 if ($this->_exam->testcase) {
