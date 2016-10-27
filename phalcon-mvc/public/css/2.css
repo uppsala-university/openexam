@@ -5180,6 +5180,11 @@ text-decoration:none;
 .label-red {
     background-color: #d9534f;
 }
+.label-blue-outline {
+    background-color: #ffffff;
+    color: #4285f4;
+    border: 1px solid #4285f4;
+}
 
 /*====== specific to media library =====*/
 a.darken {
