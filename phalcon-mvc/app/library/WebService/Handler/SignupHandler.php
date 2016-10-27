@@ -13,8 +13,8 @@
 
 namespace OpenExam\Library\WebService\Handler;
 
-use OpenExam\Library\Core\Signup\Student;
-use OpenExam\Library\Core\Signup\Teacher;
+use OpenExam\Library\Security\Signup\Student;
+use OpenExam\Library\Security\Signup\Teacher;
 use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\User;
 use OpenExam\Library\WebService\Common\ServiceHandler;

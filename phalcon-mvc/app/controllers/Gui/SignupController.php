@@ -14,8 +14,8 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
-use OpenExam\Library\Core\Signup\Student;
-use OpenExam\Library\Core\Signup\Teacher;
+use OpenExam\Library\Security\Signup\Student;
+use OpenExam\Library\Security\Signup\Teacher;
 use OpenExam\Models\Exam;
 
 /**

@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Core\Signup;
+namespace OpenExam\Library\Security\Signup;
 
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Security\Exception as SecurityException;

@@ -11,9 +11,9 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Core\Signup;
+namespace OpenExam\Library\Security\Signup;
 
-use OpenExam\Library\Core\Signup;
+use OpenExam\Library\Security\Signup;
 use Phalcon\Mvc\User\Component;
 
 /**

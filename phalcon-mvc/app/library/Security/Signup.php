@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Core;
+namespace OpenExam\Library\Security;
 
 /**
  * Interface for signup handler classes.

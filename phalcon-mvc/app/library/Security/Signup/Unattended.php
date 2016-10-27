@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Core\Signup;
+namespace OpenExam\Library\Security\Signup;
 
 use Phalcon\Mvc\User\Component;
 

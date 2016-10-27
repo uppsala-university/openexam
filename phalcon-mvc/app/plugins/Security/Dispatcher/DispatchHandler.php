@@ -13,7 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Dispatcher;
 
-use OpenExam\Library\Core\Signup\Unattended as UnattendedSignup;
+use OpenExam\Library\Security\Signup\Unattended as UnattendedSignup;
 use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\User;
 use OpenExam\Plugins\Security\Dispatcher\AuthenticationHandler;
