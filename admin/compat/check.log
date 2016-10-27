@@ -57,7 +57,7 @@ Namespaces Analysis
     OpenExam\Library\Core\Exam                                       user             5.3.0               
     OpenExam\Library\Core\Exam\Student                               user             5.3.0               
     OpenExam\Library\Core\Handler                                    user             5.3.0               
-    OpenExam\Library\Core\Signup                                     user             5.3.0               
+    OpenExam\Library\Security\Signup                                     user             5.3.0               
     OpenExam\Library\Database                                        user             5.3.0               
     OpenExam\Library\Form                                            user             5.3.0               
     OpenExam\Library\Globalization                                   user             5.3.0               
@@ -95,7 +95,7 @@ Interfaces Analysis
     OpenExam\Console\Tasks\TaskInterface                10      user             5.3.0               
     OpenExam\Library\Catalog\DirectoryService           2       user             5.3.0               
     OpenExam\Library\Catalog\ServiceConnection          1       user             5.3.0               
-    OpenExam\Library\Core\Signup                        1       user             5.3.0               
+    OpenExam\Library\Security\Signup                        1       user             5.3.0               
     OpenExam\Library\Globalization\Translate\Setup      1       user             5.3.0               
     OpenExam\Library\Globalization\Translate\Translate  1       user             5.3.0               
     OpenExam\Library\Import\Import                      1       user             5.3.0               
@@ -337,10 +337,10 @@ Classes Analysis
     OpenExam\Library\Core\Location                                            1       user                   5.3.0               
     OpenExam\Library\Core\Pattern                                                     user                   5.3.0               
     OpenExam\Library\Core\Settings                                            1       user                   5.3.0               
-    OpenExam\Library\Core\Signup\SignupBase                                   2       user                   5.3.0               
-    OpenExam\Library\Core\Signup\Student                                      3       user                   5.3.0               
-    OpenExam\Library\Core\Signup\Teacher                                      3       user                   5.3.0               
-    OpenExam\Library\Core\Signup\Unattended                                   1       user                   5.3.0               
+    OpenExam\Library\Security\Signup\SignupBase                                   2       user                   5.3.0               
+    OpenExam\Library\Security\Signup\Student                                      3       user                   5.3.0               
+    OpenExam\Library\Security\Signup\Teacher                                      3       user                   5.3.0               
+    OpenExam\Library\Security\Signup\Unattended                                   1       user                   5.3.0               
     OpenExam\Library\Database\Adapter                                         2       user                   5.3.0               
     OpenExam\Library\Database\Exception                                       9       user                   5.3.0               
     OpenExam\Library\Database\Migration                                       1       user                   5.3.0               
