@@ -1,5 +1,3 @@
-<!-- BISMILLAH-->
-
 <?php 
 $testMode 	= $exam->creator == $this->user->getPrincipalName() ? TRUE : FALSE;
 $examStartsAt 	= is_object($student) && !is_null($student->starttime) ? $student->starttime : $exam->starttime;
