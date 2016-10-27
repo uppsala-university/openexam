@@ -39,7 +39,7 @@ class DateTime implements Component
         /**
          * Unknown time.
          */
-        const UNKNOWN = '&hellip;';
+        const UNKNOWN = '?';
 
         /**
          * The start time.
@@ -119,7 +119,7 @@ class DateTime implements Component
                         printf("<span class=\"%s-date\">%s</span>\n", $this->prefix, $this->_sdate);
                         printf("<span class=\"%s-starts\">%s</span>\n", $this->prefix, $this->_stime);
                         printf("%s\n", self::ARROW);
-                        printf("<span class=\"%s-starts\">%s</span>\n", $this->prefix, $this->_stime);
+                        printf("<span class=\"%s-starts\">%s</span>\n", $this->prefix, $this->_etime);
                 } else {
                         printf("<span class=\"%s-date\">%s</span>\n", $this->prefix, $this->_sdate);
                         printf("<span class=\"%s-starts\">%s</span>\n", $this->prefix, $this->_stime);
