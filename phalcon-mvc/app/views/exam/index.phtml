@@ -242,7 +242,7 @@ $examsPerPage = 5;
                     <article class="ac-large exam-listing-wrapper" data-id="<?= $title ?>" exam-role="<?= (stristr($role, Roles::STUDENT) ? Roles::STUDENT : $role) ?>" section-role="<?= $role ?>">
                         <?php if ($role == Roles::CREATOR): ?>
                                 <a href="<?= $this->url->get('exam/create') ?>"> 
-                                    <span style="float: right; font-size: 12px;"> 
+                                    <span style="float: right; font-size: 12px; padding: 5px"> 
                                         <span class="label label-blue" style="margin-right: 26px; background-color:#3D7489">
                                             <i class="fa fa-plus-square"></i> Create a new exam
                                         </span> 
