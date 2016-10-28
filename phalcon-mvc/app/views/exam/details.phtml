@@ -15,6 +15,24 @@ use OpenExam\Library\Core\Exam\State;
 
 ?>
 
+<style>
+    .exam-properties {
+        -webkit-column-count: 2; /* Chrome, Safari, Opera */
+        -moz-column-count: 2; /* Firefox */
+        column-count: 2;
+    }
+    .exam-details {
+        border: 1px solid #eeeeee;
+        border-radius: 5px;
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #ffffff;
+    }
+    .exam-properties {
+        margin-top: 10px;
+    }
+</style>
+
 <div class="exam-details">
     <div class="exam-phase" style="display: inline">
         <?php $phase->render() ?>
