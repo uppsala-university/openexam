@@ -14,6 +14,7 @@
 use OpenExam\Library\Security\Login\ActiveDirectoryLogin;
 use OpenExam\Library\Security\Login\ActiveDirectorySession;
 use OpenExam\Library\Security\Login\CasLogin;
+use OpenExam\Library\Security\Login\SimpleSamlLogin;
 use OpenExam\Library\Security\Login\SystemLogin;
 use UUP\Authentication\Authenticator\Authenticator;
 use UUP\Authentication\Restrictor\AddressRestrictor;
@@ -39,9 +40,18 @@ return array(
                         'method' => function() use($config) {
                                 return new CasLogin(
                                         $config, 'cas.example.com', 443, '/cas'
-                                        );
+                                );
                         },
                         'desc' => 'CAS Login',
+                        'visible' => true
+                ),
+                'swamid' => array(
+                        'method' => function() use($config) {
+                                return new SimpleSamlLogin(
+                                        $config, 'sp-default', '/usr/share/php/simplesamlphp'
+                                );
+                        },
+                        'desc' => 'SWAMID (Discovery)',
                         'visible' => true
                 )
         ),
