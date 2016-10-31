@@ -15,6 +15,7 @@ namespace OpenExam\Library\Security\Login;
 
 use Phalcon\Config;
 use SimpleSAML_Auth_Simple;
+use UUP\Authentication\Authenticator\Authenticator;
 use UUP\Authentication\Library\Authenticator\AuthenticatorBase;
 use UUP\Authentication\Restrictor\Restrictor;
 
