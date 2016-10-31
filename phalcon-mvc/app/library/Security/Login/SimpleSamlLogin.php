@@ -31,6 +31,10 @@ class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authentic
          * The user principal attribute name.
          */
         const PRINCIPAL = 'eduPersonPrincipalName';
+        /**
+         * The default session name (see simplesamlphp config).
+         */
+        const SESSION_NAME = 'simplesaml';
 
         /**
          * The simple SAML object.
@@ -47,40 +51,91 @@ class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authentic
          * @var string 
          */
         private $_return;
+        /**
+         * The session name.
+         */
+        private $_sessid;
 
         /**
          * Constructor.
          * @param Config $config System configuration.
          * @param string $name The SP name.
          */
-        public function __construct($config, $name = 'default-sp', $path = null)
+        public function __construct($config, $name = 'default-sp', $path = null, $sessid = self::SESSION_NAME)
         {
                 $this->requires('lib/_autoload.php', $path);
 
                 $this->_client = new SimpleSAML_Auth_Simple($name);
                 $this->_target = $config->application->baseUri;
+                $this->_sessid = $sessid;
         }
 
         public function accepted()
         {
-                return $this->_client->isAuthenticated();
+                $this->invoke();
+                $result = $this->_client->isAuthenticated();
+                $this->leave();
+                return $result;
         }
 
         public function getSubject()
         {
-                return $this->_client->getAttributes()[self::PRINCIPAL];
+                $this->invoke();
+                $result = $this->_client->getAttributes()[self::PRINCIPAL];
+                $this->leave();
+                return $result;
+        }
+
+        public function attributes()
+        {
+                $this->invoke();
+                $result = $this->_client->getAttributes();
+                $this->leave();
+                return $result;
         }
 
         public function login()
         {
+                $this->invoke();
                 $this->_return = sprintf("%s/auth/register", $this->_target);
-                $this->_client->login(array('ReturnTo' => $this->return));
+                $this->_client->login(array('ReturnTo' => $this->_return));
+                $this->_client->login();
+                $this->leave();
         }
 
         public function logout()
         {
+                $this->invoke();
                 $this->_return = sprintf("%s/auth/logout", $this->_target);
-                $this->_client->logout(array('ReturnTo' => $this->return));
+                $this->_client->logout(array('ReturnTo' => $this->_return));
+                $this->leave();
+        }
+
+        private function invoke()
+        {
+                $this->_status = session_status();
+
+                if (session_status() == PHP_SESSION_ACTIVE &&
+                    session_status() != PHP_SESSION_DISABLED) {
+                        session_write_close();
+                }
+                if (session_status() == PHP_SESSION_NONE &&
+                    session_status() != PHP_SESSION_DISABLED) {
+                        session_name($this->_sessid);
+                        session_start();
+                }
+        }
+
+        private function leave()
+        {
+                if (session_status() == PHP_SESSION_ACTIVE &&
+                    session_status() != PHP_SESSION_DISABLED) {
+                        session_write_close();
+                }
+                if ($this->_status == PHP_SESSION_ACTIVE &&
+                    session_status() == PHP_SESSION_NONE) {
+                        session_start();
+                }
         }
 
         private function requires($file, $path = null)
@@ -88,7 +143,7 @@ class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authentic
                 $locations = array(
                         '/usr/share/php/simplesamlphp/',
                         __DIR__ . '/../../../../../../', // deployed
-                        __DIR__ . '/../../../../vendor/'        // package
+                        __DIR__ . '/../../../../vendor/' // package
                 );
                 if (isset($path)) {
                         if (!in_array($path, $locations)) {
