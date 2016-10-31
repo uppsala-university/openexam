@@ -48,7 +48,7 @@ return array(
                 'swamid' => array(
                         'method' => function() use($config) {
                                 return new SimpleSamlLogin(
-                                        $config, 'sp-default', '/usr/share/php/simplesamlphp'
+                                        $config, 'default-sp', '/usr/share/php/simplesamlphp'
                                 );
                         },
                         'desc' => 'SWAMID (Discovery)',
