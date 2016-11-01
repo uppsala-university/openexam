@@ -118,7 +118,7 @@ return array(
         // handled internal by the controller/action.
         // 
         'public' => array(
-                'public' => array('*'),
+                'index' => array('*'),
                 'error'  => array('*'),
                 'signup' => array('index')
         ),
