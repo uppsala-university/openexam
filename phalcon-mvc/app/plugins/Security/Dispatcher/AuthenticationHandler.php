@@ -104,19 +104,19 @@ class AuthenticationHandler extends Component implements DispatchHelper
                         $this->logger->auth->info(sprintf(
                                 "User initiated login using method %s -> %s (direct)", $this->_service, $method
                         ));
-                } elseif (($method = $this->request->get("auth", "string"))) {
-                        // 
-                        // Handle auth/select response:
-                        // 
-                        $this->logger->auth->info(sprintf(
-                                "User initiated login using method %s -> %s (select)", $this->_service, $method
-                        ));
                 } elseif (($method = $this->session->get('method'))) {
                         // 
                         // Handle auth/login return (e.g. CAS):
                         // 
                         $this->logger->auth->info(sprintf(
                                 "User initiated login using method %s -> %s (return)", $this->_service, $method
+                        ));
+                } elseif (($method = $this->request->get("auth", "string"))) {
+                        // 
+                        // Handle auth/select response:
+                        // 
+                        $this->logger->auth->info(sprintf(
+                                "User initiated login using method %s -> %s (select)", $this->_service, $method
                         ));
                 }
 
