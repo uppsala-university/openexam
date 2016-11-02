@@ -51,23 +51,18 @@ class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authentic
          * @var string 
          */
         private $_return;
-        /**
-         * The session name.
-         */
-        private $_sessid;
 
         /**
          * Constructor.
          * @param Config $config System configuration.
          * @param string $name The SP name.
          */
-        public function __construct($config, $name = 'default-sp', $path = null, $sessid = self::SESSION_NAME)
+        public function __construct($config, $name = 'default-sp', $path = null)
         {
                 $this->requires('lib/_autoload.php', $path);
 
                 $this->_client = new SimpleSAML_Auth_Simple($name);
                 $this->_target = $config->application->baseUri;
-                $this->_sessid = $sessid;
         }
 
         public function accepted()
@@ -81,7 +76,7 @@ class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authentic
         public function getSubject()
         {
                 $this->invoke();
-                $result = $this->_client->getAttributes()[self::PRINCIPAL];
+                $result = $this->_client->getAttributes()[self::PRINCIPAL][0];
                 $this->leave();
                 return $result;
         }
@@ -97,9 +92,8 @@ class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authentic
         public function login()
         {
                 $this->invoke();
-                $this->_return = sprintf("%s/auth/register", $this->_target);
-                $this->_client->login(array('ReturnTo' => $this->_return));
-                $this->_client->login();
+                $this->_return = sprintf("%s/auth/login", $this->_target);
+		$this->_client->requireAuth(array('ReturnTo' => $this->_return));
                 $this->leave();
         }
 
@@ -121,7 +115,6 @@ class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authentic
                 }
                 if (session_status() == PHP_SESSION_NONE &&
                     session_status() != PHP_SESSION_DISABLED) {
-                        session_name($this->_sessid);
                         session_start();
                 }
         }
