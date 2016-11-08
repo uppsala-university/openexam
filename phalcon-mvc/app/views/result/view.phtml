@@ -1,515 +1,547 @@
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>View results</title>
-</head>
-<style>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>View results</title>
+    </head>
+    <style>
 
-body {
-	margin:0px; background-color:#F8F8F8; font-family:Verdana, Geneva, sans-serif; font-size:13px
-}
+        body {
+            margin:0px; background-color:#F8F8F8; font-family:Verdana, Geneva, sans-serif; font-size:13px
+        }
 
-.header {
-	margin-left:3%; 
-	background-color:#C91F3C; 
-	width:10%;
-}
-.body {
-	left: -50%; position: relative; text-align: left;
-}
-.body-content {
-	left: 50%; 
-	position:relative; 
-	background:rgba(255, 255, 255, 0.7); 
-	padding:30px;
-}
-.main-box {
-	left: 50%; 
-	position:relative; 
-	background:rgba(255, 255, 255, 0.7); 
-	border-radius:5px; 
-	border: 5px solid #f0f0f0; 
-	padding:30px; 
-	-webkit-box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
-    -moz-box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
-    box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
-}
-h1 {
-	 font-weight:normal; 
-	 border-bottom: 1px solid #bebebe; 
-	 font-size:22px; 
-	 color:#990000
-}
-h2 {
-	font-weight:normal;
-}
-table {
-	padding:5px;
-	margin:25px;
-}
-td,th {
-	text-align:right;
-	padding-right:25px;
-	font-size:13px
-}
+        .header {
+            margin-left:3%; 
+            background-color:#C91F3C; 
+            width:10%;
+        }
+        .body {
+            left: -50%; position: relative; text-align: left;
+        }
+        .body-content {
+            left: 50%; 
+            position:relative; 
+            background:rgba(255, 255, 255, 0.7); 
+            padding:30px;
+        }
+        .main-box {
+            left: 50%; 
+            position:relative; 
+            background:rgba(255, 255, 255, 0.7); 
+            border-radius:5px; 
+            border: 5px solid #f0f0f0; 
+            padding:30px; 
+            -webkit-box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
+            -moz-box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
+            box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
+        }
+        h1 {
+            font-weight:normal; 
+            border-bottom: 1px solid #bebebe; 
+            font-size:22px; 
+            color:#990000
+        }
+        h2 {
+            font-weight:normal;
+        }
+        table {
+            padding:5px;
+            margin:25px;
+        }
+        td,th {
+            text-align:right;
+            padding-right:25px;
+            font-size:13px
+        }
 
-.summary-row td {
-	border-top:1px dashed #bebebe;
-}
+        .summary-row td {
+            border-top:1px dashed #bebebe;
+        }
 
-.uu-color {
-	color:#797C80;
-}
-.quest-part {
-	 padding:5px; 
-	 border:1px solid #dedede; 
-	 background-color:white; 
-	 margin-bottom:15px
-}
-.quest-part h2{
-	border-bottom:1px solid #990000;
-}
-.page {
-	page-break-after: always !important;
-	min-height: 1012px; 
-	background:url("<?=$this->url->get("img/seal.png")?>") no-repeat scroll -50% -150% transparent; 
-	border-top:5px solid #990000; 
-	border-bottom:5px solid #f0f0f0	
-}
-.blue-txt {
-	 font-size:14px;
-	 color:#3d749b
-}
-</style>
+        .uu-color {
+            color:#797C80;
+        }
+        .quest-part {
+            padding:5px; 
+            border:1px solid #dedede; 
+            background-color:white; 
+            margin-bottom:15px
+        }
+        .quest-part h2{
+            border-bottom:1px solid #990000;
+        }
+        .page {
+            page-break-after: always !important;
+            min-height: 1012px; 
+            background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll -50% -150% transparent; 
+            border-top:5px solid #990000; 
+            border-bottom:5px solid #f0f0f0	
+        }
+        .blue-txt {
+            font-size:14px;
+            color:#3d749b
+        }
+        .blurred {
+            font-size: 1.1em;
+            color: #bbbbbb;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
 
-<body>
-<?php $allStudents = $exam->getStudents();?>
-<?php foreach($data['students'] as $student):?>
-        <div class="student-result">
-        		<!-- Main page -->
-                <div class="page" style='min-height: 1017px; border-bottom:none' >
+    <body>
+        <?php
+
+        use OpenExam\Models\Exam;
+
+        ?>
+
+        <?php $allStudents = $exam->getStudents(); ?>
+        <?php foreach ($data['students'] as $student): ?>
+                <div class="student-result">
+                    <!-- Main page -->
+                    <div class="page" style='min-height: 1017px; border-bottom:none' >
                         <div class="header">
-                                <div style="padding-top: 45%;">
-                                <img src="<?=$this->url->get("img/Logo_UU.jpg")?>" style="width:100%" />
-                                </div>
+                            <div style="padding-top: 45%;">
+                                <img src="<?= $this->url->get("img/Logo_UU.jpg") ?>" style="width:100%" />
+                            </div>
                         </div>
                         <div class="body" style="float: right;  margin-top: 35%; margin-left: 10%;">
-                                <div class="main-box">
-                                        <h1><?=$exam->name?></h1>
-                                        <div>
-                                                <span style="color:#000; font-size:14px"><?=$exam->orgunit?></span>
-                                        </div>
-                                        <div>
-                                            <small>
-                                                <span style="color:#797C80">Exam held on: <?=date("Y-m-d", strtotime($exam->starttime))?> (<?=date("H:i", strtotime($exam->starttime))?>&mdash;<?=date("H:i", strtotime($exam->endtime))?>)</span><br />
-                                            </small>
-                                        </div>
-                                        <?php if($student):?>
+                            <div class="main-box">
+                                <h1><?= $exam->name ?></h1>
+                                <div>
+                                    <span style="color:#000; font-size:14px"><?= $exam->orgunit ?></span>
+                                </div>
+                                <div>
+                                    <small>
+                                        <span style="color:#797C80">Exam held on: <?= date("Y-m-d", strtotime($exam->starttime)) ?> (<?= date("H:i", strtotime($exam->starttime)) ?>&mdash;<?= date("H:i", strtotime($exam->endtime)) ?>)</span><br />
+                                    </small>
+                                </div>
+                                <?php if ($student): ?>
                                         <div style="margin-top:35px">
                                             <center>
                                                 <h3>
-                                                    <span style="color:#3d749b"><?=$this->helper->getCatalogAttribute($student->user, 'name')?></span>
+                                                    <span style="color:#3d749b"><?= $this->helper->getCatalogAttribute($student->user, 'name') ?></span>
                                                 </h3>
-                                                <span style="font-weight:normal"><?=$this->helper->getCatalogAttribute($student->user, 'pnr')?></span>
+                                                <span style="font-weight:normal"><?= $this->helper->getCatalogAttribute($student->user, 'pnr') ?></span>
                                             </center>
                                         </div>
-                                        <?php endif;?>
-                                </div>         
+                                <?php endif; ?>
+                            </div>         
                         </div>
-                </div>
-                
-                <!-- Description page -->   
-                <div class="page">
+                    </div>
+
+                    <!-- Description page -->   
+                    <div class="page">
                         <div class="body" >
-                                <div class="body-content" style="height:950px">
-                                        <h1>Exam description</h1>
+                            <div class="body-content" style="height:950px">
+                                <h1>Exam description</h1>
+                                <div>
+                                    <div>
+                                        <?= $exam->descr ?>
+                                    </div>
+                                </div>
+                            </div>         
+                        </div>
+                    </div>
+
+                    <!-- Examination Result page -->     
+                    <div class="page">
+                        <div class="body" >
+                            <div class="body-content">
+                                <h1>Examination result</h1>
+                                <div>
+                                    <h2>Summary</h2>
+                                    <div>
+                                        You scored total <strong><?= sprintf("%1.1f", $data['studentScore'][$student->id]) ?></strong> of maximum <strong><?= sprintf("%1.1f", $data['examScore']) ?></strong> points (<strong><?= sprintf("%1.1f", ($data['studentScore'][$student->id] / $data['examScore']) * 100) ?>%</strong>) on this examination.<br>
+                                    </div>
+
+                                    <h2>Graduation</h2>
+                                    <div>
+                                        Your graduation on this examination is: <strong><?= $data['studentGrade'][$student->id] ?></strong>
+                                    </div>
+
+                                    <h2>Score Table</h2>
+                                    <div>
                                         <div>
-                                                <div>
-                                                <?=$exam->descr?>
-                                                </div>
+                                            This table shows a summary of your score versus the maximum scores. Questions without answer are marked
+                                            with an '-' in the table.
                                         </div>
-                                </div>         
-                        </div>
-                </div>
-                
-                <!-- Examination Result page -->     
-                <div class="page">
-                        <div class="body" >
-                                <div class="body-content">
-                                        <h1>Examination result</h1>
                                         <div>
-                                        	<h2>Summary</h2>
-                                                <div>
-	                                                You scored total <strong><?=sprintf("%1.1f", $data['studentScore'][$student->id])?></strong> of maximum <strong><?=sprintf("%1.1f", $data['examScore'])?></strong> points (<strong><?=sprintf("%1.1f", ($data['studentScore'][$student->id]/$data['examScore'])*100)?>%</strong>) on this examination.<br>
-                                                </div>
-                                                
-                                                <h2>Graduation</h2>
-                                                <div>
-        	                                        Your graduation on this examination is: <strong><?=$data['studentGrade'][$student->id]?></strong>
-                                                </div>
-                                                
-                                                <h2>Score Table</h2>
-                                                <div>
-                                                        <div>
-                                                                This table shows a summary of your score versus the maximum scores. Questions without answer are marked
-                                                                with an '-' in the table.
-                                                        </div>
-                                                        <div>
-                                                                <table cellpadding="5" cellspacing="5" style="border:1px solid #bebebe; background-color: #fff">
-                                                                
-                                                                	<tr>
-                                                                        	<th>Question</th>
-                                                                                <th>Score</th>
-                                                                                <th>Max score</th>
-                                                                                <th>Percent</th>
-                                                                                <th>Notice</th>
-                                                                        </tr>
-                                                                        
-                                                                        <?php foreach($data['questions'] as $qNo => $question):?>
-                                                                        	<?php foreach($data['qData'][$question->id]['qParts'] as $pTitle => $pData):?>
-                                                                                <tr>
-                                                                                        <td>
-                                                                                        	<?php if($pTitle == 'a'):?>
-	                                                                                      	<span style="color:#990000; font-weight: bold">Q<?=$qNo+1?></span>
-                                                                                                <?=(count($data['qData'][$question->id]['qParts']) > 1) ? ", ":""; ?>
-                                                                                                <?php endif;?>
-                                                                                                
-                                                                                                <?php if(count($data['qData'][$question->id]['qParts']) > 1):?>
-                                                                                        	Part <?=$pTitle?>
-                                                                                                <?php endif;?>
-                                                                                        </td>        
-                                                                                        <td>
-                                                                                        	<span class="uu-color">
-												<?=sprintf("%1.1f", $data['results'][$student->id][$question->id][$pTitle])?>
-                                                                                                </span>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                        	<span class="uu-color">
-												<?=sprintf("%1.1f", $pData["q_points"])?>
-                                                                                                </span>
-                                                                                        <td>
-                                                                                        	<span class="uu-color">
-                                                                                                <?=sprintf("%1.1f", (($data['results'][$student->id][$question->id][$pTitle]/$pData["q_points"]) * 100))?>%
-                                                                                                </span>
-                                                                                        </td>
-                                                                                        <td></td>
-                                                                                </tr>
-                                                                                <?php endforeach;?>
-                                                                        <?php endforeach;?>
-                                                                        <tr class="summary-row">
-                                                                        	<td>Summary:</td>
-                                                                        	<td><?=sprintf("%1.1f", $data['studentScore'][$student->id])?></td>
-                                                                        	<td><?=sprintf("%1.1f", $data['examScore'])?></td>
-                                                                        	<td><?=sprintf("%1.1f", ($data['studentScore'][$student->id]/$data['examScore'])*100)?>%</td>
-                                                                                <td></td>
-                                                                        </tr>
-                                                                </table>
-                                                        </div>       
-                                                </div>
-                                        </div>
-                                </div>         
+                                            <table cellpadding="5" cellspacing="5" style="border:1px solid #bebebe; background-color: #fff">
+
+                                                <tr>
+                                                    <th>Question</th>
+                                                    <th>Score</th>
+                                                    <th>Max score</th>
+                                                    <th>Percent</th>
+                                                    <th>Notice</th>
+                                                </tr>
+
+                                                <?php foreach ($data['questions'] as $qNo => $question): ?>
+                                                        <?php foreach ($data['qData'][$question->id]['qParts'] as $pTitle => $pData): ?>
+                                                                <tr>
+                                                                    <td>
+                                                                        <?php if ($pTitle == 'a'): ?>
+                                                                                <span style="color:#990000; font-weight: bold">Q<?= $qNo + 1 ?></span>
+                                                                                <?= (count($data['qData'][$question->id]['qParts']) > 1) ? ", " : ""; ?>
+                                                                        <?php endif; ?>
+
+                                                                        <?php if (count($data['qData'][$question->id]['qParts']) > 1): ?>
+                                                                                Part <?= $pTitle ?>
+                                                                        <?php endif; ?>
+                                                                    </td>        
+                                                                    <td>
+                                                                        <span class="uu-color">
+                                                                            <?= sprintf("%1.1f", $data['results'][$student->id][$question->id][$pTitle]) ?>
+                                                                        </span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="uu-color">
+                                                                            <?= sprintf("%1.1f", $pData["q_points"]) ?>
+                                                                        </span>
+                                                                    <td>
+                                                                        <span class="uu-color">
+                                                                            <?= sprintf("%1.1f", (($data['results'][$student->id][$question->id][$pTitle] / $pData["q_points"]) * 100)) ?>%
+                                                                        </span>
+                                                                    </td>
+                                                                    <td></td>
+                                                                </tr>
+                                                        <?php endforeach; ?>
+                                                <?php endforeach; ?>
+                                                <tr class="summary-row">
+                                                    <td>Summary:</td>
+                                                    <td><?= sprintf("%1.1f", $data['studentScore'][$student->id]) ?></td>
+                                                    <td><?= sprintf("%1.1f", $data['examScore']) ?></td>
+                                                    <td><?= sprintf("%1.1f", ($data['studentScore'][$student->id] / $data['examScore']) * 100) ?>%</td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                        </div>       
+                                    </div>
+                                </div>
+                            </div>         
                         </div>
-                </div>
-                
-                <!-- Questions and Answers pages -->
-		<?php foreach($data['questions'] as $questNo => $question):?>
-                <div class="page">
-                        <div class="body" >
-                                <div class="body-content">
+                    </div>
+
+                    <!-- Questions and Answers pages -->
+                    <?php foreach ($data['questions'] as $questNo => $question): ?>
+                            <div class="page">
+                                <div class="body" >
+                                    <div class="body-content">
                                         <div class="quest">
-	                                        <h1 class="q-<?=$question->id?>">Question <?=$question->slot ? $question->slot : $question->name?> </h1>
-                                                
-                                                <?php foreach($data['qData'][$question->id]['qParts'] as $pTitle => $pData):?>
-                                        	<div class="quest-part">
-                                                	<?php if(count($data['qData'][$question->id]['qParts']) > 1):?>
-                                                        <h2>Part <?=$pTitle?></h2>
-                                                        <?php endif;?>
+                                            <h1 class="q-<?= $question->id ?>">Question <?= $question->slot ? $question->slot : $question->name ?> </h1>
+
+                                            <?php foreach ($data['qData'][$question->id]['qParts'] as $pTitle => $pData): ?>
+                                                    <div class="quest-part">
+                                                        <?php if (count($data['qData'][$question->id]['qParts']) > 1): ?>
+                                                                <h2>Part <?= $pTitle ?></h2>
+                                                        <?php endif; ?>
                                                         <div style="padding: 10px 20px 0px 20px;">
-								
-                                                                <!-- resources -->
-                                                                <?php foreach($pData['resources'] as $resTitle => $resUrl):?>
-									<?php 
-                                                                        $type = basename(dirname($resUrl)).'s';
-                                                                        $path = $this->config->application->mediaDir.$type.DIRECTORY_SEPARATOR.basename(urldecode($resUrl));
-                                                                        $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
-                                                                        ?>
-                                                                        <div class="resource-wraper">
-                                                                        <?php if(stristr($mimeType, "image/")):?>
-                                                                        	<div style="border:1px dashed #dedede;">
-                                                                                        <div class="resource-title">
-                                                                                        <?=$resTitle?>
-                                                                                        </div>
-                                                                                        <div class="resource-image">
-											<?php if(stristr($resUrl, "openexam-svn")):?>
-                                                                                        <img src="<?=$this->url->get(str_replace("/openexam-svn/","", $resUrl))?>" style=" background-color:#f9f9f9; max-width:100%;">
-											<?php else:?>
-											<img src="<?=$resUrl?>" style=" background-color:#f9f9f9; max-width:100%;">
-											<?php endif;?>
-                                                                                        </div>
+
+                                                            <!-- resources -->
+                                                            <?php foreach ($pData['resources'] as $resTitle => $resUrl): ?>
+                                                                    <?php
+                                                                    $type = basename(dirname($resUrl)) . 's';
+                                                                    $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
+                                                                    $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
+
+                                                                    ?>
+                                                                    <div class="resource-wraper">
+                                                                        <?php if (stristr($mimeType, "image/")): ?>
+                                                                                <div style="border:1px dashed #dedede;">
+                                                                                    <div class="resource-title">
+                                                                                        <?= $resTitle ?>
+                                                                                    </div>
+                                                                                    <div class="resource-image">
+                                                                                        <?php if (stristr($resUrl, "openexam-svn")): ?>
+                                                                                                <img src="<?= $this->url->get(str_replace("/openexam-svn/", "", $resUrl)) ?>" style=" background-color:#f9f9f9; max-width:100%;">
+                                                                                        <?php elseif (($exam->details & Exam::BLUR_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
+                                                                                                <svg width="100%" height="550px"> 
+                                                                                                <defs> 
+                                                                                                <filter id="blur"> 
+                                                                                                    <feGaussianBlur stdDeviation="8" /> 
+                                                                                                </filter> 
+                                                                                                </defs> 
+                                                                                                <text x="25px" y="55px" font-family="Verdana"
+                                                                                                      style="font-family: Times New Roman;
+                                                                                                      font-size: 35px;
+                                                                                                      stroke: #eeeeee;
+                                                                                                      fill: #ffffff;">
+                                                                                                The media content has been blurred
+                                                                                                </text>      
+                                                                                                <image xlink:href="<?= $resUrl ?>" y="25px" width="500px" height="500px" filter="url(#blur)">  
+                                                                                                </image> 
+                                                                                                </svg>                                                                                                
+                                                                                                <div class="blurred">The media content has been blurred by request from teacher</div>
+                                                                                        <?php else : ?>
+                                                                                                <img src="<?= $resUrl ?>" style=" background-color:#f9f9f9; max-width:100%;">
+                                                                                        <?php endif; ?>
+                                                                                    </div>
                                                                                 </div>
-                                                                        <?php else:?>
-                                                                        	<a href="<?="https://".$this->request->getServerName().$resUrl?>" target="_blank"><?=$resTitle?></a>
-                                                                        <?php endif;?>
-                                                                        </div>
-                                                                <?php endforeach;?>
-                                                                
-                                                                <div style="padding: 20px 0; font-size:14px">
-                                                                        <?=$pData['q_text']?>
-									<?php if($pData["ans_area"]["type"] == 'choicebox'):?>
-                                                                        	<?php $correctAnsArr = array();?>
-										<ul>
-										<?php foreach($pData["ans_area"]["data"] as $opt => $isCorrect):?>
-											<li>
-												<?=$opt?>
-                                                                                        	<?php if($isCorrect):?>
-                                                                                                	<span style="color:green"> ✔</span>
-                                                                                                	<?php $correctAnsArr[] = $opt;?>
-                                                                                                <?php endif;?>
-                                                                                        </li>       
-										<?php endforeach;?>
-										</ul>
-									<?php endif;?>
-                                                                </div>
+                                                                        <?php else: ?>
+                                                                                <a href="<?= "https://" . $this->request->getServerName() . $resUrl ?>" target="_blank"><?= $resTitle ?></a>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                            <?php endforeach; ?>
 
-
-                                                                <div style="padding-bottom: 20px;">
-                                                                        <div class="blue-txt"> Your answer:</div> 
-
-                                                                	<div>
-									<?php if($pData["ans_area"]["type"] == 'canvas'):?>
-                                                                        	<img src="<?=$data['answers'][$student->id][$question->id][$pTitle]["ans"][0]["canvasUrl"]?>" style=" background-color:#f9f9f9; max-width:100%;" >
-                                                                	<?php else:?>
-                                                                        	<?php if(count($data['answers'][$student->id][$question->id][$pTitle]["ans"])):?>
-                                                                                	<?php if($pData["ans_area"]["type"] == 'choicebox'):?>
-                                                                                        <ul>
-                                                                                        <?php foreach($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans):?>
-                                                                                        	<?php if(count($correctAnsArr)):?>
-                                                                                                <li style="color:<?=in_array($ans, $correctAnsArr) ? 'green': 'red'?>">
-													<?=$ans?>
-                                                                                                </li>
-                                                                                                <?php else:?>
-                                                                                                <li><?=$ans?></li>
-                                                                                                <?php endif;?>
-                                                                                        <?php endforeach;?>
-                                                                                        </ul>
-                                                                                        <?php else:?>
-												<?php if(is_array($data['answers'][$student->id][$question->id][$pTitle]["ans"])):?>
-													<?php foreach($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans):?>
-														<?=$ans?>
-													<?php endforeach;?>
-												<?php else:?>
-													<?=$data['answers'][$student->id][$question->id][$pTitle]["ans"];?>
-												<?php endif;?>	
-                                                                                        <?php endif;?>
-                                                                                <?php else:?>
-                                                                                	<em>No answer was provided for this part.</em>
-                                                                                <?php endif;?>
-                                                                        <?php endif;?>
-                                                                        </div>
-                                                                </div>
-                                                                
-								<?php /*if($pData["ans_area"]["type"] == 'choicebox'):?>
-                                                                <div style="padding-bottom: 20px;">
-                                                                        <div class="blue-txt"> Correct answer:</div> 
+                                                            <div style="padding: 20px 0; font-size:14px">
+                                                                <?= $pData['q_text'] ?>
+                                                                <?php if ($pData["ans_area"]["type"] == 'choicebox'): ?>
+                                                                        <?php $correctAnsArr = array(); ?>
                                                                         <ul>
-										<?php foreach($data['qData'][$question->id]['qParts'][$pTitle]['ans_area']['data'] as $cAnswer => $isCorrect):?>
-                                                                                        <?php if($isCorrect):?>
-                                                                                        <li><div class="uu-color"><?=$cAnswer?></div></li>
-                                                                                        <?php endif;?>
-                                                                                <?php endforeach;?>
-                                                                                
+                                                                            <?php foreach ($pData["ans_area"]["data"] as $opt => $isCorrect): ?>
+                                                                                    <li>
+                                                                                        <?= $opt ?>
+                                                                                        <?php if ($isCorrect): ?>
+                                                                                                <span style="color:green"> ✔</span>
+                                                                                                <?php $correctAnsArr[] = $opt; ?>
+                                                                                        <?php endif; ?>
+                                                                                    </li>       
+                                                                            <?php endforeach; ?>
                                                                         </ul>
+                                                                <?php endif; ?>
+                                                            </div>
+
+
+                                                            <div style="padding-bottom: 20px;">
+                                                                <div class="blue-txt"> Your answer:</div> 
+
+                                                                <div>
+                                                                    <?php if ($pData["ans_area"]["type"] == 'canvas'): ?>
+                                                                            <img src="<?= $data['answers'][$student->id][$question->id][$pTitle]["ans"][0]["canvasUrl"] ?>" style=" background-color:#f9f9f9; max-width:100%;" >
+                                                                    <?php else: ?>
+                                                                            <?php if (count($data['answers'][$student->id][$question->id][$pTitle]["ans"])): ?>
+                                                                                    <?php if ($pData["ans_area"]["type"] == 'choicebox'): ?>
+                                                                                            <ul>
+                                                                                                <?php foreach ($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans): ?>
+                                                                                                        <?php if (count($correctAnsArr)): ?>
+                                                                                                                <li style="color:<?= in_array($ans, $correctAnsArr) ? 'green' : 'red' ?>">
+                                                                                                                    <?= $ans ?>
+                                                                                                                </li>
+                                                                                                        <?php else: ?>
+                                                                                                                <li><?= $ans ?></li>
+                                                                                                        <?php endif; ?>
+                                                                                                <?php endforeach; ?>
+                                                                                            </ul>
+                                                                                    <?php else: ?>
+                                                                                            <?php if (is_array($data['answers'][$student->id][$question->id][$pTitle]["ans"])): ?>
+                                                                                                    <?php foreach ($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans): ?>
+                                                                                                            <?= $ans ?>
+                                                                                                    <?php endforeach; ?>
+                                                                                            <?php else: ?>
+                                                                                                    <?= $data['answers'][$student->id][$question->id][$pTitle]["ans"]; ?>
+                                                                                            <?php endif; ?>	
+                                                                                    <?php endif; ?>
+                                                                            <?php else: ?>
+                                                                                    <em>No answer was provided for this part.</em>
+                                                                            <?php endif; ?>
+                                                                    <?php endif; ?>
                                                                 </div>
-                                                                <?php endif*/?>
-                                                                
-                                                                <?php if(isset($data['results'][$student->id][$question->id]["comments"]) && !empty($data['results'][$student->id][$question->id]["comments"])):?>
-                                                                <div style="padding-bottom: 20px;">
+                                                            </div>
+
+                                                            <?php /* if($pData["ans_area"]["type"] == 'choicebox'):?>
+                                                              <div style="padding-bottom: 20px;">
+                                                              <div class="blue-txt"> Correct answer:</div>
+                                                              <ul>
+                                                              <?php foreach($data['qData'][$question->id]['qParts'][$pTitle]['ans_area']['data'] as $cAnswer => $isCorrect):?>
+                                                              <?php if($isCorrect):?>
+                                                              <li><div class="uu-color"><?=$cAnswer?></div></li>
+                                                              <?php endif;?>
+                                                              <?php endforeach;?>
+
+                                                              </ul>
+                                                              </div>
+                                                              <?php endif */ ?>
+
+                                                            <?php if (isset($data['results'][$student->id][$question->id]["comments"]) && !empty($data['results'][$student->id][$question->id]["comments"])): ?>
+                                                                    <div style="padding-bottom: 20px;">
                                                                         <div class="blue-txt"> Teacher's comments:</div> 
-                                                                        <div class="uu-color"><?=nl2br($data['results'][$student->id][$question->id]["comments"])?></div>
-                                                                </div>
-                                                                <?php endif;?>
-                                                                
-                                                                <div style="padding-bottom: 20px;">
-                                                                        <div style="font-size:14px"> 
-                                                                        	<strong>Your score:</strong> <span class="uu-color"><?=sprintf("%1.1f", $data['results'][$student->id][$question->id][$pTitle])?> (<em>Max score: <?=sprintf("%1.1f", $data['qData'][$question->id]['qParts'][$pTitle]['q_points'])?></em>)</span>
-                                                                        </div> 
-                                                                </div>
+                                                                        <div class="uu-color"><?= nl2br($data['results'][$student->id][$question->id]["comments"]) ?></div>
+                                                                    </div>
+                                                            <?php endif; ?>
+
+                                                            <div style="padding-bottom: 20px;">
+                                                                <div style="font-size:14px"> 
+                                                                    <strong>Your score:</strong> <span class="uu-color"><?= sprintf("%1.1f", $data['results'][$student->id][$question->id][$pTitle]) ?> (<em>Max score: <?= sprintf("%1.1f", $data['qData'][$question->id]['qParts'][$pTitle]['q_points']) ?></em>)</span>
+                                                                </div> 
+                                                            </div>
                                                         </div>
-                                            	</div>
-                                            	<?php endforeach;?>
+                                                    </div>
+                                            <?php endforeach; ?>
                                         </div>
-                                </div>         
-                        </div>
-                </div>
-                <?php endforeach;?>
-                
-                <!-- Statistics page -->
-		<?php if(($exam->details & 2) == 2):?>
-                <div class="page">
-                        <div class="body" >
-                                <div class="body-content" style="height:950px">
+                                    </div>         
+                                </div>
+                            </div>
+                    <?php endforeach; ?>
+
+                    <!-- Statistics page -->
+                    <?php if (($exam->details & Exam::RESULT_OTHERS_STATISTICS) != 0): ?>
+                            <div class="page">
+                                <div class="body" >
+                                    <div class="body-content" style="height:950px">
                                         <h1>Statistics</h1>
                                         <div>
-                                        This section shows overall statistics for all participants of this examination.
+                                            This section shows overall statistics for all participants of this examination.
                                         </div>
                                         <div style="padding-left:35px">
-                                        	<h2>Distribution</h2>
-                                                <div>
+                                            <h2>Distribution</h2>
+                                            <div>
                                                 This table shows the distribution by grades. The number of student allotted for each grade are:
-                                                </div>
-                                                
-                                                <table>
-                                                	<tr>
-                                                        	<th>Grade</th>
-                                                                <th>Threshold</th>
-                                                                <th>Students</th>
-                                                                <th>Percent</th>
-                                                        </tr>
-                                                        
-                                                        <?php foreach($data['examGrades'] as $grade => $threshold):?>
+                                            </div>
+
+                                            <table>
+                                                <tr>
+                                                    <th>Grade</th>
+                                                    <th>Threshold</th>
+                                                    <th>Students</th>
+                                                    <th>Percent</th>
+                                                </tr>
+
+                                                <?php foreach ($data['examGrades'] as $grade => $threshold): ?>
                                                         <tr>
-                                                        	<td><?=$grade?></td>
-                                                                <td class="uu-color"><?=sprintf("%1.1f", $threshold)?>%</td>
-                                                                <td class="uu-color"><?=$data['studentGrade'][$grade]?></td>
-                                                                <td class="uu-color"><?=sprintf("%1.1f", ($data['studentGrade'][$grade]/$allStudents->count())*100)?>%</td>
+                                                            <td><?= $grade ?></td>
+                                                            <td class="uu-color"><?= sprintf("%1.1f", $threshold) ?>%</td>
+                                                            <td class="uu-color"><?= $data['studentGrade'][$grade] ?></td>
+                                                            <td class="uu-color"><?= sprintf("%1.1f", ($data['studentGrade'][$grade] / $allStudents->count()) * 100) ?>%</td>
                                                         </tr>
-                                                        <?php endforeach;?>
-                                                        
-                                                        <tr class="summary-row">
-                                                        	<td>Summary:</td>
-                                                                <td>---</td>
-                                                                <td><?=$allStudents->count()?></td>
-                                                                <td>-----</td>
-                                                        </tr>
-                                                </table>
-                                                <!--
-                                                <div>
-                                                	This table shows the distribution of scores by student on this examination.
-                                                </div>
-                                                <table>
-                                                	<tr>
-                                                        	<th>Score</th>
-                                                                <th>Percent</th>
-                                                                <th>Students</th>
-                                                        </tr>
-                                                        <tr>
-                                                        	<td class="uu-color">95.0</td>
-                                                                <td class="uu-color">263.9</td>
-                                                                <td class="uu-color">1</td>
-                                                        </tr>
-                                                        <tr class="summary-row">
-                                                        	<td>Summary:</td>
-                                                                <td>&nbsp;</td>
-                                                                <td>3</td>
-                                                        </tr>
-                                                        <tr>
-                                                        	<td>Mean Value:</td>
-                                                                <td colspan="3" style="text-align:left" class="uu-color">31.5 (52.7) 87.5% (146.3%)</td>
-                                                        </tr>
-                                                        <tr>
-                                                        	<td>Standard Deviation:</td>
-                                                                <td colspan="3" style="text-align:left" class="uu-color">1.5 (30.0)</td>
-                                                        </tr>
-                                                </table>
-                                                <div>
-                                                The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. The other<br>
-                                                values are calculated by first removing the highest and lowest scores.
-                                                </div>-->
+                                                <?php endforeach; ?>
+
+                                                <tr class="summary-row">
+                                                    <td>Summary:</td>
+                                                    <td>---</td>
+                                                    <td><?= $allStudents->count() ?></td>
+                                                    <td>-----</td>
+                                                </tr>
+                                            </table>
+                                            <!--
+                                            <div>
+                                                    This table shows the distribution of scores by student on this examination.
+                                            </div>
+                                            <table>
+                                                    <tr>
+                                                            <th>Score</th>
+                                                            <th>Percent</th>
+                                                            <th>Students</th>
+                                                    </tr>
+                                                    <tr>
+                                                            <td class="uu-color">95.0</td>
+                                                            <td class="uu-color">263.9</td>
+                                                            <td class="uu-color">1</td>
+                                                    </tr>
+                                                    <tr class="summary-row">
+                                                            <td>Summary:</td>
+                                                            <td>&nbsp;</td>
+                                                            <td>3</td>
+                                                    </tr>
+                                                    <tr>
+                                                            <td>Mean Value:</td>
+                                                            <td colspan="3" style="text-align:left" class="uu-color">31.5 (52.7) 87.5% (146.3%)</td>
+                                                    </tr>
+                                                    <tr>
+                                                            <td>Standard Deviation:</td>
+                                                            <td colspan="3" style="text-align:left" class="uu-color">1.5 (30.0)</td>
+                                                    </tr>
+                                            </table>
+                                            <div>
+                                            The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. The other<br>
+                                            values are calculated by first removing the highest and lowest scores.
+                                            </div>-->
                                         </div>
                                         <!--
                                         <div style="padding-left:35px">
                                                 <h2>Ranges</h2>
                                                 <div>
-                                                       	<div>
+                                                        <div>
                                                         This table shows the number of student in each range of percentage correct answers.<br>
                                                         </div>
                                                         <table>
-                                                        	<tr>
-                                                                	<th>Range</th>
+                                                                <tr>
+                                                                        <th>Range</th>
                                                                         <th>Students</th>
                                                                 </tr>
-                                                        	<tr>
-                                                                	<td>260 - 269 %</td>
+                                                                <tr>
+                                                                        <td>260 - 269 %</td>
                                                                         <td  class="uu-color">1</td>
                                                                 </tr>
-                                                        	<tr>
-                                                                	<td >&gt; 90 %</td>
+                                                                <tr>
+                                                                        <td >&gt; 90 %</td>
                                                                         <td class="uu-color">1</td>
                                                                 </tr>
-                                                        	<tr>
-                                                                	<td>80 - 89</td>
+                                                                <tr>
+                                                                        <td>80 - 89</td>
                                                                         <td class="uu-color">1</td>
                                                                 </tr>
-                                                        	<tr class="summary-row">
-                                                                	<td>Summary:</td>
+                                                                <tr class="summary-row">
+                                                                        <td>Summary:</td>
                                                                         <td>3</td>
                                                                 </tr>
                                                         </table>
-                                               	</div>
+                                                </div>
                                         </div>
                                         -->
-                                </div>         
-                        </div>
-		</div>
-		<?php endif;?>
-		   
-                <!-- Reference page -->
-                <div class="page">
+                                    </div>         
+                                </div>
+                            </div>
+                    <?php endif; ?>
+
+                    <!-- Reference page -->
+                    <div class="page">
                         <div class="body" >
-                                <div class="body-content" style="height:950px">
-                                        <h1>Reference</h1>
+                            <div class="body-content" style="height:950px">
+                                <h1>Reference</h1>
+                                <div>
+                                    <div>Information about this examination.</div>
+                                </div>
+                                <div style="padding-left:35px">
+                                    <div>
+                                        <h2>Contact Information</h2>
                                         <div>
-                                                <div>Information about this examination.</div>
-                                        </div>
-                                        <div style="padding-left:35px">
-                                        	<div>
-                                                        <h2>Contact Information</h2>
-                                                        <div>
-                                                        	This section lists those people who have been involved in this examination.<br>
-                                                            <div style="margin-top:15px">
-                                                                <span style="font-size:15px; color:#3d749b">Responsable for examination:</span><br>
-                                                                <span class="uu-color">Main responsible person for the examination is <a href="mailto:<?=$this->helper->getCatalogAttribute($exam->creator, 'mail', true)?>" style="color:#990000; text-decoration:none"><?=$this->helper->getCatalogAttribute($exam->creator, 'name')?></a></span><br>
-                                                            </div>
-							    
-							    <?php if(($exam->details & 1) == 1):?>
-                                                            <div style="margin-top:15px">
-                                                                <span style="font-size:15px; color:#3d749b">Correction of answers:</span><br>
-                                                                <span class="uu-color">Following persons have contributed in this exam and have corrected answers:</span>
-                                                                <ul class="uu-color">
-                                                                	<?php foreach($data['qCorrectors'] as $corrector => $qList):?>
-                                                                	<li style="padding-bottom:10px">
-                                                                                <a href="mailto:<?=$this->helper->getCatalogAttribute($corrector, 'mail', true)?>" style="color:#990000; text-decoration:none"><?=$this->helper->getCatalogAttribute($corrector, 'name')?></a>                                                                                <div>
-                                                                                        <span style="color:#000">Corrected questions:</span> 
-                                                                                        <ul>
-                                                                                        	<?php foreach($qList as $qName):?>
-                                                                                                <li>Question <?=$qName?></li>
-                                                                                                <?php endforeach;?>
-                                                                                        </ul>
-                                                                                 </div>       
-                                                                    	</li>
-                                                                        <?php endforeach;?>
-                                                                </ul>        
-                                                            </div>
-							    <?php endif;?>
-                                                        </div>	
-                                                </div>
-                                                <!--
-						<div>
-                                                	<h2>Document Information</h2>
-                                                        <div>
-                                                        This document was generated by OpenExam PHP installed on https://openexam.bmc.uu.se/v2/rc1/<br>
-                                                        <div class="uu-color">
-                                                        OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala<br>
-                                                        University.
-                                                        </div>
-                                                        </div>
-                                                </div>
-						-->
-                                        </div>
-                                </div>         
+                                            This section lists those people who have been involved in this examination.<br>
+                                            <div style="margin-top:15px">
+                                                <span style="font-size:15px; color:#3d749b">Responsable for examination:</span><br>
+                                                <span class="uu-color">Main responsible person for the examination is <a href="mailto:<?= $this->helper->getCatalogAttribute($exam->creator, 'mail', true) ?>" style="color:#990000; text-decoration:none"><?= $this->helper->getCatalogAttribute($exam->creator, 'name') ?></a></span><br>
+                                            </div>
+
+                                            <?php if (($exam->details & Exam::RESULT_EXPOSE_EMPLOYEES) != 0): ?>
+                                                    <div style="margin-top:15px">
+                                                        <span style="font-size:15px; color:#3d749b">Correction of answers:</span><br>
+                                                        <span class="uu-color">Following persons have contributed in this exam and have corrected answers:</span>
+                                                        <ul class="uu-color">
+                                                            <?php foreach ($data['qCorrectors'] as $corrector => $qList): ?>
+                                                                    <li style="padding-bottom:10px">
+                                                                        <a href="mailto:<?= $this->helper->getCatalogAttribute($corrector, 'mail', true) ?>" style="color:#990000; text-decoration:none"><?= $this->helper->getCatalogAttribute($corrector, 'name') ?></a>                                                                                <div>
+                                                                            <span style="color:#000">Corrected questions:</span> 
+                                                                            <ul>
+                                                                                <?php foreach ($qList as $qName): ?>
+                                                                                        <li>Question <?= $qName ?></li>
+                                                                                <?php endforeach; ?>
+                                                                            </ul>
+                                                                        </div>       
+                                                                    </li>
+                                                            <?php endforeach; ?>
+                                                        </ul>        
+                                                    </div>
+                                            <?php endif; ?>
+                                        </div>	
+                                    </div>
+                                    <!--
+                                    <div>
+                                            <h2>Document Information</h2>
+                                            <div>
+                                            This document was generated by OpenExam PHP installed on https://openexam.bmc.uu.se/v2/rc1/<br>
+                                            <div class="uu-color">
+                                            OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala<br>
+                                            University.
+                                            </div>
+                                            </div>
+                                    </div>
+                                    -->
+                                </div>
+                            </div>         
                         </div>
+                    </div>
                 </div>
-        </div>
-<?php endforeach;?>        
-</body>
+        <?php endforeach; ?>        
+    </body>
 </html>

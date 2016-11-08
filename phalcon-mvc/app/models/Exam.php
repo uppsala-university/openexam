@@ -75,6 +75,10 @@ class Exam extends ModelBase
          * Expose student grade and percentage during correction phase.
          */
         const EXPOSE_GRADES_DURING_CORRECTION = 4;
+        /**
+         * Blur media (i.e. images) in student result.
+         */
+        const BLUR_MEDIA_CONTENT_IN_RESULT = 8;
 
         /**
          * This object ID.
