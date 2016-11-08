@@ -74,9 +74,9 @@ class ResultTask extends MainTask implements TaskInterface
                                 '--verbose'  => 'Be more verbose.',
                                 '--dry-run'  => 'Just print whats going to be done.'
                         ),
-                        'aliases' => array(
+                        'aliases'  => array(
                                 '--generate' => 'Alias for --create.',
-                                '--remove'   => 'Alias for --delete'                                
+                                '--remove'   => 'Alias for --delete'
                         ),
                         'examples' => array(
                                 array(
@@ -115,6 +115,10 @@ class ResultTask extends MainTask implements TaskInterface
                 }
 
                 $exams = $this->getExams();
+
+                if ($this->_options['exam'] && $exams->count() == 0) {
+                        $this->flash->warning(sprintf("Requested exam %d is not yet decoded", $this->_options['exam']));
+                }
                 foreach ($exams as $exam) {
                         $this->createResults($exam);
                 }
