@@ -5,52 +5,24 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    SwamidLogin.php
-// Created: 2016-10-31 12:18:56
+// File:    SimpleSamlLogin.php
+// Created: 2016-11-09 01:22:43
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
 namespace OpenExam\Library\Security\Login;
 
+use OpenExam\Library\Security\Login\Base\RemoteLogin;
 use Phalcon\Config;
-use SimpleSAML_Auth_Simple;
-use UUP\Authentication\Authenticator\Authenticator;
-use UUP\Authentication\Library\Authenticator\AuthenticatorBase;
-use UUP\Authentication\Restrictor\Restrictor;
+use UUP\Authentication\Authenticator\SimpleSamlAuthenticator;
 
 /**
- * Simple SAML PHP Login (i.e. discovery in SWAMID).
- *
+ * Simple SAML login (i.e. discovery in SWAMID).
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authenticator
+class SimpleSamlLogin extends SimpleSamlAuthenticator implements RemoteLogin
 {
-
-        /**
-         * The user principal attribute name.
-         */
-        const PRINCIPAL = 'eduPersonPrincipalName';
-        /**
-         * The default session name (see simplesamlphp config).
-         */
-        const SESSION_NAME = 'simplesaml';
-
-        /**
-         * The simple SAML object.
-         * @var SimpleSAML_Auth_Simple 
-         */
-        private $_client;
-        /**
-         * Target base URI.
-         * @var string 
-         */
-        private $_target;
-        /**
-         * The login/logout URL.
-         * @var string 
-         */
-        private $_return;
 
         /**
          * Constructor.
@@ -59,95 +31,42 @@ class SimpleSamlLogin extends AuthenticatorBase implements Restrictor, Authentic
          */
         public function __construct($config, $name = 'default-sp', $path = null)
         {
-                $this->requires('lib/_autoload.php', $path);
+                parent::__construct(array(
+                        'name' => $name,
+                        'path' => $path
+                ));
+                parent::control(self::SUFFICIENT);
+                parent::visible(true);
 
-                $this->_client = new SimpleSAML_Auth_Simple($name);
-                $this->_target = $config->application->baseUri;
+                $this->target = $config->application->baseUri . "auth/login";
+                $this->return = $config->application->baseUri . "auth/logout";
         }
 
-        public function accepted()
+        /**
+         * Current server name.
+         * @return string
+         */
+        public function hostname()
         {
-                $this->invoke();
-                $result = $this->_client->isAuthenticated();
-                $this->leave();
-                return $result;
+                return filter_input(INPUT_SERVER, 'SERVER_NAME');
         }
 
-        public function getSubject()
+        /**
+         * Current server port.
+         * @return string
+         */
+        public function port()
         {
-                $this->invoke();
-                $result = $this->_client->getAttributes()[self::PRINCIPAL][0];
-                $this->leave();
-                return $result;
+                return filter_input(INPUT_SERVER, 'SERVER_PORT');
         }
 
-        public function attributes()
+        /**
+         * Get server path.
+         * @return string
+         */
+        public function path()
         {
-                $this->invoke();
-                $result = $this->_client->getAttributes();
-                $this->leave();
-                return $result;
-        }
-
-        public function login()
-        {
-                $this->invoke();
-                $this->_return = sprintf("%s/auth/login", $this->_target);
-		$this->_client->requireAuth(array('ReturnTo' => $this->_return));
-                $this->leave();
-        }
-
-        public function logout()
-        {
-                $this->invoke();
-                $this->_return = sprintf("%s/auth/logout", $this->_target);
-                $this->_client->logout(array('ReturnTo' => $this->_return));
-                $this->leave();
-        }
-
-        private function invoke()
-        {
-                $this->_status = session_status();
-
-                if (session_status() == PHP_SESSION_ACTIVE &&
-                    session_status() != PHP_SESSION_DISABLED) {
-                        session_write_close();
-                }
-                if (session_status() == PHP_SESSION_NONE &&
-                    session_status() != PHP_SESSION_DISABLED) {
-                        session_start();
-                }
-        }
-
-        private function leave()
-        {
-                if (session_status() == PHP_SESSION_ACTIVE &&
-                    session_status() != PHP_SESSION_DISABLED) {
-                        session_write_close();
-                }
-                if ($this->_status == PHP_SESSION_ACTIVE &&
-                    session_status() == PHP_SESSION_NONE) {
-                        session_start();
-                }
-        }
-
-        private function requires($file, $path = null)
-        {
-                $locations = array(
-                        '/usr/share/php/simplesamlphp/',
-                        __DIR__ . '/../../../../../../', // deployed
-                        __DIR__ . '/../../../../vendor/' // package
-                );
-                if (isset($path)) {
-                        if (!in_array($path, $locations)) {
-                                $locations[] = $path;
-                        }
-                }
-                foreach ($locations as $location) {
-                        if (file_exists($location . $file)) {
-                                require_once $location . $file;
-                        }
-                }
+                return null;    // Use default login path
         }
 
 }
