@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Dispatcher;
 
+use OpenExam\Library\Catalog\Attribute\Provider as AttributeProvider;
 use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Plugins\Security\Dispatcher\DispatchHelper;
 use OpenExam\Plugins\Security\DispatchListener;
@@ -133,6 +134,22 @@ class AuthenticationHandler extends Component implements DispatchHelper
                 // 
                 $this->auth->activate($method, $this->_service);
                 $this->auth->login();
+
+                // 
+                // Are current authenticator providing user attributes?
+                // 
+                if (!($this->auth->getAuthenticator() instanceof AttributeProvider)) {
+                        return true;
+                }
+                if (!$this->auth->getAuthenticator()->hasAttributes()) {
+                        return true;
+                }
+                if (($user = $this->auth->getAuthenticator()->getUser()) == null) {
+                        return true;
+                }
+                if (!$this->attrstor->exists($user->principal)) {
+                        $this->attrstor->insert($user);
+                }
         }
 
         /**

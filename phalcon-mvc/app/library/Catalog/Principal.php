@@ -98,7 +98,7 @@ class Principal
         public $sn;
         /**
          * The given name (first name).
-         * @var type 
+         * @var string 
          */
         public $gn;
         /**

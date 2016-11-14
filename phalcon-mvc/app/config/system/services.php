@@ -270,6 +270,17 @@ $di->set('catalog', function() use($config) {
 }, true);
 
 /**
+ * The user attribute storage service. The storage part of catalog service.
+ */
+$di->set('attrstor', function() {
+        return new OpenExam\Library\Catalog\Attribute\Storage(
+            array(
+                '*' => new OpenExam\Library\Catalog\Attribute\Storage\Database()
+            )
+        );
+}, true);
+
+/**
  * Capabilities service.
  */
 $di->set('capabilities', function() {
