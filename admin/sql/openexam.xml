@@ -210,9 +210,9 @@
 		<field Field="data" Type="text" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="created" Type="int(15) unsigned" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="updated" Type="int(15) unsigned" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="sessions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="6" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="sessions" Non_unique="1" Key_name="session_id" Seq_in_index="1" Column_name="session_id" Collation="A" Cardinality="6" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="sessions" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="6" Avg_row_length="93" Data_length="7704" Max_data_length="281474976710655" Index_length="6144" Data_free="7144" Auto_increment="1" Create_time="2016-11-13 15:58:35" Update_time="2016-11-14 04:55:48" Check_time="2016-11-13 15:58:35" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="sessions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="78" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="sessions" Non_unique="1" Key_name="session_id" Seq_in_index="1" Column_name="session_id" Collation="A" Cardinality="78" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="sessions" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="78" Avg_row_length="88" Data_length="7704" Max_data_length="281474976710655" Index_length="8192" Data_free="840" Auto_increment="1" Create_time="2016-11-13 15:58:35" Update_time="2016-11-14 22:55:07" Check_time="2016-11-13 15:58:35" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="settings">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -272,8 +272,9 @@
 		<field Field="assurance" Type="varchar(200)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="affiliation" Type="varchar(200)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="source" Type="varchar(10)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="users" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="1" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="users" Engine="InnoDB" Version="10" Row_format="Compact" Rows="1" Avg_row_length="16384" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2016-11-14 04:54:58" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<field Field="created" Type="datetime" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="" Comment="" />
+		<key Table="users" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="16" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="users" Engine="InnoDB" Version="10" Row_format="Compact" Rows="16" Avg_row_length="1024" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2016-11-14 23:18:58" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 </database>
 </mysqldump>
