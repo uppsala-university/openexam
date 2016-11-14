@@ -169,8 +169,6 @@ class AccessHandler extends ServiceHandler
                 if (!isset($this->_request->params['flat'])) {
                         $this->_request->params['flat'] = false;
                 }
-                
-                print_r($this->_request);
 
                 $result = $location->getEntries(
                     $this->_request->data['exam_id'], $this->_request->params['filter'], $this->_request->params['flat']
