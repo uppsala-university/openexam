@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    LdapResult.php
+// File:    Result.php
 // Created: 2014-10-22 04:21:36
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -16,7 +16,7 @@ namespace OpenExam\Library\Catalog\DirectoryService\Ldap;
 /**
  * LDAP result class.
  */
-class LdapResult
+class Result
 {
 
         /**

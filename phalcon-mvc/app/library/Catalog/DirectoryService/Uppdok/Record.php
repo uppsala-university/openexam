@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    UppdokRecord.php
+// File:    Record.php
 // Created: 2014-10-22 04:20:31
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -35,7 +35,7 @@ if (!defined('INFO_CGI_FIELD_MAIL')) {
  * Represent one UPPDOK record.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class UppdokRecord
+class Record
 {
 
         /**

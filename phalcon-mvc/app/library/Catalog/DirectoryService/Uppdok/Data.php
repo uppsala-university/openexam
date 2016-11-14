@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    UppdokData.php
+// File:    Data.php
 // Created: 2014-10-22 04:20:31
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -49,7 +49,7 @@ if (!defined('INFO_CGI_FIELD_MAIL')) {
  * UPPDOK (InfoCGI) data service.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class UppdokData extends Component
+class Data extends Component
 {
 
         /**
@@ -74,14 +74,14 @@ class UppdokData extends Component
         private $_compact = true;
         /**
          * The UPPDOK service connection.
-         * @var UppdokConnection 
+         * @var Connection 
          */
         private $_connection;
 
         /**
          * Constructor.
          * 
-         * @param UppdokConnection $connection The UPPDOK service connection.
+         * @param Connection $connection The UPPDOK service connection.
          */
         public function __construct($connection)
         {
@@ -235,7 +235,7 @@ class UppdokData extends Component
                                 if ($this->_compact) {
                                         array_push($result, $arr[INFO_CGI_FIELD_USER]);
                                 } else {
-                                        array_push($result, new UppdokRecord($arr));
+                                        array_push($result, new Record($arr));
                                 }
                         }
                 }

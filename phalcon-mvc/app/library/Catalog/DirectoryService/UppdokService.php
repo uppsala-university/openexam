@@ -13,8 +13,8 @@
 
 namespace OpenExam\Library\Catalog\DirectoryService;
 
-use OpenExam\Library\Catalog\DirectoryService\Uppdok\UppdokConnection;
-use OpenExam\Library\Catalog\DirectoryService\Uppdok\UppdokData;
+use OpenExam\Library\Catalog\DirectoryService\Uppdok\Connection;
+use OpenExam\Library\Catalog\DirectoryService\Uppdok\Data;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Catalog\ServiceAdapter;
 use OpenExam\Library\Catalog\ServiceConnection;
@@ -36,7 +36,7 @@ class UppdokService extends ServiceAdapter
 
         /**
          * The UPPDOK data service.
-         * @var UppdokData 
+         * @var Data 
          */
         private $_uppdok;
 
@@ -49,8 +49,8 @@ class UppdokService extends ServiceAdapter
          */
         public function __construct($user, $pass, $host = INFO_CGI_SERVER, $port = INFO_CGI_PORT)
         {
-                $this->_uppdok = new UppdokData(
-                    new UppdokConnection($user, $pass, $host, $port)
+                $this->_uppdok = new Data(
+                    new Connection($user, $pass, $host, $port)
                 );
                 $this->_uppdok->setCompactMode(false);
                 $this->_type = 'uppdok';

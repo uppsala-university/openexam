@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    LdapConnection.php
+// File:    Connection.php
 // Created: 2014-10-22 04:21:36
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -22,7 +22,7 @@ use OpenExam\Library\Catalog\ServiceConnection;
  * @property-read resource $connection The LDAP server connection.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class LdapConnection implements ServiceConnection
+class Connection implements ServiceConnection
 {
 
         /**

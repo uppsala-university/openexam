@@ -13,8 +13,8 @@
 
 namespace OpenExam\Library\Catalog\DirectoryService;
 
-use OpenExam\Library\Catalog\DirectoryService\Ldap\LdapConnection;
-use OpenExam\Library\Catalog\DirectoryService\Ldap\LdapResult;
+use OpenExam\Library\Catalog\DirectoryService\Ldap\Connection;
+use OpenExam\Library\Catalog\DirectoryService\Ldap\Result;
 use OpenExam\Library\Catalog\Exception;
 use OpenExam\Library\Catalog\Group;
 use OpenExam\Library\Catalog\Principal;
@@ -33,7 +33,7 @@ class LdapService extends ServiceAdapter
 
         /**
          * The LDAP connection object.
-         * @var LdapConnection 
+         * @var Connection 
          */
         private $_ldap;
         /**
@@ -80,7 +80,7 @@ class LdapService extends ServiceAdapter
          */
         public function __construct($host, $port = 636, $user = null, $pass = null, $options = array())
         {
-                $this->_ldap = new LdapConnection($host, $port, $user, $pass, $options);
+                $this->_ldap = new Connection($host, $port, $user, $pass, $options);
                 $this->_type = 'ldap';
                 $this->_affiliation = function($attrs) {
                         return $attrs;
@@ -370,7 +370,7 @@ class LdapService extends ServiceAdapter
 
                 $search = $this->search(Principal::ATTR_PN, $principal, array($attribute));
 
-                $result = new LdapResult(array_flip($search['attrmap']));
+                $result = new Result(array_flip($search['attrmap']));
                 $result->setName($this->_name);
                 $result->insert($search['entries']);
 
@@ -445,7 +445,7 @@ class LdapService extends ServiceAdapter
                 // 
                 // Collect group data in result object:
                 // 
-                $result = new LdapResult(array_flip($search['attrmap']));
+                $result = new Result(array_flip($search['attrmap']));
                 $result->setName($this->_name);
                 $result->append($groups);
 
@@ -507,7 +507,7 @@ class LdapService extends ServiceAdapter
                 // 
                 // Collect group data in result object:
                 // 
-                $result = new LdapResult(array_flip($search['attrmap']));
+                $result = new Result(array_flip($search['attrmap']));
                 $result->setName($this->_name);
                 $result->insert($search['entries']);
                 $data = $result->getResult();
@@ -589,7 +589,7 @@ class LdapService extends ServiceAdapter
                 // 
                 // Load members into result:
                 // 
-                $result = new LdapResult(array_flip($search['attrmap']));
+                $result = new Result(array_flip($search['attrmap']));
                 $result->setName($this->_name);
                 $result->insert($search['entries']);
                 $data = $result->getResult();

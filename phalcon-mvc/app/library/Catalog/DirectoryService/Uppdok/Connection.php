@@ -5,7 +5,7 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    UppdokConnection.php
+// File:    Connection.php
 // Created: 2016-06-02 01:42:45
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
@@ -31,7 +31,7 @@ if (!defined('INFO_CGI_PORT')) {
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class UppdokConnection implements ServiceConnection
+class Connection implements ServiceConnection
 {
 
         /**
