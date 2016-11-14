@@ -5,8 +5,8 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    Topic.php
-// Created: 2014-02-24 07:04:58
+// File:    User.php
+// Created: 2016-11-14 22:45:11
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
@@ -117,6 +117,11 @@ class User extends ModelBase
          * @var string 
          */
         public $source;
+        /**
+         * The created timestamp (datetime).
+         * @var string 
+         */
+        public $created;
 
         public function validation()
         {
@@ -164,7 +169,8 @@ class User extends ModelBase
                         'acronym'      => 'acronym',
                         'assurance'    => 'assurance',
                         'affiliation'  => 'affiliation',
-                        'source'       => 'source'
+                        'source'       => 'source',
+                        'created'      => 'created'
                 );
         }
 
