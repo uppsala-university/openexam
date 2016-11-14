@@ -493,10 +493,11 @@ CREATE TABLE `users` (
   `co` varchar(30) DEFAULT NULL,
   `acronym` varchar(10) DEFAULT NULL,
   `home` varchar(10) DEFAULT NULL,
-  `assurance` varchar(100) DEFAULT NULL,
-  `affiliation` varchar(150) DEFAULT NULL,
+  `assurance` varchar(200) DEFAULT NULL,
+  `affiliation` varchar(200) DEFAULT NULL,
+  `source` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -508,4 +509,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-14  1:34:43
+-- Dump completed on 2016-11-14  6:12:21
