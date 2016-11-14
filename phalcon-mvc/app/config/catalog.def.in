@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-
+use OpenExam\Library\Catalog\DirectoryService\DatabaseService;
 use OpenExam\Library\Catalog\DirectoryService\LdapService;
 use OpenExam\Library\Catalog\Affiliation;
 use OpenExam\Library\Catalog\Group;
@@ -103,5 +103,18 @@ return array(
                         return $service;
                 },
                 'domains' => 'example.com'
+        ),
+        'swamid' => array(
+                'service' => function() {
+                        $service = new DatabaseService('swamid');
+                        $service->setAttributeMap(array(
+                                'person' => array(
+                                        Principal::ATTR_GN   => 'givenName',
+                                        Principal::ATTR_NAME => 'displayName'
+                                )
+                        ));
+                        return $service;
+                },
+                'domains' => null
         )
 );
