@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.28, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.34, for Linux (x86_64)
 --
 -- Host: localhost    Database: openexam2prod
 -- ------------------------------------------------------
--- Server version	5.6.28-log
+-- Server version	5.6.34-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -208,7 +208,7 @@ CREATE TABLE `files` (
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
   CONSTRAINT `files_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -270,6 +270,24 @@ CREATE TABLE `performance` (
   `data` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `profile`
+--
+
+DROP TABLE IF EXISTS `profile`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `profile` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `request` varchar(255) NOT NULL,
+  `name` varchar(15) NOT NULL,
+  `peak` varchar(10) NOT NULL,
+  `time` float NOT NULL,
+  `data` varchar(1024) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -451,6 +469,35 @@ CREATE TABLE `topics` (
   CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `principal` varchar(60) NOT NULL,
+  `uid` varchar(20) NOT NULL,
+  `domain` varchar(40) NOT NULL,
+  `given_name` varchar(30) NOT NULL,
+  `sn` varchar(30) NOT NULL,
+  `display_name` varchar(60) NOT NULL,
+  `cn` varchar(60) DEFAULT NULL,
+  `mail` varchar(60) NOT NULL,
+  `pnr` char(12) DEFAULT NULL,
+  `o` varchar(40) DEFAULT NULL,
+  `c` char(2) DEFAULT NULL,
+  `co` varchar(30) DEFAULT NULL,
+  `acronym` varchar(10) DEFAULT NULL,
+  `home` varchar(10) DEFAULT NULL,
+  `assurance` varchar(100) DEFAULT NULL,
+  `affiliation` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -461,4 +508,4 @@ CREATE TABLE `topics` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-06  0:15:12
+-- Dump completed on 2016-11-14  1:34:43
