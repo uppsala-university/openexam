@@ -29,6 +29,10 @@ class Principal
          */
         const ATTR_AFFIL = 'affiliation';
         /**
+         * The user assurance attribute.
+         */
+        const ATTR_ASSUR = 'assurance';
+        /**
          * The UID attribute.
          */
         const ATTR_UID = 'uid';
