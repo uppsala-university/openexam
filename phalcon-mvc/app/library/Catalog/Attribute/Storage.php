@@ -15,7 +15,6 @@ namespace OpenExam\Library\Catalog\Attribute;
 
 use OpenExam\Library\Catalog\Attribute\Storage\Backend;
 use OpenExam\Library\Catalog\Attribute\Storage\Bucket;
-use OpenExam\Models\User;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -26,7 +25,7 @@ use Phalcon\Mvc\User\Component;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Storage extends Component implements Backend
+class Storage extends Component
 {
 
         /**
@@ -46,33 +45,25 @@ class Storage extends Component implements Backend
         }
 
         /**
-         * Add storage backend for domain.
+         * Add storage backend for method.
          * 
-         * Use domain = '*' to add a default storage backend for unmatched
-         * domains.
-         * 
-         * @param string $domain The domain name.
+         * @param string $method The logon method (i.e. cas).
          * @param Backend $backend The storage backend.
          */
-        public function addBackend($domain, $backend)
+        public function addBackend($method, $backend)
         {
-                $this->_backends[$domain] = $backend;
+                $this->_backends[$method] = $backend;
         }
 
         /**
-         * Get storage backend for user principal.
-         * @param string $principal The user principal name.
+         * Get storage backend for logon method.
+         * @param string $method The logon method (i.e. cas).
+         * @return Backend 
          */
-        public function getBackend($principal)
+        public function getBackend($method)
         {
-                if (strstr($principal, '@')) {
-                        list($user, $domain) = explode('@', $principal);
-                } else {
-                        list($user, $domain) = array($principal, '*');
-                }
-
-                if (array_key_exists($domain, $this->_backends)) {
-                        return $this->_backends[$domain];
+                if (array_key_exists($method, $this->_backends)) {
+                        return $this->_backends[$method];
                 } elseif (array_key_exists('*', $this->_backends)) {
                         return $this->_backends['*'];
                 } else {
@@ -82,48 +73,24 @@ class Storage extends Component implements Backend
 
         /**
          * Check if storage backend exists.
-         * @param string $principal The user principal.
-         */
-        public function hasBackend($principal)
-        {
-                if (strstr($principal, '@')) {
-                        list($user, $domain) = explode('@', $principal);
-                } else {
-                        list($user, $domain) = array($principal, '*');
-                }
-
-                return array_key_exists($domain, $this->_backends);
-        }
-
-        /**
-         * Check if user exist.
-         * @param string $principal The user principal name.
+         * @param string $method The logon method (i.e. cas).
          * @return boolean 
          */
-        public function exists($principal)
+        public function hasBackend($method)
         {
-                $backend = $this->getBackend($principal);
-                return $backend->exists($principal);
+                return (
+                    array_key_exists($method, $this->_backends) ||
+                    array_key_exists('*', $this->_backends)
+                    );
         }
 
         /**
-         * Insert user attributes.
-         * @param User $user The user model.
+         * Get all backends.
+         * @return array
          */
-        public function insert($user)
+        public function getBackends()
         {
-                $backend = $this->getBackend($user->principal);
-                $backend->insert($user);
-        }
-
-        /**
-         * Delete user.
-         * @param string $principal The user principal name.
-         */
-        public function delete($principal)
-        {
-                $backend = $this->getBackend($principal);
-                $backend->delete($principal);
+                return $this->_backends;
         }
 
 }

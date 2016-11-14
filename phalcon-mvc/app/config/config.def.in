@@ -106,10 +106,10 @@ return array(
                  * the exam result. This is a bitmask of zero of more:
                  * 
                  * Expose correcting teacher:
-                 * Exam::result_expose_employees        (1)
+                 * Exam::RESULT_EXPOSE_EMPLOYEES        (1)
                  * 
                  * Expose statistics for other students:
-                 * Exam::result_others_statistics       (2)
+                 * Exam::RESULT_OTHERS_STATISTICS       (2)
                  */
                 'details' => 3
         ),
@@ -131,7 +131,11 @@ return array(
                  */
                 'auth'   => false,
                 'user'   => null,
-                'pass'   => null
+                'pass'   => null,
+                /**
+                 * Encryption (tls, ssl or null).
+                 */
+                'encrypt' => null
         ),
         /**
          * Contact information.
@@ -233,5 +237,23 @@ return array(
          * here and stick with the default options. See docs/README-MONITOR for
          * further information or tweaks.
          */
-        'monitor'     => false
+        'monitor'     => false,
+        /**
+         * User attribute storage configuration for authenticators (attribute
+         * providers).
+         */
+        'attrstor' => array(
+                'swamid' => array(
+                        'storage' => 'database',
+                        'domains' => '*'        // any domain or realm
+                ),
+                'cas'    => array(
+                        'storage' => 'database',
+                        'domains' => 'user.uu.se'
+                ),
+                'msad'   => array(
+                        'storage' => 'ldap',
+                        'domains' => array('bmc.uu.se', 'uu.se')
+                )
+        )
 );

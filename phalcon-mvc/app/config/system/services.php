@@ -272,12 +272,15 @@ $di->set('catalog', function() use($config) {
 /**
  * The user attribute storage service. The storage part of catalog service.
  */
-$di->set('attrstor', function() {
-        return new OpenExam\Library\Catalog\Attribute\Storage(
-            array(
-                '*' => new OpenExam\Library\Catalog\Attribute\Storage\Database()
-            )
-        );
+$di->set('attrstor', function() use($config) {
+        $service = new OpenExam\Library\Catalog\Attribute\Storage();
+        foreach ($config->attrstor as $method => $data) {
+                if ($data['storage'] == 'database') {
+                        $backend = new OpenExam\Library\Catalog\Attribute\Storage\Database($data['domains']);
+                        $service->addBackend($method, $backend);
+                }
+        }
+        return $service;
 }, true);
 
 /**

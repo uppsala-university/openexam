@@ -26,12 +26,35 @@ class Database implements Backend
 {
 
         /**
+         * The handled domains.
+         * @var array
+         */
+        private $_domains;
+
+        /**
+         * Constructor
+         * @param array|string $domains The handled domains.
+         */
+        public function __construct($domains = '*')
+        {
+                if (is_string($domains)) {
+                        $this->_domains = array($domains);
+                } else {
+                        $this->_domains = $domains;
+                }
+        }
+
+        /**
          * Check if user exist.
          * @param string $principal The user principal name.
          * @return boolean 
          */
         public function exists($principal)
         {
+                if (!$this->handled($principal)) {
+                        return false;
+                }
+
                 return User::count(array(
                             'condition' => 'principal = :principal:',
                             'bind'      => array(
@@ -46,6 +69,10 @@ class Database implements Backend
          */
         public function insert($user)
         {
+                if (!$this->handled($user->principal)) {
+                        return false;
+                }
+
                 if (!$user->save()) {
                         throw new Exception($user->getMessages()[0]);
                 }
@@ -57,6 +84,10 @@ class Database implements Backend
          */
         public function delete($principal)
         {
+                if (!$this->handled($principal)) {
+                        return false;
+                }
+
                 if (($user = User::find(array(
                             'condition' => 'principal = :principal:',
                             'bind'      => array(
@@ -67,6 +98,21 @@ class Database implements Backend
                                 throw new Exception($user->getMessages()[0]);
                         }
                 }
+        }
+
+        /**
+         * Check if domain is handled.
+         * @param string $principal The user principal name.
+         * @return boolean
+         */
+        private function handled($principal)
+        {
+                if ($this->_domains[0] == '*') {
+                        return true;
+                }
+
+                $domain = substr($principal, strpos($principal, '@') + 1);
+                return in_array($domain, $this->_domains);
         }
 
 }

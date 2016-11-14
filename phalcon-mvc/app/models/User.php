@@ -112,6 +112,11 @@ class User extends ModelBase
          * @var array
          */
         public $affiliation;
+        /**
+         * The user data origin.
+         * @var string 
+         */
+        public $source;
 
         public function validation()
         {
@@ -158,7 +163,8 @@ class User extends ModelBase
                         'home'         => 'home',
                         'acronym'      => 'acronym',
                         'assurance'    => 'assurance',
-                        'affiliation'  => 'affiliation'
+                        'affiliation'  => 'affiliation',
+                        'source'       => 'source'
                 );
         }
 

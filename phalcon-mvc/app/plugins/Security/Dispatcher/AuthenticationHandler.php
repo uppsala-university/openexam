@@ -136,6 +136,15 @@ class AuthenticationHandler extends Component implements DispatchHelper
                 $this->auth->login();
 
                 // 
+                // Has method attribute storage backend?
+                // 
+                if (!($backend = $this->attrstor->hasBackend($method))) {
+                        return true;
+                } else {
+                        $backend = $this->attrstor->getBackend($method);
+                }
+                
+                // 
                 // Are current authenticator providing user attributes?
                 // 
                 if (!($this->auth->getAuthenticator() instanceof AttributeProvider)) {
@@ -147,8 +156,9 @@ class AuthenticationHandler extends Component implements DispatchHelper
                 if (($user = $this->auth->getAuthenticator()->getUser()) == null) {
                         return true;
                 }
-                if (!$this->attrstor->exists($user->principal)) {
-                        $this->attrstor->insert($user);
+                if (!$backend->exists($user->principal)) {
+                        $user->source = $method;
+                        $backend->insert($user);
                 }
         }
 
