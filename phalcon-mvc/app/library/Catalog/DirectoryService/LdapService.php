@@ -18,7 +18,6 @@ use OpenExam\Library\Catalog\DirectoryService\Ldap\Result;
 use OpenExam\Library\Catalog\Exception;
 use OpenExam\Library\Catalog\Group;
 use OpenExam\Library\Catalog\Principal;
-use OpenExam\Library\Catalog\ServiceAdapter;
 use OpenExam\Library\Catalog\ServiceConnection;
 
 /**
@@ -28,7 +27,7 @@ use OpenExam\Library\Catalog\ServiceConnection;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class LdapService extends ServiceAdapter
+class LdapService extends AttributeService
 {
 
         /**
@@ -37,38 +36,10 @@ class LdapService extends ServiceAdapter
          */
         private $_ldap;
         /**
-         * Attribute map.
-         * @var array 
-         */
-        private $_attrmap = array(
-                'person' => array(
-                        Principal::ATTR_UID   => 'uid',
-                        Principal::ATTR_SN    => 'sn',
-                        Principal::ATTR_NAME  => 'cn',
-                        Principal::ATTR_GN    => 'givenName',
-                        Principal::ATTR_MAIL  => 'mail',
-                        Principal::ATTR_PNR   => 'norEduPersonNIN',
-                        Principal::ATTR_PN    => 'eduPersonPrincipalName',
-                        Principal::ATTR_AFFIL => 'eduPersonAffiliation',
-                        Principal::ATTR_ALL   => '*'
-                ),
-                'group'  => array(
-                        Group::ATTR_NAME   => 'name',
-                        Group::ATTR_DESC   => 'description',
-                        Group::ATTR_MEMBER => 'member',
-                        Group::ATTR_PARENT => 'memberOf'
-                )
-        );
-        /**
          * The search base DN.
          * @var string 
          */
         private $_basedn;
-        /**
-         * The affiliation callback.
-         * @var closure 
-         */
-        private $_affiliation;
 
         /**
          * Constructor.
@@ -82,9 +53,26 @@ class LdapService extends ServiceAdapter
         {
                 $this->_ldap = new Connection($host, $port, $user, $pass, $options);
                 $this->_type = 'ldap';
-                $this->_affiliation = function($attrs) {
-                        return $attrs;
-                };
+
+                parent::__construct(array(
+                        'person' => array(
+                                Principal::ATTR_UID   => 'uid',
+                                Principal::ATTR_SN    => 'sn',
+                                Principal::ATTR_NAME  => 'cn',
+                                Principal::ATTR_GN    => 'givenName',
+                                Principal::ATTR_MAIL  => 'mail',
+                                Principal::ATTR_PNR   => 'norEduPersonNIN',
+                                Principal::ATTR_PN    => 'eduPersonPrincipalName',
+                                Principal::ATTR_AFFIL => 'eduPersonAffiliation',
+                                Principal::ATTR_ALL   => '*'
+                        ),
+                        'group'  => array(
+                                Group::ATTR_NAME   => 'name',
+                                Group::ATTR_DESC   => 'description',
+                                Group::ATTR_MEMBER => 'member',
+                                Group::ATTR_PARENT => 'memberOf'
+                        )
+                ));
         }
 
         /**
@@ -94,84 +82,6 @@ class LdapService extends ServiceAdapter
         public function getConnection()
         {
                 return $this->_ldap;
-        }
-
-        /**
-         * Set attribute map.
-         * 
-         * The attribute map can be used to remap the symbolic query attributes
-         * constants defined by the Principal and Group class. The mapped
-         * values are the object class attribute name as defined by the LDAP
-         * schema.
-         * 
-         * <code>
-         * $service->setAttributeMap(array(
-         *      'person' => array(Principal::ATTR_UID => 'sAMAccountName'),
-         *      'group'  => array(Group::ATTR_NAME    => 'cn')
-         * ));
-         * </code>
-         * 
-         * The $attrmap argument is merged with the existing attribute map.
-         * 
-         * @param array $attrmap The attribute map.
-         */
-        public function setAttributeMap($attrmap)
-        {
-                foreach ($attrmap as $class => $attributes) {
-                        $this->_attrmap[$class] = array_merge($this->_attrmap[$class], $attributes);
-                }
-        }
-
-        /**
-         * Get current attribute map.
-         * @return array
-         */
-        public function getAttributeMap()
-        {
-                return $this->_attrmap;
-        }
-
-        /**
-         * Set user affiliation callback.
-         * @param callable $callback The callback function.
-         */
-        public function setAffiliationCallback($callback)
-        {
-                $this->_affiliation = $callback;
-        }
-
-        /**
-         * Set user affiliation map.
-         * 
-         * Calling this method replaces the current set callback.
-         * 
-         * <code>
-         * $service->setAffiliationMap(array(
-         *      Affiliation::EMPLOYEE => 'employee',
-         *      Affiliation::STUDENT  => 'student'
-         * ));
-         * </code>
-         * 
-         * @param array $affiliation The affiliation map.
-         */
-        public function setAffiliationMap($map)
-        {
-                $this->_affiliation = function($attrs) use($map) {
-                        $result = array();
-                        foreach ($map as $key => $values) {
-                                if (!is_array($values)) {
-                                        $values = array($values);
-                                }
-                                foreach ($values as $val) {
-                                        foreach ($attrs as $index => $attr) {
-                                                if ($attr == $val) {
-                                                        $result[$key] = true;
-                                                }
-                                        }
-                                }
-                        }
-                        return array_keys($result);
-                };
         }
 
         /**
