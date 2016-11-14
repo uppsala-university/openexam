@@ -93,6 +93,9 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function register($service, $domains, $name = null)
         {
+                if (!isset($domains) || $domains == '*') {
+                        $domains = $service->getDomains();
+                }
                 if (!is_array($domains)) {
                         $domains = array($domains);
                 }
@@ -129,7 +132,7 @@ class DirectoryManager extends Component implements DirectoryService
         {
                 return $this->_services[$domain];
         }
-
+        
         /**
          * Set default search domain.
          * @param string $domain The domain name.

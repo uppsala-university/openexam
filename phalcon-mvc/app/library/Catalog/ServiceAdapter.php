@@ -115,6 +115,11 @@ abstract class ServiceAdapter extends Component implements DirectoryService
                 return null;
         }
 
+        public function getDomains()
+        {
+                return null;
+        }
+
         /**
          * Get service connection.
          * @return ServiceConnection

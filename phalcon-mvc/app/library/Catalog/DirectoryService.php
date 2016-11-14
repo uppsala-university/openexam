@@ -107,4 +107,10 @@ interface DirectoryService
          * @return string
          */
         function getName();
+        
+        /**
+         * Get service domains.
+         * @return array
+         */
+        function getDomains();
 }
