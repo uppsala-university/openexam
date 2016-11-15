@@ -15,7 +15,21 @@ namespace OpenExam\Models;
 
 /**
  * Profile data model.
- *
+ * 
+ * Having both a server and host might seem redundant at first glance, but is
+ * required in more complex setups to differentiate real servers from each
+ * other.
+ * 
+ * The reason behind is: 
+ * 
+ * When serving as part of a web cluster (i.e. under IPVS using a single shared 
+ * public IP), the server and addr property will actually get their values from 
+ * the request and its identical for all real servers. 
+ * 
+ * In this case, using the host property is the only way to separate them from 
+ * each other that get its value from gethostname() that is mapped against the
+ * system name from /etc/hosts
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Profile extends ModelBase
@@ -26,6 +40,11 @@ class Profile extends ModelBase
          * @var integer
          */
         public $id;
+        /**
+         * The datetime stamp.
+         * @var string 
+         */
+        public $stamp;
         /**
          * The request URL.
          * @var string 
@@ -47,7 +66,7 @@ class Profile extends ModelBase
          */
         public $time;
         /**
-         * Server hostname (optional).
+         * Server host (optional).
          * @var string 
          */
         public $host;
@@ -56,6 +75,11 @@ class Profile extends ModelBase
          * @var string 
          */
         public $addr;
+        /**
+         * Server name (optional).
+         * @var string 
+         */
+        public $server;
         /**
          * The profile data (details).
          * @var data 
@@ -92,12 +116,14 @@ class Profile extends ModelBase
         {
                 return array(
                         'id'      => 'id',
+                        'stamp'   => 'stamp',
                         'request' => 'request',
                         'name'    => 'name',
                         'peak'    => 'peak',
                         'time'    => 'time',
                         'host'    => 'host',
                         'addr'    => 'addr',
+                        'server'  => 'server',
                         'data'    => 'data'
                 );
         }

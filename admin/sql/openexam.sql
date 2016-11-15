@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.34, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.33, for Linux (x86_64)
 --
 -- Host: localhost    Database: openexam2prod
 -- ------------------------------------------------------
--- Server version	5.6.34-log
+-- Server version	5.6.33-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -281,12 +281,14 @@ DROP TABLE IF EXISTS `profile`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `profile` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `stamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `request` varchar(255) NOT NULL,
   `name` varchar(15) NOT NULL,
   `peak` varchar(10) NOT NULL,
   `time` float NOT NULL,
-  `host` varchar(60) DEFAULT NULL,
+  `host` varchar(30) DEFAULT NULL,
   `addr` varchar(46) DEFAULT NULL,
+  `server` varchar(60) DEFAULT NULL,
   `data` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -512,4 +514,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-15  3:02:46
+-- Dump completed on 2016-11-15 16:46:10
