@@ -126,15 +126,11 @@ class Profiler extends Component
                                 $this->_enabled = true;
                         }
                         if ($this->_config->start == self::START_ALWAYS) {
-                                error_log(__METHOD__ . ':' . __LINE__);
                                 $this->_enabled = true;
                         }
                         if ($this->_config->start == self::START_DISABLED) {
-                                error_log(__METHOD__ . ':' . __LINE__);
                                 $this->_enabled = false;
                         }
-
-                        error_log($this->_enabled);
 
                         $this->_init = $this->_last = microtime(true);
                 }
@@ -167,6 +163,10 @@ class Profiler extends Component
                         $profile->peak = memory_get_peak_usage();
                         $profile->time = $this->_last - $this->_init;
                         $profile->data = $this->_data;
+
+                        if (empty($profile->request)) {
+                                $profile->request = "/";
+                        }
 
                         if (!$profile->save()) {
                                 foreach ($profile->getMessages() as $message) {
