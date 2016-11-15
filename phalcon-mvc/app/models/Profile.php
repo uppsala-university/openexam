@@ -47,6 +47,16 @@ class Profile extends ModelBase
          */
         public $time;
         /**
+         * Server hostname (optional).
+         * @var string 
+         */
+        public $host;
+        /**
+         * Server address (optional).
+         * @var string 
+         */
+        public $addr;
+        /**
          * The profile data (details).
          * @var data 
          */
@@ -86,6 +96,8 @@ class Profile extends ModelBase
                         'name'    => 'name',
                         'peak'    => 'peak',
                         'time'    => 'time',
+                        'host'    => 'host',
+                        'addr'    => 'addr',
                         'data'    => 'data'
                 );
         }

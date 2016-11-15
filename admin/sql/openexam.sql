@@ -285,6 +285,8 @@ CREATE TABLE `profile` (
   `name` varchar(15) NOT NULL,
   `peak` varchar(10) NOT NULL,
   `time` float NOT NULL,
+  `host` varchar(60) DEFAULT NULL,
+  `addr` varchar(46) DEFAULT NULL,
   `data` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -510,4 +512,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-15  0:20:50
+-- Dump completed on 2016-11-15  3:02:46

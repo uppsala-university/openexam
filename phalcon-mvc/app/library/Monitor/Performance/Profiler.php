@@ -160,8 +160,13 @@ class Profiler extends Component
 
                         $profile->request = $this->request->get("_url");
                         $profile->name = $this->_name;
+                        
                         $profile->peak = memory_get_peak_usage();
                         $profile->time = $this->_last - $this->_init;
+                        
+                        $profile->host = $this->request->getServerName();
+                        $profile->addr = $this->request->getServerAddress();
+                        
                         $profile->data = $this->_data;
 
                         if (empty($profile->request)) {

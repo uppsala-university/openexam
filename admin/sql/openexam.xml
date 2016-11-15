@@ -148,9 +148,11 @@
 		<field Field="name" Type="varchar(15)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="peak" Type="varchar(10)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="time" Type="float" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="host" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="addr" Type="varchar(46)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="data" Type="varchar(1024)" Null="NO" Key="" Extra="" Comment="" />
 		<key Table="profile" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="profile" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2016-11-14 00:25:19" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<options Name="profile" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2016-11-15 02:02:10" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="questions">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
