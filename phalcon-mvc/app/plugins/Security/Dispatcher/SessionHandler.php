@@ -95,7 +95,7 @@ class SessionHandler extends Component implements DispatchHelper
                         return false;   // Session has expired.
                 } elseif (
                     $this->get('remote') != $this->_remote &&
-                    $this->_remote != "::1" &&          // localhost (IPv6)
+                    $this->_remote != "::1" && // localhost (IPv6)
                     $this->_remote != "127.0.0.1") {    // localhost (IPv4)
                         $this->logger->auth->warning(sprintf(
                                 "Remote address missmatch (expected %s, was %s)", $this->get('remote'), $this->_remote
@@ -162,7 +162,12 @@ class SessionHandler extends Component implements DispatchHelper
          */
         public function remove()
         {
-                $this->session->remove(self::ENTRY);
+                if ($this->session->has(self::ENTRY)) {
+                        $this->logger->auth->debug(sprintf(
+                                "Removing session data: %s", print_r($this->_data, true)
+                        ));
+                        $this->session->remove(self::ENTRY);
+                }
         }
 
         /**
