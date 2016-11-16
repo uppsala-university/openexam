@@ -294,7 +294,7 @@ class QuestionController extends GuiController
                                         );
                                         $stData = Student::findFirst($loadBy[2]);
                                         $ansData = Answer::find('student_id = ' . $loadBy[2]);
-                                        $heading = 'Student (code: ' . $stData->code . ')';
+                                        $heading = 'Student (ID: ' . $stData->id . ')';
 
                                         break;
 
@@ -326,7 +326,7 @@ class QuestionController extends GuiController
                                         $ansData = Answer::find('id = ' . $loadBy[2]);
                                         $stData = Student::findFirst($ansData[0]->student_id);
                                         $heading = 'Question no. ' . $questData[0]->slot ? $questData[0]->slot : $questData[0]->name . ', '
-                                            . ' answered by Student (code: ' . $stData->code . ')';
+                                            . ' answered by Student (ID: ' . $stData->id . ')';
 
                                         break;
 

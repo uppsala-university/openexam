@@ -199,7 +199,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                 &nbsp; &nbsp; &nbsp;
                                         <?php endif; ?> 
                                         <a class="fb fancybox.ajax fill" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">
-                                            <?= $decoded ? $student->code : $student->id ?>
+                                            <?= $decoded ? $student->code : Student . '(' . $student->id . ')' ?>
                                         </a>
                                     </td>
                                     <?php if ($decoded): ?>
