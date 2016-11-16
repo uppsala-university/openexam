@@ -65,6 +65,12 @@ class GuiController extends ControllerBase
          */
         public function exceptionAction($exception)
         {
+                $status = new Error($exception);
+
+                $this->response->setStatusCode(
+                    $status->getCode(), $status->getString()
+                );
+
                 if ($exception instanceof DispatcherException) {
                         switch ($exception->getCode()) {
                                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
