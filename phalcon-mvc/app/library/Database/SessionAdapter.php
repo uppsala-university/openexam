@@ -38,15 +38,10 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
 {
 
         /**
-         * The cached session model.
+         * The session model.
          * @var SessionModel
          */
         private $_session = null;
-        /**
-         * Last queried session ID.
-         * @var string 
-         */
-        private $_lastsid = null;
 
         /**
          * {@inheritdoc}
@@ -90,6 +85,33 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 );
 
                 parent::__construct($options);
+
+                $this->_session = new SessionModel();
+        }
+
+        /**
+         * Load session model or create new if missing.
+         * @param string $sessionId The session ID.
+         * @return boolean
+         */
+        private function load($sessionId)
+        {
+                if ($this->_session === false) {
+                        return false;
+                }
+
+                if ($this->_session != null && $this->_session->session_id == $sessionId) {
+                        return true;
+                } elseif (isset($sessionId)) {
+                        $this->_session = SessionModel::findFirstBySessionId($sessionId);
+                }
+
+                if ($this->_session == null) {
+                        $this->_session = new SessionModel();
+                        $this->_session->session_id = $sessionId;
+                }
+
+                return true;
         }
 
         /**
@@ -117,22 +139,9 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function read($sessionId)
         {
-                if (empty($sessionId)) {
-                        return "";
+                if ($this->load($sessionId)) {
+                        return $this->_session->data;
                 }
-
-                if ($sessionId != $this->_lastsid) {
-                        $this->_session = null;
-                        $this->_lastsid = $sessionId;
-                }
-                if (is_null($this->_session)) {
-                        $this->_session = SessionModel::findFirstBySessionId($sessionId);
-                }
-                if (!$this->_session) {
-                        return "";
-                }
-
-                return $this->_session->data;
         }
 
         /**
@@ -144,17 +153,12 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function write($sessionId, $data)
         {
-
-                if (is_null($this->_session)) {
-                        $this->_session = SessionModel::findFirstBySessionId($sessionId);
+                if (empty($data)) {
+                        return false;
                 }
 
-                if (empty($data) && $this->_session) {
-                        return $this->_session->delete();
-                } elseif (empty($data)) {
+                if (!$this->load($sessionId)) {
                         return false;
-                } elseif (!$this->_session) {
-                        $this->_session = new SessionModel();
                 }
 
                 if ($this->_session->data == $data) {
@@ -190,12 +194,12 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function destroy($sessionId = null)
         {
-                if (!$this->isStarted()) {
+                if (!parent::isStarted()) {
                         return true;
                 }
 
                 if (is_null($sessionId)) {
-                        $sessionId = $this->getId();
+                        $sessionId = parent::getId();
                 }
 
                 if (empty($this->_session)) {
@@ -216,7 +220,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function gc($maxlifetime)
         {
-                if (empty($this->_session)) {
+                if ($this->_session->id == null) {
                         return false;
                 }
                 if (!$this->getOption('cleanup')) {
