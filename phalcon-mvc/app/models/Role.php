@@ -178,6 +178,9 @@ class Role extends ModelBase
                                 $this->lname = $principal->sn;
                         }
                         if (isset($principal->mail)) {
+                                if (is_string($principal->mail)) {
+                                        $principal->mail = array($principal->mail);
+                                }
                                 foreach ($principal->mail as $key => $val) {
                                         if (!in_array($val, $this->mail)) {
                                                 $this->mail[] = $val;
