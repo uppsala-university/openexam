@@ -47,7 +47,7 @@ class SimpleSamlLogin extends SimpleSamlAuthenticator implements RemoteLogin, At
         public function __construct($config, $name = 'default-sp', $path = null)
         {
                 parent::__construct(array(
-                        'name' => $name,
+                        'spid' => $name,
                         'path' => $path
                 ));
                 parent::control(self::SUFFICIENT);
@@ -84,6 +84,22 @@ class SimpleSamlLogin extends SimpleSamlAuthenticator implements RemoteLogin, At
         public function path()
         {
                 return null;    // Use default login path
+        }
+
+        /**
+         * Handle logout action.
+         */
+        public function logout()
+        {
+                // 
+                // TODO: Fix SSO-logout from SAML service.
+                // 
+                /*
+                 * Right now I'm getting error from IdP about missing cookies on logout. The 
+                 * same happens when using Simple SAML builtin test console. 
+                 * 
+                 * For now on, just rely on session cleanup but keep SSO functionality.
+                 */
         }
 
         /**
