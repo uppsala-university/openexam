@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Security\Login;
 
+use Phalcon\Session\Adapter as SessionAdapter;
+
 /**
  * Microsoft active directory login.
  * 
@@ -27,24 +29,30 @@ class ActiveDirectorySession extends ActiveDirectoryLogin
 
         public function getSubject()
         {
-                if (isset($_SESSION[$this->name])) {
-                        return $_SESSION[$this->name]['user'];
+                $session = self::getSession();
+
+                if ($session->has($this->name)) {
+                        return $session->get($this->name)['user'];
                 }
         }
 
         public function accepted()
         {
-                if (session_status() == PHP_SESSION_DISABLED) {
+                $session = self::getSession();
+
+                if ($session->status() == PHP_SESSION_DISABLED) {
                         return parent::accepted();      // fallback
                 }
-                if (session_status() == PHP_SESSION_NONE) {
-                        session_start();
+                if ($session->status() == PHP_SESSION_NONE) {
+                        $session->start();
                 }
-                if (isset($_SESSION[$this->name])) {
+                if ($session->has($this->name)) {
                         return true;
                 }
                 if (parent::accepted()) {
-                        $_SESSION[$this->name] = array('user' => parent::getSubject());
+                        $session->set($this->name, array(
+                                'user' => parent::getSubject()
+                        ));
                         return true;
                 } else {
                         return false;
@@ -53,14 +61,25 @@ class ActiveDirectorySession extends ActiveDirectoryLogin
 
         public function logout()
         {
-                if (session_status() == PHP_SESSION_DISABLED) {
+                $session = self::getSession();
+
+                if ($session->status() == PHP_SESSION_DISABLED) {
                         return;
                 }
+                if ($session->status() == PHP_SESSION_ACTIVE) {
+                        $session->destroy();
+                }
 
-                unset($_SESSION[$this->name]);
-                unset($_SESSION['method']);
-                
                 parent::logout();
+        }
+
+        /**
+         * Get session adapter.
+         * @return SessionAdapter
+         */
+        private static function getSession()
+        {
+                return \Phalcon\DI::getDefault()->get('session');
         }
 
 }
