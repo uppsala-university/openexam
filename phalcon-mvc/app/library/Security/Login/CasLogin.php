@@ -18,10 +18,16 @@ use UUP\Authentication\Authenticator\CasAuthenticator;
 
 /**
  * CAS Login.
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class CasLogin extends CasAuthenticator implements RemoteLogin
 {
+
+        /**
+         * The user domain.
+         */
+        public $domain;
 
         /**
          * Constructor.
@@ -35,7 +41,9 @@ class CasLogin extends CasAuthenticator implements RemoteLogin
                 parent::__construct($host, $port, $path);
                 parent::control(self::SUFFICIENT);
                 parent::visible(true);
+
                 $this->return = $config->application->baseUri . "auth/logout";
+                $this->domain = $config->user->domain;
         }
 
         /**
@@ -63,6 +71,33 @@ class CasLogin extends CasAuthenticator implements RemoteLogin
         public function path()
         {
                 return $this->path;
+        }
+
+        /**
+         * Get user domain.
+         * @return string
+         */
+        public function getDomain()
+        {
+                return $this->domain;
+        }
+
+        /**
+         * Set user domain.
+         * @param string $domain The user domain.
+         */
+        public function setDomain($domain)
+        {
+                $this->domain = $domain;
+        }
+
+        /**
+         * Get user principal name.
+         * @return string
+         */
+        public function getSubject()
+        {
+                return sprintf("%s@%s", parent::getSubject(), $this->domain);
         }
 
 }
