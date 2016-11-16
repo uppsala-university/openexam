@@ -99,7 +99,9 @@ class Catalog extends Component implements ServiceCheck
                         }
 
                         foreach ($this->catalog->getServices($domain) as $service) {
-                                $connection = $service->getConnection();
+                                if (($connection = $service->getConnection()) == null) {
+                                        continue;
+                                }
 
                                 $hostname = $connection->hostname();
                                 if (strstr($hostname, '://')) {
