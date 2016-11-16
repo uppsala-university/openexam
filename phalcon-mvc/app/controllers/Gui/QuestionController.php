@@ -284,7 +284,7 @@ class QuestionController extends GuiController
                                 case 'student':
 
                                         // show all answers for a specific student
-                                        $questData = $this->phql->executeQuery(
+                                        $questData = $this->modelsManager->executeQuery(
                                             "select distinct q.* from OpenExam\Models\Question q "
                                             . "inner join OpenExam\Models\Corrector c "
                                             . "where  exam_id = '" . $exam->id . "' and q.status = 'active' "
@@ -301,7 +301,7 @@ class QuestionController extends GuiController
                                 case 'question':
 
                                         // show student answers for a specific question
-                                        $questData = $this->phql->executeQuery(
+                                        $questData = $this->modelsManager->executeQuery(
                                             "select distinct q.* from OpenExam\Models\Question q "
                                             . "inner join OpenExam\Models\Corrector c "
                                             . "where q.id = " . $loadBy[2] . " and q.status = 'active' "
@@ -315,7 +315,7 @@ class QuestionController extends GuiController
                                 case 'answer':
 
                                         // show a specific answer
-                                        $questData = $this->phql->executeQuery(
+                                        $questData = $this->modelsManager->executeQuery(
                                             "select distinct q.* from OpenExam\Models\Question q "
                                             . "inner join OpenExam\Models\Corrector c "
                                             . "inner join OpenExam\Models\Answer a "
@@ -349,7 +349,7 @@ class QuestionController extends GuiController
 
                         // we will show score board
                         if (!$exam->decoded) {
-                                $questData = $this->phql->executeQuery(
+                                $questData = $this->modelsManager->executeQuery(
                                     "select distinct q.* from OpenExam\Models\Question q "
                                     . "inner join OpenExam\Models\Corrector c "
                                     . "where exam_id = '" . $exam->id . "' and q.status = 'active' "
@@ -362,7 +362,7 @@ class QuestionController extends GuiController
                         }
 
 
-                        $studentData = $this->phql->executeQuery(
+                        $studentData = $this->modelsManager->executeQuery(
                             "select distinct s.* from OpenExam\Models\Student s "
                             . "inner join OpenExam\Models\Answer a on a.student_id = s.id "
                             . "where s.exam_id = '" . $exam->id . "'"

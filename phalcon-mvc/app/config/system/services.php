@@ -323,11 +323,4 @@ $di->set('helper', function() {
         return new OpenExam\Library\Gui\Helper();
 });
 
-/**
- * Phql based model manager
- */
-$di->set('phql', function() {
-        return new Phalcon\Mvc\Model\Manager();
-}, true);
-
 return $di;

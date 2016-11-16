@@ -48,7 +48,7 @@ class ExamController extends GuiController
                 $colList = "e.*";
 
                 #------------ Upcoming student exam --------#
-                $exams['student-upcoming'] = $this->phql
+                $exams['student-upcoming'] = $this->modelsManager
                     ->executeQuery(
                     "select $colList from OpenExam\Models\Exam e "
                     . "inner join OpenExam\Models\Student s "
@@ -74,7 +74,7 @@ class ExamController extends GuiController
 
                 if (!count($stExamsToday)) {
                         #------------ Finished student exam --------#                
-                        $exams['student-finished'] = $this->phql
+                        $exams['student-finished'] = $this->modelsManager
                             ->executeQuery(
                             "select $colList from OpenExam\Models\Exam e "
                             . "inner join OpenExam\Models\Student s "
@@ -92,7 +92,7 @@ class ExamController extends GuiController
 
                 #------------ Exam creator --------#
                 if ($this->user->aquire(array(Roles::TEACHER))) {
-                        $exams['creator'] = $this->phql
+                        $exams['creator'] = $this->modelsManager
                             ->executeQuery(
                             "select $colList from OpenExam\Models\Exam e "
                             . "where creator = :user: order by created desc "
@@ -102,7 +102,7 @@ class ExamController extends GuiController
                 }
 
                 #------------ Exam contributor --------#
-                $exams['contributor'] = $this->phql
+                $exams['contributor'] = $this->modelsManager
                     ->executeQuery(
                     "select $colList from OpenExam\Models\Exam e "
                     . "inner join OpenExam\Models\Contributor c "
@@ -112,7 +112,7 @@ class ExamController extends GuiController
                 );
 
                 #------------ Exam invigilator --------#
-                $exams['invigilator'] = $this->phql
+                $exams['invigilator'] = $this->modelsManager
                     ->executeQuery(
                     "select $colList from OpenExam\Models\Exam e "
                     . "inner join OpenExam\Models\Invigilator i "
@@ -122,7 +122,7 @@ class ExamController extends GuiController
                 );
 
                 #------------ Question corrector --------#
-                $exams['corrector'] = $this->phql
+                $exams['corrector'] = $this->modelsManager
                     ->executeQuery(
                     "select distinct $colList from OpenExam\Models\Exam e "
                     . "inner join OpenExam\Models\Question q "
@@ -133,7 +133,7 @@ class ExamController extends GuiController
                 );
 
                 #------------ Exam decoder --------#
-                $exams['decoder'] = $this->phql
+                $exams['decoder'] = $this->modelsManager
                     ->executeQuery(
                     "select $colList from OpenExam\Models\Exam e "
                     . "inner join OpenExam\Models\Decoder d "
