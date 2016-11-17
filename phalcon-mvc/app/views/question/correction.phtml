@@ -1,5 +1,8 @@
-
 <?php
+use OpenExam\Library\Security\Roles;
+use OpenExam\Models\Exam;
+use OpenExam\Models\Student;
+
 $overallQuestScore = array();
 $totalExamScore = $totalStudentScore = 0;
 
@@ -26,7 +29,7 @@ arsort($examGrades);
 // if exam has been decoded or not
 $decoded = $exam->decoded;
 
-$showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator'), $exam->id) !== false);
+$showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id) !== false);
 
 ?>
 
@@ -116,7 +119,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                             </th> 
                             <th class="sortable" style="background-color:#EAEAEA; max-width:65px; text-align:center">%</th>
                     <?php endif; ?>
-                    <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
+                    <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) == Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
                             <th class="sortable" style="background-color:#EAEAEA; width:35px;  text-align:center">Grade</th>
                     <?php endif; ?>
                     </tr>
@@ -238,7 +241,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                                 ?>
                                             </td>
                                     <?php endif ?>
-                                    <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
+                                    <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) == Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
                                             <?php
                                             $needGraceMarks = false;
                                             foreach ($examGrades as $grade => $limit) :
@@ -295,7 +298,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array('decoder', 'creator')
                                         <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
                                     </td>
                             <?php endif; ?>
-                            <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION) == OpenExam\Models\Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
+                            <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) == Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
                                     <td class="cc aa" style="text-align:right; margin:0; padding:0">
                                         <?php foreach ($examGrades as $grade => $limit): ?>
                                                 <div style="padding:1px; "><b><?= $grade ?></b>: <?= $avgGrades[$grade] ?></div>

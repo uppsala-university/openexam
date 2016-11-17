@@ -270,13 +270,14 @@ class QuestionController extends GuiController
                 ## load exam data
                 $exam = Exam::findFirst($examId);
                 if (!$exam) {
-                        throw new Exception("Unable to load requested exam");
+                        throw new \Exception("Unable to load requested exam");
                 }
 
                 ## find display mode
                 preg_match('/^\/([a-z]+)\/([0-9]+)/', $loadAnswersBy, $loadBy);
 
-                $isDecoder = $this->user->aquire(array('decoder'), $examId);
+                $isCreator = $this->user->roles->aquire(Roles::CREATOR, $examId);
+                $isDecoder = $this->user->roles->aquire(Roles::DECODER, $examId);
 
                 if (count($loadBy)) {
 
@@ -305,7 +306,7 @@ class QuestionController extends GuiController
                                             "select distinct q.* from OpenExam\Models\Question q "
                                             . "inner join OpenExam\Models\Corrector c "
                                             . "where q.id = " . $loadBy[2] . " and q.status = 'active' "
-                                            . ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
+                                            . ((!$isDecoder && $isCreator) ?
                                                 "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
                                         );
                                         $ansData = Answer::find('question_id = ' . $loadBy[2]);
@@ -320,7 +321,7 @@ class QuestionController extends GuiController
                                             . "inner join OpenExam\Models\Corrector c "
                                             . "inner join OpenExam\Models\Answer a "
                                             . "where a.id = " . $loadBy[2] . " and q.status = 'active' " 
-                                            . ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
+                                            . ((!$isDecoder && $isCreator) ?
                                                 "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
                                         );
                                         $ansData = Answer::find('id = ' . $loadBy[2]);
@@ -353,7 +354,7 @@ class QuestionController extends GuiController
                                     "select distinct q.* from OpenExam\Models\Question q "
                                     . "inner join OpenExam\Models\Corrector c "
                                     . "where exam_id = '" . $exam->id . "' and q.status = 'active' "
-                                    . ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
+                                    . ((!$isDecoder && $isCreator) ?
                                         "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
                                     . "order by q.slot asc"
                                 );
