@@ -25,8 +25,6 @@ $(document).ready(function () {
                 }
             });
         }
-
-        return false;
     });
 
     $(document).on('click', '.manage-students', function () {
@@ -87,7 +85,13 @@ $(document).ready(function () {
                             resp = jQuery.parseJSON(response);
                             if (resp.status == 'success') {
                                 location.href = baseURL + 'exam/update/' + resp.exam_id + '/creator';
+                            } else {
+                                alert(resp.message);
                             }
+                        },
+                        error: function (xhr) {
+                            $("#reuse-exam-dialog").html(xhr.responseText);
+                            $("#reuse-exam-dialog").show();
                         }
                     });
                 },
