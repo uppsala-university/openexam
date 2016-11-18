@@ -14,7 +14,7 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
-use OpenExam\Library\Form\LoginForm;
+use OpenExam\Library\Form\UserLoginForm;
 use OpenExam\Library\Form\LoginSelect;
 use OpenExam\Library\Security\Login\Base\FormLogin;
 use OpenExam\Library\Security\Login\Base\RemoteLogin;
@@ -51,10 +51,12 @@ class AuthController extends GuiController
          */
         public function formAction($name = null, $service = "web")
         {
-                $this->auth->activate($name, $service);
-                $this->view->setVar("form", new LoginForm(
-                    $this->auth->getAuthenticator()
-                ));
+                if (!$this->auth->activate($name, $service)) {
+                        return false;
+                }
+                if (($form = $this->auth->getAuthenticator()) != null) {
+                        $this->view->setVar("form", $form->create());
+                }
         }
 
         /**

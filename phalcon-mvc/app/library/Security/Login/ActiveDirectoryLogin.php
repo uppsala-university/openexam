@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Security\Login;
 
+use OpenExam\Library\Form\UserLoginForm;
 use OpenExam\Library\Security\Login\Base\FormLogin;
 use OpenExam\Library\Security\Login\Base\RemoteLogin;
 use Phalcon\Config;
@@ -176,6 +177,15 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin, Re
         public function path()
         {
                 return null;
+        }
+
+        /**
+         * Creates the user login form.
+         * @return UserLoginForm
+         */
+        public function create()
+        {
+                return new UserLoginForm($this);
         }
 
 }

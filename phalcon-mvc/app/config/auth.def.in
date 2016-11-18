@@ -13,6 +13,8 @@
 
 use OpenExam\Library\Security\Login\ActiveDirectoryLogin;
 use OpenExam\Library\Security\Login\ActiveDirectorySession;
+use OpenExam\Library\Security\Login\AnonymousCodeLogin;
+use OpenExam\Library\Security\Login\AnonymousCodeSession;
 use OpenExam\Library\Security\Login\CasLogin;
 use OpenExam\Library\Security\Login\SimpleSamlLogin;
 use OpenExam\Library\Security\Login\SystemLogin;
@@ -119,6 +121,15 @@ return array(
                         },
                         'desc' => 'Render Service',
                         'visible' => false
+                ),
+                'anon' => array(
+                        'method' => function() use($config) {
+                                return new AnonymousCodeSession(
+                                    $config
+                                );
+                        },
+                        'desc' => 'Anonymous Code',
+                        'visible' => true
                 )                            
         )
 );

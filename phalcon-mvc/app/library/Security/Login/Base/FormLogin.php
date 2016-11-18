@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Security\Login\Base;
 
+use Phalcon\Forms\Form;
+
 /**
  * Interface for form based login.
  * 
@@ -43,4 +45,10 @@ interface FormLogin
          * @return string
          */
         function pass();
+        
+        /**
+         * Create the login form.
+         * @return Form 
+         */
+        function create();
 }

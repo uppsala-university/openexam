@@ -19,37 +19,79 @@
         border-radius: 5px;
         margin: 0 20px;
         padding: 0 20px 5px;
-        max-width: 450px;
+        max-width: 550px;
+        display: inline-block;
+    }
+    .credentials {
+        width: 50%;
+        float: left;
     }    
-    .login form {
+    .credentials form {
         margin-top: 20px;
         margin-left: 30px;
     }
     h2.identity {
-        background: url("<?=$this->url->get("/img/kgpg_identity.png")?>") no-repeat right;
+        background: url("<?= $this->url->get("/img/kgpg_identity.png") ?>") no-repeat right;
+    }
+    div.status {
+        padding: 20px;
+        margin-top: 5px;
+        font-size: 1.2em;
+        border-radius: 5px;
+        float: left;
+        width: 40%;
+    }
+    #status-info {
+        color: #333399;
+        background-color: #ffffff;
+        border: 1px solid lightskyblue;
+    }
+    #status-success {
+        color: #006600;
+        background-color: #eeffdd;
+        border: 1px solid greenyellow;
+    }
+    #status-failure {
+        background-color: #fffedd;
+        border: 1px dashed #ff9d00;
     }
 </style>
 
 <br/>
+
 <div class="login">
     <h2 class="identity">Authentication is required to continue</h2>
     <hr/>
+    
+    <div class="credentials">
     <h4>Login using <?= $form->getUserOption('description'); ?>:</h4>
-
-    <form action="<?= $form->getAction(); ?>" method="POST">
-        <p>
-            <label>Username:</label>
-            <?= $form->render('user'); ?>
-        </p>
-        <p>
-            <label>Password:</label>
-            <?= $form->render('pass'); ?>
-        </p>
-        <p>
-            <?= $form->render('submit'); ?>
-        </p>
-
-    </form>
+    
+        <form action="<?= $form->getAction(); ?>" method="POST">
+            <?php if ($form->has('fcode')) { ?>
+                    <p>
+                        <label>Password:</label>
+                        <?= $form->render('fpass'); ?>
+                    </p>
+                    <?= $form->render('fuser'); ?>
+            <?php } else { ?>
+                    <p>
+                        <label>Username:</label>
+                        <?= $form->render('fuser'); ?>
+                    </p>
+                    <p>
+                        <label>Password:</label>
+                        <?= $form->render('fpass'); ?>
+                    </p>
+            <?php } ?>
+            <p>
+                <?= $form->render('fsubmit'); ?>
+            </p>
+        </form>
+    </div>
+    <div class="status" id="status-info">
+        <i class="fa fa-info-circle"></i><br/>
+        <?= $form->getUserOption('information') ?>
+    </div>
 </div>
 
 <script>
