@@ -14,8 +14,8 @@
 namespace OpenExam\Library\Form;
 
 use Phalcon\Forms\Element\Hidden;
+use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Submit;
-use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Form;
 use UUP\Authentication\Authenticator\RequestAuthenticator;
 
@@ -39,7 +39,7 @@ class CodeLoginForm extends Form
                 $this->setUserOption('information', "Use your anonymous code as password. Contact the invigilator if you don't know the code.");
                 $this->add(new Hidden('fuser', array('name' => $login->user, 'value' => $login->secret)));
                 $this->add(new Hidden('fcode', array('name' => $login->code, 'value' => 1)));
-                $this->add(new Text('fpass', array('name' => $login->pass, 'placeholder' => 'The anonymous code')));
+                $this->add(new Password('fpass', array('name' => $login->pass, 'placeholder' => 'The anonymous code')));
                 $this->add(new Hidden("fembed", array("value" => $this->request->get("embed"))));
                 $this->add(new Submit('fsubmit', array('name' => $login->name, 'value' => 'Login', 'class' => 'btn-submit')));
         }

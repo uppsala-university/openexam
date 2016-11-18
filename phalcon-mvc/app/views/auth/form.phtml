@@ -62,10 +62,10 @@
 <div class="login">
     <h2 class="identity">Authentication is required to continue</h2>
     <hr/>
-    
+
     <div class="credentials">
-    <h4>Login using <?= $form->getUserOption('description'); ?>:</h4>
-    
+        <h4>Login using <?= $form->getUserOption('description'); ?>:</h4>
+
         <form action="<?= $form->getAction(); ?>" method="POST">
             <?php if ($form->has('fcode')) { ?>
                     <p>
@@ -84,6 +84,9 @@
                     </p>
             <?php } ?>
             <p>
+                <input type="checkbox" onclick="toggle_show_password('fpass')"> Show password
+            </p>
+            <p>
                 <?= $form->render('fsubmit'); ?>
             </p>
         </form>
@@ -95,8 +98,12 @@
 </div>
 
 <script>
-        $(document).ready(function () {
-            $("#user").val("");
-            $("#pass").val("");
-        });
+        function toggle_show_password(name) {
+            var elem = document.getElementById(name);
+            if (elem.attributes['type'].value === 'text') {
+                elem.attributes['type'].value = 'password';
+            } else {
+                elem.attributes['type'].value = 'text';
+            }
+        }
 </script>

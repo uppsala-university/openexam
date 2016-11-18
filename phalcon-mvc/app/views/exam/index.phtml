@@ -5,7 +5,6 @@
 <?= Phalcon\Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/ui/jquery-ui-timepicker.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/views/exam/index.js') ?>
 
 <?php
 
@@ -297,10 +296,10 @@ $examsPerPage = 5;
                                                             </span>
 
                                                             <a href="#"
-                                                               class = "exam-state-show"
-                                                               exam = "<?= $exam->id ?>"
-                                                               title = "Click to display exam details"
-                                                               style = "cursor: pointer">
+                                                               class="exam-state-show"
+                                                               exam="<?= $exam->id ?>"
+                                                               title="Click to display exam details"
+                                                               style="cursor: pointer">
                                                                 <span class="exam-date label label-blue-outline" style="margin-right: 10px; margin-left: 5px; min-width: 200px;">
                                                                     <i class="fa fa-clock-o"></i> 
                                                                     <?php
@@ -449,6 +448,9 @@ $examsPerPage = 5;
 
     <!-- container -->
 </div>
+
+<?= Phalcon\Tag::javascriptInclude('js/views/exam/index.js') ?>
+
 <script>
 
         $(function () {
