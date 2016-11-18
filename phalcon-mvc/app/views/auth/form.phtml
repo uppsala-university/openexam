@@ -19,11 +19,11 @@
         border-radius: 5px;
         margin: 0 20px;
         padding: 0 20px 5px;
-        max-width: 550px;
+        max-width: 600px;
         display: inline-block;
     }
     .credentials {
-        width: 50%;
+        width: 45%;
         float: left;
     }    
     .credentials form {
@@ -39,10 +39,11 @@
         font-size: 1.2em;
         border-radius: 5px;
         float: left;
-        width: 40%;
+        width: 45%;
+        margin-top: 30px;
     }
     #status-info {
-        color: #333399;
+        color: #5555aa;
         background-color: #ffffff;
         border: 1px solid lightskyblue;
     }
@@ -92,8 +93,12 @@
         </form>
     </div>
     <div class="status" id="status-info">
-        <i class="fa fa-info-circle"></i><br/>
-        <?= $form->getUserOption('information') ?>
+        <div style="float: left; display: inline-block; width: 15%">
+            <i class="fa fa-info-circle fa-2x"></i>
+        </div>
+        <div style="float: left; display: inline-block; width: 80%">
+            <?= $form->getUserOption('information') ?>
+        </div>
     </div>
 </div>
 
