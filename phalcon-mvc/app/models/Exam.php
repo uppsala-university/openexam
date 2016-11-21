@@ -79,6 +79,10 @@ class Exam extends ModelBase
          * Blur media (i.e. images) in student result.
          */
         const BLUR_MEDIA_CONTENT_IN_RESULT = 8;
+        /**
+         * Hide media (i.e. images) in student result.
+         */
+        const HIDE_MEDIA_CONTENT_IN_RESULT = 16;
 
         /**
          * This object ID.

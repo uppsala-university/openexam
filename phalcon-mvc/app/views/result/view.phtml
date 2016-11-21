@@ -87,6 +87,24 @@
             text-align: center;
             margin-bottom: 10px;
         }
+        .resource-wrapper {
+            background-color: white;
+            display: inline-block;
+            border-radius: 5px;
+            box-shadow: 1px 2px 15px grey;
+        }
+        .resource-content {
+            padding: 10px;
+            display: inline-block;
+        }
+        .resource-title {
+            color: grey;
+            margin-bottom: 5px;
+        }
+        .resource-image {
+            border: 1px dashed #bebebe;
+            display: inline-block;
+        }
     </style>
 
     <body>
@@ -247,9 +265,9 @@
                                                                     $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
 
                                                                     ?>
-                                                                    <div class="resource-wraper">
+                                                                    <div class="resource-wrapper">
                                                                         <?php if (stristr($mimeType, "image/")): ?>
-                                                                                <div style="border:1px dashed #dedede;">
+                                                                                <div class="resource-content">
                                                                                     <div class="resource-title">
                                                                                         <?= $resTitle ?>
                                                                                     </div>
@@ -268,12 +286,16 @@
                                                                                                       font-size: 35px;
                                                                                                       stroke: #eeeeee;
                                                                                                       fill: #ffffff;">
-                                                                                                The media content has been blurred
+                                                                                                The media content has been blurred by teacher request
                                                                                                 </text>      
                                                                                                 <image xlink:href="<?= $resUrl ?>" y="25px" width="500px" height="500px" filter="url(#blur)">  
                                                                                                 </image> 
                                                                                                 </svg>                                                                                                
                                                                                                 <div class="blurred">The media content has been blurred by request from teacher</div>
+                                                                                        <?php elseif (($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
+                                                                                                <div style="background-color: lightgray; max-width: 200px; text-align: center; color: white; padding: 35px">
+                                                                                                    The media content has been hidden by teacher request
+                                                                                                </div>
                                                                                         <?php else : ?>
                                                                                                 <img src="<?= $resUrl ?>" style=" background-color:#f9f9f9; max-width:100%;">
                                                                                         <?php endif; ?>
