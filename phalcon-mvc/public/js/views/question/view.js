@@ -341,5 +341,4 @@
 			$(document).trigger($.cookie('qs-menu'));
 		}
 	});
-//console.log("ALHAMDULILAH");
 		

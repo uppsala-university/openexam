@@ -265,5 +265,3 @@ $(document).ready(function () {
 
 });
 
-//console.log("ALHAMDULILAH");
-

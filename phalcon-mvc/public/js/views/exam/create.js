@@ -867,18 +867,17 @@ $(document).ready(function () {
                     } else {
                         $('.sortable-qs').find('span[q-no="' + qId + '"]').parent().find('.q-txt').html(qTxtLeftMenu);
                     }
-                    //console.log("ALHAMDULILAH");
 
                 }
         );
 
     }
 
-    /*----------------------------------------------------------*/
-    /*	Reads question data from json object (on page storage)	*/
-    /*	and re-populates questions in main question area		*/
-    /*----------------------------------------------------------*/
-
+    // 
+    // Reads question data from json object (on page storage) and 
+    // re-populates questions in main question area
+    // 
+    
     var refreshQs = function () {
 
         // lets remove all questions
@@ -988,7 +987,6 @@ $(document).ready(function () {
             $('#qs_area').append($(qLine).show());
 
         });
-        //console.log("ALHAMDULILAH");
     }
     refreshQs();
     
