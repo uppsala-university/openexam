@@ -23,6 +23,8 @@ CKEDITOR.editorConfig = function (config) {
         {name: 'colors'},
     ];
 
+    config.ToolbarStartExpanded = false;
+
     // Remove some buttons provided by the standard plugins, which are
     // not needed in the Standard(s) toolbar.
     config.removeButtons = 'Underline';
@@ -33,12 +35,22 @@ CKEDITOR.editorConfig = function (config) {
     // Simplify the dialog windows.
     config.removeDialogTabs = 'image:advanced;link:advanced';
 
-    // Don't load these plugins.
+    // Don't load these plugins:
     config.removePlugins = 'elementspath,texzilla,image,save,font,pastefromword,sourcearea,eqneditor';
 
-    config.ToolbarStartExpanded = false;
-
+    // Always load these plugins:
     config.extraPlugins = 'confighelper,wordcount,notification';
+
+    // 
+    // Load some nice looking skin:
+    // 
+    //    config.skin = 'office2013';
+    //    config.skin = 'minimalist';
+    //    config.skin = 'moono-dark';
+    //    config.skin = 'moono';
+    //    config.skin = 'moonocolor';
+    // 
+    config.skin = 'moono_blue';
 
     config.baseFloatZIndex = 9000;
 
