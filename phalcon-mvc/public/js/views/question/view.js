@@ -276,12 +276,24 @@
 		
 		CKEDITOR.config.removeButtons = 'Link,Unlink';
                 $('.ckeditor').each(function(index, element) {
+                        var limit = element.getAttribute('word-count-limit');
+                        if (limit === "") {
+                            limit = -1;
+                        }
 			CKEDITOR.replace(element.id, {
-				height: '100px'
-			});
+				height: '100px',
+                                wordcount: {
+                                    countHTML: false,
+                                    showWordCount: true,
+                                    showCharCount: false,
+                                    maxWordCount: limit
+                                }			
+                        });
                 });
 		for (var i in CKEDITOR.instances) {
-			CKEDITOR.instances[i].on('change', function() {dirtybit = 1;});
+			CKEDITOR.instances[i].on('change', function() {
+                            dirtybit = 1;
+                        });
 		}
 		
 		$(window).bind('beforeunload', function(event){
