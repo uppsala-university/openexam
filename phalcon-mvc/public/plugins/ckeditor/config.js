@@ -12,36 +12,31 @@ CKEDITOR.editorConfig = function (config) {
     config.toolbarGroups = [
         {name: 'clipboard', groups: ['clipboard', 'undo']},
         {name: 'editing', groups: ['find', 'selection']},
-        // {name: 'links'},
         {name: 'insert'},
         {name: 'forms'},
         {name: 'tools'},
         {name: 'document', groups: ['mode', 'document', 'doctools']},
         {name: 'others'},
-        // '/',
         {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
         {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
         {name: 'styles'},
         {name: 'colors'},
-        // {name: 'about'}
     ];
 
     // Remove some buttons provided by the standard plugins, which are
     // not needed in the Standard(s) toolbar.
-    config.removeButtons = 'Underline,Subscript,Superscript';
+    config.removeButtons = 'Underline';
 
     // Set the most common block elements.
     config.format_tags = 'p;h1;h2;h3;pre';
 
     // Simplify the dialog windows.
     config.removeDialogTabs = 'image:advanced;link:advanced';
-    
+
     // Don't load these plugins.
     config.removePlugins = 'elementspath,texzilla,image,save,font,pastefromword,sourcearea,eqneditor';
 
     config.ToolbarStartExpanded = false;
-
-    // config.skin = 'office2013';
 
     config.extraPlugins = 'confighelper,wordcount,notification';
 
@@ -56,6 +51,7 @@ CKEDITOR.editorConfig = function (config) {
     config.enterMode = CKEDITOR.ENTER_BR;
 
     config.entities = false;
-    
-    config.mathJaxLib = {};
+
+    config.mathJaxLib = baseURL + '/js/mathjax/MathJax.js?config=TeX-AMS_HTML';
+
 };
