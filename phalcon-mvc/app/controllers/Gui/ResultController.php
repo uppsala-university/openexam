@@ -112,6 +112,16 @@ class ResultController extends GuiController
                 $studId = $this->filter->sanitize($this->dispatcher->getParam('studentId'), 'int');
 
                 // 
+                // Check required parameters:
+                // 
+                if (empty($examId)) {
+                        throw new \Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
+                }
+                if (empty($studId)) {
+                        throw new \Exception("The student ID is missing", Error::PRECONDITION_FAILED);
+                }
+
+                // 
                 // Get exam data:
                 // 
                 if (!($exam = Exam::findFirst($examId))) {
