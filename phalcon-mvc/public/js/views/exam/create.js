@@ -962,9 +962,9 @@ $(document).ready(function () {
                         ansTypeHtml = ansTypeHtml.replace(new RegExp(/type=\"checkbox\"/g), 'type=\"radio\"');
                     }
                 } else if (ansType == 'canvas') {
-                    ansTypeHtml = '<img width="100%" src="' + baseURL + 'img/canvas.png">';
+                    ansTypeHtml = '<img width="70%" src="' + baseURL + 'img/canvas.png">';
                 } else {
-                    ansTypeHtml = '<img width="100%" src="' + baseURL + 'img/ckeditor.png">';
+                    ansTypeHtml = '<img width="70%" src="' + baseURL + 'img/ckeditor.png">';
                 }
 
                 $(qPartLine)
