@@ -7,43 +7,46 @@ var qPartTabs = $("#qPartTabs").tabs();
 var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>";
 var libJs = '';
 
-    /*------------------------------------------*/
-    /*	Question parts management (Tabs)		*/
-    /*------------------------------------------*/
-    // add new question part
-    var addQuestPartTab = function () {
+// 
+// Question parts management (Tabs)
+// 
 
-        var qPartTitle = String.fromCharCode(96 + tabCounter);
-        var label = "Part " + qPartTitle,
-                id = "q-part-" + tabId,
-                li = $(tabTemplate.replace(/#\{href\}/g, "#" + id).replace(/#\{label\}/g, label)),
-                tabContentHtml = qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel").filter(':first').html();
-        qPartTabs.find(".ui-tabs-nav").append(li);
-        qPartTabs.find("#q-parts-wrapper").append("<div id='" + id + "' class='q-part'>" + tabContentHtml + "</div>");
+// 
+// Add new question part
+// 
+var addQuestPartTab = function () {
 
-        //refresh  plugins on newly added content
-        qPartTabs.tabs("refresh");
-        qPartTabs.tabs({active: tabCounter - 1});
-        $(".accordion").accordion({heightStyle: "content"});
-        //refreshCKEditor();
+    var qPartTitle = String.fromCharCode(96 + tabCounter);
+    var label = "Part " + qPartTitle,
+            id = "q-part-" + tabId,
+            li = $(tabTemplate.replace(/#\{href\}/g, "#" + id).replace(/#\{label\}/g, label)),
+            tabContentHtml = qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel").filter(':first').html();
+    qPartTabs.find(".ui-tabs-nav").append(li);
+    qPartTabs.find("#q-parts-wrapper").append("<div id='" + id + "' class='q-part'>" + tabContentHtml + "</div>");
 
-        if (tabCounter == 2) {
-            qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel").css('padding', '1em 1.4em');
-            $('#q-part-tabs').show(200);
-        }
-        tabId++;
-        tabCounter++;
+    //refresh  plugins on newly added content
+    qPartTabs.tabs("refresh");
+    qPartTabs.tabs({active: tabCounter - 1});
+    $(".accordion").accordion({heightStyle: "content"});
+    //refreshCKEditor();
 
-        //enable CkEditor
-        $('#' + id).find('.write_q_ckeditor').attr('id', 'q_text' + tabId).val('');
-        $('#' + id).find('.ans_type').hide();
-	$('#' + id).find('.lib_resources_list').empty();
-        $('#' + id).find('#cke_q_text1').remove();
-        CKEDITOR.replace('q_text' + tabId, {
-            height: '100px'
-        } /*{
-         height: '100px'}*/);
+    if (tabCounter == 2) {
+        qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel").css('padding', '1em 1.4em');
+        $('#q-part-tabs').show(200);
     }
+    tabId++;
+    tabCounter++;
+
+    //enable CkEditor
+    $('#' + id).find('.write_q_ckeditor').attr('id', 'q_text' + tabId).val('');
+    $('#' + id).find('.ans_type').hide();
+    $('#' + id).find('.lib_resources_list').empty();
+    $('#' + id).find('#cke_q_text1').remove();
+    CKEDITOR.replace('q_text' + tabId, {
+        height: '100px'
+    } /*{
+     height: '100px'}*/);
+}
 
 /*------------------------------------------*/
 /*	Events binding area						*/
@@ -54,23 +57,24 @@ $(document).ready(function () {
     $(".accordion").accordion({
         heightStyle: "content"
     });
-    
+
     /*========  Bind CKEDITORs ==========*/
 //    setTimeout(function () {
 
-        for (var i = 1; i < tabCounter; i++) {
-            CKEDITOR.replace('q_text' + i, {
-                height: '100px'/*,
-                toolbar: [
-                    ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
-                        'Undo', 'Redo', 'Outdent', 'Indent', '-',
-                        'Bold', 'Italic', 'Underline', '-',
-                        'NumberedList', 'BulletedList'
-                    ]
-                ]*/
-            });
+    for (var i = 1; i < tabCounter; i++) {
+        CKEDITOR.replace('q_text' + i, {
+            height: '100px'/*,
+             toolbar: [
+             ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
+             'Undo', 'Redo', 'Outdent', 'Indent', '-',
+             'Bold', 'Italic', 'Underline', '-',
+             'NumberedList', 'BulletedList'
+             ]
+             ]*/
+        });
 
-        };
+    }
+    ;
 
 //    }, 100);
     CKEDITOR.config.autoParagraph = false;
@@ -83,40 +87,40 @@ $(document).ready(function () {
             tmp += '<option value="' + $(element).attr('data-user') + '">' + $(element).html() + '</option>';
         }
     });
-    
+
     // show list in openTip
     new Opentip('#uu-id4',
             'Search by name: <input type="text" class="uu-user-search q-correctors" isfor="uu-id4box">',
             {style: "drops", tipJoint: "top left"});
-    
-    
+
+
     setTimeout(
-      function() 
-      {
-        if(isExamPublished) {
+            function ()
+            {
+                if (isExamPublished) {
 
-            $( "#question-form-dialog-wrap" ).dialog( "option", "buttons", 
-              [
-                {
-                  text: "Cancel",
-                  click: function() {
-                        close_tooltips();
-                        $(this).dialog('destroy');
-                  }
+                    $("#question-form-dialog-wrap").dialog("option", "buttons",
+                            [
+                                {
+                                    text: "Cancel",
+                                    click: function () {
+                                        close_tooltips();
+                                        $(this).dialog('destroy');
+                                    }
+                                }
+                            ]
+                            );
+
                 }
-              ]
-            );        
+            }, 500);
 
-        }
-      }, 500);
-    
-    
-    if(formJs == 'loaded') {
-    	return;
+
+    if (formJs == 'loaded') {
+        return;
     } else {
-	formJs = 'loaded';
+        formJs = 'loaded';
     }
-    
+
     /*======== Removing the tab on click ==========*/
     qPartTabs.delegate("span.ui-icon-close", "click", function () {
         var panelId = $(this).closest("li").remove().attr("aria-controls");
@@ -157,24 +161,24 @@ $(document).ready(function () {
 
                                 $('#' + $(".ui-tabs-active").attr("aria-controls"))
                                         .find('.lib_resources_list')
-                                            .append('\
+                                        .append('\
                                                     <li>\
                                                             <i class="fa fa-close"></i>\
                                                             <a href="#" file-path="' + $(this).attr('file-path') + '" target="_blank">' + $(itemTitle).find('input').val() + '</a>\
                                                     </li>'
-                                            );
+                                                );
 
                             });
 
                             $(this).dialog('destroy');
                         },
                         Cancel: function () {
-				close_tooltips();				
-                            	$(this).dialog('destroy');
+                            close_tooltips();
+                            $(this).dialog('destroy');
                         }
                     },
                     close: function () {
-			close_tooltips();
+                        close_tooltips();
                         //allFields.val( "" ).removeClass( "ui-state-error" );
                     }
 
@@ -195,9 +199,9 @@ $(document).ready(function () {
 
     });
     $('body').on('click', '.delopt', function () {
-        $(this).parent().slideUp(500, function() {
-		$(this).remove();
-	});
+        $(this).parent().slideUp(500, function () {
+            $(this).remove();
+        });
     });
 
     /*========  delete selected library resource ==========*/
@@ -264,4 +268,3 @@ $(document).ready(function () {
     });
 
 });
-

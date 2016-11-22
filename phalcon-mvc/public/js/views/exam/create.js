@@ -16,25 +16,25 @@ var stEvents = '';
 /*------------------------------*/
 //initialize tool tip theme
 Opentip.styles.drops = {
-	className: "drops",
-	borderWidth: 1,
-	stemLength: 5,
-	stemBase: 10,
-	borderRadius: 5,
-	background: "#F6F6F6",
-	borderColor: "#CCCCCC",
-	target: true,
-	tipJoint: "bottom",
-	targetJoint: "top",
-	containInViewport: false,
-	showOn: "click",
-	hideOn: "click",
-	closeButtonOffset: [3, 3],
-	closeButtonCrossColor: "#CF3B18",
-	closeButtonCrossSize: 5,
-	closeButtonCrossLineWidth: 2,
-	group: "tags",
-	hideTrigger: 'closeButton'
+    className: "drops",
+    borderWidth: 1,
+    stemLength: 5,
+    stemBase: 10,
+    borderRadius: 5,
+    background: "#F6F6F6",
+    borderColor: "#CCCCCC",
+    target: true,
+    tipJoint: "bottom",
+    targetJoint: "top",
+    containInViewport: false,
+    showOn: "click",
+    hideOn: "click",
+    closeButtonOffset: [3, 3],
+    closeButtonCrossColor: "#CF3B18",
+    closeButtonCrossSize: 5,
+    closeButtonCrossLineWidth: 2,
+    group: "tags",
+    hideTrigger: 'closeButton'
 };
 
 
@@ -53,17 +53,17 @@ $(document).ready(function () {
 
                 //oldQNo = $(ui.item).find('.q').attr('q-no');
                 //topicId = $(ui.item).parent().parent().find('.topic-name').attr('data-id');
-		sortQuestions();
+                sortQuestions();
                 // send ajax requedt to update question's topic
                 /*ajax (
-			baseURL + 'core/ajax/creator/question/update',
-			{"id": qsJson[oldQNo]["questId"], "topic_id": topicId},
-			function (qData) {
-	
-			    // sort questions in new order and update in db and on page json object
-			    sortQuestions();
-			}
-                );*/
+                 baseURL + 'core/ajax/creator/question/update',
+                 {"id": qsJson[oldQNo]["questId"], "topic_id": topicId},
+                 function (qData) {
+                 
+                 // sort questions in new order and update in db and on page json object
+                 sortQuestions();
+                 }
+                 );*/
 
             },
             connectWith: ".sortable-qs",
@@ -82,20 +82,20 @@ $(document).ready(function () {
 
                 //oldQNo = $(ui.item).find('.q').attr('q-no');
                 //topicId = $(ui.item).parent().parent().find('.topic-name').attr('data-id');
-		var topicArr = [];
-		$('.sortable-q-topic > li').each(function(i, topicItem) {
-			topicArr.push({"id":$(topicItem).find('.topic-name').attr('data-id'), "slot":i+1});
-		});
+                var topicArr = [];
+                $('.sortable-q-topic > li').each(function (i, topicItem) {
+                    topicArr.push({"id": $(topicItem).find('.topic-name').attr('data-id'), "slot": i + 1});
+                });
 
                 // send ajax requedt to update question's topic
-                ajax (
-			baseURL + 'core/ajax/creator/topic/update',
-			JSON.stringify(topicArr),
-			function (qData) {
-	
-			    // sort questions in new order and update in db and on page json object
-			    sortQuestions();
-			}
+                ajax(
+                        baseURL + 'core/ajax/creator/topic/update',
+                        JSON.stringify(topicArr),
+                        function (qData) {
+
+                            // sort questions in new order and update in db and on page json object
+                            sortQuestions();
+                        }
                 );
 
             },
@@ -109,7 +109,7 @@ $(document).ready(function () {
 
     // sort questions; save in db, json; update both in main area and in left menu
     var sortQuestions = function () {
-	    
+
         cntr = 1;
         tmpJson = {};
         tmpJson = JSON.parse(JSON.stringify(qsJson));
@@ -123,9 +123,9 @@ $(document).ready(function () {
             }
 
             $(element).find('.q').each(function (i, qNo) {
-		
+
                 if ($(qNo).parent().is(':visible')) {
-		    //console.log(qsJson[$(qNo).attr('q-no')]["questId"]+"---"+$(qNo).parent().attr('q-id')+"---->"+$(this).parent().find('.q-txt').html());
+                    //console.log(qsJson[$(qNo).attr('q-no')]["questId"]+"---"+$(qNo).parent().attr('q-id')+"---->"+$(this).parent().find('.q-txt').html());
                     tmpJson[cntr] = qsJson[$(qNo).attr('q-no')];
                     qArr.push({'id': qsJson[$(qNo).attr('q-no')]["questId"], "slot": (cntr), "topic_id": $(qNo).closest('.sortable-qs').attr('topic-id')});
                     $(qNo).html("Q" + (cntr) + ":").attr('q-no', (cntr));
@@ -133,7 +133,7 @@ $(document).ready(function () {
                 }
             });
         });
-	
+
         // send ajax request to update question's names as per new sorting order
         ajax(
                 baseURL + 'core/ajax/creator/question/update',
@@ -143,36 +143,36 @@ $(document).ready(function () {
                     refreshQs();
                 }
         );
-	
+
     }
 
     $('body').on('click', "#publish_exam", function () {
-		ajax(
-			baseURL + 'core/ajax/creator/exam/update',
-			{"id": examId, "published" : 1}, 
-			function (json) {
-			    location.href = baseURL + "exam/index";
-			}
-		);
+        ajax(
+                baseURL + 'core/ajax/creator/exam/update',
+                {"id": examId, "published": 1},
+        function (json) {
+            location.href = baseURL + "exam/index";
+        }
+        );
     });
-     
+
     //initliaze tooltips in left menu
-    $('.search-ldap').each(function(index, element) {
-	    new Opentip(element,
-		    'Search by name: <input type="text" class="uu-user-search" isfor="uu-id'+(index+1)+'">',
-		    {style: "drops", tipJoint: "top left"});
+    $('.search-ldap').each(function (index, element) {
+        new Opentip(element,
+                'Search by name: <input type="text" class="uu-user-search" isfor="uu-id' + (index + 1) + '">',
+                {style: "drops", tipJoint: "top left"});
     });
-    
+
     /*if($('#exam-settings').length) {
-	    new Opentip('#exam-settings',
-		$('#exam-settings-box').html(),
-		{style: "drops", tipJoint: "top right", showOn: "click", });
-    }*/
-    
-    if(showAddQuestionView && $('.add_new_qs').length) {
-	    loadQuestionDialog(0);
+     new Opentip('#exam-settings',
+     $('#exam-settings-box').html(),
+     {style: "drops", tipJoint: "top right", showOn: "click", });
+     }*/
+
+    if (showAddQuestionView && $('.add_new_qs').length) {
+        loadQuestionDialog(0);
     }
-    
+
     //ajx request for searching user
     var userSelected = false;
     $(document).on("keyup.autocomplete", '.uu-user-search', function () {
@@ -180,133 +180,133 @@ $(document).ready(function () {
         $(this).autocomplete({
             //source: "search.php",
             source: function (request, response) {
-		respObj = [];
-		userList = [];
-		ajax(
-			baseURL+'ajax/catalog/principal', 
-			{"data":{"name":request.term+"*"},"params":{"attr":["name","uid","principal"],"limit":10}},
-			function (json) {
-				
-				$.each(json, function(i, result) {
-					if(userList.indexOf(result.principal) < 0) {
-						respObj.push({"id":result.principal,"label":result.name+" ["+result.uid+"]","value":result.uid})
-						userList.push(result.principal);
-					}
-				});
-				
-				response(respObj);
-			}
-		);
-/*		    
-                $.ajax({
-                    type: 'GET',
-                    url: 'http://media.medfarm.uu.se/play/search_oe.php?callback=?',
-                    jsonpCallback: 'jsonCallback',
-                    contentType: "application/json",
-                    dataType: 'jsonp',
-                    data: request,
-                    success: function (data) {
-                        $("#uu-user-search").removeClass('no-user-found-shadow');
-                        $("#uu-user-search").addClass((!data || !data.length) ? 'no-user-found-shadow' : '');
-                        response(data);
-                    }
-                });*/
+                respObj = [];
+                userList = [];
+                ajax(
+                        baseURL + 'ajax/catalog/principal',
+                        {"data": {"name": request.term + "*"}, "params": {"attr": ["name", "uid", "principal"], "limit": 10}},
+                function (json) {
+
+                    $.each(json, function (i, result) {
+                        if (userList.indexOf(result.principal) < 0) {
+                            respObj.push({"id": result.principal, "label": result.name + " [" + result.uid + "]", "value": result.uid})
+                            userList.push(result.principal);
+                        }
+                    });
+
+                    response(respObj);
+                }
+                );
+                /*		    
+                 $.ajax({
+                 type: 'GET',
+                 url: 'http://media.medfarm.uu.se/play/search_oe.php?callback=?',
+                 jsonpCallback: 'jsonCallback',
+                 contentType: "application/json",
+                 dataType: 'jsonp',
+                 data: request,
+                 success: function (data) {
+                 $("#uu-user-search").removeClass('no-user-found-shadow');
+                 $("#uu-user-search").addClass((!data || !data.length) ? 'no-user-found-shadow' : '');
+                 response(data);
+                 }
+                 });*/
             },
             //minLength: 4,
             select: function (event, ui) {
 
                 // empty text box
                 $(this).val('');
-		
-		// format user's name to be added
-		var usernameText = ui.item.label + " ["+ui.item.value+"]";
+
+                // format user's name to be added
+                var usernameText = ui.item.label + " [" + ui.item.value + "]";
 
                 addBtnId = $(this).attr('isfor');
-		
-		var alreadyExists = false;
-                if($(this).hasClass('q-correctors')) {
-                    $(".q_corrector_list").find('li').each(function(index, element) {
-                            if($(element).find('span').attr('data-user') == ui.item.id) {
-                                    alreadyExists = true;
-                            }
+
+                var alreadyExists = false;
+                if ($(this).hasClass('q-correctors')) {
+                    $(".q_corrector_list").find('li').each(function (index, element) {
+                        if ($(element).find('span').attr('data-user') == ui.item.id) {
+                            alreadyExists = true;
+                        }
                     });
                 } else {
-                    $("#" + addBtnId).closest('li').find('.menuLevel1').find('.left-col-user').each(function(index, element) {
-                            if($(element).attr('data-user') == ui.item.id) {
-                                    alreadyExists = true;
-                            }
+                    $("#" + addBtnId).closest('li').find('.menuLevel1').find('.left-col-user').each(function (index, element) {
+                        if ($(element).attr('data-user') == ui.item.id) {
+                            alreadyExists = true;
+                        }
                     });
                 }
-                
-		if(!alreadyExists) {
-			
-                        if($(this).hasClass('q-correctors')) {
-                                cloned = $('.q_corrector_list > li:first').clone()
-                                        .find('.left-col-user')
-                                        .attr('data-user', ui.item.id)
-                                        .html(usernameText)
-                                        .end();
 
-                                if (qId) {
-                                        
-                                        // send ajax request to add selected corrector in question
-                                        ajax(
-                                                baseURL + 'core/ajax/creator/corrector/create',
-                                                {"question_id": qId, "user": ui.item.id},
-                                                function (status) {
-                                                    $('.q_corrector_list').append(cloned);
-                                                }
-                                        );
+                if (!alreadyExists) {
 
-                                } else {
-                                    //alert("no qid");
-                                    $('.q_corrector_list').append(cloned);
-                                }
-                                
+                    if ($(this).hasClass('q-correctors')) {
+                        cloned = $('.q_corrector_list > li:first').clone()
+                                .find('.left-col-user')
+                                .attr('data-user', ui.item.id)
+                                .html(usernameText)
+                                .end();
+
+                        if (qId) {
+
+                            // send ajax request to add selected corrector in question
+                            ajax(
+                                    baseURL + 'core/ajax/creator/corrector/create',
+                                    {"question_id": qId, "user": ui.item.id},
+                            function (status) {
+                                $('.q_corrector_list').append(cloned);
+                            }
+                            );
+
                         } else {
-
-                                // send ajax request to save added role
-                                model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
-                                ajax(
-                                        baseURL + 'core/ajax/creator/' + model + '/create',
-                                        {"exam_id": examId, "user": ui.item.id},
-                                        function (userData) {
-
-                                            // prepare item to be added
-                                            tempItem = $("#" + addBtnId)
-                                                    .closest('li')
-                                                    // hide default message, if it was visible
-                                                    .find('.menuLevel1')
-                                                    .find('.left-col-def-msg')
-                                                    .hide()
-                                                    .end()
-
-                                                    // find template item and prepare it to add
-                                                    .find('li:first')
-                                                    .clone()
-
-                                                    // update data-ref attribute; helpful in deletion
-                                                    .find('.deluuid')
-                                                    .attr('data-ref', userData.id)
-                                                    .end()
-                                                    .show()
-                                                    //update username data
-                                                    .find('.left-col-user')
-                                                    .attr('data-user', ui.item.id)
-                                                    .html(usernameText)
-                                                    .show()
-                                                    .end();
-
-                                            // add item to the menu
-                                            $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
-
-
-                                            // close all tooltips
-                                            //closeTooltips();
-                                        }
-                                );
+                            //alert("no qid");
+                            $('.q_corrector_list').append(cloned);
                         }
-		}
+
+                    } else {
+
+                        // send ajax request to save added role
+                        model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
+                        ajax(
+                                baseURL + 'core/ajax/creator/' + model + '/create',
+                                {"exam_id": examId, "user": ui.item.id},
+                        function (userData) {
+
+                            // prepare item to be added
+                            tempItem = $("#" + addBtnId)
+                                    .closest('li')
+                                    // hide default message, if it was visible
+                                    .find('.menuLevel1')
+                                    .find('.left-col-def-msg')
+                                    .hide()
+                                    .end()
+
+                                    // find template item and prepare it to add
+                                    .find('li:first')
+                                    .clone()
+
+                                    // update data-ref attribute; helpful in deletion
+                                    .find('.deluuid')
+                                    .attr('data-ref', userData.id)
+                                    .end()
+                                    .show()
+                                    //update username data
+                                    .find('.left-col-user')
+                                    .attr('data-user', ui.item.id)
+                                    .html(usernameText)
+                                    .show()
+                                    .end();
+
+                            // add item to the menu
+                            $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
+
+
+                            // close all tooltips
+                            //closeTooltips();
+                        }
+                        );
+                    }
+                }
 
                 return false;
             },
@@ -394,26 +394,26 @@ $(document).ready(function () {
     /*		Left menu related		*/
     /*------------------------------------------*/
     $('body').on('click', '.bullet-closed', function () {
-	/*
-	var t = 1;
-	var bullet = $(this);
-	$('.menuLevel1').slideUp(300, function() {
-		if(t++ == $('.menuLevel1').length) {
-			$(bullet).parent().find('.menuLevel1').toggle();
-			$(bullet).find('img').attr('src', baseURL+'img/closedopt.png');
-		}
-	});*/
-	
-        $(this).parent().find('.'+$(this).attr('rel')).slideDown(500);
+        /*
+         var t = 1;
+         var bullet = $(this);
+         $('.menuLevel1').slideUp(300, function() {
+         if(t++ == $('.menuLevel1').length) {
+         $(bullet).parent().find('.menuLevel1').toggle();
+         $(bullet).find('img').attr('src', baseURL+'img/closedopt.png');
+         }
+         });*/
+
+        $(this).parent().find('.' + $(this).attr('rel')).slideDown(500);
         $(this).removeClass('bullet-closed').addClass('bullet-open').find('img').attr('src', baseURL + 'img/openeopt.png');
-	
+
         return false;
 
     });
 
     $('body').on('click', '.bullet-open', function () {
 
-        $(this).parent().find('.'+$(this).attr('rel')).slideUp(500);
+        $(this).parent().find('.' + $(this).attr('rel')).slideUp(500);
         $(this).removeClass('bullet-open').addClass('bullet-closed').find('img').attr('src', baseURL + 'img/closedopt.png');
         return false;
 
@@ -452,28 +452,28 @@ $(document).ready(function () {
             ajax(
                     baseURL + 'core/ajax/contributor/question/delete',
                     {"id": qsJson[qNo]["questId"]},
-		    function (status) {
-			
-			location.reload();
-			$(qAreaLine).slideUp('500');
-			
-			/*delete qsJson[qNo];
-	
-			i = 1;
-			jQuery.each(qsJson, function (newQNo, qData) {
-			    qsJson[i++] = qData;
-			});
-	
-			// hide from central area
-			$(qAreaLine).slideUp('500', function () {
-	
-			    // hide from left menu
-			    $('.sortable-qs').find('span[q-no="' + qNo + '"]').parent().remove();
-	
-			    sortQuestions();
-			});*/
-	
-		    }
+            function (status) {
+
+                location.reload();
+                $(qAreaLine).slideUp('500');
+
+                /*delete qsJson[qNo];
+                 
+                 i = 1;
+                 jQuery.each(qsJson, function (newQNo, qData) {
+                 qsJson[i++] = qData;
+                 });
+                 
+                 // hide from central area
+                 $(qAreaLine).slideUp('500', function () {
+                 
+                 // hide from left menu
+                 $('.sortable-qs').find('span[q-no="' + qNo + '"]').parent().remove();
+                 
+                 sortQuestions();
+                 });*/
+
+            }
             );
 
 
@@ -489,165 +489,165 @@ $(document).ready(function () {
     /*----------------------------------------------*/
     // exam title update
     /*$('.exam-title').blur(function () {
+     
+     oldVal = $(this).attr('old-value');
+     newVal = $(this).val();
+     
+     if (newVal != oldVal) {
+     ajax(
+     baseURL + 'core/ajax/creator/exam/update',
+     {"id": examId, "name": newVal},
+     function (examData) {
+     $('#exam-title').attr('old-value', examData.name)
+     }
+     );
+     }
+     
+     });*/
 
-        oldVal = $(this).attr('old-value');
-        newVal = $(this).val();
+    $('.exam-settings').click(function () {
 
-        if (newVal != oldVal) {
-            ajax(
-                    baseURL + 'core/ajax/creator/exam/update',
-                    {"id": examId, "name": newVal},
-		    function (examData) {
-			$('#exam-title').attr('old-value', examData.name)
-		    }
-            );
-        }
+        $.ajax({
+            type: "POST",
+            data: {'exam_id': examId},
+            url: baseURL + 'exam/settings/',
+            success: function (content) {
+                $("#exam-settings-box").html(content);
+                $("#exam-settings-box").dialog({
+                    autoOpen: true,
+                    width: "50%",
+                    modal: true,
+                    /*						buttons: {
+                     "Save": function() {
+                     },
+                     "btn ": function() {
+                     },
+                     Cancel: function() {
+                     $(this).dialog('destroy');
+                     }
+                     },*/
+                    close: function () {
+                        $(this).dialog('destroy');
+                    }
+                });
+            }
+        });
 
-    });*/
-    
-    $('.exam-settings').click(function() {
-				       
-	$.ajax({
-		type: "POST",
-		data: {'exam_id': examId },
-		url: baseURL + 'exam/settings/',
-		success: function(content) {
-			$("#exam-settings-box").html(content);
-			$("#exam-settings-box").dialog({
-				autoOpen: true,
-				width: "50%",
-				modal: true,
-				/*						buttons: {
-					"Save": function() {
-					},
-					"btn ": function() {
-					},
-					Cancel: function() {
-						$(this).dialog('destroy');
-					}
-				},*/
-				close: function() {
-					$(this).dialog('destroy');
-				}
-			});
-		}
-	});
-	
     });
 
-    if(isNewExam) {
-	$('.exam-settings').first().trigger('click');
+    if (isNewExam) {
+        $('.exam-settings').first().trigger('click');
     }
-    
-/*   
-    if($('#exam-desc').length) {
-	    // exam description update
-	    CKEDITOR.instances['exam-desc'].on('blur', function (event) {
-	
-		oldVal = $('#exam-desc').attr('old-val');
-		newVal = CKEDITOR.instances['exam-desc'].getData();
-	
-		if (newVal != oldVal) {
-		    ajax(
-			    baseURL + 'core/ajax/creator/exam/update',
-			    {"id": examId, "descr": newVal},
-			    function (examData) {
-				$('#exam-desc').attr('old-value', examData.descr)
-			    }
-		    );
-		}
-	
-	    });
-    }
-*/    
+
+    /*   
+     if($('#exam-desc').length) {
+     // exam description update
+     CKEDITOR.instances['exam-desc'].on('blur', function (event) {
+     
+     oldVal = $('#exam-desc').attr('old-val');
+     newVal = CKEDITOR.instances['exam-desc'].getData();
+     
+     if (newVal != oldVal) {
+     ajax(
+     baseURL + 'core/ajax/creator/exam/update',
+     {"id": examId, "descr": newVal},
+     function (examData) {
+     $('#exam-desc').attr('old-value', examData.descr)
+     }
+     );
+     }
+     
+     });
+     }
+     */
     // @ToDO: move this even handler to settings.phtml 	
     // exam's other setting's update
     $(document).on('click', '.save-exam-settings', function () {
-	
-	//if(jQuery("#exam-settings-box").validationEngine('validate')) {
-		// get data to be saved
-		var examDesc;
-		settingBox = $(this).closest('.exam-settings-box');
-		examTitle = $(settingBox).find('input[name="exam-title"]').val();
-		if(CKEDITOR.instances['exam-desc']) {
-			examDesc = CKEDITOR.instances['exam-desc'].getData();
-		}
-		org = $(settingBox).find('input[name="unit"]').val();
-		start = $(settingBox).find('input[name="start"]').val();
-		end = $(settingBox).find('input[name="end"]').val();
-		grades = $(settingBox).find('textarea[name="grade"]').val();
-		code = $(settingBox).find('input[name="exam-code"]').val();
-		course = $(settingBox).find('input[name="exam-course-code"]').val();
-		details = 0;
-		$(settingBox).find('input[name="details[]"]:checked').each(function (index, element) {
-		    details += Number($(element).val());
-		});
-		
-		data = {"id": examId, "name":examTitle, "descr":examDesc, "orgunit": org, "grades": grades, "details": details, "course":course, "code":code};
 
-		if(start != '') {
-			data["starttime"] = start;
-		}
-			
-		if(end != '') {
-			data["endtime"] = end;
-		}
+        //if(jQuery("#exam-settings-box").validationEngine('validate')) {
+        // get data to be saved
+        var examDesc;
+        settingBox = $(this).closest('.exam-settings-box');
+        examTitle = $(settingBox).find('input[name="exam-title"]').val();
+        if (CKEDITOR.instances['exam-desc']) {
+            examDesc = CKEDITOR.instances['exam-desc'].getData();
+        }
+        org = $(settingBox).find('input[name="unit"]').val();
+        start = $(settingBox).find('input[name="start"]').val();
+        end = $(settingBox).find('input[name="end"]').val();
+        grades = $(settingBox).find('textarea[name="grade"]').val();
+        code = $(settingBox).find('input[name="exam-code"]').val();
+        course = $(settingBox).find('input[name="exam-course-code"]').val();
+        details = 0;
+        $(settingBox).find('input[name="details[]"]:checked').each(function (index, element) {
+            details += Number($(element).val());
+        });
 
-		//
-		ajax(
-			baseURL + 'core/ajax/creator/exam/update',
-			data,
-			function (examData) {
-			    closeTooltips();
-			}
-		);
-	//} else {
-	//	alert(jQuery("#exam-settings-box").validationEngine('validate'));
-	//}
+        data = {"id": examId, "name": examTitle, "descr": examDesc, "orgunit": org, "grades": grades, "details": details, "course": course, "code": code};
+
+        if (start != '') {
+            data["starttime"] = start;
+        }
+
+        if (end != '') {
+            data["endtime"] = end;
+        }
+
+        //
+        ajax(
+                baseURL + 'core/ajax/creator/exam/update',
+                data,
+                function (examData) {
+                    closeTooltips();
+                }
+        );
+        //} else {
+        //	alert(jQuery("#exam-settings-box").validationEngine('validate'));
+        //}
     });
 
 
     /*----------------------------------------------*/
     /*	Manage exam students related events    	    */
     /*----------------------------------------------*/
-	$(document).on('click', '.manage-students', function() {
-		
-		$.ajax({
-			type: "POST",
-			data: {'exam_id': examId },
-			url: baseURL + 'exam/students/',
-			success: function(content) {
-				$("#mng-students").html(content);
-				$("#mng-students").dialog({
-					autoOpen: true,
-					width: "50%",
-					position:  ['center',20],
-					modal: true,
-/*						buttons: {
-						"Save": function() {
-						},
-						"btn ": function() {
-						},
-						Cancel: function() {
-							$(this).dialog('destroy');
-						}
-					},*/
-					close: function() {
-						$(this).dialog('destroy');
-						location.reload();
-					},
-					show: {
-						effect: "blind",
-						duration: 5
-					},
-					hide: {
-						effect: "blind",
-						duration: 5
-					}
-				});
-			}
-		});
-	});
+    $(document).on('click', '.manage-students', function () {
+
+        $.ajax({
+            type: "POST",
+            data: {'exam_id': examId},
+            url: baseURL + 'exam/students/',
+            success: function (content) {
+                $("#mng-students").html(content);
+                $("#mng-students").dialog({
+                    autoOpen: true,
+                    width: "50%",
+                    position: ['center', 20],
+                    modal: true,
+                    /*						buttons: {
+                     "Save": function() {
+                     },
+                     "btn ": function() {
+                     },
+                     Cancel: function() {
+                     $(this).dialog('destroy');
+                     }
+                     },*/
+                    close: function () {
+                        $(this).dialog('destroy');
+                        location.reload();
+                    },
+                    show: {
+                        effect: "blind",
+                        duration: 5
+                    },
+                    hide: {
+                        effect: "blind",
+                        duration: 5
+                    }
+                });
+            }
+        });
+    });
 
 
 
@@ -655,15 +655,15 @@ $(document).ready(function () {
     /*	Generalized  events 			*/
     /*----------------------------------------------*/
     $('body').on("focus", ".datepicker", function () {
-	//$(this).datepicker();
-	$(this).datetimepicker({
-		controlType: 'select',
-		timeFormat: 'HH:mm',
-		dateFormat: 'yy-mm-dd',
-		changeMonth: true,
-		changeYear: true,
-		minDate:0
-	});
+        //$(this).datepicker();
+        $(this).datetimepicker({
+            controlType: 'select',
+            timeFormat: 'HH:mm',
+            dateFormat: 'yy-mm-dd',
+            changeMonth: true,
+            changeYear: true,
+            minDate: 0
+        });
     });
 
 
@@ -672,7 +672,7 @@ $(document).ready(function () {
     /*	It loads populated data of question, if question id is passed	*/
     /*------------------------------------------------------------------*/
 
-    function loadQuestionDialog(qId) 
+    function loadQuestionDialog(qId)
     {
         var action = (qId ? 'update' : 'create');
         qDbId = (qId ? qsJson[qId]["questId"] : 0);
@@ -705,13 +705,13 @@ $(document).ready(function () {
                             $(this).dialog('destroy');
                         },
                         Cancel: function () {
-				close_tooltips();				
-	                        $(this).dialog('destroy');
+                            close_tooltips();
+                            $(this).dialog('destroy');
                         }
                     },
                     close: function () {
                         //allFields.val( "" ).removeClass( "ui-state-error" );
-			close_tooltips();			
+                        close_tooltips();
                         $(this).dialog('destroy');
                     }
 
@@ -719,7 +719,8 @@ $(document).ready(function () {
             }
         });
 
-    };
+    }
+    ;
 
 
     /*----------------------------------------------------------*/
@@ -751,7 +752,7 @@ $(document).ready(function () {
             qPartTitle = String.fromCharCode(96 + (index + 1));
 
             // initiate js object that will populate later on
-	    qJson[qPartTitle] = {};
+            qJson[qPartTitle] = {};
             qJson[qPartTitle]["ans_area"] = {};
             qJson[qPartTitle]["resources"] = {};
 
@@ -777,11 +778,14 @@ $(document).ready(function () {
             qJson[qPartTitle]["ans_area"]["type"] = $(ansType).val();
 
             // populate answer area related data in Json object
-            if ($(ansType).val() == 'choicebox') {
+            if ($(ansType).val() === 'choicebox') {
                 qJson[qPartTitle]["ans_area"]["data"] = {};
                 $(ansType).parent().parent().find('.ans_type').find('.question_opts > div > span').each(function (i, optElement) {
                     qJson[qPartTitle]["ans_area"]["data"][$(optElement).html()] = $(optElement).parent().find('input').is(':checked');
                 });
+            } else if ($(ansType).val() === 'textarea') {
+                qJson[qPartTitle]["ans_area"]["data"] = [];
+                qJson[qPartTitle]["ans_area"]["word_count"] = $(ansType).parent().parent().find('input[name="word-count"]:checked').val();
             } else {
                 qJson[qPartTitle]["ans_area"]["data"] = [];
             }
@@ -796,12 +800,12 @@ $(document).ready(function () {
         /////////// Send ajax request to add/update this question in database ///////////////////
         //	prepare exam data and send request. Add/update qJson to global qsJson if successful
         /////////////////////////////////////////////////////////////////////////////////////////
-	if($('#q-topic-sel').length) {
-	        topicId = $('#q-topic-sel').val();
-	} else {
-		topicId = $('#default_topic_id').val();
-	}
-	
+        if ($('#q-topic-sel').length) {
+            topicId = $('#q-topic-sel').val();
+        } else {
+            topicId = $('#default_topic_id').val();
+        }
+
         if (!qId) {
             data = {"exam_id": examId, "topic_id": topicId, "score": totalScore, "name": qIndex, "quest": JSON.stringify(qJson), "status": 'active'};
         } else {
@@ -819,10 +823,10 @@ $(document).ready(function () {
                     var qCorrectorsArr = [];
                     var qCorrectorList = $('.q_corrector_list');
                     qsCorrectorsJson[qIndex] = {};
-                    
+
                     $(qCorrectorList).find('.left-col-user').each(function (i, rElem) {
-			var correctorUserName = $(rElem).attr('data-user');    
-                        if(!qId) {
+                        var correctorUserName = $(rElem).attr('data-user');
+                        if (!qId) {
                             qCorrectorsArr.push({'question_id': qData.id, "user": $(rElem).attr('data-user')});
                         }
 
@@ -831,20 +835,20 @@ $(document).ready(function () {
                     });
 
                     if (!qId && qCorrectorsArr.length) {
-			    
-			// send ajax request to save correctors for this question
-			ajax(
-				baseURL + 'core/ajax/creator/corrector/create',
-				JSON.stringify(qCorrectorsArr),
-				function (userData) {
-				    //do nothing for now
-				}
-			);
+
+                        // send ajax request to save correctors for this question
+                        ajax(
+                                baseURL + 'core/ajax/creator/corrector/create',
+                                JSON.stringify(qCorrectorsArr),
+                                function (userData) {
+                                    //do nothing for now
+                                }
+                        );
                     }
 
 
                     // finally, add this question to qsJson
-		    qJson["canUpdate"] = 1;
+                    qJson["canUpdate"] = 1;
                     qsJson[qIndex] = qJson;
 
                     // refresh main question area
@@ -857,11 +861,11 @@ $(document).ready(function () {
                                 .clone()
                                 .show()
                                 .find('.q')
-					.attr('q-no', qIndex)
-					.html("Q" + qIndex + ":")
+                                .attr('q-no', qIndex)
+                                .html("Q" + qIndex + ":")
                                 .end()
                                 .find('.q-txt')
-					.html(qTxtLeftMenu)
+                                .html(qTxtLeftMenu)
                                 .end();
                         $('.sortable-q-topic > li:last').find('.sortable-qs').append(newQ);
                     } else {
@@ -877,7 +881,7 @@ $(document).ready(function () {
     // Reads question data from json object (on page storage) and 
     // re-populates questions in main question area
     // 
-    
+
     var refreshQs = function () {
 
         // lets remove all questions
@@ -899,24 +903,24 @@ $(document).ready(function () {
             // clone first line that was kept hidden
             var qLine = $('.qs_area_line:first').clone();
             $(qLine).attr('q-no', qNo).find('.q_no').html('Q' + qNo + ':').end();
-	    
-	    if(!qData["canUpdate"]) {
-		    console.log(qData["canUpdate"]);
-		    $(qLine).find('.q_line_op').remove();
-	    }
+
+            if (!qData["canUpdate"]) {
+                console.log(qData["canUpdate"]);
+                $(qLine).find('.q_line_op').remove();
+            }
 
             var totalScore = 0;
             var firstPartQText = '';
             var totalQParts = objectLength(qData) - 2; //we have 2 extra nodes in qParts json (on page, not in db): questId,canUpdate
-	    
+
             jQuery.each(qData, function (qPartTitle, qPartData) {
 
                 // skip extra node
                 if (qPartTitle == 'questId' || qPartTitle == 'canUpdate') {
-                    if(qPartTitle == 'questId') {
-			$(qLine).attr('q-id', qPartData);
-		    }
-		    return;
+                    if (qPartTitle == 'questId') {
+                        $(qLine).attr('q-id', qPartData);
+                    }
+                    return;
                 }
 
                 //get question text (html)
@@ -940,23 +944,23 @@ $(document).ready(function () {
                     ansTypeHtml = '<input disabled type="text" style="width:350px">';
 
                 } else if (ansType == 'choicebox') {
-		    var totalCorrect = 0;
+                    var totalCorrect = 0;
                     jQuery.each(qPartData.ans_area["data"], function (optTitle, optionStatus) {
                         ansTypeHtml += '<div style="padding-top:5px; ' + (optionStatus ? 'color: green; ' : '') + '">\
-                                           '+ (optionStatus ? '<i class="fa fa-check-circle fa-lg"></i>' : '<input type="checkbox" ' + (optionStatus ? 'checked' : '') + ' disabled>') +'\
+                                           ' + (optionStatus ? '<i class="fa fa-check-circle fa-lg"></i>' : '<input type="checkbox" ' + (optionStatus ? 'checked' : '') + ' disabled>') + '\
                                             <span>' + optTitle + '</span>\
                                        </div>';
-				       
-				       
 
-			if(optionStatus) {
-				totalCorrect++;
-			}
+
+
+                        if (optionStatus) {
+                            totalCorrect++;
+                        }
                     });
-		    
-		    if(totalCorrect == 1) {
-			ansTypeHtml = ansTypeHtml.replace(new RegExp(/type=\"checkbox\"/g), 'type=\"radio\"');
-		    }
+
+                    if (totalCorrect == 1) {
+                        ansTypeHtml = ansTypeHtml.replace(new RegExp(/type=\"checkbox\"/g), 'type=\"radio\"');
+                    }
                 } else if (ansType == 'canvas') {
                     ansTypeHtml = '<img width="100%" src="' + baseURL + 'img/canvas.png">';
                 } else {
@@ -969,7 +973,7 @@ $(document).ready(function () {
 
                 if (totalQParts > 1) {
                     $(qPartLine).find('.q_part_no').html(qPartTitle + '.');
-		    $(qPartLine).find('.q_part_pt').html("("+qPartData.q_points+' pt.)');
+                    $(qPartLine).find('.q_part_pt').html("(" + qPartData.q_points + ' pt.)');
                 }
 
 
@@ -989,5 +993,5 @@ $(document).ready(function () {
         });
     }
     refreshQs();
-    
+
 });

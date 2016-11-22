@@ -1,204 +1,247 @@
-<?php 
-	$qParts = json_decode($question->quest, true);
-	$totalQParts = count($qParts); 
+<?php
+$qParts = json_decode($question->quest, true);
+$totalQParts = count($qParts);
+
 ?>
 
 <!-- Add / Edit question form that appears in light box -->
 
 <div  id="question-form" style="padding-top:20px; ">
-        <div id="qPartTabs" style="<?=(in_array("published", $exam->flags))?'display:none':'';?>">
-                <?php $tabCounter = 1?>
-                <ul id="q-part-tabs" style=" <?=($totalQParts <= 1 ? "display:none" : "")?>">
-                        <li><a href="#q-part-<?=$tabCounter?>">Part a</a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
-                        <?php for($tabCounter ;$tabCounter < $totalQParts; $tabCounter++ ): ?>
-                        <li><a href="#q-part-<?=$tabCounter+1?>">Part
-                                <?=chr($tabCounter+97)?>
-                                </a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
-                        <?php endfor;?>
-                </ul>
-                <div id="q-parts-wrapper">
-                        <?php 
-			$i = 1;
-			do {
-				
-				$qPartTitle = chr($i+96);
-			?>
-                        <div id="q-part-<?=$i?>" class="q-part" style="padding:<?=($tabCounter <= 1 ? "0px" : "1em 1.4em")?>;">
-                                <div class="accordion">
-                                        <h3>Write question</h3>
-                                        <div>
-                                                <article class="ac-large">
-                                                        <div>
-                                                                <?php $qText = $qParts[$qPartTitle]['q_text'];?>
-                                                                <textarea id="q_text<?=$i?>" class="write_q_ckeditor" style="width:99%;" rows="1" placeholder="Write your question here"><?=$qText?>
-</textarea>
-                                                                <div class="q_resources lib_resources">
-                                                                        <div class="add_resources"><a class="add_media" href="#">Add supplementary materials</a></div>
-                                                                        <ul class="lib_resources_list">
-                                                                                <?php if(count($qParts[$qPartTitle]['resources'])):?>
-                                                                                <?php foreach($qParts[$qPartTitle]['resources'] as $rTitle => $rLink):?>
-                                                                                <li> 
-                                                                                        <i class="fa fa-close"></i> 
-                                                                                        <a target="_blank" file-path="<?=$rLink?>" href="<?=$rLink?>"><?=empty($rTitle)?urldecode(basename($rLink)):$rTitle?></a> 
-                                                                                        </i> 
-                                                                                </li>
-                                                                                <?php endforeach;?>
-                                                                                <?php endif;?>
-                                                                        </ul>
-                                                                        <div style="clear:both"></div>
-                                                                </div>
-                                                        </div>
-                                                </article>
+    <div id="qPartTabs" style="<?= (in_array("published", $exam->flags)) ? 'display:none' : ''; ?>">
+        <?php $tabCounter = 1 ?>
+        <ul id="q-part-tabs" style=" <?= ($totalQParts <= 1 ? "display:none" : "") ?>">
+            <li><a href="#q-part-<?= $tabCounter ?>">Part a</a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
+            <?php for ($tabCounter; $tabCounter < $totalQParts; $tabCounter++): ?>
+                    <li><a href="#q-part-<?= $tabCounter + 1 ?>">Part
+                            <?= chr($tabCounter + 97) ?>
+                        </a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
+            <?php endfor; ?>
+        </ul>
+        <div id="q-parts-wrapper">
+            <?php
+            $i = 1;
+            do {
+
+                    $qPartTitle = chr($i + 96);
+
+                    ?>
+                    <div id="q-part-<?= $i ?>" class="q-part" style="padding:<?= ($tabCounter <= 1 ? "0px" : "1em 1.4em") ?>;">
+                        <div class="accordion">
+                            <h3>Write question</h3>
+                            <div>
+                                <article class="ac-large">
+                                    <div>
+                                        <?php $qText = $qParts[$qPartTitle]['q_text']; ?>
+                                        <textarea id="q_text<?= $i ?>" class="write_q_ckeditor" style="width:99%;" rows="1" placeholder="Write your question here"><?= $qText ?>
+                                        </textarea>
+                                        <div class="q_resources lib_resources">
+                                            <div class="add_resources"><a class="add_media" href="#">Add supplementary materials</a></div>
+                                            <ul class="lib_resources_list">
+                                                <?php if (count($qParts[$qPartTitle]['resources'])): ?>
+                                                        <?php foreach ($qParts[$qPartTitle]['resources'] as $rTitle => $rLink): ?>
+                                                                <li> 
+                                                                    <i class="fa fa-close"></i> 
+                                                                    <a target="_blank" file-path="<?= $rLink ?>" href="<?= $rLink ?>"><?= empty($rTitle) ? urldecode(basename($rLink)) : $rTitle ?></a> 
+                                                                    </i> 
+                                                                </li>
+                                                        <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </ul>
+                                            <div style="clear:both"></div>
                                         </div>
-                                        <h3>Answer options</h3>
-                                        <?php $qAnsType = $qParts[$qPartTitle]['ans_area']['type']?>
-                                        <div class="answering_options">
-                                                <article class="ac-large">
-                                                        <div style="padding:10px">
-                                                                <div class="ans_type_selector_box_wrap">
-                                                                        <div class="ans_type_selector_box">
-                                                                                <input type="radio" class="ans_type_selector" value="textbox" <?=($qAnsType == 'textbox') ? 'checked="checked"' : ''?> />
-                                                                                <span>Single line text box</span> </div>
-                                                                        <div class="ans_type" style=" <?=($qAnsType == 'textbox') ? 'display:block':'display:none'?>">
-                                                                                <input type="text" style="width:350px"  class="readable"/>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="ans_type_selector_box_wrap">
-                                                                        <div class="ans_type_selector_box">
-                                                                                <input type="radio"  class="ans_type_selector" value="textarea" <?=($qAnsType == 'textarea') ? 'checked="checked"' : ''?>/>
-                                                                                <span>Multi line text box</span> </div>
-                                                                        <div class="ans_type" style=" <?=($qAnsType == 'textarea') ? 'display:block':'display:none'?>">
-                                                                                <?=Phalcon\Tag::image(array("img/ckeditor.png", "width" => '40%'));?>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="ans_type_selector_box_wrap">
-                                                                        <div class="ans_type_selector_box">
-                                                                                <input type="radio"  class="ans_type_selector" value="choicebox" <?=($qAnsType == 'choicebox') ? 'checked="checked"' : ''?>/>
-                                                                                <span>Choice box</span> 
-                                                                        </div>
-                                                                        <div class="ans_type" style=" <?=($qAnsType == 'choicebox') ? 'display:block':'display:none'?>">
-                                                                                <?php $delOpt = Phalcon\Tag::image(array("img/cross-circle.png", "class" => "delopt hideable", "width" => "12", "height" => "12"));?>
-                                                                                <div class="qline_wrapper">
-                                                                                        <div class="choice_q qline" style="width:100%">
-                                                                                                <div class="question_opts" style="padding-bottom:5px">
-                                                                                                        <?php if(count($qParts[$qPartTitle]['ans_area']['data'])):?>
-                                                                                                        <?php foreach($qParts[$qPartTitle]['ans_area']['data'] as $optText => $checked):?>
-                                                                                                        <div style="padding-top:5px">
-                                                                                                                <?=$delOpt?>
-                                                                                                                <input type="checkbox" class="readable" <?=$checked ? 'checked="checked"' : ''?>>
-                                                                                                                <span class="editabletext" default="<?=$optText?>"><?=$optText?></span> 
-                                                                                                        </div>
-                                                                                                        <?php endforeach;?>
-                                                                                                        <?php else:?>
-                                                                                                        <?php for($j=1; $j<=3; $j++) :?>
-                                                                                                        <?php $optTxt = "Option ".$j." - click to edit";?>
-                                                                                                        <div style="padding-top:5px">
-                                                                                                                <?=$delOpt?>
-                                                                                                                <input type="checkbox" class="readable">
-                                                                                                                <span class="editabletext" default="<?=$optTxt?>"><?=$optTxt?></span>
-                                                                                                                </div>
-                                                                                                        <?php endfor;?>
-                                                                                                        <?php endif;?>
-                                                                                                </div>
-                                                                                                <span class="addNewSortable hideable">
-                                                                                                <a href="#" style="color:grey" onClick="return false">Add new option</a>
-                                                                                                </span> 
-                                                                                         </div>
-                                                                                </div>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="ans_type_selector_box_wrap">
-                                                                        <div class="ans_type_selector_box">
-                                                                                <input type="radio"  class="ans_type_selector" value="canvas" <?=($qAnsType == 'canvas') ? 'checked="checked"' : ''?>/>
-                                                                                <span>Drawing Canvas</span> </div>
-                                                                                <div class="ans_type" style=" <?=($qAnsType == 'canvas') ? 'display:block':'display:none'?>">
-                                                                                        <div class="qline_wrapper">
-                                                                                                <?=Phalcon\Tag::image(array("img/canvas.png", "width" => '40%'));?>
-                                                                                        </div>
-                                                                                </div>
-                                                                </div>
-                                                        </div>
-                                                </article>
+                                    </div>
+                                </article>
+                            </div>
+                            <h3>Answer options</h3>
+                            <?php $qAnsType = $qParts[$qPartTitle]['ans_area']['type'] ?>
+                            <div class="answering_options">
+                                <article class="ac-large">
+                                    <div style="padding:10px">
+                                        <div class="ans_type_selector_box_wrap">
+                                            <div class="ans_type_selector_box">
+                                                <input type="radio" class="ans_type_selector" value="textbox" <?= ($qAnsType == 'textbox') ? 'checked="checked"' : '' ?> />
+                                                <span>Single line text box</span> </div>
+                                            <div class="ans_type" style=" <?= ($qAnsType == 'textbox') ? 'display:block' : 'display:none' ?>">
+                                                <input type="text" style="width:350px"  class="readable"/>
+                                            </div>
                                         </div>
-                                        <h3>Points</h3>
-                                        <div>
-                                                <div style="min-height:200px"> Maximum points:
-                                                        <input type="text" class="q-part-points" style="width:50px" value="<?=$qParts[$qPartTitle]['q_points']?>" />
+                                        <div class="ans_type_selector_box_wrap">
+                                            <div class="ans_type_selector_box">
+                                                <input type="radio"  class="ans_type_selector" value="textarea" <?= ($qAnsType == 'textarea') ? 'checked="checked"' : '' ?>/>
+                                                <span>Multi line text box</span> </div>
+                                            <div class="ans_type" style=" <?= ($qAnsType == 'textarea') ? 'display:block' : 'display:none' ?>">
+                                                <?= Phalcon\Tag::image(array("img/ckeditor.png", "width" => '40%')); ?>
+                                                <div style="margin-top: 10px; padding: 5px;">
+                                                    <?php
+                                                    if (isset($qParts[$qPartTitle]['ans_area']['word_count'])) {
+                                                            $wordcount = $qParts[$qPartTitle]['ans_area']['word_count'];
+                                                            $wordother = !in_array($wordcount, array(-1, 100, 250, 500));
+                                                    } else {
+                                                            $wordcount = -1;
+                                                            $wordother = false;
+                                                    }
+
+                                                    ?>
+                                                    Word Count: 
+                                                    <form class="word-count-selector" action="">
+                                                        <input type="radio" name="word-count" value="-1" <?= $wordcount == -1 ? 'checked="checked"' : '' ?>>
+                                                        <span style="margin-right: 25px; margin-left: 5px"> 
+                                                            Unlimited
+                                                        </span>
+                                                        <input type="radio" name="word-count" value="100"  <?= $wordcount == 100 ? 'checked="checked"' : '' ?>>
+                                                        <span style="margin-right: 25px; margin-left: 5px"> 
+                                                            100
+                                                        </span> 
+                                                        <input type="radio" name="word-count" value="250"  <?= $wordcount == 250 ? 'checked="checked"' : '' ?>>
+                                                        <span style="margin-right: 25px; margin-left: 5px"> 
+                                                            250
+                                                        </span>
+                                                        <input type="radio" name="word-count" value="500" <?= $wordcount == 500 ? 'checked="checked"' : '' ?>>
+                                                        <span style="margin-right: 25px; margin-left: 5px"> 
+                                                            500
+                                                        </span>      
+                                                        <input type="radio" name="word-count" value="0" <?= $wordother ? 'checked="checked"' : '' ?> id="<?= "counter$i" ?>">
+                                                        <span style="margin-right: 10px; margin-left: 5px"> 
+                                                            Other: 
+                                                        </span>      
+                                                        <input type="text" value="<?= $wordother ? $wordcount : "" ?>" onchange="document.getElementById('<?= "counter$i" ?>').value = this.value;">
+                                                    </form>
                                                 </div>
+                                            </div>
                                         </div>
+                                        <div class="ans_type_selector_box_wrap">
+                                            <div class="ans_type_selector_box">
+                                                <input type="radio"  class="ans_type_selector" value="choicebox" <?= ($qAnsType == 'choicebox') ? 'checked="checked"' : '' ?>/>
+                                                <span>Choice box</span> 
+                                            </div>
+                                            <div class="ans_type" style=" <?= ($qAnsType == 'choicebox') ? 'display:block' : 'display:none' ?>">
+                                                <?php $delOpt = Phalcon\Tag::image(array("img/cross-circle.png", "class" => "delopt hideable", "width" => "12", "height" => "12")); ?>
+                                                <div class="qline_wrapper">
+                                                    <div class="choice_q qline" style="width:100%">
+                                                        <div class="question_opts" style="padding-bottom:5px">
+                                                            <?php if (count($qParts[$qPartTitle]['ans_area']['data'])): ?>
+                                                                    <?php foreach ($qParts[$qPartTitle]['ans_area']['data'] as $optText => $checked): ?>
+                                                                            <div style="padding-top:5px">
+                                                                                <?= $delOpt ?>
+                                                                                <input type="checkbox" class="readable" <?= $checked ? 'checked="checked"' : '' ?>>
+                                                                                <span class="editabletext" default="<?= $optText ?>"><?= $optText ?></span> 
+                                                                            </div>
+                                                                    <?php endforeach; ?>
+                                                            <?php else: ?>
+                                                                    <?php for ($j = 1; $j <= 3; $j++) : ?>
+                                                                            <?php $optTxt = "Option " . $j . " - click to edit"; ?>
+                                                                            <div style="padding-top:5px">
+                                                                                <?= $delOpt ?>
+                                                                                <input type="checkbox" class="readable">
+                                                                                <span class="editabletext" default="<?= $optTxt ?>"><?= $optTxt ?></span>
+                                                                            </div>
+                                                                    <?php endfor; ?>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <span class="addNewSortable hideable">
+                                                            <a href="#" style="color:grey" onClick="return false">Add new option</a>
+                                                        </span> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ans_type_selector_box_wrap">
+                                            <div class="ans_type_selector_box">
+                                                <input type="radio"  class="ans_type_selector" value="canvas" <?= ($qAnsType == 'canvas') ? 'checked="checked"' : '' ?>/>
+                                                <span>Drawing Canvas</span> </div>
+                                            <div class="ans_type" style=" <?= ($qAnsType == 'canvas') ? 'display:block' : 'display:none' ?>">
+                                                <div class="qline_wrapper">
+                                                    <?= Phalcon\Tag::image(array("img/canvas.png", "width" => '40%')); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                            <h3>Points</h3>
+                            <div>
+                                <div style="min-height:200px"> Maximum points:
+                                    <input type="text" class="q-part-points" style="width:50px" value="<?= $qParts[$qPartTitle]['q_points'] ?>" />
                                 </div>
+                            </div>
                         </div>
-                        <?php 
-				$i++;
-			} while( $i <= $tabCounter );
-			?>
+                    </div>
+                    <?php
+                    $i++;
+            } while ($i <= $tabCounter);
+
+            ?>
+        </div>
+    </div>
+    <br style="clear:both" />
+    <?php
+    $showCorrectors = $this->user->getPrincipalName() == $exam->creator || $this->user->aquire(array(OpenExam\Library\Security\Roles::ADMIN)) ? true : false;
+    /* if(is_object($question)):
+      $showCorrectors = $this->capabilities->hasCapability($question, 'update');
+      else:
+      $showCorrectors = $this->user->getPrincipalName() == $exam->creator;
+      endif; */
+
+    ?>
+    <div style="margin:25px 10px; <?= (!$showCorrectors ? "display:none" : "") ?>" id="q_correctors">
+        <article class="ac-large">
+            <?php
+            if ($showCorrectors) {
+                    $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name') . " [" . $this->user->getUser() . "]");
+            } else {
+                    $correctors = is_object($question) ? $question->correctors : array();
+            }
+
+            ?>
+            <div style="font-weight:bold"> Question Correctors: <a href="#" onClick="return false;">
+                    <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "id" => "uu-id4")); ?>
+                </a> <br>
+                <div class="q-corrector-area">
+                    <ul class="q_corrector_list" style="list-style:none; margin:0px">
+                        <?php foreach ($correctors as $k => $corrector): ?>
+                                <li>
+                                    <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
+                                    <?php if (is_object($corrector)): ?>
+                                            <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
+                                                <?=
+                                                $this->helper->getCatalogAttribute($corrector->user, 'name') .
+                                                " [" . $this->helper->getCatalogAttribute($corrector->user, 'uid') . "]"
+
+                                                ?>
+                                            </span>
+                                    <?php else: ?>
+                                            <span data-user="<?= $k ?>" class="left-col-user" style="font-size:11px">
+                                                <?= $corrector ?>
+                                            </span>
+                                    <?php endif; ?>
+                                </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
-        </div>
-        <br style="clear:both" />
-	<?php 
-	$showCorrectors = $this->user->getPrincipalName() == $exam->creator || $this->user->aquire(array(OpenExam\Library\Security\Roles::ADMIN)) ? true : false;
-	/*if(is_object($question)):
-		$showCorrectors = $this->capabilities->hasCapability($question, 'update');
-	else:
-		$showCorrectors = $this->user->getPrincipalName() == $exam->creator;
-	endif;*/
-	?>
-        <div style="margin:25px 10px; <?=(!$showCorrectors ? "display:none":"")?>" id="q_correctors">
-                <article class="ac-large">
-                        <?php 
-                        if($showCorrectors) {
-                                $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name')." [".$this->user->getUser()."]");
-                        } else {
-                                $correctors = is_object($question) ? $question->correctors : array();
-                        }
-                        ?>
-                        <div style="font-weight:bold"> Question Correctors: <a href="#" onClick="return false;">
-                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "id" => "uu-id4")); ?>
-                                </a> <br>
-                                <div class="q-corrector-area">
-                                        <ul class="q_corrector_list" style="list-style:none; margin:0px">
-                                                <?php foreach($correctors as $k => $corrector):?>
-                                                <li>
-                                                        <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class"=>'del-corrector')); ?>
-                                                        <?php if(is_object($corrector)):?>
-                                                        <span data-user="<?=$corrector->user?>" data-rec="<?=$corrector->id?>" class="left-col-user" style="font-size:11px">
-                                                        <?=$this->helper->getCatalogAttribute($corrector->user, 'name').
-							" [".$this->helper->getCatalogAttribute($corrector->user, 'uid')."]"
-							?>
-                                                        </span>
-                                                        <?php else:?>
-                                                        <span data-user="<?=$k?>" class="left-col-user" style="font-size:11px">
-                                                        <?=$corrector?>
-                                                        </span>
-                                                        <?php endif;?>
-                                                </li>
-                                                <?php endforeach;?>
-                                        </ul>
-                                </div>
-                        </div>
-                        
-                </article>
-        </div>
-        <?php $topics = $exam->getTopics();?>
-        <div style="margin:25px 10px; <?=(count($topics) <= 1 ? "display:none":"")?>" id="q_topic">
-                <article class="ac-large">
-                        <div style="font-weight:bold"> 
-                                Question section: <br />
-                                <select id="q-topic-sel">
-                                        <?php foreach($topics as $topic):?>
-                                                <option value="<?=$topic->id?>" <?=($question->topic_id == $topic->id)?'selected':''?>><?=$topic->name?></option>
-                                        <?php endforeach;?>
-                                </select>
-                        </div>
-                </article>
-        </div>
+            </div>
+
+        </article>
+    </div>
+    <?php $topics = $exam->getTopics(); ?>
+    <div style="margin:25px 10px; <?= (count($topics) <= 1 ? "display:none" : "") ?>" id="q_topic">
+        <article class="ac-large">
+            <div style="font-weight:bold"> 
+                Question section: <br />
+                <select id="q-topic-sel">
+                    <?php foreach ($topics as $topic): ?>
+                            <option value="<?= $topic->id ?>" <?= ($question->topic_id == $topic->id) ? 'selected' : '' ?>><?= $topic->name ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </article>
+    </div>
 </div>
 
 <!-- dialog for resource selection from Library -->
 <div  id="media_selector" style="padding-top:20px; display:none" title="Select or upload supplementary material"></div>
 <script language="javascript">
-	var tabId = tabCounter = <?=($totalQParts ? $totalQParts+1 : 2)?>;
-	var qId = <?=$question->id ? $question->id : 0?>;
-        var isExamPublished = <?=(in_array("published", $exam->flags))?"1":"0";?>
+        var tabId = tabCounter = <?= ($totalQParts ? $totalQParts + 1 : 2) ?>;
+        var qId = <?= $question->id ? $question->id : 0 ?>;
+        var isExamPublished = <?= (in_array("published", $exam->flags)) ? "1" : "0"; ?>
 </script>
-<?= Phalcon\Tag::javascriptInclude('js/views/question/form.js')?>
+<?= Phalcon\Tag::javascriptInclude('js/views/question/form.js') ?>
