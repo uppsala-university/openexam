@@ -36,7 +36,7 @@ CKEDITOR.editorConfig = function (config) {
     config.removeDialogTabs = 'image:advanced;link:advanced';
 
     // Don't load these plugins:
-    config.removePlugins = 'elementspath,texzilla,image,save,font,pastefromword,sourcearea,eqneditor';
+    config.removePlugins = 'elementspath,texzilla,image,save,font,pastefromword,sourcearea,eqneditor,scayt,wsc';
 
     // Always load these plugins:
     config.extraPlugins = 'confighelper,wordcount,notification,maximize';
