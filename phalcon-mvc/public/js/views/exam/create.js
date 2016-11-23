@@ -786,6 +786,7 @@ $(document).ready(function () {
             } else if ($(ansType).val() === 'textarea') {
                 qJson[qPartTitle]["ans_area"]["data"] = [];
                 qJson[qPartTitle]["ans_area"]["word_count"] = $(ansType).parent().parent().find('input[name="word-count"]:checked').val();
+                qJson[qPartTitle]["ans_area"]["spell_check"] = $(ansType).parent().parent().find('input[name="spell-check"]:checked').val() === "on";
             } else {
                 qJson[qPartTitle]["ans_area"]["data"] = [];
             }

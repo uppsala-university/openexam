@@ -172,7 +172,7 @@
 											</div>                                                                        
 										<?php else:?>
                                                                                 	<div id="ansBkp<?=$qPart?>" style="display:none"><?=$answerData[$qPart]['ans'][0]?></div>
-                                                                                        <textarea id="q-<?=$questionNo?>_part-<?=$qPart?>" class="form-control changeable ckeditor" word-count-limit="<?= $qPartData['ans_area']['word_count'] ?>"><?=$answerData[$qPart]['ans'][0]?></textarea>
+                                                                                        <textarea id="q-<?=$questionNo?>_part-<?=$qPart?>" class="form-control changeable ckeditor" word-count-limit="<?= $qPartData['ans_area']['word_count'] ?>" native-spell-check="<?= $qPartData['ans_area']['spell_check'] ?>"><?=$answerData[$qPart]['ans'][0]?></textarea>
 										<?php endif;?>
 										</div>
 									<?php endif;?>

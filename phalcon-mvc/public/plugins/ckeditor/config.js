@@ -20,7 +20,7 @@ CKEDITOR.editorConfig = function (config) {
         {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
         {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
         {name: 'styles'},
-        {name: 'colors'},
+        {name: 'colors'}
     ];
 
     config.ToolbarStartExpanded = false;
@@ -39,7 +39,7 @@ CKEDITOR.editorConfig = function (config) {
     config.removePlugins = 'elementspath,texzilla,image,save,font,pastefromword,sourcearea,eqneditor';
 
     // Always load these plugins:
-    config.extraPlugins = 'confighelper,wordcount,notification';
+    config.extraPlugins = 'confighelper,wordcount,notification,maximize';
 
     // 
     // Load some nice looking skin:

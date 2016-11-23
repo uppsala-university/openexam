@@ -71,14 +71,22 @@ $totalQParts = count($qParts);
                                                 <span>Multi line text box</span> </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'textarea') ? 'display:block' : 'display:none' ?>">
                                                 <?= Phalcon\Tag::image(array("img/ckeditor.png", "width" => '40%')); ?>
-                                                <div style="margin-top: 10px; padding: 5px;">
+                                                <div style="margin-top: 5px; padding-left: 15px; border-left: 3px solid #dddddd">
                                                     <?php
                                                     if (isset($qParts[$qPartTitle]['ans_area']['word_count'])) {
-                                                            $wordcount = $qParts[$qPartTitle]['ans_area']['word_count'];
+                                                            $wordcount = (int) $qParts[$qPartTitle]['ans_area']['word_count'];
                                                             $wordother = !in_array($wordcount, array(-1, 100, 250, 500));
                                                     } else {
                                                             $wordcount = -1;
                                                             $wordother = false;
+                                                    }
+
+                                                    error_log(print_r($qParts[$qPartTitle]['ans_area'], true));
+
+                                                    if (isset($qParts[$qPartTitle]['ans_area']['spell_check'])) {
+                                                            $spellcheck = (bool) $qParts[$qPartTitle]['ans_area']['spell_check'];
+                                                    } else {
+                                                            $spellcheck = false;
                                                     }
 
                                                     ?>
@@ -104,8 +112,15 @@ $totalQParts = count($qParts);
                                                         <span style="margin-right: 10px; margin-left: 5px"> 
                                                             Other: 
                                                         </span>      
-                                                        <input type="text" value="<?= $wordother ? $wordcount : "" ?>" onchange="document.getElementById('<?= "counter$i" ?>').value = this.value;">
+                                                        <input type="text" value="<?= $wordother ? $wordcount : "" ?>" onchange="document.getElementById('<?= "counter$i" ?>').value =
+                                                                                    this.value;">
                                                     </form>
+                                                </div>
+                                                <div style="margin-top: 5px; padding-left: 15px; border-left: 3px solid #dddddd">
+                                                    <input type="checkbox" name="spell-check" <?= $spellcheck ? 'checked="checked"' : '' ?>>
+                                                    <span style="margin-right: 10px; margin-left: 5px"> 
+                                                        Enable spell checker
+                                                    </span>      
                                                 </div>
                                             </div>
                                         </div>
