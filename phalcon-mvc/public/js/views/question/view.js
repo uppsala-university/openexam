@@ -226,7 +226,7 @@ $(function () {
             spell = false;
         }
 
-        CKEDITOR.replace(element.id, {
+        var editor = CKEDITOR.replace(element.id, {
             height: '100px',
             disableNativeSpellChecker: spell === false,
             wordcount: {
@@ -236,6 +236,22 @@ $(function () {
                 maxWordCount: limit
             }
         });
+
+        if (spell) {
+            editor.addCommand("nativespellcheck", {
+                exec: function (edt) {
+                    var disabled = edt.config.disableNativeSpellChecker;
+                    edt.config.disableNativeSpellChecker = disabled;
+                    alert("Spell check is enabled for this question part using native browser support. Use 'Ctrl + Right click' to access dictionaries and spelling suggestions.");
+                }
+            });
+            editor.ui.addButton('SuperButton', {
+                label: "Spell check",
+                toolbar: "editing",
+                command: 'nativespellcheck',
+                icon: 'spellchecker'
+            });
+        }
     });
 
     for (var i in CKEDITOR.instances) {
