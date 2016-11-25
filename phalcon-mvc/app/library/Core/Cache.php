@@ -72,7 +72,7 @@ class Cache
                                     ))
                         );
 
-                        $options = $config->cache->toArray();
+                        $options = $config->cache->backend->toArray();
 
                         // 
                         // Use application instance name to provide cache isolation
@@ -80,13 +80,12 @@ class Cache
                         // 
                         if ($config->application->instance) {
                                 foreach ($options as $type => $data) {
-                                        if (isset($data['prefix'])) {
+                                        if ($type != 'file') {
                                                 $options[$type]['prefix'] = $config->application->instance . '-';
+                                        } else {
+                                                $options[$type]['cacheDir'] .= $config->application->instance . '/';
                                         }
                                 }
-                        }
-                        if ($config->cache->enable->file) {
-                                $options['file']['cacheDir'] .= $config->application->instance;
                         }
 
                         if ($config->cache->enable->xcache && extension_loaded('xcache')) {

@@ -254,20 +254,22 @@ $config = new Config(
                 /**
                  * Extension specific settings:
                  */
-                'xcache'   => array(
-                        'prefix' => ''
-                ),
-                'apc'      => array(
-                        'prefix' => ''
-                ),
-                'memcache' => array(
-                        'prefix' => '',
-                        'host'   => 'localhost',
-                        'port'   => '11211'
-                ),
-                'file'     => array(
-                        'prefix'   => '',
-                        'cacheDir' => BASE_DIR . '/cache/app/'
+                'backend'  => array(
+                        'xcache'   => array(
+                                'prefix' => ''
+                        ),
+                        'apc'      => array(
+                                'prefix' => ''
+                        ),
+                        'memcache' => array(
+                                'prefix' => '',
+                                'host'   => 'localhost',
+                                'port'   => '11211'
+                        ),
+                        'file'     => array(
+                                'prefix'   => '',
+                                'cacheDir' => BASE_DIR . '/cache/app/'
+                        )
                 )
         ),
         /*
