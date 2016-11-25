@@ -60,6 +60,9 @@ $di->set('modelsMetadata', function() use($config) {
                         }
                 }
         }
+        if ($config->application->instance) {
+                $config->metadata->prefix = $config->application->instance;
+        }
         if (!isset($config->metadata->type)) {
                 return new Phalcon\Mvc\Model\Metadata\Memory();
         } elseif ($config->application->release == false) {
