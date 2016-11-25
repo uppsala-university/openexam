@@ -85,8 +85,9 @@ class Cache
                                         }
                                 }
                         }
-
-                        error_log(print_r($options, true));
+                        if ($config->cache->enable->file) {
+                                $options['file']['cacheDir'] .= $config->application->instance;
+                        }
 
                         if ($config->cache->enable->xcache && extension_loaded('xcache')) {
                                 $backends[] = new Xcache(
@@ -109,8 +110,8 @@ class Cache
                                 );
                         }
 
-                        if (!file_exists($config->cache->file->cacheDir)) {
-                                mkdir($config->cache->file->cacheDir);
+                        if (!file_exists($options['file']['cacheDir'])) {
+                                mkdir($options['file']['cacheDir']);
                         }
 
                         if (count($backends) != 0) {
