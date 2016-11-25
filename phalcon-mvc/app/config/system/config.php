@@ -255,18 +255,18 @@ $config = new Config(
                  * Extension specific settings:
                  */
                 'xcache'   => array(
-                        'prefix' => 'cache'
+                        'prefix' => ''
                 ),
                 'apc'      => array(
-                        'prefix' => 'cache'
+                        'prefix' => ''
                 ),
                 'memcache' => array(
-                        'prefix' => 'cache',
+                        'prefix' => '',
                         'host'   => 'localhost',
                         'port'   => '11211'
                 ),
                 'file'     => array(
-                        'prefix'   => 'cache',
+                        'prefix'   => '',
                         'cacheDir' => BASE_DIR . '/cache/app/'
                 )
         ),

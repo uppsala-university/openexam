@@ -28,9 +28,13 @@ use Phalcon\Config;
  * This class should not be used direct. Instead it should be created inside 
  * a service, returning the wrapped multi level cache object.
  * 
- * The multi-level cache facilates saving ame data in several cache locations 
+ * The multi-level cache facilates saving same data in several cache locations 
  * with different lifetimes, reading first from the one with the faster adapter 
  * and ending with the slowest one until the data has expired.
+ * 
+ * Use application->instance for cache isolation between multiple application 
+ * instances running on the same server. Another options is to override the
+ * default prefix name per cache backend.
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -68,30 +72,47 @@ class Cache
                                     ))
                         );
 
+                        $options = $config->cache->toArray();
+
+                        // 
+                        // Use application instance name to provide cache isolation
+                        // by setting a unique prefix:
+                        // 
+                        if ($config->application->instance) {
+                                foreach ($options as $type => $data) {
+                                        if (isset($data['prefix'])) {
+                                                $options[$type]['prefix'] = $config->application->instance . '-';
+                                        }
+                                }
+                        }
+
+                        error_log(print_r($options, true));
+
                         if ($config->cache->enable->xcache && extension_loaded('xcache')) {
                                 $backends[] = new Xcache(
-                                    $frontend['fast'], $config->cache->xcache->toArray()
+                                    $frontend['fast'], $options['xcache']
                                 );
                         }
                         if ($config->cache->enable->apc && extension_loaded('apc')) {
                                 $backends[] = new ApcCache(
-                                    $frontend['fast'], $config->cache->apc->toArray()
+                                    $frontend['fast'], $options['apc']
                                 );
                         }
                         if ($config->cache->enable->memcache && extension_loaded('memcache')) {
                                 $backends[] = new MemcacheCache(
-                                    $frontend['medium'], $config->cache->memcache->toArray()
+                                    $frontend['medium'], $options['memcache']
                                 );
                         }
                         if ($config->cache->enable->file) {
                                 $backends[] = new FileCache(
-                                    $frontend['slow'], $config->cache->file->toArray()
+                                    $frontend['slow'], $options['file']
                                 );
                         }
 
                         if (!file_exists($config->cache->file->cacheDir)) {
                                 mkdir($config->cache->file->cacheDir);
                         }
+
                         if (count($backends) != 0) {
                                 $this->_fastest = $backends[0];
                         }
@@ -107,6 +128,15 @@ class Cache
         public function getInstance()
         {
                 return $this->_multiple;
+        }
+
+        /**
+         * Get fastest backend.
+         * @return BackendInterface The cache backend.
+         */
+        public function getFastest()
+        {
+                return $this->_fastest;
         }
 
 }

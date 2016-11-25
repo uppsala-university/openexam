@@ -77,6 +77,10 @@ return array(
          */
         'application' => array(
                 /**
+                 * Set unique instance name if running multiple installations.
+                 */
+                'instance' => null,
+                /**
                  * Enable/disable development mode.
                  */
                 'release'  => true,

@@ -78,7 +78,8 @@ $di->set('modelsCache', function() use($di, $config) {
         return new Phalcon\Cache\Backend\Memory(
             new Phalcon\Cache\Frontend\Data(
             array(
-                "lifetime" => $config->cache->lifetime->model
+                "lifetime" => $config->cache->lifetime->model,
+                "prefix"   => $config->application->instance
             )
         ));
 }, true);
