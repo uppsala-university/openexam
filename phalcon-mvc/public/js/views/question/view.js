@@ -238,13 +238,68 @@ $(function () {
         });
 
         if (spell) {
-            editor.addCommand("nativespellcheck", {
-                exec: function (edt) {
-                    var disabled = edt.config.disableNativeSpellChecker;
-                    edt.config.disableNativeSpellChecker = disabled;
-                    alert("Spell check is enabled for this question part using native browser support. Use 'Ctrl + Right click' to access dictionaries and spelling suggestions.");
-                }
+            CKEDITOR.dialog.add('nativespellcheck', function (api) {
+                // CKEDITOR.dialog.definition
+                var dialogDefinition = {
+                    title: 'Native Spell Check',
+                    minWidth: 390,
+                    minHeight: 130,
+                    contents: [
+                        {
+                            id: 'tab1',
+                            label: 'Label',
+                            title: 'Title',
+                            expand: false,
+                            resizable: CKEDITOR.DIALOG_RESIZE_NONE,
+                            padding: 0,
+                            elements: [
+                                {
+                                    type: 'html',
+                                    html: '\
+<p>\n\
+This addon uses the native spell check in the browser. Use <i>&lt;ctrl&gt; + &lt;right click&gt;</i> to <br/>\n\
+access browser dictionaries and spelling suggestions.\n\
+</p>\n\
+<br/>\n\
+<p>\n\
+Click OK to toggle spell check as you type on/off for this text area.\n\
+</p>'
+                                }
+                            ]
+                        }
+                    ],
+                    buttons: [CKEDITOR.dialog.okButton, CKEDITOR.dialog.cancelButton],
+                    onFocus: function () {
+                        this.getContentElement('tab1').focus();
+                    },
+                    onOk: function () {
+                        var edt = this.getParentEditor();
+
+                        // 
+                        // Get editor content node (not the textarea):
+                        // 
+                        var body = edt.document.getElementsByTag('body').getItem(0);
+                        var enabled = false;
+
+                        // 
+                        // Toogle spell check on/off:
+                        // 
+                        if (body.hasAttribute('spellcheck') === 'false') {
+                            enabled = false;
+                        } else if (body.getAttribute('spellcheck') === 'true') {
+                            enabled = true;
+                        } else {
+                            enabled = false;
+                        }
+
+                        body.setAttribute('spellcheck', !enabled);
+                    }
+                };
+
+                return dialogDefinition;
             });
+
+            editor.addCommand("nativespellcheck", new CKEDITOR.dialogCommand('nativespellcheck'));
             editor.ui.addButton('SuperButton', {
                 label: "Spell check",
                 toolbar: "editing",
