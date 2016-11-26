@@ -81,8 +81,6 @@ $totalQParts = count($qParts);
                                                             $wordother = false;
                                                     }
 
-                                                    error_log(print_r($qParts[$qPartTitle]['ans_area'], true));
-
                                                     if (isset($qParts[$qPartTitle]['ans_area']['spell_check'])) {
                                                             $spellcheck = (bool) $qParts[$qPartTitle]['ans_area']['spell_check'];
                                                     } else {
@@ -108,12 +106,11 @@ $totalQParts = count($qParts);
                                                         <span style="margin-right: 25px; margin-left: 5px"> 
                                                             500
                                                         </span>      
-                                                        <input type="radio" name="word-count" value="0" <?= $wordother ? 'checked="checked"' : '' ?> id="<?= "counter$i" ?>">
+                                                        <input type="radio" name="word-count" value="<?= $wordother ? $wordcount : "" ?>" class="word-count-unlimited" <?= $wordother ? 'checked="checked"' : '' ?>>
                                                         <span style="margin-right: 10px; margin-left: 5px"> 
                                                             Other: 
                                                         </span>      
-                                                        <input type="text" value="<?= $wordother ? $wordcount : "" ?>" onchange="document.getElementById('<?= "counter$i" ?>').value =
-                                                                                    this.value;">
+                                                        <input type="text" value="<?= $wordother ? $wordcount : "" ?>" onchange="this.closest('form').querySelectorAll('.word-count-unlimited')[0].value = this.value">
                                                     </form>
                                                 </div>
                                                 <div style="margin-top: 5px; padding-left: 15px; border-left: 3px solid #dddddd">
