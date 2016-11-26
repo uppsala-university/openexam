@@ -20,7 +20,11 @@ var addQuestPartTab = function () {
     var label = "Part " + qPartTitle,
             id = "q-part-" + tabId,
             li = $(tabTemplate.replace(/#\{href\}/g, "#" + id).replace(/#\{label\}/g, label)),
-            tabContentHtml = qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel").filter(':first').html();
+            tabContentHtml = qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel")
+            .filter(':first')
+            .html()
+            .replace('checked="checked"', "");  // Clear selected answer type
+    
     qPartTabs.find(".ui-tabs-nav").append(li);
     qPartTabs.find("#q-parts-wrapper").append("<div id='" + id + "' class='q-part'>" + tabContentHtml + "</div>");
 
