@@ -26,7 +26,7 @@ class AuditTask extends MainTask implements TaskInterface
          * @var array 
          */
         private $_options;
-        
+
         public function initialize()
         {
                 if (!$this->getDI()->has('audit')) {
@@ -179,8 +179,9 @@ class AuditTask extends MainTask implements TaskInterface
                         $params[] = sprintf("changes LIKE '%%%s%%'", $this->_options['fuzzy']);
                 }
 
-                $sql = sprintf("SELECT * FROM %s WHERE %s", $target['table'], implode(" AND ", $params));
                 $dbh = $this->getDI()->get($target['connection']);
+                $sql = sprintf("SELECT * FROM %s WHERE %s", $dbh->escapeIdentifier($target['table']), implode(" AND ", $params));
+                
                 $sth = $dbh->prepare($sql);
                 $res = $sth->execute();
 
@@ -253,8 +254,9 @@ class AuditTask extends MainTask implements TaskInterface
                         $params[] = sprintf("changes LIKE '%%%s%%'", $this->_options['fuzzy']);
                 }
 
-                $sql = sprintf("DELETE FROM %s WHERE %s", $target['table'], implode(" AND ", $params));
                 $dbh = $this->getDI()->get($target['connection']);
+                $sql = sprintf("DELETE FROM %s WHERE %s", $dbh->escapeIdentifier($target['table']), implode(" AND ", $params));
+                
                 $sth = $dbh->prepare($sql);
                 $res = $sth->execute();
 
