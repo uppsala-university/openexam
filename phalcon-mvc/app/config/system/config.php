@@ -58,6 +58,9 @@ if (!defined('EXTERN_DIR')) {
 $config = new Config(
     array(
         'application' => array(
+                /**
+                 * The application layout:
+                 */
                 'controllersDir' => APP_DIR . '/controllers/',
                 'modelsDir'      => APP_DIR . '/models/',
                 'viewsDir'       => APP_DIR . '/views/',
@@ -72,6 +75,11 @@ $config = new Config(
                 'logsDir'        => BASE_DIR . '/logs',
                 'baseDir'        => BASE_DIR . '/',
                 'docsDir'        => PROJ_DIR . '/docs',
+                /**
+                 * These should always be user defined:
+                 */
+                'instance'       => null,
+                'release'        => true,
                 'baseUri'        => '/phalcon-mvc/'
         ),
         'phpunit'     => array(
