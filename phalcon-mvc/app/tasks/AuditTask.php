@@ -50,12 +50,14 @@ class AuditTask extends MainTask implements TaskInterface
                         'usage'    => array(
                                 '--show  [--model=name]',
                                 '--data  [--model=name] [--time=str] [--id=num] [--user=str] [--type=action] [--fuzzy=str] [--decode]',
-                                '--clean [--model=name] [--time=str] [--days=num]'
+                                '--clean [--model=name] [--time=str] [--days=num]',
+                                '--stat'
                         ),
                         'options'  => array(
                                 '--show'        => 'Show current configuration.',
                                 '--data'        => 'Query audit data.',
                                 '--clean'       => 'Cleanup expired audit data',
+                                '--stat'        => 'Display audit statistics',
                                 '--model=name'  => 'Select this model.',
                                 '--id=num'      => 'Select this object ID.',
                                 '--user=str'    => 'Select this username.',
@@ -92,7 +94,12 @@ class AuditTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Cleanup audit data older that 90 days',
                                         'command' => '--cleanup --days=90'
-                                ))
+                                ),
+                                array(
+                                        'descr'   => 'Display audit statistics',
+                                        'command' => '--stat'
+                                )
+                        )
                 );
         }
 
@@ -148,6 +155,19 @@ class AuditTask extends MainTask implements TaskInterface
         }
 
         /**
+         * Show audit statistics.
+         * @param array $params
+         */
+        public function statAction($params = array())
+        {
+                $this->setOptions($params, 'stat');
+
+                foreach (self::getModels() as $model) {
+                        $this->statModel($model);
+                }
+        }
+
+        /**
          * Query audit data.
          * @param string $model The resource name.
          */
@@ -181,7 +201,7 @@ class AuditTask extends MainTask implements TaskInterface
 
                 $dbh = $this->getDI()->get($target['connection']);
                 $sql = sprintf("SELECT * FROM %s WHERE %s", $dbh->escapeIdentifier($target['table']), implode(" AND ", $params));
-                
+
                 $sth = $dbh->prepare($sql);
                 $res = $sth->execute();
 
@@ -226,6 +246,35 @@ class AuditTask extends MainTask implements TaskInterface
                 }
         }
 
+        /**
+         * Statistics for this model.
+         * @param string $model The resource name.
+         */
+        private function statModel($model)
+        {
+                $params = array(sprintf("res = '%s'", $model));
+
+                $config = $this->audit->getConfig($model);
+                $target = $config->getTarget('data');
+
+                if (!$target) {
+                        $this->flash->warning("Skipping model $model (data config is missing)");
+                        return false;
+                }
+
+                $dbh = $this->getDI()->get($target['connection']);
+                $sql = sprintf("SELECT SUM(LENGTH(changes)) AS len, COUNT(*) AS num FROM %s WHERE %s", $dbh->escapeIdentifier($target['table']), implode(" AND ", $params));
+
+                $res = $dbh->query($sql);
+                $obj = $res->fetch(\Phalcon\Db::FETCH_OBJ);
+
+                self::setUnit($obj);
+
+                $this->flash->notice(sprintf("%s: ->", $model));
+                $this->flash->notice(sprintf("  entries:\t%d\t(records)", $obj->num));
+                $this->flash->notice(sprintf("  size:\t%.02f\t(%s)", $obj->len, $obj->val));
+        }
+
         private function dataClean($model)
         {
                 $params = array(sprintf("res = '%s'", $model));
@@ -256,7 +305,7 @@ class AuditTask extends MainTask implements TaskInterface
 
                 $dbh = $this->getDI()->get($target['connection']);
                 $sql = sprintf("DELETE FROM %s WHERE %s", $dbh->escapeIdentifier($target['table']), implode(" AND ", $params));
-                
+
                 $sth = $dbh->prepare($sql);
                 $res = $sth->execute();
 
@@ -294,6 +343,33 @@ class AuditTask extends MainTask implements TaskInterface
                         'teacher',
                         'topic'
                 );
+        }
+
+        private static function setUnit(&$obj)
+        {
+                if (!isset($obj->len)) {
+                        return;
+                }
+                
+                if ($obj->len < 1024) {
+                        $obj->val = 'B';
+                }
+                if ($obj->len > 1024) {
+                        $obj->val = 'kB';
+                        $obj->len /= (float) 1024;
+                }
+                if ($obj->len > 1024) {
+                        $obj->val = 'MB';
+                        $obj->len /= (float) 1024;
+                }
+                if ($obj->len > 1024) {
+                        $obj->val = 'GB';
+                        $obj->len /= (float) 1024;
+                }
+                if ($obj->len > 1024) {
+                        $obj->val = 'TB';
+                        $obj->len /= (float) 1024;
+                }
         }
 
         /**
