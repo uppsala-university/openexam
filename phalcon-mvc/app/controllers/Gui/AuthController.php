@@ -150,12 +150,4 @@ class AuthController extends GuiController
                 $this->response->send();
         }
 
-        /**
-         * Register logged on user attributes.
-         */
-        public function registerAction()
-        {
-                error_log(__METHOD__);  // Debug
-        }
-
 }
