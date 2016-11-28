@@ -91,7 +91,7 @@ class CatalogController extends RestController
         public function domainsAction()
         {
                 if ($this->request->isGet()) {
-                        $response = $this->_handler->domains();
+                        $response = $this->_handler->getDomains();
                         $this->sendResponse($response);
                 }
         }
@@ -102,7 +102,7 @@ class CatalogController extends RestController
         public function nameAction()
         {
                 if ($this->request->isGet() || $this->request->isPost()) {
-                        $response = $this->_handler->name();
+                        $response = $this->_handler->getName();
                         $this->sendResponse($response);
                 }
         }
@@ -113,7 +113,7 @@ class CatalogController extends RestController
         public function mailAction()
         {
                 if ($this->request->isGet() || $this->request->isPost()) {
-                        $response = $this->_handler->mail();
+                        $response = $this->_handler->getMail();
                         $this->sendResponse($response);
                 }
         }
@@ -124,7 +124,7 @@ class CatalogController extends RestController
         public function attributeAction()
         {
                 if ($this->request->isGet() || $this->request->isPost()) {
-                        $response = $this->_handler->attribute();
+                        $response = $this->_handler->getAttribute();
                         $this->sendResponse($response);
                 }
         }
@@ -137,7 +137,7 @@ class CatalogController extends RestController
         public function groupsAction($principal = null, $output = null)
         {
                 if ($this->request->isGet() || $this->request->isPost()) {
-                        $response = $this->_handler->groups($this->request->getMethod(), $principal, $output);
+                        $response = $this->_handler->getGroups($this->request->getMethod(), $principal, $output);
                         $this->sendResponse($response);
                 }
         }
@@ -150,7 +150,7 @@ class CatalogController extends RestController
         public function membersAction($group = null, $output = null)
         {
                 if ($this->request->isGet() || $this->request->isPost()) {
-                        $response = $this->_handler->members($this->request->getMethod(), $group, $output);
+                        $response = $this->_handler->getMembers($this->request->getMethod(), $group, $output);
                         $this->sendResponse($response);
                 }
         }
@@ -161,7 +161,7 @@ class CatalogController extends RestController
         public function principalAction()
         {
                 if ($this->request->isGet() || $this->request->isPost()) {
-                        $response = $this->_handler->principal();
+                        $response = $this->_handler->findPrincipals();
                         $this->sendResponse($response);
                 }
         }

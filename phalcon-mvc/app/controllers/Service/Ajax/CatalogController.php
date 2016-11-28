@@ -194,7 +194,7 @@ class CatalogController extends AjaxController
          */
         public function domainsAction()
         {
-                $response = $this->_handler->domains();
+                $response = $this->_handler->getDomains();
                 $this->sendResponse($response);
         }
 
@@ -203,7 +203,7 @@ class CatalogController extends AjaxController
          */
         public function nameAction()
         {
-                $response = $this->_handler->name();
+                $response = $this->_handler->getName();
                 $this->sendResponse($response);
         }
 
@@ -212,7 +212,7 @@ class CatalogController extends AjaxController
          */
         public function mailAction()
         {
-                $response = $this->_handler->mail();
+                $response = $this->_handler->getMail();
                 $this->sendResponse($response);
         }
 
@@ -221,7 +221,7 @@ class CatalogController extends AjaxController
          */
         public function attributeAction()
         {
-                $response = $this->_handler->attribute();
+                $response = $this->_handler->getAttribute();
                 $this->sendResponse($response);
         }
 
@@ -232,7 +232,7 @@ class CatalogController extends AjaxController
          */
         public function groupsAction($principal = null, $output = null)
         {
-                $response = $this->_handler->groups($this->request->getMethod(), $principal, $output);
+                $response = $this->_handler->getGroups($this->request->getMethod(), $principal, $output);
                 $this->sendResponse($response);
         }
 
@@ -243,7 +243,7 @@ class CatalogController extends AjaxController
          */
         public function membersAction($group = null, $output = null)
         {
-                $response = $this->_handler->members($this->request->getMethod(), $group, $output);
+                $response = $this->_handler->getMembers($this->request->getMethod(), $group, $output);
                 $this->sendResponse($response);
         }
 
@@ -252,7 +252,7 @@ class CatalogController extends AjaxController
          */
         public function principalAction()
         {
-                $response = $this->_handler->principal();
+                $response = $this->_handler->findPrincipals();
                 $this->sendResponse($response);
         }
 

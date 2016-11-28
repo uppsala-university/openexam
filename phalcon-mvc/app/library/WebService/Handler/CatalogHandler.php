@@ -67,7 +67,7 @@ class CatalogHandler extends ServiceHandler
          * List all domains.
          * @return ServiceResponse 
          */
-        public function domains()
+        public function getDomains()
         {
                 $this->formatRequest("domains");
                 
@@ -79,7 +79,7 @@ class CatalogHandler extends ServiceHandler
          * Get name from user principal.
          * @return ServiceResponse 
          */
-        public function name()
+        public function getName()
         {
                 $this->formatRequest("name");
                 
@@ -92,7 +92,7 @@ class CatalogHandler extends ServiceHandler
          * Get mail address from user principal.
          * @return ServiceResponse 
          */
-        public function mail()
+        public function getMail()
         {
                 $this->formatRequest("mail");
                 
@@ -105,7 +105,7 @@ class CatalogHandler extends ServiceHandler
          * Get attribute from user principal.
          * @return ServiceResponse 
          */
-        public function attribute()
+        public function getAttribute()
         {
                 $this->formatRequest("attribute");
                 
@@ -121,7 +121,7 @@ class CatalogHandler extends ServiceHandler
          * @param string $output The output format.
          * @return ServiceResponse 
          */
-        public function groups($method = "POST", $principal = null, $output = null)
+        public function getGroups($method = "POST", $principal = null, $output = null)
         {
                 if ($method == "GET") {
                         $this->_request->data['principal'] = $principal;
@@ -142,7 +142,7 @@ class CatalogHandler extends ServiceHandler
          * @param string $output The output format.
          * @return ServiceResponse 
          */
-        public function members($method = "POST", $group = null, $output = null)
+        public function getMembers($method = "POST", $group = null, $output = null)
         {
                 if ($method == "GET") {
                         $this->_request->data['group'] = $group;
@@ -160,7 +160,7 @@ class CatalogHandler extends ServiceHandler
          * Search for user principals.
          * @return ServiceResponse 
          */
-        public function principal()
+        public function findPrincipals()
         {
                 $this->formatRequest("principal");
 
