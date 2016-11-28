@@ -437,7 +437,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                 if (confirm(msg)) {
                     // decode exam
                     ajax(
-                            baseURL + 'core/ajax/decoder/exam/update',
+                            baseURL + 'ajax/core/decoder/exam/update',
                             {"id": examId, "decoded": "Y"},
                     function (status) {
                         location.reload();
@@ -584,7 +584,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
 
                 if (resultsCreate.length) {
                     ajax(
-                            baseURL + 'core/ajax/corrector/result/create',
+                            baseURL + 'ajax/core/corrector/result/create',
                             JSON.stringify(resultsCreate),
                             function (rData) {
                                 if (totalCreated > 1) {
@@ -623,7 +623,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
 
                 if (resultsUpdate.length) {
                     ajax(
-                            baseURL + 'core/ajax/corrector/result/update',
+                            baseURL + 'ajax/core/corrector/result/update',
                             JSON.stringify(resultsUpdate),
                             function (rData) {
                                 resyncableResults = jQuery.grep(resyncableResults, function (value) {
@@ -647,7 +647,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
 
                 /*
                  ajax (
-                 baseURL + 'core/ajax/corrector/result/' + action,
+                 baseURL + 'ajax/core/corrector/result/' + action,
                  param,
                  function(rData) {
                  $(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');

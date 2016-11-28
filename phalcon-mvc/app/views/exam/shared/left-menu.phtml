@@ -172,7 +172,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 			
 			// send ajax requedt to add this topic in db
 			ajax(
-				baseURL + 'core/ajax/creator/topic/create', 
+				baseURL + 'ajax/core/creator/topic/create', 
 				{"exam_id": examId, "name": 'Click to edit title', "randomize" : "0"}, 
 				function(topicData) {
 					
@@ -214,7 +214,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 
 				// send ajax requedt to update topic name in db
 				ajax(
-					baseURL + 'core/ajax/creator/topic/delete', 
+					baseURL + 'ajax/core/creator/topic/delete', 
 					{"id": $(this).parent().find('.topic-name').attr('data-id')}, 
 					function(topicData) {
 						
@@ -243,7 +243,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 			
 			// send ajax requedt to update topic name in db
 			ajax(
-				baseURL + 'core/ajax/creator/topic/update', 
+				baseURL + 'ajax/core/creator/topic/update', 
 				{"id": $(this).parent().attr('data-id'), "name": valToBeUpdated, "exam_id" : examId}, 
 				function(topicData) {
 					// update topic title
@@ -274,7 +274,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 			
 			// send ajax requedt to update randomize value of topic
 			ajax(
-				baseURL + 'core/ajax/creator/topic/update', 
+				baseURL + 'ajax/core/creator/topic/update', 
 				{"id": $(this).attr('data-id'), "randomize": randomize, "exam_id" : examId}, 
 				function(topicData) {
 					

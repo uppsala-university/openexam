@@ -359,7 +359,7 @@ foreach ($exam->students as $student) {
                     }
 
                     ajax(
-                            baseURL + 'core/ajax/invigilator/student/update',
+                            baseURL + 'ajax/core/invigilator/student/update',
                             JSON.stringify(stData),
                             function (userData) {
                                 //console.log(userData);
@@ -375,7 +375,7 @@ foreach ($exam->students as $student) {
 
             $(document).on("click", "#unlock-student", function () {
                 ajax(
-                        baseURL + 'core/ajax/invigilator/lock/delete',
+                        baseURL + 'ajax/core/invigilator/lock/delete',
                         {"id": $(this).attr('data-id')},
                 function (status) {
                     $("#unlock-student").hide();
@@ -386,7 +386,7 @@ foreach ($exam->students as $student) {
 
             $(document).on("click", "#approve-student", function () {
                 ajax(
-                        baseURL + 'core/ajax/invigilator/lock/update',
+                        baseURL + 'ajax/core/invigilator/lock/update',
                         {"id": $(this).attr('data-id'), "status": "approved"},
                 function (status) {
                     $("#unlock-student").show();
@@ -439,7 +439,7 @@ foreach ($exam->students as $student) {
                 var student = $(this);
                 if (confirm("Are you sure you want to delete this student?")) {
                     ajax(
-                            baseURL + 'core/ajax/invigilator/student/delete',
+                            baseURL + 'ajax/core/invigilator/student/delete',
                             {"id": $(this).attr('data-id')},
                     function (status) {
                         //console.log(studentList);
@@ -488,7 +488,7 @@ foreach ($exam->students as $student) {
                     //console.log(stData);
                     // send ajax request to add these students to the exam
                     ajax(
-                            baseURL + 'core/ajax/invigilator/student/create',
+                            baseURL + 'ajax/core/invigilator/student/create',
                             JSON.stringify(stData),
                             function (userData) {
                                 onStudentInserted(userData);
@@ -638,7 +638,7 @@ foreach ($exam->students as $student) {
                     });
 
                     ajax(
-                            baseURL + 'core/ajax/invigilator/student/delete',
+                            baseURL + 'ajax/core/invigilator/student/delete',
                             JSON.stringify(delStudent),
                             function (status) {
                                 $('input[name="students[]"]:checked').closest('tr').remove();

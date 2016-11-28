@@ -233,28 +233,7 @@ $group->add(
     )
 )->setHttpMethods('POST');
 
-// --------------------------------------------------------------
-// Compatibility routes (should be removed).
-// --------------------------------------------------------------
-// 
-// TODO: change all use of changing /core/ajax -> /ajax/core
-$router->add(
-    "/core/ajax/capability", array(
-        "controller" => "core",
-        "action"     => "capability",
-        "namespace"  => "OpenExam\Controllers\Service\Ajax"
-    )
-)->setHttpMethods("POST");
-$router->add(
-    "/core/ajax/{role}/{model}/:action", array(
-        "controller" => "core",
-        "action"     => 3,
-        "namespace"  => "OpenExam\Controllers\Service\Ajax"
-    )
-)->setHttpMethods("POST");
-
 $router->removeExtraSlashes(true);
-
 $router->handle();
 
 return $router;
