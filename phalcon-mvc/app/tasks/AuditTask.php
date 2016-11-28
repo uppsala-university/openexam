@@ -51,7 +51,7 @@ class AuditTask extends MainTask implements TaskInterface
                                 '--show  [--model=name]',
                                 '--data  [--model=name] [--time=str] [--id=num] [--user=str] [--type=action] [--fuzzy=str] [--decode]',
                                 '--clean [--model=name] [--time=str] [--days=num]',
-                                '--stat'
+                                '--stat  [--model=name] [--full]'
                         ),
                         'options'  => array(
                                 '--show'        => 'Show current configuration.',
@@ -65,6 +65,7 @@ class AuditTask extends MainTask implements TaskInterface
                                 '--time=str'    => 'Select this date/time.',
                                 '--fuzzy=str'   => 'Fuzzy search in changes field.',
                                 '--decode'      => 'Decode changes data.',
+                                '--full'        => 'Include all statistics.',
                                 '--verbose'     => 'Be more verbose.'),
                         'examples' => array(
                                 array(
@@ -162,8 +163,12 @@ class AuditTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'stat');
 
-                foreach (self::getModels() as $model) {
-                        $this->statModel($model);
+                if ($this->_options['model']) {
+                        $this->statModel($this->_options['model']);
+                } else {
+                        foreach (self::getModels() as $model) {
+                                $this->statModel($model);
+                        }
                 }
         }
 
@@ -262,17 +267,27 @@ class AuditTask extends MainTask implements TaskInterface
                         return false;
                 }
 
-                $dbh = $this->getDI()->get($target['connection']);
-                $sql = sprintf("SELECT SUM(LENGTH(changes)) AS len, COUNT(*) AS num FROM %s WHERE %s", $dbh->escapeIdentifier($target['table']), implode(" AND ", $params));
+                if ($this->_options['full']) {
+                        $dbh = $this->getDI()->get($target['connection']);
+                        $sql = sprintf("SELECT COUNT(*) AS num, SUM(LENGTH(changes)) AS len FROM %s WHERE %s", $dbh->escapeIdentifier($target['table']), implode(" AND ", $params));
+                } else {
+                        $dbh = $this->getDI()->get($target['connection']);
+                        $sql = sprintf("SELECT COUNT(*) AS num FROM %s WHERE %s", $dbh->escapeIdentifier($target['table']), implode(" AND ", $params));
+                }
 
                 $res = $dbh->query($sql);
                 $obj = $res->fetch(\Phalcon\Db::FETCH_OBJ);
 
                 self::setUnit($obj);
 
-                $this->flash->notice(sprintf("%s: ->", $model));
-                $this->flash->notice(sprintf("  entries:\t%d\t(records)", $obj->num));
-                $this->flash->notice(sprintf("  size:\t%.02f\t(%s)", $obj->len, $obj->val));
+                if ($this->_options['full']) {
+                        $this->flash->notice(sprintf("%s: ->", $model));
+                        $this->flash->notice(sprintf("  entries:\t%d\t(records)", $obj->num));
+                        $this->flash->notice(sprintf("  size:\t%.02f\t(%s)", $obj->len, $obj->val));
+                } else {
+                        $this->flash->notice(sprintf("%s: ->", $model));
+                        $this->flash->notice(sprintf("  entries:\t%d\t(records)", $obj->num));
+                }
         }
 
         private function dataClean($model)
@@ -350,7 +365,7 @@ class AuditTask extends MainTask implements TaskInterface
                 if (!isset($obj->len)) {
                         return;
                 }
-                
+
                 if ($obj->len < 1024) {
                         $obj->val = 'B';
                 }
@@ -382,12 +397,12 @@ class AuditTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'decode' => false);
+                $this->_options = array('verbose' => false, 'decode' => false, 'full' => false);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'show', 'data', 'cleanup', 'model', 'user', 'type', 'time', 'id', 'fuzzy', 'decode', 'days');
+                $options = array('verbose', 'show', 'data', 'cleanup', 'model', 'user', 'type', 'time', 'id', 'fuzzy', 'decode', 'days', 'full');
                 $current = $action;
 
                 // 
@@ -425,6 +440,8 @@ class AuditTask extends MainTask implements TaskInterface
                             "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->_options['days'])
                         );
                 }
+                
+                print_r($this->_options);
         }
 
 }
