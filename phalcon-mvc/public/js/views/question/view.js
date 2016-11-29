@@ -113,7 +113,7 @@ function syncAnswers(async, redirectToAfterSync)
 
         $.ajax({
             type: "POST",
-            url: baseURL + 'core/ajax/student/answer/update',
+            url: baseURL + 'ajax/core/student/answer/update',
             data: {"id": ansId, "answer": JSON.stringify(ansJson), "answered": 1},
             async: async,
             dataType: "json",

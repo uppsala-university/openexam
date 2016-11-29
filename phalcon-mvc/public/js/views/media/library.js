@@ -45,7 +45,7 @@
 							var fType = file.type.split('/');
 							// send ajax request to insert this upload in resource table
 							ajax (
-								baseURL + 'core/ajax/contributor/resource/create',
+								baseURL + 'ajax/core/contributor/resource/create',
 								{"exam_id":examId, "name":file.name, "path":file.url, "type":fType[0], "subtype":fType[1], "user":user},
 								function (rData) {
 									fType[0] = fType[0]+'s';
@@ -177,7 +177,7 @@
 			
 			// send ajax request to save data
 			ajax (
-				baseURL + 'core/ajax/contributor/resource/update',
+				baseURL + 'ajax/core/contributor/resource/update',
 				{"id":mediaId, "name":title, "shared":shared},
 				function (rData) {
 					// update dom as per the changes
@@ -197,7 +197,7 @@
 			if(confirm('Are you sure you want to delete this library file?')) {
 				// send ajax request to save data
 				ajax (
-					baseURL + 'core/ajax/contributor/resource/delete',
+					baseURL + 'ajax/core/contributor/resource/delete',
 					{"id":mediaId},
 					function (rData) {
 						// update dom as per the changes

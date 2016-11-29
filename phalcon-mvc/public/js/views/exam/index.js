@@ -114,7 +114,7 @@ $(document).ready(function () {
         if (confirm("Are you sure you want to delete this Exam: '" + jQuery.trim(examName) + "'")) {
 
             ajax(
-                    baseURL + 'core/ajax/creator/exam/delete',
+                    baseURL + 'ajax/core/creator/exam/delete',
                     {"id": examId},
             function (examData) {
                 $(examLine).slideUp(500, function () {
@@ -203,7 +203,7 @@ $(document).ready(function () {
 
                     // update in db
                     ajax(
-                            baseURL + 'core/ajax/invigilator/exam/update',
+                            baseURL + 'ajax/core/invigilator/exam/update',
                             {"id": examId, "starttime": starttime, "endtime": endtime},
                     function (status) {
 
@@ -272,7 +272,7 @@ $(document).ready(function () {
 
         // send ajax request	
         ajax(
-                baseURL + 'core/ajax/' + role + '/exam/read',
+                baseURL + 'ajax/core/' + role + '/exam/read',
                 data,
                 function (examData) {
                     if (examData.length) {

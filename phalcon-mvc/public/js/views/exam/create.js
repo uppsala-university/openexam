@@ -11,10 +11,9 @@ var exam = exam || {};
 var formJs = '';
 var stEvents = '';
 
-/*------------------------------*/
-/*	Open tip template	*/
-/*------------------------------*/
-//initialize tool tip theme
+// 
+// Initialize tool tip theme.
+// 
 Opentip.styles.drops = {
     className: "drops",
     borderWidth: 1,
@@ -38,33 +37,18 @@ Opentip.styles.drops = {
 };
 
 
-/*-- Event handlers --*/
 $(document).ready(function () {
 
-    /*------------------------------------------*/
-    /*	Sortable questions related				*/
-    /*------------------------------------------*/
+    // 
+    // Sortable questions related.
+    // 
     makeQsSortable = function () {
         $(".sortable-qs").sortable({
             over: function (event, ui) {
                 $(ui.placeholder).closest('ul').parent().find('.section-default-msg').hide();
             },
             stop: function (event, ui) {
-
-                //oldQNo = $(ui.item).find('.q').attr('q-no');
-                //topicId = $(ui.item).parent().parent().find('.topic-name').attr('data-id');
                 sortQuestions();
-                // send ajax requedt to update question's topic
-                /*ajax (
-                 baseURL + 'core/ajax/creator/question/update',
-                 {"id": qsJson[oldQNo]["questId"], "topic_id": topicId},
-                 function (qData) {
-                 
-                 // sort questions in new order and update in db and on page json object
-                 sortQuestions();
-                 }
-                 );*/
-
             },
             connectWith: ".sortable-qs",
             forcePlaceholderSize: true,
@@ -79,21 +63,22 @@ $(document).ready(function () {
                 $(ui.placeholder).closest('ul').parent().find('.section-default-msg').hide();
             },
             stop: function (event, ui) {
-
-                //oldQNo = $(ui.item).find('.q').attr('q-no');
-                //topicId = $(ui.item).parent().parent().find('.topic-name').attr('data-id');
                 var topicArr = [];
                 $('.sortable-q-topic > li').each(function (i, topicItem) {
                     topicArr.push({"id": $(topicItem).find('.topic-name').attr('data-id'), "slot": i + 1});
                 });
 
-                // send ajax requedt to update question's topic
+                // 
+                // Send AJAX request to update question's topic:
+                // 
                 ajax(
-                        baseURL + 'core/ajax/creator/topic/update',
+                        baseURL + 'ajax/core/creator/topic/update',
                         JSON.stringify(topicArr),
                         function (qData) {
 
-                            // sort questions in new order and update in db and on page json object
+                            // 
+                            // Sort questions in new order and update in db and on page JSON object:
+                            // 
                             sortQuestions();
                         }
                 );
@@ -107,7 +92,9 @@ $(document).ready(function () {
     };
     makeQsSortable();
 
-    // sort questions; save in db, json; update both in main area and in left menu
+    // 
+    // Sort questions; save in database and JSON. Update both in main area and in left menu.
+    // 
     var sortQuestions = function () {
 
         cntr = 1;
@@ -134,9 +121,11 @@ $(document).ready(function () {
             });
         });
 
-        // send ajax request to update question's names as per new sorting order
+        // 
+        // Send AJAX request to update question's names as per new sorting order.
+        // 
         ajax(
-                baseURL + 'core/ajax/creator/question/update',
+                baseURL + 'ajax/core/creator/question/update',
                 JSON.stringify(qArr),
                 function (qData) {
                     qsJson = JSON.parse(JSON.stringify(tmpJson));
@@ -148,7 +137,7 @@ $(document).ready(function () {
 
     $('body').on('click', "#publish_exam", function () {
         ajax(
-                baseURL + 'core/ajax/creator/exam/update',
+                baseURL + 'ajax/core/creator/exam/update',
                 {"id": examId, "published": 1},
         function (json) {
             location.href = baseURL + "exam/index";
@@ -156,24 +145,22 @@ $(document).ready(function () {
         );
     });
 
-    //initliaze tooltips in left menu
+    // 
+    // Initialize tooltips in left menu:
+    // 
     $('.search-ldap').each(function (index, element) {
         new Opentip(element,
                 'Search by name: <input type="text" class="uu-user-search" isfor="uu-id' + (index + 1) + '">',
                 {style: "drops", tipJoint: "top left"});
     });
 
-    /*if($('#exam-settings').length) {
-     new Opentip('#exam-settings',
-     $('#exam-settings-box').html(),
-     {style: "drops", tipJoint: "top right", showOn: "click", });
-     }*/
-
     if (showAddQuestionView && $('.add_new_qs').length) {
         loadQuestionDialog(0);
     }
 
-    //ajx request for searching user
+    // 
+    // AJAX request for searching user:
+    // 
     var userSelected = false;
     $(document).on("keyup.autocomplete", '.uu-user-search', function () {
 
@@ -197,28 +184,17 @@ $(document).ready(function () {
                     response(respObj);
                 }
                 );
-                /*		    
-                 $.ajax({
-                 type: 'GET',
-                 url: 'http://media.medfarm.uu.se/play/search_oe.php?callback=?',
-                 jsonpCallback: 'jsonCallback',
-                 contentType: "application/json",
-                 dataType: 'jsonp',
-                 data: request,
-                 success: function (data) {
-                 $("#uu-user-search").removeClass('no-user-found-shadow');
-                 $("#uu-user-search").addClass((!data || !data.length) ? 'no-user-found-shadow' : '');
-                 response(data);
-                 }
-                 });*/
             },
-            //minLength: 4,
             select: function (event, ui) {
 
-                // empty text box
+                // 
+                // Empty text box:
+                // 
                 $(this).val('');
 
-                // format user's name to be added
+                // 
+                // Format user's name to be added:
+                // 
                 var usernameText = ui.item.label + " [" + ui.item.value + "]";
 
                 addBtnId = $(this).attr('isfor');
@@ -249,9 +225,11 @@ $(document).ready(function () {
 
                         if (qId) {
 
-                            // send ajax request to add selected corrector in question
+                            // 
+                            // Send AJAX request to add selected corrector in question:
+                            // 
                             ajax(
-                                    baseURL + 'core/ajax/creator/corrector/create',
+                                    baseURL + 'ajax/core/creator/corrector/create',
                                     {"question_id": qId, "user": ui.item.id},
                             function (status) {
                                 $('.q_corrector_list').append(cloned);
@@ -259,20 +237,23 @@ $(document).ready(function () {
                             );
 
                         } else {
-                            //alert("no qid");
                             $('.q_corrector_list').append(cloned);
                         }
 
                     } else {
 
-                        // send ajax request to save added role
+                        // 
+                        // Send AJAX request to save added role:
+                        // 
                         model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
                         ajax(
-                                baseURL + 'core/ajax/creator/' + model + '/create',
+                                baseURL + 'ajax/core/creator/' + model + '/create',
                                 {"exam_id": examId, "user": ui.item.id},
                         function (userData) {
 
-                            // prepare item to be added
+                            // 
+                            // Prepare item to be added:
+                            // 
                             tempItem = $("#" + addBtnId)
                                     .closest('li')
                                     // hide default message, if it was visible
@@ -297,12 +278,10 @@ $(document).ready(function () {
                                     .show()
                                     .end();
 
-                            // add item to the menu
+                            // 
+                            // Add item to the menu:
+                            // 
                             $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
-
-
-                            // close all tooltips
-                            //closeTooltips();
                         }
                         );
                     }
@@ -316,16 +295,20 @@ $(document).ready(function () {
         });
     });
 
-    // delete selected uuid 
+    // 
+    // Delete selected UUID:
+    // 
     $('body').on('click', ".deluuid", function () {
 
         if ($(this).closest('.menuLevel1').find('li:visible').length <= 1) {
             $(this).closest('.menuLevel1').find('.left-col-def-msg').show();
         }
 
-        // send ajax request to delete this record
+        // 
+        // Send AJAX request to delete this record:
+        // 
         model = $(this).closest('.menuLevel1').parent().find('a').attr('data-model');
-        reqUrl = baseURL + 'core/ajax/creator/' + model + '/delete';
+        reqUrl = baseURL + 'ajax/core/creator/' + model + '/delete';
         thisItem = $(this);
         ajax(reqUrl, {"id": $(this).attr('data-ref')}, function (json) {
             $(thisItem).closest('li').remove();
@@ -333,19 +316,13 @@ $(document).ready(function () {
 
     });
 
-    /*--------------------------------------------------*/
-    /*	Editable text - @toDo: clean/replace/delete		*/
-    /*--------------------------------------------------*/
-
     var charWidth = 8;
     var textBoxMax = 300;
     $('body').on("click", ".editabletext", function () {
         if (!$(this).find(".editabletextbox").length) {
             var txt = ($(this).attr("default") == $(this).html()) ? "" : $(this).html().replace("<br>", "\n", "g");
-            //console.log(txt);
 
             var fontSize = parseFloat(window.getComputedStyle(this, null).getPropertyValue('font-size'));
-            //console.log(fontSize);
 
             var len = (!$(this).attr('editboxsize')) ? (((txt.length * charWidth) >= textBoxMax) ? textBoxMax : (txt.length ? (txt.length * charWidth) : ($(this).attr("default").length * charWidth))) : $(this).attr('editboxsize');
 
@@ -375,8 +352,6 @@ $(document).ready(function () {
         } else if (e.which == 27) { // Escape key. Return previous value
             $(this).parent().html($(this).parent().attr('old_val'));
             $('#qtext_tmp').val(formToKurt());
-        } else {
-            //console.log("key is being pressed");
         }
     });
 
@@ -388,27 +363,15 @@ $(document).ready(function () {
         }
     });
 
-
-
-    /*------------------------------------------*/
-    /*		Left menu related		*/
-    /*------------------------------------------*/
+    // 
+    // Left menu related:
+    // 
     $('body').on('click', '.bullet-closed', function () {
-        /*
-         var t = 1;
-         var bullet = $(this);
-         $('.menuLevel1').slideUp(300, function() {
-         if(t++ == $('.menuLevel1').length) {
-         $(bullet).parent().find('.menuLevel1').toggle();
-         $(bullet).find('img').attr('src', baseURL+'img/closedopt.png');
-         }
-         });*/
 
         $(this).parent().find('.' + $(this).attr('rel')).slideDown(500);
         $(this).removeClass('bullet-closed').addClass('bullet-open').find('img').attr('src', baseURL + 'img/openeopt.png');
 
         return false;
-
     });
 
     $('body').on('click', '.bullet-open', function () {
@@ -419,92 +382,53 @@ $(document).ready(function () {
 
     });
 
-
-
-
-    /*------------------------------------------*/
-    /*		Exam questions related events		*/
-    /*------------------------------------------*/
-    // add new
+    // 
+    // Exam questions related events:
+    // 
     $(".add_new_qs").click(function () {
 
         loadQuestionDialog(0);
         return false;
 
     });
-    // edit a question
+
+    // 
+    // Edit question:
+    // 
     $(document).on('click', '.edit-q', function () {
 
         loadQuestionDialog($(this).closest('.qs_area_line').attr('q-no'));
         return false;
 
     });
-    // delete question
-    $(document).on('click', '.del-q', function () {
 
-        // delete question from json
+    // 
+    // Delete question:
+    // 
+    $(document).on('click', '.del-q', function () {
         var qNo = $(this).closest('.qs_area_line').attr('q-no');
         if (confirm("Are you sure you want to delete question no. " + qNo + "?")) {
 
             qAreaLine = $(this).closest('.qs_area_line');
 
-            // delete from database and then from json
+            // 
+            // Delete from database and then from JSON:
+            // 
             ajax(
-                    baseURL + 'core/ajax/contributor/question/delete',
+                    baseURL + 'ajax/core/contributor/question/delete',
                     {"id": qsJson[qNo]["questId"]},
             function (status) {
-
                 location.reload();
                 $(qAreaLine).slideUp('500');
-
-                /*delete qsJson[qNo];
-                 
-                 i = 1;
-                 jQuery.each(qsJson, function (newQNo, qData) {
-                 qsJson[i++] = qData;
-                 });
-                 
-                 // hide from central area
-                 $(qAreaLine).slideUp('500', function () {
-                 
-                 // hide from left menu
-                 $('.sortable-qs').find('span[q-no="' + qNo + '"]').parent().remove();
-                 
-                 sortQuestions();
-                 });*/
-
             }
             );
-
-
         }
         return false;
-
     });
 
-
-
-    /*----------------------------------------------*/
-    /*	Exam settings related events 				*/
-    /*----------------------------------------------*/
-    // exam title update
-    /*$('.exam-title').blur(function () {
-     
-     oldVal = $(this).attr('old-value');
-     newVal = $(this).val();
-     
-     if (newVal != oldVal) {
-     ajax(
-     baseURL + 'core/ajax/creator/exam/update',
-     {"id": examId, "name": newVal},
-     function (examData) {
-     $('#exam-title').attr('old-value', examData.name)
-     }
-     );
-     }
-     
-     });*/
-
+    // 
+    // Exam settings related events.
+    // 
     $('.exam-settings').click(function () {
 
         $.ajax({
@@ -517,15 +441,6 @@ $(document).ready(function () {
                     autoOpen: true,
                     width: "50%",
                     modal: true,
-                    /*						buttons: {
-                     "Save": function() {
-                     },
-                     "btn ": function() {
-                     },
-                     Cancel: function() {
-                     $(this).dialog('destroy');
-                     }
-                     },*/
                     close: function () {
                         $(this).dialog('destroy');
                     }
@@ -539,39 +454,21 @@ $(document).ready(function () {
         $('.exam-settings').first().trigger('click');
     }
 
-    /*   
-     if($('#exam-desc').length) {
-     // exam description update
-     CKEDITOR.instances['exam-desc'].on('blur', function (event) {
-     
-     oldVal = $('#exam-desc').attr('old-val');
-     newVal = CKEDITOR.instances['exam-desc'].getData();
-     
-     if (newVal != oldVal) {
-     ajax(
-     baseURL + 'core/ajax/creator/exam/update',
-     {"id": examId, "descr": newVal},
-     function (examData) {
-     $('#exam-desc').attr('old-value', examData.descr)
-     }
-     );
-     }
-     
-     });
-     }
-     */
-    // @ToDO: move this even handler to settings.phtml 	
-    // exam's other setting's update
-    $(document).on('click', '.save-exam-settings', function () {
+    // TODO: Move this even handler to settings.phtm
 
-        //if(jQuery("#exam-settings-box").validationEngine('validate')) {
-        // get data to be saved
+    // 
+    // Exam's other setting's update:
+    // 
+    $(document).on('click', '.save-exam-settings', function () {
         var examDesc;
+
         settingBox = $(this).closest('.exam-settings-box');
         examTitle = $(settingBox).find('input[name="exam-title"]').val();
+
         if (CKEDITOR.instances['exam-desc']) {
             examDesc = CKEDITOR.instances['exam-desc'].getData();
         }
+
         org = $(settingBox).find('input[name="unit"]').val();
         start = $(settingBox).find('input[name="start"]').val();
         end = $(settingBox).find('input[name="end"]').val();
@@ -579,6 +476,7 @@ $(document).ready(function () {
         code = $(settingBox).find('input[name="exam-code"]').val();
         course = $(settingBox).find('input[name="exam-course-code"]').val();
         details = 0;
+
         $(settingBox).find('input[name="details[]"]:checked').each(function (index, element) {
             details += Number($(element).val());
         });
@@ -593,23 +491,18 @@ $(document).ready(function () {
             data["endtime"] = end;
         }
 
-        //
         ajax(
-                baseURL + 'core/ajax/creator/exam/update',
+                baseURL + 'ajax/core/creator/exam/update',
                 data,
                 function (examData) {
                     closeTooltips();
                 }
         );
-        //} else {
-        //	alert(jQuery("#exam-settings-box").validationEngine('validate'));
-        //}
     });
 
-
-    /*----------------------------------------------*/
-    /*	Manage exam students related events    	    */
-    /*----------------------------------------------*/
+    // 
+    // Manage exam students related events.
+    // 
     $(document).on('click', '.manage-students', function () {
 
         $.ajax({
@@ -623,15 +516,6 @@ $(document).ready(function () {
                     width: "50%",
                     position: ['center', 20],
                     modal: true,
-                    /*						buttons: {
-                     "Save": function() {
-                     },
-                     "btn ": function() {
-                     },
-                     Cancel: function() {
-                     $(this).dialog('destroy');
-                     }
-                     },*/
                     close: function () {
                         $(this).dialog('destroy');
                         location.reload();
@@ -649,13 +533,10 @@ $(document).ready(function () {
         });
     });
 
-
-
-    /*----------------------------------------------*/
-    /*	Generalized  events 			*/
-    /*----------------------------------------------*/
+    // 
+    // Generalized event handlers.
+    // 
     $('body').on("focus", ".datepicker", function () {
-        //$(this).datepicker();
         $(this).datetimepicker({
             controlType: 'select',
             timeFormat: 'HH:mm',
@@ -666,12 +547,9 @@ $(document).ready(function () {
         });
     });
 
-
-    /*------------------------------------------------------------------*/
-    /*	Loads question dialog window									*/
-    /*	It loads populated data of question, if question id is passed	*/
-    /*------------------------------------------------------------------*/
-
+    // 
+    // Question dialog window loading populated data if question id is passed.
+    // 
     function loadQuestionDialog(qId)
     {
         var action = (qId ? 'update' : 'create');
@@ -690,18 +568,13 @@ $(document).ready(function () {
                 $("#question-form-dialog-wrap").dialog({
                     autoOpen: true,
                     width: "80%",
-                    /*position: ['center', 10],*/
                     modal: true,
                     buttons: {
                         "Add new question part": function () {
                             addQuestPartTab();
                         },
                         "I am done, save this question": function () {
-
-                            // add question to qsJson and in database
                             saveQuestionToExam(qId);
-
-                            // close popup window
                             $(this).dialog('destroy');
                         },
                         Cancel: function () {
@@ -710,7 +583,6 @@ $(document).ready(function () {
                         }
                     },
                     close: function () {
-                        //allFields.val( "" ).removeClass( "ui-state-error" );
                         close_tooltips();
                         $(this).dialog('destroy');
                     }
@@ -720,14 +592,11 @@ $(document).ready(function () {
         });
 
     }
-    ;
 
-
-    /*----------------------------------------------------------*/
-    /*	Functions for adding queation to exam (db storage)		*/
-    /*	It also saves question data in json (on page storage)	*/
-    /*----------------------------------------------------------*/
-
+    // 
+    // Functions for adding queation to exam (db storage). It also saves question 
+    // data in JSON (on page storage).
+    // 
     var saveQuestionToExam = function (qId) {
 
         /////////// Create Json object for Q ///////////
@@ -814,7 +683,7 @@ $(document).ready(function () {
         }
 
         ajax(
-                baseURL + 'core/ajax/contributor/question/' + (qId ? 'update' : 'create'),
+                baseURL + 'ajax/core/contributor/question/' + (qId ? 'update' : 'create'),
                 data,
                 function (qData) {
                     // question was successfully added, save question id in json object
@@ -839,7 +708,7 @@ $(document).ready(function () {
 
                         // send ajax request to save correctors for this question
                         ajax(
-                                baseURL + 'core/ajax/creator/corrector/create',
+                                baseURL + 'ajax/core/creator/corrector/create',
                                 JSON.stringify(qCorrectorsArr),
                                 function (userData) {
                                     //do nothing for now
