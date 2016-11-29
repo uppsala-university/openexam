@@ -11,7 +11,7 @@ $(document).ready(function () {
     // Toggle display of exam details.
     // 
     $(document).on('click', '.exam-state-show', function () {
-        var exam = $(this).attr('exam');
+        var exam = $(this).closest('li').attr('data-id');
         var target = $(this).closest('li').children('.exam-state-view').children('span');
         target.toggle();
 
@@ -310,7 +310,6 @@ $(document).ready(function () {
             var examItem = $(examListingArea).find('.exam-list').find('li').not(':first').first().clone();
             $(examItem).attr('data-id', exam.id);
             $(examItem).find('.exam-name').html(examName + (exam.code != '' && exam.code != null ? " (" + exam.code + ")" : ""));
-            /*$(examItem).find('.exam-descr').html(exam.descr.replace(/(<([^>]+)>)/ig, "").substring(0, 120)+" ...");*/
             if (exam.starttime) {
                 $(examItem).find('.exam-date-time').show();
                 $(examItem).find('.exam-date').html(start[0]);

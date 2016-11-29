@@ -260,7 +260,6 @@ $examsPerPage = 5;
                                 <div>
                                     <div class="exam-listing-area" style="min-height:400px">
                                         <ul class="list-group exam-list">
-                                            <?php //if($totalExams > $examsPerPage):   ?>
                                             <li class="list-group-item" style="background-color: rgb(245, 245, 245); padding: 5px; font-size: 11px;">
                                                 <span style="font-size:9px">Sort by: </span>
                                                 <select class="exam-sort-by" style="font-size: 9px; height: 20px; width: 95px;">
@@ -271,7 +270,6 @@ $examsPerPage = 5;
                                                 </select>
                                                 <i class="fa fa-arrow-circle-down fa-lg exam-sort-order" order="desc" style="color: rgb(193, 0, 43);"></i>
                                             </li>
-                                            <?php //endif; ?>
                                             <?php $count = 1; ?>
                                             <?php foreach ($exams as $exam): ?>
                                                     <li class="list-group-item" data-id="<?= $exam->id ?>" style=" <?= $exam->published && $role == Roles::CREATOR ? 'background-color:#feffd5' : '' ?>">
@@ -297,7 +295,6 @@ $examsPerPage = 5;
 
                                                             <a href="#"
                                                                class="exam-state-show"
-                                                               exam="<?= $exam->id ?>"
                                                                title="Click to display exam details"
                                                                style="cursor: pointer">
                                                                 <span class="exam-date label label-blue-outline" style="margin-right: 10px; margin-left: 5px; min-width: 200px;">
@@ -316,12 +313,6 @@ $examsPerPage = 5;
                                                                     <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
                                                                 </span>
                                                             </a>
-
-                                                            <?php /*
-                                                              <div class="exam-descr" style="color: grey; font-size: 9px;">
-                                                              <?=substr(strip_tags($exam->descr), 0, 120)." ...";?>
-                                                              </div>
-                                                             */ ?>
                                                         </div>
                                                         <div style="float:right">
                                                             <div class="exam-show-options">
