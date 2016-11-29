@@ -68,6 +68,8 @@ class HelpController extends GuiController
 
                 $this->view->setVar('base', $this->url->getBaseUri() . '/help');
                 $this->view->setVar('icon', $this->url->get('img/instruction-manual.jpg'));
+                
+                $this->view->setTemplateBefore('cardbox');
         }
 
         /**

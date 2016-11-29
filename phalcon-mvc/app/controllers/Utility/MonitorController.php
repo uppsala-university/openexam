@@ -62,6 +62,12 @@ class MonitorController extends GuiController
          */
         const HEALTH_CHECK_LIFETIME = 30;
 
+        public function initialize()
+        {
+                parent::initialize();
+                $this->view->setTemplateBefore('cardbox');
+        }
+
         public function indexAction()
         {
                 

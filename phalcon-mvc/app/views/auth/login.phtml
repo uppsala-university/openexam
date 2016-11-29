@@ -9,6 +9,7 @@
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
+
 ?>
 
 <style>
@@ -16,20 +17,9 @@
         padding-left: 30px;
         background: url("<?= $icon ?>") no-repeat left;
     }
-    div.mbox {
-        padding: 12px;
-        margin: 10px;
-        margin-top: 50px;
-        box-shadow: 1px 1px 6px #999999;
-        border-radius: 10px 10px 10px 10px;
-        background: #ffffff;
-        max-width: 600px;
-    }
 </style>
 
-<div class="mbox">
-    <h1 class="success">Logged in</h1>
-    <p>
-        You have successful login to <?= $auth->description; ?>. 
-    </p>
-</div>
+<h1 class="success">Logged in</h1>
+<p>
+    You have successful login to <?= $auth->description; ?>. 
+</p>

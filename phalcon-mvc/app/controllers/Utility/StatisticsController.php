@@ -25,6 +25,12 @@ use OpenExam\Library\Security\Exception as SecurityException;
  */
 class StatisticsController extends GuiController
 {
+        
+        public function initialize()
+        {
+                parent::initialize();
+                $this->view->setTemplateBefore('cardbox');
+        }
 
         /**
          * View action.

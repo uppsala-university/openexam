@@ -26,15 +26,6 @@ div.signup {
     max-width: 700px;
     border-left: 2px solid #eee;
 }
-div.mbox {
-    padding: 12px 20px 20px 20px;
-    padding-right: 40px;
-    margin: 20px 0px 10px 0px;
-    min-width: 350px;
-    max-width: 650px;
-    box-shadow: 1px 1px 6px #999999;
-    border-radius: 5px 5px 5px 5px;
-}
 div.mbox-head {
     font-weight: bold;
     font-size: 1.5em;

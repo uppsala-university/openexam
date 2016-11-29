@@ -13,15 +13,6 @@
 ?>
 
 <style>
-    div.mbox {
-        padding: 12px;
-        margin: 10px;
-        margin-top: 50px;
-        box-shadow: 1px 1px 6px #999999;
-        border-radius: 10px 10px 10px 10px;
-        background: #ffffff;
-        max-width: 1024px;
-    }
     dt {
         float: left;
         clear: left;
@@ -57,27 +48,26 @@
     }
 </style>
 
-<div class="mbox">
-    <h1>Statistics - <span id="statistics-organization"></span></h1>
-    <div id="statistics-wrapper">
-        <div class="statistics-summary">
-            <div class="organization-roles">
-                <dl id="organization-roles-list"></dl>
-            </div>
-            <div class="organization-exams">
-                <dl id="organization-exams-list"></dl>
-            </div>
-            <div class="organization-users">
-                <dl id="organization-users-list"></dl>
-            </div>
+<h1>Statistics - <span id="statistics-organization"></span></h1>
+<div id="statistics-wrapper">
+    <div class="statistics-summary">
+        <div class="organization-roles">
+            <dl id="organization-roles-list"></dl>
         </div>
-        <div class="statistics-charts">
-            <div id="organization-pie-legend" class="pie-legend"></div>
-            <canvas id="organization-pie-chart" width="400" height="300"></canvas>
+        <div class="organization-exams">
+            <dl id="organization-exams-list"></dl>
+        </div>
+        <div class="organization-users">
+            <dl id="organization-users-list"></dl>
         </div>
     </div>
-    <div id="statistics-data"></div>
+    <div class="statistics-charts">
+        <div id="organization-pie-legend" class="pie-legend"></div>
+        <canvas id="organization-pie-chart" width="400" height="300"></canvas>
+    </div>
 </div>
+<div id="statistics-data"></div>
+
 <script src="<?= $this->url->get('js/chart.js') ?>"></script>
 <script src="<?= $this->url->get('js/views/statistics/chart.js') ?>"></script>
 <script src="<?= $this->url->get('js/views/statistics/roles.js') ?>"></script>

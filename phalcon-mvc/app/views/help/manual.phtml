@@ -12,48 +12,34 @@
 
 ?>
 
-<style>
-    div.mbox {
-        padding: 12px;
-        margin: 10px;
-        margin-top: 50px;
-        box-shadow: 1px 1px 6px #999999;
-        border-radius: 10px 10px 10px 10px;
-        background: #ffffff;
-        max-width: 1024px;
+<h1 class="success">Manuals</h1>
+<div class="row">
+    <?php
+    foreach ($manual as $section => $data) {
+            printf("<div class=\"span3\">\n");
+            printf("<a href=\"%s/manual/%s\">\n", $base, $section);
+            printf("<h2>%s</h2>\n", $data['name']);
+            printf("<img src=\"%s\" style=\"padding-bottom:15px\" />\n", $icon);
+            printf("</a>");
+            printf("<ul>\n");
+            foreach ($data['data'] as $format => $name) {
+                    printf("<li>\n");
+                    printf("<a href=\"%s/manual/%s/%s/%s\">%s</a>\n", $base, $section, $data['lang'][0], $format, $name);
+                    if (count($data['lang']) > 1) {
+                            $links = array();
+                            foreach ($data['lang'] as $language) {
+                                    $links[] = sprintf("<a href=\"%s/manual/%s/%s/%s\">%s</a>", $base, $section, $language, $format, ucfirst($language));
+                            }
+                            printf("<br/>[%s]", implode(", ", $links));
+                    }
+                    printf("</li>\n");
+                    printf("<br/>\n");
+            }
+            printf("</ul>\n");
+            printf("</div>\n");
     }
-</style>
 
-<div class="mbox">
-    <h1 class="success">Manuals</h1>
-    <div class="row">
-        <?php
-        foreach ($manual as $section => $data) {
-                printf("<div class=\"span3\">\n");
-                printf("<a href=\"%s/manual/%s\">\n", $base, $section);
-                printf("<h2>%s</h2>\n", $data['name']);
-                printf("<img src=\"%s\" style=\"padding-bottom:15px\" />\n", $icon);
-                printf("</a>");
-                printf("<ul>\n");
-                foreach ($data['data'] as $format => $name) {
-                        printf("<li>\n");
-                        printf("<a href=\"%s/manual/%s/%s/%s\">%s</a>\n", $base, $section, $data['lang'][0], $format, $name);
-                        if (count($data['lang']) > 1) {
-                                $links = array();
-                                foreach ($data['lang'] as $language) {
-                                        $links[] = sprintf("<a href=\"%s/manual/%s/%s/%s\">%s</a>", $base, $section, $language, $format, ucfirst($language));
-                                }
-                                printf("<br/>[%s]", implode(", ", $links));
-                        }
-                        printf("</li>\n");
-                        printf("<br/>\n");
-                }
-                printf("</ul>\n");
-                printf("</div>\n");
-        }
-
-        ?>            
-    </div>
-    <br><hr/>    
-    <p>If you see this page, then you might have ended up on this page by misstake. Please follow one of the links above to access desired content.</p>
+    ?>            
 </div>
+<br><hr/>    
+<p>If you see this page, then you might have ended up on this page by misstake. Please follow one of the links above to access desired content.</p>

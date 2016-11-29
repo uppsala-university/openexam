@@ -12,15 +12,6 @@
 ?>
 
 <style>
-    div.mbox {
-        padding: 12px;
-        margin: 10px;
-        margin-top: 50px;
-        box-shadow: 1px 1px 6px #999999;
-        border-radius: 10px 10px 10px 10px;
-        background: #ffffff;
-        max-width: 1024px;
-    }
     div.card-box {
         margin-left: 30px;
     }
@@ -56,161 +47,136 @@
         .pagebreak { 
             page-break-before: always; 
         }
-        /*        
-        ul.card a:after {
-                    content:" (" attr(href) ") ";
-                    font-size: 0.5em;
-                    font-weight: normal;
-                }
-        */
     }
 </style>
 
-<div class="mbox">
-    <h1>About OpenExam</h1>
+<h1>About OpenExam</h1>
 
-    <h2>Introduction</h2>
-    <div>
-        <p>OpenExam Online is the web frontend that allows different types of computer-based tests and exams. It replace traditional paper-based exams if performed in exam halls equipped with computers or in computer class rooms where restricted interned can be controlled (available at different campuses).</p>
-        <img src="<?= $this->url->get("img/server-shaded-border.jpg") ?>" align="right"/>
-        <p>It may also be used for home exams and diagnostic tests on student’s personal devices. The front end of the system is entirely web based, from creating the exam to providing the students with the corrected exams.</p>
-    </div>
-
-    <h2>Who may use OpenExam?</h2>
-    <p>All teachers/course administrators at Uppsala University can log in at <a href="https://openexam.bmc.uu.se">https://openexam.bmc.uu.se</a> and start using OpenExam. Consult the manuals for information. Exams can be taken at any computer hall/student computer throughout the university.</p>
-    <p>The infrastructure, including computers, used for exams in <b>B1:3</b> at BMC is however a project within the disciplinary domain of medicine and pharmacy. If you would like to use this hall/computers for exams contact <a href="mailto:louise.engstrom@medfarm.uu.se">Louise Engström</a> for information.</p>
-
-    <h2>Brief information about Open Exam</h2>
-
-    <h4>Roles</h4>
-    <p>Using OpenExam is defined by different roles.</p>
-    <p>The exam creator (usually the course leader or course administrator) adds all basic information about the exam and then assigns contributors (teachers that will provide questions and correct answers), invigilators, students, correctors (as stand alone or as a default role for contributor) and decoders.</p>
-    <p>The creator has access to all functions of OpenExam. All other roles will have restricted access to specific functions. For example, correctors will only see the answers to questions that they should correct.</p>
-    <p>Consult the manual for detailed information on the differen roles.</p>
-
-    <h4>Life cycle</h4>
-    <p>The work flow of OpenExam can be divided into three steps – before, during and after the exam:</p>
-    <dl>
-        <dt>Before the exam</dt>
-        <dd><p>The creator defines the time and place for the exam, uploads a list of students that are allowed to take the exam and add any specific information to students. The creator can at this stage also define the number of questions and their individual credits, threshold for grades, accessibility to supplementary material or even upload all questions provided by teachers. Alternatively, the people assigned as contributors may themselves add questions, upload supplementary files and links according to the created exam.</p></dd>
-        <dt>During the exam</dt>
-        <dd><p>Eligible students can log in to the system and take the exam. Log in will automatically create an anonymous code that will not be broken until all answers have been corrected. The identity of the students will however be displayed on the computer screen and checked against ID card by the circulating invigilators. </p>
-            <p>The invigilators may add students that failed to register for the exam, and also change closing time (for example for students with special needs). During the exam, the answers given by the students are automatically saved every ten seconds.</p></dd>
-        <dt>Immediately after the exam</dt>
-        <dd><p>The system is open for assessment of the students’ answers by the correcting teachers. Corrections can be done per student or per question and automatically generates a scoreboard. When all questions have been corrected, the creator can decode the exams after which it is no longer possible to change correction and grading.</p>
-            <p>After decoding the creator can upload the results to the student registry and the corrected exam, including teacher’s comments and statistics, can be downloaded by the students.</dd>
-    </dl>
-
-    <h4>Type of questions</h4>
-    <p>OpenExam can be used for different types of questions, such as open end questions (short answers, essays, chemical structures, formulas, calculations etc), automatically corrected multiple choice questions, simple drawings (only on specific computers in the B1:3 exam hall).</p>
-    <p>Supplementary material such as PDF files, images, movies, formularies etc is uploaded to a library and displayed during the exam.</p>
-
-    <h2 class="pagebreak">Organisation</h2>
-
-    <?php
-    $organization = array(
-            'steering'  => array(
-                    'catharina.svensson@imbim.uu.se'     => 'Catharina Svensson',
-                    'ingrid.nylander@farmbio.uu.se'      => 'Ingrid Nylander',
-                    'eva.part-enander@uadm.uu.se'        => 'Eva Pärt-Enander',
-                    'anna.carin.lundqvist@medfarm.uu.se' => 'Anna-Carin Lundqvist',
-                    'it-bevakare@msr.studorg.uu.se'      => 'MSR IT-bevakare'
-            ),
-            'reference' => array(
-                    'louise.engstrom@medfarm.uu.se' => 'Louise Engström',
-                    'helene.andersson@uadm.uu.se'   => 'Helene Andersson',
-                    'anders.backlund@fkog.uu.se'    => 'Anders Backlund',
-                    'lisa.ersson@farmbio.uu.se'     => 'Lisa Ersson',
-                    'ylva.hedeland@farmkemi.uu.se'  => 'Ylva Hedeland',
-                    'nils-erik.Heldin@igp.uu.se'    => 'Nils-Erik Heldin',
-                    'ulf.holmback@pubcare.uu.se'    => 'Ulf Holmbäck',
-                    'anders.lovgren@bmc.uu.se'      => 'Anders Lövgren',
-                    'erik.sandin@mcb.uu.se'         => 'Erik Sandin',
-                    'ahsan.shahzad@medfarm.uu.se'   => 'Ahsan Shahzad',
-                    'carin.svensson@uadm.uu.se'     => 'Carin Svensson',
-                    'susanne.tingsborg@imbim.uu.se' => 'Susanne Tingsborg',
-                    'bjorn.akerblom@mcb.uu.se'      => 'Björn Åkerblom'
-            ),
-            'support'   => array(
-                    'louise.engstrom@medfarm.uu.se' => 'First Line Support (Louise)',
-                    'openexam@bmc.uu.se'            => 'Second Line Support (Project)',
-                    'anders.lovgren@bmc.uu.se'      => 'Technical Support (Anders)'
-            ),
-            'developer' => array(
-                    'anders.lovgren@bmc.uu.se' => 'Anders Lövgren'
-            )
-    );
-
-    function output_card($id, $title, $body, $contact)
-    {
-            $mailto = array();
-            foreach ($contact as $mail => $name) {
-                    $mailto[] = sprintf("%s <%s>", $name, $mail);
-            }
-
-            printf("<h3 class=\"card-title\">%s</h3>\n", $title);
-            printf("<p class=\"card-text\">%s</p>\n", $body);
-            printf("<a href=\"mailto:%s\" class=\"btn btn-primary no-print\">Contact All</a>", implode(",", $mailto));
-            printf("<a class=\"btn btn-default no-print\" id=\"butt%d\">Show Members</a>", $id);
-            printf("<ul id=\"list%d\" class=\"card\">\n", $id);
-            foreach ($contact as $mail => $name) {
-                    printf("<li><a href=\"mailto:%s\">%s</a></li>\n", $mail, $name);
-            }
-            printf("</ul>\n");
-    }
-
-    ?>
-
-    <div class="row">
-        <div class="card-box">
-            <div class="card card-block">
-                <?php output_card(1, 'Steering Committee', 'People that is defining the overall goals for this project.', $organization['steering']); ?>
-                <script>
-                        $("#butt1").click(function () {
-                            $("#list1").toggle();
-                        });
-                </script>
-            </div>
-            <div class="card card-block">
-                <?php output_card(2, 'Reference Group', 'Forum for discussing future enhancements. Contact Louise if you want to participate.', $organization['reference']); ?>
-                <script>
-                        $("#butt2").click(function () {
-                            $("#list2").toggle();
-                        });
-                </script>
-            </div>
-            <div class="card card-block">
-                <?php output_card(3, 'Support', 'Do you want an introduction or need help on using the system?', $organization['support']); ?>
-                <script>
-                        $("#butt3").click(function () {
-                            $("#list3").toggle();
-                        });
-                </script>
-            </div>
-            <div class="card card-block">
-                <?php output_card(4, 'Developer', 'Those that is currently working on the system.', $organization['developer']); ?>
-                <script>
-                        $("#butt4").click(function () {
-                            $("#list4").toggle();
-                        });
-                </script>
-            </div>
-        </div>
-    </div>
-
-    <!--    <ul>
-            <li><a href="mailto:"></a></li>
-            <li><a href="mailto:"></a></li>
-            <li><a href="mailto:"></a></li>
-            <li><a href="mailto:"></a></li>
-            <li><a href="mailto:"></a></li>
-        </ul>-->
-
-    <!--
-    <div class="alert alert-info">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Notice!</strong> Physical access to the exam hall at BMC is restricted.<br/><br/>If you are working at a department at BMC, the access to the hall can be granted by the BMC reception. If your department is located outside BMC, the head of your department must certify your application for access. Using the exam computers requires a separate level of access. For this, contact <a href="mailto:veronica.hammar@imbim.uu.se">Veronica Hammar</a>. Please make sure that these arrangements are fully functional in good time before you run your first OpenExam!
-    </div>
-    -->
+<h2>Introduction</h2>
+<div>
+    <p>OpenExam Online is the web frontend that allows different types of computer-based tests and exams. It replace traditional paper-based exams if performed in exam halls equipped with computers or in computer class rooms where restricted interned can be controlled (available at different campuses).</p>
+    <img src="<?= $this->url->get("img/server-shaded-border.jpg") ?>" align="right"/>
+    <p>It may also be used for home exams and diagnostic tests on student’s personal devices. The front end of the system is entirely web based, from creating the exam to providing the students with the corrected exams.</p>
 </div>
 
+<h2>Who may use OpenExam?</h2>
+<p>All teachers/course administrators at Uppsala University can log in at <a href="https://openexam.bmc.uu.se">https://openexam.bmc.uu.se</a> and start using OpenExam. Consult the manuals for information. Exams can be taken at any computer hall/student computer throughout the university.</p>
+<p>The infrastructure, including computers, used for exams in <b>B1:3</b> at BMC is however a project within the disciplinary domain of medicine and pharmacy. If you would like to use this hall/computers for exams contact <a href="mailto:louise.engstrom@medfarm.uu.se">Louise Engström</a> for information.</p>
+
+<h2>Brief information about Open Exam</h2>
+
+<h4>Roles</h4>
+<p>Using OpenExam is defined by different roles.</p>
+<p>The exam creator (usually the course leader or course administrator) adds all basic information about the exam and then assigns contributors (teachers that will provide questions and correct answers), invigilators, students, correctors (as stand alone or as a default role for contributor) and decoders.</p>
+<p>The creator has access to all functions of OpenExam. All other roles will have restricted access to specific functions. For example, correctors will only see the answers to questions that they should correct.</p>
+<p>Consult the manual for detailed information on the differen roles.</p>
+
+<h4>Life cycle</h4>
+<p>The work flow of OpenExam can be divided into three steps – before, during and after the exam:</p>
+<dl>
+    <dt>Before the exam</dt>
+    <dd><p>The creator defines the time and place for the exam, uploads a list of students that are allowed to take the exam and add any specific information to students. The creator can at this stage also define the number of questions and their individual credits, threshold for grades, accessibility to supplementary material or even upload all questions provided by teachers. Alternatively, the people assigned as contributors may themselves add questions, upload supplementary files and links according to the created exam.</p></dd>
+    <dt>During the exam</dt>
+    <dd><p>Eligible students can log in to the system and take the exam. Log in will automatically create an anonymous code that will not be broken until all answers have been corrected. The identity of the students will however be displayed on the computer screen and checked against ID card by the circulating invigilators. </p>
+        <p>The invigilators may add students that failed to register for the exam, and also change closing time (for example for students with special needs). During the exam, the answers given by the students are automatically saved every ten seconds.</p></dd>
+    <dt>Immediately after the exam</dt>
+    <dd><p>The system is open for assessment of the students’ answers by the correcting teachers. Corrections can be done per student or per question and automatically generates a scoreboard. When all questions have been corrected, the creator can decode the exams after which it is no longer possible to change correction and grading.</p>
+        <p>After decoding the creator can upload the results to the student registry and the corrected exam, including teacher’s comments and statistics, can be downloaded by the students.</dd>
+</dl>
+
+<h4>Type of questions</h4>
+<p>OpenExam can be used for different types of questions, such as open end questions (short answers, essays, chemical structures, formulas, calculations etc), automatically corrected multiple choice questions, simple drawings (only on specific computers in the B1:3 exam hall).</p>
+<p>Supplementary material such as PDF files, images, movies, formularies etc is uploaded to a library and displayed during the exam.</p>
+
+<h2 class="pagebreak">Organisation</h2>
+
+<?php
+$organization = array(
+        'steering'  => array(
+                'catharina.svensson@imbim.uu.se'     => 'Catharina Svensson',
+                'ingrid.nylander@farmbio.uu.se'      => 'Ingrid Nylander',
+                'eva.part-enander@uadm.uu.se'        => 'Eva Pärt-Enander',
+                'anna.carin.lundqvist@medfarm.uu.se' => 'Anna-Carin Lundqvist',
+                'it-bevakare@msr.studorg.uu.se'      => 'MSR IT-bevakare'
+        ),
+        'reference' => array(
+                'louise.engstrom@medfarm.uu.se' => 'Louise Engström',
+                'helene.andersson@uadm.uu.se'   => 'Helene Andersson',
+                'anders.backlund@fkog.uu.se'    => 'Anders Backlund',
+                'lisa.ersson@farmbio.uu.se'     => 'Lisa Ersson',
+                'ylva.hedeland@farmkemi.uu.se'  => 'Ylva Hedeland',
+                'nils-erik.Heldin@igp.uu.se'    => 'Nils-Erik Heldin',
+                'ulf.holmback@pubcare.uu.se'    => 'Ulf Holmbäck',
+                'anders.lovgren@bmc.uu.se'      => 'Anders Lövgren',
+                'erik.sandin@mcb.uu.se'         => 'Erik Sandin',
+                'ahsan.shahzad@medfarm.uu.se'   => 'Ahsan Shahzad',
+                'carin.svensson@uadm.uu.se'     => 'Carin Svensson',
+                'susanne.tingsborg@imbim.uu.se' => 'Susanne Tingsborg',
+                'bjorn.akerblom@mcb.uu.se'      => 'Björn Åkerblom'
+        ),
+        'support'   => array(
+                'louise.engstrom@medfarm.uu.se' => 'First Line Support (Louise)',
+                'openexam@bmc.uu.se'            => 'Second Line Support (Project)',
+                'anders.lovgren@bmc.uu.se'      => 'Technical Support (Anders)'
+        ),
+        'developer' => array(
+                'anders.lovgren@bmc.uu.se' => 'Anders Lövgren'
+        )
+);
+
+function output_card($id, $title, $body, $contact)
+{
+        $mailto = array();
+        foreach ($contact as $mail => $name) {
+                $mailto[] = sprintf("%s <%s>", $name, $mail);
+        }
+
+        printf("<h3 class=\"card-title\">%s</h3>\n", $title);
+        printf("<p class=\"card-text\">%s</p>\n", $body);
+        printf("<a href=\"mailto:%s\" class=\"btn btn-primary no-print\">Contact All</a>", implode(",", $mailto));
+        printf("<a class=\"btn btn-default no-print\" id=\"butt%d\">Show Members</a>", $id);
+        printf("<ul id=\"list%d\" class=\"card\">\n", $id);
+        foreach ($contact as $mail => $name) {
+                printf("<li><a href=\"mailto:%s\">%s</a></li>\n", $mail, $name);
+        }
+        printf("</ul>\n");
+}
+
+?>
+
+<div class="row">
+    <div class="card-box">
+        <div class="card card-block">
+            <?php output_card(1, 'Steering Committee', 'People that is defining the overall goals for this project.', $organization['steering']); ?>
+            <script>
+                    $("#butt1").click(function () {
+                        $("#list1").toggle();
+                    });
+            </script>
+        </div>
+        <div class="card card-block">
+            <?php output_card(2, 'Reference Group', 'Forum for discussing future enhancements. Contact Louise if you want to participate.', $organization['reference']); ?>
+            <script>
+                    $("#butt2").click(function () {
+                        $("#list2").toggle();
+                    });
+            </script>
+        </div>
+        <div class="card card-block">
+            <?php output_card(3, 'Support', 'Do you want an introduction or need help on using the system?', $organization['support']); ?>
+            <script>
+                    $("#butt3").click(function () {
+                        $("#list3").toggle();
+                    });
+            </script>
+        </div>
+        <div class="card card-block">
+            <?php output_card(4, 'Developer', 'Those that is currently working on the system.', $organization['developer']); ?>
+            <script>
+                    $("#butt4").click(function () {
+                        $("#list4").toggle();
+                    });
+            </script>
+        </div>
+    </div>
+</div>

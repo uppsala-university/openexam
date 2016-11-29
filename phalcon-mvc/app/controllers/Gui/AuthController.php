@@ -14,7 +14,6 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
-use OpenExam\Library\Form\UserLoginForm;
 use OpenExam\Library\Form\LoginSelect;
 use OpenExam\Library\Security\Login\Base\FormLogin;
 use OpenExam\Library\Security\Login\Base\RemoteLogin;

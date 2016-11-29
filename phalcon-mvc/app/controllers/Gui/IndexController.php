@@ -36,7 +36,7 @@ class IndexController extends GuiController
 
         public function aboutAction()
         {
-                $this->view->disableLevel(View::LEVEL_BEFORE_TEMPLATE);
+                $this->view->setTemplateBefore('cardbox');
         }
 
 }

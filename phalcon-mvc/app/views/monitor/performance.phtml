@@ -13,16 +13,6 @@
 ?>
 
 <style>
-    div.mbox {
-        padding: 12px;
-        margin: 10px;
-        margin-top: 50px;
-        box-shadow: 1px 1px 6px #999999;
-        border-radius: 10px 10px 10px 10px;
-        background: #ffffff;
-        max-width: 1024px;
-        min-height: 200px;
-    }
     div.monitor {
         display: none;
     }
@@ -70,18 +60,16 @@
     }
 </style>
 
-<div class="mbox">
-    <h1>Performance Monitor (<span id="milestone">Live</span>)</h1>
-    <div id="monitor-wrapper">
-        <!-- navigation buttons -->
-        <div class="monitor-buttons"></div>
-        <div class="zoom-buttons">
-            <button class="btn btn-default" id="zoom-out"><i class="icon-zoom-out"></i></button>
-            <button class="btn btn-default disabled" id="zoom-in"><i class="icon-zoom-in"></i></button>
-        </div>
-        <!-- monitor panels -->
-        <div class="monitor-content"></div>
+<h1>Performance Monitor (<span id="milestone">Live</span>)</h1>
+<div id="monitor-wrapper">
+    <!-- navigation buttons -->
+    <div class="monitor-buttons"></div>
+    <div class="zoom-buttons">
+        <button class="btn btn-default" id="zoom-out"><i class="icon-zoom-out"></i></button>
+        <button class="btn btn-default disabled" id="zoom-in"><i class="icon-zoom-in"></i></button>
     </div>
+    <!-- monitor panels -->
+    <div class="monitor-content"></div>
 </div>
 
 <script src="<?= $this->url->get('js/chart.js') ?>"></script>

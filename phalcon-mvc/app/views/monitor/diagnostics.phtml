@@ -13,15 +13,6 @@
 ?>
 
 <style>
-    div.mbox {
-        padding: 12px;
-        margin: 10px;
-        margin-top: 50px;
-        box-shadow: 1px 1px 6px #999999;
-        border-radius: 10px 10px 10px 10px;
-        background: #ffffff;
-        max-width: 1024px;
-    }
     div #summary {
         display: none;
     }
@@ -93,16 +84,14 @@
     }
 </style>
 
-<div class="mbox">
-    <h1>System Diagnostics</h1>
-    <div id="summary">
-        <div id="status-success" class="status"><i id="success-icon" class="fa fa-thumbs-up"></i> No problem detected</div>
-        <div id="status-failure" class="status"><i id="failure-icon" class="fa fa-thumbs-down"></i> Problem detected!</div>
-        <button class="btn btn-primary timer">Pause Update</button>
-        <button class="btn btn-success details">Show Details</button>
-    </div>
-    <div id="details" class="hide"></div>
+<h1>System Diagnostics</h1>
+<div id="summary">
+    <div id="status-success" class="status"><i id="success-icon" class="fa fa-thumbs-up"></i> No problem detected</div>
+    <div id="status-failure" class="status"><i id="failure-icon" class="fa fa-thumbs-down"></i> Problem detected!</div>
+    <button class="btn btn-primary timer">Pause Update</button>
+    <button class="btn btn-success details">Show Details</button>
 </div>
+<div id="details" class="hide"></div>
 
 <script src="<?= $this->url->get('js/views/monitor/diagnostics.js') ?>"></script>
 
