@@ -115,7 +115,6 @@ $(document).ready(function () {
         var examName = $(examLine).find('.exam-name').html();
 
         if (confirm("Are you sure you want to delete this Exam: '" + jQuery.trim(examName) + "'")) {
-
             ajax(
                     baseURL + 'ajax/core/creator/exam/delete',
                     {"id": examId},
@@ -129,13 +128,10 @@ $(document).ready(function () {
                     true,
                     false
                     );
-
         }
     });
 
-
     $(document).on('keyup', '.exam-search-box', function (e) {
-
         if ($(this).val() == '') {
             var examListingAreas = $(this).closest('.exam-listing-wrapper').find('.exam-listing-area');
             if (examListingAreas.length > 1) {
@@ -147,16 +143,11 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.search-exam', function () {
-
         reloadExamList($(this), 0);
-
     });
 
-
     $(document).on('change', '.exam-sort-by', function () {
-
         reloadExamList($(this));
-
     });
 
     $(document).on('click', '.exam-sort-order', function () {
@@ -243,9 +234,7 @@ $(document).ready(function () {
 
     });
 
-
     var reloadExamList = function (element, offset) {
-
         // section
         var section = $(element).closest('.exam-listing-wrapper');
         var role = $(section).attr('exam-role');
@@ -271,7 +260,6 @@ $(document).ready(function () {
                 "offset": offset
             }
         };
-
 
         // send ajax request	
         ajax(
@@ -369,7 +357,6 @@ $(document).ready(function () {
                             .append('<a class="' + btnClass + '" href="' + target + '" data-id="' + exam.id + '">' + $('#' + btnKey).html() + '</a>');
                 }
             })
-
 
             $(examListingArea).find('.exam-list').append(examItem);
 

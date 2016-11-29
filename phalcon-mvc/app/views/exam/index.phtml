@@ -292,7 +292,11 @@ $examsPerPage = 5;
 
                                                                 ?>
                                                             </span>
+                                                            <?php
+                                                            $progress = new \OpenExam\Library\Gui\Component\Progress($exam->id, $role, $exam->getState());
+                                                            $progress->render();
 
+                                                            ?>
                                                             <a href="#"
                                                                class="exam-state-show"
                                                                title="Click to display exam details"
@@ -310,7 +314,7 @@ $examsPerPage = 5;
                                                                 </span>
                                                                 <span class="exam-name">
                                                                     <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam' ?>
-                                                                    <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
+                        <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
                                                                 </span>
                                                             </a>
                                                         </div>
@@ -320,16 +324,16 @@ $examsPerPage = 5;
 
                                                                         <?php $isUrl = preg_match('/.*\/.*/', $opData['target']); ?>
                                                                         <?php if ($opData['show-on-flags'][0] == '*' || count(array_diff($opData['show-on-flags'], $exam->flags)) != count($opData['show-on-flags'])) : ?>
-                                                                                <?php $href = ($isUrl ? str_replace("{exam-id}", $exam->id, $opData['target']) : '#'); ?>
+                                        <?php $href = ($isUrl ? str_replace("{exam-id}", $exam->id, $opData['target']) : '#'); ?>
                                                                                 <a data-id="<?= $exam->id ?>" 
                                                                                    href="<?= $this->url->get($href) ?>" 
                                                                                    class="<?= ($isUrl ? '' : $opData['target'] . ' prevent') ?>"
-                                                                                   <?= (stristr($role, Roles::STUDENT)) ? 'target="_blank"' : '' ?>>
-                                                                                       <?= $opButtonsHtml[$op] ?>
+                                                                                       <?= (stristr($role, Roles::STUDENT)) ? 'target="_blank"' : '' ?>>
+                                                                                <?= $opButtonsHtml[$op] ?>
                                                                                 </a>
                                                                         <?php endif; ?>
 
-                                                                <?php endforeach; ?>
+                        <?php endforeach; ?>
                                                             </div>
                                                             <div style="padding-top: 5px; float:right; clear:both; display:none">
                                                                 <span class="exam-date" style="padding-right: 5px; font-size: 9px;">
@@ -350,7 +354,7 @@ $examsPerPage = 5;
                                                     </li>
                                                     <?php if ($count == $examsPerPage) break; ?>
                                                     <?php $count++; ?>
-                                            <?php endforeach; ?>
+                                        <?php endforeach; ?>
                                         </ul>
                                         <?php
                                         $totalPages = ceil($totalExams / $examsPerPage);
@@ -367,29 +371,29 @@ $examsPerPage = 5;
                                                                 <li class="<?= ($i == 1) ? 'active' : '' ?>" offset="<?= (($i - 1) * $examsPerPage) ?>">
                                                                     <a href="#" style="padding:0px 9px"><?= $i ?><span class="sr-only">(current)</span></a> 
                                                                 </li>
-                                                        <?php endfor; ?>
+                        <?php endfor; ?>
                                                     </ul>
                                                 </div>
-                                        <?php endif; ?>
+                <?php endif; ?>
                                     </div>
                                 </div>       
-                        <?php else: ?>
+                            <?php else: ?>
                                 <div class="exam-listing-default-msg"> 
                                     <?php if (stristr($role, Roles::STUDENT)): ?>
                                             <i class="fa fa-info-circle"></i> Currently you don't have any <?= str_replace("student-", "", $role) ?> exams.
                                     <?php else: ?>
                                             <i class="fa fa-info-circle"></i> Currently you don't have any exams as <?= $role ?>.
-                                    <?php endif; ?>
+                                <?php endif; ?>
                                 </div>
-                        <?php endif; ?>
+                    <?php endif; ?>
                     </article>
                     <?php $examData = array(); ?>
                     <?php foreach ($exams as $exam): ?>
                             <?php $examData[$exam->id] = $exam->toArray(); ?>
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
                 </div>
                 <?php $sectId++; ?>
-        <?php endforeach; ?>
+<?php endforeach; ?>
         <input id="ac-hidden" type="radio" name="accordion-1">
         <label for="ac-hidden" id="ac-hidden-label" style="display:none">
             <i class="fa fa-chevron-right chevron" style="font-size: 16px; color: #990000"></i>
@@ -434,7 +438,7 @@ $examsPerPage = 5;
     </div>
     <?php foreach ($opButtonsHtml as $btnKey => $btnHtml): ?>
             <div id="<?= $btnKey ?>" style="display:none"><?= $btnHtml ?></div>
-    <?php endforeach; ?>
+<?php endforeach; ?>
 
     <!-- container -->
 </div>

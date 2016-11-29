@@ -5180,10 +5180,30 @@ text-decoration:none;
 .label-red {
     background-color: #d9534f;
 }
+.label-yellow {
+    background-color: #ffff00;
+    color: #cc6600;
+    border: 1px solid #ffcc00;
+}
 .label-blue-outline {
     background-color: #ffffff;
     color: #4285f4;
     border: 1px solid #4285f4;
+}
+.label-orange-outline {
+    background-color: #ffffff;
+    color: #ff6600;
+    border: 1px solid #f89406;
+}
+.label-green-outline {
+    background-color: #ffffff;
+    color: #009900;
+    border: 1px solid #33cc33;
+}
+.label-yellow-outline {
+    background-color: #ffffff;
+    color: #cc6600;
+    border: 1px solid #ffcc00;
 }
 
 /*====== specific to media library =====*/
