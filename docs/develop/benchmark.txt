@@ -13,7 +13,7 @@
    o) Measure answer updates. The payload is in post.txt:
 
         bash$> ab2-ssl -n 1000 -c 20 -C PHPSESSID=hebdam42udmo63i9caaqp4l7u6 -p post.txt \
-                https://localhost/openexam/core/ajax/student/answer/update 
+                https://localhost/openexam/ajax/core/student/answer/update 
 
    o) Measure index page loading:
 
