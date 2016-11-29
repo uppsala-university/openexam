@@ -12,7 +12,8 @@ $(document).ready(function () {
     // 
     $(document).on('click', '.exam-state-show', function () {
         var exam = $(this).closest('li').attr('data-id');
-        var target = $(this).closest('li').children('.exam-state-view').children('span');
+        var target = $(this).closest('li').children('.exam-state-view').children('div');
+
         target.toggle();
 
         if (target.is(":visible")) {
@@ -25,6 +26,8 @@ $(document).ready(function () {
                 }
             });
         }
+
+        return false;
     });
 
     $(document).on('click', '.manage-students', function () {
