@@ -151,17 +151,17 @@ class CoreController extends RestController
 
                 $content = array(
                         "usage"   => array(
-                                "/core/rest/{role}/{target}"        => array("GET", "POST"),
-                                "/core/rest/{role}/{target}/{id}"   => array("PUT", "DELETE"),
-                                "/core/rest/{role}/{target}/search" => "POST"
+                                "/rest/core/{role}/{target}"        => array("GET", "POST"),
+                                "/rest/core/{role}/{target}/{id}"   => array("PUT", "DELETE"),
+                                "/rest/core/{role}/{target}/search" => "POST"
                         ),
                         "example" => array(
-                                "/core/rest/student/exams/44/questions/22/answers",
-                                "/core/rest/student/exams/44/questions/22/answers/123",
-                                "/core/rest/student/admins",
-                                "/core/rest/student/teachers",
-                                "/core/rest/student/rooms",
-                                "/core/rest/student/exams/search"
+                                "/rest/core/student/exams/44/questions/22/answers",
+                                "/rest/core/student/exams/44/questions/22/answers/123",
+                                "/rest/core/student/admins",
+                                "/rest/core/student/teachers",
+                                "/rest/core/student/rooms",
+                                "/rest/core/student/exams/search"
                         )
                 );
 
