@@ -8,6 +8,69 @@ var stEvents = '';
 $(document).ready(function () {
 
     // 
+    // Change exams start and end time.
+    // 
+    $(document).on('click', '.change-time', function () {
+        var container = $(this).closest('.list-group-item');
+        var exam = $(container).attr('data-id');
+
+        ajax(
+                baseURL + 'ajax/core/invigilator/exam/read',
+                {
+                    'id': exam
+                },
+        function (status) {
+            if (status) {
+                var stime = status.starttime;
+                var etime = status.endtime;
+
+                var changer = $("#exam-datetime-changer");
+
+                changer.find("#exam-starttime").val(stime);
+                changer.find("#exam-endtime").val(etime);
+
+                changer.dialog({
+                    autoOpen: true,
+                    modal: true,
+                    buttons: {
+                        OK: function () {
+
+                            stime = changer.find("#exam-starttime").val();
+                            etime = changer.find("#exam-endtime").val();
+
+                            if (stime.length === 0) {
+                                stime = null;
+                            }
+                            if (etime.length === 0) {
+                                etime = null;
+                            }
+
+                            ajax(
+                                    baseURL + 'ajax/core/invigilator/exam/update',
+                                    {
+                                        'id': exam,
+                                        'starttime': stime,
+                                        'endtime': etime
+                                    }, function (status) {
+                                if (status) {
+                                    changer.dialog('close');
+                                }
+                            });
+                        },
+                        Cancel: function () {
+                            changer.dialog('destroy');
+                        }
+                    },
+                    close: function () {
+                        changer.dialog('destroy');
+                    }
+                });
+            }
+        });
+    });
+
+
+    // 
     // Handle exam progress button click in exam archive.
     //
     $(document).on('click', '.exam-progress', function () {
@@ -241,68 +304,6 @@ $(document).ready(function () {
         reloadExamList($(this));
 
         return false;
-    });
-
-    $(document).on('click', '.change-time', function () {
-        var examListWrapper = $(this).closest('.list-group-item');
-        var examId = $(examListWrapper).attr('data-id');
-
-        //pick data and populate in dialog
-        $('#change-time')
-                .find('#exam-title').html($(examListWrapper).find('.exam-name').html()).end()
-                .find('#exam-date').val($(examListWrapper).find('.exam-date > span').html()).end()
-                .find('#exam-starttime').val($(examListWrapper).find('.exam-starts').html()).end()
-                .find('#exam-endtime').val($(examListWrapper).find('.exam-ends').html()).end();
-
-        $("#change-time").dialog({
-            autoOpen: true,
-            modal: true,
-            buttons: {
-                "Update date and time »": function () {
-
-                    dialog = $(this);
-
-                    // prepare data
-                    starttime = $('#exam-date').val() + " " + $('#exam-starttime').val();
-                    endtime = $('#exam-date').val() + " " + $('#exam-endtime').val();
-
-                    // update in db
-                    ajax(
-                            baseURL + 'ajax/core/invigilator/exam/update',
-                            {"id": examId, "starttime": starttime, "endtime": endtime},
-                    function (status) {
-
-                        //update in grid
-                        $(examListWrapper)
-                                .find('.exam-date > span').html($('#exam-date').val()).end()
-                                .find('.exam-starts').html($('#exam-starttime').val()).end()
-                                .find('.exam-ends').html($('#exam-endtime').val()).end();
-
-                        $(dialog).dialog('destroy');
-                    }
-                    );
-                    /*					
-                     $.ajax({
-                     type: "POST",
-                     data: data,
-                     url: baseURL + 'exam/replicate/' + examId,
-                     success: function(response) {
-                     resp = jQuery.parseJSON(response);
-                     if(resp.status == 'success') {
-                     location.href = baseURL + 'exam/update/' + resp.exam_id;
-                     }
-                     }
-                     });*/
-                },
-                Cancel: function () {
-                    $(this).dialog('destroy');
-                }
-            },
-            close: function () {
-                $(this).dialog('destroy');
-            }
-        });
-
     });
 
     var reloadExamList = function (element, offset) {
