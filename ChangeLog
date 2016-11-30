@@ -1,4 +1,496 @@
 ------------------------------------------------------------------------
+r2617 | andlov | 2016-11-30 01:11:12 +0100 (Wed, 30 Nov 2016) | 1 line
+
+Added decode and publish/unpublish actions on exam progress buttons on exam index.
+------------------------------------------------------------------------
+r2616 | andlov | 2016-11-29 22:58:04 +0100 (Tue, 29 Nov 2016) | 1 line
+
+Adding component showing exam progress (upcoming, running, answered, finished, corrected, decoded).
+------------------------------------------------------------------------
+r2615 | andlov | 2016-11-29 19:30:13 +0100 (Tue, 29 Nov 2016) | 1 line
+
+Fixed toggle exam details in google chrome.
+------------------------------------------------------------------------
+r2614 | andlov | 2016-11-29 18:23:02 +0100 (Tue, 29 Nov 2016) | 1 line
+
+Use correct exam ID in exam details when moving forward <-> back in pagination.
+------------------------------------------------------------------------
+r2613 | andlov | 2016-11-29 12:43:02 +0100 (Tue, 29 Nov 2016) | 1 line
+
+Fix REST path (in documentation): /core/rest -> /rest/core.
+------------------------------------------------------------------------
+r2612 | andlov | 2016-11-29 12:42:07 +0100 (Tue, 29 Nov 2016) | 1 line
+
+Fixing core/ajax -> ajax/core in different javascript files related with views.
+------------------------------------------------------------------------
+r2611 | andlov | 2016-11-29 12:07:31 +0100 (Tue, 29 Nov 2016) | 1 line
+
+Changed obsolete URI /core/ajax -> /ajax/core.
+------------------------------------------------------------------------
+r2610 | andlov | 2016-11-29 02:36:27 +0100 (Tue, 29 Nov 2016) | 1 line
+
+Put mbox (cardbox) wrapper to own layout file. All controllers/actions using shadow/cardbox will set template before rendering controller.
+------------------------------------------------------------------------
+r2609 | andlov | 2016-11-28 23:37:54 +0100 (Mon, 28 Nov 2016) | 1 line
+
+Code cleanup.
+------------------------------------------------------------------------
+r2608 | andlov | 2016-11-28 23:21:53 +0100 (Mon, 28 Nov 2016) | 1 line
+
+Fixed URL to AJAX core service in view. Removed compatibility route.
+------------------------------------------------------------------------
+r2607 | andlov | 2016-11-28 18:08:59 +0100 (Mon, 28 Nov 2016) | 1 line
+
+Refactoring catalog service and handler.
+------------------------------------------------------------------------
+r2606 | andlov | 2016-11-28 02:38:09 +0100 (Mon, 28 Nov 2016) | 1 line
+
+Adding support for --model=name (statistics on one model) and --full (display all vs. only count).
+------------------------------------------------------------------------
+r2605 | andlov | 2016-11-28 02:15:10 +0100 (Mon, 28 Nov 2016) | 1 line
+
+Adding options for displaying audit statistics (num entries and per type size on bytes).
+------------------------------------------------------------------------
+r2604 | andlov | 2016-11-28 01:15:26 +0100 (Mon, 28 Nov 2016) | 1 line
+
+Adding required config options. We can't trust integrator to always merge new settings into config.def.
+------------------------------------------------------------------------
+r2603 | andlov | 2016-11-27 16:15:06 +0100 (Sun, 27 Nov 2016) | 1 line
+
+Escape table name when working with audit data. For example, the table locks is named lock in audit database (if using separate audit database).
+------------------------------------------------------------------------
+r2602 | andlov | 2016-11-26 05:26:18 +0100 (Sat, 26 Nov 2016) | 1 line
+
+Adding keyboard shortcut (Ctrl + Alt + S) to toggle spell check on/off.
+------------------------------------------------------------------------
+r2601 | andlov | 2016-11-26 04:57:36 +0100 (Sat, 26 Nov 2016) | 1 line
+
+Added dialog to ckeditor for toggle browser native spell check (as you type) on/off on internal body element. Works in firefox and chrome, but should work in any browser supporting HTML 5 and contenteditable.
+------------------------------------------------------------------------
+r2600 | andlov | 2016-11-26 03:08:03 +0100 (Sat, 26 Nov 2016) | 1 line
+
+Clear selected answer type when adding new question part created by copying HTML from first part. The previous code just showed the answer part as selected without displaying details. This is more like when adding a new question, but preserves properties for multiline question part.
+------------------------------------------------------------------------
+r2599 | andlov | 2016-11-26 02:08:48 +0100 (Sat, 26 Nov 2016) | 1 line
+
+Use element.closest() and child selector to find radio input (sibling) for custom word count.
+------------------------------------------------------------------------
+r2598 | andlov | 2016-11-25 19:03:37 +0100 (Fri, 25 Nov 2016) | 1 line
+
+Isolate model metadata if application->instance is set. Defaults to application->instance == 'openexam'.
+------------------------------------------------------------------------
+r2597 | andlov | 2016-11-25 19:02:44 +0100 (Fri, 25 Nov 2016) | 1 line
+
+Use separate config section for cache backends. Add trailing '/' on cache directory or it will end up in root dir.
+------------------------------------------------------------------------
+r2596 | andlov | 2016-11-25 18:30:49 +0100 (Fri, 25 Nov 2016) | 1 line
+
+Use separate file cache directories per application instance.
+------------------------------------------------------------------------
+r2595 | andlov | 2016-11-25 17:22:44 +0100 (Fri, 25 Nov 2016) | 1 line
+
+Provide cache isolation when running multiple instances on the same server.
+------------------------------------------------------------------------
+r2594 | andlov | 2016-11-23 18:12:06 +0100 (Wed, 23 Nov 2016) | 1 line
+
+Removed unused ckeditor plugins.
+------------------------------------------------------------------------
+r2593 | andlov | 2016-11-23 16:48:17 +0100 (Wed, 23 Nov 2016) | 1 line
+
+Display custom button in editing toolbar for native spell checker.
+------------------------------------------------------------------------
+r2592 | andlov | 2016-11-23 15:50:15 +0100 (Wed, 23 Nov 2016) | 1 line
+
+Allow enabled/disabled of spell checking per question part. Uses browser native spell check in ckeditor when using online mode.
+------------------------------------------------------------------------
+r2591 | andlov | 2016-11-22 02:54:00 +0100 (Tue, 22 Nov 2016) | 1 line
+
+Replaced preview picture of ckeditor.
+------------------------------------------------------------------------
+r2590 | andlov | 2016-11-22 02:37:07 +0100 (Tue, 22 Nov 2016) | 1 line
+
+Added word count editor and question saving for textarea parts.
+------------------------------------------------------------------------
+r2589 | andlov | 2016-11-22 00:07:38 +0100 (Tue, 22 Nov 2016) | 1 line
+
+Replace previous skin with the beautiful moono blue skin.
+------------------------------------------------------------------------
+r2588 | andlov | 2016-11-22 00:06:25 +0100 (Tue, 22 Nov 2016) | 1 line
+
+Adding extra theme. We need some way to switch skin also per user for visual impared students.
+------------------------------------------------------------------------
+r2587 | andlov | 2016-11-22 00:01:09 +0100 (Tue, 22 Nov 2016) | 1 line
+
+Fixing path to MathJax.js and removing unused sections in ckeditor. Enabling subscript and superscript buttons.
+------------------------------------------------------------------------
+r2586 | andlov | 2016-11-21 23:38:12 +0100 (Mon, 21 Nov 2016) | 1 line
+
+(*)
+------------------------------------------------------------------------
+r2585 | andlov | 2016-11-21 22:23:25 +0100 (Mon, 21 Nov 2016) | 1 line
+
+Added wordcount plugin to ckeditor.
+------------------------------------------------------------------------
+r2584 | andlov | 2016-11-21 22:18:24 +0100 (Mon, 21 Nov 2016) | 1 line
+
+Upgrading ckeditor to version 4.6.0, needed for wordcount and notification.
+------------------------------------------------------------------------
+r2583 | andlov | 2016-11-21 13:10:23 +0100 (Mon, 21 Nov 2016) | 1 line
+
+Added stronger media content forging in result (completely hide). Fixed media wrapper in result view (inline block). Add shadow on image (UX improvement, makes image stand out).
+------------------------------------------------------------------------
+r2582 | andlov | 2016-11-21 12:12:30 +0100 (Mon, 21 Nov 2016) | 1 line
+
+Check required request parameters.
+------------------------------------------------------------------------
+r2581 | andlov | 2016-11-18 18:13:06 +0100 (Fri, 18 Nov 2016) | 1 line
+
+The login form: A little bit wider. Vertical centered information text with dimmed text. Larger info icon.
+------------------------------------------------------------------------
+r2580 | andlov | 2016-11-18 17:55:09 +0100 (Fri, 18 Nov 2016) | 1 line
+
+Toggle display password on/off in login form.
+------------------------------------------------------------------------
+r2579 | andlov | 2016-11-18 08:23:44 +0100 (Fri, 18 Nov 2016) | 1 line
+
+Adding support for student login using anonymous code. Also display login method information on form. The input field is now displaying placeholder text.
+------------------------------------------------------------------------
+r2578 | andlov | 2016-11-17 17:02:55 +0100 (Thu, 17 Nov 2016) | 1 line
+
+Better error handling. Use relations when fetching related objects in exam replication. Don't use array_search() for mapping old -> new topics, use simple array key -> value lookup.
+------------------------------------------------------------------------
+r2577 | andlov | 2016-11-17 15:01:32 +0100 (Thu, 17 Nov 2016) | 1 line
+
+Small fixes when aquire roles.
+------------------------------------------------------------------------
+r2576 | andlov | 2016-11-16 18:27:10 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Display student ID instead of code on correction popup.
+------------------------------------------------------------------------
+r2575 | andlov | 2016-11-16 18:26:00 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Set HTTP error code and message in response when handling exception. This will trigger error handler in AJAX callback on client side.
+------------------------------------------------------------------------
+r2574 | andlov | 2016-11-16 18:04:09 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Hide anonymous code during correction. Only display once the exam has been decoded.
+------------------------------------------------------------------------
+r2573 | andlov | 2016-11-16 05:19:36 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Cleanup in services (phql). This service is pointless.
+------------------------------------------------------------------------
+r2572 | andlov | 2016-11-16 05:04:02 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Floating copyright year on main template page.
+------------------------------------------------------------------------
+r2571 | andlov | 2016-11-16 05:01:32 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Use dependency inject to use phalcon session in active directory session login class.
+------------------------------------------------------------------------
+r2570 | andlov | 2016-11-16 04:00:31 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Prevent warning when mail is a single address instead of array.
+------------------------------------------------------------------------
+r2569 | andlov | 2016-11-16 03:46:05 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Missing in last commit.
+------------------------------------------------------------------------
+r2568 | andlov | 2016-11-16 03:42:40 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Hide catalog services without service connection (local).
+------------------------------------------------------------------------
+r2567 | andlov | 2016-11-16 03:26:40 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Always allocate empty session to simplify code. Models are light-weight, database access are not. We are willing to sacrify some extra bytes just to keep things simple.
+------------------------------------------------------------------------
+r2566 | andlov | 2016-11-16 03:22:18 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Qualify user domain in CAS-login class.
+------------------------------------------------------------------------
+r2565 | andlov | 2016-11-16 03:21:34 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Pass service provider name upward using spid in options array. By-pass SSO logout from SAML service for now on (getting cookies error).
+------------------------------------------------------------------------
+r2564 | andlov | 2016-11-16 03:18:46 +0100 (Wed, 16 Nov 2016) | 1 line
+
+Log when auth session data is being removed. Also, don't call remove on non-existing data.
+------------------------------------------------------------------------
+r2563 | andlov | 2016-11-15 17:13:27 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Adding timestamp and short hostname to profiler model. The host property is required to being able to unique identify the running server (server and addr gets their values from the request).
+------------------------------------------------------------------------
+r2562 | andlov | 2016-11-15 03:09:34 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Added logging of hostname and address in profiler. Useful to know if one of the servers are performing bad. Questinable if server name is unique. Address might be the same too on clustered servers (serving from same public address).
+------------------------------------------------------------------------
+r2561 | andlov | 2016-11-15 02:46:54 +0100 (Tue, 15 Nov 2016) | 1 line
+
+The request property is required in the model. Fall back on '/' if empty.
+------------------------------------------------------------------------
+r2560 | andlov | 2016-11-15 00:55:06 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Removed extra print_r()
+------------------------------------------------------------------------
+r2559 | andlov | 2016-11-15 00:44:09 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Adding example on defining an user attribute catalog service for SWAMID having database as its storage.
+------------------------------------------------------------------------
+r2558 | andlov | 2016-11-15 00:36:44 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Adding created field to user model.
+------------------------------------------------------------------------
+r2557 | andlov | 2016-11-15 00:23:41 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Added users.created datetime field. The timestamp is automatic inserted on created. Useful for periodic cleanup of cached user attribute data.
+------------------------------------------------------------------------
+r2556 | andlov | 2016-11-15 00:13:38 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Adding catalog service query task.
+------------------------------------------------------------------------
+r2555 | andlov | 2016-11-15 00:12:43 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Refactored attribute and affiliation mapping into abstract base class for attribute services (like the LDAP or database catalog service).
+------------------------------------------------------------------------
+r2554 | andlov | 2016-11-15 00:11:03 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Added database backed (e.g. user model) catalog service.
+------------------------------------------------------------------------
+r2553 | andlov | 2016-11-15 00:09:27 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Added method getDomains() for catalog services that has a dynamic list of domains (not fixed in config). Typical examples are the database catalog service that stores attributes from federated logons.
+------------------------------------------------------------------------
+r2552 | andlov | 2016-11-15 00:02:53 +0100 (Tue, 15 Nov 2016) | 1 line
+
+Add user attribute assurance as possible user principal object property (at least having a formalized virtual attribute name).
+------------------------------------------------------------------------
+r2551 | andlov | 2016-11-14 12:00:14 +0100 (Mon, 14 Nov 2016) | 1 line
+
+Adding users table to audit trails.
+------------------------------------------------------------------------
+r2550 | andlov | 2016-11-14 06:14:46 +0100 (Mon, 14 Nov 2016) | 1 line
+
+Restored MySQL dump script.
+------------------------------------------------------------------------
+r2549 | andlov | 2016-11-14 06:13:21 +0100 (Mon, 14 Nov 2016) | 1 line
+
+Adding users.source column.
+------------------------------------------------------------------------
+r2548 | andlov | 2016-11-14 06:09:30 +0100 (Mon, 14 Nov 2016) | 1 line
+
+Bind storage backend to attribute provider.
+------------------------------------------------------------------------
+r2547 | andlov | 2016-11-14 03:26:42 +0100 (Mon, 14 Nov 2016) | 1 line
+
+Renamed internal classes for directory services.
+------------------------------------------------------------------------
+r2546 | andlov | 2016-11-14 03:05:59 +0100 (Mon, 14 Nov 2016) | 1 line
+
+Updating database schema to version 2.0.14
+------------------------------------------------------------------------
+r2545 | andlov | 2016-11-14 03:04:24 +0100 (Mon, 14 Nov 2016) | 1 line
+
+Missing class in last commit.
+------------------------------------------------------------------------
+r2544 | andlov | 2016-11-14 03:02:09 +0100 (Mon, 14 Nov 2016) | 1 line
+
+Implemented user attribute storage for authenticators that are storage providers (i.e. SimpleSamlLogin). This is the foundation for a system internal catalog service backing SWAMID and similar enterprise logon facilities.
+------------------------------------------------------------------------
+r2543 | andlov | 2016-11-09 01:49:44 +0100 (Wed, 09 Nov 2016) | 1 line
+
+Reworked Simple SAML login class. Uses SimpleSamlAuthenticator from uup-auth and implements RemoteLogin to make it discoverable from /auth/discover
+------------------------------------------------------------------------
+r2542 | andlov | 2016-11-08 18:45:53 +0100 (Tue, 08 Nov 2016) | 1 line
+
+Added setting for blurring media content in rendered student result file. Using SVG was required as normal CSS-filter didn't apply when using wkhtmltopdf.
+------------------------------------------------------------------------
+r2541 | andlov | 2016-11-08 18:43:22 +0100 (Tue, 08 Nov 2016) | 1 line
+
+Warn if trying to render an exam that is not yet decoded instead of silent ignore.
+------------------------------------------------------------------------
+r2539 | andlov | 2016-11-02 03:59:05 +0100 (Wed, 02 Nov 2016) | 1 line
+
+Use requireAuth() instead of login() to make call return if already authenticated.
+------------------------------------------------------------------------
+r2538 | andlov | 2016-11-02 03:58:14 +0100 (Wed, 02 Nov 2016) | 1 line
+
+Prioritize return before select in dispatch auth handler class.
+------------------------------------------------------------------------
+r2534 | andlov | 2016-11-01 13:55:23 +0100 (Tue, 01 Nov 2016) | 1 line
+
+Public controller was renamed as index controller due to dropped policy for regulating authentication due to inheritance.
+------------------------------------------------------------------------
+r2533 | andlov | 2016-10-31 20:44:08 +0100 (Mon, 31 Oct 2016) | 1 line
+
+Use separate session for Simple SAML.
+------------------------------------------------------------------------
+r2532 | andlov | 2016-10-31 16:36:54 +0100 (Mon, 31 Oct 2016) | 1 line
+
+Added missing interface (Authenticator).
+------------------------------------------------------------------------
+r2531 | andlov | 2016-10-31 16:34:27 +0100 (Mon, 31 Oct 2016) | 1 line
+
+Second attempt at Simple SAML. Now with user data registration stub, improved autoloader registration and direct extending AuthenticatorBase.
+------------------------------------------------------------------------
+r2530 | andlov | 2016-10-31 14:40:30 +0100 (Mon, 31 Oct 2016) | 1 line
+
+Adding Simple SAML login. This is a remote user authenticator supporting SWAMID or other IdP:s using simplesamlphp installed on current system.
+------------------------------------------------------------------------
+r2529 | andlov | 2016-10-28 02:35:46 +0200 (Fri, 28 Oct 2016) | 1 line
+
+Adding button UI component.
+------------------------------------------------------------------------
+r2528 | andlov | 2016-10-28 02:12:14 +0200 (Fri, 28 Oct 2016) | 1 line
+
+Align 'Create exam' button with search field.
+------------------------------------------------------------------------
+r2527 | andlov | 2016-10-28 02:09:13 +0200 (Fri, 28 Oct 2016) | 1 line
+
+Moved style local to exam details view.
+------------------------------------------------------------------------
+r2526 | andlov | 2016-10-28 01:45:55 +0200 (Fri, 28 Oct 2016) | 1 line
+
+Both date button and exam name in same clickable anchor (dynamic exam details loader).
+------------------------------------------------------------------------
+r2525 | andlov | 2016-10-28 01:36:21 +0200 (Fri, 28 Oct 2016) | 1 line
+
+Display exam date in blue outline button style.
+------------------------------------------------------------------------
+r2524 | andlov | 2016-10-28 01:28:22 +0200 (Fri, 28 Oct 2016) | 1 line
+
+Display exam date on button before name.
+------------------------------------------------------------------------
+r2523 | andlov | 2016-10-28 01:10:41 +0200 (Fri, 28 Oct 2016) | 1 line
+
+The view for displaying exam details.
+------------------------------------------------------------------------
+r2522 | andlov | 2016-10-28 01:10:04 +0200 (Fri, 28 Oct 2016) | 1 line
+
+Display exam phase, datetime and details in box with content loaded using AJAX.
+------------------------------------------------------------------------
+r2521 | andlov | 2016-10-28 01:09:03 +0200 (Fri, 28 Oct 2016) | 1 line
+
+Adding exam phase component.
+------------------------------------------------------------------------
+r2520 | andlov | 2016-10-28 01:06:52 +0200 (Fri, 28 Oct 2016) | 1 line
+
+
+------------------------------------------------------------------------
+r2519 | andlov | 2016-10-28 01:02:29 +0200 (Fri, 28 Oct 2016) | 1 line
+
+The accordion (spelling corrected) should have overflow:auto or content gets clipped.
+------------------------------------------------------------------------
+r2518 | andlov | 2016-10-27 19:09:06 +0200 (Thu, 27 Oct 2016) | 1 line
+
+Updated documentation on State::has().
+------------------------------------------------------------------------
+r2517 | andlov | 2016-10-27 18:49:55 +0200 (Thu, 27 Oct 2016) | 1 line
+
+Added corrected state to exam. This state is coupled with answered beacuse uncorrected count equals 0 when answers are missing.
+------------------------------------------------------------------------
+r2516 | andlov | 2016-10-27 16:36:04 +0200 (Thu, 27 Oct 2016) | 1 line
+
+Setting svn:executable on scripts.
+------------------------------------------------------------------------
+r2515 | andlov | 2016-10-27 15:19:45 +0200 (Thu, 27 Oct 2016) | 1 line
+
+Adding datetime component.
+------------------------------------------------------------------------
+r2514 | andlov | 2016-10-27 15:19:00 +0200 (Thu, 27 Oct 2016) | 1 line
+
+Missing in previous commit.
+------------------------------------------------------------------------
+r2513 | andlov | 2016-10-27 11:54:19 +0200 (Thu, 27 Oct 2016) | 1 line
+
+Added comment on class.
+------------------------------------------------------------------------
+r2512 | andlov | 2016-10-27 11:52:07 +0200 (Thu, 27 Oct 2016) | 1 line
+
+Moved classes from OpenExam\Library\Core\Signup -> OpenExam\Library\Security\Signup.
+------------------------------------------------------------------------
+r2511 | andlov | 2016-10-27 11:38:18 +0200 (Thu, 27 Oct 2016) | 1 line
+
+Removed method downloadFile() that is no longer used.
+------------------------------------------------------------------------
+r2510 | andlov | 2016-10-21 19:30:47 +0200 (Fri, 21 Oct 2016) | 1 line
+
+Display published exam state uniform for all roles. Fixed using different colors when rendered by PHP vs JS. Added new display state (scheduled, not yet published).
+------------------------------------------------------------------------
+r2509 | andlov | 2016-10-21 18:32:29 +0200 (Fri, 21 Oct 2016) | 1 line
+
+Don't show reuse button unless exam is flagged as reusable.
+------------------------------------------------------------------------
+r2508 | andlov | 2016-10-21 18:28:29 +0200 (Fri, 21 Oct 2016) | 1 line
+
+Adding answered as state. Removed contributable as state unless seen. More bits toggled on/off to make sense (i.e. draft should always be deletable).
+------------------------------------------------------------------------
+r2507 | andlov | 2016-10-21 18:16:21 +0200 (Fri, 21 Oct 2016) | 1 line
+
+Removed unused sections and contrib-closed. We should display the exam flags instead.
+------------------------------------------------------------------------
+r2506 | andlov | 2016-10-21 18:14:05 +0200 (Fri, 21 Oct 2016) | 1 line
+
+Adding notes + source code formatting.
+------------------------------------------------------------------------
+r2505 | andlov | 2016-09-29 16:37:14 +0200 (Thu, 29 Sep 2016) | 1 line
+
+Remove first row from import list if user is 'user' literal.
+------------------------------------------------------------------------
+r2504 | andlov | 2016-09-29 16:34:32 +0200 (Thu, 29 Sep 2016) | 1 line
+
+Map tags to column selectors when importing students.
+------------------------------------------------------------------------
+r2503 | andlov | 2016-09-29 13:18:38 +0200 (Thu, 29 Sep 2016) | 1 line
+
+Fixed sorting the student list for download using a user defined callback function.
+------------------------------------------------------------------------
+r2502 | andlov | 2016-09-22 00:19:25 +0200 (Thu, 22 Sep 2016) | 1 line
+
+Add page break before printing organization cards as card gets reordered when printing.
+------------------------------------------------------------------------
+r2501 | andlov | 2016-09-21 19:08:19 +0200 (Wed, 21 Sep 2016) | 1 line
+
+Fixed typos.
+------------------------------------------------------------------------
+r2500 | andlov | 2016-09-21 18:48:49 +0200 (Wed, 21 Sep 2016) | 1 line
+
+Updated about page with contact information at bottom.
+------------------------------------------------------------------------
+r2499 | andlov | 2016-09-21 16:18:31 +0200 (Wed, 21 Sep 2016) | 1 line
+
+Updated teachers manual (1.0 draft -> 1.1). Both swedish and english.
+------------------------------------------------------------------------
+r2489 | andlov | 2016-09-05 07:13:23 +0200 (Mon, 05 Sep 2016) | 1 line
+
+Fix bug in question view (the quest parameter has mixed type).
+------------------------------------------------------------------------
+r2486 | andlov | 2016-06-16 00:08:50 +0200 (Thu, 16 Jun 2016) | 1 line
+
+Documenting SOAP controller base class.
+------------------------------------------------------------------------
+r2485 | andlov | 2016-06-16 00:04:38 +0200 (Thu, 16 Jun 2016) | 1 line
+
+Enable system performance profiler with support for client side throttling.
+------------------------------------------------------------------------
+r2484 | andlov | 2016-06-15 21:00:53 +0200 (Wed, 15 Jun 2016) | 1 line
+
+Fixed case when called by curl where the data is coming in like '{id:xyz}' in post key (possibly caused by phalcon 2.x).
+------------------------------------------------------------------------
+r2483 | andlov | 2016-06-15 19:07:35 +0200 (Wed, 15 Jun 2016) | 1 line
+
+Validate student model on anonymous code.
+------------------------------------------------------------------------
+r2482 | andlov | 2016-06-15 17:17:37 +0200 (Wed, 15 Jun 2016) | 1 line
+
+Calling commit won't clear internal transaction buffer no more.
+------------------------------------------------------------------------
+r2481 | andlov | 2016-06-15 15:53:02 +0200 (Wed, 15 Jun 2016) | 1 line
+
+Use simplified cache strategy in exam model. Cache whole exam state at once.
+------------------------------------------------------------------------
+r2480 | andlov | 2016-06-15 14:49:37 +0200 (Wed, 15 Jun 2016) | 1 line
+
+Merge phalcon-2.x branch back into trunk.
+------------------------------------------------------------------------
 r2467 | andlov | 2016-06-13 22:12:37 +0200 (Mon, 13 Jun 2016) | 1 line
 
 Restored previous version 2.x sub-trunk as real trunk.
@@ -2360,7 +2852,7 @@ Modified getRoles() and getResources() to return all defined roles and resource 
 ------------------------------------------------------------------------
 r1815 | andlov | 2014-10-27 15:51:10 +0100 (Mon, 27 Oct 2014) | 1 line
 
-Adding static and dynamic capability check in AJAX controller. Use /ajax/core/capability for static check and ordinary route for dynamic check. The check to perform is in the params:capability{} payload.
+Adding static and dynamic capability check in AJAX controller. Use /core/ajax/capability for static check and ordinary route for dynamic check. The check to perform is in the params:capability{} payload.
 ------------------------------------------------------------------------
 r1814 | andlov | 2014-10-27 15:47:31 +0100 (Mon, 27 Oct 2014) | 1 line
 
