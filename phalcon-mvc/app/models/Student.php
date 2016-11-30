@@ -15,6 +15,7 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
+use OpenExam\Library\Model\Behavior\DateTimeNull;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
 use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
