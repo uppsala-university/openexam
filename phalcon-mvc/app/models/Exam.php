@@ -17,6 +17,7 @@ use OpenExam\Library\Core\Exam\Grades;
 use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Core\Pattern;
+use OpenExam\Library\Model\Behavior\DateTimeNull;
 use OpenExam\Library\Model\Behavior\Exam as ExamBehavior;
 use OpenExam\Library\Model\Behavior\FilterText;
 use OpenExam\Library\Model\Behavior\Ownership;
@@ -250,6 +251,13 @@ class Exam extends ModelBase
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(
                                 'field'  => 'created',
+                                'format' => 'Y-m-d H:i:s'
+                        )
+                )));
+
+                $this->addBehavior(new DateTimeNull(array(
+                        'beforeSave' => array(
+                                'field'  => array('starttime', 'endtime'),
                                 'format' => 'Y-m-d H:i:s'
                         )
                 )));

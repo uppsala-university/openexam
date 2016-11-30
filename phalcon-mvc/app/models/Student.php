@@ -103,6 +103,13 @@ class Student extends Role
                                 'user' => true
                         )
                 )));
+
+                $this->addBehavior(new DateTimeNull(array(
+                        'beforeSave' => array(
+                                'field'  => array('starttime', 'endtime'),
+                                'format' => 'Y-m-d H:i:s'
+                        )
+                )));
         }
 
         /**
