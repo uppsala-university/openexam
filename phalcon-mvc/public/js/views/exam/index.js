@@ -392,7 +392,7 @@ $(document).ready(function () {
                 $(examItem).find('.upcoming-exam').hide();
                 $(examItem).find('.published-exam').show();
                 if (examRole == 'creator') {
-                    $(examItem).css('background-color', '#feffd5');
+                    $(examItem).css('background-color', '#ffffed');
                 }
             } else if (exam.state & 0x2000) {
                 $(examItem).find('.draft-exam').show();
