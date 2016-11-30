@@ -8,6 +8,77 @@ var stEvents = '';
 $(document).ready(function () {
 
     // 
+    // Handle exam progress button click in exam archive.
+    //
+    $(document).on('click', '.exam-progress', function () {
+        console.log($(this));
+        var exam = $(this).attr('data-id');
+        console.log(exam);
+
+        if ($(this).hasClass('creator') && $(this).hasClass('upcoming')) {
+            var prompt = "This exam is not yet published. If you chose to publish it now, then it will \nshow up as an upcoming exam for student but can't be opened by them \nbefore the exam actually starts.\n\nDo you want to publish it?";
+            var result = confirm(prompt);
+
+            if (result) {
+                ajax(
+                        baseURL + 'ajax/core/creator/exam/update',
+                        {
+                            'id': $(this).attr('data-id'),
+                            'published': 1
+                        },
+                function (status) {
+                    if (status) {
+                        location.reload();
+                    }
+                }
+                );
+            }
+        }
+
+        if ($(this).hasClass('creator') && $(this).hasClass('published')) {
+            var prompt = "This exam has been published. If you chose to revoke the publishing, then it will \nno longer show up as an upcoming exam for students.\n\nDo you want to unpublish it?";
+            var result = confirm(prompt);
+
+            if (result) {
+                ajax(
+                        baseURL + 'ajax/core/creator/exam/update',
+                        {
+                            "id": $(this).attr('data-id'),
+                            "published": 0
+                        },
+                function (status) {
+                    if (status) {
+                        location.reload();
+                    }
+                }
+                );
+            }
+        }
+
+        if ($(this).hasClass('decoder') && $(this).hasClass('corrected')) {
+            var prompt = "All answers has been corrected on this exam. If you chose to continue and \ndecode the exam, then no more correction can be done.\n\nDo you want to continue and decode it?";
+            var result = confirm(prompt);
+
+            if (result) {
+                ajax(
+                        baseURL + 'ajax/core/creator/exam/update',
+                        {
+                            "id": $(this).attr('data-id'),
+                            "decoded": 1
+                        },
+                function (status) {
+                    if (status) {
+                        location.reload();
+                    }
+                }
+                );
+            }
+        }
+
+        return false;
+    });
+
+    // 
     // Toggle display of exam details.
     // 
     $(document).on('click', '.exam-state-show', function () {
@@ -293,6 +364,7 @@ $(document).ready(function () {
             var examListingArea = $(section).find('.exam-listing-area');
         }
         $(examListingArea).find('.exam-list').find('li').not(':first').not(':first').remove();
+        $(examListingArea).find('.exam-progress').hide();   // TODO: display exam progress.
 
         $.each(examData, function (i, exam) {
             start = exam.starttime ? exam.starttime.split(" ") : ["0000:00:00", "00:00"];

@@ -2360,7 +2360,7 @@ Modified getRoles() and getResources() to return all defined roles and resource 
 ------------------------------------------------------------------------
 r1815 | andlov | 2014-10-27 15:51:10 +0100 (Mon, 27 Oct 2014) | 1 line
 
-Adding static and dynamic capability check in AJAX controller. Use /core/ajax/capability for static check and ordinary route for dynamic check. The check to perform is in the params:capability{} payload.
+Adding static and dynamic capability check in AJAX controller. Use /ajax/core/capability for static check and ordinary route for dynamic check. The check to perform is in the params:capability{} payload.
 ------------------------------------------------------------------------
 r1814 | andlov | 2014-10-27 15:47:31 +0100 (Mon, 27 Oct 2014) | 1 line
 

@@ -88,15 +88,17 @@ class Progress extends \Phalcon\Mvc\User\Component implements Component
                 // Check from backward:
                 // 
                 if ($this->_state->has(State::DECODED)) {
-                        $output("green", "battery-4", "decoded", false, $this->tr->_("Decoded"));
+                        $output("primary", "battery-4", "decoded", false, $this->tr->_("Decoded"));
                 } elseif ($this->_state->has(State::CORRECTED)) {
                         $output("orange", "battery-3", "corrected", true, $this->tr->_("Corrected"));
                 } elseif ($this->_state->has(State::FINISHED)) {
                         $output("orange", "battery-2", "finished", true, $this->tr->_("Finished"));
                 } elseif ($this->_state->has(State::ANSWERED)) {
-                        $output("yellow", "battery-1", "answered", false, $this->tr->_("Answered"));
+                        $output("light-green", "battery-1", "answered", false, $this->tr->_("Answered"));
                 } elseif ($this->_state->has(State::RUNNING)) {
-                        $output("yellow", "battery-0", "running", false, $this->tr->_("Running"));
+                        $output("light-green", "battery-0", "running", false, $this->tr->_("Ongoing"));
+                } elseif ($this->_state->has(State::PUBLISHED)) {
+                        $output("blue", "battery-0", "published", true, $this->tr->_("Published"));
                 } elseif ($this->_state->has(State::UPCOMING)) {
                         $output("blue", "battery-0", "upcoming", true, $this->tr->_("Upcoming"));
                 }
