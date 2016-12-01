@@ -34,20 +34,18 @@ class Helper extends Component
          * @return array
          * @deprecated since version 2.0.0
          */
-        public function getCatalogAttribute($principal, $attribute, $firstOnly = TRUE)
+        public function getCatalogAttribute($principal, $attribute)
         {
-                $data = array();
-                $userData = $this->catalog->getAttribute($principal, $attribute);
-
-                //search for info from all services
-                foreach ($userData as $service) {
-                        $data = $userData[0][$attribute];
-                        if (count($data)) {
-                                break;
-                        }
+                if (is_null($principal)) {
+                        return "";
                 }
 
-                return $firstOnly ? $data[0] : $data;
+                $result = $this->catalog->getAttribute($principal, $attribute);
+
+                if ($result) {
+                        $data = current($result);
+                        return $data[$attribute][0];
+                }
         }
 
 }
