@@ -61,6 +61,11 @@ class User extends Component
          */
         private $_role;
         /**
+         * The primary group.
+         * @var string 
+         */
+        private $_group;
+        /**
          * Construction time injected roles.
          * @var array 
          */
@@ -316,6 +321,35 @@ class User extends Component
                                 return $department[0]['department'][0];
                         }
                 }
+        }
+
+        /**
+         * Set user primary group.
+         * @param string $group The primary group name.
+         */
+        public function setPrimaryGroup($group)
+        {
+                $this->_group = $group;
+        }
+
+        /**
+         * Get user primary group.
+         * 
+         * If primary group is unset, then the trailing part of the department 
+         * name is used. The department name is fetched from the catalog.
+         * 
+         * @return string
+         */
+        public function getPrimaryGroup()
+        {
+                if (!isset($this->_group)) {
+                        if (($department = $this->getDepartment())) {
+                                $parts = explode(';', $department);
+                                $this->_group = trim(array_pop($parts));
+                        }
+                }
+
+                return $this->_group;
         }
 
 }
