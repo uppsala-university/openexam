@@ -157,13 +157,13 @@ class ResourceAccess extends ObjectAccess
                                             // 
                                             // Check groups in most to least specific order:
                                             // 
-                                            if (($group = $this->exam->workgroup)) {
+                                            if (($group = $model->exam->workgroup)) {
                                                     return $this->user->getPrimaryGroup() == $group;
                                             }
-                                            if (($group = $this->exam->department)) {
+                                            if (($group = $model->exam->department)) {
                                                     return $this->user->getPrimaryGroup() == $group;
                                             }
-                                            if (($group = $this->exam->division)) {
+                                            if (($group = $model->exam->division)) {
                                                     return $this->user->getPrimaryGroup() == $group;
                                             }
                                     } elseif ($model->shared == Resource::SHARED_GLOBAL) {
