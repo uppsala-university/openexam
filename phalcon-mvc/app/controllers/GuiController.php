@@ -67,10 +67,6 @@ class GuiController extends ControllerBase
         {
                 $status = new Error($exception);
 
-                $this->response->setStatusCode(
-                    $status->getCode(), $status->getString()
-                );
-
                 if ($exception instanceof DispatcherException) {
                         switch ($exception->getCode()) {
                                 case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
@@ -84,6 +80,10 @@ class GuiController extends ControllerBase
                                         return false;
                         }
                 }
+
+                $this->response->setStatusCode(
+                    $status->getStatus(), $status->getString()
+                );
 
                 if ($exception->getCode() == 0) {
                         $this->dispatcher->forward(array(

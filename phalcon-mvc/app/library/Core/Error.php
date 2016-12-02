@@ -78,6 +78,11 @@ class Error
          * @var \Exception 
          */
         private $_exception;
+        /**
+         * The status code.
+         * @var int 
+         */
+        private $_status;
 
         /**
          * Constructor
@@ -86,6 +91,12 @@ class Error
         public function __construct($exception)
         {
                 $this->_exception = $exception;
+
+                if (is_numeric($this->_exception->getCode())) {
+                        $this->_status = $this->_exception->getCode();
+                } else {
+                        $this->_status = self::INTERNAL_SERVER_ERROR;
+                }
         }
 
         /**
@@ -122,6 +133,15 @@ class Error
         public function getString()
         {
                 return self::lookup($this->_exception->getCode());
+        }
+
+        /**
+         * Get HTTP status code.
+         * @return int
+         */
+        public function getStatus()
+        {
+                return $this->_status;
         }
 
         /**
