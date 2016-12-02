@@ -111,11 +111,12 @@
 							\
 							<br style="clear:both">\
 							\
-							<div>This can be reused </div>\
+							<div>This resource can be used </div>\
 							<div>\
-								<select class="update-lib-item-shared" style="width:145px; height:25px">\
-									<option value="exam" '+(shared == 'exam' ? 'selected' :'')+'>Only by me</option>\
-									<option value="group" '+(shared == 'group' ? 'selected' :'')+'>For anyone else in my department</option>\
+								<select class="update-lib-item-shared" style="min-width:185px; height:25px">\
+									<option value="private" '+(shared == 'private' ? 'selected' :'')+'>Only by me</option>\
+									<option value="exam" '+(shared == 'exam' ? 'selected' :'')+'>By co-workers on this exam</option>\
+									<option value="group" '+(shared == 'group' ? 'selected' :'')+'>For anyone in my department or group</option>\
 									<option value="global" '+(shared == 'global' ? 'selected' :'')+'>By everyone else</option>\
 								</select>\
 							</div>\
