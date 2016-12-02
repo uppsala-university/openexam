@@ -154,7 +154,18 @@ class ResourceAccess extends ObjectAccess
                                                     }
                                             }
                                     } elseif ($model->shared == Resource::SHARED_GROUP) {
-                                            // TODO: depends on directory service and caller having the same primary group.
+                                            // 
+                                            // Check groups in most to least specific order:
+                                            // 
+                                            if (($group = $this->exam->workgroup)) {
+                                                    return $this->user->getPrimaryGroup() == $group;
+                                            }
+                                            if (($group = $this->exam->department)) {
+                                                    return $this->user->getPrimaryGroup() == $group;
+                                            }
+                                            if (($group = $this->exam->division)) {
+                                                    return $this->user->getPrimaryGroup() == $group;
+                                            }
                                     } elseif ($model->shared == Resource::SHARED_GLOBAL) {
                                             return true;
                                     }
