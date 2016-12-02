@@ -440,8 +440,6 @@ class AuditTask extends MainTask implements TaskInterface
                             "%Y-%m-%d %H:%M:%S", time() - 24 * 3600 * intval($this->_options['days'])
                         );
                 }
-                
-                print_r($this->_options);
         }
 
 }
