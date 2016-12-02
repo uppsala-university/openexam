@@ -48,7 +48,7 @@ $backend = new Phalcon\Cache\Backend\Xcache($frontend, array(
 );
 if (!($config = $backend->get('site-config'))) {
         $config = include(CONFIG_PHP);
-        $cache->save('site-config', $config);
+        $backend->save('site-config', $config);
 }
 
 if ($config->application->release) {

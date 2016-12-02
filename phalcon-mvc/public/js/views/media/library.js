@@ -114,9 +114,9 @@
 							<div>This can be reused </div>\
 							<div>\
 								<select class="update-lib-item-shared" style="width:145px; height:25px">\
-									<option value="exam" '+(shared == 'exam' ? 'selected' :'')+'>only for my exams</option>\
-									<option value="group" '+(shared == 'group' ? 'selected' :'')+'>for all exams in my department</option>\
-									<option value="global" '+(shared == 'global' ? 'selected' :'')+'>for any exam within Uppsala University</option>\
+									<option value="exam" '+(shared == 'exam' ? 'selected' :'')+'>Only by me</option>\
+									<option value="group" '+(shared == 'group' ? 'selected' :'')+'>For anyone else in my department</option>\
+									<option value="global" '+(shared == 'global' ? 'selected' :'')+'>By everyone else</option>\
 								</select>\
 							</div>\
 							<br />\
