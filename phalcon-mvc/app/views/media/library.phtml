@@ -32,8 +32,8 @@
 
         <div id="lib-items-addables">
                 <div class="libheader" >
-                        <div style="text-align:right"> 
-                        	<span class="btn btn-success fileinput-button"> <i class="fa fa-plus-square"></i> <span>Click here to upload files from your computer</span> 
+                        <div style="text-align:left"> 
+                        	<span class="btn btn-success fileinput-button"> <i class="fa fa-plus-square"></i> <span>Click to upload files from your computer</span> 
                                 <!-- The file input field used as target for the file upload widget -->
                                 <input type="file" multiple="" name="files[]" id="fileupload">
                                 </span> 
@@ -41,7 +41,7 @@
                 </div>
                 <div class="libheader" style="padding-top:25px">
                         <div>
-                                <h1 style="font-size:1.5em">Your previous uploads.</h1>
+                                <h1 style="font-size:1.5em">Already uploaded files.</h1>
                         </div>
                         <div style="text-align:right"> </div>
                 </div>
@@ -56,7 +56,7 @@
                                 <div class="lib-tab-area">
                                 
                                 	<?php if(!count($resource)):?>
-                                	<div class="msg">Currently you don't have any resources of <?=$type?> type. </div>
+                                	<div id="lib-default-msg">Currently you don't have any resources of <?=$type?> type. </div>
                                         <?php endif;?>
                                         
                                         <div class="lib-item-line recent-uploads">
@@ -77,7 +77,7 @@
                                         <div class="lib-item-line">
                                         <?php $i=1;?>
 					<?php foreach($resource as $rData):?>
-                                                <div class="lib-item" id="lib-item-<?=$rData->id?>"> 
+                                                <div class="lib-item lib-shared-<?= $rData->shared ?>" id="lib-item-<?=$rData->id?>"> 
                                                 	<a class="select-lib-img darken" href="#"> 
                                                         	<img src="<?=$type == 'images' ? $rData->path : $this->url->get('img/file-icon.png')?>" file-path="<?=$rData->path?>" class="lib-img" style="background-color:#fff"> 
                                                                 <span>Click to select</span> 

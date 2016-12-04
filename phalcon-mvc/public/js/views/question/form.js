@@ -153,6 +153,7 @@ $(document).ready(function () {
     $('body').on('click', '.add_media', function () {
         $.ajax({
             url: baseURL + 'utility/media/library',
+            data: {'exam_id': examId},
             success: function (data) {
                 $("#media_selector").html(data);
                 $("#media_selector").dialog({

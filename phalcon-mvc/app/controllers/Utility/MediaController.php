@@ -14,6 +14,8 @@
 namespace OpenExam\Controllers\Utility;
 
 use OpenExam\Controllers\GuiController;
+use OpenExam\Library\Core\Error;
+use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Resource;
 use Phalcon\Mvc\View;
 
@@ -30,46 +32,81 @@ class MediaController extends GuiController
         /**
          * Shows media library interface to upload / select lib resources
          * utility/media/library
+         * 
+         * @param int $exam_id The exam ID (POST).
          */
         public function libraryAction()
         {
+                $examid = $this->request->get('exam_id', 'int');
+
+                if (!$examid) {
+                        throw new \Exception("Expected exam ID", Error::PRECONDITION_FAILED);
+                }
+
                 $loggedIn = $this->user->getPrincipalName();
-                
-                // fetch and pass data to view
-                $resources = Resource::find( array(
-                        'conditions'  => 'user = ?1 and shared = ?2',
-                        'bind' => array(1 => $loggedIn, 2 => Resource::SHARED_EXAM),
-                        'order' => 'id desc'
-                    ));
-                
-                ## filter by main resource types show in tabs 
-                // filter images
-                $images = $resources->filter(function($resource){
-                    if ($resource->type == 'image') {
-                            return $resource;
-                    }
+                $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
+
+                // 
+                // Fetch data filtered on the various sharing levels:
+                // 
+                if (!($resources = Resource::find(array(
+                            'conditions' => "
+                                    (shared = :private: AND user = ?2) 
+                                        OR 
+                                    (shared = :exam: AND exam_id = ?1) 
+                                        OR 
+                                    (shared = :group: AND user = ?3) 
+                                        OR 
+                                    (shared = :global:)",
+                            'bind'       => array(
+                                    'private' => Resource::NOT_SHARED,
+                                    'exam'    => Resource::SHARED_EXAM,
+                                    'group'   => Resource::SHARED_GROUP,
+                                    'global'  => Resource::SHARED_GLOBAL,
+                                    1         => $examid,
+                                    2         => $loggedIn,
+                                    3         => $loggedIn
+                            ),
+                            'order'      => 'shared,id desc'
+                    )))) {
+                        throw new \Exception("Failed fetch resources");
+                }
+
+                // 
+                // Filter out images mime type in result set:
+                // 
+                $images = $resources->filter(function($resource) {
+                        if ($resource->type == 'image') {
+                                return $resource;
+                        }
                 });
-                // filter videos
-                $videos = $resources->filter(function($resource){
-                    if ($resource->type == 'video') {
-                            return $resource;
-                    }
+                // 
+                // Filter out videos mime type in result set:
+                // 
+                $videos = $resources->filter(function($resource) {
+                        if ($resource->type == 'video') {
+                                return $resource;
+                        }
                 });
-                // filter other files
-                $others = $resources->filter(function($resource){
-                    if (!in_array($resource->type, array('image', 'video'))) {
-                            return $resource;
-                    }
+                // 
+                // Filter out application mime type in result set:
+                // 
+                $others = $resources->filter(function($resource) {
+                        if (!in_array($resource->type, array('image', 'video'))) {
+                                return $resource;
+                        }
                 });
 
-                // pass data
                 $this->view->setVar('resources', array(
                         "images" => $images,
                         "videos" => $videos,
                         "others" => $others
-                    ));
-                
-                // set rendering level
+                ));
+
+                // 
+                // No views can handle exceptions, so reset primary role:
+                // 
+                $this->user->setPrimaryRole(null);
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
         }
 
@@ -90,7 +127,7 @@ class MediaController extends GuiController
                 // upload file
                 $uploadHandler = new \UploadHandler(array(
                         'upload_dir' => $uploadDir,
-                        'upload_url' => $uploadUrl."/",
+                        'upload_url' => $uploadUrl . "/",
                 ));
         }
 
@@ -127,7 +164,7 @@ class MediaController extends GuiController
                         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                         header('Content-Type: ' . $contentType . '; charset=utf-8');
                         header('Content-Length: ' . $size);
-                        header('Content-Disposition: inline; filename="' . basename($path) . '"');//attachment
+                        header('Content-Disposition: inline; filename="' . basename($path) . '"'); //attachment
                         header('Content-Transfer-Encoding: binary');
 
                         for ($i = 0; $i <= $size; $i = $i + $speed) {
