@@ -168,6 +168,8 @@ class ResourceAccess extends ObjectAccess
                                             }
                                     } elseif ($model->shared == Resource::SHARED_GLOBAL) {
                                             return true;
+                                    } elseif ($model->user == $user->getPrincipalName()) {
+                                            return true;        // Permit personal access
                                     }
                             } elseif ($action == self::UPDATE || $action == self::DELETE) {
                                     if ($model->user == $user->getPrincipalName()) {
