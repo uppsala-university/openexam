@@ -1838,7 +1838,7 @@
         vertical-align:top;
         max-width:470px;
 
-    }*/
+    }
     /************************************/
 
     .editBindingMenu {
@@ -4051,6 +4051,7 @@
         right: 20px;
     }
 }
+
 /****************** CV ****************/
 .employeeCv {
     display: block;
@@ -4555,7 +4556,7 @@ select[name=program] {
 }
 
 /*********** Sluttagg som ska finnas med ************/
-}
+/*}*/
 
 /*** Open exam specifics ***/
 
@@ -4844,7 +4845,7 @@ select[name=program] {
 }
 
 #q-part-tabs .ui-icon-close {
-    background-image:url('<?=$this->url->get('plugins/jqueryui/themes/blitzer/images/ui-icons_004276_256x240.png')?>');
+    background-image: url("<?=$this->url->get('plugins/jqueryui/themes/blitzer/images/ui-icons_004276_256x240.png')?>");
 }
 .write_q_ckeditor {
     margin-top:26px;
