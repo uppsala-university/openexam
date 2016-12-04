@@ -73,26 +73,25 @@ class MediaController extends GuiController
                 }
 
                 // 
-                // Filter out images mime type in result set:
+                // Filter out mime type in result set:
                 // 
                 $images = $resources->filter(function($resource) {
                         if ($resource->type == 'image') {
                                 return $resource;
                         }
                 });
-                // 
-                // Filter out videos mime type in result set:
-                // 
                 $videos = $resources->filter(function($resource) {
                         if ($resource->type == 'video') {
                                 return $resource;
                         }
                 });
-                // 
-                // Filter out application mime type in result set:
-                // 
+                $audios = $resources->filter(function($resource) {
+                        if ($resource->type == 'audio') {
+                                return $resource;
+                        }
+                });
                 $others = $resources->filter(function($resource) {
-                        if (!in_array($resource->type, array('image', 'video'))) {
+                        if (!in_array($resource->type, array('image', 'video', 'audio'))) {
                                 return $resource;
                         }
                 });
@@ -100,6 +99,7 @@ class MediaController extends GuiController
                 $this->view->setVar('resources', array(
                         "images" => $images,
                         "videos" => $videos,
+                        "audios" => $audios,
                         "others" => $others
                 ));
 
