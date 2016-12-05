@@ -104,9 +104,36 @@ $(function () {
             var title = $(tagElement).attr('item-title');
             var shared = $(tagElement).attr('item-share');
             var mediaId = $(tagElement).attr('media-id');
+            var personal = $(tagElement).attr('personal') === 'true';
 
-            new Opentip(tagElement,
-                    '<div>\
+            // 
+            // Personal resources can't be deleted as they might be in use on other exams.
+            // 
+            if (personal) {
+                new Opentip(tagElement,
+                        '<div>\
+							<div>Title</div>\
+							<div><input type="text" class="update-lib-item-title" value="' + title + '"></div>\
+							\
+							<br style="clear:both">\
+							\
+							<div>This resource can be used </div>\
+							<div>\
+								<select class="update-lib-item-shared" style="min-width:185px; height:25px">\
+									<option value="private" ' + (shared == 'private' ? 'selected' : '') + '>Only by me</option>\
+									<option value="exam" ' + (shared == 'exam' ? 'selected' : '') + '>By co-workers on this exam</option>\
+									<option value="group" ' + (shared == 'group' ? 'selected' : '') + '>For anyone in my department or group</option>\
+									<option value="global" ' + (shared == 'global' ? 'selected' : '') + '>By everyone else</option>\
+								</select>\
+							</div>\
+							<br />\
+							<span class="btn btn-success update-lib-item-details" media-id="' + mediaId + '"> Save</span>\
+						</div>',
+                        {style: "drops", tipJoint: "top left"});
+
+            } else {
+                new Opentip(tagElement,
+                        '<div>\
 							<div>Title</div>\
 							<div><input type="text" class="update-lib-item-title" value="' + title + '"></div>\
 							\
@@ -125,7 +152,8 @@ $(function () {
 							<span class="btn btn-success update-lib-item-details" media-id="' + mediaId + '"> Save</span>\
 							<span class="btn btn-danger del-lib-item-details" media-id="' + mediaId + '"> Delete it!</span>\
 						</div>',
-                    {style: "drops", tipJoint: "top left"});
+                        {style: "drops", tipJoint: "top left"});
+            }
         });
 
     }
