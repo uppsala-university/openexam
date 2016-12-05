@@ -345,17 +345,13 @@ class QuestionController extends GuiController
                         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                         $this->view->pick('question/answers');
                 } else {
-
-                        $isDecoder = $this->user->aquire(array('decoder'), $examId);
-
                         // we will show score board
                         if (!$exam->decoded) {
                                 $questData = $this->modelsManager->executeQuery(
                                     "select distinct q.* from OpenExam\Models\Question q "
                                     . "inner join OpenExam\Models\Corrector c "
                                     . "where exam_id = '" . $exam->id . "' and q.status = 'active' "
-                                    . ((!$isDecoder && $isCreator) ?
-                                        "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
+                                    . ($isDecoder || $isCreator ? " " : "and c.user = '" . $this->user->getPrincipalName() . "' ")
                                     . "order by q.slot asc"
                                 );
                         } else {
