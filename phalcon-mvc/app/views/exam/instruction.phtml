@@ -1,83 +1,94 @@
-<?php 
-$testMode 	= $exam->creator == $this->user->getPrincipalName() ? TRUE : FALSE;
-$examStartsAt 	= is_object($student) && !is_null($student->starttime) ? $student->starttime : $exam->starttime;
+<?php
+$testMode = $exam->creator == $this->user->getPrincipalName() ? TRUE : FALSE;
+$examStartsAt = is_object($student) && !is_null($student->starttime) ? $student->starttime : $exam->starttime;
+
 ?>
 
 <div class='col-xs-12' style="padding:0px 35px">
-        <div class='row'>
-                <div class='col-sm-12'>
-                        <div class='page-header'>
-                                <h1 class='pull-left'> <i class='icon-book'></i> 
-                                        <span>
-                                                <?=$exam->name?>
-                                        </span> 
-                                </h1>
-                        </div>
-                </div>
+    <div class='row'>
+        <div class='col-sm-12'>
+            <div class='page-header'>
+                <h1 class='pull-left'> <i class='icon-book'></i> 
+                    <span>
+                        <?= $exam->name ?>
+                    </span> 
+                </h1>
+            </div>
         </div>
-        <div class='alert alert-info alert-dismissable'> 
-        	<a class='close' data-dismiss='alert' href='#'>&times;</a> <strong>Welcome to OpenExam!</strong>
-					<p>
-					Use the buttons in the heading to minimize the left pane or increase the text size 
-Under Exam info. You may again read the instructions, access a preview of all your answers and log out when you are done. <!--If you find it helpful, you can mark all questions as completed (green), in need of revision  (yellow) or will not be answered (red). -->
-					You can hover over images (in supplementary material) to zoom. You can see full size image by clicking on it.
-					</p>
-					<br />
-					<p>
-					<strong>Important to know:</strong><br />
-					<ul>
-						<li>All your answers are automatically saved, every 10 seconds.</li>
-						<li>It is highly recomended that you <u>don't</u> use "back" and "forward" buttons of web browser to go from one question to another. Always click on <button class="btn btn-xs btn-success" disabled="disabled"> Next Question <i class="icon-arrow-right"></i></button> and <button class="btn btn-xs" disabled="disabled"><i class="icon-arrow-left"></i> Prev. Question </button> buttons. To open a specific question, you can always click on desired question number appearing in left side menu.</li>
-						<li>Please report to invigilator immediately if any button or link do not work. In such a case, please don't close/refresh web browser otherwise we may loose your answer. If you see any error message from system, it is highly important that you <u>don't</u> refresh/close the web page before you report. </li>
-						<li>Flip down the screen if you go away for a biological break.</li>
-						<li>If you have drawing canvas in a quesiton, don't try to write text in canvas by drawing.</li>
-					</ul>
-		
-        </div>
-        <div class="exam-descr">
-        	<?=$exam->descr?>
-        </div>
+    </div>
+    <div class='alert alert-info alert-dismissable'> 
+        <a class='close' data-dismiss='alert' href='#'>&times;</a> <strong>Welcome to OpenExam Online!</strong><br/><br/>
+        <p style="margin-left: 15px">
+            Use the buttons in the heading to minimize the left pane or increase the text size 
+            Under Exam info. You may again read the instructions, access a preview of all your answers and log out when you are done. <!--If you find it helpful, you can mark all questions as completed (green), in need of revision  (yellow) or will not be answered (red). -->
+            Hover over images (in supplementary material) to zoom in on content. You can see full size image by clicking on it.
+        </p>
+        <br />
+
+        <strong>Important to know:</strong><br/><br/>
+        <ul>
+            <li>All your answers are automatically saved every 10 seconds.</li>
+            <li>It is highly recommended that you <u>don't</u> use the web browsers "back" and "forward" buttons for navigation. Always use buttons and/or links in the web interface. To open a specific question, you can always click on desired question number appearing in left side menu.</li>
+            <li>Please report any error message immediately to invigilator. In such a case, please <u>don't</u> close the web browser/refresh the page, or you may loose your latest changes. </li>
+        </ul>
+        <br />
         
-        <div class="exam-status-area">
-                <center>
-                <input onClick="javascript:location.href='<?=$this->url->get('exam/'.$exam->id.'/question/1')?>';" class="btn btn-success btn-lg" value="I am ready, start the exam <?=$testMode?'in test mode':''?>" type="button" style=" <?=((strtotime($examStartsAt) <= strtotime("now"))|| $testMode) ? '':'display:none'?>">
-                <?php if(strtotime($examStartsAt) > strtotime("now")):?>
-                <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam <?=$testMode?'testing':''?> starts in: " type="button" disabled="disabled" style="font-size:45px; margin:14% 0px; <?=($testMode) ? 'display:none':''?>">
-                <?php endif;?>
-                </center>
-        </div>        
+        <strong>Ready to start?</strong><br/><br/>
+        <p style="margin-left: 15px">
+            You have not yet started the exam, this page is only for showing some information. 
+            <?php if ($exam->lockdown->enable): ?>
+                    Once you click the button below, the exam will be locked down to your account and currently used computer.
+            <?php else: ?>
+                    This exam has no locking, so you will be able to open it again from another computer until it has finished.
+            <?php endif; ?>
+        </p>
+
+    </div>
+    <div class="exam-descr">
+        <?= $exam->descr ?>
+    </div>
+
+    <div class="exam-status-area">
+        <center>
+            <input class="btn btn-default btn-lg" style="margin: 2px" onclick="window.location.assign('<?= $this->url->get('/help/manual/student') ?>')" value="Open student manual" title="Open student manual." type="submit" name="manual" />
+            <input class="btn btn-success btn-lg" style="margin: 2px" onClick="javascript:location.href = '<?= $this->url->get('exam/' . $exam->id . '/question/1') ?>';" value="I am ready, start the exam <?= $testMode ? 'in test mode' : '' ?>" type="button" style=" <?= ((strtotime($examStartsAt) <= strtotime("now")) || $testMode) ? '' : 'display:none' ?>">
+            <?php if (strtotime($examStartsAt) > strtotime("now")): ?>
+                    <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam <?= $testMode ? 'testing' : '' ?> starts in: " type="button" disabled="disabled" style="font-size:45px; margin:14% 0px; <?= ($testMode) ? 'display:none' : '' ?>">
+            <?php endif; ?>
+        </center>
+    </div>        
 </div>
 
 <script language="javascript">
-$('#main-nav').remove();
-$('#main-nav-bg').remove();
-$('#content').css("margin-left", "0px");
-$('.toggle-nav').each(function(i, elem) {
-	if(!$(elem).hasClass('url')) {
-		$(elem).remove();
-	}
-});
-<?php if(strtotime($examStartsAt) > strtotime("now")):?>
-<?php if(!$testMode):?>
-$('.exam-descr').hide();
-$('.alert').hide();
-<?php endif;?>
-var examStartCount = <?=(strtotime(!$testMode ? $examStartsAt : "+0 seconds") - strtotime("now"))?>;
-var examStartCountDown = setInterval(function() {
-	examStartCount--;
-	if (examStartCount <= 0)
-	{
-		$('#countdown-btn').hide();
-		$('.btn-success').show(500);
-		clearInterval(examStartCountDown);
-		$('.exam-descr').show();
-		$('.alert').show();
-		return;
-	}
-	$("#countdown-btn").val("Exam <?=$testMode?'testing':''?> starts in: " + toHHMMSS(examStartCount));
-	$('.exam-descr').hide();
-	$('.alert').hide();
-}, 1000); 
-<?php endif;?>
+        $('#main-nav').remove();
+        $('#main-nav-bg').remove();
+        $('#content').css("margin-left", "0px");
+        $('.toggle-nav').each(function (i, elem) {
+            if (!$(elem).hasClass('url')) {
+                $(elem).remove();
+            }
+        });
+<?php if (strtotime($examStartsAt) > strtotime("now")): ?>
+        <?php if (!$testMode): ?>
+                        $('.exam-descr').hide();
+                        $('.alert').hide();
+        <?php endif; ?>
+                var examStartCount = <?= (strtotime(!$testMode ? $examStartsAt : "+0 seconds") - strtotime("now")) ?>;
+                var examStartCountDown = setInterval(function () {
+                    examStartCount--;
+                    if (examStartCount <= 0)
+                    {
+                        $('#countdown-btn').hide();
+                        $('.btn-success').show(500);
+                        clearInterval(examStartCountDown);
+                        $('.exam-descr').show();
+                        $('.alert').show();
+                        return;
+                    }
+                    $("#countdown-btn").val("Exam <?= $testMode ? 'testing' : '' ?> starts in: " + toHHMMSS(examStartCount));
+                    $('.exam-descr').hide();
+                    $('.alert').hide();
+                }, 1000);
+<?php endif; ?>
 
 </script> 
