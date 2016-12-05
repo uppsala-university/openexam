@@ -15,7 +15,7 @@
     <!-- / jquery -->
     <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery.min.js');?>	
     <!-- / jquery mobile (for touch events) -->
-    <?php //Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery.mobile.custom.min.js');?>	
+    <?php //Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery.mobile.custom.min.js');?>
     <!-- / jquery migrate (for compatibility with new jquery) [required] -->
     <?=Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery-migrate.min.js');?>
     <?=Phalcon\Tag::javascriptInclude('js/jquery.cookie.js');?>
@@ -196,7 +196,7 @@
             <div class='footer-wrapper'>
               <div class='row'>
                 <div class='col-sm-6 text'>
-                  Copyright &copy; 2010-2015 Uppsala Universitet
+                  Copyright &copy; 2010-<?= date('Y') ?> Uppsala Universitet
                 </div>
               </div>
             </div>
