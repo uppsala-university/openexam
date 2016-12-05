@@ -132,11 +132,11 @@
 
                 <?php elseif($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("editable", $exam->flags)):?>
                 <a href="<?=$this->url->get('exam/index');?>">
-                <div id="">
+                <div id="" style="margin-bottom: 10px">
                         <center>
                                 <span class="btn btn-success">
                                         <i class="fa fa-chevron-circle-right"></i>
-                                        <span>I am done with my questions, Notify exam creator.</span>
+                                        <span>I am done with my questions. Notify exam creator.</span>
                                 </span>
                         </center>
                 </div>
