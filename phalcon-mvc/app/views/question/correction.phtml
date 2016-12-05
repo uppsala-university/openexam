@@ -1,4 +1,5 @@
 <?php
+
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Student;
@@ -161,7 +162,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                             endforeach;
 
                                             ?>
-                                            <?php //$ansResult = count($answers) ? $answers[0]->getResult() : array()?>
+                                            <?php //$ansResult = count($answers) ? $answers[0]->getResult() : array() ?>
 
                                             <?php /* foreach($answers as $ans):?>
                                               <?php $result = $ans->getResult()?>
@@ -195,7 +196,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                             </td>
 
                                     <?php endforeach; ?>
-                                    <?php //if($wasAbsent) continue; ?>
+                                    <?php //if($wasAbsent) continue;  ?>
                                     <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                         <?php if ($decoded): ?>
                                                 <a title="download result in pdf format" href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>"><i class="fa fa-file-pdf-o" style="color:red"></i></a>    
@@ -632,29 +633,26 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
 
                                 $.each(resultsUpdate, function (i, rec) {
 
+                                    console.log(rec);
                                     var tScore = 0;
                                     $.each(jQuery.parseJSON(rec.score), function (j, sc) {
                                         tScore = tScore + parseFloat(sc);
                                     });
 
                                     $('a[ans-id="' + rec.answer_id + '"]').html(tScore);
+
+                                    if (rec.correction === 'waiting' || rec.correction === 'partial') {
+                                        $('a[ans-id="' + rec.answer_id + '"]').parent().removeClass('ac').addClass('nc');
+                                    }
+                                    if (rec.correction === 'completed' || rec.correction === 'finalized') {
+                                        $('a[ans-id="' + rec.answer_id + '"]').parent().removeClass('nc').addClass('ac');
+                                    }
                                 });
 
                                 console.log(resyncableResults);
                             }
                     );
                 }
-
-                /*
-                 ajax (
-                 baseURL + 'ajax/core/corrector/result/' + action,
-                 param,
-                 function(rData) {
-                 $(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
-                 $(saveResultBtn).closest('.q-body').css('background-color', '#fff');
-                 $(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
-                 }
-                 );*/
 
             }
         });
@@ -724,9 +722,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
 
                 $('#ajax_loader').hide();
 
-                //console.log((objectLength(completedRequests)/objectLength(stIds)) *100);
                 var val = (((objectLength(completedRequests) + 1) / objectLength(stIds)) * 100) || 0;
-
                 progressbar.progressbar("value", Math.round(val));
 
                 if (val <= 99) {
