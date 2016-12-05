@@ -158,7 +158,7 @@ $(document).ready(function () {
                 $("#media_selector").html(data);
                 $("#media_selector").dialog({
                     autoOpen: true,
-                    width: "75%",
+                    width: "55%",
                     modal: true,
                     buttons: {
                         "Add selected resources to question": function () {

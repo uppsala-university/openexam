@@ -567,7 +567,8 @@ $(document).ready(function () {
                         .html(content);
                 $("#question-form-dialog-wrap").dialog({
                     autoOpen: true,
-                    width: "80%",
+                    width: "60%",
+                    minWidth: 400,
                     modal: true,
                     buttons: {
                         "Add new question part": function () {

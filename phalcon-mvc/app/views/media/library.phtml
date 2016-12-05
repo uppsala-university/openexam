@@ -1,5 +1,4 @@
 <?php
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -9,99 +8,123 @@
 // 
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 // 
+
 ?>
 <?= Phalcon\Tag::stylesheetLink('plugins/jquery-file-upload/css/jquery.fileupload.css'); ?>
 <?= Phalcon\Tag::javascriptInclude('plugins/jquery-file-upload/js/jquery.fileupload.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('js/views/media/library.js'); ?>
 
 <div>
-        <div id="lib-items-added">
-                <div id="lib-default-msg">
-                        <div> No files have been uploaded or selected from previous uploads yet. </div>
+    <div id="lib-items-added">
+        <div id="lib-default-msg">
+            <div> No files have been uploaded or selected from previous uploads yet. </div>
+        </div>
+        <ul id="selected-lib-img">
+            <li style="display:none" media-id=""> 
+                <img src="">
+                <div file-path="" class="title-box">
+                    <input type="text" placeholder="Click to write title here" value="">
                 </div>
-                <ul id="selected-lib-img">
-                        <li style="display:none" media-id=""> 
-                        	<img src="">
-                                <div file-path="" class="title-box">
-                                	<input type="text" placeholder="Click to write title here" value="">
-                                </div>
-                                <i class="fa fa-close"></i> 
-                        </li>
-                </ul>
+                <i class="fa fa-close"></i> 
+            </li>
+        </ul>
+    </div>
+
+    <div id="lib-items-addables">
+        <div class="libheader" >
+            <div style="text-align:left"> 
+                <span class="btn btn-success fileinput-button"><i class="fa fa-plus-square"></i><span> Click to upload files from your computer</span> 
+                    <!-- The file input field used as target for the file upload widget -->
+                    <input type="file" multiple="" name="files[]" id="fileupload">
+                </span> 
+            </div>
         </div>
 
-        <div id="lib-items-addables">
-                <div class="libheader" >
-                        <div style="text-align:left"> 
-                        	<span class="btn btn-success fileinput-button"> <i class="fa fa-plus-square"></i> <span>Click to upload files from your computer</span> 
-                                <!-- The file input field used as target for the file upload widget -->
-                                <input type="file" multiple="" name="files[]" id="fileupload">
-                                </span> 
-                        </div>
-                </div>
-                <div class="libheader" style="padding-top:25px">
-                        <div>
-                                <h1 style="font-size:1.5em">Already uploaded files.</h1>
-                        </div>
-                        <div style="text-align:right"> </div>
-                </div>
-                <div id="media_types" style="margin-top:20px">
-                        <ul>
-                        	<?php foreach($resources as $type => $resource):?>
-                                <li><a href="#<?=$type?>-tab"><?=ucfirst($type)?></a></li>
-                                <?php endforeach;?>
-                        </ul>
-                        <?php foreach($resources as $type => $resource):?>
-                        <div id="<?=$type?>-tab">
-                                <div class="lib-tab-area">
-                                
-                                	<?php if(!count($resource)):?>
-                                	<div id="lib-default-msg">Currently you don't have any resources of <?=$type?> type. </div>
-                                        <?php endif;?>
-                                        
-                                        <div class="lib-item-line recent-uploads">
-                                                <div class="lib-item" id="" style="display:none">
-                                                        <a class="selected-lib-img darken" href="#"> 
-                                                                <img src="" file-path="" class="lib-img"> 
-                                                                <span><i class="fa fa-check-square-o"></i> Selected</span>
-                                                        </a>
-                                                        <div class="title-box">
-                                                                <div class="lib-item-title" ></div>
-                                                                <div class="lib-item-settings"> 
-                                                                        <i class="fa fa-pencil" item-title="" item-share="exam" media-id=""></i> 
-                                                                </div>
-                                                        </div>
-                                                </div>
-                                        </div>
-                                        
-                                        <div class="lib-item-line">
-                                        <?php $i=1;?>
-					<?php foreach($resource as $rData):?>
-                                                <div class="lib-item lib-shared-<?= $rData->shared ?>" id="lib-item-<?=$rData->id?>"> 
-                                                	<a class="select-lib-img darken" href="#"> 
-                                                        	<img src="<?=$type == 'images' ? $rData->path : $this->url->get('img/file-icon.png')?>" file-path="<?=$rData->path?>" class="lib-img" style="background-color:#fff"> 
-                                                                <span>Click to select</span> 
-                                                        </a>
-                                                        <div class="title-box">
-                                                                <div class="lib-item-title"><?=$rData->name?></div>
-                                                                <div class="lib-item-settings"> 
-                                                                	<i class="fa fa-pencil" item-title="<?=$rData->name?>" item-share="<?=$rData->shared?>" media-id="<?=$rData->id?>"></i> 
-                                                                </div>
-                                                        </div>
-                                                </div>
-                                        <?php if($i++ == 3 ): $i=1;?>
-                                        </div>
-                                        <div class="lib-item-line">
-                                        <?php endif;?>
-                                        <?php endforeach;?>
-                                        </div>
-                                </div>
-                        </div>
-                        <?php endforeach;?>
-                </div>
+        <div class="libheader" style="padding-top:25px">
+            <div>
+                <h1 style="font-size:1.5em">Already uploaded files.</h1>
+            </div>
+            <div style="text-align:right"> </div>
         </div>
+
+        <div id="media_types" style="margin-top:20px">
+            <ul>
+                <?php foreach (array_keys($sres) as $type): ?>
+                        <li><a href="#<?= $type ?>-tab"><?= ucfirst($type) ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+            <?php foreach (array_keys($sres) as $type): ?>
+                    <div id="<?= $type ?>-tab">
+
+                        <div class="lib-item recent-uploads" id="" style="display:none">
+                            <a class="selected-lib-img darken" href="#"> 
+                                <img src="" file-path="" class="lib-img"> 
+                                <span><i class="fa fa-check-square-o"></i> Selected</span>
+                            </a>
+                            <div class="title-box">
+                                <div class="lib-item-title" ></div>
+                                <div class="lib-item-settings"> 
+                                    <i class="fa fa-pencil" item-title="" item-share="exam" media-id=""></i> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shared resources -->
+                        <?php if (!count($sres[$type])): ?>
+                                <div class="lib-missing-msg">No shared <?= $type ?> resources was found. </div>
+                        <?php endif; ?>
+
+                        <div class="lib-tab-area" style="display: <?= count($sres[$type]) > 0 ? '' : 'none' ?>">
+                            <?php foreach ($sres[$type] as $resource): ?>
+                                    <div class="lib-item lib-shared-<?= $resource->shared ?>" id="lib-item-<?= $resource->id ?>"> 
+                                        <a class="select-lib-img darken" href="#"> 
+                                            <img src="<?= $type == 'images' ? $resource->path : $this->url->get('img/file-icon.png') ?>" file-path="<?= $resource->path ?>" class="lib-img" style="background-color:#fff"> 
+                                            <span>Click to select</span> 
+                                        </a>
+                                        <div class="title-box">
+                                            <div class="lib-item-title"><?= $resource->name ?></div>
+                                            <div class="lib-item-settings"> 
+                                                <i class="fa fa-pencil" item-title="<?= $resource->name ?>" item-share="<?= $resource->shared ?>" media-id="<?= $resource->id ?>"></i> 
+                                            </div>
+                                        </div>
+                                    </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- Personal resources -->
+                        <?php if (!count($pres[$type])): ?>
+                                <div class="lib-missing-msg">No personal <?= $type ?> resources was found. </div>
+                        <?php else: ?>
+                                <div style="text-align:left"> 
+                                    <span class="btn btn-default show-personal-files" resource-type="<?= $type ?>"> 
+                                        <i class="fa fa-files-o"></i> <span>Show personal files</span> 
+                                    </span> 
+                                </div>
+                        <?php endif; ?>
+
+                        <div id="lib-personal-<?= $type ?>" class="lib-tab-area" style="display:none">
+                            <?php foreach ($pres[$type] as $resource): ?>
+                                    <div class="lib-item lib-shared-personal" id="lib-item-<?= $resource->id ?>"> 
+                                        <a class="select-lib-img darken" href="#"> 
+                                            <img src="<?= $type == 'images' ? $resource->path : $this->url->get('img/file-icon.png') ?>" file-path="<?= $resource->path ?>" class="lib-img" style="background-color:#fff"> 
+                                            <span>Click to select</span> 
+                                        </a>
+                                        <div class="title-box">
+                                            <div class="lib-item-title"><?= $resource->name ?></div>
+                                            <div class="lib-item-settings"> 
+                                                <i class="fa fa-pencil" item-title="<?= $resource->name ?>" item-share="<?= $resource->shared ?>" media-id="<?= $resource->id ?>"></i> 
+                                            </div>
+                                        </div>
+                                    </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                    </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 </div>
 <br style="clear:both" />
 <script language="javascript">
-var user = '<?=$this->user->getPrincipalName()?>';
+        var user = '<?= $this->user->getPrincipalName() ?>';
 </script>

@@ -47,9 +47,9 @@ class MediaController extends GuiController
                 $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
 
                 // 
-                // Fetch data filtered on the various sharing levels:
+                // Fetch shared resources filtered on sharing levels:
                 // 
-                if (!($resources = Resource::find(array(
+                if (!($sres = Resource::find(array(
                             'conditions' => "
                                     (shared = :private: AND user = ?2) 
                                         OR 
@@ -69,38 +69,83 @@ class MediaController extends GuiController
                             ),
                             'order'      => 'shared,id desc'
                     )))) {
-                        throw new \Exception("Failed fetch resources");
+                        throw new \Exception("Failed fetch shared resources");
                 }
 
                 // 
-                // Filter out mime type in result set:
+                // Fetch personal resource files:
                 // 
-                $images = $resources->filter(function($resource) {
+                if (!($pres = Resource::find(array(
+                            'conditions' => "user = :user: AND exam_id != :exam:",
+                            'bind'       => array(
+                                    'user' => $loggedIn,
+                                    'exam' => $examid
+                            ),
+                            'order'      => 'id desc'
+                    )))) {
+                        throw new \Exception("Failed fetch personal resources");
+                }
+
+                // 
+                // Filter shared resources on mime-type:
+                // 
+                $simages = $sres->filter(function($resource) {
                         if ($resource->type == 'image') {
                                 return $resource;
                         }
                 });
-                $videos = $resources->filter(function($resource) {
+                $svideos = $sres->filter(function($resource) {
                         if ($resource->type == 'video') {
                                 return $resource;
                         }
                 });
-                $audios = $resources->filter(function($resource) {
+                $saudios = $sres->filter(function($resource) {
                         if ($resource->type == 'audio') {
                                 return $resource;
                         }
                 });
-                $others = $resources->filter(function($resource) {
+                $sothers = $sres->filter(function($resource) {
                         if (!in_array($resource->type, array('image', 'video', 'audio'))) {
                                 return $resource;
                         }
                 });
 
-                $this->view->setVar('resources', array(
-                        "images" => $images,
-                        "videos" => $videos,
-                        "audios" => $audios,
-                        "others" => $others
+                // 
+                // Filter personal resources on mime-type:
+                // 
+                $pimages = $pres->filter(function($resource) {
+                        if ($resource->type == 'image') {
+                                return $resource;
+                        }
+                });
+                $pvideos = $pres->filter(function($resource) {
+                        if ($resource->type == 'video') {
+                                return $resource;
+                        }
+                });
+                $paudios = $pres->filter(function($resource) {
+                        if ($resource->type == 'audio') {
+                                return $resource;
+                        }
+                });
+                $pothers = $pres->filter(function($resource) {
+                        if (!in_array($resource->type, array('image', 'video', 'audio'))) {
+                                return $resource;
+                        }
+                });
+
+                $this->view->setVar('sres', array(
+                        "images" => $simages,
+                        "videos" => $svideos,
+                        "audios" => $saudios,
+                        "others" => $sothers
+                ));
+
+                $this->view->setVar('pres', array(
+                        "images" => $pimages,
+                        "videos" => $pvideos,
+                        "audios" => $paudios,
+                        "others" => $pothers
                 ));
 
                 // 

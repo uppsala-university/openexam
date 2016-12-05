@@ -1233,7 +1233,7 @@
 
 
     ul {
-        list-style-image: url("../img/red-bullet.png");
+        list-style-image: url("../../img/red-bullet.png");
         margin: 20px 0 0 40px;
         padding: 0;
     }	
@@ -4564,7 +4564,7 @@ select[name=program] {
     /*margin-left:228px !important;*/
 }
 .ui-autocomplete-loading {
-    background: white url('../img/ui-anim_basic_16x16.gif') right center no-repeat;
+    background: white url('../../img/ui-anim_basic_16x16.gif') right center no-repeat;
 }
 .ui-autocomplete {
     max-height: 100px;
@@ -4784,7 +4784,7 @@ select[name=program] {
 .q_resources .add_resources a {
     color: #C02E3C; 
     font-weight: normal;
-    background: url("../img/plus-button-2.png") no-repeat scroll 0px 0px transparent; 
+    background: url("../../img/plus-button-2.png") no-repeat scroll 0px 0px transparent; 
     line-height: 1.25; 
     margin-left: 2px; 
     padding-left: 15px;
@@ -4981,7 +4981,7 @@ select[name=program] {
 }
 
 .plus-circle {
-    content: url('../img/plus-circle.png');
+    content: url('../../img/plus-circle.png');
     height:12px;
     widows:12px;
 }
@@ -5084,7 +5084,7 @@ select[name=program] {
     cursor:pointer;
 }
 .addNewSortable {
-    background:url('../img/plus-button-2.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0); 
+    background:url('../../img/plus-button-2.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0); 
     padding-left:15px	
 }
 
@@ -5271,7 +5271,9 @@ a.selected-lib-img .lib-img {
 
 .lib-img  {
     /*border: 1px solid #DEDEDE;*/
-    width:100%
+    width:100%;
+    min-width: 100px;
+    height: 80px;
 }
 
 #selected-lib-img {
@@ -5310,16 +5312,38 @@ a.selected-lib-img .lib-img {
 }
 
 .lib-item-line {
+    float: left;
     clear:both;
-    /*border-bottom: 1px dashed grey;
-    margin-bottom:5px;*/
+    display: inline-block;
 }
+
 .lib-item {
     float:left; 
-    width:30%; 
-    padding:1px 2px 1px 1px; 
-    border:1px solid #bebebe;
-    margin:2px;
+    width: 100px;
+    height: 100%;
+    padding: 1px 2px 1px 1px; 
+    border: 1px solid #bebebe;
+    margin: 2px;
+}
+
+.lib-shared-private {
+    border-top: 4px solid #008cff;
+}
+
+.lib-shared-exam {
+    border-top: 4px solid #0dff00;
+}
+
+.lib-shared-group {
+    border-top: 4px solid #f300ff;
+}
+
+.lib-shared-global {
+    border-top: 4px solid #ff7300;
+}
+
+.lib-shared-personal {
+    border-top: 4px solid #aaaaaa;
 }
 
 .lib-item .title-box 
@@ -5336,30 +5360,35 @@ a.selected-lib-img .lib-img {
 
 .lib-item-settings {
     cursor:pointer;
-    /*background:url('/img/settings.png');*/
 }
 
 .lib-tab-area {
-    clear:both; 
-    /*height:400px;*/
-    overflow:auto; 
-    margin-top:15px;
-    max-height:250px;
+    display: flex;
+    overflow: scroll;
+    margin: 10px 0px 10px 0px;
+    max-height: 250px;
+    padding-bottom: 10px;
 }
 
 #lib-items-added {
-    clear:both; 
-    float:right; 
-    width:55%;
+    clear: both; 
+    float: right; 
+    width: 25%;
+    height: 100%;
 }
 
 #lib-items-addables {
-    float:left; 
-    width: 40%; 
-    border-right:5px #999999 solid; 
-    height:100%; 
-    min-height:200px; 
-    padding:5px		
+    float: left; 
+    width: 70%; 
+    border-right: 5px #999999 solid; 
+    height: 100%; 
+    min-height: 400px; 
+    padding: 5px		
+}
+
+.lib-missing-msg {
+    color: #C0C0C0; 
+    text-align: left;     
 }
 
 #lib-default-msg {
@@ -5367,11 +5396,11 @@ a.selected-lib-img .lib-img {
     padding:10px;
 }
 
-#lib-default-msg div{
-    font-size:14px; 
-    color:#C0C0C0; 
-    text-align:center; 
-    margin-top:150px
+#lib-default-msg div {
+    font-size: 1.2em; 
+    color: #C0C0C0; 
+    text-align: center; 
+    margin-top: 150px
 }
 
 td.cc {
