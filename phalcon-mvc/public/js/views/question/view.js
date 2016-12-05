@@ -107,10 +107,6 @@ function syncAnswers(async, redirectToAfterSync)
 
         $('.ans-sync-msg').show();
 
-        failMsg = "Failed to save your answer! \r\n \
-				Please report this issue to the exam invigilator immediately. \r\n \
-				Please DO NOT refresh/close this web page otherwise we may loose your answer.\r\n";
-
         $.ajax({
             type: "POST",
             url: baseURL + 'ajax/core/student/answer/update',
@@ -129,8 +125,11 @@ function syncAnswers(async, redirectToAfterSync)
             }
         }).done(function (respJson) {
             if (typeof respJson.success == "undefined") {
+                failMsg = "\Failed to save your answer!\r\n\Please report to invigilator immediately. Don't refresh or close this page or you may loose your latest changes!\r\n";
                 if (async) {
-                    alert(failMsg + JSON.stringify(respJson));
+                    failMsg += "Error source:   \n------------------\n" + JSON.stringify(respJson) + "\r\n";
+                    failMsg += "Answer recovery:\n------------------\nHit Ctrl+A and Ctrl+C in the text editor to copy your answer. Paste copied text into another text editor (i.e. notepad) and save to disk before reloading the page.";
+                    alert(failMsg);
                 } else {
                     return failMsg;
                 }
