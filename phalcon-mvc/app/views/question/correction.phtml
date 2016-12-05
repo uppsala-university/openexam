@@ -150,9 +150,6 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                                             $totalStudentScore+=$qScore;
                                                             $overallQuestScore[$question->id][] = $qScore;
                                                     endif;
-                                            //else:
-                                            //	$wasAbsent = true;
-                                            //	break;
                                             endif;
 
                                             // get corrector list
@@ -162,12 +159,6 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                             endforeach;
 
                                             ?>
-                                            <?php //$ansResult = count($answers) ? $answers[0]->getResult() : array() ?>
-
-                                            <?php /* foreach($answers as $ans):?>
-                                              <?php $result = $ans->getResult()?>
-                                              <?php $pointsGained += $result->score;?>
-                                              <?php endforeach; */ ?>
 
                                             <?php
                                             // find color code
@@ -337,22 +328,9 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                         <td class="cc gm">&nbsp;</td>
                         <td>Student can pass with some grace marks.</td>
                     </tr>
-                    <!--
-                    <tr class="colorcode">
-                            <td class="cc qr">&nbsp;</td>
-                            <td>Question is flagged as removed (no scores for this question is counted).</td>
-                    </tr>
-                    <tr class="colorcode">
-                            <td class="cc qu">&nbsp;</td>
-                            <td>This question was not assigned to this student.</td>
-                    </tr>
-                    -->
                 </tbody>
             </table>
             <br />
-            <!--
-            <h5>Download Scoreboard</h5>
-            <p>Click <a href="?exam=711&amp;mode=save">here</a> to download the score board.</p>-->
         </div>
     </div>
     <br clear="both">
@@ -450,7 +428,6 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
             $(document).on('change', '.changeable', function () {
                 if (resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
                     resyncableResults.push($(this).attr('ans-id'));
-                    console.log(resyncableResults);
                 }
             });
 
@@ -459,7 +436,9 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                 // Save result with values, but not yet saved by default. Give
                 // caller an option to force save all result.
                 // 
-                resyncableResults = getSyncableResults('unsaved');
+                if (resyncableResults.length == 0) {
+                    resyncableResults = getSyncableResults('unsaved');
+                }
 
                 if (resyncableResults.length == 0) {
                     if (confirm('No result need to be saved. Save anyway?')) {
@@ -616,7 +595,6 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                     resyncableResults = jQuery.grep(resyncableResults, function (value) {
                                         return value != rData.answer_id;
                                     });
-                                    console.log(resyncableResults);
                                 }
                             }
                     );
@@ -633,7 +611,6 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
 
                                 $.each(resultsUpdate, function (i, rec) {
 
-                                    console.log(rec);
                                     var tScore = 0;
                                     $.each(jQuery.parseJSON(rec.score), function (j, sc) {
                                         tScore = tScore + parseFloat(sc);
@@ -648,16 +625,13 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                         $('a[ans-id="' + rec.answer_id + '"]').parent().removeClass('nc').addClass('ac');
                                     }
                                 });
-
-                                console.log(resyncableResults);
                             }
                     );
                 }
 
             }
         });
-</script>
-<script>
+
         $(function () {
             var progressTimer,
                     progressbar = $("#progressbar"),
