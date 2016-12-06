@@ -36,6 +36,11 @@ define('EXTERN_DIR', APP_DIR . '/extern/');
 define('CONFIG_PHP', CONFIG_SYS . '/config.php');
 
 // 
+// An instance unique cache key:
+// 
+$cachekey = sprintf("site-config-%s", basename(dirname(dirname(__DIR__))));
+
+// 
 // Keep system configuration in cache:
 // 
 $frontend = new Phalcon\Cache\Frontend\Data(array(
@@ -43,12 +48,12 @@ $frontend = new Phalcon\Cache\Frontend\Data(array(
     )
 );
 $backend = new Phalcon\Cache\Backend\Xcache($frontend, array(
-        "prefix" => "config-data"
+        "prefix" => $cachekey
     )
 );
-if (!($config = $backend->get('site-config'))) {
+if (!($config = $backend->get($cachekey))) {
         $config = include(CONFIG_PHP);
-        $backend->save('site-config', $config);
+        $backend->save($cachekey, $config);
 }
 
 if ($config->application->release) {
