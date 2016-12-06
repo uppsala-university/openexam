@@ -27,10 +27,29 @@ foreach ($grades as $k => $grade) :
 endforeach;
 arsort($examGrades);
 
-// if exam has been decoded or not
-$decoded = $exam->decoded;
+if ($exam->decoded || $this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
+        $exam->show_percent = true;
+} else {
+        $exam->show_percent = false;
+}
 
-$showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id) !== false);
+if ($this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id) && $exam->getState()->isCorrected()) {
+        $exam->show_download = true;
+} else {
+        $exam->show_download = false;
+}
+
+if (!$exam->decoded && $this->user->roles->aquire(Roles::DECODER, $exam->id) && $exam->getState()->isCorrected()) {
+        $exam->show_decode = true;
+} else {
+        $exam->show_decode = false;
+}
+
+if ($exam->decoded || $this->user->roles->aquire(Roles::CREATOR, $exam->id) || (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) != 0)) {
+        $exam->show_grades = true;
+} else {
+        $exam->show_grades = false;
+}
 
 ?>
 
@@ -38,49 +57,47 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
 <div id="container" class="left_menu_space" style="width:100%">
     <div id="centerColWide" style="width:95%">
         <div id="mainview">
-            <?php if (!$decoded): ?>
+            <?php if (!$exam->decoded): ?>
                     <h3>Exam correction</h3>
                     <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
                     <p>Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.</p>
             <?php else: ?>
                     <h3>Exam score board</h3>
                     <p>Following table shows the final result of all students for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
-                    <p>You can view the student's answers by student (rows), by question (column) or individual (by index). As this exam has been decoded, it is no more possible to change student results.</p>
+                    <p>You can view the student's answers by student (rows), by question (column) or individual (by index). This exam has been decoded, so it's no longer possible to change student results.</p>
             <?php endif; ?>
 
 
             <div>
                 <center>
-                    <?php if (!$decoded && $this->user->aquire(array('decoder'), $exam->id) !== false && in_array('decodable', $exam->flags)): ?>
-                            <button id="decode-exam" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding:5px 15px">
+                    <?php if ($exam->show_decode): ?>
+                            <button id="decode-exam" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 5px 15px; min-width: 220px" title="Click to decode the exam. Confirmation is required as this is an irreversable operation">
                                 <h5 style="font-style:normal; font-size:12px">
-                                    <i class="fa fa-check-circle" style="color:green"></i> 
-                                    I am satisfied with exam correction, Decode this exam.
+                                    <i class="fa fa-check-circle fa-lg" style="color:green"></i> 
+                                    Decode this exam.
                                 </h5>
                             </button>
                     <?php endif; ?>
 
-                    <?php if ($this->user->aquire(array('decoder'), $exam->id) !== false && ($decoded || in_array('decodable', $exam->flags))): ?>
-                            <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-                                <button id="download-scoreboard" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding:5px 15px">
-                                    <h5 style="font-style:normal; font-size:12px" >
-                                        <i class="fa fa-file-excel-o" style="color:#1D9D73"></i>
-                                        <span class="download-msg"> Download score board (xls)</span>
-                                    </h5>
-                                </button>
-                        <?php endif; ?>
+                    <?php if ($exam->show_download): ?>
+                            <button id="download-scoreboard" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 5px 15px; min-width: 220px" title="Download score board in spreadsheet format">
+                                <h5 style="font-style:normal; font-size:12px" >
+                                    <i class="fa fa-file-excel-o fa-lg" style="color:#1D9D73"></i>
+                                    <span class="download-msg"> Download score board</span>
+                                </h5>
+                            </button>
+                    <?php endif; ?>
 
-                        <?php if ($decoded): ?>
-                                <button id="downloadButton">
-                                    <h5 style="font-style:normal; font-size:12px" >
-                                        <i class="fa fa-file-pdf-o" style="color:red"></i>
-                                        <span class="download-msg"> Download all student's answers (pdf)</span>
-                                    </h5>
-                                </button>
-                        <?php endif; ?>
+                    <?php if ($exam->decoded): ?>
+                            <button id="download-results" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 0px 15px; min-width: 220px" title="Download zip-file containing all students result">
+                                <h5 style="font-style:normal; font-size:12px" >
+                                    <i class="fa fa-file-pdf-o fa-lg" style="color:red"></i>
+                                    <span class="download-msg"> Download student results</span>
+                                </h5>
+                            </button>
+                    <?php endif; ?>
                 </center>
             </div>	
-
 
             <div style="overflow:scroll" id="scoreboard-wrapper">
                 <table class="tablesorter">
@@ -100,7 +117,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                     <th style="background-color:#EAEAEA; width:62px" class="sortable">
                         Student
                     </th>
-                    <?php if ($decoded): ?>
+                    <?php if ($exam->decoded): ?>
                             <th style="background-color:#EAEAEA; width:62px" class="sortable">
                                 F. name
                             </th>
@@ -111,7 +128,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                 P No.
                             </th>
                     <?php endif; ?>
-                    <?php if ($showPercentScore): ?>
+                    <?php if ($exam->show_percent): ?>
                             <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sortable">
                             <div style="text-align: center">
                                 Total score
@@ -120,7 +137,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                             </th> 
                             <th class="sortable" style="background-color:#EAEAEA; max-width:65px; text-align:center">%</th>
                     <?php endif; ?>
-                    <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) == Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
+                    <?php if ($exam->show_grades): ?>
                             <th class="sortable" style="background-color:#EAEAEA; width:35px;  text-align:center">Grade</th>
                     <?php endif; ?>
                     </tr>
@@ -187,17 +204,16 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                             </td>
 
                                     <?php endforeach; ?>
-                                    <?php //if($wasAbsent) continue;  ?>
                                     <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                        <?php if ($decoded): ?>
+                                        <?php if ($exam->decoded): ?>
                                                 <a title="download result in pdf format" href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>"><i class="fa fa-file-pdf-o" style="color:red"></i></a>    
                                                 &nbsp; &nbsp; &nbsp;
                                         <?php endif; ?> 
                                         <a class="fb fancybox.ajax fill" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">
-                                            <?= $decoded ? $student->code : Student . '(' . $student->id . ')' ?>
+                                            <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
                                         </a>
                                     </td>
-                                    <?php if ($decoded): ?>
+                                    <?php if ($exam->decoded): ?>
                                             <?php $stName = explode(' ', $this->helper->getCatalogAttribute($student->user, 'name'), 2); ?>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                     <!--<a class="fb fancybox.ajax" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">-->
@@ -213,7 +229,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                                 <?= substr(substr_replace($this->helper->getCatalogAttribute($student->user, 'pnr'), "-", 8, 0), 2); ?>
                                             </td>
                                     <?php endif; ?>
-                                    <?php if ($showPercentScore): ?>
+                                    <?php if ($exam->show_percent): ?>
                                             <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
                                                 <?= $totalStudentScore ?>
                                                 <?php
@@ -233,7 +249,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                                 ?>
                                             </td>
                                     <?php endif ?>
-                                    <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) == Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
+                                    <?php if ($exam->show_grades): ?>
                                             <?php
                                             $needGraceMarks = false;
                                             foreach ($examGrades as $grade => $limit) :
@@ -277,12 +293,12 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                             <?php endforeach; ?>
 
                             <th  class="cc aa" align="right" style="vertical-align:top;">Average:</th>
-                            <?php if ($decoded): ?>
+                            <?php if ($exam->decoded): ?>
                                     <th align="right" style="vertical-align:top;"></th>
                                     <th align="right" style="vertical-align:top;"></th>
                                     <th align="right" style="vertical-align:top;"></th>
                             <?php endif; ?>
-                            <?php if ($showPercentScore): ?>
+                            <?php if ($exam->show_percent): ?>
                                     <td class="cc aa">
                                         <?= sprintf("%1.1f", array_sum($avgScore) / count($avgScore)) ?>/<?= $totalExamScore ?>
                                     </td>
@@ -290,7 +306,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                                         <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
                                     </td>
                             <?php endif; ?>
-                            <?php if ($decoded || $this->user->getPrincipalName() == $exam->creator || (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) == Exam::EXPOSE_GRADES_DURING_CORRECTION)): ?>
+                            <?php if ($exam->show_grades): ?>
                                     <td class="cc aa" style="text-align:right; margin:0; padding:0">
                                         <?php foreach ($examGrades as $grade => $limit): ?>
                                                 <div style="padding:1px; "><b><?= $grade ?></b>: <?= $avgGrades[$grade] ?></div>
@@ -310,7 +326,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                         <td class="cc ac">&nbsp;</td>
                         <td>Answer has been corrected.</td>
                     </tr>
-                    <?php if (!$decoded && $this->user->getPrincipalName() == $exam->creator): ?>
+                    <?php if (!$exam->decoded && $this->user->getPrincipalName() == $exam->creator): ?>
                             <tr class="colorcode">
                                 <td class="cc no">&nbsp;</td>
                                 <td>This answer should be corrected by another person.</td>
@@ -373,7 +389,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
             // keep column order
             jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function () {
                 if (($(this).children().length)) {
-                    for (i = 0; i <<?= $decoded ? "7" : ($showPercentScore ? "4" : "2") ?>; i++) {
+                    for (i = 0; i <<?= $exam->decoded ? "7" : ($exam->show_percent ? "4" : "2") ?>; i++) {
                         $(this).children(":first").before($(this).children(":last"));
                     }
                 } else {
@@ -656,7 +672,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
                     downloadButton.find('.download-msg').html('Download result of all students');
                 }
             }),
-                    downloadButton = $("#downloadButton")
+                    downloadButton = $("#download-results")
                     .button()
                     .on("click", function () {
 
@@ -719,7 +735,7 @@ $showPercentScore = ($decoded || $this->user->aquire(array(Roles::DECODER, Roles
             }
 
 <?php if (stristr($_SERVER['REQUEST_URI'], 'download-result')): ?>
-                    $("#downloadButton").trigger('click');
+                    $("#download-results").trigger('click');
 <?php endif; ?>
         });
 </script>
