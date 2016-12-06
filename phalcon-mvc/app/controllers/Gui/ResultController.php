@@ -285,7 +285,7 @@ class ResultController extends GuiController
                                 throw new \Exception("Failed to generate Excel (HTML) Spreadsheet.");
                         }
 
-                        file_put_contents($source, $data);
+                        file_put_contents($source, utf8_decode($data));
                         print "exported";
                         return;
                 }
