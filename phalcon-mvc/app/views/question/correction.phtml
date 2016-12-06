@@ -51,6 +51,17 @@ if ($exam->decoded || $this->user->roles->aquire(Roles::CREATOR, $exam->id) || (
         $exam->show_grades = false;
 }
 
+if (!$exam->getState()->isCorrected()) {
+        $exam->show_download = false;
+        $exam->show_decode = false;
+        $exam->show_percent = false;
+        
+        if ($exam->decoded) {
+                $exam->decoded = false;
+                printf("<div class=\"alert alert-warning\">Your exam is flagged as decoded, but some answers are still uncorrected. Please contact the system administrator to resolve this issue.</div>");
+        }
+}
+
 ?>
 
 <!-- Main area -->
