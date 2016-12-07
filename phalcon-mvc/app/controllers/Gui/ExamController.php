@@ -15,13 +15,13 @@ namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
+use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\DateTime;
 use OpenExam\Library\Gui\Component\Phase;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Question;
-use OpenExam\Models\Student;
 use OpenExam\Models\Topic;
 use Phalcon\Mvc\View;
 
@@ -44,110 +44,98 @@ class ExamController extends GuiController
          */
         public function indexAction()
         {
-                // initializations
-                $loggedIn = $this->user->getPrincipalName();
-                $colList = "e.*";
-
-                #------------ Upcoming student exam --------#
-                $exams['student-upcoming'] = $this->modelsManager
-                    ->executeQuery(
-                    "select $colList from OpenExam\Models\Exam e "
-                    . "inner join OpenExam\Models\Student s "
-                    . "where "
-                    . "s.user = :user: and "
-                    . "("
-                    . "(s.endtime is NULL and e.endtime >= NOW()) or "
-                    . "(s.endtime is not NULL  and s.endtime >= NOW()) or"
-                    . "(e.starttime is not NULL  and e.endtime is null)"
-                    . ") and "
-                    . "e.published = 'Y' "
-                    . "order by e.starttime desc "
-                    , array("user" => $loggedIn)
-                );
-                $stExamsToday = $exams['student-upcoming']->filter(function($resource) {
-                        if (date("Y-m-d", strtotime($resource->starttime)) == date('Y-m-d')) {
-                                return $resource;
+                // 
+                // Get all published exams using the student role:
+                // 
+                $this->user->setPrimaryRole(Roles::STUDENT);
+                if (!($exams['student'] = Exam::find(array(
+                            'conditions' => "published = 'Y'",
+                            'order'      => 'starttime DESC'
+                    )))) {
+                        throw new \Exception("Failed query student exams");
+                }
+                // 
+                // Filter student exams on upcoming and ongoing:
+                // 
+                $exams['student-upcoming'] = $exams['student']->filter(function($exam) {
+                        if ($exam->state & State::UPCOMING || $exam->state & State::RUNNING) {
+                                return $exam;
                         }
                 });
-                if (count($stExamsToday) == 1) {
-                        return $this->response->redirect('exam/' . $stExamsToday[0]->id);
+                // 
+                // Filter student exams on finished:
+                // 
+                $exams['student-finished'] = $exams['student']->filter(function($exam) {
+                        if ($exam->state & State::FINISHED) {
+                                return $exam;
+                        }
+                });
+                unset($exams['student']);
+
+                // 
+                // Get exams using the creator role:
+                // 
+                $this->user->setPrimaryRole(Roles::CREATOR);
+                if (!($exams['creator'] = Exam::find(array(
+                            'order' => 'created DESC'
+                    )))) {
+                        throw new \Exception("Failed query creator exams");
                 }
 
-                if (!count($stExamsToday)) {
-                        #------------ Finished student exam --------#                
-                        $exams['student-finished'] = $this->modelsManager
-                            ->executeQuery(
-                            "select $colList from OpenExam\Models\Exam e "
-                            . "inner join OpenExam\Models\Student s "
-                            . "where "
-                            . "s.user = :user: and "
-                            . "("
-                            . "(s.endtime is NULL and e.endtime < NOW()) or "
-                            . "(s.endtime is not NULL and s.endtime < NOW())"
-                            . ") and "
-                            . "e.published = 'Y' "
-                            . "order by e.endtime desc "
-                            , array("user" => $loggedIn)
-                        );
+                // 
+                // Get exams using the contributor role:
+                // 
+                $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
+                if (!($exams['contributor'] = Exam::find(array(
+                            'order' => 'created DESC'
+                    )))) {
+                        throw new \Exception("Failed query contributor exams");
                 }
 
-                #------------ Exam creator --------#
-                if ($this->user->aquire(array(Roles::TEACHER))) {
-                        $exams['creator'] = $this->modelsManager
-                            ->executeQuery(
-                            "select $colList from OpenExam\Models\Exam e "
-                            . "where creator = :user: order by created desc "
-                            //.   "limit " . self::EXAMS_PER_PAGE
-                            , array("user" => $loggedIn)
-                        );
+                // 
+                // Get exams using the invigilator role:
+                // 
+                $this->user->setPrimaryRole(Roles::INVIGILATOR);
+                if (!($exams['invigilator'] = Exam::find(array(
+                            'order' => 'created DESC'
+                    )))) {
+                        throw new \Exception("Failed query invigilator exams");
                 }
 
-                #------------ Exam contributor --------#
-                $exams['contributor'] = $this->modelsManager
-                    ->executeQuery(
-                    "select $colList from OpenExam\Models\Exam e "
-                    . "inner join OpenExam\Models\Contributor c "
-                    . "where c.user = :user: order by created desc "
-                    //.   "limit " . self::EXAMS_PER_PAGE
-                    , array("user" => $loggedIn)
-                );
+                // 
+                // Get exams using the corrector role:
+                // 
+                $this->user->setPrimaryRole(Roles::CORRECTOR);
+                if (!($exams['corrector'] = Exam::find(array(
+                            'order' => 'created DESC'
+                    )))) {
+                        throw new \Exception("Failed query corrector exams");
+                }
 
-                #------------ Exam invigilator --------#
-                $exams['invigilator'] = $this->modelsManager
-                    ->executeQuery(
-                    "select $colList from OpenExam\Models\Exam e "
-                    . "inner join OpenExam\Models\Invigilator i "
-                    . "where i.user = :user: order by created desc "
-                    //.   "limit " . self::EXAMS_PER_PAGE
-                    , array("user" => $loggedIn)
-                );
+                // 
+                // Get exams using the decoder role:
+                // 
+                $this->user->setPrimaryRole(Roles::DECODER);
+                if (!($exams['decoder'] = Exam::find(array(
+                            'order' => 'created DESC'
+                    )))) {
+                        throw new \Exception("Failed query decoder exams");
+                }
 
-                #------------ Question corrector --------#
-                $exams['corrector'] = $this->modelsManager
-                    ->executeQuery(
-                    "select distinct $colList from OpenExam\Models\Exam e "
-                    . "inner join OpenExam\Models\Question q "
-                    . "inner join OpenExam\Models\Corrector c on q.id = c.question_id "
-                    . "where c.user = :user: order by created desc"
-                    //.   "limit " . self::EXAMS_PER_PAGE
-                    , array("user" => $loggedIn)
-                );
+                // 
+                // Reset primary role:
+                // 
+                $this->user->setPrimaryRole(null);
 
-                #------------ Exam decoder --------#
-                $exams['decoder'] = $this->modelsManager
-                    ->executeQuery(
-                    "select $colList from OpenExam\Models\Exam e "
-                    . "inner join OpenExam\Models\Decoder d "
-                    . "where d.user = :user: order by created desc "
-                    //.   "limit " . self::EXAMS_PER_PAGE
-                    , array("user" => $loggedIn)
-                );
+                // 
+                // Set data for view:
+                // 
+                $this->view->setVar('roleBasedExamList', $exams);
 
-                // pass data to view
-                $this->view->setVars(array(
-                        'roleBasedExamList' => $exams,
-                        'baseRole'          => $baseRole
-                ));
+                // 
+                // Cleanup:
+                // 
+                unset($exams);
         }
 
         /**
@@ -159,17 +147,15 @@ class ExamController extends GuiController
          */
         public function createAction()
         {
-                // create a new exam
                 $exam = new Exam();
-                $examSaved = $exam->save(array(
-                        'name'    => ' ',
-                        'descr'   => ' ',
-                        'creator' => $this->user->getPrincipalName(),
-                        'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75',
-                        'details' => 7
-                ));
 
-                if (!$examSaved) {
+                if ($exam->save(array(
+                            'name'    => ' ',
+                            'descr'   => ' ',
+                            'creator' => $this->user->getPrincipalName(),
+                            'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75',
+                            'details' => 7
+                    )) == false) {
                         throw new \Exception(
                         sprintf("Failed to initialize exam (%s)", $exam->getMessages()[0])
                         );
@@ -186,20 +172,16 @@ class ExamController extends GuiController
          */
         public function updateAction($examId)
         {
-                /*                //@ToDO: get roles from access.def
-                  //someone will be able to access this action when he is permitted
-                  //to be here
-                  // allowed roles for a user to be in this action
-                  $allowedRoleList = array('admin', 'creator', 'contributor');
+                // 
+                // Sanitize:
+                // 
+                if (!($examId = $this->filter->sanitize($examId, "int"))) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
 
-                  // get the role because of which this looged in person has got
-                  // permissions to be in current controller/action
-                  $role = $this->user->aquire($allowedRoleList, $examId, false)[0];
-                 */
-                // sanitize
-                $examId = $this->filter->sanitize($examId, "int");
-
-                // check if role has been passed
+                // 
+                // Check if role has been passed:
+                // 
                 $params = $this->dispatcher->getParams();
                 if (isset($params[1]) && in_array($params[1], $this->capabilities->getRoles())) {
                         $this->user->setPrimaryRole($params[1]);
@@ -207,14 +189,23 @@ class ExamController extends GuiController
                         throw new \Exception("Invalid URL.");
                 }
 
-                // fetch data
+                // 
+                // Fetch data:
+                // 
                 $exam = Exam::findFirst($examId);
 
-                // pass data to view
+                // 
+                // Set view data:
+                // 
                 $this->view->setVars(array(
                         'exam' => $exam
-                    //'myRole' => $role,
                 ));
+
+                // 
+                // Cleanup:
+                // 
+                unset($exam);
+                unset($params);
         }
 
         /**
@@ -225,10 +216,8 @@ class ExamController extends GuiController
          */
         public function replicateAction($examId)
         {
-                $examId = $this->filter->sanitize($examId, "int");
-
-                if (!isset($examId)) {
-                        throw new \Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
+                if (!($examId = $this->filter->sanitize($examId, "int"))) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 if (!$this->user->roles->aquire(Roles::CREATOR, $examId) ||
@@ -236,7 +225,7 @@ class ExamController extends GuiController
                         throw new \Exception("Only creator or admins can replicate exams", Error::FORBIDDEN);
                 }
 
-                if (($exam = Exam::findFirst($examId)) == null) {
+                if (($oldExam = Exam::findFirst($examId)) == null) {
                         throw new \Exception("Failed lookup exam", Error::INTERNAL_SERVER_ERROR);
                 }
 
@@ -244,15 +233,16 @@ class ExamController extends GuiController
                 // Create new exam with inherited properties:
                 // 
                 $newExam = new Exam();
+
                 if ($newExam->save(array(
-                            "name"    => $exam->name,
-                            "descr"   => $exam->descr,
-                            "creator" => $exam->creator,
-                            "details" => $exam->details,
-                            "orgunit" => $exam->orgunit,
-                            "grades"  => $exam->grades
+                            "name"    => $oldExam->name,
+                            "descr"   => $oldExam->descr,
+                            "creator" => $oldExam->creator,
+                            "details" => $oldExam->details,
+                            "orgunit" => $oldExam->orgunit,
+                            "grades"  => $oldExam->grades
                     )) == false) {
-                        throw new \Exception("Failed save new exam");
+                        throw new \Exception(sprintf("Failed save new exam (%s)", $newExam->getMessages()[0]));
                 }
 
                 // 
@@ -275,25 +265,34 @@ class ExamController extends GuiController
                                 // Replicate topics. Keep track on new topics by
                                 // adding them to the topics map.
                                 // 
-                                foreach ($exam->topics as $topic) {
+                                foreach ($oldExam->topics as $oldTopic) {
+                                        if ($oldTopic->name == 'default') {
+                                                $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
+                                                continue;
+                                        }
+
                                         $newTopic = new Topic();
                                         if ($newTopic->save(array(
                                                     "exam_id"   => $newExam->id,
-                                                    "name"      => $topic->name,
-                                                    "randomize" => $topic->randomize,
-                                                    "grades"    => $topic->grades,
-                                                    "depend"    => $topic->depend
+                                                    "name"      => $oldTopic->name,
+                                                    "randomize" => $oldTopic->randomize,
+                                                    "grades"    => $oldTopic->grades,
+                                                    "depend"    => $oldTopic->depend
                                             )) == false) {
-                                                throw new \Exception("Failed duplicate topic");
+                                                throw new \Exception(sprintf("Failed duplicate topic (%s)", $newTopic->getMessages()[0]));
                                         }
-                                        $topicsMap[$topic->id] = $newTopic->id;
+                                        $topicsMap[$oldTopic->id] = $newTopic->id;
+
+                                        unset($oldTopic);
+                                        unset($newTopic);
                                 }
                         } else {
                                 // 
                                 // Map all topics to default topic:
                                 // 
-                                foreach ($exam->topics as $topic) {
-                                        $topicsMap[$topic->id] = $newExam->topics[0]->id;
+                                foreach ($oldExam->topics as $oldTopic) {
+                                        $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
+                                        unset($oldTopic);
                                 }
                         }
 
@@ -301,7 +300,7 @@ class ExamController extends GuiController
                         // Replicate questions and correctors if selected:
                         // 
                         if (in_array('questions', $replicateOpts)) {
-                                foreach ($exam->questions as $quest) {
+                                foreach ($oldExam->questions as $oldQuest) {
 
                                         // 
                                         // Replicate question:
@@ -310,29 +309,35 @@ class ExamController extends GuiController
 
                                         if ($newQuest->save(array(
                                                     "exam_id"  => $newExam->id,
-                                                    "topic_id" => $topicsMap[$quest->topic_id],
-                                                    "score"    => $quest->score,
-                                                    "name"     => $quest->name,
-                                                    "quest"    => $quest->quest,
-                                                    "status"   => $quest->status,
-                                                    "comment"  => $quest->comment,
-                                                    "grades"   => $quest->grades
+                                                    "topic_id" => $topicsMap[$oldQuest->topic_id],
+                                                    "score"    => $oldQuest->score,
+                                                    "name"     => $oldQuest->name,
+                                                    "quest"    => $oldQuest->quest,
+                                                    "status"   => $oldQuest->status,
+                                                    "comment"  => $oldQuest->comment,
+                                                    "grades"   => $oldQuest->grades
                                             )) == false) {
-                                                throw new \Exception("Failed duplicate question");
+                                                throw new \Exception(sprintf("Failed duplicate question (%s)", $newQuest->getMessages()[0]));
                                         }
 
                                         // 
                                         // Replicate question correctors:
                                         // 
-                                        foreach ($quest->correctors as $corrector) {
+                                        foreach ($oldQuest->correctors as $oldCorrector) {
                                                 $newCorrector = new Corrector();
                                                 if ($newCorrector->save(array(
                                                             "question_id" => $newQuest->id,
-                                                            "user"        => $corrector->user
+                                                            "user"        => $oldCorrector->user
                                                     )) == false) {
-                                                        throw new \Exception("Failed duplicate corrector");
+                                                        throw new \Exception(sprintf("Failed duplicate corrector (%s)", $newCorrector->getMessages()[0]));
                                                 }
+
+                                                unset($newCorrector);
+                                                unset($oldCorrector);
                                         }
+
+                                        unset($newQuest);
+                                        unset($oldQuest);
                                 }
                         }
 
@@ -350,7 +355,7 @@ class ExamController extends GuiController
                                 );
 
                                 foreach ($roles as $role => $class) {
-                                        foreach ($exam->$role as $member) {
+                                        foreach ($oldExam->$role as $member) {
 
                                                 // 
                                                 // Skip user added by behavior.
@@ -366,18 +371,30 @@ class ExamController extends GuiController
                                                     )) == false) {
                                                         throw new \Exception("Failed duplicate role");
                                                 }
+
+                                                unset($newRole);
                                         }
                                 }
                         }
+
+                        unset($replicateOpts);
+                        unset($topicsMap);
                 }
 
                 $this->session->set('draft-exam-id', $newExam->id);
 
                 $this->view->disable();
-                return $this->response->setJsonContent(array(
-                            "status"  => "success",
-                            "exam_id" => $newExam->id
+                $this->response->setJsonContent(array(
+                        "status"  => "success",
+                        "exam_id" => $newExam->id
                 ));
+                $this->response->send();
+
+                // 
+                // Cleanup:
+                // 
+                unset($oldExam);
+                unset($newExam);
         }
 
         /**
@@ -388,43 +405,59 @@ class ExamController extends GuiController
          */
         public function instructionAction($examId)
         {
-                $loggedIn = $this->user->getPrincipalName();
-
-                // sanitize
-                $examId = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
-
-                // fetch exam data if it has not been finished yet
-                $exam = Exam::findFirst($examId);
-                if (!$exam) {
-                        return $this->response->redirect('exam/index');
+                // 
+                // Sanitize:
+                // 
+                if (!($examId = $this->filter->sanitize(
+                    $this->dispatcher->getParam("examId"), "int")
+                    )) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
-                if ($exam->creator == $loggedIn) {
-                        $testMode = TRUE;
+                // 
+                // Fetch exam data either as creator or student:
+                // 
+                if ($this->user->roles->aquire(Roles::CREATOR, $examId)) {
+                        $this->user->setPrimaryRole(Roles::CREATOR);
                 } else {
+                        $this->user->setPrimaryRole(Roles::STUDENT);
+                }
 
-                        ## find student id of this logged in person for this exam
-                        $student = Student::findFirst("user = '" . $loggedIn . "' and exam_id = " . $examId);
-                        if (!$student) {
-                                throw new \Exception("You are not authorized to access this exam");
-                        }
+                // 
+                // Redirect to start page if exam is missing:
+                // 
+                if (!($exam = Exam::findFirst($examId))) {
+                        return $this->response->redirect($this->config->session->startPage);
+                }
 
-                        $examStartsAt = !is_null($student->starttime) ? $student->starttime : $exam->starttime;
-                        $examEndsAt = !is_null($student->endtime) ? $student->endtime : $exam->endtime;
-
-                        ## load exam with time checking
-                        if (!is_null($examEndsAt) && strtotime($examEndsAt) < strtotime("now")) {
-                                return $this->response->redirect('exam/index');
+                // 
+                // Check that exam has not finished:
+                // 
+                if ($this->user->getPrimaryRole() == Roles::STUDENT) {
+                        if ($exam->state & State::FINISHED) {
+                                return $this->response->redirect($this->config->session->startPage);
                         }
                 }
 
-                $this->view->setVars(array(
-                        "exam"    => $exam,
-                        "student" => $student
-                ));
+                // 
+                // Set test mode if exam creator:
+                // 
+                if ($this->user->getPrimaryRole() == Roles::CREATOR) {
+                        $this->view->setVar('testMode', true);
+                } else {
+                        $this->view->setVar('testMode', false);
+                }
 
-                // $this->view->setVar("tr", new Translate('admin'));
+                // 
+                // Set exam and layout for instructions view:
+                // 
+                $this->view->setVar('exam', $exam);
                 $this->view->setLayout('thin-layout');
+
+                // 
+                // Cleanup:
+                // 
+                unset($exam);
         }
 
         /**
@@ -435,26 +468,44 @@ class ExamController extends GuiController
          */
         public function studentsAction()
         {
+                // 
+                // Render view as popup page:
+                // 
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
-                // sanitize
-
-                $examId = $this->filter->sanitize($this->request->getPost("exam_id"), "int");
-                if ($examId) {
-
-                        // load exam data if exam time has not been finished
-                        $exam = Exam::findFirst("id = " . $examId . " and (endtime IS NULL or endtime > NOW())");
-                        if (!$exam) {
-                                throw new \Exception("Sorry! "
-                                . "Exam time has been finished. <br>"
-                                . "It is no more possible to manage student's data.");
-                        }
-                } else {
-                        throw new \Exception("Unable to load student list for this exam");
+                // 
+                // Sanitize:
+                // 
+                if (!($examId = $this->request->get('exam_id', "int"))) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
-                $this->view->setVar("exam", $exam);
-                $this->view->setVar("domains", $this->catalog->getDomains());
+                // 
+                // Try to find exam in request parameter:
+                // 
+                if (!($exam = Exam::findFirst(array(
+                            'conditions' => 'id = :exam: AND (endtime IS NULL OR endtime > NOW())',
+                            'bind'       => array(
+                                    'exam' => $examId
+                            )
+                    )))) {
+                        throw new \Exception("Sorry! "
+                        . "Exam time has been finished. <br>"
+                        . "It is no more possible to manage student's data.");
+                }
+
+                // 
+                // Set data for view:
+                // 
+                $this->view->setVars(array(
+                        "exam"    => $exam,
+                        "domains" => $this->catalog->getDomains()
+                ));
+
+                // 
+                // Cleanup:
+                // 
+                unset($exam);
         }
 
         /**
@@ -465,20 +516,34 @@ class ExamController extends GuiController
          */
         public function settingsAction()
         {
+                // 
+                // Render view as popup page:
+                // 
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
-                // sanitize
-                $examId = $this->filter->sanitize($this->request->getPost("exam_id"), "int");
-                if ($examId) {
-
-                        // load exam data if exam time has not been finished
-                        $exam = Exam::findFirst($examId);
-                        if (!$exam) {
-                                throw new \Exception("Unable to load exam settings.");
-                        }
+                // 
+                // Sanitize:
+                // 
+                if (!($examId = $this->request->get('exam_id', "int"))) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
+                // 
+                // Try to find exam in request parameter:
+                // 
+                if (!($exam = Exam::findFirst($examId))) {
+                        throw new \Exception("Failed find requested exam.", Error::BAD_REQUEST);
+                }
+
+                // 
+                // Set data for view:
+                // 
                 $this->view->setVar("exam", $exam);
+
+                // 
+                // Cleanup:
+                // 
+                unset($exam);
         }
 
         /**
@@ -489,19 +554,39 @@ class ExamController extends GuiController
          */
         public function securityAction()
         {
+                // 
+                // Render view as popup page:
+                // 
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
+                // 
+                // Sanitize:
+                // 
                 if (($examId = $this->request->getPost("exam_id", "int")) == null) {
-                        throw new \Exception("Missing exam ID");
-                }
-                if (($exam = Exam::findFirst($examId)) == false) {
-                        throw new \Exception("Unable to load exam settings.");
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
-                $this->view->setVar("active", $this->location->getActive($examId));
-                $this->view->setVar("system", $this->location->getSystem());
-                $this->view->setVar("recent", $this->location->getRecent());
-                $this->view->setVar("exam", $exam);
+                // 
+                // Try to find exam in request parameter:
+                // 
+                if (($exam = Exam::findFirst($examId)) == false) {
+                        throw new \Exception("Failed find requested exam.", Error::BAD_REQUEST);
+                }
+
+                // 
+                // Set data for view:
+                // 
+                $this->view->setVars(array(
+                        "active" => $this->location->getActive($examId),
+                        "system" => $this->location->getSystem(),
+                        "recent" => $this->location->getRecent(),
+                        "exam"   => $exam
+                ));
+
+                // 
+                // Cleanup:
+                // 
+                unset($exam);
         }
 
         /**
@@ -509,21 +594,60 @@ class ExamController extends GuiController
          */
         public function pendingAction()
         {
+                // 
+                // Get forwarded exam:
+                // 
                 $exam = $this->dispatcher->getParam('exam');
-                $this->view->setVar('exam', $exam);
-                $this->view->setVar('icon', $this->url->get('/img/clock.png'));
-                $this->view->setVar('retry', $this->url->get('/exam/' . $exam->id . '/question/1'));
+
+                // 
+                // Set view data:
+                // 
+                $this->view->setVars(array(
+                        'exam'  => $exam,
+                        'icon'  => $this->url->get('/img/clock.png'),
+                        'retry' => $this->url->get('/exam/' . $exam->id . '/question/1')
+                ));
+
+                // 
+                // Cleanup:
+                // 
+                unset($exam);
         }
 
+        /**
+         * View for displaying exam details (i.e. state).
+         * @param int $examId The exam ID.
+         * @throws \Exception
+         */
         public function detailsAction($examId)
         {
-                if (($exam = Exam::findFirst($examId)) == false) {
-                        throw new \Exception("Unable to load exam settings.");
+                // 
+                // Sanitize:
+                // 
+                if (!($examId = $this->filter->sanitize($examId, "int"))) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
-                $this->view->setVar('exam', $exam);
-                $this->view->setVar('phase', new Phase($exam->getState()));
-                $this->view->setVar('datetime', new DateTime($exam->starttime, $exam->endtime));
+                // 
+                // Try to find exam in request parameter:
+                // 
+                if (($exam = Exam::findFirst($examId)) == false) {
+                        throw new \Exception("Failed find requested exam.", Error::BAD_REQUEST);
+                }
+
+                // 
+                // Set view data:
+                // 
+                $this->view->setVars(array(
+                        'exam'     => $exam,
+                        'phase'    => new Phase($exam->getState()),
+                        'datetime' => new DateTime($exam->starttime, $exam->endtime)
+                ));
+
+                // 
+                // Cleanup:
+                // 
+                unset($exam);
         }
 
 }
