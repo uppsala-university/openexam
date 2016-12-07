@@ -59,7 +59,7 @@ class DateTimeNull extends ModelBehavior
                         // Check all fields:
                         // 
                         foreach ($fields as $field) {
-                                $input = $model->$field;
+                                $input = $value = $model->$field;
 
                                 // 
                                 // Convert literal null's:
