@@ -61,16 +61,20 @@ $di->set('modelsMetadata', function() use($config) {
                 }
         }
         if ($config->application->instance) {
-                $config->metadata->prefix = $config->application->instance;
+                $config->metadata->prefix = $config->application->instance . '-';
         }
         if (!isset($config->metadata->type)) {
                 return new Phalcon\Mvc\Model\Metadata\Memory();
         } elseif ($config->application->release == false) {
                 return new Phalcon\Mvc\Model\Metadata\Memory();
         } elseif ($config->metadata->type == 'xcache') {
-                return new Phalcon\Mvc\Model\Metadata\Xcache($config->metadata);
+                return new Phalcon\Mvc\Model\Metadata\Xcache(
+                    $config->metadata->toArray()
+                );
         } elseif ($config->metadata->type == 'apc') {
-                return new Phalcon\Mvc\Model\MetaData\Apc($config->metadata);
+                return new Phalcon\Mvc\Model\MetaData\Apc(
+                    $config->metadata->toArray()
+                );
         }
 }, true);
 
