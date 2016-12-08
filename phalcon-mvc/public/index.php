@@ -38,7 +38,7 @@ define('CONFIG_PHP', CONFIG_SYS . '/config.php');
 // 
 // An instance unique cache key:
 // 
-$cachekey = sprintf("site-config-%s", basename(dirname(dirname(__DIR__))));
+$cachekey = basename(dirname(dirname(__DIR__)));
 
 // 
 // Keep system configuration in cache:
@@ -48,7 +48,7 @@ $frontend = new Phalcon\Cache\Frontend\Data(array(
     )
 );
 $backend = new Phalcon\Cache\Backend\Xcache($frontend, array(
-        "prefix" => $cachekey
+        "prefix" => "site-config-"
     )
 );
 if (!($config = $backend->get($cachekey))) {
