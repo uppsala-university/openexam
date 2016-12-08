@@ -69,9 +69,12 @@ $decoded = $exam->decoded;
                                         <div class="q-part-resources">
                                             <?php foreach ($qPart['resources'] as $resName => $resPath): ?>
                                                     <?php
-                                                    $mimeType = finfo_file(
-                                                        finfo_open(FILEINFO_MIME_TYPE), $this->config->application->mediaDir . basename(dirname($resPath)) . 's' . DIRECTORY_SEPARATOR . basename(urldecode($resPath))
-                                                    );
+                                                    $resFile = $this->config->application->mediaDir . basename(dirname($resPath)) . 's' . DIRECTORY_SEPARATOR . basename(urldecode($resPath));
+                                                    if (file_exists($resFile)) {
+                                                            $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $resFile);
+                                                    } else {
+                                                            $mimeType = "application/shitty-content";
+                                                    }
 
                                                     ?>
                                                     <?php if (stristr($mimeType, "image")): ?>
@@ -111,11 +114,12 @@ $decoded = $exam->decoded;
                                         if ($loadBy != 'question'):
 
                                                 // filter answer for this question from list of answers
-                                                $qSpecificAns = $answers->filter(function($tmpAns) use ($question) {
-                                                        if ($tmpAns->question_id == $question->id) {
-                                                                return $tmpAns;
+                                                $qSpecificAns = array();
+                                                foreach ($answers as $answer) {
+                                                        if ($answer->question_id == $question->id) {
+                                                                $qSpecificAns[] = $answer;
                                                         }
-                                                });
+                                                }
 
                                                 ?>
 
@@ -380,14 +384,3 @@ $decoded = $exam->decoded;
         padding: 0px !important;
     }
 </style>
-<script>
-        /*
-         jQuery(document).ready(function(){
-         // binds form submission and fields to the validation engine
-         //jQuery(".q-part-student-score").validationEngine();
-         $(".save-result").click(function(){
-         jQuery("#formID").validationEngine('validate');
-         })
-         });
-         */
-</script>
