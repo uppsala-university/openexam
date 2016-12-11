@@ -169,6 +169,11 @@ diagnostics = (function () {
             url: baseURL + '/utility/monitor/health?details=' + _details,
             success: function (resp) {
                 display(JSON.parse(resp));
+            },
+            error: function (err) {
+                var target = $(".mbox");
+                target.html(err.responseText);
+                target.removeClass('hide');
             }
         });
     }
