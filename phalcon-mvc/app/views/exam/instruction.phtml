@@ -1,21 +1,34 @@
+<?php
+
+use OpenExam\Library\Core\Exam\State;
+
+?>
+
 <div class='col-xs-12' style="padding:0px 35px">
+
     <div class='row'>
         <div class='col-sm-12'>
             <div class='page-header'>
-                <h1 class='pull-left'> <i class='icon-book'></i> 
+                <h1  class='pull-left' style='display: inline;'> 
                     <span>
+                        <i class='icon-book'></i> 
                         <?= $exam->name ?>
                     </span> 
+                </h1>
+                <h1 class='pull-right' style='display:<?= ($testMode) ? 'none' : 'inline' ?>'> 
+                    <span id='exam-start-counter'>
+                    </span>
                 </h1>
             </div>
         </div>
     </div>
+
     <div class='alert alert-info alert-dismissable'> 
         <a class='close' data-dismiss='alert' href='#'>&times;</a> <strong>Welcome to OpenExam Online!</strong><br/><br/>
         <p style="margin-left: 15px">
-            Use the buttons in the heading to minimize the left pane or increase the text size 
-            Under Exam info. You may again read the instructions, access a preview of all your answers and log out when you are done. <!--If you find it helpful, you can mark all questions as completed (green), in need of revision  (yellow) or will not be answered (red). -->
-            Hover over images (in supplementary material) to zoom in on content. You can see full size image by clicking on it.
+            Use the buttons in the heading to minimize the left pane or increase the text size.
+            During the exam you may read the instructions, access a preview of all your answers and log out when you are done.
+            Hover over images (in supplementary material) to zoom in on content. You can see media files in full size view by clicking on them.
         </p>
         <br />
 
@@ -26,7 +39,30 @@
             <li>Please report any error message immediately to invigilator. In such a case, please <u>don't</u> close the web browser/refresh the page, or you may loose your latest changes. </li>
         </ul>
         <br />
+    </div>
 
+    <div id='exam-wait-info' style='display: none'>
+        <strong>Manual to read:</strong><br/><br/>
+        <p style="margin-left: 15px">
+            Why not spend the time while waiting for the exam to start with reading?
+        </p>
+        <p style="margin-left: 15px">The student manual will give you a short introduction for the system.
+            <?php if (isset($location)): ?>
+                    Press current location to see information specific to <?= $location['desc'] ?>.
+            <?php endif; ?>
+        </p>
+        <center>
+            <?php if (isset($location)): ?>
+                    <input class="btn btn-default btn-lg" style="margin: 2px; min-width: 200px" onclick="window.location.assign('<?= $this->url->get('/help/manual/student') ?>')" value="Open student manual" title="Open student manual" type="submit" name="manual" />
+                    <input class="btn btn-default btn-lg" style="margin: 2px; min-width: 200px" onclick="window.location.assign('<?= $this->url->get($location['info']) ?>')" value="Show current location" title="<?= $location['desc'] ?>" type="submit" name="location" />
+            <?php else: ?>
+                    <input class="btn btn-default btn-lg" style="margin: 2px; min-width: 200px" onclick="window.location.assign('<?= $this->url->get('/help/manual/student') ?>')" value="Open student manual" title="Open student manual" type="submit" name="manual" />
+            <?php endif; ?>
+        </center>            
+    </div>
+
+    <div id="exam-start-info" style='display: none'>
+        <?= $exam->descr ?>
         <strong>Ready to start?</strong><br/><br/>
         <p style="margin-left: 15px">
             You have not yet started the exam, this page is only for showing some information. 
@@ -36,21 +72,11 @@
                     This exam has no locking, so you will be able to open it again from another computer until it has finished.
             <?php endif; ?>
         </p>
-
-    </div>
-    <div class="exam-descr">
-        <?= $exam->descr ?>
-    </div>
-
-    <div class="exam-status-area">
         <center>
             <input class="btn btn-default btn-lg" style="margin: 2px" onclick="window.location.assign('<?= $this->url->get('/help/manual/student') ?>')" value="Open student manual" title="Open student manual." type="submit" name="manual" />
             <input class="btn btn-success btn-lg" style="margin: 2px" onClick="javascript:location.href = '<?= $this->url->get('exam/' . $exam->id . '/question/1') ?>';" value="I am ready, start the exam <?= $testMode ? 'in test mode' : '' ?>" type="button" style=" <?= ((strtotime($exam->starttime) <= strtotime("now")) || $testMode) ? '' : 'display:none' ?>">
-            <?php if (strtotime($exam->starttime) > strtotime("now")): ?>
-                    <input id="countdown-btn" class="btn btn-warning btn-lg" value="Exam <?= $testMode ? 'testing' : '' ?> starts in: " type="button" disabled="disabled" style="font-size:45px; margin:14% 0px; <?= ($testMode) ? 'display:none' : '' ?>">
-            <?php endif; ?>
         </center>
-    </div>        
+    </div>
 </div>
 
 <script language="javascript">
@@ -62,27 +88,41 @@
                 $(elem).remove();
             }
         });
-<?php if (strtotime($exam->starttime) > strtotime("now")): ?>
-        <?php if (!$testMode): ?>
-                        $('.exam-descr').hide();
-                        $('.alert').hide();
-        <?php endif; ?>
-                var examStartCount = <?= (strtotime(!$testMode ? $exam->starttime : "+0 seconds") - strtotime("now")) ?>;
-                var examStartCountDown = setInterval(function () {
-                    examStartCount--;
-                    if (examStartCount <= 0)
-                    {
-                        $('#countdown-btn').hide();
-                        $('.btn-success').show(500);
-                        clearInterval(examStartCountDown);
-                        $('.exam-descr').show();
-                        $('.alert').show();
-                        return;
-                    }
-                    $("#countdown-btn").val("Exam <?= $testMode ? 'testing' : '' ?> starts in: " + toHHMMSS(examStartCount));
-                    $('.exam-descr').hide();
-                    $('.alert').hide();
-                }, 1000);
+
+        function exam_waiting() {
+            $('#exam-wait-info').show(500);
+
+            var secleft = <?= (strtotime($exam->starttime) - time()) ?>;
+            var counter = setInterval(function () {
+                if (secleft-- <= 0) {
+                    clearInterval(counter);
+                    exam_started();
+                } else {
+                    $('#exam-start-counter').html('Exam starts in: ' + toHHMMSS(secleft));
+                }
+            }, 1000);
+        }
+
+        function exam_started() {
+            $('#exam-start-counter').html('');
+            $('#exam-wait-info').hide();
+            $('#exam-start-info').show(500);
+        }
+
+        function exam_finished() {
+            $('#exam-wait-info').hide();
+            $('#exam-start-info').hide();
+            alert("This exam has been finished!");
+        }
+
+<?php if ($testMode): ?>
+                exam_started();
+<?php elseif ($exam->state & State::UPCOMING): ?>
+                exam_waiting();
+<?php elseif ($exam->state & State::RUNNING): ?>
+                exam_started();
+<?php elseif ($exam->state & State::FINISHED): ?>
+                exam_finished();
 <?php endif; ?>
 
 </script> 

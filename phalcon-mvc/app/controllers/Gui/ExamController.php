@@ -455,6 +455,13 @@ class ExamController extends GuiController
                 $this->view->setLayout('thin-layout');
 
                 // 
+                // Check for location aware documentation:
+                // 
+                if (($location = $this->location->getEntry())) {
+                        $this->view->setVar('location', $location);
+                }
+
+                // 
                 // Cleanup:
                 // 
                 unset($exam);

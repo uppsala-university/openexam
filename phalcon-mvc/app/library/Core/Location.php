@@ -63,12 +63,16 @@ class Location extends Component
          * );
          * </code>
          * 
-         * @param string $address The remote address.
-         * @param mixed $default The default value if not found.
+         * @param string $address The remote address (peer if unset).
+         * @param mixed $default The default value if location is missing.
          * @return array
          */
-        public function getEntry($address, $default = false)
+        public function getEntry($address = null, $default = false)
         {
+                if (!isset($address)) {
+                        $address = $this->request->getClientAddress(true);
+                }
+                
                 foreach ($this->_locations as $okey => $oval) {
                         foreach ($oval as $ckey => $cval) {
                                 foreach ($cval as $pkey => $pval) {
