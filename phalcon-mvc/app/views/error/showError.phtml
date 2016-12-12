@@ -12,14 +12,16 @@
 
 ?>
 
-<style>
-    h1.error {
-        padding-left: 30px;
-        background: url("<?= $icon ?>") no-repeat left;
-    }
-</style>
+<?php $this->partial("error/partial/style"); ?>
+<?php $this->partial("error/partial/script"); ?>
 
-<div style="<?= $style ?>">
-    <h1 class="error"><?= $error->getString(); ?></h1>
-    <p><?= $error->getMessage(); ?>
+<h1 class="error"><?= $error->getString(); ?></h1>
+<p class="error"><?= $error->getMessage(); ?></p>
+
+<div class="info">
+    <p>There was an problem processing the last request. The error message might give you an hint on what is wrong, but most of the time errors are permanent and has to be investigates and solved by the system manager.</p>
+    <p>You can click on the <u>retry button</u> below to try the request again. Click on the <u>report button</u> to send an email to the system manager.</p>
+<button class="btn btn-primary" value="retry"  onclick="document.location.href = ''">Retry</button>
+<button class="btn btn-warning" value="report" onclick="return report_exception()">Report</button>
+<span id="notice" style="display: block"></span>
 </div>

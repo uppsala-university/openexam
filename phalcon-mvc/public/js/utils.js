@@ -2,7 +2,7 @@
  * Application level utility functions
  * 
  * @author Ahsan Shahzad (MedfarmDoIT)
-**/
+ **/
 
 
 /**
@@ -12,48 +12,47 @@
  * @param {Json} data
  * @param {string} target [e.g: undefined, 'return', '#id-of-element', '.class-name']
  * @param {type} type [POST, GET]
- */ 
-    var ajax = function (url, data, callback, type, async, showSuccessMsg) {
+ */
+var ajax = function (url, data, callback, type, async, showSuccessMsg) {
 
-            type  = typeof type !== 'undefined' ? type : 'POST';
-	    async = typeof async !== 'undefined' ? async : true;
-	    showSuccessMsg = typeof showSuccessMsg !== 'undefined' ? showSuccessMsg : true;
+    type = typeof type !== 'undefined' ? type : 'POST';
+    async = typeof async !== 'undefined' ? async : true;
+    showSuccessMsg = typeof showSuccessMsg !== 'undefined' ? showSuccessMsg : true;
 
-            var request = $.ajax({
-                    url: url,
-                    type: type,
-                    data: data,
-                    dataType: "json",
-		    async:async
-            });
+    var request = $.ajax({
+        url: url,
+        type: type,
+        data: data,
+        dataType: "json",
+        async: async
+    });
 
-            request.done(function( response ) {
+    request.done(function (response) {
+        // check response status
+        if (typeof response.failed !== "undefined") {
+            showMessage(response.failed.return, 'error');
+        } else if (typeof response.success !== "undefined") {
 
-                    // check response status
-                    if (typeof response.failed != "undefined") {
+            callback(response.success.return);
 
-                            showMessage(response.failed.return, 'error');
-                    } else if (typeof response.success != "undefined") {
+            if (showSuccessMsg) {
+                if (response.success.action === 'create') {
+                    showMessage("Data has been inserted.", 'success');
+                } else if (response.success.action === 'update') {
+                    showMessage("Updated successfully.", 'success');
+                } else if (response.success.action === 'delete') {
+                    showMessage("Record has been successfully deleted.", 'success');
+                }
+            }
+        } else {
+            showMessage('Request failed. Please contact system administrators.', 'error');
+        }
+    });
 
-                            callback(response.success.return);
-			    
-			    if(showSuccessMsg) {
-				    if (response.success.action == 'create') {
-					showMessage("Data has been inserted.", 'success');
-				    } else if(response.success.action == 'update') {
-					showMessage("Updated successfully.", 'success');
-				    } else if (response.success.action == 'delete') {
-					showMessage("Record has been successfully deleted.", 'success');
-				    }
-			    }
-                    } else {
-                        showMessage( 'Request failed. Please contact system administrators.', 'error');
-                    }
-            });
-
-            request.fail(function( jqXHR, textStatus ) {
-                    showMessage( 'Request failed. Please contact system administrators: ' + textStatus, 'error');
-            });
+    request.fail(function (jqXHR, textStatus) {
+        showMessage('Request failed. Please contact system administrators: ' + textStatus, 'error');
+        $("#ajax_loader").hide();
+    });
 };
 
 /**
@@ -63,23 +62,23 @@
  * @param {String} message
  * @returns 
  */
-var showMessage = function ( message, type ) {
-    
-        type = typeof type !== 'undefined' ? type : 'info';
-        
-        if(type == 'success') {
-            $('#msg-box')
-                    .attr('class', 'alert alert-' + type)
-                    .html( message )
-                    .slideDown(300)
-                    .delay(3000)
-                    .slideUp(300);
-        } else {
-            $('#msg-box')
-                    .attr('class', 'alert alert-' + type)
-                    .html( message )
-                    .slideDown(300)
-        }
+var showMessage = function (message, type) {
+
+    type = typeof type !== 'undefined' ? type : 'info';
+
+    if (type == 'success') {
+        $('#msg-box')
+                .attr('class', 'alert alert-' + type)
+                .html(message)
+                .slideDown(300)
+                .delay(3000)
+                .slideUp(300);
+    } else {
+        $('#msg-box')
+                .attr('class', 'alert alert-' + type)
+                .html(message)
+                .slideDown(300)
+    }
 }
 
 /**
@@ -87,11 +86,10 @@ var showMessage = function ( message, type ) {
  * @returns 
  */
 var closeTooltips = function () {
-        for (var i = 0; i < Opentip.tips.length; i++) {
-                        Opentip.tips[i].hide();
-        }
+    for (var i = 0; i < Opentip.tips.length; i++) {
+        Opentip.tips[i].hide();
+    }
 }
-
 
 /**
  * Returns length of json object
@@ -99,16 +97,16 @@ var closeTooltips = function () {
  * @param {json} object
  * @returns {Number}
  */
-function objectLength(object) 
+function objectLength(object)
 {
-        var length = 0;
-        for( var key in object ) {
-                if( object.hasOwnProperty(key) ) {
-                        ++length;
-                }
+    var length = 0;
+    for (var key in object) {
+        if (object.hasOwnProperty(key)) {
+            ++length;
         }
-        return length;
-};
+    }
+    return length;
+}
 
 /**
  * Closes all opened opentip instances
@@ -116,11 +114,10 @@ function objectLength(object)
  */
 function close_tooltips()
 {
-	for (var i = 0; i < Opentip.tips.length; i++) {
-			Opentip.tips[i].hide();
-	}
+    for (var i = 0; i < Opentip.tips.length; i++) {
+        Opentip.tips[i].hide();
+    }
 }
-
 
 /**
  * Global loading and events handlers
@@ -128,24 +125,23 @@ function close_tooltips()
  */
 $(document).ready(function () {
 
-        $( document ).ajaxStart(function() {
-		$('#ajax_loader').show();
-	});	
-	
+    $(document).ajaxStart(function () {
+        $('#ajax_loader').show();
+    });
 
-	$( document ).ajaxStop(function() {
-		$('#ajax_loader').hide();
-	});	
-    	
-        $('.fancybox').fancybox({
-                    autoHeight : true, 
-                    autoWidth: true,helpers : { 
-                        overlay : {closeClick: false}
-                }
-        });
-	
-	$( document ).on('click', '.prevent', function() {
-		return false;
-	});
+    $(document).ajaxStop(function () {
+        $('#ajax_loader').hide();
+    });
+
+    $('.fancybox').fancybox({
+        autoHeight: true,
+        autoWidth: true, helpers: {
+            overlay: {closeClick: false}
+        }
+    });
+
+    $(document).on('click', '.prevent', function () {
+        return false;
+    });
 
 });

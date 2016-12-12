@@ -4,8 +4,8 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    show404.phtml
-// Created: 2015-02-24 03:24:47
+// File:    show500.phtml
+// Created: 2016-12-12 00:12:27
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
@@ -15,12 +15,12 @@
 <?php $this->partial("error/partial/style"); ?>
 <?php $this->partial("error/partial/script"); ?>
 
-<h1 class="error">Page not found:</h1>
+<h1 class="error">Internal system error:</h1>
 <p class="error"><?= $error->getMessage(); ?></p>
 
 <div class="info">
-    <p>The requested page seems to be missing. If you ended up here by following a link, please click on the <u>report button</u> to send an email to the system manager.</p>
-<button class="btn btn-primary" value="back"   onclick="window.history.back()">Back</button>
+    <p>There was an error processing the request. It might be caused by a miss configuration or an external service no longer working.</p>
+    <p>This kind of error is usually permanent and will persist until been taking cared of by someone. Please click on the <u>report button</u> to send an email to the system manager.</p>
 <button class="btn btn-warning" value="report" onclick="return report_exception()">Report</button>
 <span id="notice" style="display: block"></span>
 </div>

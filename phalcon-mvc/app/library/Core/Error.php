@@ -173,6 +173,8 @@ class Error
 
                 if (!is_numeric($this->_status)) {
                         $this->_status = self::INTERNAL_SERVER_ERROR;
+                } elseif ($this->_status == 0) {
+                        $this->_status = self::INTERNAL_SERVER_ERROR;
                 } elseif (!array_key_exists($this->_status, self::$http_codes)) {
                         $this->_status = self::INTERNAL_SERVER_ERROR;
                 }

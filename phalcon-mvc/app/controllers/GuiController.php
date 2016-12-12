@@ -9,6 +9,7 @@
 // Created: 2014-08-27 11:35:20
 // 
 // Author:  Ahsan Shahzad (MedfarmDoIT)
+//          Anders Lövgren (BMC-IT)
 // 
 
 namespace OpenExam\Controllers;
@@ -23,26 +24,30 @@ use Phalcon\Mvc\Dispatcher\Exception as DispatcherException;
 use Phalcon\Mvc\View;
 
 /**
- * Base class for gui controllers.
+ * Base class for GUI controllers.
  * 
- * The GuiController class serve as base class for all gui controllers
- * and helps to setup templates for views
+ * Controllers that (mostly) have actions with visual interface can derive from
+ * this class to use the main layout.
  *  
  * @author Ahsan Shahzad (MedfarmDoIT)
+ * @author Anders Lövgren (BMC-IT)
  */
 class GuiController extends ControllerBase
 {
 
         public function initialize()
         {
-                parent::initialize();
-
                 // 
-                // Normal exception handling is not working at dispatch time.
-                // We need to use try/catch with forward to error page.
+                // Warning: 
+                // -------------
+                // Normal exception handling don't apply to exceptions thrown
+                // at dispatch time. We need to use try/catch with forward to 
+                // error page.
                 // 
 
                 try {
+                        parent::initialize();
+
                         if ($this->request->isAjax()) {
                                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                         } else {
@@ -65,7 +70,7 @@ class GuiController extends ControllerBase
          */
         public function exceptionAction($exception)
         {
-                $status = new Error($exception);
+                $error = new Error($exception);
 
                 if ($exception instanceof DispatcherException) {
                         switch ($exception->getCode()) {
@@ -75,35 +80,57 @@ class GuiController extends ControllerBase
                                                 'controller' => 'error',
                                                 'action'     => 'show404',
                                                 'namespace'  => 'OpenExam\Controllers\Gui',
-                                                'params'     => array('exception' => $exception)
+                                                'params'     => array('error' => $error)
                                         ));
+                                        return false;
+                        }
+                } else {
+
+                        $this->response->setStatusCode(
+                            $error->getStatus(), $error->getString()
+                        );
+
+                        switch ($error->getStatus()) {
+                                case Error::INTERNAL_SERVER_ERROR:
+                                        $this->dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'show500',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('error' => $error)
+                                        ));
+                                        $this->report($exception);
+                                        return false;
+                                case Error::SERVICE_UNAVAILABLE:
+                                        $this->dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'show503',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('error' => $error)
+                                        ));
+                                        $this->report($exception);
+                                        return false;
+                                case Error::NOT_FOUND:
+                                        $this->dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'show404',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('error' => $error)
+                                        ));
+                                        $this->report($exception);
+                                        return false;
+                                default :
+                                        $this->dispatcher->forward(array(
+                                                'controller' => 'error',
+                                                'action'     => 'showError',
+                                                'namespace'  => 'OpenExam\Controllers\Gui',
+                                                'params'     => array('error' => $error)
+                                        ));
+                                        $this->report($exception);
                                         return false;
                         }
                 }
 
-                $this->response->setStatusCode(
-                    $status->getStatus(), $status->getString()
-                );
-
-                if ($exception->getCode() == 0) {
-                        $this->dispatcher->forward(array(
-                                'controller' => 'error',
-                                'action'     => 'show503',
-                                'namespace'  => 'OpenExam\Controllers\Gui',
-                                'params'     => array('exception' => $exception)
-                        ));
-                        $this->report($exception);
-                        return false;
-                } else {
-                        $this->report($exception);
-                        $this->dispatcher->forward(array(
-                                'controller' => 'error',
-                                'action'     => 'showError',
-                                'namespace'  => 'OpenExam\Controllers\Gui',
-                                'params'     => array('exception' => $exception)
-                        ));
-                        return false;
-                }
+                unset($error);
         }
 
         /**
@@ -131,77 +158,82 @@ class GuiController extends ControllerBase
                 $access = new Config(require CONFIG_DIR . '/access.def');
                 $permit = $access->private->$controller->$action;
 
-                // 
-                // Bypass for non-configured controller/action:
-                // 
-                if (!isset($permit)) {
-                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule missing)", $controller, $action));
-                        }
-                        return true;
-                }
-                if (count($permit->toArray()) == 0) {
-                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rules empty)", $controller, $action));
-                        }
-                        return true;
-                }
-
-                // 
-                // Using roles == '*' means access for all roles:
-                // 
-                if ($permit[0] == '*') {
-                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule is '*')", $controller, $action));
-                        }
-                        return true;
-                }
-
-                // 
-                // Check question access:
-                // 
-                if (($id = $this->request->get('q_id', 'int')) ||
-                    ($id = $this->request->get('questionId', 'int')) ||
-                    ($id = $this->dispatcher->getParam('questId', 'int'))) {
-                        if ($this->user->roles->aquire(Roles::CORRECTOR, $id)) {
+                try {
+                        // 
+                        // Bypass for non-configured controller/action:
+                        // 
+                        if (!isset($permit)) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->access->debug(sprintf("Permitted question level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, Roles::CORRECTOR));
+                                        $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule missing)", $controller, $action));
                                 }
                                 return true;
                         }
-                }
-
-                // 
-                // Check exam access:
-                // 
-                if (($id = $this->request->get('exam_id', 'int')) ||
-                    ($id = $this->request->get('examId', 'int')) ||
-                    ($id = $this->dispatcher->getParam('examId', 'int'))) {
-                        if (($roles = $this->user->aquire($permit, $id))) {
+                        if (count($permit->toArray()) == 0) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->access->debug(sprintf("Permitted exam level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, implode(",", $roles)));
+                                        $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rules empty)", $controller, $action));
                                 }
                                 return true;
                         }
-                }
 
-                // 
-                // Check role access:
-                // 
-                if (($roles = $this->user->aquire($permit))) {
-                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                $this->logger->access->debug(sprintf("Permitted role based access on %s -> %s (roles: %s)", $controller, $action, implode(",", $roles)));
+                        // 
+                        // Using roles == '*' means access for all roles:
+                        // 
+                        if ($permit[0] == '*') {
+                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                        $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule is '*')", $controller, $action));
+                                }
+                                return true;
                         }
-                        return true;
-                }
 
-                // 
-                // Nuke access with a proper contact us message:
-                // 
-                throw new SecurityException(sprintf(
-                    "You are not allowed to access this URL. Please contact <a href=\"mailto:%s\">%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
-                ), Error::METHOD_NOT_ALLOWED
-                );
+                        // 
+                        // Check question access:
+                        // 
+                        if (($id = $this->request->get('q_id', 'int')) ||
+                            ($id = $this->request->get('questionId', 'int')) ||
+                            ($id = $this->dispatcher->getParam('questId', 'int'))) {
+                                if ($this->user->roles->aquire(Roles::CORRECTOR, $id)) {
+                                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                                $this->logger->access->debug(sprintf("Permitted question level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, Roles::CORRECTOR));
+                                        }
+                                        return true;
+                                }
+                        }
+
+                        // 
+                        // Check exam access:
+                        // 
+                        if (($id = $this->request->get('exam_id', 'int')) ||
+                            ($id = $this->request->get('examId', 'int')) ||
+                            ($id = $this->dispatcher->getParam('examId', 'int'))) {
+                                if (($roles = $this->user->aquire($permit, $id))) {
+                                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                                $this->logger->access->debug(sprintf("Permitted exam level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, implode(",", $roles)));
+                                        }
+                                        return true;
+                                }
+                        }
+
+                        // 
+                        // Check role access:
+                        // 
+                        if (($roles = $this->user->aquire($permit))) {
+                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                        $this->logger->access->debug(sprintf("Permitted role based access on %s -> %s (roles: %s)", $controller, $action, implode(",", $roles)));
+                                }
+                                return true;
+                        }
+
+                        // 
+                        // Nuke access with a proper contact us message:
+                        // 
+                        throw new SecurityException(sprintf(
+                            "You are not allowed to access this URL. Please contact <a href=\"mailto:%s\">%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
+                        ), Error::METHOD_NOT_ALLOWED
+                        );
+                } finally {
+                        unset($access);
+                        unset($permit);
+                }
         }
 
 }
