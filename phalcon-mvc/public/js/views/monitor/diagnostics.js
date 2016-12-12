@@ -171,6 +171,8 @@ diagnostics = (function () {
                 display(JSON.parse(resp));
             },
             error: function (err) {
+                $("#ajax_loader").hide();
+
                 var target = $(".mbox");
                 target.html(err.responseText);
                 target.removeClass('hide');
