@@ -32,12 +32,20 @@ use OpenExam\Library\Core\Exam\State;
         </p>
         <br />
 
-        <strong>Important to know:</strong><br/><br/>
-        <ul>
-            <li>All your answers are automatically saved every 10 seconds.</li>
-            <li>It is highly recommended that you <u>don't</u> use the web browsers "back" and "forward" buttons for navigation. Always use buttons and/or links in the web interface. To open a specific question, you can always click on desired question number appearing in left side menu.</li>
-            <li>Please report any error message immediately to invigilator. In such a case, please <u>don't</u> close the web browser/refresh the page, or you may loose your latest changes. </li>
-        </ul>
+        <div id='exam-generic'>
+            <strong>Important to know:</strong><br/><br/>
+            <ul>
+                <li>All your answers are automatically saved every 10 seconds.</li>
+                <li>It is highly recommended that you <u>don't</u> use the web browsers "back" and "forward" buttons for navigation. Always use buttons and/or links in the web interface. To open a specific question, you can always click on desired question number appearing in left side menu.</li>
+                <li>Please report any error message immediately to invigilator. In such a case, please <u>don't</u> close the web browser/refresh the page, or you may loose your latest changes. </li>
+            </ul>
+        </div>
+
+        <div id='exam-specific' style='display: none'>
+            <strong>Exam instructions:</strong><br/><br/>
+            <?= $exam->descr ?>
+        </div>
+
         <br />
     </div>
 
@@ -62,7 +70,6 @@ use OpenExam\Library\Core\Exam\State;
     </div>
 
     <div id="exam-start-info" style='display: none'>
-        <?= $exam->descr ?>
         <strong>Ready to start?</strong><br/><br/>
         <p style="margin-left: 15px">
             You have not yet started the exam, this page is only for showing some information. 
@@ -73,7 +80,6 @@ use OpenExam\Library\Core\Exam\State;
             <?php endif; ?>
         </p>
         <center>
-            <input class="btn btn-default btn-lg" style="margin: 2px" onclick="window.location.assign('<?= $this->url->get('/help/manual/student') ?>')" value="Open student manual" title="Open student manual." type="submit" name="manual" />
             <input class="btn btn-success btn-lg" style="margin: 2px" onClick="javascript:location.href = '<?= $this->url->get('exam/' . $exam->id . '/question/1') ?>';" value="I am ready, start the exam <?= $testMode ? 'in test mode' : '' ?>" type="button" style=" <?= ((strtotime($exam->starttime) <= strtotime("now")) || $testMode) ? '' : 'display:none' ?>">
         </center>
     </div>
@@ -106,6 +112,8 @@ use OpenExam\Library\Core\Exam\State;
         function exam_started() {
             $('#exam-start-counter').html('');
             $('#exam-wait-info').hide();
+            $('#exam-generic').hide();
+            $('#exam-specific').show(250);
             $('#exam-start-info').show(500);
         }
 
