@@ -214,6 +214,7 @@ $(function () {
     });
 
     CKEDITOR.config.removeButtons = 'Link,Unlink';
+
     $('.ckeditor').each(function (index, element) {
         var limit = element.getAttribute('word-count-limit');
         if (limit === "") {
@@ -311,6 +312,16 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
                     // Toogle spell check on/off:
                     // 
                     body.setAttribute('spellcheck', !enabled);
+
+                    // 
+                    // Display auto-hiding notification:
+                    // 
+                    if (!enabled) {
+                        edt.showNotification('Spellchecking is now enabled', 'success');
+                    } else {
+                        edt.showNotification('Spellchecking is now disabled', 'info');
+
+                    }
                 }
             });
 

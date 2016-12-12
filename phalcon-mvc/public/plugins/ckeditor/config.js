@@ -40,6 +40,9 @@ CKEDITOR.editorConfig = function (config) {
 
     // Always load these plugins:
     config.extraPlugins = 'confighelper,wordcount,notification,maximize';
+    
+    // Display notifications for 2 sec:
+    config.notification_duration = 2000;
 
     // 
     // Load some nice looking skin:
