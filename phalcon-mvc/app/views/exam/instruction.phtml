@@ -29,7 +29,6 @@ use OpenExam\Library\Core\Exam\State;
             Use the buttons in the heading to minimize the left pane or increase the text size. 
             Zoom in on content (in supplementary material) by hover over images or click on the media files to see them in full size.
             During the exam you can at any time access the instructions again. Remember to preview your answers before log out when you are done.
-            
         </p>
         <br />
 
@@ -56,12 +55,12 @@ use OpenExam\Library\Core\Exam\State;
         <strong>While waiting:</strong><br/><br/>
         <p style="margin-left: 15px">
             Why not spend the time waiting for the exam to start with some reading? The student manual will give you a brief introduction to examination part of the system.
-            <?php if (isset($location)): ?>
+            <?php if (isset($location['info'])): ?>
                     Press current location to see information specific to <?= $location['desc'] ?>.
             <?php endif; ?>
         </p>
         <center>
-            <?php if (isset($location)): ?>
+            <?php if (isset($location['info'])): ?>
                     <input class="btn btn-default btn-lg" style="margin: 2px; min-width: 200px" onclick="window.location.assign('<?= $this->url->get('/help/manual/student') ?>')" value="Open student manual" title="Open student manual" type="submit" name="manual" />
                     <input class="btn btn-default btn-lg" style="margin: 2px; min-width: 200px" onclick="window.location.assign('<?= $this->url->get($location['info']) ?>')" value="Show current location" title="<?= $location['desc'] ?>" type="submit" name="location" />
             <?php else: ?>
