@@ -71,8 +71,12 @@
             `user` varchar(60) DEFAULT NULL,
             `time` datetime DEFAULT NULL,
             `changes` mediumblob,
-            PRIMARY KEY (`id`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            PRIMARY KEY (`id`),
+            KEY `res` (`res`),
+            KEY `rid` (`rid`),
+            KEY `user` (`user`),
+            KEY `time` (`time`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 
 ** EXAMPLES:
 
