@@ -26,9 +26,10 @@ use OpenExam\Library\Core\Exam\State;
     <div class='alert alert-info alert-dismissable'> 
         <a class='close' data-dismiss='alert' href='#'>&times;</a> <strong>Welcome to OpenExam Online!</strong><br/><br/>
         <p style="margin-left: 15px">
-            Use the buttons in the heading to minimize the left pane or increase the text size.
-            During the exam you may read the instructions, access a preview of all your answers and log out when you are done.
-            Hover over images (in supplementary material) to zoom in on content. You can see media files in full size view by clicking on them.
+            Use the buttons in the heading to minimize the left pane or increase the text size. 
+            Zoom in on content (in supplementary material) by hover over images or click on the media files to see them in full size.
+            During the exam you can at any time access the instructions again. Remember to preview your answers before log out when you are done.
+            
         </p>
         <br />
 
@@ -43,18 +44,18 @@ use OpenExam\Library\Core\Exam\State;
 
         <div id='exam-specific' style='display: none'>
             <strong>Exam instructions:</strong><br/><br/>
-            <?= $exam->descr ?>
+            <p style="margin-left: 15px">
+                <?= $exam->descr ?>
+            </p>
         </div>
 
         <br />
     </div>
 
     <div id='exam-wait-info' style='display: none'>
-        <strong>Manual to read:</strong><br/><br/>
+        <strong>While waiting:</strong><br/><br/>
         <p style="margin-left: 15px">
-            Why not spend the time while waiting for the exam to start with reading?
-        </p>
-        <p style="margin-left: 15px">The student manual will give you a short introduction for the system.
+            Why not spend the time waiting for the exam to start with some reading? The student manual will give you a brief introduction to examination part of the system.
             <?php if (isset($location)): ?>
                     Press current location to see information specific to <?= $location['desc'] ?>.
             <?php endif; ?>
@@ -72,9 +73,9 @@ use OpenExam\Library\Core\Exam\State;
     <div id="exam-start-info" style='display: none'>
         <strong>Ready to start?</strong><br/><br/>
         <p style="margin-left: 15px">
-            You have not yet started the exam, this page is only for showing some information. 
+            You have not yet opened the exam, this page is only for showing some information. 
             <?php if ($exam->lockdown->enable): ?>
-                    Once you click the button below, the exam will be locked down to your account and currently used computer.
+                    Once you click the button below, the exam will be locked down on your account and currently used computer giving you access to the exam questions.
             <?php else: ?>
                     This exam has no locking, so you will be able to open it again from another computer until it has finished.
             <?php endif; ?>
