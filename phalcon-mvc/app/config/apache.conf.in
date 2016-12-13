@@ -15,11 +15,13 @@ Alias /phalcon-mvc /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/publ
     # Disable htaccess for performance reasons:
     AllowOverride none
 
-    # Handle non-static content from index.php:
+    # Exclude public locations, local file and directories. Handle 
+    # non-static content from index.php:
     RewriteEngine On
+    RewriteRule ^(css|fonts|js|img|swf|plugins|location|bootstrap|thin-layout)($|/) - [L]
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ /phalcon-mvc/index.php?_url=/$1 [QSA,L]
+    RewriteRule ^(.*)$ /phalcon-svn/index.php?_url=/$1 [QSA,L]
 
     # Enforce HTTPS connection:
     RewriteEngine On
