@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.33, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.34, for Linux (x86_64)
 --
--- Host: localhost    Database: openexam2prod_audit
+-- Host: 127.0.0.1    Database: openexam2_audit
 -- ------------------------------------------------------
--- Server version	5.6.33-log
+-- Server version	5.6.34-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -30,7 +30,11 @@ CREATE TABLE `access` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -49,8 +53,12 @@ CREATE TABLE `admin` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +76,11 @@ CREATE TABLE `answer` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -87,7 +99,11 @@ CREATE TABLE `audit` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`),
+  KEY `time` (`time`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -106,7 +122,11 @@ CREATE TABLE `computer` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -125,7 +145,11 @@ CREATE TABLE `contributor` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -144,7 +168,11 @@ CREATE TABLE `corrector` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -163,7 +191,11 @@ CREATE TABLE `decoder` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -182,7 +214,11 @@ CREATE TABLE `exam` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -201,8 +237,12 @@ CREATE TABLE `file` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,7 +260,11 @@ CREATE TABLE `invigilator` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -239,7 +283,11 @@ CREATE TABLE `lock` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -258,7 +306,11 @@ CREATE TABLE `question` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -277,7 +329,11 @@ CREATE TABLE `resource` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -296,7 +352,11 @@ CREATE TABLE `result` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -315,8 +375,12 @@ CREATE TABLE `room` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,7 +398,11 @@ CREATE TABLE `session` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -353,8 +421,12 @@ CREATE TABLE `setting` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -372,7 +444,11 @@ CREATE TABLE `student` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -391,7 +467,11 @@ CREATE TABLE `teacher` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -410,7 +490,11 @@ CREATE TABLE `topic` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -429,8 +513,12 @@ CREATE TABLE `user` (
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `changes` mediumblob,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -442,4 +530,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-14 11:58:46
+-- Dump completed on 2016-12-13 19:43:21
