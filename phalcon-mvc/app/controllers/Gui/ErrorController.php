@@ -14,7 +14,6 @@
 namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
-use OpenExam\Library\Core\Error;
 
 /**
  * Handle error conditions.
@@ -31,9 +30,13 @@ class ErrorController extends GuiController
         public function initialize()
         {
                 parent::initialize();
-                
-                $this->view->setvar('icon', $this->url->get('img/cross-button.png'));
-                $this->view->setVar('style', $this->request->isAjax() == false ? "margin-top: 50px" : "");
+
+                $this->view->setTemplateBefore('error');
+                $this->view->setVars(array(
+                        'icon'    => $this->url->get('img/cross-button.png'),
+                        'style'   => $this->request->isAjax() ? "" : "margin-top: 50px",
+                        'contact' => $this->config->contact->toArray()
+                ));
         }
 
         public function indexAction()
@@ -46,8 +49,15 @@ class ErrorController extends GuiController
          */
         public function show404Action()
         {
-                $exception = $this->dispatcher->getParam('exception');
-                $this->view->setVar('exception', $exception);
+                $this->view->setVar('error', $this->dispatcher->getParam('error'));
+        }
+
+        /**
+         * Internal server error.
+         */
+        public function show500Action()
+        {
+                $this->view->setVar('error', $this->dispatcher->getParam('error'));
         }
 
         /**
@@ -55,14 +65,15 @@ class ErrorController extends GuiController
          */
         public function show503Action()
         {
-                $exception = $this->dispatcher->getParam('exception');
-                $this->view->setVar('exception', $exception);
+                $this->view->setVar('error', $this->dispatcher->getParam('error'));
         }
 
+        /**
+         * Generic error handler.
+         */
         public function showErrorAction()
         {
-                $exception = $this->dispatcher->getParam('exception');
-                $this->view->setVar('error', new Error($exception));
+                $this->view->setVar('error', $this->dispatcher->getParam('error'));
         }
 
 }
