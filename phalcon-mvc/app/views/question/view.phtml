@@ -192,7 +192,16 @@
                                                                         <?php
                                                                         $type = basename(dirname($resUrl)) . 's';
                                                                         $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
-                                                                        $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
+                                                                        if (!file_exists($path)) {
+                                                                                $mimeType = "application";
+                                                                        } elseif (!($handle = finfo_open(FILEINFO_MIME_TYPE))) {
+                                                                                $mimeType = "application";
+                                                                        } elseif (!($mimeType = finfo_file($handle, $path))) {
+                                                                                $mimeType = "application";
+                                                                        }
+                                                                        if (is_resource($handle)) {
+                                                                                finfo_close($handle);
+                                                                        }
 
                                                                         ?>
                                                                         <div>
