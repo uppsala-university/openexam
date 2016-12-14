@@ -41,6 +41,17 @@ if ($testMode) {
         $tdiff = 0;
         $count = false;
 }
+$tt = (object) array(
+            'dd' => floor(($tdiff / (3600 * 24))),
+            'hh' => floor(($tdiff / 3600) % 24),
+            'mm' => floor((($tdiff % 3600) / 60)),
+            'ss' => floor($tdiff % 60)
+);
+if ($tt->dd != 0) {
+        $tdisp = sprintf("%02d:%02d:%02d (+%d days)", $tt->hh, $tt->mm, $tt->ss, $tt->dd);
+} else {
+        $tdisp = sprintf("%02d:%02d:%02d", $tt->hh, $tt->mm, $tt->ss);
+}
 
 ?>
 
@@ -96,7 +107,7 @@ if ($testMode) {
 
         <div style="float:right; padding:5px 1%; font-size:20px; color:#F9C271; background-color:#BE2435"><!--#F8A325-->
             <i class="icon-time"></i>
-            <span style="margin-top:25px" id="timer"></span>
+            <span style="margin-top:25px" id="timer"><?= $tdisp ?></span>
         </div>        
     </nav>
 </header>
@@ -227,7 +238,7 @@ if ($testMode) {
         <?php endif; ?>
 
                 function timer() {
-                    if (tdiff-- <= 0)
+                    if (tdiff < 0)
                     {
                         syncAnswers(true, '<?= $this->url->get('exam/index'); ?>');
                         alert("The exam time is up. Please logout and close the browser. We wish you good luck!");
@@ -237,7 +248,7 @@ if ($testMode) {
                         alert("Remaining time for this exam is 5 minutes.");
                         tdiff = etime - Math.round(+new Date() / 1000);         // Needs reschedule
                     }
-                    $("#timer").html(toHHMMSS(tdiff));
+                    $("#timer").html(toHHMMSS(tdiff--));
                 }
 
                 function toHHMMSS(tsec) {
