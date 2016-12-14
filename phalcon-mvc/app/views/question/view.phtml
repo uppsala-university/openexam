@@ -192,21 +192,16 @@
                                                                         <?php
                                                                         $type = basename(dirname($resUrl)) . 's';
                                                                         $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
-                                                                        if (!file_exists($path)) {
-                                                                                $mimeType = "application";
-                                                                        } elseif (!($handle = finfo_open(FILEINFO_MIME_TYPE))) {
-                                                                                $mimeType = "application";
-                                                                        } elseif (!($mimeType = finfo_file($handle, $path))) {
-                                                                                $mimeType = "application";
-                                                                        }
-                                                                        if (is_resource($handle)) {
-                                                                                finfo_close($handle);
+                                                                        if (file_exists($path)) {
+                                                                                $mime = mime_content_type($path);
+                                                                        } else {
+                                                                                $mime = "application/octet-stream";
                                                                         }
 
                                                                         ?>
                                                                         <div>
                                                                             <a class="fancybox" rel="fancybox" href="<?= $resUrl ?>" title="<?= $resTitle ?>">
-                                                                                <?php if (stristr($mimeType, "image/")): ?>
+                                                                                <?php if (stristr($mime, "image/")): ?>
                                                                                         <img style="max-width:400px" class="img-zoom" src='<?= $resUrl ?>' data-zoom-image="<?= $resUrl ?>"/>
                                                                                 <?php else: ?>
                                                                                         <a class="media {width:400}" href="<?= $resUrl ?>"></a> 
