@@ -9,6 +9,7 @@
 // Created: 2014-09-19 11:15:15
 // 
 // Author:  Ahsan Shahzad (MedfarmDoIT)
+//          Anders Lövgren (BMC-IT)
 // 
 
 namespace OpenExam\Controllers\Utility;
@@ -177,56 +178,74 @@ class MediaController extends GuiController
         }
 
         /**
-         * Dumps media file content
+         * Send media file.
          * 
-         * @param string $type Media type (e.g image, video)
-         * @param string $file File name
-         * @return 
+         * @param string $type The media file type (e.g image, video).
+         * @param string $file The file name.
          * @throws \Exception
          */
         public function viewAction($type, $file)
         {
-                $this->view->disable();
-
+                // 
+                // Sanity check:
+                // 
                 if (empty($type) || empty($file)) {
-                        throw new \Exception('Invalid request');
+                        throw new \Exception('Invalid request', Error::PRECONDITION_FAILED);
                 }
 
-                $path = $this->config->application->mediaDir . $type . "s" . DIRECTORY_SEPARATOR . $file;
-
-                if (is_file($path) === true) {
-                        set_time_limit(0);
-
-                        while (ob_get_level() > 0) {
-                                ob_end_clean();
-                        }
-
-                        $size = sprintf('%u', filesize($path));
-                        $speed = (is_null($speed) === true) ? $size : intval($speed) * 1024;
-                        $contentType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
-                        header('Expires: 0');
-                        header('Pragma: public');
-                        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                        header('Content-Type: ' . $contentType . '; charset=utf-8');
-                        header('Content-Length: ' . $size);
-                        header('Content-Disposition: inline; filename="' . basename($path) . '"'); //attachment
-                        header('Content-Transfer-Encoding: binary');
-
-                        for ($i = 0; $i <= $size; $i = $i + $speed) {
-                                echo file_get_contents($path, false, null, $i, $speed);
-
-                                while (ob_get_level() > 0) {
-                                        ob_end_clean();
-                                }
-
-                                flush();
-                                sleep(1);
-                        }
-
-                        exit();
-                } else {
-                        throw new \Exception("File not found");
+                // 
+                // Prevent disclose of system files:
+                // 
+                if (strpos($file, '/') != false ||
+                    strpos($type, '/') != false) {
+                        throw new \Exception('Invalid character in filename', Error::NOT_ACCEPTABLE);
                 }
+
+                // 
+                // Check that file exists:
+                // 
+                $path = sprintf("%s/%ss/%s", $this->config->application->mediaDir, $type, $file);
+
+                if (!file_exists($path)) {
+                        throw new \Exception("Can't located requested file", Error::NOT_FOUND);
+                }
+                if (!is_file($path)) {
+                        throw new \Exception("Requested resource is not a file", Error::NOT_FOUND);
+                }
+
+                // 
+                // Flush output buffering to get chunked mode:
+                // 
+                while (ob_get_level()) {
+                        ob_end_clean();
+                        ob_end_flush();
+                }
+
+                // 
+                // Required by some browsers for actually caching:
+                // 
+                $expires = new \DateTime();
+                $expires->modify("+2 months");
+
+                // 
+                // Disable view:
+                // 
+                $this->view->disable();
+                $this->view->finish();
+
+                // 
+                // Set file and headers for transfer:
+                // 
+                $this->response->setFileToSend($path);
+                $this->response->setContentType(mime_content_type($path));
+                $this->response->setHeader("Cache-Control", "max-age=86400");
+                $this->response->setHeader("Pragma", "public");
+                $this->response->setExpires($expires);
+
+                // 
+                // Send content including file:
+                // 
+                $this->response->send();
         }
 
 }
