@@ -329,8 +329,8 @@ class Result extends Component
 
                 $this->view->disable();
 
-                $this->response->setContentType('application/pdf', 'UTF-8');
                 $this->response->setFileToSend($source, $target);
+                $this->response->setContentType('application/pdf', 'UTF-8');
 
                 $this->response->send();
         }
@@ -361,8 +361,8 @@ class Result extends Component
                         ob_end_flush();
                 }
 
-                $this->response->setContentType('application/zip', 'UTF-8');
                 $this->response->setFileToSend($source, "\"$target\"");
+                $this->response->setContentType('application/zip', 'UTF-8');
 
                 $this->response->send();
         }
