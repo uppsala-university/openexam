@@ -220,7 +220,7 @@ class ExamController extends GuiController
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
-                if (!$this->user->roles->aquire(Roles::CREATOR, $examId) ||
+                if (!$this->user->roles->aquire(Roles::CREATOR, $examId) &&
                     !$this->user->roles->aquire(Roles::ADMIN, $examId)) {
                         throw new \Exception("Only creator or admins can replicate exams", Error::FORBIDDEN);
                 }
