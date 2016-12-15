@@ -234,18 +234,19 @@ class MediaController extends GuiController
                 $this->view->finish();
 
                 // 
-                // Set file and headers for transfer:
+                // Set headers for cache and chunked transfer mode:
                 // 
-                $this->response->setFileToSend($path);
+                // $this->response->setFileToSend($path);
                 $this->response->setContentType(mime_content_type($path));
                 $this->response->setHeader("Cache-Control", "max-age=86400");
                 $this->response->setHeader("Pragma", "public");
                 $this->response->setExpires($expires);
 
                 // 
-                // Send content including file:
+                // Send response headers and file:
                 // 
                 $this->response->send();
+                readfile($path);
         }
 
 }
