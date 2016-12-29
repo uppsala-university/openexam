@@ -159,7 +159,10 @@ class WSDL_Gen
                         $this->operations[$method->getName()]['output'] = array();
                         $doc = $method->getDocComment();
 
-                        // extract input params
+                        // 
+                        // Extract input params:
+                        // 
+                        $matches = array();
                         if (preg_match_all('|@param\s+(?:object\s+)?(.*?)?(\[\])*\s+\$(\w+)\s*([\w\. ]*)|', $doc, $matches, PREG_SET_ORDER)) {
                                 foreach ($matches as $match) {
                                         $this->mytypes[$match[1]] = 1;
@@ -167,13 +170,17 @@ class WSDL_Gen
                                 }
                         }
 
-                        // extract return types
+                        // 
+                        // Extract return types:
+                        // 
                         if (preg_match('|@return\s+([^\s(\[\])]+)?(\[\])*\s*(.*)\n|', $doc, $match)) {
                                 $this->mytypes[$match[1]] = 1;
                                 $this->operations[$method->getName()]['output'][] = array('name' => 'return', 'type' => $match[1], 'repeat' => $match[2] == '[]' ? 'unbounded' : '1', 'docs' => $match[3]);
                         }
 
-                        // extract documentation
+                        // 
+                        // Extract documentation:
+                        // 
                         $comment = trim($doc);
                         $commentStart = strpos($comment, '/**') + 3;
                         $comment = trim(substr($comment, $commentStart, strlen($comment) - 5));
@@ -255,7 +262,6 @@ class WSDL_Gen
                         if (preg_match('|@var\s+(?:object\s+)?(\w+)|', $doc, $match)) {
                                 $type = $match[1];
                                 $this->complexTypes[$className][] = array('name' => $prop->getName(), 'type' => $type);
-//echo "<pre>"; var_dump($match); var_dump($this->complexTypes); echo "</pre>";
                                 if (!isset($this->types[$type])) {
                                         $this->addComplexType($type);
                                 }
@@ -274,13 +280,6 @@ class WSDL_Gen
                                 $part->setAttribute('element', 'tns:' . $fullName);
                                 $part->setAttribute('name', 'parameters');
                                 $el->appendChild($part);
-//        foreach($params[$type] as $param) {
-//          $part = $doc->createElementNS(self::SCHEMA_WSDL, 'part');
-//          $part->setAttribute('name', $param['name']);
-//          $prefix = $root->lookupPrefix($this->types[$param['type']]['ns']);
-//          $part->setAttribute('type', "$prefix:".$this->types[$param['type']]['name']);
-//          $el->appendChild($part);
-//        } 
                                 $root->appendChild($el);
                         }
                 }
@@ -369,22 +368,6 @@ class WSDL_Gen
                 $el->setAttribute('targetNamespace', $this->ns);
                 $types->appendChild($el);
 
-                /* BEGIN: crutch */
-//    $ct = $doc->createElementNS(self::SOAP_XML_SCHEMA_VERSION, 'complexType');
-//    $el->appendChild($ct);
-//    $ct->setAttribute('name', 'array');
-//    $cc = $doc->createElementNS(self::SOAP_XML_SCHEMA_VERSION, 'complexContent');
-//    $ct->appendChild($cc);
-//    $restriction = $doc->createElementNS(self::SOAP_XML_SCHEMA_VERSION, 'restriction');
-//    $cc->appendChild($restriction);
-//    $restriction->setAttribute('base', 'soapenc:array');
-//    $attribute = $doc->createElementNS(self::SOAP_XML_SCHEMA_VERSION, 'attribute');
-//    $restriction->appendChild($attribute);
-//    $attribute->setAttribute('ref', 'soapenc:arrayType');
-//    $attribute->setAttributeNS(self::SCHEMA_WSDL, 'arrayType', 'tns:mixed[]');
-
-                /* END: crutch */
-
                 foreach ($this->complexTypes as $name => $data) {
                         if ($name == 'mixed') {
                                 continue;
@@ -408,7 +391,9 @@ class WSDL_Gen
                         $el->appendChild($ct);
                 }
 
-                // Add message types
+                // 
+                // Add message types:
+                // 
                 foreach ($this->operations as $name => $params) {
                         if (($str = strrchr($name, '\\'))) {
                                 $name = trim($str, '\\');
@@ -443,7 +428,6 @@ class WSDL_Gen
         public function toXML()
         {
                 $wsdl = new DomDocument("1.0");
-                //$root = $wsdl->createElementNS('http://schemas.xmlsoap.org/wsdl/', 'definitions');
                 $root = $wsdl->createElement('wsdl:definitions');
                 $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
                 $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:tns', $this->ns);
@@ -465,4 +449,3 @@ class WSDL_Gen
 }
 
 /* vim: set ts=2 sts=2 bs=2 ai expandtab : */
-
