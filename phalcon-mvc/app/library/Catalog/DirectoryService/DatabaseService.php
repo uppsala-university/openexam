@@ -16,6 +16,7 @@ namespace OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Catalog\ServiceConnection;
 use OpenExam\Models\User;
+use Phalcon\Mvc\Model\Criteria;
 
 /**
  * Catalog service based on user model.
@@ -63,6 +64,16 @@ class DatabaseService extends AttributeService
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_domains);
+                unset($this->_source);
+                parent::__destruct();
+        }
+
+        /**
          * Get service connection.
          * @return ServiceConnection
          */
@@ -94,18 +105,58 @@ class DatabaseService extends AttributeService
                         $this->_domains = array();
                         foreach ($domains as $domain) {
                                 $this->_domains[] = $domain['domain'];
+                                unset($domain);
                         }
+
+                        unset($domains);
                         return $this->_domains;
                 }
         }
 
-        public function getAttribute($principal, $attr)
+        /**
+         * Get attribute (Principal::ATTR_XXX) for user.
+         * 
+         * <code>
+         * // Get all email addresses:
+         * $service->getAttribute('user@example.com', Principal::ATTR_MAIL);
+         * 
+         * // Get user given name:
+         * $service->getAttribute('user@example.com', Principal::ATTR_GN);
+         * </code>
+         * 
+         * @param string $principal The user principal name.
+         * @param string $attribute The attribute to return.
+         * @return array
+         */
+        public function getAttribute($principal, $attribute)
         {
-                
+                if (($user = User::findFirst(array(
+                            'conditions' => 'principal = :principal:',
+                            'bind'       => array(
+                                    'principal' => $principal
+                            )
+                    )))) {
+                        $data = $user->toArray();
+
+                        if (isset($this->_attrmap['person'][$attribute])) {
+                                $result = $data[$this->_attrmap['person'][$attribute]];
+                        } else {
+                                $result = $data[$attribute];
+                        }
+
+                        if (!is_array($result)) {
+                                $result = array($result);
+                        }
+
+                        unset($user);
+                        unset($data);
+
+                        return $result;
+                }
         }
 
         /**
-         * Get user principal object.
+         * Get user principal objects.
          * 
          * <code>
          * // Search three first Tomas in example.com domain:
@@ -137,9 +188,95 @@ class DatabaseService extends AttributeService
          * @param string $needle The attribute search string.
          * @param string $search The attribute to query.
          * @param array $options Various search options.
+         * 
          * @return Principal[] Matching user principal objects.
          */
         public function getPrincipal($needle, $search, $options)
+        {
+                $query = $this->getPrincipalQuery($needle, $search, $options);
+                $array = $this->getPrincipalArray($query, $options);
+
+                unset($query);
+                return $array;
+        }
+
+        /**
+         * Get user principal objects.
+         * 
+         * @param Criteria $query The query criteria.
+         * @param array $options Various search options.
+         * 
+         * @return Principal[]
+         */
+        private function getPrincipalArray($query, $options)
+        {
+                $principals = array();
+
+                if (($data = $query->execute())) {
+                        foreach ($data->toArray() as $d) {
+                                $principals[] = $this->getPrincipalObject($d, $options);
+                        }
+                }
+                return $principals;
+        }
+
+        /**
+         * Get principal object from data.
+         * 
+         * @param array $data The principal data.
+         * @param array $options Various search options.
+         * 
+         * @return Principal
+         */
+        private function getPrincipalObject($data, $options)
+        {
+                $principal = new Principal();
+
+                // 
+                // Populate public properties in principal object:
+                // 
+                foreach ($data as $attr => $attrs) {
+                        if (property_exists($principal, $attr)) {
+                                if ($attr == Principal::ATTR_MAIL) {
+                                        $principal->mail = $attrs;
+                                        unset($data[$attr]);
+                                } elseif ($attr == Principal::ATTR_AFFIL) {
+                                        $affilation = $this->_affiliation;
+                                        $principal->affiliation = unserialize($affilation($attrs));
+                                        unset($data[$attr]);
+                                } else {
+                                        $principal->$attr = $attrs;
+                                        unset($data[$attr]);
+                                }
+                        }
+                }
+
+                // 
+                // Any left over attributes goes in attr member:
+                // 
+                if ($options) {
+                        $principal->attr = $data;
+                } else {
+                        $principal->attr['svc'] = $d['svc'];
+                }
+
+                if (isset($principal->attr[Principal::ATTR_ASSUR])) {
+                        $principal->attr[Principal::ATTR_ASSUR] = unserialize($principal->attr[Principal::ATTR_ASSUR]);
+                }
+
+                return $principal;
+        }
+
+        /**
+         * Get query criteria.
+         * 
+         * @param string $needle The attribute search string.
+         * @param string $search The attribute to query.
+         * @param array $options Various search options.
+         * 
+         * @return Criteria
+         */
+        private function getPrincipalQuery($needle, $search, $options)
         {
                 // 
                 // Dynamic build search criteria. The search values might come from
@@ -197,49 +334,17 @@ class DatabaseService extends AttributeService
                         $query->limit($options['limit']);
                 }
 
-                if (($data = $query->execute())) {
-                        $principals = array();
+                // 
+                // Cleanup:
+                // 
+                unset($attrmap);
+                unset($insert);
+                unset($remove);
 
-                        foreach ($data->toArray() as $d) {
-                                $principal = new Principal();
-
-                                // 
-                                // Populate public properties in principal object:
-                                // 
-                                foreach ($d as $attr => $attrs) {
-                                        if (property_exists($principal, $attr)) {
-                                                if ($attr == Principal::ATTR_MAIL) {
-                                                        $principal->mail = $attrs;
-                                                        unset($d[$attr]);
-                                                } elseif ($attr == Principal::ATTR_AFFIL) {
-                                                        $affilation = $this->_affiliation;
-                                                        $principal->affiliation = unserialize($affilation($attrs));
-                                                        unset($d[$attr]);
-                                                } else {
-                                                        $principal->$attr = $attrs;
-                                                        unset($d[$attr]);
-                                                }
-                                        }
-                                }
-
-                                // 
-                                // Any left over attributes goes in attr member:
-                                // 
-                                if ($options) {
-                                        $principal->attr = $d;
-                                } else {
-                                        $principal->attr['svc'] = $d['svc'];
-                                }
-
-                                if (isset($principal->attr[Principal::ATTR_ASSUR])) {
-                                        $principal->attr[Principal::ATTR_ASSUR] = unserialize($principal->attr[Principal::ATTR_ASSUR]);
-                                }
-
-                                $principals[] = $principal;
-                        }
-
-                        return $principals;
-                }
+                // 
+                // Finally return result:
+                // 
+                return $query;
         }
 
 }
