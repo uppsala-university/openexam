@@ -28,6 +28,10 @@ Alias /phalcon-mvc /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/publ
     RewriteCond %{HTTPS} off
     RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
+    # Options for application config cache (see index.php):
+    SetEnv OPENEXAM_CACHE_CONFIG 0
+    SetEnv OPENEXAM_CACHE_METHOD xcache
+    
     # Hide development files:
     <FilesMatch "\.(inc|bak|svn|.*~)$">
 	Require all denied
