@@ -39,6 +39,20 @@
                 'password' => 'secret',
         ),
 
+    Database connection are defined to fail on first connection error. It's possible 
+    to configure retry behavior by enabling these options (same setting can be used on 
+    all dbxxx):
+        
+        // 
+        // Retry options:
+        // 
+        'dbread' => array(
+                    ...
+                'connect' => true,      // mandatory for retry
+                'retry' => 6,           // optional (default to 5)
+                'sleep' => 1            // optional (default to 2)
+        )
+
 ** INSTALLATION:
 
    Installation is either done using the SQL-script (MySQL only) or using the Phalcon Developer 

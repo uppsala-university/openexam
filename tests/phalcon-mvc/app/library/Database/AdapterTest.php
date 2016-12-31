@@ -22,49 +22,49 @@ class AdapterTest extends TestCase
                 $config = $this->config->database;
 
                 try {
-                        $config->adapter = Adapter::MySQL;
+                        $config->adapter = Adapter::MYSQL;
                         $adapter = Adapter::create($config);
                         self::assertNotNull($adapter);
                         self::assertInstanceOf('\Phalcon\Db\Adapter\Pdo\Mysql', $adapter);
                 } catch (PDOException $exception) {
                         // ignore expected exception
-                        self::info("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
+                        self::info("Adapter %s: %s\n", Adapter::MYSQL, $exception->getMessage());
                 } catch (Exception $exception) {
                         self::error($exception);
                 }
 
                 try {
-                        $config->adapter = Adapter::PostgreSQL;
+                        $config->adapter = Adapter::POSTGRE;
                         $adapter = Adapter::create($config);
                         self::assertNotNull($adapter);
                         self::assertInstanceOf('\Phalcon\Db\Adapter\Pdo\Postgresql', $adapter);
                 } catch (PDOException $exception) {
                         // ignore expected exception
-                        self::info("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
+                        self::info("Adapter %s: %s\n", Adapter::MYSQL, $exception->getMessage());
                 } catch (Exception $exception) {
                         self::error($exception);
                 }
 
                 try {
-                        $config->adapter = Adapter::Oracle;
+                        $config->adapter = Adapter::ORACLE;
                         $adapter = Adapter::create($config);
                         self::assertNotNull($adapter);
                         self::assertInstanceOf('\Phalcon\Db\Adapter\Pdo\Oracle', $adapter);
                 } catch (PDOException $exception) {
                         // ignore expected exception
-                        self::info("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
+                        self::info("Adapter %s: %s\n", Adapter::MYSQL, $exception->getMessage());
                 } catch (Exception $exception) {
                         self::error($exception);
                 }
 
                 try {
-                        $config->adapter = Adapter::SQLite;
+                        $config->adapter = Adapter::SQLITE;
                         $adapter = Adapter::create($config);
                         self::assertNotNull($adapter);
                         self::assertInstanceOf('\Phalcon\Db\Adapter\Pdo\Sqlite', $adapter);
                 } catch (PDOException $exception) {
                         // ignore expected exception
-                        self::info("Adapter %s: %s\n", Adapter::MySQL, $exception->getMessage());
+                        self::info("Adapter %s: %s\n", Adapter::MYSQL, $exception->getMessage());
                 } catch (Exception $exception) {
                         self::error($exception);
                 }
