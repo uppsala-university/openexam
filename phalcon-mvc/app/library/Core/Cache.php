@@ -17,6 +17,7 @@ use OpenExam\Library\Core\Cache\Backend\Xcache as XcacheSubstitute;
 use Phalcon\Cache\Backend\Apc as ApcCacheBackend;
 use Phalcon\Cache\Backend\File as FileCacheBackend;
 use Phalcon\Cache\Backend\Memcache as MemcacheBackend;
+use Phalcon\Cache\Backend\Memory as MemoryBackend;
 use Phalcon\Cache\Backend\Xcache as XcacheBackend;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Cache\Exception as CacheException;
@@ -59,6 +60,9 @@ class Cache extends Multiple
         {
                 if ($config->cache) {
                         $frontend = array(
+                                'ultra'  => new DataFrontend(array(
+                                        "lifetime" => $config->cache->lifetime->ultra
+                                    )),
                                 'fast'   => new DataFrontend(array(
                                         "lifetime" => $config->cache->lifetime->fast
                                     )),
@@ -86,17 +90,18 @@ class Cache extends Multiple
                                 }
                         }
 
-                        // 
-                        // Use replacement class if framework version < 3.x
-                        // 
+                        if ($config->cache->enable->memory) {
+                                $backends[] = new MemoryBackend(
+                                    $frontend['ultra'], $options['memory']
+                                );
+                        }
                         if ($config->cache->enable->xcache && extension_loaded('xcache')) {
                                 if (PhalconVersion::getPart(PhalconVersion::VERSION_MAJOR) >= 3) {
-                                        die(__METHOD__);
                                         $backends[] = new XcacheBackend(
                                             $frontend['fast'], $options['xcache']
                                         );
                                 } else {
-                                        $backends[] = new XcacheSubstitute(
+                                        $backends[] = new XcacheSubstitute(// Use replacement class if framework version < 3.x
                                             $frontend['fast'], $options['xcache']
                                         );
                                 }
