@@ -61,6 +61,8 @@ class DatabaseService extends AttributeService
                                 Principal::ATTR_ALL   => '*'
                         )
                 ));
+
+                $this->_type = 'data';
         }
 
         /**
@@ -138,20 +140,27 @@ class DatabaseService extends AttributeService
                     )))) {
                         $data = $user->toArray();
 
+                        $result = array(
+                                'svc' => array(
+                                        'name' => $this->_name,
+                                        'type' => $this->_type,
+                                        'ref'  => $user->id
+                        ));
+
                         if (isset($this->_attrmap['person'][$attribute])) {
-                                $result = $data[$this->_attrmap['person'][$attribute]];
+                                $result[$attribute] = $data[$this->_attrmap['person'][$attribute]];
                         } else {
-                                $result = $data[$attribute];
+                                $result[$attribute] = $data[$attribute];
                         }
 
-                        if (!is_array($result)) {
-                                $result = array($result);
+                        if (!is_array($result[$attribute])) {
+                                $result[$attribute] = array($result[$attribute]);
                         }
 
                         unset($user);
                         unset($data);
 
-                        return $result;
+                        return array($result);
                 }
         }
 
@@ -257,7 +266,7 @@ class DatabaseService extends AttributeService
                 if ($options) {
                         $principal->attr = $data;
                 } else {
-                        $principal->attr['svc'] = $d['svc'];
+                        $principal->attr['svc'] = $data['svc'];
                 }
 
                 if (isset($principal->attr[Principal::ATTR_ASSUR])) {
@@ -310,24 +319,33 @@ class DatabaseService extends AttributeService
                 }
 
                 // 
-                // Select attribute map:
+                // Adjustment for simplified attribute queries:
                 // 
-                $attrmap = $this->_attrmap['person'];
-
-                // 
-                // Prepare attribute map:
-                // 
-                $insert = array_diff($options['attr'], array_keys($attrmap));
-                $remove = array_diff(array_keys($attrmap), $options['attr']);
-
-                foreach ($remove as $attribute) {
-                        unset($attrmap[$attribute]);
+                if ($options['attr'] == Principal::ATTR_ALL) {
+                        unset($options['attr']);
                 }
-                foreach ($insert as $attribute) {
-                        $attrmap[$attribute] = $attribute;
+                if (is_string($options['attr'])) {
+                        $options['attr'] = array($options['attr']);
                 }
 
-                if (isset($options['attr']) && $options['attr'] != Principal::ATTR_ALL) {
+                // 
+                // Map formal principal attribute names to model specific:
+                // 
+                if (isset($options['attr'])) {
+                        $attrmap = $this->_attrmap['person'];
+
+                        $insert = array_diff($options['attr'], array_keys($attrmap));
+                        $remove = array_diff(array_keys($attrmap), $options['attr']);
+
+                        foreach ($remove as $attribute) {
+                                unset($attrmap[$attribute]);
+                        }
+                        foreach ($insert as $attribute) {
+                                $attrmap[$attribute] = $attribute;
+                        }
+                }
+
+                if (isset($options['attr'])) {
                         $query->columns($attrmap);
                 }
                 if (isset($options['limit'])) {
