@@ -21,6 +21,7 @@ use Phalcon\Cache\BackendInterface;
 use Phalcon\Cache\Frontend\Data as DataFrontend;
 use Phalcon\Cache\Multiple;
 use Phalcon\Config;
+use OpenExam\Library\Core\Cache\Backend\Xcache as Xcache3;
 
 /**
  * Cache service configurator.
@@ -91,6 +92,11 @@ class Cache
                         if ($config->cache->enable->xcache && extension_loaded('xcache')) {
                                 $backends[] = new Xcache(
                                     $frontend['fast'], $options['xcache']
+                                );
+                        }
+                        if ($config->cache->enable->xcache3 && extension_loaded('xcache')) {
+                                $backends[] = new Xcache3(
+                                    $frontend['fast'], $options['xcache3']
                                 );
                         }
                         if ($config->cache->enable->apc && extension_loaded('apc')) {
