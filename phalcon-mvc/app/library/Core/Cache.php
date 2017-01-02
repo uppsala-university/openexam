@@ -143,7 +143,7 @@ class Cache extends Multiple
          */
         public function get($keyName, $lifetime = null)
         {
-                return parent::get($keyName, $lifetime);
+                return self::decode(parent::get($keyName, $lifetime));
         }
 
         /**
@@ -157,7 +157,7 @@ class Cache extends Multiple
          */
         public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = null)
         {
-                parent::save($keyName, serialize($content), $lifetime, $stopBuffer);
+                parent::save($keyName, self::encode($content), $lifetime, $stopBuffer);
         }
 
         /**
@@ -167,6 +167,34 @@ class Cache extends Multiple
         public function getFastest()
         {
                 return $this->_fastest;
+        }
+
+        /**
+         * Decode cache data.
+         * @param mixed $data The data to decode.
+         * @return mixed
+         */
+        private static function decode($data)
+        {
+                if (is_string($data)) {
+                        return unserialize($data);
+                } else {
+                        return $data;
+                }
+        }
+
+        /**
+         * Encode cache data.
+         * @param mixed $data The data to encode.
+         * @return string
+         */
+        private static function encode($data)
+        {
+                if (is_string($data)) {
+                        return $data;
+                } else {
+                        return serialize($data);
+                }
         }
 
 }
