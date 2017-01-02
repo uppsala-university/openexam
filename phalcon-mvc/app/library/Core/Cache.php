@@ -13,15 +13,17 @@
 
 namespace OpenExam\Library\Core;
 
-use Phalcon\Cache\Backend\Apc as ApcCache;
-use Phalcon\Cache\Backend\File as FileCache;
-use Phalcon\Cache\Backend\Memcache as MemcacheCache;
-use Phalcon\Cache\Backend\Xcache;
+use OpenExam\Library\Core\Cache\Backend\Xcache as XcacheSubstitute;
+use Phalcon\Cache\Backend\Apc as ApcCacheBackend;
+use Phalcon\Cache\Backend\File as FileCacheBackend;
+use Phalcon\Cache\Backend\Memcache as MemcacheBackend;
+use Phalcon\Cache\Backend\Xcache as XcacheBackend;
 use Phalcon\Cache\BackendInterface;
+use Phalcon\Cache\Exception as CacheException;
 use Phalcon\Cache\Frontend\Data as DataFrontend;
 use Phalcon\Cache\Multiple;
 use Phalcon\Config;
-use OpenExam\Library\Core\Cache\Backend\Xcache as Xcache3;
+use Phalcon\Version as PhalconVersion;
 
 /**
  * Cache service configurator.
@@ -39,7 +41,7 @@ use OpenExam\Library\Core\Cache\Backend\Xcache as Xcache3;
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Cache
+class Cache extends Multiple
 {
 
         /**
@@ -47,11 +49,6 @@ class Cache
          * @var BackendInterface 
          */
         private $_fastest;
-        /**
-         * Multi level cache.
-         * @var Multiple 
-         */
-        private $_multiple;
 
         /**
          * Constructor.
@@ -89,28 +86,33 @@ class Cache
                                 }
                         }
 
+                        // 
+                        // Use replacement class if framework version < 3.x
+                        // 
                         if ($config->cache->enable->xcache && extension_loaded('xcache')) {
-                                $backends[] = new Xcache(
-                                    $frontend['fast'], $options['xcache']
-                                );
-                        }
-                        if ($config->cache->enable->xcache3 && extension_loaded('xcache')) {
-                                $backends[] = new Xcache3(
-                                    $frontend['fast'], $options['xcache3']
-                                );
+                                if (PhalconVersion::getPart(PhalconVersion::VERSION_MAJOR) >= 3) {
+                                        die(__METHOD__);
+                                        $backends[] = new XcacheBackend(
+                                            $frontend['fast'], $options['xcache']
+                                        );
+                                } else {
+                                        $backends[] = new XcacheSubstitute(
+                                            $frontend['fast'], $options['xcache']
+                                        );
+                                }
                         }
                         if ($config->cache->enable->apc && extension_loaded('apc')) {
-                                $backends[] = new ApcCache(
+                                $backends[] = new ApcCacheBackend(
                                     $frontend['fast'], $options['apc']
                                 );
                         }
                         if ($config->cache->enable->memcache && extension_loaded('memcache')) {
-                                $backends[] = new MemcacheCache(
+                                $backends[] = new MemcacheBackend(
                                     $frontend['medium'], $options['memcache']
                                 );
                         }
                         if ($config->cache->enable->file) {
-                                $backends[] = new FileCache(
+                                $backends[] = new FileCacheBackend(
                                     $frontend['slow'], $options['file']
                                 );
                         }
@@ -123,17 +125,34 @@ class Cache
                                 $this->_fastest = $backends[0];
                         }
 
-                        $this->_multiple = new Multiple($backends);
+                        parent::__construct($backends);
                 }
         }
 
         /**
-         * Get multi level cache object.
-         * @return Multiple
+         * {@inheritdoc}
+         *
+         * @param string $keyName The cache key.
+         * @param int $lifetime The cache entry lifetime.
+         * @return mixed|null
          */
-        public function getInstance()
+        public function get($keyName, $lifetime = null)
         {
-                return $this->_multiple;
+                return parent::get($keyName, $lifetime);
+        }
+
+        /**
+         * {@inheritdoc}
+         *
+         * @param  string $keyName The cache key.
+         * @param  string $content The data to cache.
+         * @param  int    $lifetime The cache entry lifetime.
+         * @param  bool   $stopBuffer Stop backend on save.
+         * @throws CacheException
+         */
+        public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = null)
+        {
+                parent::save($keyName, serialize($content), $lifetime, $stopBuffer);
         }
 
         /**

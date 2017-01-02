@@ -313,8 +313,7 @@ $di->set('location', function() {
  * Multi-level backend binary cache.
  */
 $di->set('cache', function() use($config) {
-        return (new OpenExam\Library\Core\Cache($config))
-                ->getInstance();
+        return new OpenExam\Library\Core\Cache($config);
 }, true);
 
 /**
