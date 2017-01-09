@@ -19,13 +19,6 @@ use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Catalog\ServiceAdapter;
 use OpenExam\Library\Catalog\ServiceConnection;
 
-if (!defined('INFO_CGI_SERVER')) {
-        define('INFO_CGI_SERVER', 'localhost');
-}
-if (!defined('INFO_CGI_PORT')) {
-        define('INFO_CGI_PORT', 108);
-}
-
 /**
  * UPPDOK directory service.
  *
@@ -38,22 +31,43 @@ class UppdokService extends ServiceAdapter
          * The UPPDOK data service.
          * @var Data 
          */
-        private $_uppdok;
+        private $_data;
+        /**
+         * The service connection.
+         * @var Connection 
+         */
+        private $_conn;
 
         /**
          * Constructor.
-         * @param string $user The service username.
-         * @param string $pass The service password.
-         * @param string $host The service hostname.
-         * @param int $port The service port.
+         * @param Connection $connection The UPPDOK service connection.
          */
-        public function __construct($user, $pass, $host = INFO_CGI_SERVER, $port = INFO_CGI_PORT)
+        public function __construct($connection)
         {
-                $this->_uppdok = new Data(
-                    new Connection($user, $pass, $host, $port)
-                );
-                $this->_uppdok->setCompactMode(false);
+                $this->_conn = $connection;
+
+                $this->_data = new Data();
+                $this->_data->setConnection($connection);
+                $this->_data->setCompactMode(false);
                 $this->_type = 'uppdok';
+        }
+
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                parent::__destruct();
+                unset($this->_data);
+        }
+
+        /**
+         * Set compact output mode.
+         * @param bool $enable Enabled if true.
+         */
+        public function setCompactMode($enable = true)
+        {
+                $this->_data->setCompactMode($enable);
         }
 
         /**
@@ -78,7 +92,7 @@ class UppdokService extends ServiceAdapter
                 $result = array();
                 $group = trim($group, '*');
 
-                foreach ($this->_uppdok->members($group) as $member) {
+                foreach ($this->_data->members($group) as $member) {
                         $principal = $member->getPrincipal($domain, $attributes);
                         $principal->attr = array(
                                 'svc' => array(
@@ -86,8 +100,8 @@ class UppdokService extends ServiceAdapter
                                         'type' => $this->_type,
                                         'ref'  => array(
                                                 'group'    => $group,
-                                                'year'     => $this->_uppdok->getYear(),
-                                                'semester' => $this->_uppdok->getSemester()
+                                                'year'     => $this->_data->getYear(),
+                                                'semester' => $this->_data->getSemester()
                                         )
                                 )
                         );
@@ -107,7 +121,16 @@ class UppdokService extends ServiceAdapter
          */
         public function getConnection()
         {
-                return $this->_uppdok->getConnection();
+                return $this->_conn;
+        }
+
+        /**
+         * Get data service.
+         * @return Data
+         */
+        public function getMemberService()
+        {
+                return $this->_data;
         }
 
 }
