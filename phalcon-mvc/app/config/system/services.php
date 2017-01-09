@@ -265,7 +265,7 @@ $di->set('render', function() use($config) {
 /**
  * Get catalog (directory information) service.
  */
-$di->set('catalog', function() use($config) {
+$di->set('catalog', function() use($config, $di) {
         $manager = new OpenExam\Library\Catalog\DirectoryManager();
         $services = require CONFIG_DIR . '/catalog.def';
         foreach ($services as $name => $data) {
@@ -274,6 +274,7 @@ $di->set('catalog', function() use($config) {
                 $manager->register($service(), $domains, $name);
         }
         $manager->setDefaultDomain($config->user->domain);     // Set default domain.
+        $manager->setCache(new \OpenExam\Library\Catalog\DirectoryCache());
         return $manager;
 }, true);
 

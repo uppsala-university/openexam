@@ -51,6 +51,11 @@ class DirectoryManager extends Component implements DirectoryService
          * @var string 
          */
         private $_domain;
+        /**
+         * The directory cache.
+         * @var DirectoryCache 
+         */
+        private $_cache;
 
         /**
          * Constructor.
@@ -69,16 +74,21 @@ class DirectoryManager extends Component implements DirectoryService
                 foreach ($this->_services as $domain => $services) {
                         foreach ($services as $name => $service) {
                                 if (($backend = $service->getConnection()) != null) {
-                                        if ($backend->connected()) {
-                                                try {
+                                        try {
+                                                if ($backend->connected()) {
                                                         $backend->close();
-                                                } catch (Exception $exception) {
-                                                        $this->report($exception, $service, $name);
                                                 }
+                                        } catch (Exception $exception) {
+                                                $this->report($exception, $service, $name);
+                                        } finally {
+                                                unset($backend);
                                         }
                                 }
                         }
                 }
+
+                unset($this->_domain);
+                unset($this->_services);
         }
 
         /**
@@ -115,6 +125,24 @@ class DirectoryManager extends Component implements DirectoryService
         }
 
         /**
+         * Set directory cache.
+         * @param DirectoryCache $cache The directory cache.
+         */
+        public function setCache($cache)
+        {
+                $this->_cache = $cache;
+        }
+
+        /**
+         * Get directory cache.
+         * @return DirectoryCache
+         */
+        public function getCache()
+        {
+                return $this->_cache;
+        }
+
+        /**
          * Get registered domains.
          * @return array
          */
@@ -132,7 +160,23 @@ class DirectoryManager extends Component implements DirectoryService
         {
                 return $this->_services[$domain];
         }
-        
+
+        /**
+         * Get service.
+         * @param string $name The service name.
+         * @return DirectoryService 
+         */
+        public function getService($name)
+        {
+                foreach ($this->_services as $services) {
+                        foreach ($services as $sname => $service) {
+                                if ($sname == $name) {
+                                        return $service;
+                                }
+                        }
+                }
+        }
+
         /**
          * Set default search domain.
          * @param string $domain The domain name.
@@ -159,6 +203,10 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getGroups($principal, $attributes = array(Group::ATTR_NAME))
         {
+                if (($result = $this->_cache->getGroups($principal, $attributes))) {
+                        return $result;
+                }
+
                 $domain = $this->getDomain($principal);
                 $result = array();
 
@@ -174,6 +222,7 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
+                $this->_cache->setGroups($principal, $attributes, $result);
                 return $result;
         }
 
@@ -186,6 +235,10 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getMembers($group, $domain = null, $attributes = array(Principal::ATTR_PN, Principal::ATTR_NAME, Principal::ATTR_MAIL))
         {
+                if (($result = $this->_cache->getMembers($group, $domain, $attributes))) {
+                        return $result;
+                }
+
                 $result = array();
 
                 foreach ($this->_services as $dom => $services) {
@@ -202,6 +255,7 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
+                $this->_cache->setMembers($group, $domain, $attributes, $result);
                 return $result;
         }
 
@@ -222,6 +276,10 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getAttribute($principal, $attribute)
         {
+                if (($result = $this->_cache->getAttribute($principal, $attribute))) {
+                        return $result;
+                }
+
                 $domain = $this->getDomain($principal);
                 $result = array();
 
@@ -237,6 +295,7 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
+                $this->_cache->setAttribute($principal, $attribute, $result);
                 return $result;
         }
 
@@ -291,6 +350,10 @@ class DirectoryManager extends Component implements DirectoryService
                         $options['attr'] = array($options['attr']);
                 }
 
+                if (($result = $this->_cache->getPrincipal($needle, $search, $options))) {
+                        return $result;
+                }
+
                 $result = array();
 
                 foreach ($this->_services as $domain => $services) {
@@ -315,6 +378,7 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
+                $this->_cache->setPrincipal($needle, $search, $options, $result);
                 return $result;
         }
 
