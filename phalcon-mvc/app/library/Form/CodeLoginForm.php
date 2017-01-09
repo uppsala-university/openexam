@@ -32,8 +32,6 @@ class CodeLoginForm extends Form
          */
         public function initialize($login)
         {
-                error_log($login->secret);
-                
                 $this->setAction($this->url->get('auth/login/' . $login->name));
                 $this->setUserOption('description', $login->description);
                 $this->setUserOption('information', "Use your anonymous code as password. Contact the invigilator if you don't know the code.");
