@@ -72,6 +72,16 @@ class Staff extends Component
                 $this->_lifetime = 24 * 3600;
                 $this->setData();
         }
+        
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_cachekey);
+                unset($this->_data);
+                unset($this->_exam);
+        }
 
         public function __isset($property)
         {

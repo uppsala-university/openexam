@@ -54,6 +54,14 @@ class Record
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_data);
+        }
+
+        /**
          * Get user from data record.
          * @return string
          */

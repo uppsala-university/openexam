@@ -45,6 +45,14 @@ class Storage extends Component
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_backends);
+        }
+
+        /**
          * Add storage backend for method.
          * 
          * @param string $method The logon method (i.e. cas).

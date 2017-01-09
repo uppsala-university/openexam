@@ -181,6 +181,14 @@ class Error
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_exception);
+        }
+
+        /**
          * Get wrapped exception.
          * @return \Exception
          */

@@ -135,6 +135,14 @@ class Cache extends Multiple
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_fastest);
+        }
+
+        /**
          * {@inheritdoc}
          *
          * @param string $keyName The cache key.

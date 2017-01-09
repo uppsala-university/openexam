@@ -57,6 +57,16 @@ class Role extends Component
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_data);
+                unset($this->_name);
+                unset($this->_role);
+        }
+
+        /**
          * Get role name.
          * @return string
          */
@@ -123,8 +133,20 @@ class Role extends Component
 abstract class RoleData extends Component
 {
 
+        /**
+         * The cache key.
+         * @var string 
+         */
         private $_cachekey;
+        /**
+         * Cache entry lifetime (in seconds).
+         * @var int 
+         */
         private $_lifetime;
+        /**
+         * The role name.
+         * @var string 
+         */
         protected $_role;
         protected $_cond;
         protected $_type;
@@ -150,6 +172,13 @@ abstract class RoleData extends Component
         public function __destruct()
         {
                 $this->cache->save($this->_cachekey, $this->_data, $this->_lifetime);
+
+                unset($this->_cachekey);
+
+                unset($this->_role);
+                unset($this->_cond);
+                unset($this->_type);
+                unset($this->_data);
         }
 
         public function addDecoration($enable = true)
@@ -192,6 +221,7 @@ abstract class RoleData extends Component
                 if (!isset($this->_data['size'])) {
                         if (($resultset = $this->dbread->query($sql))) {
                                 $this->_data['size'] = $resultset->fetch()[0];
+                                unset($resultset);
                         } else {
                                 throw new DatabaseException("Failed query for $role role.");
                         }
@@ -208,6 +238,7 @@ abstract class RoleData extends Component
                 if (!isset($this->_data['data'])) {
                         if (($resultset = $this->dbread->query($sql))) {
                                 $this->_data['data'] = $this->filterResults($resultset->fetchAll());
+                                unset($resultset);
                         } else {
                                 throw new DatabaseException("Failed query for $role role.");
                         }
@@ -241,6 +272,7 @@ abstract class RoleData extends Component
                                 }
                         }
 
+                        unset($principals);
                         unset($result[$i][0]);
                         unset($result[$i][1]);
                 }

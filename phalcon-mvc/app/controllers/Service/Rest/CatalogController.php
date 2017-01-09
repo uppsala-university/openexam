@@ -80,6 +80,15 @@ class CatalogController extends RestController
                 $this->_handler = new CatalogHandler($this->getRequest(), $this->user, $this->catalog);
         }
 
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handler);
+                parent::__destruct();
+        }
+
         public function indexAction()
         {
                 
@@ -93,6 +102,7 @@ class CatalogController extends RestController
                 if ($this->request->isGet()) {
                         $response = $this->_handler->getDomains();
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 
@@ -104,6 +114,7 @@ class CatalogController extends RestController
                 if ($this->request->isGet() || $this->request->isPost()) {
                         $response = $this->_handler->getName();
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 
@@ -115,6 +126,7 @@ class CatalogController extends RestController
                 if ($this->request->isGet() || $this->request->isPost()) {
                         $response = $this->_handler->getMail();
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 
@@ -126,6 +138,7 @@ class CatalogController extends RestController
                 if ($this->request->isGet() || $this->request->isPost()) {
                         $response = $this->_handler->getAttribute();
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 
@@ -139,6 +152,7 @@ class CatalogController extends RestController
                 if ($this->request->isGet() || $this->request->isPost()) {
                         $response = $this->_handler->getGroups($this->request->getMethod(), $principal, $output);
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 
@@ -152,6 +166,7 @@ class CatalogController extends RestController
                 if ($this->request->isGet() || $this->request->isPost()) {
                         $response = $this->_handler->getMembers($this->request->getMethod(), $group, $output);
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 
@@ -163,6 +178,7 @@ class CatalogController extends RestController
                 if ($this->request->isGet() || $this->request->isPost()) {
                         $response = $this->_handler->findPrincipals();
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 

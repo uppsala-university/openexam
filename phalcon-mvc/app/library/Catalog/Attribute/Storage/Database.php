@@ -45,6 +45,14 @@ class Database implements Backend
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_domains);
+        }
+
+        /**
          * Check if user exist.
          * @param string $principal The user principal name.
          * @return boolean 
@@ -112,7 +120,9 @@ class Database implements Backend
                 }
 
                 $domain = substr($principal, strpos($principal, '@') + 1);
-                return in_array($domain, $this->_domains);
+                $result = in_array($domain, $this->_domains);
+
+                return $result;
         }
 
 }

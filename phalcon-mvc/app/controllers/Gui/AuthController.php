@@ -36,7 +36,9 @@ class AuthController extends GuiController
          */
         public function indexAction()
         {
-                $this->dispatcher->forward(array('action' => 'select'));
+                $this->dispatcher->forward(array(
+                        'action' => 'select'
+                ));
         }
 
         /**
@@ -53,9 +55,13 @@ class AuthController extends GuiController
                 if (!$this->auth->activate($name, $service)) {
                         return false;
                 }
-                if (($form = $this->auth->getAuthenticator()) != null) {
-                        $this->view->setVar("form", $form->create());
+
+                if (!($auth = $this->auth->getAuthenticator())) {
+                        return false;
                 }
+
+                $form = $auth->create();
+                $this->view->setVar("form", $form);
         }
 
         /**
@@ -68,9 +74,14 @@ class AuthController extends GuiController
          */
         public function selectAction($service = "web")
         {
-                $this->view->setVar("form", new LoginSelect(
-                    new AuthenticatorChain($this->auth->getChain($service))
-                ));
+                if (!($chain = $this->auth->getChain($service))) {
+                        return false;
+                }
+
+                $auth = new AuthenticatorChain($chain);
+                $form = new LoginSelect($auth);
+
+                $this->view->setVar("form", $form);
         }
 
         /**
@@ -86,7 +97,9 @@ class AuthController extends GuiController
          */
         public function loginAction()
         {
-                $auth = $this->auth->getAuthenticator();
+                if (!($auth = $this->auth->getAuthenticator())) {
+                        return false;
+                }
                 if ($auth->accepted()) {
                         $this->response->redirect($this->config->session->startPage);
                 }
@@ -106,8 +119,12 @@ class AuthController extends GuiController
         public function logoutAction()
         {
                 $auth = $this->auth->getAuthenticator();
-                $this->view->setVar('auth', $auth);
-                $this->view->setVar('icon', $this->url->get("/img/tick-circle.png"));
+                $icon = $this->url->get("/img/tick-circle.png");
+
+                $this->view->setVars(array(
+                        'auth' => $auth,
+                        'icon' => $icon
+                ));
         }
 
         /**
@@ -123,6 +140,7 @@ class AuthController extends GuiController
 
                 foreach ($chain as $name => $plugin) {
                         $auth = $plugin['method']();
+
                         if ($auth instanceof RemoteLogin) {
                                 $result[$name] = $chain[$name];
                                 $result[$name]['method'] = "remote";
@@ -133,6 +151,7 @@ class AuthController extends GuiController
                                         'path' => $auth->path()
                                 );
                         }
+
                         if ($auth instanceof FormLogin) {
                                 $result[$name] = $chain[$name];
                                 $result[$name]['method'] = "form";
@@ -143,6 +162,8 @@ class AuthController extends GuiController
                                         'pass' => $auth->pass()
                                 );
                         }
+
+                        unset($auth);
                 }
 
                 $this->response->setJsonContent($result);

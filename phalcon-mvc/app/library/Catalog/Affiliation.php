@@ -77,6 +77,15 @@ class Affiliation extends Component
                         $this->_principal = $this->user->getPrincipalName();
                 }
         }
+        
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_affiliations);
+                unset($this->_principal);
+        }
 
         /**
          * Return true if user has student affiliation.

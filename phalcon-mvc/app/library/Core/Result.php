@@ -75,6 +75,14 @@ class Result extends Component
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_exam);
+        }
+
+        /**
          * Check if forced file generation is enabled.
          * @return boolean
          */
@@ -116,6 +124,7 @@ class Result extends Component
                                 throw new \Exception("Failed unlink result archive.");
                         }
                 }
+                unset($target);
 
                 $target = sprintf("%s.xls", self::getPath($this->_exam->id));
                 if (file_exists($target)) {
@@ -123,6 +132,7 @@ class Result extends Component
                                 throw new \Exception("Failed unlink result spreadsheet.");
                         }
                 }
+                unset($target);
 
                 $target = sprintf("%s", self::getPath($this->_exam->id));
                 if (file_exists($target)) {
@@ -130,6 +140,7 @@ class Result extends Component
                                 throw new \Exception("Failed delete result directory.");
                         }
                 }
+                unset($target);
         }
 
         /**
@@ -150,6 +161,8 @@ class Result extends Component
                                 throw new \Exception("Failed unlink student result.");
                         }
                 }
+                unset($target);
+                unset($student);
         }
 
         /**
@@ -192,6 +205,12 @@ class Result extends Component
                 // The result view URL:
                 // 
                 $source = $this->getResultUrl($token, $student);
+                
+                // 
+                // Cleanup:
+                // 
+                unset($student);
+                unset($token);
 
                 // 
                 // Create target directory if missing:
@@ -254,6 +273,7 @@ class Result extends Component
                         if (!file_exists($filename)) {
                                 $this->createFile($student);
                         }
+                        unset($filename);
                 }
 
                 // 
@@ -268,9 +288,18 @@ class Result extends Component
                 // 
                 $zip = new ZipArchive();
 
+                // 
+                // Create new ZIP-archive:
+                // 
                 if (!($zip->open($target, ZipArchive::CREATE))) {
                         throw new \Exception($zip->getStatusString());
+                } else {
+                        unset($target);
                 }
+                
+                // 
+                // Add files to archive:
+                // 
                 foreach ($this->_exam->students as $student) {
                         $input = sprintf("%s.pdf", self::getPath($this->_exam->id, $student->id));
                         $local = sprintf("%s-%s.pdf", $student->code, $student->user);
@@ -278,7 +307,11 @@ class Result extends Component
                         if (!$zip->addFile($input, $local)) {
                                 throw new \Exception($zip->getStatusString());
                         }
+                        
+                        unset($input);
+                        unset($local);
                 }
+                
                 $zip->close();
         }
 
@@ -305,6 +338,7 @@ class Result extends Component
                 foreach ($exams as $exam) {
                         $result = new Result($exam);
                         $result->createArchive();
+                        unset($result);
                 }
         }
 
@@ -331,6 +365,10 @@ class Result extends Component
 
                 $this->response->setFileToSend($source, $target);
                 $this->response->setContentType('application/pdf', 'UTF-8');
+                
+                unset($student);
+                unset($source);
+                unset($target);
 
                 $this->response->send();
         }
@@ -364,6 +402,9 @@ class Result extends Component
                 $this->response->setFileToSend($source, "\"$target\"");
                 $this->response->setContentType('application/zip', 'UTF-8');
 
+                unset($source);
+                unset($target);
+                
                 $this->response->send();
         }
 

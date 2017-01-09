@@ -90,9 +90,9 @@ class MonitorController extends GuiController
          */
         public function countersAction()
         {
-                $performance = new Performance();
-
                 $content = array();
+
+                $performance = new Performance();
 
                 foreach ($performance->getCounters() as $counter) {
                         $type = $counter->getType();
@@ -154,7 +154,6 @@ class MonitorController extends GuiController
                         $performance->addFilter('addr', $this->request->get('addr', 'string'));
                 }
                 if ($this->request->has('milestone') && $this->request->get('milestone')) {
-                        error_log($this->request->get('milestone', 'string'));
                         $performance->addFilter('milestone', $this->request->get('milestone', 'string'));
                 }
 
@@ -277,6 +276,7 @@ class MonitorController extends GuiController
                 }
 
                 $this->cache->save($cachekey, $content, $lifetime);
+
                 return $content;
         }
 

@@ -27,7 +27,6 @@ class Setup extends Component
          * @var Exam 
          */
         private $_exam;
-        
         /**
          * @var Student 
          */
@@ -42,6 +41,15 @@ class Setup extends Component
         {
                 $this->_exam = $exam;
                 $this->_student = $student;
+        }
+
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_exam);
+                unset($this->_student);
         }
 
         /**

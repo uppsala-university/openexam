@@ -69,6 +69,14 @@ class Lockdown extends Component
                 $this->_student = $student;
                 $this->_remote = $this->request->getClientAddress(true);
         }
+        
+        public function __destruct()
+        {
+                unset($this->_exam);
+                unset($this->_lock);
+                unset($this->_remote);
+                unset($this->_student);
+        }
 
         /**
          * Check if access is accepted for student. 

@@ -50,8 +50,12 @@ class AjaxController extends ServiceController
          */
         public function exceptionAction($exception)
         {
+                $response = new ServiceResponse(null, ServiceHandler::ERROR, $exception->getMessage());
+
                 $this->report($exception);
-                $this->sendResponse(new ServiceResponse(null, ServiceHandler::ERROR, $exception->getMessage()));
+                $this->sendResponse($response);
+
+                unset($response);
         }
 
         /**
@@ -64,7 +68,8 @@ class AjaxController extends ServiceController
         {
                 if ($this->request->isPost()) {
                         list($data, $params) = $this->getPayload();
-                        return new ServiceRequest($data, $params);
+                        $request = new ServiceRequest($data, $params);
+                        return $request;
                 } else {
                         throw new ServiceException("Expected POST request");
                 }

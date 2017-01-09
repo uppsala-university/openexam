@@ -31,11 +31,12 @@ class Result
         private $_result = array();
         /**
          * The service name.
-         * @var type 
+         * @var string 
          */
         private $_name;
         /**
          * The service type.
+         * @var string
          */
         private $_type;
 
@@ -50,6 +51,17 @@ class Result
                 $this->_attrmap = array_change_key_case($attrmap);
                 $this->_name = $name;
                 $this->_type = $type;
+        }
+
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_attrmap);
+                unset($this->_result);
+                unset($this->_name);
+                unset($this->_type);
         }
 
         /**
@@ -150,7 +162,11 @@ class Result
                 for ($i = 0; $i < $entry['count']; $i++) {
                         $name = $entry[$i];
                         $attr = $entry[$name];
+                        
                         $this->addAttribute($index, $name, $attr);
+                        
+                        unset($name);
+                        unset($attr);
                 }
         }
 

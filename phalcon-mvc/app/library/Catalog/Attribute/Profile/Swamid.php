@@ -150,7 +150,7 @@ class Swamid implements Profile
                 
                 $user = new User();
                 $user->assign($attr, $attrmap);
-
+                
                 return $user;
         }
 

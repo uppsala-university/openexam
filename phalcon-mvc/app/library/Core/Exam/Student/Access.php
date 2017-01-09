@@ -83,6 +83,14 @@ class Access extends Component
         {
                 $this->_exam = $exam;
         }
+        
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_exam);
+        }
 
         /**
          * Open exam as a student.

@@ -44,12 +44,22 @@ class Students extends Component
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_data);
+                unset($this->_users);
+        }
+
+        /**
          * Get number of students.
          * @return int
          */
         public function getSize()
         {
-                return count($this->getUsers());
+                $this->setUsers();
+                return count($this->_data);
         }
 
         /**
@@ -58,7 +68,8 @@ class Students extends Component
          */
         public function getData()
         {
-                return $this->getUsers();
+                $this->setUsers();
+                return $this->_data;
         }
 
         /**
@@ -80,19 +91,17 @@ class Students extends Component
         }
 
         /**
-         * Get users data.
+         * Set users data.
          */
-        private function getUsers()
+        private function setUsers()
         {
                 if (!isset($this->_data)) {
-                        $this->_data = array_filter($this->_users->getData(), function($data) {
-                                if ($data['type'] == Users::TYPE_STUDENT) {
-                                        return $data;
+                        $this->_data = array_filter($this->_users->getData(), function($user) {
+                                if ($user['type'] == Users::TYPE_STUDENT) {
+                                        return $user;
                                 }
                         });
                 }
-
-                return $this->_data;
         }
 
 }

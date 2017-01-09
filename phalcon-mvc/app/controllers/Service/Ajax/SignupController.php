@@ -86,12 +86,22 @@ class SignupController extends AjaxController
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handler);
+                parent::__destruct();
+        }
+
+        /**
          * Discover subscribe options action.
          */
         public function indexAction()
         {
                 $response = new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $this->config->signup->toArray());
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -101,6 +111,7 @@ class SignupController extends AjaxController
         {
                 $response = $this->_handler->insert();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -110,6 +121,7 @@ class SignupController extends AjaxController
         {
                 $response = $this->_handler->remove();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -119,6 +131,7 @@ class SignupController extends AjaxController
         {
                 $response = $this->_handler->subscribe();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -140,9 +153,17 @@ class SignupController extends AjaxController
         private function aliasAction($name)
         {
                 $request = $this->_handler->getRequest();
-                $response = $this->_handler->subscribe(array($name => array($request->data['id'])));
+                $response = $this->_handler->subscribe(array(
+                        $name => array(
+                                $request->data['id']
+                        )
+                ));
+                
                 $response->result = $response->result[$name][$request->data['id']];
                 $this->sendResponse($response);
+                
+                unset($response);
+                unset($request);
         }
 
 }

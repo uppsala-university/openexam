@@ -23,7 +23,6 @@ use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Student;
-use Phalcon\Mvc\View;
 
 /**
  * Data export controller.
@@ -41,32 +40,32 @@ class ExportController extends GuiController
         /**
          * Show or download list of students. Only accessable by invigilators.
          * 
-         * @param int $id The exam ID.
+         * @param int $eid The exam ID.
          * @param string $download
          */
-        public function studentsAction($id = null, $download = null)
+        public function studentsAction($eid = null, $download = null)
         {
-                if (!isset($id)) {
+                if (!isset($eid)) {
                         throw new StandardException("Missing exam ID", Error::BAD_REQUEST);
                 }
-                if (!$this->user->roles->aquire(Roles::INVIGILATOR, $id)) {
+                if (!$this->user->roles->aquire(Roles::INVIGILATOR, $eid)) {
                         throw new SecurityException("This page is only accessable for invigilators.", Error::METHOD_NOT_ALLOWED);
                 } else {
                         $this->user->setPrimaryRole(Roles::INVIGILATOR);
                 }
 
                 if (isset($download)) {
-                        $this->studentsDownload($id);
+                        $this->studentsDownload($eid);
                         return true;
                 }
 
                 // 
                 // Get students in this exam and exam data.
                 // 
-                if (($stud = Student::find("exam_id = $id")) == false) {
+                if (($stud = Student::find("exam_id = $eid")) == false) {
                         throw new ModelException("Failed find student on exam");
                 }
-                if (($exam = Exam::findFirst($id)) == false) {
+                if (($exam = Exam::findFirst($eid)) == false) {
                         throw new ModelException("Failed get exam data");
                 }
 
@@ -96,9 +95,9 @@ class ExportController extends GuiController
 
         /**
          * Download student registrations as PDF.
-         * @param int $id The exam ID.
+         * @param int $eid The exam ID.
          */
-        private function studentsDownload($id)
+        private function studentsDownload($eid)
         {
                 $this->view->disable();
 
@@ -116,13 +115,13 @@ class ExportController extends GuiController
                 // is allowed for localhost request.
                 // 
                 $expand = $this->url->get("utility/export/students/");
-                $target = sprintf("http://localhost/%s/%d?token=%s&user=%s", $expand, $id, $token, $this->user->getPrincipalName());
+                $target = sprintf("http://localhost/%s/%d?token=%s&user=%s", $expand, $eid, $token, $this->user->getPrincipalName());
 
                 // 
                 // Send PDF using render service.
                 // 
                 $render = $this->render->getRender(Renderer::FORMAT_PDF);
-                $render->send("students-registrations-exam-$id.pdf", array(
+                $render->send("students-registrations-exam-$eid.pdf", array(
                         array(
                                 'page' => $target
                         )

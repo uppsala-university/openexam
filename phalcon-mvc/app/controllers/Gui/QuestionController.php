@@ -40,15 +40,33 @@ class QuestionController extends GuiController
          */
         public function createAction()
         {
-                // sanitize
-                $examId = $this->filter->sanitize($this->request->getPost('exam_id'), "int");
+                // 
+                // Sanitize:
+                // 
+                if (!($eid = $this->request->getPost('exam_id', "int"))) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
 
-                $this->view->setVar('exam', Exam::findFirst($examId));
+                // 
+                // Try to find exam in request parameter:
+                // 
+                if (!($exam = Exam::findFirst($eid))) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                }
 
-                //disable main layout
+                // 
+                // Set view data:
+                // 
+                $this->view->setVar('exam', Exam::findFirst($eid));
+
+                // 
+                // Disable main layout:
+                // 
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
-                //pickup question form
+                // 
+                // Pickup question form (non-standard path):
+                // 
                 $this->view->pick("question/form");
         }
 
@@ -61,26 +79,36 @@ class QuestionController extends GuiController
         public function updateAction()
         {
 
-                if ($this->request->hasPost('q_id')) {
-
-                        // sanitize
-                        $quesId = $this->filter->sanitize($this->request->getPost('q_id'), "int");
-
-                        // fetch data
-                        $question = Question::findFirst($quesId);
-                        $exam = Exam::findFirst($question->exam_id);
-
-                        //load question form with preloaded data and layout disabled
-                        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
-                        $this->view->setVars(array(
-                                'question' => $question,
-                                'exam'     => $exam
-                        ));
-                        $this->view->pick("question/form");
-                } else {
-
+                if (!$this->request->hasPost('q_id')) {
                         throw new \Exception('Invalid data provided');
                 }
+
+                // 
+                // Sanitize:
+                // 
+                if (!($qid = $this->request->getPost('q_id', "int"))) {
+                        throw new \Exception("Missing or invalid question ID", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Fetch data for view:
+                // 
+                if (!($question = Question::findFirst($qid))) {
+                        throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
+                }
+                if (!($exam = Exam::findFirst($question->exam_id))) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                }
+
+                // 
+                // Show view with main layout disabled:
+                // 
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+                $this->view->setVars(array(
+                        'question' => $question,
+                        'exam'     => $exam
+                ));
+                $this->view->pick("question/form");
         }
 
         /**
@@ -96,14 +124,14 @@ class QuestionController extends GuiController
                 // 
                 // Initialization:
                 // 
-                $questData = $ansData = array();
+                $questions = $answers = array();
                 $exam = false;
 
                 // 
                 // Get sanitized request parameters:
                 // 
-                $examId = $this->dispatcher->getParam("examId", "int");
-                $questId = $this->dispatcher->getParam("questId", "int");
+                $eid = $this->dispatcher->getParam("examId", "int");
+                $qid = $this->dispatcher->getParam("questId", "int");
 
                 // 
                 // Load exam object using primary role (if any). If primary 
@@ -112,18 +140,18 @@ class QuestionController extends GuiController
                 // TODO: Keep access list of allowed roles in parent controller.
                 // 
                 if ($this->user->hasPrimaryRole()) {
-                        $exam = Exam::findFirst($examId);
+                        $exam = Exam::findFirst($eid);
                 }
                 if (!$exam) {
                         $role = $this->user->setPrimaryRole(Roles::STUDENT);
-                        $exam = Exam::findFirst($examId);
+                        $exam = Exam::findFirst($eid);
                 }
                 if (!$exam) {
                         $role = $this->user->setPrimaryRole(Roles::CREATOR);
-                        $exam = Exam::findFirst($examId);
+                        $exam = Exam::findFirst($eid);
                 }
                 if (!$exam) {
-                        throw new \Exception("Failed to load exam for this question");
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -140,6 +168,7 @@ class QuestionController extends GuiController
                         // 
                         if ($exam->lockdown->enable) {
                                 $access = new Access($exam);
+
                                 switch ($access->open()) {
                                         case Access::OPEN_APPROVED;
                                                 $this->logger->access->debug("Approved exam access for student");
@@ -154,6 +183,8 @@ class QuestionController extends GuiController
                                                 ));
                                                 return false;
                                 }
+
+                                unset($access);
                         }
 
                         // 
@@ -164,8 +195,14 @@ class QuestionController extends GuiController
                         // 
                         // Find student object of this logged in person for this exam:
                         // 
-                        if (!($student = Student::findFirst("user = '" . $this->user->getPrincipalName() . "' and exam_id = " . $examId))) {
-                                throw new \Exception("You are not authorized to access this question");
+                        if (!($student = Student::findFirst(array(
+                                    'conditions' => 'user = :user: AND exam_id = :exam:',
+                                    'bind'       => array(
+                                            'user' => $this->user->getPrincipalName(),
+                                            'exam' => $eid
+                                )))
+                            )) {
+                                throw new \Exception("You are not authorized to access this question", Error::FORBIDDEN);
                         }
 
                         // 
@@ -176,61 +213,94 @@ class QuestionController extends GuiController
                         }
                 }
 
-                ## load all questions in this exam for highlighting questions
+                // 
+                // Load all questions in this exam for highlighting questions.
+                // 
                 $allQs = $exam->getQuestions(array('order' => 'slot'));
                 $firtstQ = $allQs->getFirst();
 
-                ## check if needed to load a specific question
-                if ($questId) {
+                // 
+                // Check if needed to load a specific question:
+                // 
+                if ($qid) {
                         $viewMode = 'single';
 
-                        ## load question data
-                        $quest = $allQs->filter(function($qObj) use ($questId) {
-                                if ($qObj->id == $questId) {
+                        //
+                        // Load question data:
+                        // 
+                        $quest = $allQs->filter(function($qObj) use ($qid) {
+                                if ($qObj->id == $qid) {
                                         return $qObj;
                                 }
                         });
 
-                        // to array, doing so to keeps things clean in view
-                        $questData[0] = (!$quest ? $firtstQ : $quest[0]);
+                        // 
+                        // To array, doing so to keeps things clean in view.
+                        // 
+                        $questions[0] = (!$quest ? $firtstQ : $quest[0]);
 
-                        ## pick up answer data if student has answered
-                        ## otherwise, create an entry in answer table for this question against this student
+                        //
+                        // Pick up answer data if student has answered. Otherwise, create an entry 
+                        // in answer table for this question against this student.
+                        // 
                         if (!$exam->testcase) {
-                                $ans = Answer::findFirst("student_id = " . $student->id . " and question_id = " . $questData[0]->id);
-                                if (!$ans) {
-                                        //lets add answer record in database now
-                                        $ans = new Answer();
-                                        $ans->save(array(
-                                                'student_id'  => $student->id,
-                                                'question_id' => $questData[0]->id,
-                                                'answered'    => 0
-                                        ));
+                                if (!($answer = Answer::findFirst(array(
+                                            'conditions' => 'student_id = :sid: AND question_id = :qid:',
+                                            'bind'       => array(
+                                                    'sid' => $student->id,
+                                                    'qid' => $questions[0]->id
+                                            ))
+                                    ))) {
+                                        // 
+                                        // Insert empty answer:
+                                        // 
+                                        $answer = new Answer();
+                                        if (!$answer->save(array(
+                                                    'student_id'  => $student->id,
+                                                    'question_id' => $questions[0]->id,
+                                                    'answered'    => 0
+                                            ))) {
+                                                throw new \Exception("Failed insert empty answer (%s)", $answer->getMessages()[0]);
+                                        }
                                 }
-                                // to array, doing so to keeps things clean in view
-                                $ansData[$questData[0]->id] = $ans;
+
+                                // 
+                                // Insert answer model:
+                                // 
+                                $answers[$questions[0]->id] = $answer;
                         }
+
+                        unset($quest);
+                        unset($answer);
                 } else {
                         $viewMode = 'all';
-                        $questData = $allQs;
+                        $questions = $allQs;
 
-                        ## load all answers that logged in student has given against all qs
+                        //
+                        // Load all answers that logged in student has given against all questions.
+                        // 
                         if (!$exam->testcase) {
                                 foreach ($allQs as $qObj) {
-                                        $tmp = Answer::findFirst("student_id = " . $student->id . " and question_id = " . $qObj->id);
-                                        if (is_object($tmp) && $tmp->count()) {
-                                                $ansData[$qObj->id] = $tmp;
+                                        if (($answer = Answer::findFirst(array(
+                                                    'conditions' => 'student_id = :student: AND question_id = :question:',
+                                                    'bind'       => array(
+                                                            'student'  => $student->id,
+                                                            'question' => $qObj->id
+                                                    ))
+                                            ))) {
+                                                $answers[$qObj->id] = $answer;
                                         }
                                 }
                         }
                 }
 
-                ## get list of all questions that this student has asked to highlight
+                // 
+                // Get list of all questions that this student has asked to highlight:
+                // 
                 $highlightedQuestList = array();
                 if (!$exam->testcase) {
                         foreach ($allQs as $q) {
-                                $allAns = $q->getAnswers('student_id = ' . $student->id);
-                                if (is_object($allAns) && $allAns->count()) {
+                                if (($allAns = $q->getAnswers('student_id = ' . $student->id))) {
                                         foreach ($allAns as $stAns) {
                                                 $stAnsData = json_decode($stAns->answer, true);
                                                 if (isset($stAnsData['highlight-q']) && $stAnsData['highlight-q'] == 'yes') {
@@ -241,16 +311,18 @@ class QuestionController extends GuiController
                         }
                 }
 
-                $this->view->setVars(array(
+                $params = array(
                         'exam'          => $exam,
                         'questions'     => $allQs,
-                        'quest'         => $questData,
-                        'answer'        => $ansData,
+                        'quest'         => $questions,
+                        'answer'        => $answers,
                         'highlightedQs' => $highlightedQuestList,
                         'viewMode'      => $viewMode,
                         'testMode'      => $exam->testcase,
                         'student'       => $student
-                ));
+                );
+
+                $this->view->setVars($params);
                 $this->view->setLayout('thin-layout');
         }
 
@@ -262,119 +334,139 @@ class QuestionController extends GuiController
          * 
          * Allowed to Roles: correctors, decoder
          */
-        public function correctionAction($examId, $loadAnswersBy = NULL)
+        public function correctionAction($eid, $loadAnswersBy = null)
         {
-                ## sanitize
-                $examId = $this->filter->sanitize($this->dispatcher->getParam("examId"), "int");
+                //
+                // Sanitize:
+                // 
+                $eid = $this->dispatcher->getParam("examId", "int");
 
-                ## load exam data
-                $exam = Exam::findFirst($examId);
-                if (!$exam) {
-                        throw new \Exception("Unable to load requested exam");
+                // 
+                // Load exam data:
+                // 
+                if (!($exam = Exam::findFirst($eid))) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
-                ## find display mode
+                // 
+                // Find display mode:
+                // 
                 preg_match('/^\/([a-z]+)\/([0-9]+)/', $loadAnswersBy, $loadBy);
 
-                $isCreator = $this->user->roles->aquire(Roles::CREATOR, $examId);
-                $isDecoder = $this->user->roles->aquire(Roles::DECODER, $examId);
+                // 
+                // Use corrector role unless being creator or decoder:
+                // 
+                if ($this->user->aquire(array(Roles::CREATOR, Roles::DECODER), $eid)) {
+                        $this->user->setPrimaryRole(Roles::CORRECTOR);
+                }
 
                 if (count($loadBy)) {
 
                         switch ($loadBy[1]) {
                                 case 'student':
+                                        // 
+                                        // Find questions and answers for student:
+                                        // 
+                                        if (!($questions = Question::find(array(
+                                                    'conditions' => "exam_id = :exam: AND status = 'active'",
+                                                    'bind'       => array(
+                                                            'exam' => $exam->id
+                                                    ),
+                                                    'order'      => 'slot ASC'
+                                            )))) {
+                                                throw new \Exception("Failed fetch question models", Error::BAD_REQUEST);
+                                        }
 
-                                        // show all answers for a specific student
-                                        $questData = $this->modelsManager->executeQuery(
-                                            "select distinct q.* from OpenExam\Models\Question q "
-                                            . "inner join OpenExam\Models\Corrector c "
-                                            . "where  exam_id = '" . $exam->id . "' and q.status = 'active' "
-                                            . ((!$isDecoder && $exam->creator != $this->user->getPrincipalName()) ?
-                                                "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
-                                            . "order by q.slot asc"
-                                        );
-                                        $stData = Student::findFirst($loadBy[2]);
-                                        $ansData = Answer::find('student_id = ' . $loadBy[2]);
-                                        $heading = 'Student (ID: ' . $stData->id . ')';
+                                        if (!($answers = Answer::find('student_id = ' . $loadBy[2]))) {
+                                                throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
+                                        }
 
+                                        $this->view->setVars(array(
+                                                'heading' => sprintf('Student (ID: %d)', $loadBy[2]),
+                                                'loadBy'  => 'student'
+                                        ));
                                         break;
 
                                 case 'question':
+                                        // 
+                                        // Find question and its answers:
+                                        // 
+                                        if (!($questions = Question::findFirst($loadBy[2]))) {
+                                                throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
+                                        }
 
-                                        // show student answers for a specific question
-                                        $questData = $this->modelsManager->executeQuery(
-                                            "select distinct q.* from OpenExam\Models\Question q "
-                                            . "inner join OpenExam\Models\Corrector c "
-                                            . "where q.id = " . $loadBy[2] . " and q.status = 'active' "
-                                            . ((!$isDecoder && $isCreator) ?
-                                                "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
-                                        );
-                                        $ansData = Answer::find('question_id = ' . $loadBy[2]);
-                                        $heading = 'Question no. ' . $questData[0]->slot ? $questData[0]->slot : $questData[0]->name;
+                                        if (!($answers = Answer::find('question_id = ' . $loadBy[2]))) {
+                                                throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
+                                        }
+
+                                        // 
+                                        // View expects questions array:
+                                        // 
+                                        $questions = array($questions);
+
+                                        $this->view->setVars(array(
+                                                'heading' => sprintf('Question (Q%d)', $questions[0]->slot),
+                                                'loadBy'  => 'question'
+                                        ));
                                         break;
 
                                 case 'answer':
+                                        // 
+                                        // Get answer and question:
+                                        // 
+                                        if (!($answers = Answer::findFirst($loadBy[2]))) {
+                                                throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
+                                        }
 
-                                        // show a specific answer
-                                        $questData = $this->modelsManager->executeQuery(
-                                            "select distinct q.* from OpenExam\Models\Question q "
-                                            . "inner join OpenExam\Models\Corrector c "
-                                            . "inner join OpenExam\Models\Answer a "
-                                            . "where a.id = " . $loadBy[2] . " and q.status = 'active' " 
-                                            . ((!$isDecoder && $isCreator) ?
-                                                "and c.user = '" . $this->user->getPrincipalName() . "' " : " ")
-                                        );
-                                        $ansData = Answer::find('id = ' . $loadBy[2]);
-                                        $stData = Student::findFirst($ansData[0]->student_id);
-                                        $heading = 'Question no. ' . $questData[0]->slot ? $questData[0]->slot : $questData[0]->name . ', '
-                                            . ' answered by Student (ID: ' . $stData->id . ')';
+                                        if (!($questions = $answers->question)) {
+                                                throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
+                                        }
 
+                                        // 
+                                        // View expects questions and answers array:
+                                        // 
+                                        $questions = array($questions);
+                                        $answers = array($answers);
+
+                                        $this->view->setVars(array(
+                                                'heading' => sprintf('Question (Q%d) answered by student (ID: %d)', $questions[0]->slot, $answers[0]->student_id),
+                                                'loadBy'  => 'answer'
+                                        ));
                                         break;
 
                                 default:
                                         throw new \Exception("Unable to load answers for provided criteria");
-                                        break;
                         }
-
-                        $this->view->setVars(array(
-                                'loadBy'  => $loadBy[1],
-                                'answers' => $ansData,
-                                'heading' => $heading
-                        ));
 
                         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                         $this->view->pick('question/answers');
                 } else {
-                        // we will show score board
-                        if (!$exam->decoded) {
-                                $questData = $this->modelsManager->executeQuery(
-                                    "select distinct q.* from OpenExam\Models\Question q "
-                                    . "inner join OpenExam\Models\Corrector c "
-                                    . "where exam_id = '" . $exam->id . "' and q.status = 'active' "
-                                    . ($isDecoder || $isCreator ? " " : "and c.user = '" . $this->user->getPrincipalName() . "' ")
-                                    . "order by q.slot asc"
-                                );
-                        } else {
-                                $questData = $exam->getQuestions(array('order' => 'slot asc', 'conditions' => "status = 'active'"));
+                        // 
+                        // Fetch all data for score board:
+                        // 
+                        if (!($questions = Question::find(array(
+                                    'conditions' => "exam_id = :exam: AND status = 'active'",
+                                    'bind'       => array(
+                                            'exam' => $exam->id
+                                    ),
+                                    'order'      => 'slot ASC'
+                            )))) {
+                                throw new \Exception("Failed fetch question models", Error::BAD_REQUEST);
                         }
 
-
-                        $studentData = $this->modelsManager->executeQuery(
-                            "select distinct s.* from OpenExam\Models\Student s "
-                            . "inner join OpenExam\Models\Answer a on a.student_id = s.id "
-                            . "where s.exam_id = '" . $exam->id . "'"
-                            . "order by s.code asc"
-                        );
-
-                        $this->view->setVars(array(
-                                'students' => $studentData
-                        ));
+                        if (!($students = $exam->students)) {
+                                throw new \Exception("Failed fetch student models", Error::BAD_REQUEST);
+                        }
                 }
 
-
+                // 
+                // Pass data to view:
+                // 
                 $this->view->setVars(array(
                         'exam'      => $exam,
-                        'questions' => $questData
+                        'answers'   => $answers,
+                        'questions' => $questions,
+                        'students'  => $students
                 ));
         }
 

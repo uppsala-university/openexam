@@ -145,6 +145,15 @@ class CoreController extends RestController
                 $this->_handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
         }
 
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handler);
+                parent::__destruct();
+        }
+
         public function apiAction()
         {
                 // TODO: use view for displaying API docs
@@ -165,7 +174,11 @@ class CoreController extends RestController
                         )
                 );
 
-                $this->sendResponse(new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $content));
+                $response = new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $content);
+                $this->sendResponse($response);
+
+                unset($response);
+                unset($content);
         }
 
         /**
@@ -181,7 +194,7 @@ class CoreController extends RestController
                 if (!isset($target)) {
                         throw new ServiceException("Invalid request (missing target)");
                 }
-                                
+
                 $request = $this->_handler->getRequest();
 
                 switch ($request->action) {
@@ -198,6 +211,8 @@ class CoreController extends RestController
                                 $this->sendResponse($this->_handler->delete($request->role, $request->model));
                                 break;
                 }
+
+                unset($request);
         }
 
         /**
@@ -207,6 +222,7 @@ class CoreController extends RestController
         {
                 $response = $this->_handler->capability();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -224,7 +240,7 @@ class CoreController extends RestController
                 $request = parent::getRequest();
                 $params = $this->dispatcher->getParams();
 
-                if(count($params) == 0) {
+                if (count($params) == 0) {
                         return $request;
                 }
 

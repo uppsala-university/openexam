@@ -78,6 +78,15 @@ class SignupController extends GuiController
                 }
         }
 
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_student);
+                unset($this->_teacher);
+        }
+
         public function indexAction()
         {
                 if ($this->config->signup->wizard == false) {

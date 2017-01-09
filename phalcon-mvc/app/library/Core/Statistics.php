@@ -50,6 +50,14 @@ class Statistics extends Component
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_orgunit);
+        }
+
+        /**
          * Get organization unit name.
          * @return string
          */
@@ -166,6 +174,10 @@ class Statistics extends Component
                                 )
                         )
                 );
+
+                unset($roles);
+                unset($exams);
+                unset($users);
 
                 return $summary;
         }

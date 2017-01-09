@@ -129,8 +129,6 @@ class GuiController extends ControllerBase
                                         return false;
                         }
                 }
-
-                unset($error);
         }
 
         /**
@@ -158,82 +156,77 @@ class GuiController extends ControllerBase
                 $access = new Config(require CONFIG_DIR . '/access.def');
                 $permit = $access->private->$controller->$action;
 
-                try {
-                        // 
-                        // Bypass for non-configured controller/action:
-                        // 
-                        if (!isset($permit)) {
-                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule missing)", $controller, $action));
-                                }
-                                return true;
+                // 
+                // Bypass for non-configured controller/action:
+                // 
+                if (!isset($permit)) {
+                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule missing)", $controller, $action));
                         }
-                        if (count($permit->toArray()) == 0) {
-                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rules empty)", $controller, $action));
-                                }
-                                return true;
-                        }
-
-                        // 
-                        // Using roles == '*' means access for all roles:
-                        // 
-                        if ($permit[0] == '*') {
-                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule is '*')", $controller, $action));
-                                }
-                                return true;
-                        }
-
-                        // 
-                        // Check question access:
-                        // 
-                        if (($id = $this->request->get('q_id', 'int')) ||
-                            ($id = $this->request->get('questionId', 'int')) ||
-                            ($id = $this->dispatcher->getParam('questId', 'int'))) {
-                                if ($this->user->roles->aquire(Roles::CORRECTOR, $id)) {
-                                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                                $this->logger->access->debug(sprintf("Permitted question level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, Roles::CORRECTOR));
-                                        }
-                                        return true;
-                                }
-                        }
-
-                        // 
-                        // Check exam access:
-                        // 
-                        if (($id = $this->request->get('exam_id', 'int')) ||
-                            ($id = $this->request->get('examId', 'int')) ||
-                            ($id = $this->dispatcher->getParam('examId', 'int'))) {
-                                if (($roles = $this->user->aquire($permit, $id))) {
-                                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                                $this->logger->access->debug(sprintf("Permitted exam level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, implode(",", $roles)));
-                                        }
-                                        return true;
-                                }
-                        }
-
-                        // 
-                        // Check role access:
-                        // 
-                        if (($roles = $this->user->aquire($permit))) {
-                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
-                                        $this->logger->access->debug(sprintf("Permitted role based access on %s -> %s (roles: %s)", $controller, $action, implode(",", $roles)));
-                                }
-                                return true;
-                        }
-
-                        // 
-                        // Nuke access with a proper contact us message:
-                        // 
-                        throw new SecurityException(sprintf(
-                            "You are not allowed to access this URL. Please contact <a href=\"mailto:%s\">%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
-                        ), Error::METHOD_NOT_ALLOWED
-                        );
-                } finally {
-                        unset($access);
-                        unset($permit);
+                        return true;
                 }
+                if (count($permit->toArray()) == 0) {
+                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rules empty)", $controller, $action));
+                        }
+                        return true;
+                }
+
+                // 
+                // Using roles == '*' means access for all roles:
+                // 
+                if ($permit[0] == '*') {
+                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule is '*')", $controller, $action));
+                        }
+                        return true;
+                }
+
+                // 
+                // Check question access:
+                // 
+                if (($id = $this->request->get('q_id', 'int')) ||
+                    ($id = $this->request->get('questionId', 'int')) ||
+                    ($id = $this->dispatcher->getParam('questId', 'int'))) {
+                        if ($this->user->roles->aquire(Roles::CORRECTOR, $id)) {
+                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                        $this->logger->access->debug(sprintf("Permitted question level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, Roles::CORRECTOR));
+                                }
+                                return true;
+                        }
+                }
+
+                // 
+                // Check exam access:
+                // 
+                if (($id = $this->request->get('exam_id', 'int')) ||
+                    ($id = $this->request->get('examId', 'int')) ||
+                    ($id = $this->dispatcher->getParam('examId', 'int'))) {
+                        if (($roles = $this->user->aquire($permit, $id))) {
+                                if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                        $this->logger->access->debug(sprintf("Permitted exam level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, implode(",", $roles)));
+                                }
+                                return true;
+                        }
+                }
+
+                // 
+                // Check role access:
+                // 
+                if (($roles = $this->user->aquire($permit))) {
+                        if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
+                                $this->logger->access->debug(sprintf("Permitted role based access on %s -> %s (roles: %s)", $controller, $action, implode(",", $roles)));
+                        }
+                        return true;
+                }
+
+                // 
+                // Nuke access with a proper contact us message:
+                // 
+                throw new SecurityException(sprintf(
+                    "You are not allowed to access this URL. Please contact <a href=\"mailto:%s\">%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
+                ), Error::METHOD_NOT_ALLOWED
+                );
         }
 
 }

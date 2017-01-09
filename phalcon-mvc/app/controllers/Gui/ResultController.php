@@ -33,27 +33,32 @@ class ResultController extends GuiController
         /**
          * Generate and save student result in PDF format.
          * 
-         * @param int $examId
-         * @param int $studentId
+         * @param int $eid
+         * @param int $sid
          * 
          * result/{exam_id}/generate/{student_id}
          */
-        public function generateAction($examId, $studentId)
+        public function generateAction($eid, $sid)
         {
-                $result = new ResultHandler($examId);
+                $result = new ResultHandler($eid);
 
                 // 
                 // Authorize access.
                 // 
-                if (!$result->canAccess($studentId)) {
+                if (!$result->canAccess($sid)) {
                         throw new ModelException("You are not allowed to access student result.", Error::FORBIDDEN);
                 }
 
                 // 
                 // Create the result file.
                 // 
-                $result->createFile($studentId);
-                return $this->response->setJsonContent(array("stId" => $studentId));
+                $result->createFile($sid);
+
+                // 
+                // Send JSON content:
+                // 
+                $this->response->setJsonContent(array("stId" => $sid));
+                $this->response->send();
         }
 
         /**
@@ -62,22 +67,22 @@ class ResultController extends GuiController
          * result/{exam_id}/download
          * Allowed to Roles: contributor, 
          */
-        public function downloadAction($examId, $studentId = null)
+        public function downloadAction($eid, $sid = null)
         {
-                $result = new ResultHandler($examId);
+                $result = new ResultHandler($eid);
 
                 // 
                 // Authorize access.
                 // 
-                if (!$result->canAccess($studentId)) {
+                if (!$result->canAccess($sid)) {
                         throw new ModelException("You are not allowed to access student result.", Error::FORBIDDEN);
                 }
 
                 // 
                 // Download result:
                 // 
-                if (isset($studentId)) {
-                        $result->downloadFile($studentId);
+                if (isset($sid)) {
+                        $result->downloadFile($sid);
                 } else {
                         $result->downloadArchive();
                 }
@@ -103,47 +108,46 @@ class ResultController extends GuiController
         public function viewAction()
         {
                 $data = array();
-                $studentIds = array();
-
+                $sids = array();        // Student ID's
                 // 
                 // Sanitize request parameters:
                 // 
-                $examId = $this->filter->sanitize($this->dispatcher->getParam('examId'), 'int');
-                $studId = $this->filter->sanitize($this->dispatcher->getParam('studentId'), 'int');
+                $eid = $this->dispatcher->getParam('examId', 'int');
+                $sid = $this->dispatcher->getParam('studentId', 'int');
 
                 // 
                 // Check required parameters:
                 // 
-                if (empty($examId)) {
+                if (empty($eid)) {
                         throw new \Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
                 }
-                if (empty($studId)) {
+                if (empty($sid)) {
                         throw new \Exception("The student ID is missing", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Get exam data:
                 // 
-                if (!($exam = Exam::findFirst($examId))) {
+                if (!($exam = Exam::findFirst($eid))) {
                         throw new ModelException("Failed find exam", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Get student model:
                 // 
-                if (!($student = Student::findFirst($studId))) {
+                if (!($student = Student::findFirst($sid))) {
                         throw new ModelException("Failed find student", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Authorize access.
                 // 
-                $result = new ResultHandler($exam);
-                if (!$result->canAccess($studId)) {
+                $handler = new ResultHandler($exam);
+                if (!$handler->canAccess($sid)) {
                         throw new ModelException("You are not allowed to access student result.", Error::FORBIDDEN);
                 }
 
-                $studentIds[] = $student->id;
+                $sids[] = $student->id;
                 $data['students'][] = $student;
 
                 // 
@@ -151,6 +155,7 @@ class ResultController extends GuiController
                 // 
                 $data['examScore'] = 0;
                 $questions = $exam->getQuestions(array("order" => "slot", 'conditions' => "status = 'active'"));
+
                 foreach ($questions as $question) {
 
                         $qScore = 0;
@@ -187,7 +192,7 @@ class ResultController extends GuiController
                                         // 
                                         // Store data if required for this student:
                                         // 
-                                        if (in_array($answer->student_id, $studentIds)) {
+                                        if (in_array($answer->student_id, $sids)) {
                                                 $data['answers'][$student->id][$question->id] = json_decode($answer->answer, true);
                                                 $data['results'][$student->id][$question->id] = $qPartsResult;
                                                 $data['results'][$student->id][$question->id]["comments"] = $result->comment;
@@ -197,6 +202,9 @@ class ResultController extends GuiController
                                         foreach ($qPartsResult as $part => $score) {
                                                 $data['studentScore'][$answer->student_id] += $score;
                                         }
+
+                                        unset($qPartsResult);
+                                        unset($answer);
                                 }
                         }
 
@@ -204,6 +212,10 @@ class ResultController extends GuiController
                         // Exam score:
                         // 
                         $data['examScore'] += $qScore;
+
+                        unset($answers);
+                        unset($question);
+                        unset($qParts);
                 }
 
                 // 
@@ -219,10 +231,10 @@ class ResultController extends GuiController
                 // 
                 // Calcualte student's grades:
                 // 
-                foreach ($data['studentScore'] as $studId => $score) {
+                foreach ($data['studentScore'] as $id => $score) {
                         foreach ($data['examGrades'] as $grade => $limit) {
                                 if ((($score / $data['examScore']) * 100) >= $limit) {
-                                        $data['studentGrade'][$studId] = $grade;
+                                        $data['studentGrade'][$id] = $grade;
                                         if (isset($data['studentGrade'][$grade])) {
                                                 $data['studentGrade'][$grade] ++;
                                         } else {
@@ -254,18 +266,18 @@ class ResultController extends GuiController
         /**
          * Downloads scoreboard as faked (HTML) Excel Spreadsheet. 
          * 
-         * @param int $examId The exam ID.
+         * @param int $eid The exam ID.
          * @param bool $download True for sending data.
          */
-        public function exportScoreBoardAction($examId, $download = false)
+        public function exportScoreBoardAction($eid, $download = false)
         {
-                $examId = $this->filter->sanitize($examId, "int");
+                $eid = $this->filter->sanitize($eid, "int");
 
                 // 
                 // Get exam data:
                 // 
-                if (!($exam = Exam::findFirst($examId))) {
-                        throw new ModelException("Failed find exam", Error::PRECONDITION_FAILED);
+                if (!($exam = Exam::findFirst($eid))) {
+                        throw new ModelException("Failed find exam model", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -274,10 +286,10 @@ class ResultController extends GuiController
                 $source = sprintf("%s/results/%d.xls", $this->config->application->cacheDir, $exam->id);
                 $target = sprintf("\"%s.xls\"", $exam->name);
 
-                // 
-                // Store POST data:
-                // 
                 if (!$download) {
+                        // 
+                        // Store POST data:
+                        // 
                         if (!$this->request->hasPost('score_board')) {
                                 return;
                         }
@@ -287,18 +299,18 @@ class ResultController extends GuiController
 
                         file_put_contents($source, utf8_decode($data));
                         print "exported";
-                        return;
+                } else {
+
+                        // 
+                        // Use MIME hint when sending file:
+                        // 
+                        $this->view->disable();
+
+                        $this->response->setFileToSend($source, $target);
+                        $this->response->setContentType('application/vnd.ms-excel', 'UTF-8');
+
+                        $this->response->send();
                 }
-
-                // 
-                // Use MIME hint when sending file:
-                // 
-                $this->view->disable();
-
-                $this->response->setFileToSend($source, $target);
-                $this->response->setContentType('application/vnd.ms-excel', 'UTF-8');
-
-                $this->response->send();
         }
 
 }

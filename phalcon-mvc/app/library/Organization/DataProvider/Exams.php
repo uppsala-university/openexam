@@ -65,6 +65,16 @@ class Exams extends Component
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_columns);
+                unset($this->_conditions);
+                unset($this->_filter);
+        }
+
+        /**
          * Set exams filter.
          * @param array $filter The exams filter.
          */

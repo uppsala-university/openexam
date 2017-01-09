@@ -25,7 +25,7 @@ use OpenExam\Library\Security\Exception as SecurityException;
  */
 class StatisticsController extends GuiController
 {
-        
+
         public function initialize()
         {
                 parent::initialize();
@@ -52,6 +52,8 @@ class StatisticsController extends GuiController
                         'name' => $statistics->getName(),
                         'data' => $statistics->getSummary()
                 );
+                
+                unset($statistics);
 
                 $this->view->disable();
                 $this->response->setJsonContent($content);
@@ -74,8 +76,11 @@ class StatisticsController extends GuiController
 
                 foreach ($statistics->getChildren() as $child) {
                         $content['children'][] = $child->getData();
+                        unset($child);
                 }
 
+                unset($statistics);
+                
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();
@@ -102,6 +107,9 @@ class StatisticsController extends GuiController
                         'name' => $users->getName()
                 );
 
+                unset($statistics);
+                unset($users);
+                
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();
@@ -120,6 +128,9 @@ class StatisticsController extends GuiController
                         'size' => $exams->getSize(),
                         'data' => $exams->getData()
                 );
+                
+                unset($statistics);
+                unset($exams);
 
                 $this->view->disable();
                 $this->response->setJsonContent($content);
@@ -145,6 +156,9 @@ class StatisticsController extends GuiController
                         'data' => $users->getData(),
                         'name' => $users->getName()
                 );
+                
+                unset($statistics);
+                unset($users);
 
                 $this->view->disable();
                 $this->response->setJsonContent($content);
@@ -171,6 +185,9 @@ class StatisticsController extends GuiController
                         'name' => $users->getName()
                 );
 
+                unset($statistics);
+                unset($users);
+                
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();
@@ -196,6 +213,9 @@ class StatisticsController extends GuiController
                         'name' => $users->getName()
                 );
 
+                unset($statistics);
+                unset($users);
+                
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();

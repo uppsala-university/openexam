@@ -68,10 +68,22 @@ class AccessController extends AjaxController
          */
         protected $_handler;
 
-        public function initialize()
+        /**
+         * Constructor.
+         */
+        public function __construct()
         {
-                parent::initialize();
+                parent::__construct();
                 $this->_handler = new AccessHandler($this->getRequest(), $this->user);
+        }
+
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handler);
+                parent::__destruct();
         }
 
         /**
@@ -81,6 +93,7 @@ class AccessController extends AjaxController
         {
                 $response = $this->_handler->open();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -90,6 +103,7 @@ class AccessController extends AjaxController
         {
                 $response = $this->_handler->close();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -99,6 +113,7 @@ class AccessController extends AjaxController
         {
                 $response = $this->_handler->approve();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -108,6 +123,7 @@ class AccessController extends AjaxController
         {
                 $response = $this->_handler->release();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -118,9 +134,11 @@ class AccessController extends AjaxController
                 if (($section = $this->dispatcher->getParam(0))) {
                         $response = $this->_handler->entries($this->location, $section);
                         $this->sendResponse($response);
+                        unset($response);
                 } else {
                         $response = $this->_handler->entries($this->location);
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 

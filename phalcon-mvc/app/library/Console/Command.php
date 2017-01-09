@@ -57,7 +57,7 @@ class Command
         private $_error;
         /**
          * The exit status from command.
-         * @var type 
+         * @var int 
          */
         private $_status = -1;
         /**
@@ -74,6 +74,16 @@ class Command
         {
                 $this->_command = $command;
                 $this->_errfile = sprintf("%s/command-%d.err", sys_get_temp_dir(), getmypid());
+        }
+        
+        public function __destruct()
+        {
+                unset($this->_command);
+                unset($this->_cwd);
+                unset($this->_env);
+                unset($this->_errfile);
+                unset($this->_error);
+                unset($this->_output);
         }
 
         /**

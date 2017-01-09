@@ -105,7 +105,7 @@ class RestController extends ServiceController
                 $params = array_merge($params, $this->request->getQuery());
 
                 // 
-                // Return service request object:
+                // Create and return service request object:
                 // 
                 return new ServiceRequest($data, $params);
         }

@@ -45,6 +45,14 @@ abstract class ServiceController extends ControllerBase
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_payload);
+        }
+
+        /**
          * Get service request.
          * @param callable $remapper Callback remapping request parameters (e.g. exams -> exam_id).
          * @return ServiceRequest
@@ -124,7 +132,6 @@ abstract class ServiceController extends ControllerBase
                 foreach (array('data', 'params') as $part) {
                         if (isset($input[$part])) {
                                 $$part = (array) $input[$part];
-                                unset($input[$part]);
                         }
                 }
 
@@ -157,6 +164,7 @@ abstract class ServiceController extends ControllerBase
                 }
 
                 $this->_payload = array($data, $params);
+
                 return $this->_payload;
         }
 

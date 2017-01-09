@@ -70,12 +70,22 @@ class AccessController extends RestController
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handler);
+                parent::__destruct();
+        }
+
+        /**
          * Open exam action.
          */
         public function openAction()
         {
                 $response = $this->_handler->open();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -85,6 +95,7 @@ class AccessController extends RestController
         {
                 $response = $this->_handler->close();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -94,6 +105,7 @@ class AccessController extends RestController
         {
                 $response = $this->_handler->approve();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -103,6 +115,7 @@ class AccessController extends RestController
         {
                 $response = $this->_handler->release();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -113,9 +126,12 @@ class AccessController extends RestController
                 if (($section = $this->request->getQuery('section'))) {
                         $response = $this->_handler->entries($this->location, $section);
                         $this->sendResponse($response);
+                        unset($response);
+                        unset($section);
                 } else {
                         $response = $this->_handler->entries($this->location);
                         $this->sendResponse($response);
+                        unset($response);
                 }
         }
 

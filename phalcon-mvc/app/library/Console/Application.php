@@ -122,6 +122,7 @@ class Application extends \Phalcon\CLI\Console
                         } else {
                                 $options[] = $option->key;
                         }
+                        unset($option);
                 }
 
                 if (strstr($options[0], '.php')) {

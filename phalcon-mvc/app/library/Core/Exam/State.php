@@ -166,6 +166,16 @@ class State extends Component
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_ckey);
+                unset($this->_exam);
+                unset($this->_flags);
+        }
+
+        /**
          * Check if cached data exists.
          * @return boolean
          */

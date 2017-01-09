@@ -154,6 +154,15 @@ class CoreController extends AjaxController
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handler);
+                parent::__destruct();
+        }
+
+        /**
          * Perform create operation.
          * @param string $role The requested role.
          * @param string $type The requested model.
@@ -162,6 +171,7 @@ class CoreController extends AjaxController
         {
                 $response = $this->_handler->create($role, $type);
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -173,6 +183,7 @@ class CoreController extends AjaxController
         {
                 $response = $this->_handler->read($role, $type);
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -184,6 +195,7 @@ class CoreController extends AjaxController
         {
                 $response = $this->_handler->update($role, $type);
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -195,6 +207,7 @@ class CoreController extends AjaxController
         {
                 $response = $this->_handler->delete($role, $type);
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -204,6 +217,7 @@ class CoreController extends AjaxController
         {
                 $response = $this->_handler->capability();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -218,15 +232,19 @@ class CoreController extends AjaxController
                                 "/ajax/core/{role}/{model}/{action}" => "POST"
                         ),
                         "example" => array(
-                                "/ajax/core/teacher/exam/create"     => "Create exam",
-                                "/ajax/core/student/exam/read"       => "Read exam",
-                                "/ajax/core/creator/exam/update"     => "Update exam",
-                                "/ajax/core/creator/exam/delete"     => "Delete exam",
+                                "/ajax/core/teacher/exam/create"         => "Create exam",
+                                "/ajax/core/student/exam/read"           => "Read exam",
+                                "/ajax/core/creator/exam/update"         => "Update exam",
+                                "/ajax/core/creator/exam/delete"         => "Delete exam",
                                 "/ajax/core/student/question/capability" => "Get static capabilities"
                         )
                 );
 
-                $this->sendResponse(new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $content));
+                $response = new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $content);
+                $this->sendResponse($response);
+
+                unset($content);
+                unset($response);
         }
-        
+
 }

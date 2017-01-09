@@ -97,6 +97,9 @@ class ImportController extends GuiController
                         return false;
                 }
 
+                // 
+                // Aggregate data in three columns:
+                // 
                 $data = array(array(
                                 'user', 'tag', 'name'
                 ));
@@ -109,6 +112,9 @@ class ImportController extends GuiController
                         );
                 }
 
+                // 
+                // Pass data to view:
+                // 
                 $this->view->setVar('data', $data);
         }
 

@@ -40,11 +40,12 @@ class Helper extends Component
                         return "";
                 }
 
-                $result = $this->catalog->getAttribute($principal, $attribute);
-
-                if ($result) {
+                if (($result = $this->catalog->getAttribute($principal, $attribute))) {
                         $data = current($result);
-                        return $data[$attribute][0];
+                        $attr = $data[$attribute][0];
+
+                        unset($data);
+                        return $attr;
                 }
         }
 

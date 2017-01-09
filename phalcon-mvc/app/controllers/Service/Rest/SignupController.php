@@ -76,6 +76,15 @@ class SignupController extends RestController
                 parent::initialize();
                 $this->_handler = new SignupHandler($this->getRequest(), $this->user, $this->config->signup);
         }
+        
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handler);
+                parent::__destruct();
+        }
 
         public function indexAction()
         {
@@ -85,18 +94,22 @@ class SignupController extends RestController
                                     $this->_handler, ServiceHandler::SUCCESS, $this->config->signup->toArray()
                                 );
                                 $this->sendResponse($response);
+                                unset($response);
                                 break;
                         case "PUT":
                                 $response = $this->_handler->subscribe();
                                 $this->sendResponse($response);
+                                unset($response);
                                 break;
                         case "POST":
                                 $response = $this->_handler->insert();
                                 $this->sendResponse($response);
+                                unset($response);
                                 break;
                         case "DELETE":
                                 $response = $this->_handler->remove();
                                 $this->sendResponse($response);
+                                unset($response);
                                 break;
                 }
         }
@@ -109,10 +122,12 @@ class SignupController extends RestController
                                     $this->_handler, ServiceHandler::SUCCESS, $this->config->signup->teacher->toArray()
                                 );
                                 $this->sendResponse($response);
+                                unset($response);
                                 break;
                         case "PUT":
                                 $response = $this->_handler->subscribe($this->getData());
                                 $this->sendResponse($response);
+                                unset($response);
                                 break;
                 }
         }
@@ -125,10 +140,12 @@ class SignupController extends RestController
                                     $this->_handler, ServiceHandler::SUCCESS, $this->config->signup->student->toArray()
                                 );
                                 $this->sendResponse($response);
+                                unset($response);
                                 break;
                         case "PUT":
                                 $response = $this->_handler->subscribe($this->getData());
                                 $this->sendResponse($response);
+                                unset($response);
                                 break;
                 }
         }
@@ -173,7 +190,7 @@ class SignupController extends RestController
                                 $action => true
                         );
                 }
-
+                
                 return $result;
         }
 

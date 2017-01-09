@@ -47,6 +47,16 @@ abstract class AttributeService extends ServiceAdapter
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_affiliation);
+                unset($this->_attrmap);
+                parent::__destruct();
+        }
+
+        /**
          * Set attribute map.
          * 
          * The attribute map can be used to remap the symbolic query attributes
@@ -67,8 +77,8 @@ abstract class AttributeService extends ServiceAdapter
          */
         public function setAttributeMap($attrmap)
         {
-                foreach ($attrmap as $class => $attributes) {
-                        $this->_attrmap[$class] = array_merge($this->_attrmap[$class], $attributes);
+                foreach ($attrmap as $class => $attrs) {
+                        $this->_attrmap[$class] = array_merge($this->_attrmap[$class], $attrs);
                 }
         }
 
@@ -102,12 +112,17 @@ abstract class AttributeService extends ServiceAdapter
          * ));
          * </code>
          * 
-         * @param array $affiliation The affiliation map.
+         * @param array $map The affiliation map.
          */
         public function setAffiliationMap($map)
         {
                 $this->_affiliation = function($attrs) use($map) {
                         $result = array();
+
+                        if (!isset($attrs)) {
+                                return $result;
+                        }
+
                         foreach ($map as $key => $values) {
                                 if (!is_array($values)) {
                                         $values = array($values);
@@ -120,6 +135,7 @@ abstract class AttributeService extends ServiceAdapter
                                         }
                                 }
                         }
+
                         return array_keys($result);
                 };
         }

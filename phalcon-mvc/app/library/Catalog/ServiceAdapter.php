@@ -44,6 +44,16 @@ abstract class ServiceAdapter extends Component implements DirectoryService
         protected $_lifetime = 0;
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_lifetime);
+                unset($this->_name);
+                unset($this->_type);
+        }
+
+        /**
          * Set service name.
          * @param string $name The service name.
          */
@@ -92,6 +102,7 @@ abstract class ServiceAdapter extends Component implements DirectoryService
                 if (!$this->cache->exists($key, $this->_lifetime)) {
                         $this->cache->save($key, $result, $this->_lifetime);
                 }
+                
                 return $result;
         }
 

@@ -66,9 +66,14 @@ class HelpController extends GuiController
         {
                 parent::initialize();
 
-                $this->view->setVar('base', $this->url->getBaseUri() . '/help');
-                $this->view->setVar('icon', $this->url->get('img/instruction-manual.jpg'));
-                
+                $base = $this->url->get('help');
+                $icon = $this->url->get('img/instruction-manual.jpg');
+
+                $this->view->setVars(array(
+                        'base' => $base,
+                        'icon' => $icon
+                ));
+
                 $this->view->setTemplateBefore('cardbox');
         }
 
@@ -78,7 +83,7 @@ class HelpController extends GuiController
          */
         public function indexAction()
         {
-                $this->view->setVar("help", self::$_help);
+                $this->view->setVar('help', self::$_help);
         }
 
         /**
@@ -190,6 +195,7 @@ class HelpController extends GuiController
                 $this->view->disable();
                 $this->response->setContentType(self::$_mime[$format]);
                 $this->response->setHeader("content-disposition", "attachment; filename=\"$name\"");
+
                 readfile($path);
         }
 

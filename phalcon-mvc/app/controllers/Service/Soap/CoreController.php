@@ -48,6 +48,15 @@ class CoreController extends SoapController
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_service);
+                parent::__destruct();
+        }
+
+        /**
          * Create (set) the SOAP service object.
          * @param string $action Create service for core action.
          */
@@ -55,6 +64,7 @@ class CoreController extends SoapController
         {
                 $request = new SoapRequest($this->request, $action, $this->url->get($this->request->getQuery('_url')));
                 $this->_service = $request->createService();
+                unset($request);
         }
 
         /**

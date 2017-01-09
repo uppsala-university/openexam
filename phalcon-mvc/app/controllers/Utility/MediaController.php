@@ -38,13 +38,16 @@ class MediaController extends GuiController
          */
         public function libraryAction()
         {
-                $examid = $this->request->get('exam_id', 'int');
-
-                if (!$examid) {
+                // 
+                // Sanitize:
+                // 
+                if (!($eid = $this->request->get('exam_id', 'int'))) {
                         throw new \Exception("Expected exam ID", Error::PRECONDITION_FAILED);
                 }
 
-                $loggedIn = $this->user->getPrincipalName();
+                // 
+                // Set contributor role.
+                // 
                 $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
 
                 // 
@@ -64,13 +67,13 @@ class MediaController extends GuiController
                                     'exam'    => Resource::SHARED_EXAM,
                                     'group'   => Resource::SHARED_GROUP,
                                     'global'  => Resource::SHARED_GLOBAL,
-                                    1         => $examid,
-                                    2         => $loggedIn,
-                                    3         => $loggedIn
+                                    1         => $eid,
+                                    2         => $this->user->getPrincipalName(),
+                                    3         => $this->user->getPrincipalName()
                             ),
                             'order'      => 'shared,id desc'
                     )))) {
-                        throw new \Exception("Failed fetch shared resources");
+                        throw new \Exception("Failed fetch shared resources", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -79,12 +82,12 @@ class MediaController extends GuiController
                 if (!($pres = Resource::find(array(
                             'conditions' => "user = :user: AND exam_id != :exam:",
                             'bind'       => array(
-                                    'user' => $loggedIn,
-                                    'exam' => $examid
+                                    'user' => $this->user->getPrincipalName(),
+                                    'exam' => $eid
                             ),
                             'order'      => 'id desc'
                     )))) {
-                        throw new \Exception("Failed fetch personal resources");
+                        throw new \Exception("Failed fetch personal resources", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -164,14 +167,27 @@ class MediaController extends GuiController
         {
                 $this->view->disable();
 
-                // find media type of this file to set file upload directory
+                // 
+                // Find media type of this file to set file upload directory:
+                // 
                 $files = $this->request->getUploadedFiles();
-                preg_match('/(.*)\/.*/', $files[0]->getRealType(), $mediaType);
-                $uploadDir = $this->config->application->mediaDir . $mediaType[1] . "s/";
-                $uploadUrl = $this->url->get('utility/media/view/' . $mediaType[1]);
+                $media = array();
 
-                // upload file
-                $uploadHandler = new \UploadHandler(array(
+                // 
+                // Extract MIME type:
+                // 
+                preg_match('/(.*)\/.*/', $files[0]->getRealType(), $media);
+                
+                // 
+                // Set target URL and path:
+                //                 
+                $uploadDir = $this->config->application->mediaDir . $media[1] . "s/";
+                $uploadUrl = $this->url->get('utility/media/view/' . $media[1]);
+
+                // 
+                // Upload file:
+                // 
+                $handler = new \UploadHandler(array(
                         'upload_dir' => $uploadDir,
                         'upload_url' => $uploadUrl . "/",
                 ));

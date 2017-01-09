@@ -149,10 +149,22 @@ class CatalogController extends AjaxController
          */
         private $_handler;
 
+        /**
+         * Constructor.
+         */
         public function initialize()
         {
                 parent::initialize();
                 $this->_handler = new CatalogHandler($this->getRequest(), $this->user, $this->catalog);
+        }
+
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handler);
+                parent::__destruct();
         }
 
         /**
@@ -196,6 +208,7 @@ class CatalogController extends AjaxController
         {
                 $response = $this->_handler->getDomains();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -205,6 +218,7 @@ class CatalogController extends AjaxController
         {
                 $response = $this->_handler->getName();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -214,6 +228,7 @@ class CatalogController extends AjaxController
         {
                 $response = $this->_handler->getMail();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -223,6 +238,7 @@ class CatalogController extends AjaxController
         {
                 $response = $this->_handler->getAttribute();
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -234,6 +250,7 @@ class CatalogController extends AjaxController
         {
                 $response = $this->_handler->getGroups($this->request->getMethod(), $principal, $output);
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -245,6 +262,7 @@ class CatalogController extends AjaxController
         {
                 $response = $this->_handler->getMembers($this->request->getMethod(), $group, $output);
                 $this->sendResponse($response);
+                unset($response);
         }
 
         /**
@@ -254,6 +272,7 @@ class CatalogController extends AjaxController
         {
                 $response = $this->_handler->findPrincipals();
                 $this->sendResponse($response);
+                unset($response);
         }
 
 }

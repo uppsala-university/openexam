@@ -19,7 +19,7 @@ use OpenExam\Library\Catalog\ServiceConnection;
 /**
  * LDAP server connection class.
  * 
- * @property-read resource $connection The LDAP server connection.
+ * @property-read resource $handle The LDAP server connection.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Connection implements ServiceConnection
@@ -29,7 +29,7 @@ class Connection implements ServiceConnection
          * The LDAP connection.
          * @var resource 
          */
-        private $_ldap;
+        private $_handle;
         /**
          * The LDAP server hostname.
          * @var string 
@@ -64,7 +64,7 @@ class Connection implements ServiceConnection
          * @param string $pass The LDAP bind password.
          * @param array $options Array of LDAP_OPT_XXX options.
          */
-        public function __construct($host, $port, $user, $pass, $options)
+        public function __construct($host, $port = 636, $user = null, $pass = null, $options = array())
         {
                 $this->_host = $host;
                 $this->_port = $port;
@@ -73,22 +73,37 @@ class Connection implements ServiceConnection
                 $this->_options = $options;
         }
 
+        /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_handle);
+
+                unset($this->_host);
+                unset($this->_port);
+                unset($this->_user);
+                unset($this->_pass);
+
+                unset($this->_options);
+        }
+
         public function __get($name)
         {
-                if ($name == 'connection') {
+                if ($name == 'handle') {
                         return $this->getConnection();
                 }
         }
 
         /**
-         * Opens connection on-demand.
+         * Get LDAP connection.
          */
         public function getConnection()
         {
                 if (!$this->connected()) {
                         $this->open();
                 }
-                return $this->_ldap;
+                return $this->_handle;
         }
 
         /**
@@ -106,22 +121,22 @@ class Connection implements ServiceConnection
          */
         public function open()
         {
-                if (($this->_ldap = ldap_connect($this->_host, $this->_port)) == false) {
+                if (($this->_handle = ldap_connect($this->_host, $this->_port)) == false) {
                         throw new Exception(sprintf(
                             "Failed connect to LDAP server %s:%d", $this->_host, $this->_port
                         ));
                 }
 
                 foreach ($this->_options as $name => $value) {
-                        if (ldap_set_option($this->_ldap, $name, $value) == false) {
-                                throw new Exception(ldap_error($this->_ldap), ldap_errno($this->_ldap));
+                        if (ldap_set_option($this->_handle, $name, $value) == false) {
+                                throw new Exception(ldap_error($this->_handle), ldap_errno($this->_handle));
                         }
                 }
 
-                if (@ldap_bind($this->_ldap, $this->_user, $this->_pass) == false) {
-                        throw new Exception(ldap_error($this->_ldap), ldap_errno($this->_ldap));
+                if (@ldap_bind($this->_handle, $this->_user, $this->_pass) == false) {
+                        throw new Exception(ldap_error($this->_handle), ldap_errno($this->_handle));
                 }
-                
+
                 return true;
         }
 
@@ -130,8 +145,8 @@ class Connection implements ServiceConnection
          */
         public function close()
         {
-                if (ldap_unbind($this->_ldap) == false) {
-                        throw new Exception(ldap_error($this->_ldap), ldap_errno($this->_ldap));
+                if (ldap_unbind($this->_handle) == false) {
+                        throw new Exception(ldap_error($this->_handle), ldap_errno($this->_handle));
                 }
         }
 
@@ -141,7 +156,7 @@ class Connection implements ServiceConnection
          */
         public function connected()
         {
-                return is_resource($this->_ldap);
+                return is_resource($this->_handle);
         }
 
         /**

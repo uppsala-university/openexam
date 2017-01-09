@@ -125,6 +125,12 @@ class Process
                 if (file_exists($this->_errfile)) {
                         unlink($this->_errfile);
                 }
+
+                unset($this->_command);
+                unset($this->_cwd);
+                unset($this->_env);
+                unset($this->_errfile);
+                unset($this->_pipes);
         }
 
         /**

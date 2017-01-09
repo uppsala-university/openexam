@@ -59,6 +59,16 @@ class Users extends Component
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_conditions);
+                unset($this->_data);
+                unset($this->_filter);
+        }
+
+        /**
          * Decorate returned users with name and mail from catalog service.
          * @param boolean $enable Enable or disable.
          */

@@ -131,11 +131,6 @@ class ExamController extends GuiController
                 // Set data for view:
                 // 
                 $this->view->setVar('roleBasedExamList', $exams);
-
-                // 
-                // Cleanup:
-                // 
-                unset($exams);
         }
 
         /**
@@ -170,12 +165,12 @@ class ExamController extends GuiController
          * 
          * Allowed to Roles: creator, contributor
          */
-        public function updateAction($examId)
+        public function updateAction($eid)
         {
                 // 
                 // Sanitize:
                 // 
-                if (!($examId = $this->filter->sanitize($examId, "int"))) {
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
@@ -186,13 +181,15 @@ class ExamController extends GuiController
                 if (isset($params[1]) && in_array($params[1], $this->capabilities->getRoles())) {
                         $this->user->setPrimaryRole($params[1]);
                 } else {
-                        throw new \Exception("Invalid URL.");
+                        throw new \Exception("Invalid URL.", Error::BAD_REQUEST);
                 }
 
                 // 
                 // Fetch data:
                 // 
-                $exam = Exam::findFirst($examId);
+                if (!($exam = Exam::findFirst($eid))) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                }
 
                 // 
                 // Set view data:
@@ -200,12 +197,6 @@ class ExamController extends GuiController
                 $this->view->setVars(array(
                         'exam' => $exam
                 ));
-
-                // 
-                // Cleanup:
-                // 
-                unset($exam);
-                unset($params);
         }
 
         /**
@@ -214,19 +205,19 @@ class ExamController extends GuiController
          * exam/replicate/{exam-id}
          * Allowed to Roles: teacher
          */
-        public function replicateAction($examId)
+        public function replicateAction($eid)
         {
-                if (!($examId = $this->filter->sanitize($examId, "int"))) {
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
-                if (!$this->user->roles->aquire(Roles::CREATOR, $examId) &&
-                    !$this->user->roles->aquire(Roles::ADMIN, $examId)) {
+                if (!$this->user->roles->aquire(Roles::CREATOR, $eid) ||
+                    !$this->user->roles->aquire(Roles::ADMIN, $eid)) {
                         throw new \Exception("Only creator or admins can replicate exams", Error::FORBIDDEN);
                 }
 
-                if (($oldExam = Exam::findFirst($examId)) == null) {
-                        throw new \Exception("Failed lookup exam", Error::INTERNAL_SERVER_ERROR);
+                if (!($oldExam = Exam::findFirst($eid))) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -242,7 +233,9 @@ class ExamController extends GuiController
                             "orgunit" => $oldExam->orgunit,
                             "grades"  => $oldExam->grades
                     )) == false) {
-                        throw new \Exception(sprintf("Failed save new exam (%s)", $newExam->getMessages()[0]));
+                        throw new \Exception(
+                        sprintf("Failed save new exam (%s)", $newExam->getMessages()[0])
+                        );
                 }
 
                 // 
@@ -279,7 +272,9 @@ class ExamController extends GuiController
                                                     "grades"    => $oldTopic->grades,
                                                     "depend"    => $oldTopic->depend
                                             )) == false) {
-                                                throw new \Exception(sprintf("Failed duplicate topic (%s)", $newTopic->getMessages()[0]));
+                                                throw new \Exception(
+                                                sprintf("Failed duplicate topic (%s)", $newTopic->getMessages()[0])
+                                                );
                                         }
                                         $topicsMap[$oldTopic->id] = $newTopic->id;
 
@@ -292,7 +287,6 @@ class ExamController extends GuiController
                                 // 
                                 foreach ($oldExam->topics as $oldTopic) {
                                         $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
-                                        unset($oldTopic);
                                 }
                         }
 
@@ -317,7 +311,9 @@ class ExamController extends GuiController
                                                     "comment"  => $oldQuest->comment,
                                                     "grades"   => $oldQuest->grades
                                             )) == false) {
-                                                throw new \Exception(sprintf("Failed duplicate question (%s)", $newQuest->getMessages()[0]));
+                                                throw new \Exception(
+                                                sprintf("Failed duplicate question (%s)", $newQuest->getMessages()[0])
+                                                );
                                         }
 
                                         // 
@@ -329,7 +325,9 @@ class ExamController extends GuiController
                                                             "question_id" => $newQuest->id,
                                                             "user"        => $oldCorrector->user
                                                     )) == false) {
-                                                        throw new \Exception(sprintf("Failed duplicate corrector (%s)", $newCorrector->getMessages()[0]));
+                                                        throw new \Exception(
+                                                        sprintf("Failed duplicate corrector (%s)", $newCorrector->getMessages()[0])
+                                                        );
                                                 }
 
                                                 unset($newCorrector);
@@ -369,7 +367,9 @@ class ExamController extends GuiController
                                                             "exam_id" => $newExam->id,
                                                             "user"    => $member->user
                                                     )) == false) {
-                                                        throw new \Exception("Failed duplicate role");
+                                                        throw new \Exception(
+                                                        sprintf("Failed duplicate role (%s)", $newRole->getMessages()[0])
+                                                        );
                                                 }
 
                                                 unset($newRole);
@@ -389,12 +389,6 @@ class ExamController extends GuiController
                         "exam_id" => $newExam->id
                 ));
                 $this->response->send();
-
-                // 
-                // Cleanup:
-                // 
-                unset($oldExam);
-                unset($newExam);
         }
 
         /**
@@ -403,21 +397,19 @@ class ExamController extends GuiController
          * 
          * Allowed to Roles: student
          */
-        public function instructionAction($examId)
+        public function instructionAction($eid)
         {
                 // 
                 // Sanitize:
                 // 
-                if (!($examId = $this->filter->sanitize(
-                    $this->dispatcher->getParam("examId"), "int")
-                    )) {
+                if (!($eid = $this->dispatcher->getParam("examId", "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Fetch exam data either as creator or student:
                 // 
-                if ($this->user->roles->aquire(Roles::CREATOR, $examId)) {
+                if ($this->user->roles->aquire(Roles::CREATOR, $eid)) {
                         $this->user->setPrimaryRole(Roles::CREATOR);
                 } else {
                         $this->user->setPrimaryRole(Roles::STUDENT);
@@ -426,7 +418,7 @@ class ExamController extends GuiController
                 // 
                 // Redirect to start page if exam is missing:
                 // 
-                if (!($exam = Exam::findFirst($examId))) {
+                if (!($exam = Exam::findFirst($eid))) {
                         return $this->response->redirect($this->config->session->startPage);
                 }
 
@@ -460,11 +452,6 @@ class ExamController extends GuiController
                 if (($location = $this->location->getEntry())) {
                         $this->view->setVar('location', $location);
                 }
-
-                // 
-                // Cleanup:
-                // 
-                unset($exam);
         }
 
         /**
@@ -483,7 +470,7 @@ class ExamController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (!($examId = $this->request->get('exam_id', "int"))) {
+                if (!($eid = $this->request->get('exam_id', "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
@@ -493,12 +480,12 @@ class ExamController extends GuiController
                 if (!($exam = Exam::findFirst(array(
                             'conditions' => 'id = :exam: AND (endtime IS NULL OR endtime > NOW())',
                             'bind'       => array(
-                                    'exam' => $examId
+                                    'exam' => $eid
                             )
                     )))) {
-                        throw new \Exception("Sorry! "
-                        . "Exam time has been finished. <br>"
-                        . "It is no more possible to manage student's data.");
+                        throw new \Exception(
+                        "Exam time has finished and it's no longer possible to manage student's data.", Error::METHOD_NOT_ALLOWED
+                        );
                 }
 
                 // 
@@ -508,11 +495,6 @@ class ExamController extends GuiController
                         "exam"    => $exam,
                         "domains" => $this->catalog->getDomains()
                 ));
-
-                // 
-                // Cleanup:
-                // 
-                unset($exam);
         }
 
         /**
@@ -531,26 +513,21 @@ class ExamController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (!($examId = $this->request->get('exam_id', "int"))) {
+                if (!($eid = $this->request->get('exam_id', "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Try to find exam in request parameter:
                 // 
-                if (!($exam = Exam::findFirst($examId))) {
-                        throw new \Exception("Failed find requested exam.", Error::BAD_REQUEST);
+                if (!($exam = Exam::findFirst($eid))) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
                 // Set data for view:
                 // 
                 $this->view->setVar("exam", $exam);
-
-                // 
-                // Cleanup:
-                // 
-                unset($exam);
         }
 
         /**
@@ -569,31 +546,26 @@ class ExamController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (($examId = $this->request->getPost("exam_id", "int")) == null) {
+                if (($eid = $this->request->getPost("exam_id", "int")) == null) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Try to find exam in request parameter:
                 // 
-                if (($exam = Exam::findFirst($examId)) == false) {
-                        throw new \Exception("Failed find requested exam.", Error::BAD_REQUEST);
+                if (($exam = Exam::findFirst($eid)) == false) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
                 // Set data for view:
                 // 
                 $this->view->setVars(array(
-                        "active" => $this->location->getActive($examId),
+                        "active" => $this->location->getActive($eid),
                         "system" => $this->location->getSystem(),
                         "recent" => $this->location->getRecent(),
                         "exam"   => $exam
                 ));
-
-                // 
-                // Cleanup:
-                // 
-                unset($exam);
         }
 
         /**
@@ -614,32 +586,27 @@ class ExamController extends GuiController
                         'icon'  => $this->url->get('/img/clock.png'),
                         'retry' => $this->url->get('/exam/' . $exam->id . '/question/1')
                 ));
-
-                // 
-                // Cleanup:
-                // 
-                unset($exam);
         }
 
         /**
          * View for displaying exam details (i.e. state).
-         * @param int $examId The exam ID.
+         * @param int $eid The exam ID.
          * @throws \Exception
          */
-        public function detailsAction($examId)
+        public function detailsAction($eid)
         {
                 // 
                 // Sanitize:
                 // 
-                if (!($examId = $this->filter->sanitize($examId, "int"))) {
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Try to find exam in request parameter:
                 // 
-                if (($exam = Exam::findFirst($examId)) == false) {
-                        throw new \Exception("Failed find requested exam.", Error::BAD_REQUEST);
+                if (($exam = Exam::findFirst($eid)) == false) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -650,11 +617,6 @@ class ExamController extends GuiController
                         'phase'    => new Phase($exam->getState()),
                         'datetime' => new DateTime($exam->starttime, $exam->endtime)
                 ));
-
-                // 
-                // Cleanup:
-                // 
-                unset($exam);
         }
 
 }
