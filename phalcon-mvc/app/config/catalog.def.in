@@ -13,6 +13,7 @@
 
 use OpenExam\Library\Catalog\DirectoryService\DatabaseService;
 use OpenExam\Library\Catalog\DirectoryService\LdapService;
+use OpenExam\Library\Catalog\DirectoryService\Ldap\Connection as LdapConnection;
 use OpenExam\Library\Catalog\Affiliation;
 use OpenExam\Library\Catalog\Group;
 use OpenExam\Library\Catalog\Principal;
@@ -31,8 +32,9 @@ return array(
         'ldap'  => array(
                 'service' => function() {
                         $service = new LdapService(
-                            'ldaps://ldap.example.com', 636, 'user', 'secret'
-                        );
+                            new LdapConnection(
+                                'ldaps://ldap.example.com', 636, 'user', 'secret'
+                        ));
                         // 
                         // Remap object class attributes:
                         // 
@@ -60,11 +62,12 @@ return array(
         'msad'  => array(
                 'service' => function() {
                         $service = new LdapService(
-                            'ldaps://dc.example.com', 636, 'user@example.com', 'secret', array(
+                            new LdapConnection(
+                                    'ldaps://dc.example.com', 636, 'user@example.com', 'secret', array(
                                     LDAP_OPT_REFERRALS        => false,
                                     LDAP_OPT_PROTOCOL_VERSION => 3
                                 )
-                        );
+                        ));
                         $service->setAttributeMap(array(
                                 'person' => array(
                                         Principal::ATTR_PN    => 'userPrincipalName',

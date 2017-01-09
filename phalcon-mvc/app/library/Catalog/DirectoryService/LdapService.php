@@ -34,24 +34,20 @@ class LdapService extends AttributeService
          * The LDAP connection object.
          * @var Connection 
          */
-        private $_ldap;
+        private $_conn;
         /**
          * The search base DN.
          * @var string 
          */
-        private $_basedn;
+        private $_base;
 
         /**
          * Constructor.
-         * @param string $host The LDAP server hostname.
-         * @param string $port The LDAP server port.
-         * @param string $user The LDAP bind username.
-         * @param string $pass The LDAP bind password.
-         * @param array $options Array of LDAP_OPT_XXX options.
+         * @param Connection $connection The LDAP service connection.
          */
-        public function __construct($host, $port = 636, $user = null, $pass = null, $options = array())
+        public function __construct($connection)
         {
-                $this->_ldap = new Connection($host, $port, $user, $pass, $options);
+                $this->_conn = $connection;
                 $this->_type = 'ldap';
 
                 parent::__construct(array(
@@ -76,12 +72,21 @@ class LdapService extends AttributeService
         }
 
         /**
+         * Destructor.
+         */
+        public function __destruct()
+        {
+                unset($this->_base);
+                parent::__destruct();
+        }
+
+        /**
          * Get service connection.
          * @return ServiceConnection
          */
         public function getConnection()
         {
-                return $this->_ldap;
+                return $this->_conn;
         }
 
         /**
@@ -90,7 +95,7 @@ class LdapService extends AttributeService
          */
         public function setBase($basedn)
         {
-                $this->_basedn = $basedn;
+                $this->_base = $basedn;
         }
 
         /**
@@ -140,16 +145,16 @@ class LdapService extends AttributeService
                 // 
                 // Search directory tree and return entries:
                 // 
-                if (($result = ldap_search($this->_ldap->connection, $this->_basedn, $filter, array_values($attrmap), 0, $limit)) == false) {
-                        throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
+                if (($result = ldap_search($this->_conn->handle, $this->_base, $filter, array_values($attrmap), 0, $limit)) == false) {
+                        throw new Exception(ldap_error($this->_conn->handle), ldap_errno($this->_conn->handle));
                 }
 
-                if (($entries = ldap_get_entries($this->_ldap->connection, $result)) == false) {
-                        throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
+                if (($entries = ldap_get_entries($this->_conn->handle, $result)) == false) {
+                        throw new Exception(ldap_error($this->_conn->handle), ldap_errno($this->_conn->handle));
                 }
 
                 if (ldap_free_result($result) == false) {
-                        throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
+                        throw new Exception(ldap_error($this->_conn->handle), ldap_errno($this->_conn->handle));
                 }
 
                 // 
@@ -206,20 +211,20 @@ class LdapService extends AttributeService
                 // 
                 // Find directory entry:
                 // 
-                if (($result = ldap_read($this->_ldap->connection, $path, $filter, array_values($attrmap))) == false) {
-                        throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
+                if (($result = ldap_read($this->_conn->handle, $path, $filter, array_values($attrmap))) == false) {
+                        throw new Exception(ldap_error($this->_conn->handle), ldap_errno($this->_conn->handle));
                 }
 
-                if (($entry = ldap_first_entry($this->_ldap->connection, $result)) == false) {
-                        throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
+                if (($entry = ldap_first_entry($this->_conn->handle, $result)) == false) {
+                        throw new Exception(ldap_error($this->_conn->handle), ldap_errno($this->_conn->handle));
                 }
 
-                if (($data = ldap_get_attributes($this->_ldap->connection, $entry)) == false) {
-                        throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
+                if (($data = ldap_get_attributes($this->_conn->handle, $entry)) == false) {
+                        throw new Exception(ldap_error($this->_conn->handle), ldap_errno($this->_conn->handle));
                 }
 
                 if (ldap_free_result($result) == false) {
-                        throw new Exception(ldap_error($this->_ldap->connection), ldap_errno($this->_ldap->connection));
+                        throw new Exception(ldap_error($this->_conn->handle), ldap_errno($this->_conn->handle));
                 }
 
                 // 
@@ -393,17 +398,17 @@ class LdapService extends AttributeService
          * </code>
          * 
          * @param string $needle The attribute search string.
-         * @param string $attribute The attribute to query.
+         * @param string $search The attribute to query.
          * @param array $options Various search options.
          * @return Principal[] Matching user principal objects.
          */
-        public function getPrincipal($needle, $attribute, $options)
+        public function getPrincipal($needle, $search, $options)
         {
                 // 
                 // Return entry from cache if existing:
                 // 
                 if ($this->_lifetime) {
-                        $cachekey = sprintf("catalog-%s-principal-%s-%s", $this->_name, $attribute, md5(serialize(array($needle, $options))));
+                        $cachekey = sprintf("catalog-%s-principal-%s-%s", $this->_name, $search, md5(serialize(array($needle, $options))));
                         if ($this->cache->exists($cachekey, $this->_lifetime)) {
                                 return $this->cache->get($cachekey, $this->_lifetime);
                         }
@@ -412,7 +417,7 @@ class LdapService extends AttributeService
                 // 
                 // Search for attribute matching needle:
                 // 
-                $search = $this->search($attribute, $needle, $options['attr'], 'person', $options['limit']);
+                $search = $this->search($search, $needle, $options['attr'], 'person', $options['limit']);
 
                 // 
                 // Collect group data in result object:
