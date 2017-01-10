@@ -144,10 +144,10 @@ endforeach;
         <br>
 
         <?php if ($canUpdateExam): ?>
-                <input type="checkbox" value="4" <?= ((($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) != 0 || empty($exam->details)) ? 'checked="checked"' : '') ?> name="details[]" >
-                Expose student's accumulated points in score board.
+                <input type="checkbox" value="4" <?= ((($exam->details & Exam::EXPOSE_SCORING_DURING_CORRECTION) != 0 || empty($exam->details)) ? 'checked="checked"' : '') ?> name="details[]" >
+                Expose student's accumulated points in score board during correction.
         <?php else: ?>
-                <?= (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) != 0) ? '&#10004; Expose student\'s accumulated points in score board.' : '' ?>
+                <?= (($exam->details & Exam::EXPOSE_SCORING_DURING_CORRECTION) != 0) ? '&#10004; Expose student\'s accumulated points in score board during correction.' : '' ?>
         <?php endif; ?>
         <br>
 

@@ -73,9 +73,9 @@ class Exam extends ModelBase
          */
         const RESULT_OTHERS_STATISTICS = 2;
         /**
-         * Expose student grade and percentage during correction phase.
+         * Expose student scoring percentage during the correction phase.
          */
-        const EXPOSE_GRADES_DURING_CORRECTION = 4;
+        const EXPOSE_SCORING_DURING_CORRECTION = 4;
         /**
          * Blur media (i.e. images) in student result.
          */

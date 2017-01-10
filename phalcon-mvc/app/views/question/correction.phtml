@@ -27,12 +27,8 @@ foreach ($grades as $k => $grade) :
 endforeach;
 arsort($examGrades);
 
-if (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) != 0) {
-        $exam->show_grades = true;
+if (($exam->details & Exam::EXPOSE_SCORING_DURING_CORRECTION) != 0) {
         $exam->show_percent = true;
-} else {
-        $exam->show_grades = false;
-        $exam->show_percent = false;
 }
 
 if ($exam->decoded || $this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
@@ -62,8 +58,17 @@ if (!$exam->getState()->isCorrected()) {
         }
 }
 
+// 
+// Use config defaults for undefined display options:
+// 
 if (!isset($exam->show_summary)) {
-        $exam->show_summary = true;     // subject for change
+        $exam->show_summary = $this->config->result->show->summary;
+}
+if (!isset($exam->show_percent)) {
+        $exam->show_percent = $this->config->result->show->scores;
+}
+if (!isset($exam->show_grades)) {
+        $exam->show_grades = $this->config->result->show->grades;
 }
 
 ?>

@@ -115,7 +115,15 @@ return array(
                  * Expose statistics for other students:
                  * Exam::RESULT_OTHERS_STATISTICS       (2)
                  */
-                'details' => 3
+                'details' => 3,
+                /**
+                 * Expose this meta data to correctors during correction.
+                 */
+                'show'    => array(
+                        'grades'  => false,
+                        'scores'  => false,
+                        'summary' => true
+                )        
         ),
         /**
          * SMTP settings.
