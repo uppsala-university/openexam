@@ -148,8 +148,7 @@ class ExamController extends GuiController
                             'name'    => ' ',
                             'descr'   => ' ',
                             'creator' => $this->user->getPrincipalName(),
-                            'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75',
-                            'details' => 7
+                            'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75'
                     )) == false) {
                         throw new \Exception(
                         sprintf("Failed to initialize exam (%s)", $exam->getMessages()[0])
