@@ -306,8 +306,12 @@ if (!isset($exam->show_summary)) {
                                             // 
                                             // Avarage:
                                             // 
-                                            $sumScores = array_sum($overallQuestScore[$q->id]);
-                                            $numScores = count($overallQuestScore[$q->id]);
+                                            if (isset($overallQuestScore[$q->id])) {
+                                                    $sumScores = array_sum($overallQuestScore[$q->id]);
+                                                    $numScores = count($overallQuestScore[$q->id]);
+                                            } else {
+                                                    $numScores = 0;
+                                            }
 
                                             // 
                                             // Fixup for division by zero warning:
@@ -317,6 +321,11 @@ if (!isset($exam->show_summary)) {
                                                     $numScores = 1;
                                             }
                                             $avgScores = sprintf("%1.1f", $sumScores / $numScores);
+                                            
+                                            // 
+                                            // Tooltip:
+                                            // 
+                                            $ansCount = count($overallQuestScore[$q->id]);
 
                                             ?>
                                             <td title="Answers: <?= $ansCount ?> Percent: <?= sprintf("%.02d", ($avgScores / $q->score) * 100) ?>%" class="cc aa">
