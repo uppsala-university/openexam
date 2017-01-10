@@ -27,10 +27,17 @@ foreach ($grades as $k => $grade) :
 endforeach;
 arsort($examGrades);
 
-if ($exam->decoded || $this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
+if (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) != 0) {
+        $exam->show_grades = true;
         $exam->show_percent = true;
 } else {
+        $exam->show_grades = false;
         $exam->show_percent = false;
+}
+
+if ($exam->decoded || $this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
+        $exam->show_grades = true;
+        $exam->show_percent = true;
 }
 
 if ($this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id) && $exam->getState()->isCorrected()) {
@@ -45,21 +52,18 @@ if (!$exam->decoded && $this->user->roles->aquire(Roles::DECODER, $exam->id) && 
         $exam->show_decode = false;
 }
 
-if ($exam->decoded || $this->user->roles->aquire(Roles::CREATOR, $exam->id) || (($exam->details & Exam::EXPOSE_GRADES_DURING_CORRECTION) != 0)) {
-        $exam->show_grades = true;
-} else {
-        $exam->show_grades = false;
-}
-
 if (!$exam->getState()->isCorrected()) {
         $exam->show_download = false;
         $exam->show_decode = false;
-        $exam->show_percent = false;
-        
+
         if ($exam->decoded) {
                 $exam->decoded = false;
                 printf("<div class=\"alert alert-warning\">Your exam is flagged as decoded, but some answers are still uncorrected. Please contact the system administrator to resolve this issue.</div>");
         }
+}
+
+if (!isset($exam->show_summary)) {
+        $exam->show_summary = true;     // subject for change
 }
 
 ?>
@@ -146,10 +150,10 @@ if (!$exam->getState()->isCorrected()) {
                                 <div>Max. <?= $totalExamScore ?></div>
                             </div>
                             </th> 
-                            <th class="sortable" style="background-color:#EAEAEA; max-width:65px; text-align:center">%</th>
+                            <th class="sortable" style="background-color:#EAEAEA; width:25px; max-width: 25px; text-align:center">%</th>
                     <?php endif; ?>
                     <?php if ($exam->show_grades): ?>
-                            <th class="sortable" style="background-color:#EAEAEA; width:35px;  text-align:center">Grade</th>
+                            <th class="sortable" style="background-color:#EAEAEA; width:25px; max-width: 25px; text-align:center">Grade</th>
                     <?php endif; ?>
                     </tr>
                     </thead>	
@@ -294,38 +298,40 @@ if (!$exam->getState()->isCorrected()) {
 
                         ?>
                     </tbody>	
-                    <tfoot>
-                        <tr class="avarage">
-                            <?php foreach ($questions as $q): ?>
-                                    <?php $avg = sprintf("%1.1f", array_sum($overallQuestScore[$q->id]) / count($overallQuestScore[$q->id])); ?>
-                                    <td title="Answers: <?= count($overallQuestScore[$q->id]) ?> Percent: <?= (count($students) / count($overallQuestScore[$q->id])) * 100 ?>%" class="cc aa">
-                                        <?= $avg ?>/<?= $q->score ?>
-                                    </td>
-                            <?php endforeach; ?>
+                    <?php if ($exam->show_summary): ?>
+                            <tfoot>
+                                <tr class="avarage">
+                                    <?php foreach ($questions as $q): ?>
+                                            <?php $avg = sprintf("%1.1f", array_sum($overallQuestScore[$q->id]) / count($overallQuestScore[$q->id])); ?>
+                                            <td title="Answers: <?= count($overallQuestScore[$q->id]) ?> Percent: <?= (count($students) / count($overallQuestScore[$q->id])) * 100 ?>%" class="cc aa">
+                                                <?= $avg ?>/<?= $q->score ?>
+                                            </td>
+                                    <?php endforeach; ?>
 
-                            <th  class="cc aa" align="right" style="vertical-align:top;">Average:</th>
-                            <?php if ($exam->decoded): ?>
-                                    <th align="right" style="vertical-align:top;"></th>
-                                    <th align="right" style="vertical-align:top;"></th>
-                                    <th align="right" style="vertical-align:top;"></th>
-                            <?php endif; ?>
-                            <?php if ($exam->show_percent): ?>
-                                    <td class="cc aa">
-                                        <?= sprintf("%1.1f", array_sum($avgScore) / count($avgScore)) ?>/<?= $totalExamScore ?>
-                                    </td>
-                                    <td class="cc aa">
-                                        <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
-                                    </td>
-                            <?php endif; ?>
-                            <?php if ($exam->show_grades): ?>
-                                    <td class="cc aa" style="text-align:right; margin:0; padding:0">
-                                        <?php foreach ($examGrades as $grade => $limit): ?>
-                                                <div style="padding:1px; "><b><?= $grade ?></b>: <?= $avgGrades[$grade] ?></div>
-                                        <?php endforeach; ?>
-                                    </td>
-                            <?php endif; ?>
-                        </tr>
-                    </tfoot>
+                                    <th  class="cc aa" align="right" style="vertical-align:top;">Average:</th>
+                                    <?php if ($exam->decoded): ?>
+                                            <th align="right" style="vertical-align:top;"></th>
+                                            <th align="right" style="vertical-align:top;"></th>
+                                            <th align="right" style="vertical-align:top;"></th>
+                                    <?php endif; ?>
+                                    <?php if ($exam->show_percent): ?>
+                                            <td class="cc aa">
+                                                <?= sprintf("%1.1f", array_sum($avgScore) / count($avgScore)) ?>/<?= $totalExamScore ?>
+                                            </td>
+                                            <td class="cc aa">
+                                                <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
+                                            </td>
+                                    <?php endif; ?>
+                                    <?php if ($exam->show_grades): ?>
+                                            <td class="cc aa" style="text-align:right; margin:0; padding:0">
+                                                <?php foreach ($examGrades as $grade => $limit): ?>
+                                                        <div style="padding:1px; "><b><?= $grade ?></b>: <?= $avgGrades[$grade] ?></div>
+                                                <?php endforeach; ?>
+                                            </td>
+                                    <?php endif; ?>
+                                </tr>
+                            </tfoot>
+                    <?php endif; ?>
                 </table>
             </div>  
 
