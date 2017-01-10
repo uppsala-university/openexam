@@ -321,7 +321,7 @@ if (!isset($exam->show_summary)) {
                                                     $numScores = 1;
                                             }
                                             $avgScores = sprintf("%1.1f", $sumScores / $numScores);
-                                            
+
                                             // 
                                             // Tooltip:
                                             // 
@@ -422,6 +422,25 @@ if (!isset($exam->show_summary)) {
 </style>
 
 <script language="javascript">
+<?php
+// 
+// Question is currently first in table. Calculate number of columns last in
+// table containing meta data (code, name, grade, ...).
+// 
+
+$colReorderCount = 1;           // Only student ID
+
+if ($exam->show_percent) {
+        $colReorderCount += 2;
+}
+if ($exam->show_grades) {
+        $colReorderCount += 1;
+}
+if ($exam->decoded) {
+        $colReorderCount = 7;
+}
+
+?>
         var examId = <?= $exam->id ?>;
         var stIds = <?= json_encode($studentIds) ?>;
         var completedRequests = {};
@@ -431,7 +450,7 @@ if (!isset($exam->show_summary)) {
             // keep column order
             jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function () {
                 if (($(this).children().length)) {
-                    for (i = 0; i <<?= $exam->decoded ? "7" : ($exam->show_percent ? "4" : "2") ?>; i++) {
+                    for (i = 0; i <<?= $colReorderCount ?>; i++) {
                         $(this).children(":first").before($(this).children(":last"));
                     }
                 } else {
