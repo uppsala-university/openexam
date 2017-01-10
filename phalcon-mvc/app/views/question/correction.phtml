@@ -302,9 +302,25 @@ if (!isset($exam->show_summary)) {
                             <tfoot>
                                 <tr class="avarage">
                                     <?php foreach ($questions as $q): ?>
-                                            <?php $avg = sprintf("%1.1f", array_sum($overallQuestScore[$q->id]) / count($overallQuestScore[$q->id])); ?>
-                                            <td title="Answers: <?= count($overallQuestScore[$q->id]) ?> Percent: <?= (count($students) / count($overallQuestScore[$q->id])) * 100 ?>%" class="cc aa">
-                                                <?= $avg ?>/<?= $q->score ?>
+                                            <?php
+                                            // 
+                                            // Avarage:
+                                            // 
+                                            $sumScores = array_sum($overallQuestScore[$q->id]);
+                                            $numScores = count($overallQuestScore[$q->id]);
+
+                                            // 
+                                            // Fixup for division by zero warning:
+                                            // 
+                                            if ($numScores == 0) {
+                                                    $sumScores = 0;
+                                                    $numScores = 1;
+                                            }
+                                            $avgScores = sprintf("%1.1f", $sumScores / $numScores);
+
+                                            ?>
+                                            <td title="Answers: <?= $ansCount ?> Percent: <?= sprintf("%.02d", ($avgScores / $q->score) * 100) ?>%" class="cc aa">
+                                                <?= $avgScores ?>
                                             </td>
                                     <?php endforeach; ?>
 
