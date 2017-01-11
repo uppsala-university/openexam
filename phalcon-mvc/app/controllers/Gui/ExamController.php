@@ -148,7 +148,10 @@ class ExamController extends GuiController
                 // 
                 // Set data for view:
                 // 
-                $this->view->setVar('roleBasedExamList', $exams);
+                $this->view->setVars(array(
+                        'roleBasedExamList' => $exams,
+                        'expandExamTabs'    => array()
+                ));
         }
 
         /**
@@ -634,6 +637,49 @@ class ExamController extends GuiController
                         'phase'    => new Phase($exam->getState()),
                         'datetime' => new DateTime($exam->starttime, $exam->endtime)
                 ));
+        }
+
+        /**
+         * Start taking an exam.
+         */
+        public function startAction()
+        {
+                // 
+                // Get ongoing or upcoming exams:
+                // 
+                $this->user->setPrimaryRole(Roles::STUDENT);
+                if (!($exams = Exam::find(array(
+                            'conditions' => "published = 'Y' AND OpenExam\Models\Exam.endtime > :endtime:",
+                            'order'      => 'starttime DESC',
+                            'bind'       => array(
+                                    'endtime' => strftime("%x %X")
+                            )
+                    )))) {
+                        throw new \Exception("Failed query student exams");
+                }
+
+                // 
+                // Bypass exam selection if only one active exam.
+                // 
+                if (count($exams) == 1) {
+                        $this->dispatcher->forward(array(
+                                'action' => 'instruction',
+                                'params' => array(
+                                        'examId' => $exams[0]->id
+                                )
+                        ));
+                        return true;
+                }
+
+                // 
+                // Let caller select exam. Pick index view and tell it to 
+                // expand the upcoming exam tab.
+                // 
+                $this->view->setVars(array(
+                        'roleBasedExamList' => array('student-upcoming' => $exams),
+                        'expandExamTabs'    => array('student-upcoming')
+                ));
+                $this->view->pick(array('exam/index'));
         }
 
 }

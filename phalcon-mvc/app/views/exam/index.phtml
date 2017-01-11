@@ -205,7 +205,12 @@ $examsPerPage = 5;
         <?php $sectId = 1; ?>
         <?php foreach ($roleBasedExamList as $role => $exams) : ?>
                 <div>
-                    <input id="ac-<?= $sectId ?>" name="accordion-1" type="radio"/>
+                    <?php if (in_array($role, $expandExamTabs)): ?>
+                            <input id="ac-<?= $sectId ?>" name="accordion-1" type="radio" checked="" />
+                    <?php else: ?>
+                            <input id="ac-<?= $sectId ?>" name="accordion-1" type="radio"/>
+                    <?php endif; ?>
+
                     <label for="ac-<?= $sectId ?>" class="exam-list-boxes">
                         <i class="fa fa-chevron-right chevron" style="font-size: 16px; color: #990000"></i>
                         <?= $sections[$role]['title'] ?>
