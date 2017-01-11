@@ -128,6 +128,24 @@ class ExamController extends GuiController
                 $this->user->setPrimaryRole(null);
 
                 // 
+                // Strip "roles" without any exams:
+                // 
+                foreach ($exams as $role => $data) {
+                        if (count($data) == 0) {
+                                unset($exams[$role]);
+                        }
+                }
+
+                // 
+                // Show creator tab if admin and teacher:
+                // 
+                if (!isset($exams['creator'])) {
+                        if ($this->user->aquire(array('admin', 'teacher'))) {
+                                $exams['creator'] = array();
+                        }
+                }
+
+                // 
                 // Set data for view:
                 // 
                 $this->view->setVar('roleBasedExamList', $exams);

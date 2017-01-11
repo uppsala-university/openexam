@@ -204,7 +204,6 @@ $examsPerPage = 5;
     <section class="ac-container">
         <?php $sectId = 1; ?>
         <?php foreach ($roleBasedExamList as $role => $exams) : ?>
-                <?php if ($role != Roles::CREATOR && !count($exams)) continue; ?>
                 <div>
                     <input id="ac-<?= $sectId ?>" name="accordion-1" type="radio"/>
                     <label for="ac-<?= $sectId ?>" class="exam-list-boxes">
