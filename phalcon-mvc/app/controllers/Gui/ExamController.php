@@ -644,6 +644,8 @@ class ExamController extends GuiController
          */
         public function startAction()
         {
+                error_log(strftime("%F %T"));
+                
                 // 
                 // Get ongoing or upcoming exams:
                 // 
@@ -652,7 +654,7 @@ class ExamController extends GuiController
                             'conditions' => "published = 'Y' AND OpenExam\Models\Exam.endtime > :endtime:",
                             'order'      => 'starttime DESC',
                             'bind'       => array(
-                                    'endtime' => strftime("%x %X")
+                                    'endtime' => strftime("%F %T")
                             )
                     )))) {
                         throw new \Exception("Failed query student exams");
