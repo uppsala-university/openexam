@@ -644,8 +644,6 @@ class ExamController extends GuiController
          */
         public function startAction()
         {
-                error_log(strftime("%F %T"));
-                
                 // 
                 // Get ongoing or upcoming exams:
                 // 
