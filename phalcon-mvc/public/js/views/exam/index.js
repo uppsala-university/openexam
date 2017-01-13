@@ -124,7 +124,7 @@ $(document).ready(function () {
 
             if (result) {
                 ajax(
-                        baseURL + 'ajax/core/creator/exam/update',
+                        baseURL + 'ajax/core/decoder/exam/update',
                         {
                             "id": $(this).attr('data-id'),
                             "decoded": 1

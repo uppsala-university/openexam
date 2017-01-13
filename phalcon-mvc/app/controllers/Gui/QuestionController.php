@@ -356,7 +356,7 @@ class QuestionController extends GuiController
                 // 
                 // Use corrector role unless being creator or decoder:
                 // 
-                if ($this->user->aquire(array(Roles::CREATOR, Roles::DECODER), $eid)) {
+                if (!($this->user->aquire(array(Roles::CREATOR, Roles::DECODER), $eid))) {
                         $this->user->setPrimaryRole(Roles::CORRECTOR);
                 }
 
