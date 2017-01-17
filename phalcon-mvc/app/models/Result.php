@@ -15,6 +15,7 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\FilterText;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * The result model.
@@ -137,6 +138,11 @@ class Result extends ModelBase
                         'field'  => 'correction',
                         'domain' => array(self::CORRECTION_WAITING, self::CORRECTION_PARTIAL, self::CORRECTION_COMPLETED, self::CORRECTION_FINALIZED)
                 )));
+                $this->validate(new Uniqueness(array(
+                        'field'   => 'answer_id',
+                        'message' => "The answer $this->answer_id has already an result."
+                )));
+
                 if ($this->validationHasFailed() == true) {
                         return false;
                 }
