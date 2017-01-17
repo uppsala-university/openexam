@@ -226,7 +226,10 @@ class Exam extends ModelBase
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Student', 'exam_id', array(
                         'alias'    => 'students',
-                        'reusable' => true
+                        'reusable' => true,
+                        'params'   => array(
+                                'order' => 'id'
+                        )
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Topic', 'exam_id', array(
                         'alias'    => 'topics',
