@@ -518,10 +518,12 @@ class QuestionController extends GuiController
                                 $sorted[$student->code] = $answer;
                         }
 
-                        ksort($sorted, SORT_STRING);
-
-                        unset($answers);
-                        $answers = $sorted;
+                        if (!ksort($sorted, SORT_STRING)) {
+                                unset($sorted);
+                        } else {
+                                unset($answers);
+                                $answers = $sorted;
+                        }
                 }
 
                 // 
