@@ -373,96 +373,14 @@ class QuestionController extends GuiController
 
                         switch ($loadBy[1]) {
                                 case 'student':
-                                        // 
-                                        // Find questions and answers for student:
-                                        // 
-                                        if (!($questions = Question::find(array(
-                                                    'conditions' => "exam_id = :exam: AND status = 'active'",
-                                                    'bind'       => array(
-                                                            'exam' => $exam->id
-                                                    ),
-                                                    'order'      => 'slot ASC'
-                                            )))) {
-                                                throw new \Exception("Failed fetch question models", Error::BAD_REQUEST);
-                                        }
-
-                                        if (!($answers = Answer::find('student_id = ' . $loadBy[2]))) {
-                                                throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
-                                        }
-
-                                        if ($exam->show_code) {
-                                                if (!($student = Student::findFirst($loadBy[2]))) {
-                                                        throw new \Exception("Failed fetch student model", Error::BAD_REQUEST);
-                                                }
-                                                $this->view->setVars(array(
-                                                        'heading' => sprintf('Student (Code: %s)', $student->code),
-                                                        'loadBy'  => 'student'
-                                                ));
-                                        } else {
-                                                $this->view->setVars(array(
-                                                        'heading' => sprintf('Student (ID: %d)', $loadBy[2]),
-                                                        'loadBy'  => 'student'
-                                                ));
-                                        }
+                                        $this->correctionLoadStudent($exam, $loadBy[2]);
                                         break;
-
                                 case 'question':
-                                        // 
-                                        // Find question and its answers:
-                                        // 
-                                        if (!($questions = Question::findFirst($loadBy[2]))) {
-                                                throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
-                                        }
-
-                                        if (!($answers = Answer::find('question_id = ' . $loadBy[2]))) {
-                                                throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
-                                        }
-
-                                        // 
-                                        // View expects questions array:
-                                        // 
-                                        $questions = array($questions);
-
-                                        $this->view->setVars(array(
-                                                'heading' => sprintf('Question (Q%d)', $questions[0]->slot),
-                                                'loadBy'  => 'question'
-                                        ));
+                                        $this->correctionLoadQuestion($exam, $loadBy[2]);
                                         break;
-
                                 case 'answer':
-                                        // 
-                                        // Get answer, question and student:
-                                        // 
-                                        if (!($answers = Answer::findFirst($loadBy[2]))) {
-                                                throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
-                                        }
-
-                                        if (!($questions = $answers->question)) {
-                                                throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
-                                        }
-                                        if (!($student = Student::findFirst($answers->student_id))) {
-                                                throw new \Exception("Failed fetch student model", Error::BAD_REQUEST);
-                                        }
-
-                                        // 
-                                        // View expects questions and answers array:
-                                        // 
-                                        $questions = array($questions);
-                                        $answers = array($answers);
-
-                                        if ($exam->show_code) {
-                                                $this->view->setVars(array(
-                                                        'heading' => sprintf('Question (Q%d) answered by student (Code: %s)', $questions[0]->slot, $student->code),
-                                                        'loadBy'  => 'answer'
-                                                ));
-                                        } else {
-                                                $this->view->setVars(array(
-                                                        'heading' => sprintf('Question (Q%d) answered by student (ID: %d)', $questions[0]->slot, $answers[0]->student_id),
-                                                        'loadBy'  => 'answer'
-                                                ));
-                                        }
+                                        $this->correctionLoadAnswer($exam, $loadBy[2]);
                                         break;
-
                                 default:
                                         throw new \Exception("Unable to load answers for provided criteria");
                         }
@@ -470,22 +388,46 @@ class QuestionController extends GuiController
                         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                         $this->view->pick('question/answers');
                 } else {
-                        // 
-                        // Fetch all data for score board:
-                        // 
-                        if (!($questions = Question::find(array(
-                                    'conditions' => "exam_id = :exam: AND status = 'active'",
-                                    'bind'       => array(
-                                            'exam' => $exam->id
-                                    ),
-                                    'order'      => 'slot ASC'
-                            )))) {
-                                throw new \Exception("Failed fetch question models", Error::BAD_REQUEST);
-                        }
+                        $this->correctionLoadBoard($exam);
+                }
+        }
 
-                        if (!($students = $exam->students)) {
-                                throw new \Exception("Failed fetch student models", Error::BAD_REQUEST);
-                        }
+        /**
+         * Get data for student correction.
+         * @param Exam $exam The exam.
+         * @param int $sid The student ID.
+         */
+        private function correctionLoadStudent($exam, $sid)
+        {
+                // 
+                // Find questions and answers for student:
+                // 
+                if (!($student = Student::findFirst($sid))) {
+                        throw new \Exception("Failed fetch student model", Error::BAD_REQUEST);
+                }
+                if (!($answers = $student->answers)) {
+                        throw new \Exception("Failed fetch answer models", Error::BAD_REQUEST);
+                }
+                if (!($questions = Question::find(array(
+                            'conditions' => "exam_id = :exam: AND status = 'active'",
+                            'bind'       => array(
+                                    'exam' => $exam->id
+                            ),
+                            'order'      => 'slot ASC'
+                    )))) {
+                        throw new \Exception("Failed fetch question models", Error::BAD_REQUEST);
+                }
+
+                if ($exam->show_code) {
+                        $this->view->setVars(array(
+                                'heading' => sprintf('Student (Code: %s)', $student->code),
+                                'loadBy'  => 'student'
+                        ));
+                } else {
+                        $this->view->setVars(array(
+                                'heading' => sprintf('Student (ID: %d)', $sid),
+                                'loadBy'  => 'student'
+                        ));
                 }
 
                 // 
@@ -494,6 +436,114 @@ class QuestionController extends GuiController
                 $this->view->setVars(array(
                         'exam'      => $exam,
                         'answers'   => $answers,
+                        'questions' => $questions,
+                        'students'  => array($student)
+                ));
+        }
+
+        /**
+         * Get data for answer correction.
+         * @param Exam $exam The exam.
+         * @param int $aid The answer ID.
+         */
+        private function correctionLoadAnswer($exam, $aid)
+        {
+                // 
+                // Get answer, question and student:
+                // 
+                if (!($answer = Answer::findFirst($aid))) {
+                        throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
+                }
+
+                if (!($question = $answer->question)) {
+                        throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
+                }
+                if (!($student = $answer->student)) {
+                        throw new \Exception("Failed fetch student model", Error::BAD_REQUEST);
+                }
+
+                if ($exam->show_code) {
+                        $this->view->setVars(array(
+                                'heading' => sprintf('Question (Q%d) answered by student (Code: %s)', $question->slot, $student->code),
+                                'loadBy'  => 'answer'
+                        ));
+                } else {
+                        $this->view->setVars(array(
+                                'heading' => sprintf('Question (Q%d) answered by student (ID: %d)', $question->slot, $answer->student_id),
+                                'loadBy'  => 'answer'
+                        ));
+                }
+
+                // 
+                // Pass data to view:
+                // 
+                $this->view->setVars(array(
+                        'exam'      => $exam,
+                        'answers'   => array($answer),
+                        'questions' => array($question),
+                        'students'  => array($student)
+                ));
+        }
+
+        /**
+         * Get data for question correction.
+         * @param Exam $exam The exam.
+         * @param int $qid The question ID.
+         */
+        private function correctionLoadQuestion($exam, $qid)
+        {
+                // 
+                // Find question and its answers:
+                // 
+                if (!($question = Question::findFirst($qid))) {
+                        throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
+                }
+                if (!($answers = $question->answers)) {
+                        throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
+                }
+
+                $this->view->setVars(array(
+                        'heading' => sprintf('Question (Q%d)', $question->slot),
+                        'loadBy'  => 'question'
+                ));
+
+                // 
+                // Pass data to view:
+                // 
+                $this->view->setVars(array(
+                        'exam'      => $exam,
+                        'answers'   => $answers,
+                        'questions' => array($question)
+                ));
+        }
+
+        /**
+         * Get data for score board.
+         * @param Exam $exam The exam.
+         */
+        private function correctionLoadBoard($exam)
+        {
+                // 
+                // Fetch all data for score board:
+                // 
+                if (!($questions = Question::find(array(
+                            'conditions' => "exam_id = :exam: AND status = 'active'",
+                            'bind'       => array(
+                                    'exam' => $exam->id
+                            ),
+                            'order'      => 'slot ASC'
+                    )))) {
+                        throw new \Exception("Failed fetch question models", Error::BAD_REQUEST);
+                }
+                if (!($students = $exam->students)) {
+                        throw new \Exception("Failed fetch student models", Error::BAD_REQUEST);
+                }
+
+                // 
+                // Pass data to view:
+                // 
+                $this->view->setVars(array(
+                        'exam'      => $exam,
                         'questions' => $questions,
                         'students'  => $students
                 ));
