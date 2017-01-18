@@ -7,11 +7,6 @@ use OpenExam\Models\Student;
 $overallQuestScore = array();
 $totalExamScore = $totalStudentScore = 0;
 
-if (!count($studentData)) {
-        $students = $exam->getStudents(array('order' => 'code asc'));
-} else {
-        $students = $studentData;
-}
 $studentIds = array();
 
 $grades = preg_split('/[\r\n]+/', $exam->grades);
@@ -182,7 +177,7 @@ if ($exam->decoded) {
                     <tbody>
                         <?php foreach ($students as $student): ?>
                                 <tr>
-                                    <?php if (!$student->getAnswers()->count()) continue; ?>
+                                    <?php if ($student->answers->count() == 0) continue; ?>
 
                                     <?php $totalStudentScore = 0; ?>
                                     <?php
