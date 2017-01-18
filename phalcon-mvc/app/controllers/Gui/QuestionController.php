@@ -360,6 +360,15 @@ class QuestionController extends GuiController
                         $this->user->setPrimaryRole(Roles::CORRECTOR);
                 }
 
+                // 
+                // Show anonymous code during correction:
+                // 
+                if (($exam->details & Exam::EXPOSE_CODE_DURING_CORRECTION) != 0) {
+                        $exam->show_code = true;
+                } else {
+                        $exam->show_code = false;
+                }
+
                 if (count($loadBy)) {
 
                         switch ($loadBy[1]) {
@@ -381,10 +390,20 @@ class QuestionController extends GuiController
                                                 throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
                                         }
 
-                                        $this->view->setVars(array(
-                                                'heading' => sprintf('Student (ID: %d)', $loadBy[2]),
-                                                'loadBy'  => 'student'
-                                        ));
+                                        if ($exam->show_code) {
+                                                if (!($student = Student::findFirst($loadBy[2]))) {
+                                                        throw new \Exception("Failed fetch student model", Error::BAD_REQUEST);
+                                                }
+                                                $this->view->setVars(array(
+                                                        'heading' => sprintf('Student (Code: %s)', $student->code),
+                                                        'loadBy'  => 'student'
+                                                ));
+                                        } else {
+                                                $this->view->setVars(array(
+                                                        'heading' => sprintf('Student (ID: %d)', $loadBy[2]),
+                                                        'loadBy'  => 'student'
+                                                ));
+                                        }
                                         break;
 
                                 case 'question':
@@ -412,7 +431,7 @@ class QuestionController extends GuiController
 
                                 case 'answer':
                                         // 
-                                        // Get answer and question:
+                                        // Get answer, question and student:
                                         // 
                                         if (!($answers = Answer::findFirst($loadBy[2]))) {
                                                 throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
@@ -421,6 +440,9 @@ class QuestionController extends GuiController
                                         if (!($questions = $answers->question)) {
                                                 throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
                                         }
+                                        if (!($student = Student::findFirst($answers->student_id))) {
+                                                throw new \Exception("Failed fetch student model", Error::BAD_REQUEST);
+                                        }
 
                                         // 
                                         // View expects questions and answers array:
@@ -428,10 +450,17 @@ class QuestionController extends GuiController
                                         $questions = array($questions);
                                         $answers = array($answers);
 
-                                        $this->view->setVars(array(
-                                                'heading' => sprintf('Question (Q%d) answered by student (ID: %d)', $questions[0]->slot, $answers[0]->student_id),
-                                                'loadBy'  => 'answer'
-                                        ));
+                                        if ($exam->show_code) {
+                                                $this->view->setVars(array(
+                                                        'heading' => sprintf('Question (Q%d) answered by student (Code: %s)', $questions[0]->slot, $student->code),
+                                                        'loadBy'  => 'answer'
+                                                ));
+                                        } else {
+                                                $this->view->setVars(array(
+                                                        'heading' => sprintf('Question (Q%d) answered by student (ID: %d)', $questions[0]->slot, $answers[0]->student_id),
+                                                        'loadBy'  => 'answer'
+                                                ));
+                                        }
                                         break;
 
                                 default:

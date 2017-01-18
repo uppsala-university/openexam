@@ -252,7 +252,11 @@ $decoded = $exam->decoded;
                                                 <div class="st-ans-box-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #999999">
                                                     <span style="color:#514E4E; font-weight:normal">
                                                         <i class="fa fa-user"></i>
-                                                        Students answer for this question (<?= $student->id ?>)
+                                                        <?php if ($exam->show_code): ?>
+                                                                Students answer for this question (<?= $student->code ?>)
+                                                        <?php else: ?>
+                                                                Students answer for this question (<?= $student->id ?>)
+                                                        <?php endif; ?>
                                                     </span>
                                                 </div>
                                                 <?php
