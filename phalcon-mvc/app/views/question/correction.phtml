@@ -356,7 +356,7 @@ if ($exam->decoded) {
 
                                             ?>
                                             <td title="Answers: <?= $ansCount ?> Percent: <?= sprintf("%.02d", ($avgScores / $q->score) * 100) ?>%" class="cc aa">
-                                                <?= $avgScores ?>
+                                                <?= $avgScores ?> (<?= $question->score ?>)
                                             </td>
                                     <?php endforeach; ?>
 
@@ -371,7 +371,7 @@ if ($exam->decoded) {
                                     <?php endif; ?>
                                     <?php if ($exam->show_percent): ?>
                                             <td class="cc aa">
-                                                <?= sprintf("%1.1f", array_sum($avgScore) / count($avgScore)) ?>/<?= $totalExamScore ?>
+                                                <?= sprintf("%1.1f", array_sum($avgScore) / count($avgScore)) ?> (<?= $totalExamScore ?>)
                                             </td>
                                             <td class="cc aa">
                                                 <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
