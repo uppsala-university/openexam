@@ -30,6 +30,9 @@ arsort($examGrades);
 if (($exam->details & Exam::EXPOSE_SCORING_DURING_CORRECTION) != 0) {
         $exam->show_percent = true;
 }
+if (($exam->details & Exam::EXPOSE_CODE_DURING_CORRECTION) != 0) {
+        $exam->show_code = true;
+}
 
 if ($exam->decoded || $this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
         $exam->show_grades = true;
@@ -69,6 +72,16 @@ if (!isset($exam->show_percent)) {
 }
 if (!isset($exam->show_grades)) {
         $exam->show_grades = $this->config->result->show->grades;
+}
+if (!isset($exam->show_code)) {
+        $exam->show_code = $this->config->result->show->code;
+}
+
+// 
+// Don't display separate column with code if already decoded:
+// 
+if ($exam->decoded) {
+        $exam->show_code = false;
 }
 
 ?>
@@ -128,7 +141,6 @@ if (!isset($exam->show_grades)) {
                             <div style="text-align: center">
                                 <a class="fb fancybox.ajax fill" href="<?= $this->url->get('exam/' . $exam->id . '/correction/question/' . $question->id) ?>">Q<?= $question->slot ? $question->slot : $question->name ?><br>Max. <?= $question->score ?></a>
                             </div>
-                            <!--<div style="font-weight:normal; font-size:10px; font-style:italic">Max: <?= sprintf("%1.1f", $question->score) ?></div>-->
 
                             </th>
                             <?php $totalExamScore += $question->score; ?>
@@ -137,6 +149,11 @@ if (!isset($exam->show_grades)) {
                     <th style="background-color:#EAEAEA; width:62px" class="sortable">
                         Student
                     </th>
+                    <?php if ($exam->show_code): ?>
+                            <th style="background-color:#EAEAEA; width:62px" class="sortable">
+                                Code
+                            </th>
+                    <?php endif; ?>
                     <?php if ($exam->decoded): ?>
                             <th style="background-color:#EAEAEA; width:62px" class="sortable">
                                 F. name
@@ -233,6 +250,11 @@ if (!isset($exam->show_grades)) {
                                             <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
                                         </a>
                                     </td>
+                                    <?php if ($exam->show_code): ?>
+                                            <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                                <?= $student->code ?>
+                                            </td>
+                                    <?php endif; ?>
                                     <?php if ($exam->decoded): ?>
                                             <?php $stName = explode(' ', $this->helper->getCatalogAttribute($student->user, 'name'), 2); ?>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
@@ -339,6 +361,9 @@ if (!isset($exam->show_grades)) {
                                     <?php endforeach; ?>
 
                                     <th  class="cc aa" align="right" style="vertical-align:top;">Average:</th>
+                                    <?php if ($exam->show_code): ?>
+                                            <th align="right" style="vertical-align:top;"></th>
+                                    <?php endif; ?>
                                     <?php if ($exam->decoded): ?>
                                             <th align="right" style="vertical-align:top;"></th>
                                             <th align="right" style="vertical-align:top;"></th>
@@ -439,6 +464,9 @@ if ($exam->show_percent) {
         $colReorderCount += 2;
 }
 if ($exam->show_grades) {
+        $colReorderCount += 1;
+}
+if ($exam->show_code) {
         $colReorderCount += 1;
 }
 if ($exam->decoded) {

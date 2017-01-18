@@ -122,7 +122,8 @@ return array(
                 'show'    => array(
                         'grades'  => false,
                         'scores'  => false,
-                        'summary' => true
+                        'summary' => true,
+                        'code'    => false
                 )        
         ),
         /**

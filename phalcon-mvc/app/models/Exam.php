@@ -84,6 +84,10 @@ class Exam extends ModelBase
          * Hide media (i.e. images) in student result.
          */
         const HIDE_MEDIA_CONTENT_IN_RESULT = 16;
+        /**
+         * Expose anonymous code for correctors during correction.
+         */
+        const EXPOSE_CODE_DURING_CORRECTION = 32;
 
         /**
          * This object ID.
