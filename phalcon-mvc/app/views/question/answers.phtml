@@ -140,7 +140,14 @@ $decoded = $exam->decoded;
                                                             <?php $ansData = json_decode($qSpecAns->answer, true); ?>
                                                             <span style="color:#990000;"><i class="fa fa-arrow-circle-right"></i></span> 
                                                             <span style="color:#000; font-weight:bold">Student's answer</span>
-                                                            <?php $correctAnsPart = $correctAns[$question->id][$qPartTitle]; ?>
+                                                            <?php
+                                                            if (isset($correctAns[$question->id][$qPartTitle])) {
+                                                                    $correctAnsPart = $correctAns[$question->id][$qPartTitle];
+                                                            } else {
+                                                                    $correctAnsPart = array();
+                                                            }
+
+                                                            ?>
                                                             <?php $totalCorrect = 0; ?>
                                                             <?php if (count($ansData[$qPartTitle]['ans'])): ?>
                                                                     <ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:#F5FAF5; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
@@ -280,7 +287,14 @@ $decoded = $exam->decoded;
                                                                     <div class="st-ans-part-content" style="baclground-color:#dedede; border">
                                                                         <ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:<?= (!$decoded && !count($scoreData)) ? '#F5FAF5' : '#F9F9F9' ?>; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
                                                                             <?php $totalCorrect = 0; ?>
-                                                                            <?php $correctAnsPart = $correctAns[$question->id][$qPartTitle]; ?>
+                                                                            <?php
+                                                                            if (isset($correctAns[$question->id][$qPartTitle])) {
+                                                                                    $correctAnsPart = $correctAns[$question->id][$qPartTitle];
+                                                                            } else {
+                                                                                    $correctAnsPart = array();
+                                                                            }
+
+                                                                            ?>
                                                                             <?php foreach ($ansData[$qPartTitle]['ans'] as $stAns): ?>
                                                                                     <?php if ($qPart['type'] == 'choicebox'): ?>
                                                                                             <li style="color:<?= (in_array($stAns, $correctAnsPart) ? 'green' : 'red') ?>">
