@@ -248,7 +248,7 @@ $decoded = $exam->decoded;
 
                         <?php if ($loadBy == 'question'): ?>
                                 <div class="st-ans-box" style="border: 1px solid #dedede; padding: 2px; margin:15px">
-                                    <?php foreach ($answers as $k => $answer): ?>
+                                    <?php foreach ($answers as $answer): ?>
                                             <div>
                                                 <?php $result = $answer->getResult(); ?>
                                                 <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array()); ?>

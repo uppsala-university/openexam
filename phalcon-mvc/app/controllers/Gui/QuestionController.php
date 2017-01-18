@@ -507,6 +507,23 @@ class QuestionController extends GuiController
                         'loadBy'  => 'question'
                 ));
 
+                if ($exam->show_code) {
+                        // 
+                        // Order answers by student code:
+                        // 
+                        $sorted = array();
+
+                        foreach ($answers as $answer) {
+                                $student = $answer->student;
+                                $sorted[$student->code] = $answer;
+                        }
+
+                        ksort($sorted, SORT_STRING);
+
+                        unset($answers);
+                        $answers = $sorted;
+                }
+
                 // 
                 // Pass data to view:
                 // 
