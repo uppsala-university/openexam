@@ -635,6 +635,17 @@ if ($exam->decoded) {
                 var resultsCreate = [];
                 var resultsUpdate = [];
                 var totalCreated = 0;
+                ansIds = ansIds.filter(function (aid) {
+                    if (typeof (aid) === 'string') {
+                        aid = parseInt(aid);
+                    }
+                    if (aid === undefined || typeof (aid) !== 'number' || isNaN(aid)) {
+                        return false;
+                    } else {
+                        return aid !== 0;
+                    }
+                });
+                console.log(ansIds);
                 $.each(ansIds, function (i, ansId) {
                     var saveResultBtn = $('.ans-id' + ansId);
                     var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
