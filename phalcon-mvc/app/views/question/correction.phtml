@@ -645,7 +645,6 @@ if ($exam->decoded) {
                         return aid !== 0;
                     }
                 });
-                console.log(ansIds);
                 $.each(ansIds, function (i, ansId) {
                     var saveResultBtn = $('.ans-id' + ansId);
                     var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
