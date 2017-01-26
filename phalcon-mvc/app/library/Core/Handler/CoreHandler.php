@@ -198,7 +198,10 @@ class CoreHandler extends Component
                         $this->error($model, ObjectAccess::CREATE);
                 } else {
                         foreach ($model as $key => $val) {
-                                if (is_object($val)) {
+                                if (!is_object($val)) {
+                                        continue;
+                                }
+                                if (!($val instanceof \stdClass)) {
                                         unset($model->$key);    // strip relations
                                 }
                         }
