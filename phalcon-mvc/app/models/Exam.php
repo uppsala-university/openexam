@@ -75,7 +75,7 @@ class Exam extends ModelBase
         /**
          * Expose student scoring percentage during the correction phase.
          */
-        const EXPOSE_SCORING_DURING_CORRECTION = 4;
+        const SHOW_SUMMARY_DURING_CORRECTION = 4;
         /**
          * Blur media (i.e. images) in student result.
          */
@@ -87,8 +87,8 @@ class Exam extends ModelBase
         /**
          * Expose anonymous code for correctors during correction.
          */
-        const EXPOSE_CODE_DURING_CORRECTION = 32;
-
+        const SHOW_CODE_DURING_CORRECTION = 32;
+        
         /**
          * This object ID.
          * @var integer

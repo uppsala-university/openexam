@@ -363,7 +363,7 @@ class QuestionController extends GuiController
                 // 
                 // Show anonymous code during correction:
                 // 
-                if (($exam->details & Exam::EXPOSE_CODE_DURING_CORRECTION) != 0) {
+                if (($exam->details & Exam::SHOW_CODE_DURING_CORRECTION) != 0) {
                         $exam->show_code = true;
                 } else {
                         $exam->show_code = false;

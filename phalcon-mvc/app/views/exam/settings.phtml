@@ -156,22 +156,23 @@ endforeach;
     <div class="st-line">
         <label for="exam-correction"><strong>Exam correction:</strong></label>		
         <?php if ($canUpdateExam): ?>
-                <input type="checkbox" value="4" title="Display student statistics like scoring percentage during correction. Might have an influence on correcting teacher." <?= ((($exam->details & Exam::EXPOSE_SCORING_DURING_CORRECTION) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                Expose student's accumulated points in score board.
+                <input type="checkbox" value="4" title="Display student statistics like scoring percentage during correction. Might have an influence on correcting teacher." <?= ((($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                Show student's accumulated points in score board.
         <?php else: ?>
-                <?= (($exam->details & Exam::EXPOSE_SCORING_DURING_CORRECTION) != 0) ? '&#10004; Expose student\'s accumulated points in score board.' : '' ?>
+                <?= (($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) ? '&#10004; Show student\'s accumulated points in score board.' : '' ?>
         <?php endif; ?>
         <br>
 
         <?php if ($canUpdateExam): ?>
-                <input type="checkbox" value="32" title="Display students anonymous code during correction. Leave disabled if same persons that registered students are going to participate in the answer correction." <?= ((($exam->details & Exam::EXPOSE_CODE_DURING_CORRECTION) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                Expose student's anonymous code in score board.
+                <input type="checkbox" value="32" title="Display students anonymous code during correction. Leave disabled if same persons that registered students are going to participate in the answer correction." <?= ((($exam->details & Exam::SHOW_CODE_DURING_CORRECTION) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                Show student's anonymous code in score board.
         <?php else: ?>
-                <?= (($exam->details & Exam::EXPOSE_SCORING_DURING_CORRECTION) != 0) ? '&#10004; Expose student\'s anonymous code in score board.' : '' ?>
+                <?= (($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) ? '&#10004; Show student\'s anonymous code in score board.' : '' ?>
         <?php endif; ?>
         <br>
 
     </div>
+
     <?php if ($canUpdateExam): ?>
             <div class="st-line">
                 <center>

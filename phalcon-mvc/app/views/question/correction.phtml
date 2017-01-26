@@ -22,10 +22,10 @@ foreach ($grades as $k => $grade) :
 endforeach;
 arsort($examGrades);
 
-if (($exam->details & Exam::EXPOSE_SCORING_DURING_CORRECTION) != 0) {
+if (($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) {
         $exam->show_percent = true;
 }
-if (($exam->details & Exam::EXPOSE_CODE_DURING_CORRECTION) != 0) {
+if (($exam->details & Exam::SHOW_CODE_DURING_CORRECTION) != 0) {
         $exam->show_code = true;
 }
 
