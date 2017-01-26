@@ -350,8 +350,8 @@ if ($exam->decoded) {
                                             $ansCount = count($overallQuestScore[$q->id]);
 
                                             ?>
-                                            <td title="Answers: <?= $ansCount ?> Percent: <?= sprintf("%.02d", ($avgScores / $q->score) * 100) ?>%" class="cc aa">
-                                                <?= $avgScores ?> (<?= $question->score ?>)
+                                            <td title="Corrected: <?= $ansCount ?> Percent: <?= sprintf("%.02d", ($avgScores / $q->score) * 100) ?>%" class="cc aa">
+                                                <?= $avgScores ?> (<?= $q->score ?>)
                                             </td>
                                     <?php endforeach; ?>
 
