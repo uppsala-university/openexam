@@ -300,6 +300,8 @@ class CoreHandler extends Component
                         foreach ($model->dump() as $key => $val) {
                                 if (!is_object($val)) {
                                         $dump[$key] = $val;
+                                } elseif ($val instanceof \stdClass) {
+                                        $dump[$key] = $val;
                                 }
                         }
                         return $dump;
