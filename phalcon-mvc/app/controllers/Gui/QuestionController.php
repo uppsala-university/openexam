@@ -390,6 +390,12 @@ class QuestionController extends GuiController
                 } else {
                         $this->correctionLoadBoard($exam);
                 }
+
+                // 
+                // Reset primary role as the view is not correctly dealing 
+                // with roles yet.
+                // 
+                $this->user->setPrimaryRole(null);
         }
 
         /**
