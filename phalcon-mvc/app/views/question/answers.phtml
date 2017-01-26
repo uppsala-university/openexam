@@ -191,7 +191,7 @@ $decoded = $exam->decoded;
                                                                     // 
                                                                     // Fill in score if max is zero on this question part.
                                                                     // 
-                                                                    if ($qPart['q_points'] == 0 && !isset($scoreData[$qPartTitle])) {
+                                                                    if (isset($qPart['q_points']) && $qPart['q_points'] == 0 && !isset($scoreData[$qPartTitle])) {
                                                                             $scoreData[$qPartTitle] = 0;
                                                                             printf("<script>resyncableResults.push('%d')</script>\n", $result->answer_id);
                                                                     }
@@ -336,7 +336,7 @@ $decoded = $exam->decoded;
                                                                             // 
                                                                             // Fill in score if max is zero on this question part.
                                                                             // 
-                                                                            if ($qPart['q_points'] == 0 && !isset($scoreData[$qPartTitle])) {
+                                                                            if (isset($qPart['q_points']) && $qPart['q_points'] == 0 && !isset($scoreData[$qPartTitle])) {
                                                                                     $scoreData[$qPartTitle] = 0;
                                                                                     printf("<script>resyncableResults.push('%d')</script>\n", $answer->id);
                                                                             }
