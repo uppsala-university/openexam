@@ -70,10 +70,14 @@
         <form action="<?= $form->getAction(); ?>" method="POST">
             <?php if ($form->has('fcode')) { ?>
                     <p>
-                        <label>Password:</label>
+                        <label>Code:</label>
                         <?= $form->render('fpass'); ?>
                     </p>
-                    <?= $form->render('fuser'); ?>
+                    <p>
+                        <label>Exam:</label>
+                        <?= $form->render('fexam'); ?>
+                    </p>
+                    <?= $form->render('fcode'); ?>
             <?php } else { ?>
                     <p>
                         <label>Username:</label>

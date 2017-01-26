@@ -34,8 +34,10 @@ class UserLoginForm extends Form
         public function initialize($login)
         {
                 $this->setAction($this->url->get('auth/login/' . $login->name));
+                
                 $this->setUserOption('description', $login->description);
-                $this->setUserOption('information', "Use your domain account for login. Contact the invigilator if you have any questions or problem with the login.<br><br>Username example: john1234@user.uu.se");
+                $this->setUserOption('information', "Use your domain account for login. Contact the invigilator if you have any questions or problem with the login.<br><br>Example username: john1234@user.uu.se");
+                
                 $this->add(new Text('fuser', array('name' => $login->user, 'placeholder' => sprintf("login@%s", $this->config->user->domain))));
                 $this->add(new Password('fpass', array('name' => $login->pass, 'placeholder' => 'Type your password')));
                 $this->add(new Hidden("fembed", array("value" => $this->request->get("embed"))));

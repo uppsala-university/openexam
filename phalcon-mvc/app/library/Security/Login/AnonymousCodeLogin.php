@@ -73,8 +73,8 @@ class AnonymousCodeLogin extends RequestAuthenticator implements FormLogin
                 $defaults = array(
                         'form' => array(
                                 'name' => 'anon',
-                                'pass' => 'pass1',
-                                'user' => 'user1'
+                                'pass' => 'code1',
+                                'user' => 'exam1'
                         )
                 );
 
@@ -212,6 +212,11 @@ class AnonymousCodeValidator implements Validator
          * @var string 
          */
         private $_pass;
+        /**
+         * The shared secret.
+         * @var string 
+         */
+        private $_secret;
 
         /**
          * Constructor.
@@ -220,6 +225,7 @@ class AnonymousCodeValidator implements Validator
         public function __construct($login)
         {
                 $this->_login = $login;
+                $this->_secret = filter_input(INPUT_POST, 'secret');
         }
 
         /**
@@ -231,14 +237,19 @@ class AnonymousCodeValidator implements Validator
                 // 
                 // Check shared secret.
                 // 
-                if ($this->_user != $this->_login->secret) {
+                if ($this->_secret != $this->_login->secret) {
                         return false;
                 }
 
                 // 
                 // Find student by code and set user principal.
                 // 
-                if (($stud = Student::findFirstByCode($this->_pass)) != null) {
+                if (($stud = Student::findFirst(array(
+                            'conditions' => 'code = :code: AND exam_id = :exam:',
+                            'bind'       => array(
+                                    'code' => $this->_pass,
+                                    'exam' => $this->_user
+                        )))) != null) {
                         $this->_login->setSubject($stud->user);
                         return true;
                 } else {
