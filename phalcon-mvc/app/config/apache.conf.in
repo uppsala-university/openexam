@@ -26,6 +26,10 @@ Alias /phalcon-mvc /var/www/localhost/apps/openexam-phalcon-mvc/phalcon-mvc/publ
     # Enforce HTTPS connection:
     RewriteEngine On
     RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP_HOST} !=localhost
+    RewriteCond %{SERVER_NAME} !=localhost
+    RewriteCond %{REMOTE_ADDR} !=127.0.0.1
+    RewriteCond %{REMOTE_ADDR} !=::1
     RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
     # Options for application config cache (see index.php):
