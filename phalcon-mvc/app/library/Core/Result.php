@@ -205,7 +205,7 @@ class Result extends Component
                 // The result view URL:
                 // 
                 $source = $this->getResultUrl($token, $student);
-                
+
                 // 
                 // Cleanup:
                 // 
@@ -241,10 +241,14 @@ class Result extends Component
                 }
 
                 if (!file_exists($target)) {
-                        throw new \Exception("Failed create PDF document (missing).");
+                        throw new \Exception("Failed create PDF document (target is missing).");
                 }
                 if (filesize($target) < self::MIN_FILE_SIZE) {
-                        throw new \Exception("Failed create PDF document (bad request).");
+                        if (!unlink($target)) {
+                                throw new \Exception("Failed create PDF document (permission problem).");
+                        } else {
+                                throw new \Exception("Failed create PDF document (failed generate file).");
+                        }
                 }
         }
 
@@ -296,7 +300,7 @@ class Result extends Component
                 } else {
                         unset($target);
                 }
-                
+
                 // 
                 // Add files to archive:
                 // 
@@ -307,11 +311,11 @@ class Result extends Component
                         if (!$zip->addFile($input, $local)) {
                                 throw new \Exception($zip->getStatusString());
                         }
-                        
+
                         unset($input);
                         unset($local);
                 }
-                
+
                 $zip->close();
         }
 
@@ -365,7 +369,7 @@ class Result extends Component
 
                 $this->response->setFileToSend($source, $target);
                 $this->response->setContentType('application/pdf', 'UTF-8');
-                
+
                 unset($student);
                 unset($source);
                 unset($target);
@@ -404,7 +408,7 @@ class Result extends Component
 
                 unset($source);
                 unset($target);
-                
+
                 $this->response->send();
         }
 
