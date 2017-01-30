@@ -498,13 +498,20 @@ class ExamController extends GuiController
                 // Try to find exam in request parameter:
                 // 
                 if (!($exam = Exam::findFirst(array(
-                            'conditions' => 'id = :exam: AND (endtime IS NULL OR endtime > NOW())',
+                            'conditions' => 'id = :exam:',
                             'bind'       => array(
                                     'exam' => $eid
                             )
                     )))) {
+                        throw new \Exception("Failed find target exam", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check if exam is examinatable (students can be managed):
+                // 
+                if (!$exam->getState()->has(State::EXAMINATABLE)) {
                         throw new \Exception(
-                        "Exam time has finished and it's no longer possible to manage student's data.", Error::METHOD_NOT_ALLOWED
+                        "It's no longer possible to manage student's data.", Error::METHOD_NOT_ALLOWED
                         );
                 }
 
