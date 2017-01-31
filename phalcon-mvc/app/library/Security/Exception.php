@@ -17,7 +17,7 @@ class Exception extends \Exception
 {
 
         /**
-         * Failed aquire role.
+         * Failed acquire role.
          */
         const ROLE = 1;
         /**

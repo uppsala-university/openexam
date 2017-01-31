@@ -19,10 +19,10 @@ use Phalcon\Mvc\Model\Validator\Inclusionin;
 /**
  * The lock model.
  * 
- * Represent the lock aquired for a single computer on an exam.
+ * Represent the lock acquired for a single computer on an exam.
  * 
- * @property Student $student The student this lock was aquired for.
- * @property Computer $computer The computer that aquired the lock.
+ * @property Student $student The student this lock was acquired for.
+ * @property Computer $computer The computer that acquired the lock.
  * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -59,10 +59,10 @@ class Lock extends ModelBase
          */
         public $exam_id;
         /**
-         * Date/time when the lock was aquired.
+         * Date/time when the lock was acquired.
          * @var string
          */
-        public $aquired;
+        public $acquired;
         /**
          * The lock status (see STATUS_XXX).
          * @var string 
@@ -90,7 +90,7 @@ class Lock extends ModelBase
 
                 $this->addBehavior(new Timestampable(array(
                         'beforeValidationOnCreate' => array(
-                                'field'  => 'aquired',
+                                'field'  => 'acquired',
                                 'format' => 'Y-m-d H:i:s'
                         )
                 )));
@@ -116,7 +116,7 @@ class Lock extends ModelBase
                         'student_id'  => 'student_id',
                         'computer_id' => 'computer_id',
                         'exam_id'     => 'exam_id',
-                        'aquired'     => 'aquired',
+                        'acquired'     => 'acquired',
                         'status'      => 'status'
                 );
         }

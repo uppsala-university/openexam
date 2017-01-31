@@ -55,7 +55,7 @@ class ComputerAccess extends ObjectAccess
                                 $role == Roles::INVIGILATOR ||
                                 $role == Roles::STUDENT) {
                                     foreach ($model->locks as $lock) {
-                                            if ($user->roles->aquire($role, $lock->exam_id)) {
+                                            if ($user->roles->acquire($role, $lock->exam_id)) {
                                                     return true;
                                             }
                                     }
@@ -63,20 +63,20 @@ class ComputerAccess extends ObjectAccess
                                     foreach ($model->locks as $lock) {
                                             if (($questions = Question::find("exam_id='$lock->exam_id'"))) {
                                                     foreach ($questions as $question) {
-                                                            if ($user->roles->aquire($role, $question->id)) {
+                                                            if ($user->roles->acquire($role, $question->id)) {
                                                                     return true;
                                                             }
                                                     }
                                             }
                                     }
                             } elseif (isset($role)) {
-                                    if ($user->roles->aquire($role)) {
+                                    if ($user->roles->acquire($role)) {
                                             return true;
                                     }
                             }
 
                             if (isset($role)) {
-                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
+                                    throw new Exception(sprintf("Failed acquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }

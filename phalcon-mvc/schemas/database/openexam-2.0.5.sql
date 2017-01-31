@@ -200,7 +200,7 @@ CREATE TABLE `locks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `computer_id` int(11) NOT NULL,
   `exam_id` int(11) NOT NULL,
-  `aquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `acquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `locks_ibfk_1` (`computer_id`),
   KEY `locks_ibfk_2` (`exam_id`),

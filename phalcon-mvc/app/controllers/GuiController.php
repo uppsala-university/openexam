@@ -139,12 +139,12 @@ class GuiController extends ControllerBase
          * is done against list of explicit defined private URL's. If a URL
          * is not defined, then access is permitted.
          * 
-         * Object specific check (thru role aquire) is done if exam or question 
+         * Object specific check (thru role acquire) is done if exam or question 
          * ID is passed in request. The order of access check is: question,
-         * exam and then generic role aquire check.
+         * exam and then generic role acquire check.
          * 
          * Return true if access is permitted. Throws exception if URL is 
-         * private and none accepted role was aquired.
+         * private and none accepted role was acquired.
          * 
          * @param string $controller The target controller.
          * @param string $action The target action.
@@ -188,7 +188,7 @@ class GuiController extends ControllerBase
                 if (($id = $this->request->get('q_id', 'int')) ||
                     ($id = $this->request->get('questionId', 'int')) ||
                     ($id = $this->dispatcher->getParam('questId', 'int'))) {
-                        if ($this->user->roles->aquire(Roles::CORRECTOR, $id)) {
+                        if ($this->user->roles->acquire(Roles::CORRECTOR, $id)) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
                                         $this->logger->access->debug(sprintf("Permitted question level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, Roles::CORRECTOR));
                                 }
@@ -202,7 +202,7 @@ class GuiController extends ControllerBase
                 if (($id = $this->request->get('exam_id', 'int')) ||
                     ($id = $this->request->get('examId', 'int')) ||
                     ($id = $this->dispatcher->getParam('examId', 'int'))) {
-                        if (($roles = $this->user->aquire($permit, $id))) {
+                        if (($roles = $this->user->acquire($permit, $id))) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
                                         $this->logger->access->debug(sprintf("Permitted exam level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, implode(",", $roles)));
                                 }
@@ -213,7 +213,7 @@ class GuiController extends ControllerBase
                 // 
                 // Check role access:
                 // 
-                if (($roles = $this->user->aquire($permit))) {
+                if (($roles = $this->user->acquire($permit))) {
                         if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
                                 $this->logger->access->debug(sprintf("Permitted role based access on %s -> %s (roles: %s)", $controller, $action, implode(",", $roles)));
                         }

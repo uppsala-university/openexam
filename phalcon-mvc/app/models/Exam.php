@@ -52,7 +52,7 @@ use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
  * @property Contributor[] $contributors The contributors for this exam.
  * @property Decoder[] $decoders The decoders for this exam.
  * @property Invigilator[] $invigilators The invigilators for this exam.
- * @property Lock[] $locks The computer locks aquired for this exam.
+ * @property Lock[] $locks The computer locks acquired for this exam.
  * @property Resource[] $resources The multimedia or resource files associated with this exam.
  * @property Question[] $questions The questions that belongs to this exam.
  * @property Student[] $students The students assigned to this exam.

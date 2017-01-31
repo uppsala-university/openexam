@@ -160,7 +160,7 @@ CREATE TABLE `locks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `computer_id` int(11) DEFAULT NULL,
   `exam_id` int(11) DEFAULT NULL,
-  `aquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `acquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `computer_id` (`computer_id`),
   KEY `exam_id` (`exam_id`),

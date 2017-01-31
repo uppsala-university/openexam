@@ -52,7 +52,7 @@ class LocksMigration_208 extends Migration
                     )
                 ),
                 new Column(
-                    'aquired',
+                    'acquired',
                     array(
                         'type' => Column::TYPE_DATE,
                         'notNull' => true,
@@ -66,7 +66,7 @@ class LocksMigration_208 extends Migration
                         'type' => Column::TYPE_CHAR,
                         'notNull' => true,
                         'size' => 1,
-                        'after' => 'aquired'
+                        'after' => 'acquired'
                     )
                 )
             ),

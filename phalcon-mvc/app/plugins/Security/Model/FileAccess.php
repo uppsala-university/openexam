@@ -53,25 +53,25 @@ class FileAccess extends ObjectAccess
                                 $role == Roles::CREATOR ||
                                 $role == Roles::DECODER ||
                                 $role == Roles::INVIGILATOR) {
-                                    if ($user->roles->aquire($role, $model->answer->question->exam_id)) {
+                                    if ($user->roles->acquire($role, $model->answer->question->exam_id)) {
                                             return true;
                                     }
                             } elseif ($role == Roles::STUDENT) {
-                                    if ($user->roles->aquire($role, $model->answer->student->exam_id)) {
+                                    if ($user->roles->acquire($role, $model->answer->student->exam_id)) {
                                             return true;
                                     }
                             } elseif ($role == Roles::CORRECTOR) {
-                                    if ($user->roles->aquire($role, $model->answer->question->id)) {
+                                    if ($user->roles->acquire($role, $model->answer->question->id)) {
                                             return true;
                                     }
                             } elseif (isset($role)) {
-                                    if ($user->roles->aquire($role)) {
+                                    if ($user->roles->acquire($role)) {
                                             return true;
                                     }
                             }
 
                             if (isset($role)) {
-                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
+                                    throw new Exception(sprintf("Failed acquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }

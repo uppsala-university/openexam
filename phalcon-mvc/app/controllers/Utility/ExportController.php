@@ -48,7 +48,7 @@ class ExportController extends GuiController
                 if (!isset($eid)) {
                         throw new StandardException("Missing exam ID", Error::BAD_REQUEST);
                 }
-                if (!$this->user->roles->aquire(Roles::INVIGILATOR, $eid)) {
+                if (!$this->user->roles->acquire(Roles::INVIGILATOR, $eid)) {
                         throw new SecurityException("This page is only accessable for invigilators.", Error::METHOD_NOT_ALLOWED);
                 } else {
                         $this->user->setPrimaryRole(Roles::INVIGILATOR);

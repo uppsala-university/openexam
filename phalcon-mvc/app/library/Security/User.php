@@ -200,37 +200,37 @@ class User extends Component
         }
 
         /**
-         * Aquire roles on object.
+         * Acquire roles on object.
          * 
-         * Try to aquire multiple roles at once. Returns the aquired roles or
-         * false if none was aquired. If $id == 0, then roles are aquired 
+         * Try to acquire multiple roles at once. Returns the acquired roles or
+         * false if none was acquired. If $id == 0, then roles are acquired 
          * globally.
          * 
          * <code>
-         * // Get specific roles aquired:
-         * $roles = $this->user->aquire(array('admin', 'teacher', 'student'), $id);
+         * // Get specific roles acquired:
+         * $roles = $this->user->acquire(array('admin', 'teacher', 'student'), $id);
          * 
-         * // Get all aquired roles:
+         * // Get all acquired roles:
          * $roles = $this->user->roles->getRoles($id);
          * </code>
          * 
          * @param array $roles The requested roles.
          * @param int $id The object ID.
-         * @param mixed $default The default value if no role was aquired.
+         * @param mixed $default The default value if no role was acquired.
          * @return array
-         * @see Roles::aquire()
+         * @see Roles::acquire()
          */
-        public function aquire($roles, $id = 0, $default = false)
+        public function acquire($roles, $id = 0, $default = false)
         {
-                $aquired = array();
+                $acquired = array();
 
                 foreach ($roles as $role) {
-                        if ($this->roles->aquire($role, $id)) {
-                                $aquired[] = $role;
+                        if ($this->roles->acquire($role, $id)) {
+                                $acquired[] = $role;
                         }
                 }
 
-                return count($aquired) != 0 ? $aquired : $default;
+                return count($acquired) != 0 ? $acquired : $default;
         }
 
         /**

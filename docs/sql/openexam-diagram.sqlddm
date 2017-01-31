@@ -105,7 +105,7 @@
 <ddm:tableColumn defaultValue="" id="3364" name="student_id" nullable="false" scale="" size="10" typeName="INT"/>
 <ddm:tableColumn defaultValue="" id="3365" name="computer_id" nullable="false" scale="" size="10" typeName="INT"/>
 <ddm:tableColumn defaultValue="" id="3366" name="exam_id" nullable="false" scale="" size="10" typeName="INT"/>
-<ddm:tableColumn defaultValue="CURRENT_TIMESTAMP" id="3367" name="aquired" nullable="false" scale="" size="" typeName="TIMESTAMP"/>
+<ddm:tableColumn defaultValue="CURRENT_TIMESTAMP" id="3367" name="acquired" nullable="false" scale="" size="" typeName="TIMESTAMP"/>
 <ddm:tableColumn defaultValue="approved" id="3368" name="status" nullable="false" scale="" size="8" typeName="ENUM"/>
 </ddm:tableColumns>
 </ddm:table>

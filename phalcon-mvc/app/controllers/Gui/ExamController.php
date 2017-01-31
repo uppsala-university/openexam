@@ -140,7 +140,7 @@ class ExamController extends GuiController
                 // Show creator tab if admin and teacher:
                 // 
                 if (!isset($exams['creator'])) {
-                        if ($this->user->aquire(array('admin', 'teacher'))) {
+                        if ($this->user->acquire(array('admin', 'teacher'))) {
                                 $exams['creator'] = array();
                         }
                 }
@@ -231,8 +231,8 @@ class ExamController extends GuiController
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
-                if (!$this->user->roles->aquire(Roles::CREATOR, $eid) ||
-                    !$this->user->roles->aquire(Roles::ADMIN, $eid)) {
+                if (!$this->user->roles->acquire(Roles::CREATOR, $eid) ||
+                    !$this->user->roles->acquire(Roles::ADMIN, $eid)) {
                         throw new \Exception("Only creator or admins can replicate exams", Error::FORBIDDEN);
                 }
 
@@ -429,7 +429,7 @@ class ExamController extends GuiController
                 // 
                 // Fetch exam data either as creator or student:
                 // 
-                if ($this->user->roles->aquire(Roles::CREATOR, $eid)) {
+                if ($this->user->roles->acquire(Roles::CREATOR, $eid)) {
                         $this->user->setPrimaryRole(Roles::CREATOR);
                 } else {
                         $this->user->setPrimaryRole(Roles::STUDENT);

@@ -29,18 +29,18 @@ if (($exam->details & Exam::SHOW_CODE_DURING_CORRECTION) != 0) {
         $exam->show_code = true;
 }
 
-if ($exam->decoded || $this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
+if ($exam->decoded || $this->user->acquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
         $exam->show_grades = true;
         $exam->show_percent = true;
 }
 
-if ($this->user->aquire(array(Roles::DECODER, Roles::CREATOR), $exam->id) && $exam->getState()->isCorrected()) {
+if ($this->user->acquire(array(Roles::DECODER, Roles::CREATOR), $exam->id) && $exam->getState()->isCorrected()) {
         $exam->show_download = true;
 } else {
         $exam->show_download = false;
 }
 
-if (!$exam->decoded && $this->user->roles->aquire(Roles::DECODER, $exam->id) && $exam->getState()->isCorrected()) {
+if (!$exam->decoded && $this->user->roles->acquire(Roles::DECODER, $exam->id) && $exam->getState()->isCorrected()) {
         $exam->show_decode = true;
 } else {
         $exam->show_decode = false;

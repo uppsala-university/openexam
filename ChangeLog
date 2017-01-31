@@ -161,7 +161,7 @@ Better error handling. Use relations when fetching related objects in exam repli
 ------------------------------------------------------------------------
 r2577 | andlov | 2016-11-17 15:01:32 +0100 (Thu, 17 Nov 2016) | 1 line
 
-Small fixes when aquire roles.
+Small fixes when acquire roles.
 ------------------------------------------------------------------------
 r2576 | andlov | 2016-11-16 18:27:10 +0100 (Wed, 16 Nov 2016) | 1 line
 
@@ -1201,7 +1201,7 @@ Keep state and grades object in exam model.
 ------------------------------------------------------------------------
 r2278 | andlov | 2016-01-26 23:29:38 +0100 (Tue, 26 Jan 2016) | 1 line
 
-Cache user aquired roles between invocations. Clear cached roles after role/exam models has been deleted.
+Cache user acquired roles between invocations. Clear cached roles after role/exam models has been deleted.
 ------------------------------------------------------------------------
 r2277 | andlov | 2016-01-26 23:26:47 +0100 (Tue, 26 Jan 2016) | 1 line
 
@@ -2488,7 +2488,7 @@ Fixing unit test of model. Based on capabilites (access.def) and sample data (fr
 ------------------------------------------------------------------------
 r1914 | andlov | 2014-11-17 15:03:10 +0100 (Mon, 17 Nov 2014) | 1 line
 
-Both contributor and decoder roles are automatic added for exam creator -> aquire these roles will always succeed for new user (teacher) that creates an exam.
+Both contributor and decoder roles are automatic added for exam creator -> acquire these roles will always succeed for new user (teacher) that creates an exam.
 ------------------------------------------------------------------------
 r1913 | andlov | 2014-11-17 14:59:52 +0100 (Mon, 17 Nov 2014) | 1 line
 
@@ -2860,7 +2860,7 @@ Allow mixed argument to Capabilities::hasCapability(). Added static filter conve
 ------------------------------------------------------------------------
 r1813 | andlov | 2014-10-24 15:56:35 +0200 (Fri, 24 Oct 2014) | 1 line
 
-Adding unit test for method User::aquire().
+Adding unit test for method User::acquire().
 ------------------------------------------------------------------------
 r1812 | andlov | 2014-10-24 05:16:16 +0200 (Fri, 24 Oct 2014) | 1 line
 
@@ -2884,7 +2884,7 @@ Explicit use getPrincipalName() instead of relying on automatic conversion to st
 ------------------------------------------------------------------------
 r1807 | andlov | 2014-10-23 20:39:50 +0200 (Thu, 23 Oct 2014) | 1 line
 
-Use User::aquire() for aquire mulitple roles at once.
+Use User::acquire() for acquire mulitple roles at once.
 ------------------------------------------------------------------------
 r1806 | ahsan | 2014-10-23 14:27:53 +0200 (Thu, 23 Oct 2014) | 1 line
 
@@ -3280,7 +3280,7 @@ Implemented ACL for model using listener/triggers.
 ------------------------------------------------------------------------
 r1706 | andlov | 2014-09-30 08:53:06 +0200 (Tue, 30 Sep 2014) | 1 line
 
-Return true when aquired a custom role.
+Return true when acquired a custom role.
 ------------------------------------------------------------------------
 r1705 | andlov | 2014-09-30 08:23:31 +0200 (Tue, 30 Sep 2014) | 1 line
 
@@ -3488,7 +3488,7 @@ Removed index from isAdmin(). This is a global role anyway.
 ------------------------------------------------------------------------
 r1654 | andlov | 2014-09-17 08:32:51 +0200 (Wed, 17 Sep 2014) | 1 line
 
-Aquire the corrector role on a question will automatic inject the corrector role on its related exam (the one that contains the question).
+Acquire the corrector role on a question will automatic inject the corrector role on its related exam (the one that contains the question).
 ------------------------------------------------------------------------
 r1653 | andlov | 2014-09-17 07:47:34 +0200 (Wed, 17 Sep 2014) | 1 line
 
@@ -3985,7 +3985,7 @@ Updating class Authentication to match uup-auth >= 2.0.x
 ------------------------------------------------------------------------
 r1530 | andlov | 2014-09-02 00:38:14 +0200 (Tue, 02 Sep 2014) | 1 line
 
-It only makes sense to aquire unrequested roles in GUI-controller(s).
+It only makes sense to acquire unrequested roles in GUI-controller(s).
 ------------------------------------------------------------------------
 r1529 | andlov | 2014-09-02 00:23:35 +0200 (Tue, 02 Sep 2014) | 1 line
 
@@ -4113,7 +4113,7 @@ Fixed namespace path to Authentication class.
 ------------------------------------------------------------------------
 r1498 | andlov | 2014-08-27 10:14:52 +0200 (Wed, 27 Aug 2014) | 1 line
 
-Inject shared Roles object. Try to aquire 'admin' and 'teacher' roles in advance.
+Inject shared Roles object. Try to acquire 'admin' and 'teacher' roles in advance.
 ------------------------------------------------------------------------
 r1497 | andlov | 2014-08-27 10:05:35 +0200 (Wed, 27 Aug 2014) | 1 line
 

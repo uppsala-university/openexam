@@ -157,7 +157,7 @@ CREATE TABLE `locks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `computer_id` int(11) DEFAULT NULL,
   `exam_id` int(11) DEFAULT NULL,
-  `aquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `acquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

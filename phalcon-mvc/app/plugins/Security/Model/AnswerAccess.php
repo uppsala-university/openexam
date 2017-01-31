@@ -52,25 +52,25 @@ class AnswerAccess extends ObjectAccess
                                 $role == Roles::CREATOR ||
                                 $role == Roles::DECODER ||
                                 $role == Roles::INVIGILATOR) {
-                                    if ($user->roles->aquire($role, $model->question->exam_id)) {
+                                    if ($user->roles->acquire($role, $model->question->exam_id)) {
                                             return true;
                                     }
                             } elseif ($role == Roles::STUDENT) {
-                                    if ($user->roles->aquire($role, $model->student->exam_id)) {
+                                    if ($user->roles->acquire($role, $model->student->exam_id)) {
                                             return true;
                                     }
                             } elseif ($role == Roles::CORRECTOR) {
-                                    if ($user->roles->aquire($role, $model->question->id)) {
+                                    if ($user->roles->acquire($role, $model->question->id)) {
                                             return true;
                                     }
                             } elseif (isset($role)) {
-                                    if ($user->roles->aquire($role)) {
+                                    if ($user->roles->acquire($role)) {
                                             return true;
                                     }
                             }
 
                             if (isset($role)) {
-                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
+                                    throw new Exception(sprintf("Failed acquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }

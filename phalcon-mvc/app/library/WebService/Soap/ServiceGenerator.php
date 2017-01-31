@@ -975,8 +975,8 @@ EOL
                 
                 if (!isset(\$handle->role) || strlen(\$handle->role) == 0) {
                         throw new SecurityException("The requested role is not set.");
-                } elseif (\$this->user->roles->aquire(\$handle->role) == false) {
-                        throw new SecurityException("Failed aquire requested role.");
+                } elseif (\$this->user->roles->acquire(\$handle->role) == false) {
+                        throw new SecurityException("Failed acquire requested role.");
                 } else {
                         \$this->user->setPrimaryRole(\$handle->role);
                 }

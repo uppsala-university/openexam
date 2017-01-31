@@ -220,7 +220,7 @@ CREATE TABLE `locks` (
   `student_id` int(11) NOT NULL,
   `computer_id` int(11) NOT NULL,
   `exam_id` int(11) NOT NULL,
-  `aquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `acquired` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `status` enum('pending','approved') NOT NULL DEFAULT 'approved',
   PRIMARY KEY (`id`),
   KEY `locks_ibfk_1` (`computer_id`),

@@ -77,7 +77,7 @@
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" />
 		<field Field="computer_id" Type="int(11)" Null="YES" Key="MUL" Extra="" />
 		<field Field="exam_id" Type="int(11)" Null="YES" Key="MUL" Extra="" />
-		<field Field="aquired" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="on update CURRENT_TIMESTAMP" />
+		<field Field="acquired" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="on update CURRENT_TIMESTAMP" />
 		<key Table="locks" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
 		<key Table="locks" Non_unique="1" Key_name="computer_id" Seq_in_index="1" Column_name="computer_id" Collation="A" Cardinality="0" Null="YES" Index_type="BTREE" Comment="" />
 		<key Table="locks" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="0" Null="YES" Index_type="BTREE" Comment="" />

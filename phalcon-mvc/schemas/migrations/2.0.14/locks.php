@@ -57,7 +57,7 @@ class LocksMigration_2014 extends Migration
                         )
                     ),
                     new Column(
-                        'aquired',
+                        'acquired',
                         array(
                             'type' => Column::TYPE_TIMESTAMP,
                             'default' => "CURRENT_TIMESTAMP",
@@ -73,7 +73,7 @@ class LocksMigration_2014 extends Migration
                             'default' => "approved",
                             'notNull' => true,
                             'size' => 1,
-                            'after' => 'aquired'
+                            'after' => 'acquired'
                         )
                     )
                 ),

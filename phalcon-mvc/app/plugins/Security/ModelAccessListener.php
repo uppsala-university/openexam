@@ -28,7 +28,7 @@ use Phalcon\Mvc\User\Plugin;
  * 
  * 1. The system services are present (acl and user).
  * 2. User is authenticated (if primary role is set).
- * 3. The requested primary role has been global aquired.
+ * 3. The requested primary role has been global acquired.
  * 4. The ACL allows access to the requested resource/action for role.
  * 
  * Object specific access control is provided by classes derived from 
@@ -268,11 +268,11 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                 // Verify that caller has requested role (global), if so,
                 // trigger object specific role verification.
                 // 
-                if ($user->roles->aquire($role) == false) {
+                if ($user->roles->acquire($role) == false) {
                         $this->logger->access->error(sprintf(
-                                "Denied %s access on %s(id=%d) for caller using role %s (failed aquire role)", $action, $name, $model->id, $role
+                                "Denied %s access on %s(id=%d) for caller using role %s (failed acquire role)", $action, $name, $model->id, $role
                         ));
-                        throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
+                        throw new Exception(sprintf("Failed acquire role %s", $role), Exception::ROLE);
                 } elseif (Roles::isCustom($role)) {             // Custom roles are global
                         $this->logger->access->info(sprintf(
                                 "Granted %s access on %s(id=%d) for caller using role %s (custom role)", $action, $name, $model->id, $role

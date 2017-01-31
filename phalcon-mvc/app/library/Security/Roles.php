@@ -27,11 +27,11 @@ use ReflectionClass;
 /**
  * Manage roles for user session.
  * 
- * Roles are aquired either system wide or bound to an object (identified by 
- * the object ID in the model). Aquired roles are stored in the cache that 
+ * Roles are acquired either system wide or bound to an object (identified by 
+ * the object ID in the model). Acquired roles are stored in the cache that 
  * should be invalidated whenever user roles are added or deleted. The mutators
  * 
- * Internal the aquired roles are stored as:
+ * Internal the acquired roles are stored as:
  * 
  * <code>
  * $roles[0][role]              // System wide role.
@@ -73,7 +73,7 @@ use ReflectionClass;
  * $quest = ...         // (id = 456, exam_id = 123, ...)
  * 
  * $roles->hasRole(Roles::corrector, 123);      // false (on exam)
- * $roles->aquire(Roles::corrector, 456);       // aquire role on question object
+ * $roles->acquire(Roles::corrector, 456);       // acquire role on question object
  * $roles->hasRole(Roles::corrector, 123);      // true (on exam)
  * $roles->hasRole(Roles::corrector, 456);      // true (on question)
  * </code>
@@ -151,7 +151,7 @@ class Roles extends Component
         public function __construct($roles = array())
         {
                 if ($this->getDI()->has('user')) {
-                        $this->_rckey = sprintf("roles-aquired-%s", $this->getDI()->get('user')->getPrincipalName());
+                        $this->_rckey = sprintf("roles-acquired-%s", $this->getDI()->get('user')->getPrincipalName());
                 }
                 if ($this->cache->exists($this->_rckey)) {
                         $this->_roles = $this->cache->get($this->_rckey);
@@ -253,7 +253,7 @@ class Roles extends Component
         }
 
         /**
-         * Clear all aquired roles.
+         * Clear all acquired roles.
          */
         public function clear()
         {
@@ -262,16 +262,16 @@ class Roles extends Component
         }
 
         /**
-         * Try to aquire role. Returns true if successful. The object ID is
+         * Try to acquire role. Returns true if successful. The object ID is
          * is optional. 
          * 
-         * If the object ID is missing, then the role is aquired system wide. 
-         * If supplied, then requested role is aquired on that specific object. 
+         * If the object ID is missing, then the role is acquired system wide. 
+         * If supplied, then requested role is acquired on that specific object. 
          * 
          * @param string $role The role name.
          * @param int $id The object ID.
          */
-        public function aquire($role, $id = 0)
+        public function acquire($role, $id = 0)
         {
                 if ($this->hasRole($role, $id)) {
                         return true;
@@ -432,14 +432,14 @@ class Roles extends Component
                 }
 
                 // 
-                // Role was not aquired.
+                // Role was not acquired.
                 // 
                 $user->setPrimaryRole($rold);
                 return false;
         }
 
         /**
-         * Check if the admin role has been aquired.
+         * Check if the admin role has been acquired.
          * @return bool
          */
         public function isAdmin()
@@ -448,7 +448,7 @@ class Roles extends Component
         }
 
         /**
-         * Check if the student role has been aquired.
+         * Check if the student role has been acquired.
          * @param int $id The object ID.
          * @return bool
          */
@@ -458,7 +458,7 @@ class Roles extends Component
         }
 
         /**
-         * Check if the staff role has been aquired.
+         * Check if the staff role has been acquired.
          * @param int $id The object ID.
          * @return bool
          */

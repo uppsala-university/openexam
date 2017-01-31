@@ -54,23 +54,23 @@ class ContributorAccess extends ObjectAccess
                                 $role == Roles::DECODER ||
                                 $role == Roles::INVIGILATOR ||
                                 $role == Roles::STUDENT) {
-                                    if ($user->roles->aquire($role, $model->exam_id)) {
+                                    if ($user->roles->acquire($role, $model->exam_id)) {
                                             return true;
                                     }
                             } elseif ($role == Roles::CORRECTOR) {
                                     foreach ($model->exam->questions as $question) {
-                                            if ($user->roles->aquire($role, $question->id)) {
+                                            if ($user->roles->acquire($role, $question->id)) {
                                                     return true;
                                             }
                                     }
                             } elseif (isset($role)) {
-                                    if ($user->roles->aquire($role)) {
+                                    if ($user->roles->acquire($role)) {
                                             return true;
                                     }
                             }
 
                             if (isset($role)) {
-                                    throw new Exception(sprintf("Failed aquire role %s", $role), Exception::ROLE);
+                                    throw new Exception(sprintf("Failed acquire role %s", $role), Exception::ROLE);
                             } else {
                                     return true;
                             }

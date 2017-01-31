@@ -60,7 +60,7 @@ class Progress extends \Phalcon\Mvc\User\Component implements Component
                 $this->_style = "display: inline-block; min-width: 90px; text-align: left; margin-left: 5px";
 
                 if (isset($this->_role)) {
-                        if (!$this->user->roles->aquire($this->_role)) {
+                        if (!$this->user->roles->acquire($this->_role)) {
                                 $this->_role = null;
                         }
                 }

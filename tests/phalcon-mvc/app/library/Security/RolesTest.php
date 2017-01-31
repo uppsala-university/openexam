@@ -254,10 +254,10 @@ class RolesTest extends TestCase
         }
 
         /**
-         * @covers OpenExam\Library\Security\Roles::aquire
+         * @covers OpenExam\Library\Security\Roles::acquire
          * @group security
          */
-        public function testAquire()
+        public function testAcquire()
         {
                 // 
                 // Domain for unique users:
@@ -288,8 +288,8 @@ class RolesTest extends TestCase
                     Roles::ADMIN,
                     Roles::STUDENT
                 ) as $role) {
-                        self::assertFalse($this->_object->aquire($role), "role: $role");
-                        self::assertFalse($this->_object->aquire($role, 1), "role: $role");
+                        self::assertFalse($this->_object->acquire($role), "role: $role");
+                        self::assertFalse($this->_object->acquire($role, 1), "role: $role");
                 }
                 $this->_object->clear();
 
@@ -316,13 +316,13 @@ class RolesTest extends TestCase
                 self::assertEquals($user, $this->_di->get('user'));
 
                 // 
-                // Test aquire system wide roles:
+                // Test acquire system wide roles:
                 // 
-                $this->checkAquireSystemRole($principal, Roles::ADMIN, '\OpenExam\Models\Admin');
-                $this->checkAquireSystemRole($principal, Roles::TEACHER, '\OpenExam\Models\Teacher');
+                $this->checkAcquireSystemRole($principal, Roles::ADMIN, '\OpenExam\Models\Admin');
+                $this->checkAcquireSystemRole($principal, Roles::TEACHER, '\OpenExam\Models\Teacher');
 
                 // 
-                // Test aquire object specific roles:
+                // Test acquire object specific roles:
                 // 
                 $exam = new Exam();
                 $exam->name = "Name";
@@ -341,19 +341,19 @@ class RolesTest extends TestCase
 
                 self::assertEquals($principal, $exam->creator);
 
-                $this->checkAquireExamRole($principal, $exam, Roles::CREATOR, null);
-                $this->checkAquireExamRole($principal, $exam, Roles::CONTRIBUTOR, '\OpenExam\Models\Contributor');
-                $this->checkAquireExamRole($principal, $exam, Roles::DECODER, '\OpenExam\Models\Decoder');
-                $this->checkAquireExamRole($principal, $exam, Roles::INVIGILATOR, '\OpenExam\Models\Invigilator');
-                $this->checkAquireExamRole($principal, $exam, Roles::STUDENT, '\OpenExam\Models\Student');
+                $this->checkAcquireExamRole($principal, $exam, Roles::CREATOR, null);
+                $this->checkAcquireExamRole($principal, $exam, Roles::CONTRIBUTOR, '\OpenExam\Models\Contributor');
+                $this->checkAcquireExamRole($principal, $exam, Roles::DECODER, '\OpenExam\Models\Decoder');
+                $this->checkAcquireExamRole($principal, $exam, Roles::INVIGILATOR, '\OpenExam\Models\Invigilator');
+                $this->checkAcquireExamRole($principal, $exam, Roles::STUDENT, '\OpenExam\Models\Student');
 
-                $this->checkAquireCorrectorRoles($principal, $exam);
+                $this->checkAcquireCorrectorRoles($principal, $exam);
 
                 $exam->delete();
         }
 
         /**
-         * Test aquire system role.
+         * Test acquire system role.
          * 
          * System roles are global and not connected with an object, like 
          * an exam (e.g. decoder) or question (corrector).
@@ -362,14 +362,14 @@ class RolesTest extends TestCase
          * @param string $role The wanted role.
          * @param string $class The class name related to wanted role.
          */
-        private function checkAquireSystemRole($user, $role, $class)
+        private function checkAcquireSystemRole($user, $role, $class)
         {
                 self::info("[class: '%s', role: '%s']", $class, $role);
                 self::info("[roles: '%s']", $this->_object);
 
-                self::assertFalse($this->_object->aquire($role));
-                self::assertFalse($this->_object->aquire($role, 0));
-                self::assertFalse($this->_object->aquire($role, 1));
+                self::assertFalse($this->_object->acquire($role));
+                self::assertFalse($this->_object->acquire($role, 0));
+                self::assertFalse($this->_object->acquire($role, 1));
                 self::info("[roles: '%s']", $this->_object);
 
                 $model = new $class();
@@ -377,17 +377,17 @@ class RolesTest extends TestCase
                 $model->create();
                 self::dump($model);
 
-                self::assertTrue($this->_object->aquire($role));
-                self::assertTrue($this->_object->aquire($role, 0));
-                self::assertTrue($this->_object->aquire($role, 1));
+                self::assertTrue($this->_object->acquire($role));
+                self::assertTrue($this->_object->acquire($role, 0));
+                self::assertTrue($this->_object->acquire($role, 1));
                 self::info("[roles: '%s']", $this->_object);
                 $model->delete();       // cleanup                
         }
 
         /**
-         * Test aquire exam role.
+         * Test acquire exam role.
          * 
-         * Try to aquire the requested role on the exam. The role can for
+         * Try to acquire the requested role on the exam. The role can for
          * example be decoder of an exam.
          * 
          * @param string $user The user principal name.
@@ -395,7 +395,7 @@ class RolesTest extends TestCase
          * @param string $role The wanted role.
          * @param string $class The class name related to wanted role.
          */
-        private function checkAquireExamRole($user, $exam, $role, $class)
+        private function checkAcquireExamRole($user, $exam, $role, $class)
         {
                 self::info("[class: '%s', role: '%s']\n", $class, $role);
                 self::info("[roles: '%s']\n", $this->_object);
@@ -409,9 +409,9 @@ class RolesTest extends TestCase
                     $role != Roles::CONTRIBUTOR &&
                     $role != Roles::INVIGILATOR &&
                     $role != Roles::DECODER) {
-                        self::assertFalse($this->_object->aquire($role));
-                        self::assertFalse($this->_object->aquire($role, 0));
-                        self::assertFalse($this->_object->aquire($role, $exam->id));
+                        self::assertFalse($this->_object->acquire($role));
+                        self::assertFalse($this->_object->acquire($role, 0));
+                        self::assertFalse($this->_object->acquire($role, $exam->id));
                         self::info("[roles: '%s']\n", $this->_object);
 
                         $model = new $class();
@@ -426,10 +426,10 @@ class RolesTest extends TestCase
                         self::dump($model);
                 }
 
-                self::assertTrue($this->_object->aquire($role));
-                self::assertTrue($this->_object->aquire($role, 0));
-                self::assertTrue($this->_object->aquire($role, $exam->id));
-                self::assertFalse($this->_object->aquire($role, $exam->id + 1));
+                self::assertTrue($this->_object->acquire($role));
+                self::assertTrue($this->_object->acquire($role, 0));
+                self::assertTrue($this->_object->acquire($role, $exam->id));
+                self::assertFalse($this->_object->acquire($role, $exam->id + 1));
                 self::info("[roles: '%s']\n", $this->_object);
 
                 if (isset($model)) {
@@ -438,7 +438,7 @@ class RolesTest extends TestCase
         }
 
         /**
-         * Test aquire corrector role.
+         * Test acquire corrector role.
          * 
          * The corrector role is connected with an question in contrary to
          * most other roles that are connected with an exam. This makes the
@@ -447,15 +447,15 @@ class RolesTest extends TestCase
          * @param string $user The user principal name.
          * @param Exam $exam The exam object.
          */
-        private function checkAquireCorrectorRoles($user, $exam)
+        private function checkAcquireCorrectorRoles($user, $exam)
         {
                 $role = Roles::CORRECTOR;
 
                 self::info("[exam: '%s', role: '%s']\n", $exam->id, $role);
                 self::info("[roles: '%s']\n", $this->_object);
 
-                self::assertFalse($this->_object->aquire($role));
-                self::assertFalse($this->_object->aquire($role, 0));
+                self::assertFalse($this->_object->acquire($role));
+                self::assertFalse($this->_object->acquire($role, 0));
                 self::info("[roles: '%s']\n", $this->_object);
 
                 $tmodel = new Topic();
@@ -487,12 +487,12 @@ class RolesTest extends TestCase
                 self::dump($cmodel);
 
                 self::assertEquals($user, $qmodel->user);
-                self::assertTrue($this->_object->aquire($role));
-                self::assertTrue($this->_object->aquire($role, 0));
-                self::assertTrue($this->_object->aquire($role, $qmodel->id));
-                self::assertTrue($this->_object->aquire($role, $exam->id));
-                self::assertFalse($this->_object->aquire($role, $qmodel->id + 1));
-                self::assertFalse($this->_object->aquire($role, $exam->id + 1));
+                self::assertTrue($this->_object->acquire($role));
+                self::assertTrue($this->_object->acquire($role, 0));
+                self::assertTrue($this->_object->acquire($role, $qmodel->id));
+                self::assertTrue($this->_object->acquire($role, $exam->id));
+                self::assertFalse($this->_object->acquire($role, $qmodel->id + 1));
+                self::assertFalse($this->_object->acquire($role, $exam->id + 1));
                 self::info("[roles: '%s']\n", $this->_object);
 
                 $qmodel->delete();

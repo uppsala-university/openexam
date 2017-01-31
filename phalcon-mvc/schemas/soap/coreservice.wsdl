@@ -99,7 +99,7 @@
           <xsd:element name="id" type="xsd:int"/>
           <xsd:element name="computer_id" type="xsd:int"/>
           <xsd:element name="exam_id" type="xsd:int"/>
-          <xsd:element name="aquired" type="xsd:string"/>
+          <xsd:element name="acquired" type="xsd:string"/>
         </xsd:all>
       </xsd:complexType>
       <xsd:complexType name="Question">

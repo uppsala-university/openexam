@@ -99,7 +99,7 @@ class Actions extends PhalconComponent implements Component
         {
                 $this->_buttons = array();
 
-                if (!$this->user->roles->aquire($this->_role, $this->_exam->id)) {
+                if (!$this->user->roles->acquire($this->_role, $this->_exam->id)) {
                         return;
                 }
 

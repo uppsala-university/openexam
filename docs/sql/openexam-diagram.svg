@@ -12755,7 +12755,7 @@
       <text style="clip-path:url(#clipPath70); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="50">student_id</text>
       <text style="clip-path:url(#clipPath70); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="65">computer_id</text>
       <text style="clip-path:url(#clipPath70); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="80">exam_id</text>
-      <text style="clip-path:url(#clipPath70); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">aquired</text>
+      <text style="clip-path:url(#clipPath70); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="95">acquired</text>
       <text style="clip-path:url(#clipPath70); font-weight:normal; stroke:none;" x="17" xml:space="preserve" y="110">status</text>
       <text style="clip-path:url(#clipPath70); font-weight:normal; stroke:none;" x="100" xml:space="preserve" y="35">INT (10)</text>
       <text style="clip-path:url(#clipPath70); font-weight:normal; stroke:none;" x="100" xml:space="preserve" y="50">INT (10)</text>

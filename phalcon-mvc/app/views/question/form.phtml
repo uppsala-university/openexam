@@ -187,7 +187,7 @@ $totalQParts = count($qParts);
     </div>
     <br style="clear:both" />
     <?php
-    $showCorrectors = $this->user->getPrincipalName() == $exam->creator || $this->user->aquire(array(OpenExam\Library\Security\Roles::ADMIN)) ? true : false;
+    $showCorrectors = $this->user->getPrincipalName() == $exam->creator || $this->user->acquire(array(OpenExam\Library\Security\Roles::ADMIN)) ? true : false;
     /* if(is_object($question)):
       $showCorrectors = $this->capabilities->hasCapability($question, 'update');
       else:

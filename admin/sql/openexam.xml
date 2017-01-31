@@ -122,7 +122,7 @@
 		<field Field="student_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
 		<field Field="computer_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
 		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
-		<field Field="aquired" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="on update CURRENT_TIMESTAMP" Comment="" />
+		<field Field="acquired" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="on update CURRENT_TIMESTAMP" Comment="" />
 		<field Field="status" Type="enum('pending','approved')" Null="NO" Key="" Default="approved" Extra="" Comment="" />
 		<key Table="locks" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="7189" Null="" Index_type="BTREE" Comment="" Index_comment="" />
 		<key Table="locks" Non_unique="1" Key_name="locks_ibfk_1" Seq_in_index="1" Column_name="computer_id" Collation="A" Cardinality="599" Null="" Index_type="BTREE" Comment="" Index_comment="" />

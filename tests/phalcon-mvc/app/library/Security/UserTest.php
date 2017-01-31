@@ -259,10 +259,10 @@ class UserTest extends TestCase
         }
 
         /**
-         * @covers OpenExam\Library\Security\User::aquire
+         * @covers OpenExam\Library\Security\User::acquire
          * @group security
          */
-        public function testAquire()
+        public function testAcquire()
         {
                 $id = 2;        // faked object ID
 
@@ -279,17 +279,17 @@ class UserTest extends TestCase
                 $this->_object = new User(self::$_user, self::$_domain, null, array($id => $expect));
 
                 // 
-                // Test aquire global:
+                // Test acquire global:
                 // 
-                $actual = $this->_object->aquire($expect);
+                $actual = $this->_object->acquire($expect);
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);
 
                 // 
-                // Test aquire object specific:
+                // Test acquire object specific:
                 // 
-                $actual = $this->_object->aquire($expect, $id);
+                $actual = $this->_object->acquire($expect, $id);
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
                 self::assertEquals($expect, $actual);

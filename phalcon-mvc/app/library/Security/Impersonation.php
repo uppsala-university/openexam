@@ -69,7 +69,7 @@ class Impersonation extends Component
                         ));
                         return false;
                 }
-                if (!$this->user->roles->aquire(Roles::ADMIN)) {
+                if (!$this->user->roles->acquire(Roles::ADMIN)) {
                         $this->logger->auth->alert(sprintf(
                                 "Denied impersonate request as %s (caller is not admin)", $user
                         ));
