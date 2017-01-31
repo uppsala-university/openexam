@@ -35,10 +35,12 @@ class RenderService extends Component
          */
         public function getRender($type)
         {
-                if (!isset($this->_render[$type])) {
-                        $this->createRender($type);
+                if (isset($this->_render[$type])) {
+                        return $this->_render[$type];
+                } else {
+                        $this->_render[$type] = $this->createRender($type);
+                        return $this->_render[$type];
                 }
-                return $this->_render[$type];
         }
 
         /**
@@ -58,15 +60,28 @@ class RenderService extends Component
          */
         private function createRender($type)
         {
-                switch ($type) {
-                        case Renderer::FORMAT_IMAGE:
-                                $this->_render[$type] = new RenderImage($this->config->render->image);
-                                break;
-                        case Renderer::FORMAT_PDF:
-                                $this->_render[$type] = new RenderPdfDocument($this->config->render->pdf);
-                                break;
-                        default:
-                                throw new Exception($this->tr->_("Unknown format type %format%", array('format' => $type)));
+                if ($type == Renderer::FORMAT_IMAGE) {
+                        if ($this->config->render->method == 'command') {
+                                return new Command\RenderImage(
+                                    $this->config->render->command->image
+                                );
+                        } else {
+                                return new Extension\RenderImage(
+                                    $this->config->render->command->image
+                                );
+                        }
+                } elseif ($type == \OpenExam\Library\Render\Renderer::FORMAT_PDF) {
+                        if ($this->config->render->method == 'command') {
+                                return new Command\RenderPdfDocument(
+                                    $this->config->render->command->pdf
+                                );
+                        } else {
+                                return new Extension\RenderPdfDocument(
+                                    $this->config->render->command->pdf
+                                );
+                        }
+                } else {
+                        throw new Exception($this->tr->_("Unknown format type %format%", array('format' => $type)));
                 }
         }
 

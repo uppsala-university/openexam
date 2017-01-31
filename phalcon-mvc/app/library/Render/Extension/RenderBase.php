@@ -1,5 +1,7 @@
 <?php
 
+use OpenExam\Library\Render\Exception;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -11,7 +13,7 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Render;
+namespace OpenExam\Library\Render\Extension;
 
 /**
  * Base class for page render implementations.
@@ -62,7 +64,7 @@ abstract class RenderBase
          */
         public function setOptions($globals)
         {
-                $this->_globals = array_merge($this->_globals, $globals);
+                $this->_globals = array_merge($this->_globals, (array) $globals);
         }
 
         /**
@@ -84,7 +86,8 @@ abstract class RenderBase
          */
         public function render($type, $globals, $objects = array())
         {
-                $globals = array_merge($globals, $this->_globals);
+
+                $globals = array_merge((array) $globals, $this->_globals);
 
                 // 
                 // Render image fail unless the output type is known:
@@ -102,17 +105,16 @@ abstract class RenderBase
                 // 
                 // Emulate '-' output option:
                 // 
-                $tmpfile = tempnam(sys_get_temp_dir(), 'wktohtml') . ".$extension";
-                $dstfile = $globals['out'];
-                $globals['out'] = $tmpfile;
+                if ($globals['out'] == '-') {
+                        $tmpfile = tempnam(sys_get_temp_dir(), 'result-wktohtml');
+                        $globals['out'] = $tmpfile;
+                }
 
                 $result = wkhtmltox_convert($type, $globals, $objects);
 
-                if ($dstfile == '-') {
+                if (isset($tmpfile) && file_exists($tmpfile)) {
                         echo file_get_contents($tmpfile);
                         unlink($tmpfile);
-                } else {
-                        rename($tmpfile, $dstfile);
                 }
 
                 return $result;

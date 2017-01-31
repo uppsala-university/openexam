@@ -207,6 +207,13 @@ class Result extends Component
                 $source = $this->getResultUrl($token, $student);
 
                 // 
+                // Check if file should be downloaded:
+                // 
+                if ($this->config->render->local) {
+                        $this->downloadSource($source);
+                }
+
+                // 
                 // Cleanup:
                 // 
                 unset($student);
@@ -225,14 +232,15 @@ class Result extends Component
                 // Page(s) that goes into generated PDF:
                 //
                 $settings = array(array('page' => $source));
-
+                
                 // 
                 // Retry on HTTP 400 (Bad Request).
-                // 
+                //                 
                 for ($i = 0; $i < 5; ++$i) {
+
                         $render = $this->render->getRender(Renderer::FORMAT_PDF);
                         $render->save($target, $settings);
-
+                        
                         if (file_exists($target) && filesize($target) > self::MIN_FILE_SIZE) {
                                 return true;
                         } else {
@@ -369,10 +377,6 @@ class Result extends Component
 
                 $this->response->setFileToSend($source, $target);
                 $this->response->setContentType('application/pdf', 'UTF-8');
-
-                unset($student);
-                unset($source);
-                unset($target);
 
                 $this->response->send();
         }
@@ -521,8 +525,32 @@ class Result extends Component
         private function getResultUrl($token, $student)
         {
                 $expand = $this->url->get(sprintf("result/%d/view/%d", $this->_exam->id, $student->id));
-                $source = sprintf("http://localhost/%s?token=%s&user=%s", $expand, $token, $student->user);
+                $source = sprintf("http://%s%s?token=%s&user=%s", $this->config->render->server, $expand, $token, $student->user);
                 return $source;
+        }
+
+        /**
+         * Download source to local file.
+         * 
+         * @param string $source The source URL.
+         * @throws \Exception
+         */
+        private function downloadSource(&$source)
+        {
+                if (!($content = file_get_contents($source))) {
+                        throw new \Exception("Failed download content.");
+                }
+                if (!($tmpfile = tempnam(sys_get_temp_dir(), 'result-source'))) {
+                        throw new \Exception("Failed create temporary file.");
+                } else {
+                        $dstfile = sprintf("%s.html", $tmpfile);
+                        unlink($tmpfile);
+                }
+                if (!(file_put_contents($dstfile, $content))) {
+                        throw new \Exception("Failed save content.");
+                } else {
+                        $source = $dstfile;
+                }
         }
 
 }

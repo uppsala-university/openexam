@@ -75,7 +75,7 @@ class Command
                 $this->_command = $command;
                 $this->_errfile = sprintf("%s/command-%d.err", sys_get_temp_dir(), getmypid());
         }
-        
+
         public function __destruct()
         {
                 unset($this->_command);
@@ -139,6 +139,15 @@ class Command
         public function getStatus()
         {
                 return $this->_status;
+        }
+
+        /**
+         * Set command to execeute.
+         * @param string $command The command string.
+         */
+        public function setCommand($command)
+        {
+                $this->_command = $command;
         }
 
         /**
@@ -249,7 +258,7 @@ class Command
                 // Wipe output from previous exec.
                 // 
                 unset($this->_output);
-                
+
                 // 
                 // Execute program.
                 // 

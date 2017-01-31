@@ -11,7 +11,9 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Render;
+namespace OpenExam\Library\Render\Extension;
+
+use OpenExam\Library\Render\Renderer;
 
 /**
  * Image render class.
@@ -56,7 +58,7 @@ class RenderImage extends RenderBase implements Renderer
          */
         public function save($filename, $settings)
         {
-                return parent::render('image', array_merge($settings, array('out' => $filename)));
+                return parent::render('image', array_merge((array) $settings, array('out' => $filename)));
         }
 
         /**
@@ -73,7 +75,7 @@ class RenderImage extends RenderBase implements Renderer
                         header(sprintf('Content-type: %s', self::$_mime[$settings['fmt']]));
                         header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
                 }
-                return parent::render('image', array_merge($settings, array('out' => '-')));
+                return parent::render('image', array_merge((array) $settings, array('out' => '-')));
         }
 
 }

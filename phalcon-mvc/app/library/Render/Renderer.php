@@ -37,9 +37,6 @@ interface Renderer
         function save($filename, $settings);
 
         /**
-         */
-
-        /**
          * Send rendered page(s) to stdout.
          * @param string $filename The suggested filename.
          * @param array $settings The render settings or objects.

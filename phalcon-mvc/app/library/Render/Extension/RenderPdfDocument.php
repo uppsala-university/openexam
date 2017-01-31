@@ -11,7 +11,9 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Render;
+namespace OpenExam\Library\Render\Extension;
+
+use OpenExam\Library\Render\Renderer;
 
 /**
  * PDF document render class.
@@ -50,7 +52,7 @@ class RenderPdfDocument extends RenderBase implements Renderer
          */
         public function save($filename, $objects)
         {
-                return parent::render('pdf', array('out' => $filename), $objects);
+                return parent::render('pdf', array('out' => $filename), (array) $objects);
         }
 
         /**
@@ -67,7 +69,7 @@ class RenderPdfDocument extends RenderBase implements Renderer
                         header(sprintf('Content-type: %s', 'application/pdf'));
                         header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
                 }
-                return parent::render('pdf', array('out' => '-'), $objects);
+                return parent::render('pdf', array('out' => '-'), (array) $objects);
         }
 
 }

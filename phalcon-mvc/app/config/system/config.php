@@ -204,21 +204,45 @@ $config = new Config(
          * See http://wkhtmltopdf.org/libwkhtmltox/pagesettings.html
          */
         'render'      => array(
-                'image' => array(
-                        'fmt'          => 'png',
-                        'imageQuality' => 95,
-                // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
-                ),
-                'pdf'   => array(
-                        'produceForms' => false,
-                        'outline'      => true,
-                        'outlineDepth' => 2,
-                // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
-                ),
+                // 
+                // Prefered render method (extension or command):
+                // 
+                'method'    => 'command',
                 // 
                 // Security token, an absolute file path or string:
                 // 
-                'token' => BASE_DIR . '/cache/render.sec'
+                'token'     => BASE_DIR . '/cache/render.sec',
+                // 
+                // Download content before rendering:
+                // 
+                'local'     => false,
+                // 
+                // The results download server:
+                // 
+                'server'    => 'localhost',
+                // 
+                // Options for phpwkhtmltox extension:
+                // 
+                'extension' => array(
+                        'image' => array(
+                                'fmt'          => 'png',
+                                'imageQuality' => 95,
+                        // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
+                        ),
+                        'pdf'   => array(
+                                'produceForms' => false,
+                                'outline'      => true,
+                                'outlineDepth' => 2,
+                        // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
+                        )
+                ),
+                // 
+                // Options for wkhtmltoxxx command:
+                // 
+                'command'   => array(
+                        'image' => 'wkhtmltoimage',
+                        'pdf'   => 'wkhtmltopdf'
+                )
         ),
         /**
          * Models meta data cache. Only activated if application->release is
@@ -283,15 +307,15 @@ $config = new Config(
         /*
          * System performance profiler config. 
          */
-        'profile' => false,
+        'profile'     => false,
         /**
          * Audit is disabled by default.
          */
-        'audit'   => false,
+        'audit'       => false,
         /**
          * Performance monitoring is disabled by default.
          */
-        'monitor' => false
+        'monitor'     => false
     )
 );
 
