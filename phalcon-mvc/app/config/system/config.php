@@ -240,8 +240,8 @@ $config = new Config(
                 // Options for wkhtmltoxxx command:
                 // 
                 'command'   => array(
-                        'image' => 'wkhtmltoimage',
-                        'pdf'   => 'wkhtmltopdf'
+                        'image' => 'wkhtmltoimage --format png --quality 95',
+                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --disable-forms'
                 )
         ),
         /**
