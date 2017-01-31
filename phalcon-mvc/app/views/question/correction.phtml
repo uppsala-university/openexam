@@ -132,9 +132,20 @@ if ($exam->decoded) {
                     <thead>
                         <tr>
                             <?php foreach ($questions as $qNo => $question): ?>
+                                    <?php
+                                    $href = $this->url->get('exam/' . $exam->id . '/correction/question/' . $question->id);
+                                    $desc = "Correctors: ";
+
+                                    $correctors = array();
+                                    foreach ($question->correctors as $corrector) {
+                                            $correctors[] = $corrector->name;
+                                    }
+                                    $desc .= implode(", ", $correctors);
+
+                                    ?>
                                     <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
                             <div style="text-align: center">
-                                <a class="fb fancybox.ajax fill" href="<?= $this->url->get('exam/' . $exam->id . '/correction/question/' . $question->id) ?>">Q<?= $question->slot ? $question->slot : $question->name ?><br>Max. <?= $question->score ?></a>
+                                <a class="fb fancybox.ajax fill" href="<?= $href ?>" title="<?= $desc ?>">Q<?= $question->slot ?><br>Max. <?= $question->score ?></a>
                             </div>
 
                             </th>
