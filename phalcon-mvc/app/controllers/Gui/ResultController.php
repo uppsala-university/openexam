@@ -231,16 +231,18 @@ class ResultController extends GuiController
                 // 
                 // Calcualte student's grades:
                 // 
-                foreach ($data['studentScore'] as $id => $score) {
-                        foreach ($data['examGrades'] as $grade => $limit) {
-                                if ((($score / $data['examScore']) * 100) >= $limit) {
-                                        $data['studentGrade'][$id] = $grade;
-                                        if (isset($data['studentGrade'][$grade])) {
-                                                $data['studentGrade'][$grade] ++;
-                                        } else {
-                                                $data['studentGrade'][$grade] = 1;
+                if (isset($data['studentScore'])) {
+                        foreach ($data['studentScore'] as $id => $score) {
+                                foreach ($data['examGrades'] as $grade => $limit) {
+                                        if ((($score / $data['examScore']) * 100) >= $limit) {
+                                                $data['studentGrade'][$id] = $grade;
+                                                if (isset($data['studentGrade'][$grade])) {
+                                                        $data['studentGrade'][$grade] ++;
+                                                } else {
+                                                        $data['studentGrade'][$grade] = 1;
+                                                }
+                                                break;
                                         }
-                                        break;
                                 }
                         }
                 }
