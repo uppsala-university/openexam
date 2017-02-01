@@ -192,9 +192,11 @@ $di->set('acl', function() {
 }, true);
 
 $di->set('auth', function() use($config) {
-        return new OpenExam\Library\Security\Authentication(
+        $auth = new OpenExam\Library\Security\Authentication(
             require CONFIG_DIR . '/auth.def'
         );
+        $auth->setNormalizer('strtolower');
+        return $auth;
 }, true);
 
 /**
