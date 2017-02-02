@@ -746,6 +746,10 @@ if ($exam->decoded) {
                                         tScore = tScore + parseFloat(sc);
                                     });
 
+                                    if (tScore < 0) {
+                                        tScore = 0;
+                                    }
+
                                     $('a[ans-id="' + rec.answer_id + '"]').html(tScore);
 
                                     if (rec.correction === 'waiting' || rec.correction === 'partial') {
