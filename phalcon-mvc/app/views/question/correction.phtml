@@ -207,6 +207,10 @@ if ($exam->decoded) {
                                                                     $qScore+=$score;
                                                             endforeach;
 
+                                                            if ($qScore < 0) {
+                                                                    $qScore = 0;
+                                                            }
+
                                                             $totalStudentScore+=$qScore;
                                                             $overallQuestScore[$question->id][] = $qScore;
                                                     endif;
