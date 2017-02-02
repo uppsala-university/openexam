@@ -43,6 +43,11 @@ class Authentication implements Authenticator, Restrictor
          * @var string 
          */
         private $_service;
+        /**
+         * The username normalizer callback.
+         * @var callable 
+         */
+        private $_normalizer;
 
         /**
          * Constructor.
@@ -199,6 +204,9 @@ class Authentication implements Authenticator, Restrictor
                 $this->_authenticator = $auth;
                 $this->_authenticator->name($name);
                 $this->_authenticator->description($desc);
+                if (isset($this->_normalizer)) {
+                        $this->_authenticator->setNormalizer($this->_normalizer);
+                }
                 $this->_service = $service;
         }
 
@@ -241,6 +249,15 @@ class Authentication implements Authenticator, Restrictor
                                 }
                         }
                 }
+        }
+
+        /**
+         * Set username normalizer callback.
+         * @param callable $normalizer The normalizer callback.
+         */
+        public function setNormalizer(callable $normalizer)
+        {
+                $this->_normalizer = $normalizer;
         }
 
 }
