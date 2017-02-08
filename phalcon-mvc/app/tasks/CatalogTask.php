@@ -38,10 +38,11 @@ class CatalogTask extends MainTask implements TaskInterface
                         'header'   => 'Catalog service query tool',
                         'action'   => '--catalog',
                         'usage'    => array(
-                                '--principal --needle=val --search=attr',
+                                '--principal --needle=val --search=attr [--domain=name] [--service=name] [--limit=num]',
                                 '--attribute --principal=user',
                                 '--groups --principal=user',
-                                '--members --group=name'
+                                '--members --group=name',
+                                '--domains|--services'
                         ),
                         'options'  => array(
                                 '--principal'      => 'Search for user principal.',
@@ -52,13 +53,30 @@ class CatalogTask extends MainTask implements TaskInterface
                                 '--groups'         => 'Search for groups where user principal is member.',
                                 '--group=name'     => 'Use group name as search parameter for members listing.',
                                 '--members'        => 'Search for group members.',
+                                '--domain=name'    => 'Restrict search to given domain.',
+                                '--service=name'   => 'Restrict search to given service.',
+                                '--limit=num'      => 'Limit number of records returned from user principal search.',
+                                '--domains'        => 'List all directory domains in catalog manager.',
+                                '--services'       => 'List all services in catalog manager.',
                                 '--verbose'        => 'Be more verbose.'
                         ),
                         'examples' => array(
                                 array(
+                                        'descr'   => 'List services in all domains',
+                                        'command' => '--catalog --services'
+                                ),
+                                array(
                                         'descr'   => 'Get user principals with given name in domain user.uu.se',
                                         'command' => '--catalog --principal --search=gn --needle=Anders --domain=user.uu.se'
-                                )
+                                ),
+                                array(
+                                        'descr'   => 'Get user principals with given name in service akka',
+                                        'command' => '--catalog --principal --search=gn --needle=Anders --service=akka --limit=15'
+                                ),
+                                array(
+                                        'descr'   => 'Get members of given group',
+                                        'command' => '--catalog --members --group="BMC Mediateket CBE Manager"'
+                                ),
                         )
                 );
         }
@@ -103,8 +121,49 @@ class CatalogTask extends MainTask implements TaskInterface
         public function principalAction($params = array())
         {
                 $this->setOptions($params, 'principal');
-                $result = $this->catalog->getPrincipal($this->_options['needle'], $this->_options['search'], array('domain' => $this->_options['domain']));
+
+                if ($this->_options['service']) {
+                        $catalog = $this->catalog->getService($this->_options['service']);
+                } else {
+                        $catalog = $this->catalog;
+                }
+                if ($this->_options['domain']) {
+                        $catalog->setDefaultDomain($this->_options['domain']);
+                }
+
+                $result = $catalog->getPrincipal(
+                    $this->_options['needle'], $this->_options['search'], array(
+                        'domain' => $this->_options['domain'],
+                        'limit'  => $this->_options['limit']
+                ));
                 print_r($result);
+        }
+
+        /**
+         * Doamin listing action.
+         * @param array $params
+         */
+        public function domainsAction($params = array())
+        {
+                $this->setOptions($params, 'domains');
+                $result = $this->catalog->getDomains();
+                print_r($result);
+        }
+
+        /**
+         * Services listing action.
+         * @param array $params
+         */
+        public function servicesAction($params = array())
+        {
+                $this->setOptions($params, 'services');
+                $result = $this->catalog->getDomains();
+                foreach ($result as $domain) {
+                        $this->flash->notice(sprintf("%s ->", $domain));
+                        foreach ($this->catalog->getServices($domain) as $service) {
+                                $this->flash->notice(sprintf("\t%s", $service->getName()));
+                        }
+                }
         }
 
         /**
@@ -122,7 +181,7 @@ class CatalogTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'groups', 'group', 'members', 'principal', 'attribute', 'domain', 'needle', 'search');
+                $options = array('verbose', 'groups', 'group', 'members', 'principal', 'attribute', 'domain', 'service', 'limit', 'needle', 'search', 'domains', 'services');
                 $current = $action;
 
                 // 
@@ -154,8 +213,6 @@ class CatalogTask extends MainTask implements TaskInterface
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
                 }
-
-                print_r($this->_options);
         }
 
 }
