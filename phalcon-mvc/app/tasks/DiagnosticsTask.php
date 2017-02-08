@@ -299,8 +299,6 @@ class DiagnosticsTask extends MainTask implements TaskInterface
                 if (is_bool($this->_options['online'])) {
                         $this->_options['online'] = '127.0.0.1';
                 }
-
-                print_r($this->_options);
         }
 
 }

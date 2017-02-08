@@ -79,8 +79,8 @@ class Database extends Component implements ServiceCheck
                         throw new Exception("The dbwrite config is missing");
                 }
 
-                $dbr = new OnlineStatus($this->config->dbread->host);
-                $dbw = new OnlineStatus($this->config->dbwrite->host);
+                $dbr = new OnlineStatus($this->config->dbread->config->host);
+                $dbw = new OnlineStatus($this->config->dbwrite->config->host);
 
                 if ($dbr->checkStatus()) {
                         $this->_result['dbread']['online'] = $dbr->getResult();
