@@ -13,17 +13,9 @@
 
 namespace OpenExam\Library\Database\Adapter;
 
-use OpenExam\Library\Core\Cache\Backend\Xcache as XcacheBackend;
+use OpenExam\Library\Database\Cache\Backend;
 use OpenExam\Library\Database\Cache\Mediator;
 use OpenExam\Library\Database\Exception;
-use Phalcon\Cache\Backend\Aerospike as AerospikeBackend;
-use Phalcon\Cache\Backend\Apc as ApcBackend;
-use Phalcon\Cache\Backend\Database as DatabaseBackend;
-use Phalcon\Cache\Backend\File as FileBackend;
-use Phalcon\Cache\Backend\Libmemcached as LibMemcachedBackend;
-use Phalcon\Cache\Backend\Memcache as MemcacheBackend;
-use Phalcon\Cache\Backend\Mongo as MongoBackend;
-use Phalcon\Cache\Backend\Redis as RedisBackend;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Cache\Frontend\Data as DataFrontend;
 use Phalcon\Config;
@@ -310,61 +302,33 @@ class Factory implements InjectionAwareInterface
          */
         private function setBackend()
         {
-                if (is_callable($this->_params->cache->backend)) {
-                        $this->_cache = call_user_func($this->_params->cache->backend);
-                        return;
-                }
+                // 
+                // Use dbcache service:
+                // 
                 if ($this->_di->has($this->_params->cache->backend)) {
                         $this->_cache = $this->_di->get($this->_params->cache->backend);
                         return;
                 }
 
-                $options = $this->_params->cache->options->toArray();
-                $backend = null;
-
-                if (isset($options['prefix'])) {
-                        $options['prefix'] = $this->_instance . '-' . $options['prefix'] . '-';
-                } else {
-                        $options['prefix'] = $this->_instance . '-';
+                // 
+                // Use user defined callback:
+                // 
+                if (is_callable($this->_params->cache->backend)) {
+                        $this->_cache = call_user_func($this->_params->cache->backend);
+                        return;
                 }
+
+                // 
+                // Use backend factory function:
+                // 
+                $options = $this->_params->cache->options->toArray();
+                $options['prefix'] = $this->_instance . '-' . $options['prefix'] . '-';
 
                 $frontend = new DataFrontend(array(
                         'lifetime' => $this->_params->cache->lifetime
                 ));
 
-                switch ($this->_params->cache->backend) {
-                        case 'xcache':
-                                $backend = new XcacheBackend($frontend, $options);
-                                break;
-                        case 'apc':
-                                $backend = new ApcBackend($frontend, $options);
-                                break;
-                        case 'redis':
-                                $backend = new RedisBackend($frontend, $options);
-                                break;
-                        case 'memcache':
-                                $backend = new MemcacheBackend($frontend, $options);
-                                break;
-                        case 'libmemcached':
-                                $backend = new LibMemcachedBackend($frontend, $options);
-                                break;
-                        case 'mongo':
-                                $backend = new MongoBackend($frontend, $options);
-                                break;
-                        case 'aerospike':
-                                $backend = new AerospikeBackend($frontend, $options);
-                                break;
-                        case 'database':
-                                $backend = new DatabaseBackend($frontend, $options);
-                                break;
-                        case 'file':
-                                $backend = new FileBackend($frontend, $options);
-                                break;
-                        default:
-                                throw new Exception(sprintf("Unsupported cache backend %s", $this->_params->cache->backend));
-                }
-
-                $this->_cache = $backend;
+                $this->_cache = Backend::create($this->_params->cache->backend, $frontend, $options);
         }
 
         /**

@@ -163,45 +163,14 @@ $di->set('dbcache', function() use($config) {
 
         if ($config->dbcache->upper) {
                 $options = $config->dbcache->upper->options->toArray();
-                $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
-
-                switch ($config->dbcache->upper->backend) {
-                        case 'aerospike':
-                                $upper = new \Phalcon\Cache\Backend\Aerospike($frontend, $options);
-                                break;
-                        case 'database':
-                                $upper = new \Phalcon\Cache\Backend\Database($frontend, $options);
-                                break;
-                        case 'file':
-                                $upper = new \Phalcon\Cache\Backend\File($frontend, $options);
-                                break;
-                        case 'libmemcached':
-                                $upper = new \Phalcon\Cache\Backend\Libmemcached($frontend, $options);
-                                break;
-                        case 'memcache':
-                                $upper = new \Phalcon\Cache\Backend\Memcache($frontend, $options);
-                                break;
-                        case 'mongo':
-                                $upper = new \Phalcon\Cache\Backend\Mongo($frontend, $options);
-                                break;
-                        case 'redis':
-                                $upper = new \Phalcon\Cache\Backend\Redis($frontend, $options);
-                                break;
-                }
+                $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';                
+                $upper = \OpenExam\Library\Database\Cache\Backend::create($config->dbcache->upper->backend, $frontend, $options);
         }
 
         if ($config->dbcache->lower) {
                 $options = $config->dbcache->lower->options->toArray();
                 $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
-
-                switch ($config->dbcache->lower->backend) {
-                        case 'xcache':
-                                $lower = new \OpenExam\Library\Core\Cache\Backend\Xcache($frontend, $options);
-                                break;
-                        case 'memcache':
-                                $lower = new \Phalcon\Cache\Backend\Apc($frontend, $options);
-                                break;
-                }
+                $lower = \OpenExam\Library\Database\Cache\Backend::create($config->dbcache->lower->backend, $frontend, $options);
         }
 
         if (isset($upper) && isset($lower)) {
