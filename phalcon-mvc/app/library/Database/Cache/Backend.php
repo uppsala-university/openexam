@@ -17,7 +17,14 @@ use Phalcon\Cache\BackendInterface;
 
 /**
  * The cache backend.
- *
+ * 
+ * Each database table has an index (i.e. isolated-adapter-cache-exams) that
+ * contains an array of cache keys containing result sets related to that 
+ * table. The index is modified upon calling delete() or save(). 
+ * 
+ * Calling delete() for an table is potential costly as it invalidates all
+ * result sets cached for that table based on its index.
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Backend
@@ -97,7 +104,7 @@ class Backend
          * 
          * @param string $keyName The cache key.
          * @param mixed $content The content to store in cache.
-         * @param string $tables The table name.
+         * @param array $tables The affected tables.
          */
         public function save($keyName, $content, $tables)
         {

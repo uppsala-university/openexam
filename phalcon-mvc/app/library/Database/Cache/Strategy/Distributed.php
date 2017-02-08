@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Database\Cache;
+namespace OpenExam\Library\Database\Cache\Strategy;
 
 use Phalcon\Cache\Backend;
 use Phalcon\Cache\BackendInterface;

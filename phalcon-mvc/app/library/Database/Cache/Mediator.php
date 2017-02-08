@@ -24,7 +24,7 @@ use Phalcon\Db as PhalconDb;
  * 
  * This class masquerades as an database adapter for the application and acts 
  * as a bridge between the real adapter and the cache. It takes care of cache 
- * invalidation and fetches quesry result sets from cache whenever possible.
+ * invalidation and fetches query result sets from cache whenever possible.
  * 
  * For greatest value, this class should be used with an deferred database 
  * adapter. In that case the number of database connections are keept to a
@@ -215,10 +215,12 @@ class Mediator extends Proxy
                 }
 
                 // 
-                // Save query result in cache:
+                // Save query result in cache. Result set used in model instantiation 
+                // must have keys matching the column mapping, thus all result sets
+                // except simple counters are fetched associative.
                 // 
                 if (is_object($data)) {
-                        
+
                         if (strncmp($sqlStatement, 'SELECT COUNT', 12) == 0) {
                                 $data->setFetchMode(PhalconDb::FETCH_BOTH);
                         } else {
