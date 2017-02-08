@@ -332,11 +332,11 @@ $config->merge(new Config(
 $config->merge(new Config(
     array(
         'database' => array(
-                'adapter'  => $config->dbwrite->adapter,
-                'host'     => $config->dbwrite->host,
-                'username' => $config->dbwrite->username,
-                'password' => $config->dbwrite->password,
-                'dbname'   => $config->dbwrite->dbname
+                'adapter'  => $config->dbwrite->config->adapter,
+                'host'     => $config->dbwrite->config->host,
+                'username' => $config->dbwrite->config->username,
+                'password' => $config->dbwrite->config->password,
+                'dbname'   => $config->dbwrite->config->dbname
         )
     )
 ));

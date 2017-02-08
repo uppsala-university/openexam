@@ -26,34 +26,87 @@ return array(
          * The write-only/master database connection (for load balancing).
          */
         'dbwrite'     => array(
-                'adapter'    => 'Mysql',
-                'host'       => 'localhost',
-                'username'   => 'openexam',
-                'password'   => '',
-                'dbname'     => 'openexam',
-                'persistent' => true   // Required for uniqueness validation
+                'config' => array(
+                        'adapter'    => 'Mysql',
+                        'host'       => 'localhost',
+                        'username'   => 'openexam',
+                        'password'   => '',
+                        'dbname'     => 'openexam',
+                        'persistent' => true   // Required for uniqueness validation
+                ),
+                'params' => array(
+                        'connect' => array(
+                                'retry'      => 3,
+                                'sleep'      => 1,
+                        ),
+                        'adapter' => array(
+                                'cached'     => true,
+                                'deferred'   => true                                
+                        ),
+                        'cache'   => array(
+                                'exclude' => array('answers'),
+                                'backend' => 'dbcache'  // Use the shared service                                
+                        )
+                )
         ),
         /**
          * The read-only/slave database connection (for load balancing).
          */
         'dbread'      => array(
-                'adapter'    => 'Mysql',
-                'host'       => 'localhost',
-                'username'   => 'openexam',
-                'password'   => '',
-                'dbname'     => 'openexam',
-                'persistent' => true   // Required for uniqueness validation
+                'config' => array(
+                        'adapter'    => 'Mysql',
+                        'host'       => 'localhost',
+                        'username'   => 'openexam',
+                        'password'   => '',
+                        'dbname'     => 'openexam',
+                        'persistent' => true   // Required for uniqueness validation
+                ),
+                'params' => array(
+                        'connect' => array(
+                                'retry'      => 3,
+                                'sleep'      => 1,
+                        ),
+                        'adapter' => array(
+                                'cached'     => true,
+                                'deferred'   => true                                
+                        ),
+                        'cache'   => array(
+                                'exclude' => array('answers'),
+                                'limits'  => array('min' => 1, 'max' => 20),
+                                'backend' => 'dbcache'  // Use the shared service                                
+                        )
+                )
         ),
         /**
          * The audit trail database connection (for model change tracking).
          */
         'dbaudit'      => array(
-                'adapter'    => 'Mysql',
-                'host'       => 'localhost',
-                'username'   => 'openexam',
-                'password'   => '',
-                'dbname'     => 'openexam',
-                'persistent' => true   // Required for uniqueness validation
+                'config' => array(
+                        'adapter'    => 'Mysql',
+                        'host'       => 'localhost',
+                        'username'   => 'openexam',
+                        'password'   => '',
+                        'dbname'     => 'openexam',
+                        'persistent' => true   // Required for uniqueness validation
+                ),
+                'params' => array(
+                        'connect' => array(
+                                'retry'      => 3,
+                                'sleep'      => 1,
+                        )                        
+                )
+        ),
+        /**
+         * Distributed or shared database adapter cache (see README-DATABASE):
+         */
+        'dbcache'     => array(
+                'lifetime' => 9200,
+                'lower' => array(
+                        'backend' => 'xcache',
+                        'options' => array(
+                                'prefix' => 'adapter-cache'
+                        )                        
+                )
         ),
         /**
          * User service configuration.

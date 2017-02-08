@@ -131,16 +131,89 @@ $di->set('flash', function() {
 });
 
 /**
- * Database connection is created based in the parameters defined in the configuration file
+ * Database connection is created based on the parameters defined in the configuration file.
  */
-$di->set('dbread', function() use ($config) {
-        return OpenExam\Library\Database\Adapter::create($config->dbread);
+$di->set('dbread', function() use ($config, $di) {
+        $factory = new \OpenExam\Library\Database\Adapter\Factory();
+        $factory->setConfig($config->dbread->config);
+        $factory->setParams($config->dbread->params);
+        $factory->setInstance($config->application->instance);
+        $factory->setDI($di);
+        return $factory->getAdapter();
 }, true);
-$di->set('dbwrite', function() use ($config) {
-        return OpenExam\Library\Database\Adapter::create($config->dbwrite);
+$di->set('dbwrite', function() use ($config, $di) {
+        $factory = new \OpenExam\Library\Database\Adapter\Factory();
+        $factory->setConfig($config->dbwrite->config);
+        $factory->setParams($config->dbwrite->params);
+        $factory->setInstance($config->application->instance);
+        $factory->setDI($di);
+        return $factory->getAdapter();
 }, true);
-$di->set('dbaudit', function() use ($config) {
-        return OpenExam\Library\Database\Adapter::create($config->dbaudit);
+$di->set('dbaudit', function() use ($config, $di) {
+        $factory = new \OpenExam\Library\Database\Adapter\Factory();
+        $factory->setConfig($config->dbaudit->config);
+        $factory->setParams($config->dbaudit->params);
+        $factory->setDI($di);
+        return $factory->getAdapter();
+}, true);
+$di->set('dbcache', function() use($config) {
+        $frontend = new \Phalcon\Cache\Frontend\Data(array(
+                'lifetime' => $config->dbcache->lifetime
+        ));
+
+        if ($config->dbcache->upper) {
+                $options = $config->dbcache->upper->options->toArray();
+                $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
+
+                switch ($config->dbcache->upper->backend) {
+                        case 'aerospike':
+                                $upper = new \Phalcon\Cache\Backend\Aerospike($frontend, $options);
+                                break;
+                        case 'database':
+                                $upper = new \Phalcon\Cache\Backend\Database($frontend, $options);
+                                break;
+                        case 'file':
+                                $upper = new \Phalcon\Cache\Backend\File($frontend, $options);
+                                break;
+                        case 'libmemcached':
+                                $upper = new \Phalcon\Cache\Backend\Libmemcached($frontend, $options);
+                                break;
+                        case 'memcache':
+                                $upper = new \Phalcon\Cache\Backend\Memcache($frontend, $options);
+                                break;
+                        case 'mongo':
+                                $upper = new \Phalcon\Cache\Backend\Mongo($frontend, $options);
+                                break;
+                        case 'redis':
+                                $upper = new \Phalcon\Cache\Backend\Redis($frontend, $options);
+                                break;
+                }
+        }
+
+        if ($config->dbcache->lower) {
+                $options = $config->dbcache->lower->options->toArray();
+                $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
+
+                switch ($config->dbcache->lower->backend) {
+                        case 'xcache':
+                                $lower = new \OpenExam\Library\Core\Cache\Backend\Xcache($frontend, $options);
+                                break;
+                        case 'memcache':
+                                $lower = new \Phalcon\Cache\Backend\Apc($frontend, $options);
+                                break;
+                }
+        }
+
+        if (isset($upper) && isset($lower)) {
+                $distributed = new \OpenExam\Library\Database\Cache\Distributed($frontend);
+                $distributed->setUpperBackend($upper);
+                $distributed->setLowerBackend($lower);
+                return $distributed;
+        } elseif (isset($upper)) {
+                return $upper;
+        } elseif (isset($lower)) {
+                return $lower;
+        }
 }, true);
 
 /**

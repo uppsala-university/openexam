@@ -14,45 +14,6 @@
         * Oracle
         * Sqlite.
 
-** CONFIGURATION:
-
-   The database connection (dbread and dbwrite) is configured in app/config/config.def. 
-   Connection parameters are either defined using separate parameters or using an DSN:
-
-        //
-        // Using separate parameters:
-        // 
-        'dbwrite' => array(
-                'adapter'  => 'Mysql',
-                'host'     => 'localhost',
-                'username' => 'openexam',
-                'password' => 'secret',
-                'dbname'   => 'openexam'
-        ),
-
-        //
-        // Using DSN:
-        // 
-        'dbwrite' => array(
-                'dns'      => 'mysql:unix_socket=/var/run/mysqld/mysqld.sock;dbname=openexam;charset=utf8;',
-                'username' => 'openexam',
-                'password' => 'secret',
-        ),
-
-    Database connection are defined to fail on first connection error. It's possible 
-    to configure retry behavior by enabling these options (same setting can be used on 
-    all dbxxx):
-        
-        // 
-        // Retry options:
-        // 
-        'dbread' => array(
-                    ...
-                'connect' => true,      // mandatory for retry
-                'retry' => 6,           // optional (default to 5)
-                'sleep' => 1            // optional (default to 2)
-        )
-
 ** INSTALLATION:
 
    Installation is either done using the SQL-script (MySQL only) or using the Phalcon Developer 
@@ -78,11 +39,272 @@
 
 ** UPGRADE:
 
-   The procedure is the same when installing the database using phalcon/devtools.
+   The procedure is the same when installing the database using phalcon/devtools. Notice 
+   that database field type (i.e. enum) gets lost when migrating the database using the 
+   devtools!
 
 ** MORE INFORMATION:
 
    See http://php.net/manual/en/pdo.drivers.php for DSN examples.
+
+** CONFIGURATION:
+
+   The database connection (dbread and dbwrite) is configured in app/config/config.def. 
+   Connection parameters are either defined using separate parameters or using an DSN:
+
+        //
+        // Using separate parameters:
+        // 
+        'dbwrite' => array(
+                'config' => array(
+                        'adapter'  => 'Mysql',
+                        'host'     => 'localhost',
+                        'username' => 'openexam',
+                        'password' => 'secret',
+                        'dbname'   => 'openexam'
+                )
+        ),
+
+        //
+        // Using DSN:
+        // 
+        'dbwrite' => array(
+                'config' => array(
+                    'dns'      => 'mysql:unix_socket=/var/run/mysqld/mysqld.sock;dbname=openexam;charset=utf8;',
+                    'username' => 'openexam',
+                    'password' => 'secret',
+                )
+        ),
+
+    o) RETRY:
+
+    Database connection are defined to fail on first connection error. It's possible 
+    to configure retry behavior by enabling these options (same setting can be used on 
+    all dbxxx):
+        
+        // 
+        // Retry options:
+        // 
+        'dbread' => array(
+                    ...
+                'params' => array(
+                        'connect' => array(
+                                'retry'      => 4,
+                                'sleep'      => 2,
+                        ),
+                    ...
+                )
+        )
+
+    o) ON-DEMAND CONNECTION:
+
+    Database connection can be deferred until really needed by using the deferred option:
+
+        'dbread' => array(
+                    ...
+                'params' => array(
+                    ...
+                        'adapter' => array(
+                                    ...
+                                'deferred'   => true    // Open connection on-demand  
+                        )
+                )
+        )
+
+    This is useful when caching is enabled. If the result set can be fetched from cache,
+    then no database connection is opened. This helps keep the number of needed connection
+    low, leaving memory for web server processes instead.
+
+    o) CACHE:
+
+    Query cache can be configured per database connection. Its recommended to disable audit 
+    database cache and exclude the answers table from caching (enabled by default).
+
+        // 
+        // Cache options:
+        // 
+        'dbread' => array(
+                    ...
+                'params' => array(
+                    ...
+                        'adapter' => array(
+                                    ...
+                                'cached'     => true,   // Cached database adapter
+                        ),                        
+                        'cache'   => array(
+                                'exclude' => array('answers'),
+                                'limits'  => array('min' => 1, 'max' => 25),
+                                'backend' => 'xcache',
+                                'options' => array(
+                                        'prefix' => 'adapter-cache'
+                                )
+                        )
+                )
+
+    Use the cached option to create a database adapter with cache first/database then 
+    behavior. This means that cache is the primary data source, with cache invalidation 
+    on write.
+
+    The deferred option creates an database adapter that is unconnected until used in
+    first read/write operation. Default behavior in Phalcon is otherwise to connect when
+    during adapter construction.
+
+    The limit is minimum and maximum number of records in result set. Use 0 to disable
+    the an limit (i.e. min = max = 0 => cache all result set).
+
+    Supported backends are: xcache, apc, memcache and redis. If using multiple web servers
+    in a distributed system setup, use memcache or redis:
+
+                    ...
+                        'cache'   => array(
+                                    ...
+                                'backend' => 'redis',
+                                'options' => array(
+                                        'host' => 'server.example.com',
+                                        'port' => 6379,
+                                        'auth' => 'supersecret',
+                                        'persistent' => false
+                                        'index' => 0,
+                                )
+                        )
+                    ...
+
+    It's also possible to use the distributed/shared cache (configured by dbcache). Options 
+    are set in config.def and uses the dbcache service:
+
+        // 
+        // Cache options:
+        // 
+        'dbread' => array(
+                    ...
+                'params' => array(
+                    ...
+                        'adapter' => array(
+                                'cached'     => true,
+                                'deferred'   => true                                
+                        ),                        
+                        'cache'   => array(
+                                'exclude' => array('answers'),
+                                'backend' => 'dbcache'  // Use the shared service
+                        )
+                )   
+     )
+
+    Defines both the upper and lower backend to get distributed cache consisting of a network 
+    cache combined with a local cache. If either upper or lower backend is defined, then the 
+    service creates a shared cache (system local or networked).
+
+    Defining a distributed cache is probably most interesting if the cache needs to be slit 
+    among different physical locations. In a distributed system within a single organization, 
+    its probably better to use redis or memcache.
+
+    Need a more complex caching strategy? Consider modify the config/system/services.php to 
+    set your own cache object:
+
+            $di->set('dbread', function() use ($config, $di) {
+                    $backend = new MyComplexCache($config);
+                    $factory = new \OpenExam\Library\Database\Adapter\Factory();
+                    $factory->setCache(backend);
+                        ...
+                    return $factory->getAdapter();
+            }, true);
+            
+    Your custom class (MyComplexCache) needs to implement the exists(), get(), save()
+    and delete() methods from Phalcon\Cache\BackendInterface
+
+    o) EXAMPLES:
+
+    These examples should serve as a guideline when configure caching. You should run some
+    test and measure real world performance.
+
+        1. Single web server:
+
+            'dbread'      => array(
+                    'config' => array(
+                        ...
+                    ),
+                    'params' => array(
+                                ...
+                            'adapter' => array(
+                                    'cached'     => true,
+                                    'deferred'   => true                                
+                            ),                        
+                            'cache'   => array(
+                                    'exclude' => array('answers'),
+                                    'backend' => 'xcache',
+                                    'options' => array(
+                                            'prefix' => 'adapter-cache'
+                                    )
+                           )
+                    )
+            ),
+
+        2. Multiple web server in same physical location:
+
+            'dbread'      => array(
+                    'config' => array(
+                        ...
+                    ),
+                    'params' => array(
+                                ...
+                            'adapter' => array(
+                                    'cached'     => true,
+                                    'deferred'   => true                                
+                            ),                        
+                            'cache'   => array(
+                                    'lifetime' => 7200,
+                                    'backend'  => 'redis',
+                                    'options'  => array(
+                                                 'host' => 'redis.example.com',
+                                                 'port' => 6379,
+                                                 'persistent' => false,
+                                                 'index' => 0,                                        
+                                                 'prefix' => 'adapter-cache'
+                                    )
+                            )
+                    )
+            ),
+
+        3. Multiple web server in different physical locations:
+
+            'dbread'      => array(
+                    'config' => array(
+                        ...
+                    ),
+                    'params' => array(
+                                ...
+                            'adapter' => array(
+                                    'cached'     => true,
+                                    'deferred'   => true                                
+                            ),                        
+                            'cache'   => array(
+                                    'lifetime' => 7200,
+                                    'backend'  => 'dbcache'
+                            )
+                    )
+            ),
+            'dbcache'     => array(
+                    'lifetime' => 9200,
+                    'upper' => array(
+                            'backend' => 'redis',
+                            'options' => array(
+                                         'host' => 'redis.example.com',
+                                         'port' => 6379,
+                                         'persistent' => false,
+                                         'index' => 0,                                        
+                                         'prefix' => 'adapter-cache'
+                            )                        
+                    ),
+                    'lower' => array(
+                            'backend' => 'xcache',
+                            'options' => array(
+                                    'prefix' => 'adapter-cache'
+                            )                        
+                    )
+            )
+
+    Other options are of course to setup redis in some location aware setup and use a 
+    special cache service, but its out of scope in this documentation.
 
 
 // Anders Lövgren, 2014-08-25
