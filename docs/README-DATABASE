@@ -143,7 +143,8 @@
 
     Use the cached option to create a database adapter with cache first/database then 
     behavior. This means that cache is the primary data source, with cache invalidation 
-    on write.
+    on write (create, update and delete on table). This gives an aggressive cache policy
+    that should be combined with using a deferred database adapter.
 
     The deferred option creates an database adapter that is unconnected until used in
     first read/write operation. Default behavior in Phalcon is otherwise to connect when
