@@ -13,6 +13,8 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Database\Adapter\Deferred\DeferredAdapter;
+use OpenExam\Library\Database\Cache\Mediator;
 use OpenExam\Library\Model\Audit\Audit;
 use OpenExam\Library\Model\Audit\History;
 use OpenExam\Library\Model\Filter;
@@ -295,8 +297,24 @@ class ModelBase extends Model
          * @param ModelInterface[] $related
          * @return bool 
          */
-        protected function _preSaveRelatedRecords(AdapterInterface $connection, $related)
+        protected function _preSaveRelatedRecords($connection, $related)
         {
+                // 
+                // Get database adapter if using cache mediator:
+                // 
+                if ($connection instanceof Mediator) {
+                        $adapter = $connection->getAdapter();
+                } else {
+                        $adapter = $connection;
+                }
+
+                // 
+                // Get underlying adapter from deferred:
+                // 
+                if ($adapter instanceof DeferredAdapter) {
+                        $adapter = $adapter->getAdapter();
+                }
+
                 // 
                 // Only perform access control on the master record. Bypass
                 // ACL for related records using the system role.
@@ -304,18 +322,18 @@ class ModelBase extends Model
                 $user = $this->getDI()->get('user');
                 $role = $user->setPrimaryRole(Roles::SYSTEM);
 
-                $txlevel = $connection->getTransactionLevel();
+                $txlevel = $adapter->getTransactionLevel();
 
                 try {
-                        if (($result = parent::_preSaveRelatedRecords($connection, $related))) {
+                        if (($result = parent::_preSaveRelatedRecords($adapter, $related))) {
                                 $this->_related = null;
                         } else {
                                 $this->_related = $related;
                         }
                 } catch (\Exception $exception) {
-                        while ($connection->getTransactionLevel() > $txlevel) {
+                        while ($adapter->getTransactionLevel() > $txlevel) {
                                 try {
-                                        $connection->rollback();
+                                        $adapter->rollback();
                                 } catch (\PDOException $e) {
                                         // ignore
                                 }
