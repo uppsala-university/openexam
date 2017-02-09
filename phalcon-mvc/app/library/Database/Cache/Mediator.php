@@ -13,11 +13,11 @@
 
 namespace OpenExam\Library\Database\Cache;
 
+use OpenExam\Library\Database\Cache\Result\Serializable as SerializableResultSet;
 use Phalcon\Cache\BackendInterface;
-use Phalcon\Db\AdapterInterface;
-use Phalcon\Db\Result\Serializable as SerializableResultSet;
-use Phalcon\Kernel as PhalconKernel;
 use Phalcon\Db as PhalconDb;
+use Phalcon\Db\AdapterInterface;
+use Phalcon\Kernel as PhalconKernel;
 
 /**
  * Mediator for cached database adapters.
