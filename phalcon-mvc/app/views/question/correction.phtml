@@ -188,20 +188,32 @@ if ($exam->decoded) {
                     <tbody>
                         <?php foreach ($students as $student): ?>
                                 <tr>
-                                    <?php if ($student->answers->count() == 0) continue; ?>
+                                    <?php
+                                    // 
+                                    // Create an answer lookup table:
+                                    // 
+                                    $studans = $student->answers;
+                                    $answers = array();
+                                    if ($studans->count() == 0) {
+                                            continue;
+                                    }
+                                    foreach ($studans as $a) {
+                                            $answers[$a->question_id] = $a;
+                                    }
+
+                                    ?>
 
                                     <?php $totalStudentScore = 0; ?>
                                     <?php
                                     foreach ($questions as $question):
 
-                                            //$totalPoints += $question->score;
-                                            $result = NULL;
+                                            $result = null;
                                             $qScore = 0;
-                                            $answer = $question->getAnswers("student_id = '" . $student->id . "'");
-                                            if ($answered = $answer->count()) :
+                                            $answer = isset($answers[$question->id]) ? $answers[$question->id] : false;
+                                            if ($answer) {
 
-                                                    $result = $answer->getFirst()->getResult();
-                                                    if (is_object($result) && $result->count()) :
+                                                    $result = $answer->result;
+                                                    if (is_object($result) && $result->count()) {
 
                                                             foreach (json_decode($result->score, true) as $part => $score):
                                                                     $qScore+=$score;
@@ -213,10 +225,9 @@ if ($exam->decoded) {
 
                                                             $totalStudentScore+=$qScore;
                                                             $overallQuestScore[$question->id][] = $qScore;
-                                                    endif;
-                                            endif;
+                                                    }
+                                            }
 
-                                            // get corrector list
                                             $qCorrectorList = array();
                                             foreach ($question->getCorrectors() as $qCorrector) :
                                                     $qCorrectorList[] = $qCorrector->user;
@@ -227,7 +238,7 @@ if ($exam->decoded) {
                                             <?php
                                             // find color code
                                             $cLink = true;
-                                            if (!$answered) {
+                                            if (!$answer) {
                                                     $cc = 'na';
                                                     $cLink = false;
                                             } elseif (is_object($result) && $result->count() && in_array($result->correction, array('completed', 'finalized'))) {
@@ -241,8 +252,8 @@ if ($exam->decoded) {
                                             ?>
                                             <td class="cc <?= $cc ?>">
                                                 <?php if ($cLink): ?>
-                                                        <a class="fb fancybox.ajax fill" ans-id="<?= $answer->getFirst()->id ?>" 
-                                                           href="<?= $this->url->get('exam/' . $exam->id . '/correction/answer/' . $answer->getFirst()->id) ?>">
+                                                        <a class="fb fancybox.ajax fill" ans-id="<?= $answer->id ?>" 
+                                                           href="<?= $this->url->get('exam/' . $exam->id . '/correction/answer/' . $answer->id) ?>">
                                                                <?= (is_object($result) && $result->count()) ? $qScore : '<i class="fa fa-check-square-o"></i>' ?>
                                                         </a>
                                                 <?php else: ?>
@@ -285,7 +296,7 @@ if ($exam->decoded) {
                                             <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
                                                 <?= $totalStudentScore ?>
                                                 <?php
-                                                if ($answered):
+                                                if ($answer):
                                                         $avgScore[] = $totalStudentScore;
                                                 endif;
 
@@ -294,7 +305,7 @@ if ($exam->decoded) {
                                             <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
                                                 <?= sprintf("%1.1f", ($totalStudentScore / $totalExamScore) * 100) ?>%
                                                 <?php
-                                                if ($answered):
+                                                if ($answer):
                                                         $avgPercentage[] = sprintf("%1.1f", ($totalStudentScore / $totalExamScore) * 100);
                                                 endif;
 
