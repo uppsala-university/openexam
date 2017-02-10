@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenExam\Library\Render;
+namespace OpenExam\Library\Render\Extension;
 
 use OpenExam\Tests\Phalcon\TestCase;
 
@@ -78,7 +78,7 @@ class RenderImageTest extends TestCase
                 // 
 
                 $globals = array(
-                        'in'           => 'index.html',
+                        'in'           => '../index.html',
                         'imageQuality' => '95'
                 );
 

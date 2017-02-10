@@ -27,7 +27,8 @@ class RenderServiceTest extends TestCase
          */
         protected function setUp()
         {
-                $this->_object = new RenderService;
+                $this->_object = new RenderService();
+                $this->_object->setMethod('command');
         }
 
         /**
@@ -50,7 +51,7 @@ class RenderServiceTest extends TestCase
                 // 
                 $render1 = $this->_object->getRender(Renderer::FORMAT_PDF);
                 self::assertNotNull($render1);
-                self::assertEquals(get_class($render1), __NAMESPACE__ . '\\RenderPdfDocument');
+                self::assertEquals(get_class($render1), __NAMESPACE__ . '\\Command\\RenderPdfDocument');
 
                 // 
                 // Test that same object is returned:
@@ -63,7 +64,7 @@ class RenderServiceTest extends TestCase
                 // 
                 $render1 = $this->_object->getRender(Renderer::FORMAT_IMAGE);
                 self::assertNotNull($render1);
-                self::assertEquals(get_class($render1), __NAMESPACE__ . '\\RenderImage');
+                self::assertEquals(get_class($render1), __NAMESPACE__ . '\\Command\\RenderImage');
 
                 // 
                 // Test that same object is returned:

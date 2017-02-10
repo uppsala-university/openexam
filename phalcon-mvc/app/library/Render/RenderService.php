@@ -27,6 +27,43 @@ class RenderService extends Component
          * @var Renderer[] 
          */
         private $_render = array();
+        private $_method;
+
+        /**
+         * Constructor.
+         * @param string $method The render method (command or extension).
+         */
+        public function __construct($method = null)
+        {
+                if (isset($method)) {
+                        $this->_method = $method;
+                } else {
+                        $this->_method = $this->config->render->method;
+                }
+        }
+
+        /**
+         * Set render method.
+         * @param string $method The render method (command or extension).
+         */
+        public function setMethod($method)
+        {
+                foreach ($this->_render as $render) {
+                        unset($render);
+                }
+
+                $this->_render = array();
+                $this->_method = $method;
+        }
+
+        /**
+         * Get render method.
+         * @return string
+         */
+        public function getMethod()
+        {
+                return $this->_method;
+        }
 
         /**
          * Get render object for type.
@@ -67,7 +104,7 @@ class RenderService extends Component
                                 );
                         } else {
                                 return new Extension\RenderImage(
-                                    $this->config->render->command->image
+                                    $this->config->render->extension->image
                                 );
                         }
                 } elseif ($type == \OpenExam\Library\Render\Renderer::FORMAT_PDF) {
@@ -77,7 +114,7 @@ class RenderService extends Component
                                 );
                         } else {
                                 return new Extension\RenderPdfDocument(
-                                    $this->config->render->command->pdf
+                                    $this->config->render->extension->pdf
                                 );
                         }
                 } else {

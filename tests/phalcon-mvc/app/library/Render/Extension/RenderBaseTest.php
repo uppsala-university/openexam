@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenExam\Library\Render;
+namespace OpenExam\Library\Render\Extension;
 
 use OpenExam\Tests\Phalcon\TestCase;
 
@@ -31,7 +31,7 @@ class RenderBaseTest extends TestCase
                         'md5'  => 'b1242ce26730c72c91725e06adeb6cdc',
                         'size' => 1863147,
                         'mime' => 'image/png',
-                        'type' => 'PNG image data, 1024 x 454, 8-bit/color RGBA, non-interlaced'
+                        'type' => 'PNG image data, 1024 x 459, 8-bit/color RGBA, non-interlaced'
                 ),
                 'jpeg'   => array(
                         'md5'  => 'ed78c0ca0257a6a64c51c6b6e2ba7e5d',
@@ -43,7 +43,7 @@ class RenderBaseTest extends TestCase
                         'md5'  => 'ef46e21c679eb9d63d62368f13eae714',
                         'size' => 1394742,
                         'mime' => 'image/x-ms-bmp',
-                        'type' => 'PC bitmap, Windows 3.x format, 1024 x 454 x 24'
+                        'type' => 'PC bitmap, Windows 3.x format, 1024 x 459 x 24'
                 ),
                 'svg'    => array(
                         'md5'  => '153131d44c1e4aaa94801bce150ff2ab',
@@ -138,7 +138,7 @@ class RenderBaseTest extends TestCase
                 // Test image rendering:
                 // 
                 $globals = array(
-                        'in'           => 'index.html',
+                        'in'           => '../index.html',
                         'imageQuality' => '95'
                 );
 
@@ -173,7 +173,7 @@ class RenderBaseTest extends TestCase
                         'imageQuality' => '95'
                 );
                 $objects = array(
-                        array('page' => 'index.html')
+                        array('page' => '../index.html')
                 );
 
                 foreach (array('pdf') as $type) {

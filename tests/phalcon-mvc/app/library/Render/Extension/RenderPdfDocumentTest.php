@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenExam\Library\Render;
+namespace OpenExam\Library\Render\Extension;
 
 use OpenExam\Tests\Phalcon\TestCase;
 
@@ -55,7 +55,7 @@ class RenderPdfDocumentTest extends TestCase
          */
         public function testSave()
         {
-                $objects = array(array('page' => 'index.html'));
+                $objects = array(array('page' => '../index.html'));
                 $filename = sprintf("%s/render-pdf-document-test.pdf", sys_get_temp_dir());
 
                 self::assertTrue($this->_object->save($filename, $objects));
