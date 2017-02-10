@@ -84,7 +84,8 @@ class User extends Component
                 $this->_injected = $roles;
 
                 if (isset($user)) {
-                        if ($this->config->user->normalizer) {
+                        if (isset($this->config->user->normalizer) &&
+                            is_callable($this->config->user->normalizer)) {
                                 $user = call_user_func($this->config->user->normalizer, $user);
                         }
 
