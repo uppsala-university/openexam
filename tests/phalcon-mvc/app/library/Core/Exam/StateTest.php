@@ -3,6 +3,7 @@
 namespace OpenExam\Library\Core\Exam;
 
 use OpenExam\Models\Answer;
+use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Question;
 use OpenExam\Models\Result;
@@ -130,7 +131,7 @@ class StateTest extends TestCase
         private function addCorrector()
         {
                 self::$_data['corrector']['question_id'] = $this->question->id;
-                $this->corrector = new \OpenExam\Models\Corrector();
+                $this->corrector = new Corrector();
                 $this->corrector->create(self::$_data['corrector']);
         }
 
