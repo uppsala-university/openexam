@@ -23,6 +23,24 @@ $config = include(CONFIG_PHP);
 $loader = include(CONFIG_SYS . "/loader.php");
 
 // 
+// Set error reporting:
+// 
+if ($config->application->release) {
+        error_reporting(E_ALL ^ E_NOTICE & ~E_DEPRECATED ^ E_STRICT);
+        ini_set('display_errors', 0);
+} else {
+        error_reporting(E_ALL | E_STRICT);
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+}
+
+// 
+// Disable database caching:
+// 
+//$config->dbread->params->adapter->cached = false;
+//$config->dbwrite->params->adapter->cached = false;
+
+// 
 // Add namespace for tasks:
 // 
 $loader->registerNamespaces(

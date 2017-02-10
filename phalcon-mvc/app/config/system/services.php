@@ -60,7 +60,7 @@ $di->set('modelsMetadata', function() use($config) {
                         }
                 }
         }
-        if ($config->application->instance) {
+        if (isset($config->application->instance)) {
                 $config->metadata->prefix = $config->application->instance . '-';
         }
         if (!isset($config->metadata->type)) {
@@ -160,7 +160,7 @@ $di->set('dbcache', function() use($config) {
         $frontend = new \Phalcon\Cache\Frontend\Data(array(
                 'lifetime' => $config->dbcache->lifetime
         ));
-
+        
         if ($config->dbcache->upper) {
                 $options = $config->dbcache->upper->options->toArray();
                 $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';                
@@ -173,7 +173,7 @@ $di->set('dbcache', function() use($config) {
                 $lower = \OpenExam\Library\Database\Cache\Backend::create($config->dbcache->lower->backend, $frontend, $options);
         }
 
-        if (isset($upper) && isset($lower)) {
+        if (($upper) && isset($lower)) {
                 $distributed = new \OpenExam\Library\Database\Cache\Strategy\Distributed($frontend);
                 $distributed->setUpperBackend($upper);
                 $distributed->setLowerBackend($lower);
