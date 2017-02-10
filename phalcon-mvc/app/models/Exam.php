@@ -345,7 +345,7 @@ class Exam extends ModelBase
                     array(
                         "field"   => "creator",
                         "message" => "The username '$this->creator' is not matching expected format",
-                        "pattern" => Pattern::USER
+                        "pattern" => Pattern::get(Pattern::MATCH_USER)
                     )
                 ));
                 if ($this->validationHasFailed() == true) {

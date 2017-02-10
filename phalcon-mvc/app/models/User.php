@@ -129,7 +129,7 @@ class User extends ModelBase
                     array(
                         "field"   => "principal",
                         "message" => "The username '$this->principal' is not matching expected format",
-                        "pattern" => Pattern::USER
+                        "pattern" => Pattern::get(Pattern::MATCH_USER)
                     )
                 ));
 

@@ -20,7 +20,7 @@ class PatternTest extends TestCase
         public function testPatternAny()
         {
                 $string = sprintf("%c%c", chr(10), chr(13));    // telnet newline
-                self::assertEquals(1, preg_match(Pattern::ANY, $string));
+                self::assertEquals(1, preg_match(Pattern::REGEX_ANY, $string));
         }
 
         /**
@@ -34,10 +34,10 @@ class PatternTest extends TestCase
                         "a" => 0
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::NOTHING, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_NOTHING, $string), $string);
                 }
 
-                self::assertEquals(1, preg_match(Pattern::NOTHING, null));
+                self::assertEquals(1, preg_match(Pattern::REGEX_NOTHING, null));
         }
 
         /**
@@ -55,7 +55,7 @@ class PatternTest extends TestCase
                         "afp://www.example.com"   => 0,
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::URL, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_URL, $string), $string);
                 }
         }
 
@@ -79,7 +79,7 @@ class PatternTest extends TestCase
                         "abc"  => 0
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::FLOAT, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_FLOAT, $string), $string);
                 }
         }
 
@@ -96,7 +96,7 @@ class PatternTest extends TestCase
                         "a"   => 0
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::INDEX, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_INDEX, $string), $string);
                 }
         }
 
@@ -122,7 +122,7 @@ class PatternTest extends TestCase
                         "1.5 poäng" => 1,
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::SCORE, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_SCORE, $string), $string);
                 }
         }
 
@@ -142,7 +142,7 @@ class PatternTest extends TestCase
                         "text with number 123" => 1
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::MULTI_LINE_TEXT, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_MULTI_LINE_TEXT, $string), $string);
                 }
         }
 
@@ -157,7 +157,7 @@ class PatternTest extends TestCase
                         "text with number 123" => 1
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::SINGLE_LINE_TEXT, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_SINGLE_LINE_TEXT, $string), $string);
                 }
         }
 
@@ -179,7 +179,7 @@ class PatternTest extends TestCase
                         "user\name@server.example.com" => 0,
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::USER, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_USER, $string), $string);
                 }
         }
 
@@ -196,7 +196,7 @@ class PatternTest extends TestCase
                         "1234567890ABCDEF" => 0, // Max length exceeded
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::CODE, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_CODE, $string), $string);
                 }
         }
 
@@ -211,11 +211,11 @@ class PatternTest extends TestCase
                         "Adam Bertilsson-Götlind" => 1,
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::NAME, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_NAME, $string), $string);
                 }
 
                 $string = sprintf("Adam Bertilsson-Götlind%c", chr(10));
-                self::assertEquals(0, preg_match(Pattern::NAME, $string), $string);
+                self::assertEquals(0, preg_match(Pattern::REGEX_NAME, $string), $string);
         }
 
         /**
@@ -234,7 +234,7 @@ class PatternTest extends TestCase
                         "20051231-1234" => 1,
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::PERSNR, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_PERSNR, $string), $string);
                 }
         }
 
@@ -255,7 +255,7 @@ class PatternTest extends TestCase
                         "UPPDOK - 3FV271 ABCDE" => 0, // Max length exceeded
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::COURSE, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_COURSE, $string), $string);
                 }
         }
 
@@ -274,7 +274,7 @@ class PatternTest extends TestCase
                         "AB20" => 0,
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::YEAR, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_YEAR, $string), $string);
                 }
         }
 
@@ -290,8 +290,58 @@ class PatternTest extends TestCase
                         "3" => 0,
                 );
                 foreach ($strings as $string => $expect) {
-                        self::assertEquals($expect, preg_match(Pattern::TERMIN, $string), $string);
+                        self::assertEquals($expect, preg_match(Pattern::REGEX_TERMIN, $string), $string);
                 }
+        }
+
+        /**
+         * Test get function.
+         * @group core
+         */
+        public function testGet()
+        {
+                $expect = Pattern::REGEX_USER;
+                $actual = Pattern::get(Pattern::MATCH_USER);
+                
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+        }
+
+        /**
+         * Test set function.
+         * @group core
+         */
+        public function testSet()
+        {
+                $expect = "user1";
+                Pattern::set(Pattern::MATCH_USER, $expect);
+                $actual = Pattern::get(Pattern::MATCH_USER);
+                
+                self::assertNotNull($actual);
+                self::assertEquals($expect, $actual);
+        }
+
+        /**
+         * Test match function.
+         * @group core
+         */
+        public function testMatch()
+        {
+                $matches = array();
+                
+                $expect = false;
+                $actual = Pattern::match(Pattern::MATCH_YEAR, 1.0, $matches);
+                
+                self::assertNotNull($actual);
+                self::assertTrue(is_bool($actual));
+                self::assertEquals($expect, $actual);
+                
+                $expect = true;
+                $actual = Pattern::match(Pattern::MATCH_YEAR, 2017, $matches);
+                
+                self::assertNotNull($actual);
+                self::assertTrue(is_bool($actual));
+                self::assertEquals($expect, $actual);
         }
 
 }

@@ -48,7 +48,7 @@ class Student extends ModelBehavior
                         // Lookup username from personal number:
                         // 
                         if ($options['user']) {
-                                if (preg_match(Pattern::PERSNR, $model->user, $matched)) {
+                                if (Pattern::match(Pattern::MATCH_PERSNR, $model->user, $matched)) {
                                         if (strlen($matched[1]) == 6) {   // short year
                                                 if (date('y') < substr($matched[1], 0, 2)) {
                                                         $matched[1] = 19 . $matched[1];

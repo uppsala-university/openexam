@@ -161,7 +161,7 @@ class Student extends Role
                     array(
                         "field"   => "code",
                         "message" => "The anonymous code '$this->code' is not matching expected format",
-                        "pattern" => Pattern::CODE
+                        "pattern" => Pattern::get(Pattern::MATCH_CODE)
                     )
                 ));
 

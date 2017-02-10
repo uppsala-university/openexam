@@ -87,7 +87,7 @@ class Role extends ModelBase
                     array(
                         "field"   => "user",
                         "message" => "The username '$this->user' is not matching expected format",
-                        "pattern" => Pattern::USER
+                        "pattern" => Pattern::get(Pattern::MATCH_USER)
                     )
                 ));
 
