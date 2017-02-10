@@ -178,6 +178,15 @@ class Cache extends Multiple
         }
 
         /**
+         * Get cache backends.
+         * @return array
+         */
+        public function getBackends()
+        {
+                return $this->_backends;
+        }
+
+        /**
          * Decode cache data.
          * @param mixed $data The data to decode.
          * @return mixed
