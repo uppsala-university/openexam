@@ -309,6 +309,10 @@ $config = new Config(
                         )
                 )
         ),
+        /**
+         * Database cache is recommended, but disabled by default.
+         */
+        'dbcache'     => false,
         /*
          * System performance profiler config. 
          */
