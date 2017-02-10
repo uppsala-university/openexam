@@ -101,6 +101,16 @@ return array(
          */
         'dbcache'     => array(
                 'lifetime' => 9200,
+                'upper' => array(
+                        'backend' => 'redis',
+                        'options' => array(
+                                'host'       => 'localhost',
+                                'port'       => 6379,
+                                'persistent' => false,
+                                'index'      => 0,                                        
+                                'prefix'     => 'adapter-cache'
+                        )
+                ),
                 'lower' => array(
                         'backend' => 'xcache',
                         'options' => array(
