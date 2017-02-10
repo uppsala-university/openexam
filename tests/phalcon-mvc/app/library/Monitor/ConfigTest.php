@@ -2,10 +2,12 @@
 
 namespace OpenExam\Library\Monitor;
 
+use OpenExam\Tests\Phalcon\TestCase;
+
 /**
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends TestCase
 {
 
         /**
