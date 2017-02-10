@@ -21,14 +21,14 @@
  */
 ini_set('display_errors', 1);
 ini_set("memory_limit", "1536M");
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_STRICT);
 
 // 
 // Configure for running unit test:
 // 
 define('VALIDATION_SKIP_UNIQUENESS_CHECK', true);
 define('MODEL_ALWAYS_USE_MASTER_CONNECTION', true);
-define('CONFIG_PHP', __DIR__ . '/../../phalcon-mvc/app/config/system/config.php');
+define('CONFIG_PHP', realpath(__DIR__ . '/../../phalcon-mvc/app/config/system/config.php'));
 
 // 
 // Include the standard system configuration:
@@ -36,12 +36,20 @@ define('CONFIG_PHP', __DIR__ . '/../../phalcon-mvc/app/config/system/config.php'
 $config = include(CONFIG_PHP);
 
 // 
-// Disable caching:
+// Disable generic caching:
 // 
 $config->cache->enable->xcache = false;
 $config->cache->enable->apc = false;
 $config->cache->enable->memcache = false;
 $config->cache->enable->file = false;
+
+// 
+// Disable database caching:
+// 
+$config->dbread->params->adapter->cached = false;
+$config->dbread->params->adapter->deferred = false;
+$config->dbwrite->params->adapter->cached = false;
+$config->dbwrite->params->adapter->deferred = false;
 
 // 
 // Disable audit:
