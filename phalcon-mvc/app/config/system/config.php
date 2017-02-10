@@ -269,6 +269,7 @@ $config = new Config(
                  * Enable these extensions (if available):
                  */
                 'enable'   => array(
+                        'memory'   => true,
                         'xcache'   => true,
                         'apc'      => true,
                         'memcache' => true,
@@ -278,6 +279,7 @@ $config = new Config(
                  * Cached object lifetime:
                  */
                 'lifetime' => array(
+                        'ultra'  => 60,
                         'fast'   => 3600,
                         'medium' => 86400,
                         'slow'   => 604800,
@@ -287,6 +289,9 @@ $config = new Config(
                  * Extension specific settings:
                  */
                 'backend'  => array(
+                        'memory'   => array(
+                                'prefix' => ''
+                        ),
                         'xcache'   => array(
                                 'prefix' => ''
                         ),
