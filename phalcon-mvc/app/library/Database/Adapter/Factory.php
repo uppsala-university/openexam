@@ -257,42 +257,42 @@ class Factory implements InjectionAwareInterface
                 //  
                 // Set connection defaults:
                 // 
-                if (!$this->_params->connect) {
+                if (!isset($this->_params->connect)) {
                         $this->_params->connect = new Config();
                 }
-                if (!$this->_params->connect->retry) {
+                if (!isset($this->_params->connect->retry)) {
                         $this->_params->connect->retry = self::CONNECT_RETRY;
                 }
-                if (!$this->_params->connect->sleep) {
+                if (!isset($this->_params->connect->sleep)) {
                         $this->_params->connect->sleep = self::CONNECT_SLEEP;
                 }
 
                 // 
                 // Set adapter defaults:
                 // 
-                if (!$this->_params->adapter) {
+                if (!isset($this->_params->adapter)) {
                         $this->_params->adapter = new Config();
                 }
-                if (!$this->_params->adapter->cached) {
+                if (!isset($this->_params->adapter->cached)) {
                         $this->_params->adapter->cached = self::ADAPTER_CACHED;
                 }
-                if (!$this->_params->adapter->deferred) {
+                if (!isset($this->_params->adapter->deferred)) {
                         $this->_params->adapter->deferred = self::ADAPTER_DEFERRED;
                 }
 
                 // 
                 // Set caching defaults:
                 // 
-                if (!$this->_params->cache) {
+                if (!isset($this->_params->cache)) {
                         $this->_params->cache = new Config();
                 }
-                if (!$this->_params->cache->backend) {
+                if (!isset($this->_params->cache->backend)) {
                         $this->_params->cache->backend = self::CACHE_BACKEND;
                 }
-                if (!$this->_params->cache->lifetime) {
+                if (!isset($this->_params->cache->lifetime)) {
                         $this->_params->cache->lifetime = self::CACHE_LIFETIME;
                 }
-                if (!$this->_params->cache->options) {
+                if (!isset($this->_params->cache->options)) {
                         $this->_params->cache->options = new Config();
                 }
         }
@@ -356,13 +356,17 @@ class Factory implements InjectionAwareInterface
                 $mediator = new Mediator($adapter);
                 $mediator->setCache($this->useCache());
 
-                if ($this->_params->cache->exclude) {
+                if (!$mediator->hasCache()) {
+                        return $adapter;
+                }
+
+                if (isset($this->_params->cache->exclude)) {
                         $mediator->setFilter($this->_params->cache->exclude->toArray());
                 }
-                if ($this->_params->cache->limits->min) {
+                if (isset($this->_params->cache->limits->min)) {
                         $mediator->setMinimun($this->_params->cache->limits->min);
                 }
-                if ($this->_params->cache->limits->max) {
+                if (isset($this->_params->cache->limits->max)) {
                         $mediator->setMaximun($this->_params->cache->limits->max);
                 }
 

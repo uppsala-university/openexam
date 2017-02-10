@@ -77,7 +77,18 @@ class Mediator extends Proxy
          */
         public function setCache($cache)
         {
-                $this->_cache = new Backend($cache);
+                if (isset($cache)) {
+                        $this->_cache = new Backend($cache);
+                }
+        }
+
+        /**
+         * Check if cache is set.
+         * @return bool
+         */
+        public function hasCache()
+        {
+                return isset($this->_cache);
         }
 
         /**
@@ -86,7 +97,9 @@ class Mediator extends Proxy
          */
         public function setAdapter($adapter)
         {
-                $this->_adapter = $adapter;
+                if (isset($adapter)) {
+                        $this->_adapter = $adapter;
+                }
         }
 
         /**
@@ -96,6 +109,15 @@ class Mediator extends Proxy
         public function getAdapter()
         {
                 return $this->_adapter;
+        }
+
+        /**
+         * Check if adapter is set.
+         * @return bool
+         */
+        public function hasAdapter()
+        {
+                return isset($this->_adapter);
         }
 
         /**
