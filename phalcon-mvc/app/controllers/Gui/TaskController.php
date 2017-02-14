@@ -65,7 +65,7 @@ class TaskController extends GuiController
         public function invigilateAction()
         {
                 $this->user->setPrimaryRole(Roles::INVIGILATOR);
-                $this->roleAction(Roles::INVIGILATOR, Exam::find());
+                $this->roleAction(Roles::INVIGILATOR, Exam::find(), State::EXAMINATABLE);
         }
 
         /**
