@@ -44,7 +44,6 @@
             </div>        
     <?php endif; ?>
 
-
     <?php
     // 
     // This is a mess: The $quest parameter is sometimes an object and sometimes an array depending 
@@ -53,9 +52,6 @@
     $qSize = count($quest);
     $questionNo = 0;
 
-    ?>
-
-    <?php
     foreach ($quest as $qKey => $qObj):
             if (!$qObj->id) {
                     continue;
@@ -172,18 +168,68 @@
                                                                 <i class="icon-file-text-alt text-contrast"></i> Supplementary material 
                                                             </div>
                                                             <?php foreach ($qPartData['resources'] as $resTitle => $resUrl) : ?>
-                                                                    <div style="margin-bottom:15px; ">
+                                                                    <div style="margin-bottom: 10px; border-radius: 3px; min-width: 325px; padding: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
                                                                         <?php
                                                                         $type = basename(dirname($resUrl)) . 's';
                                                                         $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
+
                                                                         if (file_exists($path)) {
                                                                                 $mime = mime_content_type($path);
+                                                                                $type = explode("/", $mime);
                                                                         } else {
                                                                                 $mime = "application/octet-stream";
+                                                                                $type = explode("/", $mime);
+                                                                        }
+
+                                                                        switch ($type[0]) {
+                                                                                case 'audio':
+                                                                                        $icon = 'file-audio-o';
+                                                                                        $desc = 'Download audio file';
+                                                                                        break;
+                                                                                case 'video':
+                                                                                        $icon = 'file-video-o';
+                                                                                        $desc = 'Download video file';
+                                                                                        break;
+                                                                                case 'image':
+                                                                                        $icon = 'file-image-o';
+                                                                                        $desc = 'Download image file';
+                                                                                        break;
+                                                                                case 'application':
+                                                                                        switch ($type[1]) {
+                                                                                                case 'pdf':
+                                                                                                        $icon = 'file-pdf-o';
+                                                                                                        $desc = 'Download PDF';
+                                                                                                        break;
+                                                                                                case 'vnd.oasis.opendocument.spreadsheet':
+                                                                                                case 'octet-stream':
+                                                                                                case 'vnd.ms-office':
+                                                                                                        $icon = 'file-excel-o';
+                                                                                                        $desc = 'Download spreadsheet';
+                                                                                                        break;
+                                                                                                case 'vnd.openxmlformats-officedocument.wordprocessingml.document':
+                                                                                                case 'vnd.oasis.opendocument.text':
+                                                                                                case 'msword':
+                                                                                                        $icon = 'file-word-o';
+                                                                                                        $desc = 'Download text document';
+                                                                                                        break;
+                                                                                                case 'vnd.openxmlformats-officedocument.presentationml.presentation':
+                                                                                                case 'vnd.oasis.opendocument.presentation':
+                                                                                                case 'vnd.ms-powerpoint':
+                                                                                                        $icon = 'file-powerpoint-o';
+                                                                                                        $desc = 'Download presentation';
+                                                                                                        break;
+                                                                                                case 'zip':
+                                                                                                case 'x-gzip':
+                                                                                                case 'java-archive':
+                                                                                                        $icon = 'file-archive-o';
+                                                                                                        $desc = 'Download archive file';
+                                                                                                        break;
+                                                                                        }
+                                                                                        break;
                                                                         }
 
                                                                         ?>
-                                                                        <?php if ($type == 'videos') : ?>
+                                                                        <?php if ($type[0] == 'video') : ?>
                                                                                 <video
                                                                                     id="my-player"
                                                                                     class="video-js"
@@ -201,7 +247,7 @@
                                                                                         </a>
                                                                                     </p>
                                                                                 </video>
-                                                                        <?php elseif ($type == 'audios') : ?>
+                                                                        <?php elseif ($type[0] == 'audio') : ?>
                                                                                 <audio
                                                                                     id="my-player"
                                                                                     class="video-js"
@@ -222,19 +268,25 @@
                                                                         <?php else : ?>
                                                                                 <div>
                                                                                     <a class="fancybox" rel="fancybox" href="<?= $resUrl ?>" title="<?= $resTitle ?>">
-                                                                                        <?php if (stristr($mime, "image/")): ?>
-                                                                                                <img style="max-width:400px" class="img-zoom" src='<?= $resUrl ?>' data-zoom-image="<?= $resUrl ?>"/>
+                                                                                        <?php if ($type[0] == "image"): ?>
+                                                                                                <img style="max-width:320px" class="img-zoom" src='<?= $resUrl ?>' data-zoom-image="<?= $resUrl ?>"/>
                                                                                         <?php else: ?>
-                                                                                                <a class="media {width:400}" href="<?= $resUrl ?>"></a> 
-                                                                                                <a target="_blank" href="<?= $resUrl ?>" style="font-size:9px">Download this file</a>
+                                                                                                <a class="media {width:320}" href="<?= $resUrl ?>"></a> 
                                                                                         <?php endif; ?>
                                                                                     </a>    
                                                                                 </div>
                                                                         <?php endif; ?>
-                                                                        <div>
-                                                                            <small class="text-muted" style="padding:5px"><?= $resTitle ?></small> <br />
+
+                                                                        <div style="padding: 5px">
+                                                                            <a href="<?= $resUrl ?>" title="<?= $desc ?>" style="text-decoration: none">
+                                                                                <small class="text-muted" style="vertical-align: central">
+                                                                                    <i class="fa fa-<?= $icon ?> fa-2x"></i> 
+                                                                                    <?= $resTitle ?>
+                                                                                </small> <br />
+                                                                            </a>
                                                                         </div>
                                                                     </div>
+
                                                             <?php endforeach; ?>
                                                         </div>
                                                     </div>                                            
@@ -255,21 +307,6 @@
                                                     <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
                                                 </label>
                                             </div>
-                                            <!--
-                                            <div style="padding-bottom:25px">
-                                                    <label style="font-weight:normal">
-                                                    <input type="radio" value="g" checked="checked" class="highlight_q" />
-                                                    <input type="checkbox" id="highlight_q" value="1" class="changeable" <?= $answerData['highlight-q'] == 'yes' ? 'checked' : '' ?> <?= $testMode ? 'disabled' : '' ?>>
-                                                     <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
-                                                     </label>
-                                                     <label>
-                                                            <input type="radio" value="y" />
-                                                     </label>
-                                                     <label>
-                                                            <input type="radio" value="r" />
-                                                     </label>
-                                            </div>
-                                            -->
                                             <?php if ($prevQuestId && $prevQuestId != $qObj->id): ?>
                                                     <a class="sync-answer" href="#" hlink="<?= $this->url->get('exam/' . $exam->id . '/question/' . ($prevQuestId)) ?>">
                                                         <button class="btn btn-xs btn-prev"><i class="icon-arrow-left"></i> Prev. Question </button>

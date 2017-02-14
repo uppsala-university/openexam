@@ -27,6 +27,8 @@
 <?= Phalcon\Tag::javascriptInclude('js/video.min.js'); ?>
 <?= Phalcon\Tag::stylesheetLink('css/video-js.min.css'); ?>
 
+<?= Phalcon\Tag::stylesheetLink("css/font-awesome.css"); ?>
+
 <?php
 $answerData = json_decode($answer->answer, true); // highlight-q
 $testMode = $exam->creator == $this->user->getPrincipalName();
