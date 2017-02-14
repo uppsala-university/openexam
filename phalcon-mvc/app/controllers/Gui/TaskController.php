@@ -42,7 +42,11 @@ class TaskController extends GuiController
         public function contributeAction()
         {
                 $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
-                $this->roleAction(Roles::CONTRIBUTOR, Exam::find("published = 'N'"), State::CONTRIBUTABLE);
+                $this->roleAction(Roles::CONTRIBUTOR, Exam::find(array(
+                            'conditions' => "published = 'N'",
+                            'order'      => 'starttime DESC'
+                    )), State::CONTRIBUTABLE
+                );
         }
 
         /**
@@ -51,7 +55,10 @@ class TaskController extends GuiController
         public function correctAction()
         {
                 $this->user->setPrimaryRole(Roles::CORRECTOR);
-                $this->roleAction(Roles::CORRECTOR, Exam::find("published = 'Y' AND decoded = 'N'"), function($exam) {
+                $this->roleAction(Roles::CORRECTOR, Exam::find(array(
+                            'conditions' => "published = 'Y' AND decoded = 'N'",
+                            'order'      => 'starttime DESC'
+                    )), function($exam) {
                         if ($exam->state & State::CORRECTABLE ||
                             $exam->state & State::CORRECTED) {
                                 return $exam;
@@ -65,7 +72,10 @@ class TaskController extends GuiController
         public function invigilateAction()
         {
                 $this->user->setPrimaryRole(Roles::INVIGILATOR);
-                $this->roleAction(Roles::INVIGILATOR, Exam::find(), State::EXAMINATABLE);
+                $this->roleAction(Roles::INVIGILATOR, Exam::find(array(
+                            'order' => 'starttime DESC'
+                    )), State::EXAMINATABLE
+                );
         }
 
         /**
@@ -74,7 +84,11 @@ class TaskController extends GuiController
         public function decodeAction()
         {
                 $this->user->setPrimaryRole(Roles::DECODER);
-                $this->roleAction(Roles::DECODER, Exam::find("decoded = 'N'"), State::DECODABLE);
+                $this->roleAction(Roles::DECODER, Exam::find(array(
+                            'conditions' => "decoded = 'N'",
+                            'order'      => 'starttime DESC'
+                    )), State::DECODABLE
+                );
         }
 
         /**
@@ -83,7 +97,11 @@ class TaskController extends GuiController
         public function resultAction()
         {
                 $this->user->setPrimaryRole(Roles::STUDENT);
-                $this->roleAction('student-finished', Exam::find("decoded = 'Y'"));
+                $this->roleAction('student-finished', Exam::find(array(
+                            'conditions' => "decoded = 'Y'",
+                            'order'      => 'starttime DESC'
+                    ))
+                );
         }
 
         /**
