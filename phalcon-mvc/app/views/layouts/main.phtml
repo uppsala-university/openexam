@@ -135,7 +135,7 @@ $actionName = $this->dispatcher->getActionName();
                     </ul>
                 </li>
             </ul>
-            <?php if ($this->user->getPrincipalName() != null) : ?>
+            <?php if ($this->user->getUser()) : ?>
                     <ul id="menucontainer" style="float:right;" class="tasks-menu">
                         <li id="tasks">
                             <?=
