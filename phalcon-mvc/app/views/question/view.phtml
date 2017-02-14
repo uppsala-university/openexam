@@ -189,18 +189,36 @@
                                                                                     class="video-js"
                                                                                     controls
                                                                                     preload="auto"
-                                                                                    poster="<?= $this->url->get('img/video-js-oceans.png') ?>"
+                                                                                    poster="<?= $this->url->get('img/pexels-photo-318540-video.jpeg') ?>"
                                                                                     width="320" height="240"
                                                                                     data-setup='{}'>
                                                                                     <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
                                                                                     <p class="vjs-no-js">
-                                                                                        To view this video please enable JavaScript, and consider upgrading to a
+                                                                                        To view this video file please enable JavaScript, and consider upgrading to a
                                                                                         web browser that
                                                                                         <a href="http://videojs.com/html5-video-support/" target="_blank">
-                                                                                            supports HTML5 video
+                                                                                            supports HTML5 video/audio
                                                                                         </a>
                                                                                     </p>
                                                                                 </video>
+                                                                        <?php elseif ($type == 'audios') : ?>
+                                                                                <audio
+                                                                                    id="my-player"
+                                                                                    class="video-js"
+                                                                                    controls
+                                                                                    preload="auto"
+                                                                                    poster="<?= $this->url->get('img/pexels-photo-144429-audio.jpeg') ?>"
+                                                                                    width="320" height="240"
+                                                                                    data-setup='{}'>
+                                                                                    <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
+                                                                                    <p class="vjs-no-js">
+                                                                                        To listen to this audio file please enable JavaScript, and consider upgrading to a
+                                                                                        web browser that
+                                                                                        <a href="http://videojs.com/html5-video-support/" target="_blank">
+                                                                                            supports HTML5 audio/audio
+                                                                                        </a>
+                                                                                    </p>
+                                                                                </audio>
                                                                         <?php else : ?>
                                                                                 <div>
                                                                                     <a class="fancybox" rel="fancybox" href="<?= $resUrl ?>" title="<?= $resTitle ?>">
