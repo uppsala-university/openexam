@@ -130,7 +130,7 @@ class User extends Component
 
         public function __toString()
         {
-                return isset($this->_user) ? $this->getPrincipalName() : "";
+                return $this->getPrincipalName();
         }
 
         /**
@@ -290,6 +290,8 @@ class User extends Component
                         } else {
                                 return $this->roles = new Roles();
                         }
+                } else {
+                        return $this->roles = new Roles();
                 }
         }
 
