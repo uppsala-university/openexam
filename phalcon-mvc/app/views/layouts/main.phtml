@@ -135,46 +135,48 @@ $actionName = $this->dispatcher->getActionName();
                     </ul>
                 </li>
             </ul>
-            <ul id="menucontainer" style="float:right;" class="tasks-menu">
-                <li id="tasks">
-                    <?=
-                    Phalcon\Tag::linkTo(array("#", "Tasks"));
+            <?php if ($this->user->getPrincipalName() != null) : ?>
+                    <ul id="menucontainer" style="float:right;" class="tasks-menu">
+                        <li id="tasks">
+                            <?=
+                            Phalcon\Tag::linkTo(array("#", "Tasks"));
 
-                    ?>
-                    <ul class="tasks-menu" style="visibility:hidden">
-                        <?php if ($this->user->roles->hasRole('teacher')) : ?>
-                                <li>
-                                    <?= Phalcon\Tag::linkTo('exam/create', 'Create Exam...') ?>
-                                </li>
-                        <?php endif; ?>
-                        <?php if ($this->user->roles->hasRole('contributor')) : ?>
-                                <li>
-                                    <?= Phalcon\Tag::linkTo('task/contribute', 'Contribute Questions') ?>
-                                </li>
-                        <?php endif; ?>
-                        <?php if ($this->user->roles->hasRole('corrector')) : ?>
-                                <li>
-                                    <?= Phalcon\Tag::linkTo('task/correct', 'Correct Answers') ?>
-                                </li>
-                        <?php endif; ?>
-                        <?php if ($this->user->roles->hasRole('invigilator')) : ?>
-                                <li>
-                                    <?= Phalcon\Tag::linkTo('task/invigilate', 'Invigilate Exam') ?>
-                                </li>
-                        <?php endif; ?>
-                        <?php if ($this->user->roles->hasRole('decoder')) : ?>
-                                <li>
-                                    <?= Phalcon\Tag::linkTo('task/decode', 'Decode Exam') ?>
-                                </li>
-                        <?php endif; ?>
-                        <?php if ($this->user->roles->hasRole('student')) : ?>
-                                <li>
-                                    <?= Phalcon\Tag::linkTo('task/result', 'Download Results') ?>
-                                </li>
-                        <?php endif; ?>
+                            ?>
+                            <ul class="tasks-menu" style="visibility:hidden">
+                                <?php if ($this->user->roles->hasRole('teacher')) : ?>
+                                        <li>
+                                            <?= Phalcon\Tag::linkTo('exam/create', 'Create Exam...') ?>
+                                        </li>
+                                <?php endif; ?>
+                                <?php if ($this->user->roles->hasRole('contributor')) : ?>
+                                        <li>
+                                            <?= Phalcon\Tag::linkTo('task/contribute', 'Contribute Questions') ?>
+                                        </li>
+                                <?php endif; ?>
+                                <?php if ($this->user->roles->hasRole('corrector')) : ?>
+                                        <li>
+                                            <?= Phalcon\Tag::linkTo('task/correct', 'Correct Answers') ?>
+                                        </li>
+                                <?php endif; ?>
+                                <?php if ($this->user->roles->hasRole('invigilator')) : ?>
+                                        <li>
+                                            <?= Phalcon\Tag::linkTo('task/invigilate', 'Invigilate Exam') ?>
+                                        </li>
+                                <?php endif; ?>
+                                <?php if ($this->user->roles->hasRole('decoder')) : ?>
+                                        <li>
+                                            <?= Phalcon\Tag::linkTo('task/decode', 'Decode Exam') ?>
+                                        </li>
+                                <?php endif; ?>
+                                <?php if ($this->user->roles->hasRole('student')) : ?>
+                                        <li>
+                                            <?= Phalcon\Tag::linkTo('task/result', 'Download Results') ?>
+                                        </li>
+                                <?php endif; ?>
+                            </ul>
+                        </li>
                     </ul>
-                </li>
-            </ul>
+            <?php endif; ?>
         </div>
     </div>
 
