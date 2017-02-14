@@ -21,7 +21,7 @@
 
 <!-- question content row ends --> 
 <div class='col-xs-12'>
-    
+
     <!-- question title row -->
     <?php if ($testMode): ?>
             <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
@@ -183,16 +183,36 @@
                                                                         }
 
                                                                         ?>
-                                                                        <div>
-                                                                            <a class="fancybox" rel="fancybox" href="<?= $resUrl ?>" title="<?= $resTitle ?>">
-                                                                                <?php if (stristr($mime, "image/")): ?>
-                                                                                        <img style="max-width:400px" class="img-zoom" src='<?= $resUrl ?>' data-zoom-image="<?= $resUrl ?>"/>
-                                                                                <?php else: ?>
-                                                                                        <a class="media {width:400}" href="<?= $resUrl ?>"></a> 
-                                                                                        <a target="_blank" href="<?= $resUrl ?>" style="font-size:9px">Download this file</a>
-                                                                                <?php endif; ?>
-                                                                            </a>    
-                                                                        </div>
+                                                                        <?php if ($type == 'videos') : ?>
+                                                                                <video
+                                                                                    id="my-player"
+                                                                                    class="video-js"
+                                                                                    controls
+                                                                                    preload="auto"
+                                                                                    poster="<?= $this->url->get('img/video-js-oceans.png') ?>"
+                                                                                    width="320" height="240"
+                                                                                    data-setup='{}'>
+                                                                                    <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
+                                                                                    <p class="vjs-no-js">
+                                                                                        To view this video please enable JavaScript, and consider upgrading to a
+                                                                                        web browser that
+                                                                                        <a href="http://videojs.com/html5-video-support/" target="_blank">
+                                                                                            supports HTML5 video
+                                                                                        </a>
+                                                                                    </p>
+                                                                                </video>
+                                                                        <?php else : ?>
+                                                                                <div>
+                                                                                    <a class="fancybox" rel="fancybox" href="<?= $resUrl ?>" title="<?= $resTitle ?>">
+                                                                                        <?php if (stristr($mime, "image/")): ?>
+                                                                                                <img style="max-width:400px" class="img-zoom" src='<?= $resUrl ?>' data-zoom-image="<?= $resUrl ?>"/>
+                                                                                        <?php else: ?>
+                                                                                                <a class="media {width:400}" href="<?= $resUrl ?>"></a> 
+                                                                                                <a target="_blank" href="<?= $resUrl ?>" style="font-size:9px">Download this file</a>
+                                                                                        <?php endif; ?>
+                                                                                    </a>    
+                                                                                </div>
+                                                                        <?php endif; ?>
                                                                         <div>
                                                                             <small class="text-muted" style="padding:5px"><?= $resTitle ?></small> <br />
                                                                         </div>

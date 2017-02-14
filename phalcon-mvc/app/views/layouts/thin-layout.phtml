@@ -23,6 +23,10 @@
 <!-- fancy box -->
 <?= Phalcon\Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>            
 
+<!-- Video.js - HTML5 video with flowplayer dropin -->
+<?= Phalcon\Tag::javascriptInclude('js/video.min.js'); ?>
+<?= Phalcon\Tag::stylesheetLink('css/video-js.min.css'); ?>
+
 <?php
 $answerData = json_decode($answer->answer, true); // highlight-q
 $testMode = $exam->creator == $this->user->getPrincipalName();
