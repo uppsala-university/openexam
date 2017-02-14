@@ -142,6 +142,10 @@ class QuestionController extends GuiController
                 if ($this->user->hasPrimaryRole()) {
                         $exam = Exam::findFirst($eid);
                 }
+
+                // 
+                // Using corrector instead of contributor might be a better option.
+                // 
                 if (!$exam) {
                         $role = $this->user->setPrimaryRole(Roles::STUDENT);
                         $exam = Exam::findFirst($eid);
@@ -151,15 +155,18 @@ class QuestionController extends GuiController
                         $exam = Exam::findFirst($eid);
                 }
                 if (!$exam) {
+                        $role = $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
+                        $exam = Exam::findFirst($eid);
+                }
+                if (!$exam) {
                         throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
                 // Is the exam accessed in test mode?:
                 // 
-                if ($exam->creator == $this->user->getPrincipalName()) {
+                if ($this->user->getPrimaryRole() != Roles::STUDENT) {
                         $exam->testcase = true;
-                        $this->user->setPrimaryRole(Roles::CREATOR);
                 }
 
                 if (!$exam->testcase) {

@@ -386,20 +386,25 @@ $(document).ready(function () {
     // Exam questions related events:
     // 
     $(".add_new_qs").click(function () {
-
         loadQuestionDialog(0);
         return false;
+    });
 
+    // 
+    // View question:
+    // 
+    $(document).on('click', '.view-q', function () {
+        var url = baseURL + '/exam/' + examId + '/question/' + $(this).closest('.qs_area_line').attr('q-id');
+        document.location = url;
+        return false;
     });
 
     // 
     // Edit question:
     // 
     $(document).on('click', '.edit-q', function () {
-
         loadQuestionDialog($(this).closest('.qs_area_line').attr('q-no'));
         return false;
-
     });
 
     // 
