@@ -59,6 +59,11 @@ class GuiController extends ControllerBase
                         );
 
                         $this->view->setVar("authenticators", $this->auth->getChain("web"));
+                        $this->user->acquire(array(
+                                Roles::TEACHER, Roles::CREATOR, Roles::CONTRIBUTOR,
+                                Roles::CORRECTOR, Roles::INVIGILATOR, Roles::DECODER, 
+                                Roles::STUDENT
+                        ));
                 } catch (\Exception $exception) {
                         return $this->exceptionAction($exception);
                 }
