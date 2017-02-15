@@ -5211,6 +5211,11 @@ select[name=program] {
     color: #ddaa00;
     border: 1px solid #ffcc00;
 }
+.label-red-outline {
+    background-color: #ffffff;
+    color: #cc0000;
+    border: 1px solid #ff0000;
+}
 
 /*====== specific to media library =====*/
 a.darken {

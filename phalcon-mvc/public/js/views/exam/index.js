@@ -77,8 +77,9 @@ $(document).ready(function () {
         console.log($(this));
         var exam = $(this).attr('data-id');
         console.log(exam);
+        console.log($(this).hasClass('running'));
 
-        if ($(this).hasClass('creator') && $(this).hasClass('upcoming')) {
+        if ($(this).hasClass('creator') && $(this).hasClass('upcoming') || $(this).hasClass('running')) {
             var prompt = "This exam is not yet published. If you chose to publish it now, then it will \nshow up as an upcoming exam for student but can't be opened by them \nbefore the exam actually starts.\n\nDo you want to publish it?";
             var result = confirm(prompt);
 

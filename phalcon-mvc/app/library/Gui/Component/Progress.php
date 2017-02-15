@@ -95,8 +95,10 @@ class Progress extends \Phalcon\Mvc\User\Component implements Component
                         $output("orange", "battery-2", "finished", true, $this->tr->_("Finished"));
                 } elseif ($this->_state->has(State::ANSWERED)) {
                         $output("light-green", "battery-1", "answered", false, $this->tr->_("Answered"));
-                } elseif ($this->_state->has(State::RUNNING)) {
-                        $output("light-green", "battery-0", "running", false, $this->tr->_("Ongoing"));
+                } elseif ($this->_state->has(State::RUNNING) && $this->_state->has(State::PUBLISHED) == true) {
+                        $output("light-green", "battery-0", "published", false, $this->tr->_("Ongoing"));
+                } elseif ($this->_state->has(State::RUNNING) && $this->_state->has(State::PUBLISHED) == false) {
+                        $output("red", "battery-0", "upcoming", true, $this->tr->_("Started"));
                 } elseif ($this->_state->has(State::PUBLISHED)) {
                         $output("blue", "battery-0", "published", true, $this->tr->_("Published"));
                 } elseif ($this->_state->has(State::UPCOMING)) {
