@@ -7,7 +7,7 @@
    These are the requirements. Tested versions within brackets, but other
    versions might work just OK.
    
-        *) PHP >= 5.4.x (need to support the new object model). [5.6.29]
+        *) PHP >= 5.6.x [5.6.29]
         *) An SQL database (RDBS) supported by PDO. [MySQL 5.6.28]
         *) Apache web server [2.4.28]
         *) Composer [2016-06-12]
