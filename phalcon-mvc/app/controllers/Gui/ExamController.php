@@ -17,7 +17,7 @@ use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\DateTime;
-use OpenExam\Library\Gui\Component\Phase;
+use OpenExam\Library\Gui\Component\Exam\Phase;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;

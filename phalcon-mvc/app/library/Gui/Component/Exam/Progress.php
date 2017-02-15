@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Gui\Component;
+namespace OpenExam\Library\Gui\Component\Exam;
 
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component;

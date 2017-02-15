@@ -9,6 +9,7 @@
 <?php
 
 use OpenExam\Library\Core\Exam\State;
+use OpenExam\Library\Gui\Component\Exam\Progress;
 use OpenExam\Library\Security\Roles;
 
 /**
@@ -271,7 +272,7 @@ $examsPerPage = 5;
                                                                 ?>
                                                             </span>
                                                             <?php
-                                                            $progress = new \OpenExam\Library\Gui\Component\Progress($exam->id, $role, $exam->getState());
+                                                            $progress = new Progress($exam->id, $role, $exam->getState());
                                                             $progress->render();
 
                                                             ?>
