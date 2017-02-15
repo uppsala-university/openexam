@@ -8,18 +8,18 @@
    versions might work just OK.
    
         *) PHP >= 5.6.x [5.6.29]
-        *) An SQL database (RDBS) supported by PDO. [MySQL 5.6.28]
-        *) Apache web server [2.4.28]
-        *) Composer [2016-06-12]
+        *) An SQL database (RDBS) supported by PDO. [MySQL 5.6.34]
+        *) Apache web server [2.4.25]
+        *) Composer 1.2.xxx [2016-09-12]
 	 
    PECL Extensions (including those builtin in PHP):
 	    
         *) cphalcon.so - Core MVC functionality (required).
         *) gettext.so  - GNU gettext  (i.e. ngettext(), _(), ...) (recommended).
-        *) http.so     - HTTP extension (used to get content type of media URL's).
+        *) http.so     - HTTP extension (content type of media URL's) (optional).
         *) zip.so      - For bundling results for download (recommended).
         *) curl.so     - For downloading UPPDOK data (optional).
-        *) fileinfo.so - For detection of MIME type for uploaded files.
+        *) fileinfo.so - For detection of MIME type for uploaded files (required).
 
    The script admin/compat/check.sh will check the code and display a list of all 
    required extensions.
