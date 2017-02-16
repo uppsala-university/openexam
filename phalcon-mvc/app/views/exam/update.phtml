@@ -15,6 +15,7 @@
 
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/create.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('js/views/exam/security.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('js/views/exam/check.js'); ?>
 
 <?php
 
@@ -43,6 +44,9 @@ use \OpenExam\Library\Security\Roles; ?>
             </a> 
             <a href="#" class="prevent exam-security">
                 <i class="fa fa-lock" id="exam-security" style="float:right;padding:3px"></i>
+            </a>                
+            <a href="#" class="prevent exam-check">
+                <i class="fa fa-check-square" id="exam-check" style="float:right;padding:3px"></i>
             </a>                
         </h1>
 
@@ -151,6 +155,9 @@ use \OpenExam\Library\Security\Roles; ?>
 
 <!-- Exam security -->
 <div id="exam-security-box" style="display:none" title="Security and access control" ></div>
+
+<!-- Exam status check -->
+<div id="exam-check-box" style="display:none" title="Exam status check" ></div>
 
 <?php
 // combine question json to initialize exam

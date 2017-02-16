@@ -15,6 +15,7 @@ namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
+use OpenExam\Library\Core\Exam\Check;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\DateTime;
 use OpenExam\Library\Gui\Component\Exam\Phase;
@@ -687,6 +688,35 @@ class ExamController extends GuiController
                         'expandExamTabs'    => array('student-upcoming')
                 ));
                 $this->view->pick(array('exam/index'));
+        }
+
+        /**
+         * Exam status check.
+         * @param int $eid The exam ID.
+         */
+        public function checkAction()
+        {
+                // 
+                // Render view as popup page:
+                // 
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+
+                // 
+                // Sanitize:
+                // 
+                if (($eid = $this->request->getPost("exam_id", "int")) == null) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+                
+                // 
+                // Try to find exam in request parameter:
+                // 
+                if (($exam = Exam::findFirst($eid)) == false) {
+                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                }
+                
+                $this->view->setVar('check', new Check($exam));
+                
         }
 
 }

@@ -1,0 +1,222 @@
+<?php
+
+use OpenExam\Library\Core\Exam\Check;
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    check.phtml
+// Created: 2017-02-16 16:23:35
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+$status = $check->getStatus();
+$security = $check->getSecurity();
+
+?>
+
+<?php if ($status == Check::STATUS_IS_READY) : ?>
+        <h1>Exam is ready</h1>
+<?php elseif ($status == Check::STATUS_NEED_ATTENTION) : ?>
+        <h1>Exam need attention</h1>
+<?php else : ?>
+        <h1>Exam is not ready</h1>
+<?php endif; ?>
+
+<div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+    This dialog displays result from checking if exam is ready for use. Control that all requirements are full-filled and press the 'Fix this problem' button to correct any issues.
+</div>
+
+<div style="padding-bottom: 3px">
+    <?php if ($check->hasName()) : ?>
+            <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has an name</span>
+    <?php else : ?>
+            <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam name is missing</span>
+            <div style="display: block; float:right; clear: both">
+                <a href="#" class="exam-check-set-name">
+                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                        <i class="fa fa-check"></i>
+                        <span>Fix this problem</span>
+                    </span>
+                </a>
+            </div>
+    <?php endif; ?>
+</div>
+
+<div style="padding-bottom: 3px">
+    <?php if ($check->hasQuestions()) : ?>
+            <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Questions has been added</span>
+    <?php else : ?>
+            <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Questions are missing</span>
+            <div style="display: block; float:right; clear: both">
+                <a href="#" class="exam-check-add-questions">
+                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                        <i class="fa fa-check"></i>
+                        <span>Fix this problem</span>
+                    </span>
+                </a>
+            </div>
+    <?php endif; ?>
+</div>
+
+<div style="padding-bottom: 3px">
+    <?php if ($check->hasStudents()) : ?>
+            <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Students has been added</span>
+    <?php else : ?>
+            <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Students are missing</span>
+            <div style="display: block; float:right; clear: both">
+                <a href="#" class="exam-check-add-students">
+                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                        <i class="fa fa-check"></i>
+                        <span>Fix this problem</span>
+                    </span>
+                </a>
+            </div>
+    <?php endif; ?>
+</div>
+
+<div style="padding-bottom: 3px">
+    <?php if ($check->isPublished()) : ?>
+            <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been published</span>
+            <div style="display: block; float:right; clear: both">
+                <a href="#" class="exam-check-unpublish">
+                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                        <i class="fa fa-check"></i>
+                        <span>Unpublish exam</span>
+                    </span>
+                </a>
+            </div>
+    <?php else : ?>
+            <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam is not yet published</span>
+            <div style="display: block; float:right; clear: both">
+                <a href="#" class="exam-check-publish">
+                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                        <i class="fa fa-check"></i>
+                        <span>Fix this problem</span>
+                    </span>
+                </a>
+            </div>
+    <?php endif; ?>
+</div>
+
+<div style="padding-bottom: 3px">
+    <?php if ($check->hasStartTime()) : ?>
+            <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been scheduled (start time is set)</span>
+    <?php else : ?>
+            <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam has not been scheduled (start time is missing)</span>
+            <div style="display: block; float:right; clear: both">
+                <a href="#" class="exam-check-set-starttime">
+                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                        <i class="fa fa-check"></i>
+                        <span>Fix this problem</span>
+                    </span>
+                </a>
+            </div>
+    <?php endif; ?>
+</div>
+
+<h3>Security</h3>
+<?php if ($check->hasSecurity()) : ?>
+        <div style="padding-bottom: 3px">
+            <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam is using all security settings</span>
+        </div>
+<?php else : ?>
+        <div style="padding-bottom: 3px">
+            <?php if ($security & Check::SECURITY_LOCKDOWN) : ?>
+                    <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has lockdown enabled</span>
+            <?php else : ?>
+                    <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam lockdown is not set</span>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-set-security">
+                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                <i class="fa fa-check"></i>
+                                <span>Fix this problem</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
+        </div>
+        <div style="padding-bottom: 3px">
+            <?php if ($security & Check::SECURITY_LOCATION) : ?>
+                    <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has allowed locations set</span>
+            <?php else : ?>
+                    <i class="fa fa-warning fa-2x" style="min-width: 30px; color: #ffd900"></i><span>Allowed exam locations are not set</span>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-set-security">
+                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                <i class="fa fa-check"></i>
+                                <span>Fix this problem</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
+        </div>
+<?php endif; ?>
+</div>
+
+<hr>
+<div class="st-line">
+    <center>
+        <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="check-refresh">
+            <i class="fa fa-refresh"></i>
+            <span>Refresh</span>
+        </span>
+        <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="check-close">
+            <i class="fa fa-close"></i>
+            <span>Close</span>
+        </span>
+    </center>		
+</div>   
+
+<script>
+        $(document).ready(function () {
+            $('.exam-check-set-name').click(function () {
+                $('#exam-settings').trigger('click');
+            });
+
+            $('.exam-check-add-questions').click(function () {
+                $('.add_new_qs').trigger('click');
+            });
+
+            $('.exam-check-add-students').click(function () {
+                $('.manage-students').trigger('click');
+            });
+
+            $('.exam-check-publish').click(function () {
+                $.ajax({
+                    type: "POST",
+                    data: {'id': examId, 'published': 1},
+                    url: baseURL + 'ajax/core/creator/exam/update',
+                });
+            });
+
+            $('.exam-check-unpublish').click(function () {
+                $.ajax({
+                    type: "POST",
+                    data: {'id': examId, 'published': 0},
+                    url: baseURL + 'ajax/core/creator/exam/update',
+                });
+            });
+
+            $('.exam-check-set-starttime').click(function () {
+                $('#exam-settings').trigger('click');
+            });
+
+            $('.exam-check-set-security').click(function () {
+                $('#exam-security').trigger('click');
+            });
+
+            $('body').on('click', "#check-close", function () {
+                $("#exam-check-box").dialog('close');
+            });
+
+            $('body').on('click', "#check-refresh", function () {
+                $("#exam-check-box").dialog('close');
+                $('.exam-check').trigger('click');
+            });
+
+        });
+</script>
