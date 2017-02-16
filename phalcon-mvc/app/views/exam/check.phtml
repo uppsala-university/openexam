@@ -1,6 +1,7 @@
 <?php
 
 use OpenExam\Library\Core\Exam\Check;
+use OpenExam\Library\Security\Roles;
 
 // 
 // The source code is copyrighted, with equal shared rights, between the
@@ -35,14 +36,16 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has an name</span>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam name is missing</span>
-            <div style="display: block; float:right; clear: both">
-                <a href="#" class="exam-check-set-name">
-                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
-                        <i class="fa fa-check"></i>
-                        <span>Fix this problem</span>
-                    </span>
-                </a>
-            </div>
+            <?php if (!$readonly) : ?>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-set-name">
+                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                <i class="fa fa-check"></i>
+                                <span>Fix this problem</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
     <?php endif; ?>
 </div>
 
@@ -51,14 +54,16 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Questions has been added</span>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Questions are missing</span>
-            <div style="display: block; float:right; clear: both">
-                <a href="#" class="exam-check-add-questions">
-                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
-                        <i class="fa fa-check"></i>
-                        <span>Fix this problem</span>
-                    </span>
-                </a>
-            </div>
+            <?php if (!$readonly) : ?>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-add-questions">
+                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                <i class="fa fa-check"></i>
+                                <span>Fix this problem</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
     <?php endif; ?>
 </div>
 
@@ -67,38 +72,44 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Students has been added</span>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Students are missing</span>
-            <div style="display: block; float:right; clear: both">
-                <a href="#" class="exam-check-add-students">
-                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
-                        <i class="fa fa-check"></i>
-                        <span>Fix this problem</span>
-                    </span>
-                </a>
-            </div>
+            <?php if (!$readonly) : ?>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-add-students">
+                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                <i class="fa fa-check"></i>
+                                <span>Fix this problem</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
     <?php endif; ?>
 </div>
 
 <div style="padding-bottom: 3px">
     <?php if ($check->isPublished()) : ?>
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been published</span>
-            <div style="display: block; float:right; clear: both">
-                <a href="#" class="exam-check-unpublish">
-                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
-                        <i class="fa fa-check"></i>
-                        <span>Unpublish exam</span>
-                    </span>
-                </a>
-            </div>
+            <?php if (!$readonly) : ?>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-unpublish">
+                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                <i class="fa fa-check"></i>
+                                <span>Unpublish exam</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam is not yet published</span>
-            <div style="display: block; float:right; clear: both">
-                <a href="#" class="exam-check-publish">
-                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
-                        <i class="fa fa-check"></i>
-                        <span>Fix this problem</span>
-                    </span>
-                </a>
-            </div>
+            <?php if (!$readonly) : ?>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-publish">
+                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                <i class="fa fa-check"></i>
+                                <span>Fix this problem</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
     <?php endif; ?>
 </div>
 
@@ -107,14 +118,16 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been scheduled (start time is set)</span>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam has not been scheduled (start time is missing)</span>
-            <div style="display: block; float:right; clear: both">
-                <a href="#" class="exam-check-set-starttime">
-                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
-                        <i class="fa fa-check"></i>
-                        <span>Fix this problem</span>
-                    </span>
-                </a>
-            </div>
+            <?php if (!$readonly) : ?>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-set-starttime">
+                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                <i class="fa fa-check"></i>
+                                <span>Fix this problem</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
     <?php endif; ?>
 </div>
 
@@ -129,14 +142,16 @@ $security = $check->getSecurity();
                     <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has lockdown enabled</span>
             <?php else : ?>
                     <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam lockdown is not set</span>
-                    <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-set-security">
-                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
-                                <i class="fa fa-check"></i>
-                                <span>Fix this problem</span>
-                            </span>
-                        </a>
-                    </div>
+                    <?php if (!$readonly) : ?>
+                            <div style="display: block; float:right; clear: both">
+                                <a href="#" class="exam-check-set-security">
+                                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                        <i class="fa fa-check"></i>
+                                        <span>Fix this problem</span>
+                                    </span>
+                                </a>
+                            </div>
+                    <?php endif; ?>
             <?php endif; ?>
         </div>
         <div style="padding-bottom: 3px">
@@ -144,35 +159,52 @@ $security = $check->getSecurity();
                     <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has allowed locations set</span>
             <?php else : ?>
                     <i class="fa fa-warning fa-2x" style="min-width: 30px; color: #ffd900"></i><span>Allowed exam locations are not set</span>
-                    <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-set-security">
-                            <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
-                                <i class="fa fa-check"></i>
-                                <span>Fix this problem</span>
-                            </span>
-                        </a>
-                    </div>
+                    <?php if (!$readonly) : ?>
+                            <div style="display: block; float:right; clear: both">
+                                <a href="#" class="exam-check-set-security">
+                                    <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
+                                        <i class="fa fa-check"></i>
+                                        <span>Fix this problem</span>
+                                    </span>
+                                </a>
+                            </div>
+                    <?php endif; ?>
             <?php endif; ?>
         </div>
 <?php endif; ?>
 </div>
 
-<hr>
-<div class="st-line">
-    <center>
-        <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="check-refresh">
-            <i class="fa fa-refresh"></i>
-            <span>Refresh</span>
-        </span>
-        <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="check-close">
-            <i class="fa fa-close"></i>
-            <span>Close</span>
-        </span>
-    </center>		
-</div>   
+<?php if (!$readonly) : ?>
+        <hr>
+        <div class="st-line">
+            <center>
+                <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="check-refresh">
+                    <i class="fa fa-refresh"></i>
+                    <span>Refresh</span>
+                </span>
+                <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="check-close">
+                    <i class="fa fa-close"></i>
+                    <span>Close</span>
+                </span>
+            </center>		
+        </div>   
+<?php elseif ($role == Roles::CREATOR) : ?>
+        <hr>
+        <div class="st-line">
+            <center>
+                <span style="padding:2px; font-size:11px; min-width: 10em" class="btn btn-success" id="open-manager">
+                    <i class="fa fa-gear"></i>
+                    <span>Open Manager</span>
+                </span>
+            </center>		
+        </div>   
+
+<?php endif; ?>
 
 <script>
         $(document).ready(function () {
+            var examId = <?= $exam_id ?>;
+
             $('.exam-check-set-name').click(function () {
                 $('#exam-settings').trigger('click');
             });
@@ -216,6 +248,11 @@ $security = $check->getSecurity();
             $('body').on('click', "#check-refresh", function () {
                 $("#exam-check-box").dialog('close');
                 $('.exam-check').trigger('click');
+            });
+
+            $('body').on('click', "#open-manager", function () {
+                var url = baseURL + '/exam/update/' + examId + '/creator';
+                document.location = url;
             });
 
         });

@@ -29,10 +29,7 @@ $(document).ready(function () {
                 $("#exam-check-box").dialog({
                     autoOpen: true,
                     width: "50%",
-                    modal: true,
-                    close: function () {
-                        $(this).dialog('destroy');
-                    }
+                    modal: true
                 });
             }
         });

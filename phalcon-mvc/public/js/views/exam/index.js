@@ -203,6 +203,26 @@ $(document).ready(function () {
         });
     });
 
+    $('.check-exam').click(function () {
+        $.ajax({
+            type: "POST",
+            data: {
+                'exam_id': $(this).attr('data-id'),
+                'readonly': 1
+            },
+            url: baseURL + 'exam/check',
+            success: function (content) {
+                $("#exam-check-box").html(content);
+                $("#exam-check-box").dialog({
+                    autoOpen: true,
+                    width: "50%",
+                    modal: true
+                });
+            }
+        });
+
+    });
+
     $(document).on('click', '.reuse-exam', function () {
         var examId = $(this).closest('.list-group-item').attr('data-id');
         $("#reuse-exam-dialog").dialog({

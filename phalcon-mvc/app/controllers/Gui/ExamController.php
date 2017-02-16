@@ -707,16 +707,37 @@ class ExamController extends GuiController
                 if (($eid = $this->request->getPost("exam_id", "int")) == null) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
-                
+                if ($this->request->hasPost('readonly')) {
+                        if (($readonly = $this->request->getPost("readonly", "int")) == null) {
+                                throw new \Exception("Missing readonly parameter", Error::PRECONDITION_FAILED);
+                        }
+                }
+
+                // 
+                // Dialog is readonly:
+                // 
+                if (isset($readonly)) {
+                        $this->view->setVar('readonly', $readonly);
+                } else {
+                        $this->view->setVar('readonly', false);
+                }
+
+                // 
+                // Set dailog role:
+                // 
+                if (($roles = $this->user->acquire(array(Roles::CREATOR, Roles::INVIGILATOR), $eid))) {
+                        $this->view->setVar('role', $roles[0]);
+                }
+
                 // 
                 // Try to find exam in request parameter:
                 // 
                 if (($exam = Exam::findFirst($eid)) == false) {
                         throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
-                
+
                 $this->view->setVar('check', new Check($exam));
-                
+                $this->view->setVar('exam_id', $eid);
         }
 
 }

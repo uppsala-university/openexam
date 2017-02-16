@@ -20,6 +20,12 @@ $sections = array(
         Roles::CREATOR               => array(
                 'title'        => 'Creator - create and manage an exam',
                 'show-options' => array(
+                        'check-exam'     => array(
+                                'target'        => 'check-exam',
+                                'show-on-flags' => array(
+                                        '*'
+                                )
+                        ),
                         'del-exam'    => array(
                                 'target'        => 'del-exam',
                                 'show-on-flags' => array(
@@ -49,7 +55,7 @@ $sections = array(
                                 'show-on-flags' => array(
                                         "*"
                                 )
-                        ),
+                        )
                 )
         ),
         Roles::CONTRIBUTOR           => array(
@@ -72,6 +78,12 @@ $sections = array(
         Roles::INVIGILATOR           => array(
                 'title'        => 'Invigilator',
                 'show-options' => array(
+                        'check-exam'     => array(
+                                'target'        => 'check-exam',
+                                'show-on-flags' => array(
+                                        '*'
+                                )
+                        ),
                         'change-time'    => array(
                                 'target'        => 'change-time',
                                 'show-on-flags' => array(
@@ -172,10 +184,11 @@ $sections = array(
 
 $opButtonsHtml = array(
         'manage-exam'       => '<span class="label label-green"><i class="fa fa-gear"></i> Manage</span>',
-        'test-exam'         => '<span class="label label-blue"><i class="fa fa-thumbs-o-up"></i> Test exam</span>',
+        'test-exam'         => '<span class="label label-blue"><i class="fa fa-thumbs-o-up"></i> Preview</span>',
         'del-exam'          => '<span class="label label-red"><i class="fa fa-trash"></i> Delete</span>',
         'reuse-exam'        => '<span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-refresh"></i> Reuse</span>',
-        'view-exam'         => '<span class="label label-green"><i class="fa fa-question-circle"></i> View exam</span>',
+        'view-exam'         => '<span class="label label-green"><i class="fa fa-question-circle"></i> Display</span>',
+        'check-exam'        => '<span class="label label-orange"><i class="fa fa-thumbs-o-up"></i> Status</span>',
         'add-q'             => '<span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>',
         'ans-correction'    => '<span class="label label-green"><i class="fa fa-check-square-o"></i> Answer correction</span>',
         'exam-not-finished' => '<span class="label label-primary"><i class="fa fa-times"></i> Exam not finished yet</span>',
@@ -414,6 +427,11 @@ $examsPerPage = 5;
             <input type="text" value="" id="exam-endtime"   name="endtime" placeholder="yyyy-mm-dd hh:mm:ss">
         </div>
     </div>
+
+    <!--
+        Dialog for checking exam status.
+    -->
+    <div id="exam-check-box" style="display:none" title="Exam status check" ></div>    
 
     <?php foreach ($opButtonsHtml as $btnKey => $btnHtml): ?>
             <div id="<?= $btnKey ?>" style="display:none"><?= $btnHtml ?></div>
