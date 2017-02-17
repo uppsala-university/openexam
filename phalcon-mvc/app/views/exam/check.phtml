@@ -38,7 +38,7 @@ $security = $check->getSecurity();
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam name is missing</span>
             <?php if (!$readonly) : ?>
                     <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-set-name">
+                        <a href="#" class="exam-check-set-name prevent">
                             <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
                                 <i class="fa fa-check"></i>
                                 <span>Fix this problem</span>
@@ -56,7 +56,7 @@ $security = $check->getSecurity();
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Questions are missing</span>
             <?php if (!$readonly) : ?>
                     <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-add-questions">
+                        <a href="#" class="exam-check-add-questions prevent">
                             <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
                                 <i class="fa fa-check"></i>
                                 <span>Fix this problem</span>
@@ -74,7 +74,7 @@ $security = $check->getSecurity();
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Students are missing</span>
             <?php if (!$readonly) : ?>
                     <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-add-students">
+                        <a href="#" class="exam-check-add-students prevent">
                             <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
                                 <i class="fa fa-check"></i>
                                 <span>Fix this problem</span>
@@ -90,7 +90,7 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been published</span>
             <?php if (!$readonly) : ?>
                     <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-unpublish">
+                        <a href="#" class="exam-check-unpublish prevent">
                             <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
                                 <i class="fa fa-check"></i>
                                 <span>Unpublish exam</span>
@@ -102,7 +102,7 @@ $security = $check->getSecurity();
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam is not yet published</span>
             <?php if (!$readonly) : ?>
                     <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-publish">
+                        <a href="#" class="exam-check-publish prevent">
                             <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
                                 <i class="fa fa-check"></i>
                                 <span>Fix this problem</span>
@@ -120,7 +120,7 @@ $security = $check->getSecurity();
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam has not been scheduled (start time is missing)</span>
             <?php if (!$readonly) : ?>
                     <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-set-starttime">
+                        <a href="#" class="exam-check-set-starttime prevent">
                             <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
                                 <i class="fa fa-check"></i>
                                 <span>Fix this problem</span>
@@ -144,7 +144,7 @@ $security = $check->getSecurity();
                     <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam lockdown is not set</span>
                     <?php if (!$readonly) : ?>
                             <div style="display: block; float:right; clear: both">
-                                <a href="#" class="exam-check-set-security">
+                                <a href="#" class="exam-check-set-security prevent">
                                     <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
                                         <i class="fa fa-check"></i>
                                         <span>Fix this problem</span>
@@ -161,7 +161,7 @@ $security = $check->getSecurity();
                     <i class="fa fa-warning fa-2x" style="min-width: 30px; color: #ffd900"></i><span>Allowed exam locations are not set</span>
                     <?php if (!$readonly) : ?>
                             <div style="display: block; float:right; clear: both">
-                                <a href="#" class="exam-check-set-security">
+                                <a href="#" class="exam-check-set-security prevent">
                                     <span class="btn btn-success" style="padding:2px; font-size:11px; float: right; min-width: 11em">
                                         <i class="fa fa-check"></i>
                                         <span>Fix this problem</span>
