@@ -243,6 +243,7 @@ $security = $check->getSecurity();
 
             $('body').on('click', "#check-close", function () {
                 $("#exam-check-box").dialog('close');
+                location.reload();
             });
 
             $('body').on('click', "#check-refresh", function () {

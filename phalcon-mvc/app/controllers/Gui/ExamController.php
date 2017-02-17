@@ -212,11 +212,16 @@ class ExamController extends GuiController
                         throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
+                $check = new Check($exam);
+
                 // 
                 // Set view data:
                 // 
                 $this->view->setVars(array(
-                        'exam' => $exam
+                        'exam'     => $exam,
+                        'status'   => $check->getStatus(),
+                        'task'     => $check->getRemainingTask(),
+                        'security' => $check->getSecurity()
                 ));
         }
 

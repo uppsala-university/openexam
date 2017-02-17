@@ -19,7 +19,9 @@
 
 <?php
 
-use \OpenExam\Library\Security\Roles; ?>
+use OpenExam\Library\Core\Exam\Check;
+
+?>
 
 <?php $examQs = $exam->getQuestions(array("order" => "slot")); ?>
 
@@ -29,14 +31,62 @@ use \OpenExam\Library\Security\Roles; ?>
 <!-- Main area -->         
 <?php $canUpdateExam = $this->capabilities->hasCapability($exam, 'update'); ?>
 <div id="container" class="left_menu_space" style="">
-    <?php if ($exam->published): ?>
-            <div id="breadcrumbsRow">
-                <?= Phalcon\Tag::image(array("img/published.gif", "style" => "z-index: 0; height: 65px; position: relative; float: right; top: -9px;")); ?>
+
+    <?php if ($status != Check::STATUS_IS_READY) : ?>
+            <div style="margin-left: 20px; float: left">
+                <?php if ($status == Check::STATUS_NEED_ATTENTION) : ?>
+                        <i class="fa fa-2x fa-exclamation-circle" style="color: blue"></i>
+                        <span style="vertical-align: top">Suggested task: 
+                    <?php elseif ($status == Check::STATUS_NOT_READY) : ?>
+                            <i class="fa fa-2x fa-exclamation-circle" style="color: red"></i>
+                            <span style="vertical-align: top">Remaining task: 
+                        <?php endif; ?>
+                        <?php
+                        switch ($task) {
+                                case Check::TASK_ADD_QUESTIONS:
+                                        echo "Add questions";
+                                        break;
+                                case Check::TASK_ADD_STUDENTS:
+                                        echo "Add students";
+                                        break;
+                                case Check::TASK_ALL_COMPLETED:
+                                        echo "Exam is ready for use";
+                                        break;
+                                case Check::TASK_PUBLISH_EXAM:
+                                        echo "Publish exam";
+                                        break;
+                                case Check::TASK_SET_NAME:
+                                        echo "Set exam name";
+                                        break;
+                                case Check::TASK_SET_SECURITY:
+                                        if ($security == Check::SECURITY_NONE) {
+                                                echo "Set exam security";
+                                        } elseif (($security & Check::SECURITY_LOCKDOWN) == 0) {
+                                                echo "Set exam lockdown";
+                                        } elseif (($security & Check::SECURITY_LOCATION) == 0) {
+                                                echo "Set exam location";
+                                        }
+                                        break;
+                                case Check::TASK_SET_STARTTIME:
+                                        echo "Set exam start time";
+                                        break;
+                        }
+
+                        ?>
+                    </span>
             </div>
     <?php endif; ?>
+
+    <div id="breadcrumbsRow">
+        <?php if ($exam->published): ?>
+                <?= Phalcon\Tag::image(array("img/published.gif", "style" => "z-index: 0; height: 65px; position: relative; float: right; top: -9px;")); ?>
+        <?php endif; ?>
+    </div>
+
     <div id="centerColWide">
 
         <? /* --Exam title and description-- */ ?>
+
         <h1>
             <?= trim($exam->name) != '' ? $exam->name : 'Untitled exam' ?>
             <a href="#" class="prevent exam-settings">

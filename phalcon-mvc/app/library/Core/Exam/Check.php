@@ -60,6 +60,34 @@ class Check
          * All security features are enabled.
          */
         const SECURITY_FULL = 3;
+        /**
+         * All required tasks completed.
+         */
+        const TASK_ALL_COMPLETED = 0;
+        /**
+         * Add questions is remaining.
+         */
+        const TASK_ADD_QUESTIONS = 1;
+        /**
+         * Add students is remaining.
+         */
+        const TASK_ADD_STUDENTS = 2;
+        /**
+         * Set start time is remaining.
+         */
+        const TASK_SET_STARTTIME = 3;
+        /**
+         * Set exam name is remaining.
+         */
+        const TASK_SET_NAME = 4;
+        /**
+         * Set exam security is remaining.
+         */
+        const TASK_SET_SECURITY = 5;
+        /**
+         * Publish exam is remaining.
+         */
+        const TASK_PUBLISH_EXAM = 6;
 
         /**
          * The exam model.
@@ -180,6 +208,8 @@ class Check
 
         /**
          * Get exam status.
+         * 
+         * Returns one of the STATUS_XXX constants.
          * @return int
          */
         public function getStatus()
@@ -217,6 +247,29 @@ class Check
         public function isReady()
         {
                 return $this->getStatus() == self::STATUS_IS_READY;
+        }
+
+        /**
+         * Get remaining task to complete.
+         * @return int
+         */
+        public function getRemainingTask()
+        {
+                if ($this->isReady()) {
+                        return self::TASK_ALL_COMPLETED;
+                } elseif (!$this->hasQuestions()) {
+                        return self::TASK_ADD_QUESTIONS;
+                } elseif (!$this->hasStudents()) {
+                        return self::TASK_ADD_STUDENTS;
+                } elseif (!$this->hasStartTime()) {
+                        return self::TASK_SET_STARTTIME;
+                } elseif (!$this->hasName()) {
+                        return self::TASK_SET_NAME;
+                } elseif (!$this->isPublished()) {
+                        return self::TASK_PUBLISH_EXAM;
+                } elseif (!$this->hasSecurity()) {
+                        return self::TASK_SET_SECURITY;
+                }
         }
 
         /**
