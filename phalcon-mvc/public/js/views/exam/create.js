@@ -458,6 +458,10 @@ $(document).ready(function () {
     if (isNewExam) {
         $('.exam-settings').first().trigger('click');
     }
+    
+    $(document).on('click', '.check-exam', function() {
+        $('.exam-check').trigger('click');
+    });
 
     // TODO: Move this even handler to settings.phtm
 

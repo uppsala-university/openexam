@@ -176,17 +176,14 @@ endforeach;
     <?php if ($canUpdateExam): ?>
             <div class="st-line">
                 <center>
-                    <span style="padding:2px; font-size:11px" class="btn btn-success save-exam-settings">
+                    <span style="padding:2px; font-size:11px; min-width: 10em" class="btn btn-success save-exam-settings">
                         <i class="fa fa-floppy-o"></i>
-                        <span>Save exam settings</span>
+                        <span>Save settings</span>
                     </span>
-                    &nbsp;
-                    <?php if (!$exam->published): ?>
-                            <span style="padding:2px; font-size:11px" class="btn btn-success" id="publish_exam">
-                                <i class="fa fa-check-circle"></i>
-                                <span>This exam is ready for use</span>
-                            </span>
-                    <?php endif; ?>
+                    <span style="padding:2px; font-size:11px; min-width: 10em" class="btn btn-success check-exam">
+                        <i class="fa fa-check-square"></i>
+                        <span>Check exam</span>
+                    </span>
                 </center>		
 
             </div>   
