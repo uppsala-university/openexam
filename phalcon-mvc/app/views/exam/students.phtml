@@ -41,8 +41,8 @@ foreach ($exam->students as $student) {
                     </p>
                     <textarea id="student_list" placeholder="identity code" style="height:100px; width:480px"></textarea>
 
-                    <div id="add_students_btn" style="display: block;margin:10px 0px 30px 0px;">        
-                        <span class="btn btn-success">
+                    <div style="display: block; margin:10px 0px 30px 0px;">   
+                        <span id="add_students_btn" class="btn btn-success">
                             <i class="fa fa-chevron-circle-right"></i>
                             <span>Add students</span>
                         </span>
@@ -77,8 +77,8 @@ foreach ($exam->students as $student) {
                         </form>
                     </div>
 
-                    <div id="import-students-by-file" style="display: block; margin:10px 0px 30px 0px;">        
-                        <span class="btn btn-success">
+                    <div style="display: block; margin:10px 0px 30px 0px;">        
+                        <span id="import-students-by-file" class="btn btn-success">
                             <i class="fa fa-chevron-circle-right"></i>
                             <span>Import students</span>
                         </span>
@@ -105,8 +105,8 @@ foreach ($exam->students as $student) {
                         </form>
                     </div>
 
-                    <div id="import-students-by-group" style="display: block;margin:10px 0px 30px 0px;">        
-                        <span class="btn btn-success">
+                    <div style="display: block; margin:10px 0px 30px 0px;">   
+                        <span id="import-students-by-group" class="btn btn-success">
                             <i class="fa fa-chevron-circle-right"></i>
                             <span>Import students</span>
                         </span>
@@ -205,14 +205,14 @@ foreach ($exam->students as $student) {
                                                         <?php else: ?>
                                                                 <input id="approve-student" data-id="<?= $studentLocks[0]->id ?>" type="button" value="Approve">
                                                         <?php endif; ?>
-                <?php endif; ?>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
-        <?php endforeach; ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
-<?php endif; ?>
+            <?php endif; ?>
             <div style="clear:both"></div>
         </div>
     </div>
