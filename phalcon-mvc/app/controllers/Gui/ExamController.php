@@ -24,6 +24,7 @@ use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Question;
 use OpenExam\Models\Topic;
+use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\View;
 
 /**
@@ -184,9 +185,13 @@ class ExamController extends GuiController
          * Update view for exam
          * exam/update/{exam-id}
          * 
-         * Allowed to Roles: creator, contributor
+         * Allowed for roles: creator, contributor
+         * 
+         * @param int $eid Exam ID
+         * @param string $role The exam role.
+         * @param string $mode Optional mode (i.e. new-exam).
          */
-        public function updateAction($eid)
+        public function updateAction($eid, $role, $mode = null)
         {
                 // 
                 // Sanitize:
@@ -194,13 +199,15 @@ class ExamController extends GuiController
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
+                if (!($role = $this->filter->sanitize($role, "string"))) {
+                        throw new \Exception("Missing required role", Error::PRECONDITION_FAILED);
+                }
 
                 // 
-                // Check if role has been passed:
+                // Check if required role has been passed:
                 // 
-                $params = $this->dispatcher->getParams();
-                if (isset($params[1]) && in_array($params[1], $this->capabilities->getRoles())) {
-                        $this->user->setPrimaryRole($params[1]);
+                if ($this->capabilities->hasPermission($role, 'exam', ObjectAccess::UPDATE)) {
+                        $this->user->setPrimaryRole($role);
                 } else {
                         throw new \Exception("Invalid URL.", Error::BAD_REQUEST);
                 }
@@ -212,6 +219,9 @@ class ExamController extends GuiController
                         throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
+                // 
+                // Exam status check:
+                // 
                 $check = new Check($exam);
 
                 // 
@@ -219,6 +229,7 @@ class ExamController extends GuiController
                 // 
                 $this->view->setVars(array(
                         'exam'     => $exam,
+                        'mode'     => $mode,
                         'status'   => $check->getStatus(),
                         'task'     => $check->getRemainingTask(),
                         'security' => $check->getSecurity()
