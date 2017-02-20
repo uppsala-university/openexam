@@ -242,12 +242,12 @@ $security = $check->getSecurity();
             });
 
             $('body').on('click', "#check-close", function () {
-                $("#exam-check-box").dialog('close');
+                $("#exam-check-box").dialog('destroy');
                 location.reload();
             });
 
             $('body').on('click', "#check-refresh", function () {
-                $("#exam-check-box").dialog('close');
+                $("#exam-check-box").dialog('destroy');
                 $('.exam-check').trigger('click');
             });
 
