@@ -556,6 +556,19 @@ if ($exam->decoded) {
                 }
             });
 
+            $(document).on('change', '.hide-completed', function () {
+                var checked = $(this).is(':checked');
+                $('div[correction]').each(function () {
+                    if ($(this).attr('correction') === 'completed') {
+                        if (checked) {
+                            $(this).hide(500);
+                        } else {
+                            $(this).show(500);
+                        }
+                    }
+                });
+            });
+
             $(document).on('change', '.changeable', function () {
                 if (resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
                     resyncableResults.push($(this).attr('ans-id'));
@@ -700,6 +713,13 @@ if ($exam->decoded) {
                         $(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
                         $(saveResultBtn).closest('.q-body').css('background-color', '#fff');
                         $(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
+                        $(saveResultBtn).closest('div[correction]').attr('correction', correctionStatus);
+                    }
+
+                    if (correctionStatus === 'completed') {
+                        if ($('.hide-completed').is(':checked')) {
+                            $(saveResultBtn).closest('div[correction]').hide(500);
+                        }
                     }
                 });
 

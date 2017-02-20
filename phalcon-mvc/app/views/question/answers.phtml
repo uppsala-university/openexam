@@ -29,13 +29,13 @@ $decoded = $exam->decoded;
 
                 ?>
 
-                <div class="q-wrapper" style="border: 1px solid #dedede; padding: 2px; margin-bottom:15px" >
+                <div class="q-wrapper" style="border: 1px solid #dedede; padding: 2px; margin-bottom:15px" correction="" >
 
                     <?php if (!$decoded && $loadBy != 'question'): ?>
                             <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 15px; width: 5%;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
                     <?php endif; ?>
-                    <div class="q-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #D84B4B">
-                        <span style="color:#990000; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?= $question->slot ? $question->slot : $question->name ?></span>
+                    <div class="q-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #999999">
+                        <span style="color:#333333; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?= $question->slot ? $question->slot : $question->name ?></span>
                     </div>
 
                     <?php
@@ -216,7 +216,7 @@ $decoded = $exam->decoded;
                                                                                     <textarea class="changeable" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
                                                                                 </div>
                                                                                 <div style="padding-bottom: 10px; padding-left: 45px;">
-                                                                                    <input style="text-shadow:none; background-color:#D84B4B; font-size:11px" type="button" class="save-result ans-id<?= $qSpecAns->id ?>" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                    <input style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $qSpecAns->id ?>" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                 </div>
                                                                         <?php endif; ?>
                                                                 <?php else: ?>
@@ -249,9 +249,9 @@ $decoded = $exam->decoded;
                         <?php if ($loadBy == 'question'): ?>
                                 <div class="st-ans-box" style="border: 1px solid #dedede; padding: 2px; margin:15px">
                                     <?php foreach ($answers as $answer): ?>
-                                            <div>
-                                                <?php $result = $answer->getResult(); ?>
-                                                <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array()); ?>
+                                            <?php $result = $answer->getResult(); ?>
+                                            <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array()); ?>
+                                            <div correction="<?= $result->correction ?>">
                                                 <?php if (!$decoded && (count($scoreData) == 0 || !in_array($result->correction, array('completed', 'finalized')))): ?>
                                                         <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 40px; width: 5%;", "class" => "not-corrected")); ?>
                                                 <?php endif; ?>
@@ -362,7 +362,7 @@ $decoded = $exam->decoded;
                                                                                     </div>
 
                                                                                     <div style="padding-top: 10px; padding-left: 45px;">
-                                                                                        <input style="text-shadow:none; background-color:#D84B4B; font-size:11px" type="button" class="save-result ans-id<?= $answer->id ?>" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                        <input style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $answer->id ?>" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                     </div>
                                                                             <?php endif; ?>
                                                                     <?php else: ?>
@@ -398,7 +398,12 @@ $decoded = $exam->decoded;
         <br />
     </div>
 </div>
-<input type="button" style="text-shadow: none; background-color: rgb(216, 75, 75); position: fixed; bottom: 70px; left: 45%; font-size: 22px; padding: 7px;" class="save-all-result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
+<div style="position: fixed; top: 55px; right: 5%; padding: 10px; background-color: white; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
+    <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
+    <div style="padding-left: 10px; padding-top: 5px">
+        <input type="checkbox" class="hide-completed"><span style="margin-left: 10px">Hide fully corrected answers</span>
+    </div>
+</div>
 <style>
     .hero-unit {
         background-color:#F9F9F9 !important;
