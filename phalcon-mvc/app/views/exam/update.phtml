@@ -228,6 +228,7 @@ $combinedJson = (!count($combinedJson) ? "JSON.parse('{}')" : json_encode($combi
 <script language="javascript">
         var mngr = '<?= $exam->creator ?>';
         var user = '<?= $this->user->getPrincipalName() ?>';
+        var mode = '<?= $mode ?>';
         var examId = <?= $exam->id ?>;
         var qsJson = <?= $combinedJson ?>;
         var qsCorrectorsJson = {};

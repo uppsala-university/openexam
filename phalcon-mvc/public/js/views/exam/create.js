@@ -36,8 +36,18 @@ Opentip.styles.drops = {
     hideTrigger: 'closeButton'
 };
 
-
 $(document).ready(function () {
+
+    // 
+    // Fix document location when mode has been passed in URL:
+    // 
+    if (history.pushState) {
+        if (mode.length > 0) {
+            if (location.href.indexOf(mode) > 0) {
+                history.pushState({state: mode}, '', location.href.replace(mode, ''));
+            }
+        }
+    }
 
     // 
     // Sortable questions related.
@@ -458,8 +468,8 @@ $(document).ready(function () {
     if (isNewExam) {
         $('.exam-settings').first().trigger('click');
     }
-    
-    $(document).on('click', '.check-exam', function() {
+
+    $(document).on('click', '.check-exam', function () {
         $('.exam-check').trigger('click');
     });
 
