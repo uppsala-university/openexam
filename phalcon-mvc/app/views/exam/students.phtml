@@ -141,7 +141,7 @@ foreach ($exam->students as $student) {
                         <input id="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
                         <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
                     </div>
-                    <table style="width:100%" class="tablesorter">
+                    <table id="all-students-table" style="width:100%" class="tablesorter">
                         <thead>
                             <tr>
                                 <th class="no-sort"><input id="select_all_students" type="checkbox" value="1"></th>
@@ -242,21 +242,6 @@ foreach ($exam->students as $student) {
             $(".accordion").accordion({
                 heightStyle: "content"
             });
-            /*
-             $(".search-students").autocomplete({
-             source: studentList,
-             select: function (event, ui) {
-             newItem = $('.student-list > li:first').clone();
-             newItem.find('span').html(ui.item.value).end()
-             .find('a').attr('data-id', ui.item.id).end()
-             .show();
-             $('.student-list').empty();
-             $('.student-list').append(newItem);
-             $('.ui-autocomplete-input').val('');
-             }
-             
-             });
-             */
 
             if (stEvents == 'loaded') {
                 return;
@@ -270,51 +255,31 @@ foreach ($exam->students as $student) {
             // @param array userData The array of newly created student objects.
             // 
             var onStudentInserted = function (userData) {
+
                 if (userData.length > 1) {
-                    $.each(userData, function (i, user) {
-                        newItem = $('.student-list > li').first().clone();
-                        $(newItem)
-                                .find('.del-student').attr('data-id', user.id).end()
-                                .find('span').html(user.user + " - " + user.code).end()
-                                .show();
-                        $('.student-list').prepend($(newItem));
-                    });
+                    var examId = userData[0].exam_id;
                 } else {
-                    newItem = $('.student-list > li').first().clone();
-                    $(newItem)
-                            .find('.del-student').attr('data-id', userData.id).end()
-                            .find('span').html(userData.user + " - " + userData.code).end()
-                            .show();
-                    $('.student-list').prepend($(newItem));
-                }
-                $(".tabs").tabs("option", "active", 1);
-                if ($('.total-exam-students')) {
-                    $('.total-exam-students').html($('.student-list').find('li').length - 1);
+                    var examId = userData.exam_id;
                 }
 
-                $('#no-student-msg').hide();
+                $.ajax({
+                    type: "POST",
+                    data: {'exam_id': examId},
+                    url: baseURL + 'exam/students/',
+                    success: function (content) {
+                        // 
+                        // Replace dialog content:
+                        // 
+                        $("#manage-students").html(content);
+
+                        // 
+                        // Switch to second tab:
+                        // 
+                        $(".tabs").tabs("option", "active", 1);
+                        $('#no-student-msg').hide();
+                    }
+                });
             }
-
-            /*  
-             $(document).on('click', '#lsit-all-students', function () {
-             
-             $('.student-list > li:visible').remove();
-             jQuery.each(studentList , function( i, studentData ) {
-             //jQuery.each(studentData , function( username, student ) {			
-             newItem = $('.student-list > li:first').clone();
-             newItem.find('span').html(studentData.value).end()
-             .find('a').attr('data-id', studentData.id).end()
-             .show();
-             $('.student-list').append(newItem);
-             //});	
-             });
-             
-             if(!$('.student-list > li:visible').length) {
-             $('.student-list').append('<li>There are no registered users in this exam.</li>');
-             }
-             $('.student-list').show();
-             
-             });*/
 
             var updatingStExamTime = false;
 
@@ -618,9 +583,10 @@ foreach ($exam->students as $student) {
                         });
             });
 
-            //Attach event for student deletion button
+            // 
+            // Attach event for student deletion button
+            // 
             $(document).on('change', 'input[name="students[]"], #select_all_students', function () {
-                //console.log($('input[name="students[]"]:checked').length);
                 if ($('input[name="students[]"]:checked').length) {
                     $('#del-st-btn > span').html("Delete selected students (" + $('input[name="students[]"]:checked').length + ")").parent().show();
                 } else {
@@ -628,7 +594,9 @@ foreach ($exam->students as $student) {
                 }
             });
 
-            //Delete selected student
+            // 
+            // Delete selected student:
+            // 
             $(document).on('click', '#del-st-btn', function () {
                 if (confirm("Are you sure you want to " + $('#del-st-btn > span').html() + "?")) {
 

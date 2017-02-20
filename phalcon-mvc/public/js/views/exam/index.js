@@ -166,27 +166,17 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.manage-students', function () {
-
         $.ajax({
             type: "POST",
             data: {'exam_id': $(this).attr('data-id')},
             url: baseURL + 'exam/students/',
             success: function (content) {
-                $("#mng-students").html(content);
-                $("#mng-students").dialog({
+                $("#manage-students").html(content);
+                $("#manage-students").dialog({
                     autoOpen: true,
                     width: "50%",
                     position: ['center', 20],
                     modal: true,
-                    /*						buttons: {
-                     "Save": function() {
-                     },
-                     "btn ": function() {
-                     },
-                     Cancel: function() {
-                     $(this).dialog('destroy');
-                     }
-                     },*/
                     close: function () {
                         $(this).dialog('destroy');
                     },

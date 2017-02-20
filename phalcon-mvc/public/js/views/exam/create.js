@@ -529,8 +529,8 @@ $(document).ready(function () {
             data: {'exam_id': examId},
             url: baseURL + 'exam/students/',
             success: function (content) {
-                $("#mng-students").html(content);
-                $("#mng-students").dialog({
+                $("#manage-students").html(content);
+                $("#manage-students").dialog({
                     autoOpen: true,
                     width: "50%",
                     position: ['center', 20],
