@@ -88,7 +88,7 @@ class Exam extends ModelBase
          * Expose anonymous code for correctors during correction.
          */
         const SHOW_CODE_DURING_CORRECTION = 32;
-        
+
         /**
          * This object ID.
          * @var integer
@@ -765,6 +765,10 @@ class Exam extends ModelBase
         {
                 if (!isset($this->orgunit)) {
                         $this->orgunit = $this->getDI()->get('user')->getDepartment();
+                }
+                if (!isset($this->orgunit)) {
+                        $config = $this->getDI()->get('config');
+                        $this->orgunit = $config->user->orgname;
                 }
 
                 $parts = explode(";", $this->orgunit);
