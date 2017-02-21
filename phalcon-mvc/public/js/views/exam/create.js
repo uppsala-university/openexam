@@ -441,7 +441,7 @@ $(document).ready(function () {
             // Delete from database and then from JSON:
             // 
             ajax(
-                    baseURL + 'ajax/core/contributor/question/delete',
+                    baseURL + 'ajax/core/' + role + '/question/delete',
                     {"id": qsJson[qNo]["questId"]},
             function (status) {
                 location.reload();
@@ -730,7 +730,7 @@ $(document).ready(function () {
         }
 
         ajax(
-                baseURL + 'ajax/core/contributor/question/' + (qId ? 'update' : 'create'),
+                baseURL + 'ajax/core/' + role + '/question/' + (qId ? 'update' : 'create'),
                 data,
                 function (qData) {
                     // 
