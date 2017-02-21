@@ -40,7 +40,7 @@ class Exam extends ModelBehavior
                 // Delegate contributor, invigilator and decoder roles:
                 // 
                 if ($type == 'afterCreate') {
-                        $this->trustedContextCall(function($user) use($model) {
+                        $this->trustedContextCall(function() use($model) {
                                 $contributor = new Contributor();
                                 $contributor->user = $model->creator;
                                 $contributor->exam_id = $model->id;
@@ -52,7 +52,7 @@ class Exam extends ModelBehavior
                                 $invigilator->user = $model->creator;
                                 $invigilator->exam_id = $model->id;
                                 if ($invigilator->save() == false) {
-                                        throw new Exception("Failed add invigilator by behavior (" . $contributor->getMessages()[0] . ")");
+                                        throw new Exception("Failed add invigilator by behavior (" . $invigilator->getMessages()[0] . ")");
                                 }
 
                                 $decoder = new Decoder();

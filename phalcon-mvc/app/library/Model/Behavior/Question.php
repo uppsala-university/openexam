@@ -34,12 +34,15 @@ class Question extends ModelBehavior
         public function notify($type, ModelInterface $model)
         {
                 if ($type == 'afterCreate') {
-                        $this->trustedContextCall(function($user) use($model) {
+                        $this->trustedContextCall(function($user, $role) use($model) {
+
                                 // 
                                 // Don't add exam creator as question corrector.
                                 // 
-                                if ($user->getPrincipalName() == $model->exam->creator) {
-                                        return;
+                                if ($role == \OpenExam\Library\Security\Roles::CREATOR) {
+                                        if ($user->getPrincipalName() == $model->exam->creator) {
+                                                return;
+                                        }
                                 }
 
                                 // 

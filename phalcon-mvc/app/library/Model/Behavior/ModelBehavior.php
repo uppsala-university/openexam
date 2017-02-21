@@ -37,20 +37,25 @@ class ModelBehavior extends Behavior implements BehaviorInterface
          * @var User 
          */
         protected $user;
+        /**
+         * The primary role.
+         * @var string 
+         */
+        protected $role;
 
         /**
-         * Invoke callback function in trusted context.
-         * @param callable $callback The callback function.
+         * Setup for making trusted call.
          * @param DiInterface $dependencyInjector
          */
-        protected function trustedContextCall($callback, $dependencyInjector = null)
+        private function setup($dependencyInjector)
         {
                 if (!isset($dependencyInjector)) {
                         $dependencyInjector = \Phalcon\DI::getDefault();
                 }
 
                 $this->logger = $dependencyInjector->getLogger();
-                $this->user = $dependencyInjector->get('user');
+                $this->user = $dependencyInjector->getUser();
+                $this->role = $this->user->getPrimaryRole();
 
                 $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
 
@@ -59,15 +64,33 @@ class ModelBehavior extends Behavior implements BehaviorInterface
 
                 $this->logger->access->debug(print_r($trace, true));
 
-                $role = $this->user->setPrimaryRole(Roles::TRUSTED);
+                $this->user->setPrimaryRole(Roles::TRUSTED);
+        }
+
+        /**
+         * Leave after making trusted call.
+         */
+        private function leave()
+        {
+                $this->user->setPrimaryRole($this->role);
+        }
+
+        /**
+         * Invoke callback function in trusted context.
+         * @param callable $callback The callback function.
+         * @param DiInterface $dependencyInjector
+         */
+        protected function trustedContextCall($callback, $dependencyInjector = null)
+        {
                 try {
-                        $result = $callback($this->user);
+                        $this->setup($dependencyInjector);
+                        $result = $callback($this->user, $this->role);
                 } catch (\Exception $exception) {
                         $this->logger->access->error($exception);
-                        $this->user->setPrimaryRole($role);
                         throw $exception;
+                } finally {
+                        $this->leave();
                 }
-                $this->user->setPrimaryRole($role);
 
                 return $result;
         }
