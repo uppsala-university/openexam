@@ -32,51 +32,6 @@ use OpenExam\Library\Core\Exam\Check;
 <?php $canUpdateExam = $this->capabilities->hasCapability($exam, 'update'); ?>
 <div id="container" class="left_menu_space" style="">
 
-    <?php if ($canUpdateExam && $status != Check::STATUS_IS_READY) : ?>
-            <div style="margin-left: 20px; float: left">
-                <?php if ($status == Check::STATUS_NEED_ATTENTION) : ?>
-                        <i class="fa fa-2x fa-exclamation-circle" style="color: blue"></i>
-                        <span style="vertical-align: top">Suggested task: 
-                    <?php elseif ($status == Check::STATUS_NOT_READY) : ?>
-                            <i class="fa fa-2x fa-exclamation-circle" style="color: red"></i>
-                            <span style="vertical-align: top">Remaining task: 
-                        <?php endif; ?>
-                        <?php
-                        switch ($task) {
-                                case Check::TASK_ADD_QUESTIONS:
-                                        echo "Add questions";
-                                        break;
-                                case Check::TASK_ADD_STUDENTS:
-                                        echo "Add students";
-                                        break;
-                                case Check::TASK_ALL_COMPLETED:
-                                        echo "Exam is ready for use";
-                                        break;
-                                case Check::TASK_PUBLISH_EXAM:
-                                        echo "Publish exam";
-                                        break;
-                                case Check::TASK_SET_NAME:
-                                        echo "Set exam name";
-                                        break;
-                                case Check::TASK_SET_SECURITY:
-                                        if ($security == Check::SECURITY_NONE) {
-                                                echo "Set exam security";
-                                        } elseif (($security & Check::SECURITY_LOCKDOWN) == 0) {
-                                                echo "Set exam lockdown";
-                                        } elseif (($security & Check::SECURITY_LOCATION) == 0) {
-                                                echo "Set exam location";
-                                        }
-                                        break;
-                                case Check::TASK_SET_STARTTIME:
-                                        echo "Set exam start time";
-                                        break;
-                        }
-
-                        ?>
-                    </span>
-            </div>
-    <?php endif; ?>
-
     <div id="breadcrumbsRow">
         <?php if ($exam->published): ?>
                 <?= Phalcon\Tag::image(array("img/published.gif", "style" => "z-index: 0; height: 65px; position: relative; float: right; top: -9px;")); ?>
@@ -102,6 +57,51 @@ use OpenExam\Library\Core\Exam\Check;
             <?php endif; ?>
         </h1>
 
+        <?php if ($canUpdateExam && $status != Check::STATUS_IS_READY) : ?>
+                <div style="float: left">
+                    <?php if ($status == Check::STATUS_NEED_ATTENTION) : ?>
+                            <i class="fa fa-2x fa-exclamation-circle" style="color: blue"></i>
+                            <span style="vertical-align: top">Suggested task: 
+                        <?php elseif ($status == Check::STATUS_NOT_READY) : ?>
+                                <i class="fa fa-2x fa-exclamation-circle" style="color: red"></i>
+                                <span style="vertical-align: top">Remaining task: 
+                            <?php endif; ?>
+                            <?php
+                            switch ($task) {
+                                    case Check::TASK_ADD_QUESTIONS:
+                                            echo "Add questions";
+                                            break;
+                                    case Check::TASK_ADD_STUDENTS:
+                                            echo "Add students";
+                                            break;
+                                    case Check::TASK_ALL_COMPLETED:
+                                            echo "Exam is ready for use";
+                                            break;
+                                    case Check::TASK_PUBLISH_EXAM:
+                                            echo "Publish exam";
+                                            break;
+                                    case Check::TASK_SET_NAME:
+                                            echo "Set exam name";
+                                            break;
+                                    case Check::TASK_SET_SECURITY:
+                                            if ($security == Check::SECURITY_NONE) {
+                                                    echo "Set exam security";
+                                            } elseif (($security & Check::SECURITY_LOCKDOWN) == 0) {
+                                                    echo "Set exam lockdown";
+                                            } elseif (($security & Check::SECURITY_LOCATION) == 0) {
+                                                    echo "Set exam location";
+                                            }
+                                            break;
+                                    case Check::TASK_SET_STARTTIME:
+                                            echo "Set exam start time";
+                                            break;
+                            }
+
+                            ?>
+                        </span>
+                </div>
+        <?php endif; ?>
+
         <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("contributable", $exam->flags)): ?>
                 <a href="#" style="font-size: 12px; float:right" class="add_new_qs">
                     <div style="display: block; float:right">
@@ -114,7 +114,7 @@ use OpenExam\Library\Core\Exam\Check;
         <?php endif; ?>
 
         <? /* --seprator-- */ ?>
-        <div class="seprator" style="border-bottom:0px"></div>
+        <div class="seprator" style="border-bottom:0px">&nbsp;</div>
 
         <? /* --Questions area-- */ ?>
         <div id="qs_area">
@@ -166,13 +166,6 @@ use OpenExam\Library\Core\Exam\Check;
                                 <span>Preview student view</span>
                             </span>
                         </a>
-                        &nbsp;
-                        <?php if (!$exam->published): ?>
-                                <span class="btn btn-default exam-settings" style="font-size:11px; color:#333333">
-                                    <i class="fa fa-gear"></i>
-                                    <span>Check settings if exam is ready to be used</span>
-                                </span>
-                        <?php endif; ?>
                     </center>
                 </div>
 
