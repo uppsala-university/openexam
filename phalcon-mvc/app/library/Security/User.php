@@ -324,9 +324,7 @@ class User extends Component
         public function getDepartment()
         {
                 if (isset($this->_user)) {
-                        if (($department = $this->catalog->getAttribute($this->getPrincipalName(), 'department'))) {
-                                return $department[0]['department'][0];
-                        }
+                        return $this->catalog->getAttribute('department');
                 }
         }
 

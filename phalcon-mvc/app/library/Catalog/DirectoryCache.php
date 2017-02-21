@@ -62,56 +62,80 @@ class DirectoryCache extends Component implements DirectoryService
                 return null;
         }
 
-        public function getName()
+        public function getServiceName()
         {
                 return 'cache';
         }
 
-        public function getAttribute($principal, $attribute)
+        public function getAttribute($attribute, $principal = null)
         {
-                $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->getName(), $attribute, md5($principal));
+                $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->getServiceName(), $attribute, md5($principal));
                 return $this->_cache->get($cachekey);
         }
 
-        public function setAttribute($principal, $attribute, &$content)
+        public function setAttribute($attribute, $principal, &$content)
         {
-                $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->getName(), $attribute, md5($principal));
+                $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->getServiceName(), $attribute, md5($principal));
                 $this->_cache->save($cachekey, $content);
         }
 
-        public function getGroups($principal, $attributes)
+        public function getAttributes($attribute, $principal = null)
         {
-                $cachekey = sprintf("catalog-%s-groups-%s", $this->getName(), md5(serialize(array($principal, $attributes))));
+                $cachekey = sprintf("catalog-%s-attributes-%s-%s", $this->getServiceName(), $attribute, md5($principal));
+                return $this->_cache->get($cachekey);
+        }
+
+        public function setAttributes($attribute, $principal, &$content)
+        {
+                $cachekey = sprintf("catalog-%s-attributes-%s-%s", $this->getServiceName(), $attribute, md5($principal));
+                $this->_cache->save($cachekey, $content);
+        }
+
+        public function getGroups($principal, $attributes = null)
+        {
+                $cachekey = sprintf("catalog-%s-groups-%s", $this->getServiceName(), md5(serialize(array($principal, $attributes))));
                 return $this->_cache->get($cachekey);
         }
 
         public function setGroups($principal, $attributes, &$content)
         {
-                $cachekey = sprintf("catalog-%s-groups-%s", $this->getName(), md5(serialize(array($principal, $attributes))));
+                $cachekey = sprintf("catalog-%s-groups-%s", $this->getServiceName(), md5(serialize(array($principal, $attributes))));
                 $this->_cache->save($cachekey, $content);
         }
 
-        public function getMembers($group, $domain, $attributes)
+        public function getMembers($group, $domain = null, $attributes = null)
         {
-                $cachekey = sprintf("catalog-%s-members-%s", $this->getName(), md5(serialize(array($group, $domain, $attributes))));
+                $cachekey = sprintf("catalog-%s-members-%s", $this->getServiceName(), md5(serialize(array($group, $domain, $attributes))));
                 return $this->_cache->get($cachekey);
         }
 
         public function setMembers($group, $domain, $attributes, &$content)
         {
-                $cachekey = sprintf("catalog-%s-members-%s", $this->getName(), md5(serialize(array($group, $domain, $attributes))));
+                $cachekey = sprintf("catalog-%s-members-%s", $this->getServiceName(), md5(serialize(array($group, $domain, $attributes))));
                 $this->_cache->save($cachekey, $content);
         }
 
-        public function getPrincipal($needle, $search, $options)
+        public function getPrincipal($needle, $search = null, $domain = null, $attr = null)
         {
-                $cachekey = sprintf("catalog-%s-principal-%s-%s", $this->getName(), $search, md5(serialize(array($needle, $options))));
+                $cachekey = sprintf("catalog-%s-principal-%s-%s-%s", $this->getServiceName(), $search, $domain, md5(serialize(array($needle, $attr))));
                 return $this->_cache->get($cachekey);
         }
 
-        public function setPrincipal($needle, $search, $options, &$content)
+        public function setPrincipal($needle, $search, $domain, $attr, &$content)
         {
-                $cachekey = sprintf("catalog-%s-principal-%s-%s", $this->getName(), $search, md5(serialize(array($needle, $options))));
+                $cachekey = sprintf("catalog-%s-principal-%s-%s-%s", $this->getServiceName(), $search, $domain, md5(serialize(array($needle, $attr))));
+                $this->_cache->save($cachekey, $content);
+        }
+
+        public function getPrincipals($needle, $search = null, $options = null)
+        {
+                $cachekey = sprintf("catalog-%s-principals-%s-%s", $this->getServiceName(), $search, md5(serialize(array($needle, $options))));
+                return $this->_cache->get($cachekey);
+        }
+
+        public function setPrincipals($needle, $search, $options, &$content)
+        {
+                $cachekey = sprintf("catalog-%s-principals-%s-%s", $this->getServiceName(), $search, md5(serialize(array($needle, $options))));
                 $this->_cache->save($cachekey, $content);
         }
 

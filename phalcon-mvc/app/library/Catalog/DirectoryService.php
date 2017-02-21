@@ -27,87 +27,153 @@ interface DirectoryService
 
         /**
          * Get groups for user.
+         * 
          * @param string $principal The user principal name.
          * @param array $attributes The attributes to return.
          * @return array
          */
-        function getGroups($principal, $attributes);
+        function getGroups($principal, $attributes = null);
 
         /**
          * Get members of group.
+         * 
          * @param string $group The group name.
-         * @param string $domain Restrict search to domain.
-         * @param array $attributes The attributes to return.
+         * @param string $domain Restrict search to domain (optional).
+         * @param array $attributes The attributes to return (optional).
          * @return Principal[]
          */
-        function getMembers($group, $domain, $attributes);
+        function getMembers($group, $domain = null, $attributes = null);
 
         /**
-         * Get attribute (Principal::ATTR_XXX) for user.
+         * Get single attribute (Principal::ATTR_XXX) for user.
+         * 
+         * Returns first found attribute from directory service. Use 
+         * getAttributes() to get full set of attributes from all directory 
+         * serices.
+         * 
+         * If $principal argument is missing, then it defaults to calling
+         * user that has to be authenticated.
          * 
          * <code>
-         * // Get all email addresses:
-         * $service->getAttribute('user@example.com', Principal::ATTR_MAIL);
+         * // Get email address of caller:
+         * $service->getAttribute(Principal::ATTR_MAIL);
          * 
-         * // Get user given name:
+         * // Get email address for user@example.com:
+         * $service->getAttribute(Principal::ATTR_MAIL, 'user@example.com');
+         * 
+         * // Get given name for user@example.com:
          * $service->getAttribute('user@example.com', Principal::ATTR_GN);
          * </code>
          * 
-         * @param string $principal The user principal name.
          * @param string $attribute The attribute to return.
-         * @return array
+         * @param string $principal The user principal name (defaults to caller).
+         * @return string
+         * 
+         * @see getAttributes()
          */
-        function getAttribute($principal, $attribute);
+        function getAttribute($attribute, $principal = null);
 
         /**
-         * Get user principal object.
+         * Get multiple attributes (Principal::ATTR_XXX) for user.
+         * 
+         * Returns all attribute from all directory services. A single user
+         * might occure in multiple directory services. Each service might also
+         * return multiple attributes (mail addresses is a typical case).
+         * 
+         * If $principal argument is missing, then it defaults to calling
+         * user that has to be authenticated.
          * 
          * <code>
-         * // Search three first Tomas in example.com domain:
-         * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
+         * // Get email addresses of caller:
+         * $service->getAttributes(Principal::ATTR_MAIL);
          * 
-         * // Get email for user tomas:
-         * $manager->getPrincipal('thomas', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
+         * // Get email addresses for user@example.com:
+         * $service->getAttributes(Principal::ATTR_MAIL, 'user@example.com');
          * 
-         * // Get email for user principal name tomas@example.com:
-         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
+         * // Get given names for user@example.com:
+         * $service->getAttributes(Principal::ATTR_GN, 'user@example.com');
          * </code>
          * 
-         * The $options parameter is an array containing zero or more of 
-         * these fields:
+         * @param string $attribute The attribute to return.
+         * @param string $principal The user principal name (defaults to caller).
+         * @return array
          * 
+         * @see getAttribute()
+         */
+        function getAttributes($attribute, $principal = null);
+
+        /**
+         * Get multiple user principal objects.
+         * 
+         * The $needle defines the search string and $search defines the search
+         * type. The options parameter defines common search options (i.e. limit
+         * on returned records) or which attributes to return.
+         * 
+         * Supported options are:
          * <code>
-         * array(
-         *       'attr'   => array(),
-         *       'limit'  => 0,
-         *       'domain' => null
+         * $options = array(
+         *       'attr'   => array(),   // An string or array
+         *       'limit'  => 0,         // Use 0 for unlimited
+         *       'domain' => null       // The domain filter
          * )
          * </code>
          * 
-         * The attr field defines which attributes to return. The limit field 
-         * limits the number of returned user principal objects (use 0 for 
-         * unlimited). The query can be restricted to a single domain by 
-         * setting the domain field.
+         * The attr in $options defines which properties to set in returned
+         * user principal objects. Non-standard attributes are populated in
+         * the attr member of the user principal class.
+         * 
+         * Some examples:
+         * <code>
+         * // Search for users named Thomas in all domains:
+         * $manager->getPrincipal('Thomas');
+         * 
+         * // Search three first Tomas in example.com domain:
+         * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
+         * 
+         * // Get email attributes for user thomas:
+         * $manager->getPrincipal('thomas', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
+         * 
+         * // Get email attributes for user principal name thomas@example.com:
+         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
+         * </code>
          * 
          * @param string $needle The attribute search string.
-         * @param string $search The attribute to query.
-         * @param array $options Various search options.
+         * @param string $search The attribute to query (optional).
+         * @param array $options Various search options (optional).
+         * 
          * @return Principal[] Matching user principal objects.
          */
-        function getPrincipal($needle, $search, $options);
+        function getPrincipals($needle, $search = null, $options = null);
 
+        /**
+         * Get single user principal object.
+         * 
+         * Similar to getPrincipals(), but only returns null (not found) or
+         * a single principal object. Use $domain to restrict search scope.
+         * The $attr array is the attributes to fetch and populate in the
+         * principal object returned.
+         * 
+         * @param string $needle The attribute search string.
+         * @param string $search The attribute to query (optional).
+         * @param string $domain The search domain (optional).
+         * @param array|string $attr The attributes to return (optional).
+         * 
+         * @return Principal The matching user principal object.
+         */
+        function getPrincipal($needle, $search = null, $domain = null, $attr = null);
+        
         /**
          * Get service connection.
          * @return ServiceConnection 
          */
         function getConnection();
-        
+
         /**
          * Get service name.
          * @return string
          */
-        function getName();
-        
+        function getServiceName();
+
         /**
          * Get service domains.
          * @return array

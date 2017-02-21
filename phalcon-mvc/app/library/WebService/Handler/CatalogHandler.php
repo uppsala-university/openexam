@@ -83,7 +83,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("name");
                 
-                $result = $this->_catalog->getAttributeName($this->_request->data['principal']);
+                $result = $this->_catalog->getName($this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -96,7 +96,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("mail");
                 
-                $result = $this->_catalog->getAttributeMail($this->_request->data['principal']);
+                $result = $this->_catalog->getMail($this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -109,7 +109,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("attribute");
                 
-                $result = $this->_catalog->getAttribute($this->_request->data['principal'], $this->_request->data['attribute']);
+                $result = $this->_catalog->getAttribute($this->_request->data['attribute'], $this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
@@ -164,7 +164,7 @@ class CatalogHandler extends ServiceHandler
         {
                 $this->formatRequest("principal");
 
-                $result = $this->_catalog->getPrincipal(current($this->_request->data), key($this->_request->data), $this->_request->params);
+                $result = $this->_catalog->getPrincipals(current($this->_request->data), key($this->_request->data), $this->_request->params);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }

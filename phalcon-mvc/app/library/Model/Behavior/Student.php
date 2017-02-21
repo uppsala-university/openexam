@@ -70,7 +70,7 @@ class Student extends ModelBehavior
 
         private function getUser($user, $persnr, $di)
         {
-                $result = $di->get('catalog')->getPrincipal(
+                $result = $di->get('catalog')->getPrincipals(
                     $persnr, Principal::ATTR_PNR, array('attr' => Principal::ATTR_PN)
                 );
 

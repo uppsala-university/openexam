@@ -193,8 +193,10 @@ class Cache extends Multiple
          */
         private static function decode($data)
         {
-                if (is_string($data)) {
-                        return unserialize($data);
+                if (!is_string($data)) {
+                        return $data;
+                } elseif (($result = unserialize($data))) {
+                        return $result;
                 } else {
                         return $data;
                 }

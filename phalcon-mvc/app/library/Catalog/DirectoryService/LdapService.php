@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Catalog\DirectoryService;
 
+use OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\DirectoryService\Ldap\Connection;
 use OpenExam\Library\Catalog\DirectoryService\Ldap\Result;
 use OpenExam\Library\Catalog\Exception;
@@ -107,7 +108,7 @@ class LdapService extends AttributeService
          * @param int $limit Limit on number of records returned.
          * @return array The directory entries.
          */
-        private function search($type, $value, $attributes, $class = 'person', $limit = null)
+        private function search($type, $value, $attributes, $class = 'person', $limit = 0)
         {
                 // 
                 // Return entry from cache if existing:
@@ -117,6 +118,19 @@ class LdapService extends AttributeService
                         if ($this->cache->exists($cachekey, $this->_lifetime)) {
                                 return $this->cache->get($cachekey, $this->_lifetime);
                         }
+                }
+
+                // 
+                // Return all attributes if unset:
+                // 
+                if (!isset($attributes)) {
+                        $attributes = array();
+                }
+                if ($attributes == false) {
+                        $attributes = array();
+                }
+                if (is_string($attributes)) {
+                        $attributes = array($attributes);
                 }
 
                 // 
@@ -145,7 +159,7 @@ class LdapService extends AttributeService
                 // 
                 // Search directory tree and return entries:
                 // 
-                if (($result = ldap_search($this->_conn->handle, $this->_base, $filter, array_values($attrmap), 0, $limit)) == false) {
+                if (($result = @ldap_search($this->_conn->handle, $this->_base, $filter, array_values($attrmap), 0, $limit)) == false) {
                         throw new Exception(ldap_error($this->_conn->handle), ldap_errno($this->_conn->handle));
                 }
 
@@ -257,27 +271,25 @@ class LdapService extends AttributeService
         }
 
         /**
-         * Get attribute (Principal::ATTR_XXX) for user.
+         * Get multiple attributes (Principal::ATTR_XXX) for user.
          * 
-         * <code>
-         * // Get all email addresses:
-         * $service->getAttribute('user@example.com', Principal::ATTR_MAIL);
-         * 
-         * // Get user given name:
-         * $service->getAttribute('user@example.com', Principal::ATTR_GN);
-         * </code>
-         * 
-         * @param string $principal The user principal name.
          * @param string $attribute The attribute to return.
+         * @param string $principal The user principal name (defaults to caller).
          * @return array
+         * 
+         * @see getAttribute()
          */
-        public function getAttribute($principal, $attribute)
+        public function getAttributes($attribute, $principal = null)
         {
+                if (!isset($principal)) {
+                        $principal = $this->user->getPrincipalName();
+                }
+
                 // 
                 // Return entry from cache if existing:
                 // 
                 if ($this->_lifetime) {
-                        $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->_name, $attribute, md5($principal));
+                        $cachekey = sprintf("catalog-%s-attributes-%s-%s", $this->_name, $attribute, md5($principal));
                         if ($this->cache->exists($cachekey, $this->_lifetime)) {
                                 return $this->cache->get($cachekey, $this->_lifetime);
                         }
@@ -315,12 +327,71 @@ class LdapService extends AttributeService
         }
 
         /**
+         * Get single attribute (Principal::ATTR_XXX) for user.
+         * 
+         * @param string $attribute The attribute to return.
+         * @param string $principal The user principal name (defaults to caller).
+         * @return string
+         * 
+         * @see getAttribute()
+         */
+        public function getAttribute($attribute, $principal = null)
+        {
+                if (!isset($principal)) {
+                        $principal = $this->user->getPrincipalName();
+                }
+
+                // 
+                // Return entry from cache if existing:
+                // 
+                if ($this->_lifetime) {
+                        $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->_name, $attribute, md5($principal));
+                        if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                return $this->cache->get($cachekey, $this->_lifetime)[0];
+                        }
+                }
+
+                $search = $this->search(Principal::ATTR_PN, $principal, array($attribute), 'person', 1);
+
+                $result = new Result(array_flip($search['attrmap']));
+                $result->setName($this->_name);
+                $result->insert($search['entries']);
+
+                $output = $result->getResult();
+                if ($attribute == Principal::ATTR_AFFIL) {
+                        $affilation = $this->_affiliation;
+                        foreach ($output as $index => $array) {
+                                $output[$index][$attribute] = $affilation($array[$attribute]);
+                        }
+                }
+
+                // 
+                // Flatten array to scalar. Detect x-primary (i.e. mail) attribute:
+                // 
+                if (is_string($output[0][$attribute][0])) {
+                        $attrib = $output[0][$attribute][0];
+                } elseif (isset($output[0][$attribute][0][DirectoryService::PRIMARY_ATTR_VALUE])) {
+                        $attrib = $output[0][$attribute][0][DirectoryService::PRIMARY_ATTR_VALUE];
+                } elseif (is_array($output[0][$attribute][0])) {
+                        $attrib = current($output[0][$attribute][0]);
+                } else {
+                        $attrib = $output[0][$attribute][0];
+                }
+
+                if (isset($cachekey)) {
+                        return $this->setCacheData($cachekey, $attrib);
+                } else {
+                        return $attrib;
+                }
+        }
+
+        /**
          * Get groups for user.
          * @param string $principal The user principal name.
          * @param array $attributes The attributes to return.
          * @return array
          */
-        public function getGroups($principal, $attributes)
+        public function getGroups($principal, $attributes = null)
         {
                 // 
                 // Return entry from cache if existing:
@@ -336,7 +407,7 @@ class LdapService extends AttributeService
                 // Get distinguished names for all user principal groups:
                 // 
                 $member = strtolower($this->_attrmap['group'][Group::ATTR_PARENT]);
-                $mapped = $this->getAttribute($principal, $member);
+                $mapped = $this->getAttributes($member, $principal);
                 $groups = array();
 
                 // 
@@ -372,43 +443,21 @@ class LdapService extends AttributeService
         }
 
         /**
-         * Get user principal object.
-         * 
-         * <code>
-         * // Search three first Tomas in example.com domain:
-         * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
-         * 
-         * // Get email for user tomas:
-         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
-         * 
-         * // Get email for user principal tomas@example.com:
-         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
-         * </code>
-         * 
-         * The $options parameter is an array containing zero or more of 
-         * these fields:
-         * 
-         * <code>
-         * array(
-         *       'attr'   => array(),   // attributes to return
-         *       'limit'  => 0,         // limit number of entries
-         *       'domain' => null,      // restrict to domain
-         *       'data'   => true       // append search data in attr member
-         * )
-         * </code>
+         * Get multiple user principal objects.
          * 
          * @param string $needle The attribute search string.
-         * @param string $search The attribute to query.
-         * @param array $options Various search options.
+         * @param string $search The attribute to query (optional).
+         * @param array $options Various search options (optional).
+         * 
          * @return Principal[] Matching user principal objects.
          */
-        public function getPrincipal($needle, $search, $options)
+        public function getPrincipals($needle, $search = null, $options = null)
         {
                 // 
                 // Return entry from cache if existing:
                 // 
                 if ($this->_lifetime) {
-                        $cachekey = sprintf("catalog-%s-principal-%s-%s", $this->_name, $search, md5(serialize(array($needle, $options))));
+                        $cachekey = sprintf("catalog-%s-principals-%s-%s", $this->_name, $search, md5(serialize(array($needle, $options))));
                         if ($this->cache->exists($cachekey, $this->_lifetime)) {
                                 return $this->cache->get($cachekey, $this->_lifetime);
                         }
@@ -476,13 +525,55 @@ class LdapService extends AttributeService
         }
 
         /**
+         * Get single user principal object.
+         * 
+         * @param string $needle The attribute search string.
+         * @param string $search The attribute to query (optional).
+         * @param string $domain The search domain (optional).
+         * @param array|string $attr The attributes to return (optional).
+         * 
+         * @return Principal The matching user principal object.
+         */
+        function getPrincipal($needle, $search = null, $domain = null, $attr = null)
+        {
+                // 
+                // Return entry from cache if existing:
+                // 
+                if ($this->_lifetime) {
+                        $cachekey = sprintf("catalog-%s-principal-%s-%s-%s", $this->_name, $search, $domain, md5(serialize(array($needle, $attr))));
+                        if ($this->cache->exists($cachekey, $this->_lifetime)) {
+                                return $this->cache->get($cachekey, $this->_lifetime);
+                        }
+                }
+
+                if (($principals = $this->getPrincipals($needle, $search, array(
+                        'domain' => $domain,
+                        'attr'   => $attr,
+                        'limit'  => 1
+                    ))) == null) {
+                        return null;
+                }
+
+                // 
+                // Return user principals:
+                // 
+                if (isset($cachekey)) {
+                        $result = $this->setCacheData($cachekey, $principals);
+                } else {
+                        $result = $principals;
+                }
+
+                return $result[0];
+        }
+
+        /**
          * Get members of group.
          * @param string $group The group name.
          * @param string $domain Restrict search to domain.
          * @param array $attributes The attributes to return.
          * @return Principal[]
          */
-        public function getMembers($group, $domain, $attributes)
+        public function getMembers($group, $domain = null, $attributes = null)
         {
                 // 
                 // Return entry from cache if existing:

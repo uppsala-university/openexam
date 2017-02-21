@@ -133,20 +133,18 @@ class Role extends ModelBase
         protected function getAttribute($name)
         {
                 if (($catalog = $this->getDI()->getCatalog()) != false) {
-                        if (($attrs = $catalog->getAttribute($this->user, $name))) {
-                                return current($attrs)[$name][0];
-                        }
+                        return $catalog->getAttributes($name, $this->user);
                 }
         }
 
         /**
-         * Get all attributes from directory service.
+         * Get all user principals for this user from directory service.
          * @return array
          */
         protected function getAttributes()
         {
                 if (($catalog = $this->getDI()->getCatalog()) != false) {
-                        return $catalog->getPrincipal(
+                        return $catalog->getPrincipals(
                                 $this->user, Principal::ATTR_PN, array(
                                     'attr' => array(
                                             Principal::ATTR_NAME,

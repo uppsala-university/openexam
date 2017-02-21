@@ -36,17 +36,7 @@ class Helper extends Component
          */
         public function getCatalogAttribute($principal, $attribute)
         {
-                if (is_null($principal)) {
-                        return "";
-                }
-
-                if (($result = $this->catalog->getAttribute($principal, $attribute))) {
-                        $data = current($result);
-                        $attr = $data[$attribute][0];
-
-                        unset($data);
-                        return $attr;
-                }
+                return $this->catalog->getAttribute($attribute, $principal);
         }
 
 }

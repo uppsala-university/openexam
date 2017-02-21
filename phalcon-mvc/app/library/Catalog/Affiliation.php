@@ -164,7 +164,7 @@ class Affiliation extends Component
         private function setAffilations()
         {
                 $this->_affiliations = array();
-                $affiliations = $this->catalog->getAttribute($this->_principal, Principal::ATTR_AFFIL);
+                $affiliations = $this->catalog->getAttributes(Principal::ATTR_AFFIL, $this->_principal);
 
                 foreach ($affiliations as $data) {
                         $this->_affiliations = array_merge($this->_affiliations, $data[Principal::ATTR_AFFIL]);

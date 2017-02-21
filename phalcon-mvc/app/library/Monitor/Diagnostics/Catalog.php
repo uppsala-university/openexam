@@ -111,10 +111,10 @@ class Catalog extends Component implements ServiceCheck
                                 $online = new OnlineStatus($hostname);
 
                                 if (!$online->checkStatus()) {
-                                        $this->_result[$domain][$service->getName()]['online'] = $online->getResult();
+                                        $this->_result[$domain][$service->getServiceName()]['online'] = $online->getResult();
                                         $this->_failed = true;
                                 } else {
-                                        $this->_result[$domain][$service->getName()]['online'] = $online->getResult();
+                                        $this->_result[$domain][$service->getServiceName()]['online'] = $online->getResult();
                                 }
                         }
                 }
@@ -141,12 +141,12 @@ class Catalog extends Component implements ServiceCheck
                                 }
 
                                 if ($connection->connected()) {
-                                        $this->_result[$domain][$service->getName()]['working'] = true;
+                                        $this->_result[$domain][$service->getServiceName()]['working'] = true;
                                 } elseif ($connection->open()) {
-                                        $this->_result[$domain][$service->getName()]['working'] = true;
+                                        $this->_result[$domain][$service->getServiceName()]['working'] = true;
                                         $connection->close();
                                 } else {
-                                        $this->_result[$domain][$service->getName()]['working'] = false;
+                                        $this->_result[$domain][$service->getServiceName()]['working'] = false;
                                         $this->_failed = true;
                                 }
                         }

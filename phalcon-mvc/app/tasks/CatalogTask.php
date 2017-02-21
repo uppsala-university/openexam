@@ -13,6 +13,8 @@
 
 namespace OpenExam\Console\Tasks;
 
+use OpenExam\Library\Catalog\DirectoryService;
+
 /**
  * Catalog service task.
  *
@@ -26,6 +28,11 @@ class CatalogTask extends MainTask implements TaskInterface
          * @var array 
          */
         private $_options;
+        /**
+         * The directory service.
+         * @var DirectoryService
+         */
+        private $_service;
 
         public function helpAction()
         {
@@ -39,26 +46,28 @@ class CatalogTask extends MainTask implements TaskInterface
                         'action'   => '--catalog',
                         'usage'    => array(
                                 '--principal --needle=val --search=attr [--domain=name] [--service=name] [--limit=num]',
-                                '--attribute --principal=user',
+                                '--attribute=name --principal=user',
+                                '--attributes=name --principal=user',
                                 '--groups --principal=user',
                                 '--members --group=name',
                                 '--domains|--services'
                         ),
                         'options'  => array(
-                                '--principal'      => 'Search for user principal.',
-                                '--principal=user' => 'User principal as search parameter.',
-                                '--search=attr'    => 'Search for attribute (user principal search).',
-                                '--needle=val'     => 'The attribute value (user principal search).',
-                                '--attribute'      => 'Search for user attribute(s).',
-                                '--groups'         => 'Search for groups where user principal is member.',
-                                '--group=name'     => 'Use group name as search parameter for members listing.',
-                                '--members'        => 'Search for group members.',
-                                '--domain=name'    => 'Restrict search to given domain.',
-                                '--service=name'   => 'Restrict search to given service.',
-                                '--limit=num'      => 'Limit number of records returned from user principal search.',
-                                '--domains'        => 'List all directory domains in catalog manager.',
-                                '--services'       => 'List all services in catalog manager.',
-                                '--verbose'        => 'Be more verbose.'
+                                '--principal'       => 'Search for user principal.',
+                                '--principal=user'  => 'User principal as search parameter.',
+                                '--search=attr'     => 'Search for attribute (user principal search).',
+                                '--needle=val'      => 'The attribute value (user principal search).',
+                                '--attribute=name'  => 'Search for user attributes.',
+                                '--attributes=name' => 'Search for user attributes.',
+                                '--groups'          => 'Search for groups where user principal is member.',
+                                '--group=name'      => 'Use group name as search parameter for members listing.',
+                                '--members'         => 'Search for group members.',
+                                '--domain=name'     => 'Restrict search to given domain.',
+                                '--service=name'    => 'Restrict search to given service.',
+                                '--limit=num'       => 'Limit number of records returned from user principal search.',
+                                '--domains'         => 'List all directory domains in catalog manager.',
+                                '--services'        => 'List all services in catalog manager.',
+                                '--verbose'         => 'Be more verbose.'
                         ),
                         'examples' => array(
                                 array(
@@ -74,8 +83,20 @@ class CatalogTask extends MainTask implements TaskInterface
                                         'command' => '--catalog --principal --search=gn --needle=Anders --service=akka --limit=15'
                                 ),
                                 array(
+                                        'descr'   => 'Same, but restrict returned attributes',
+                                        'command' => '--catalog --principal --search=gn --needle=Anders --service=akka --limit=15 --attributes=name,mail,uid,department'
+                                ),
+                                array(
                                         'descr'   => 'Get members of given group',
                                         'command' => '--catalog --members --group="BMC Mediateket CBE Manager"'
+                                ),
+                                array(
+                                        'descr'   => 'Get user groups',
+                                        'command' => '--catalog --groups --principal=user@example.com'
+                                ),
+                                array(
+                                        'descr'   => 'Get all mail attribute for user',
+                                        'command' => '--catalog --attributes=mail --principal=user@example.com'
                                 ),
                         )
                 );
@@ -88,7 +109,7 @@ class CatalogTask extends MainTask implements TaskInterface
         public function groupsAction($params = array())
         {
                 $this->setOptions($params, 'group');
-                $result = $this->catalog->getGroups($this->_options['principal']);
+                $result = $this->_service->getGroups($this->_options['principal']);
                 print_r($result);
         }
 
@@ -99,7 +120,7 @@ class CatalogTask extends MainTask implements TaskInterface
         public function membersAction($params = array())
         {
                 $this->setOptions($params, 'members');
-                $result = $this->catalog->getMembers($this->_options['group']);
+                $result = $this->_service->getMembers($this->_options['group']);
                 print_r($result);
         }
 
@@ -110,32 +131,48 @@ class CatalogTask extends MainTask implements TaskInterface
         public function attributeAction($params = array())
         {
                 $this->setOptions($params, 'attribute');
-                $result = $this->catalog->getAttribute($this->_options['principal']);
+                $result = $this->_service->getAttribute($this->_options['attribute'], $this->_options['principal']);
                 print_r($result);
         }
 
         /**
-         * Principal search action.
+         * Attributes search action.
+         * @param array $params
+         */
+        public function attributesAction($params = array())
+        {
+                $this->setOptions($params, 'attributes');
+                $result = $this->_service->getAttributes($this->_options['attribute'], $this->_options['principal']);
+                print_r($result);
+        }
+
+        /**
+         * Principals search action.
          * @param array $params
          */
         public function principalAction($params = array())
         {
                 $this->setOptions($params, 'principal');
 
-                if ($this->_options['service']) {
-                        $catalog = $this->catalog->getService($this->_options['service']);
-                } else {
-                        $catalog = $this->catalog;
-                }
                 if ($this->_options['domain']) {
-                        $catalog->setDefaultDomain($this->_options['domain']);
+                        $this->_service->setDefaultDomain($this->_options['domain']);
+                }
+                if ($this->_options['attributes'] && strstr($this->_options['attributes'], ',')) {
+                        $this->_options['attribute'] = explode(',', $this->_options['attributes']);
                 }
 
-                $result = $catalog->getPrincipal(
-                    $this->_options['needle'], $this->_options['search'], array(
-                        'domain' => $this->_options['domain'],
-                        'limit'  => $this->_options['limit']
-                ));
+                if ($this->_options['limit'] == 1) {
+                        $result = $this->_service->getPrincipal(
+                            $this->_options['needle'], $this->_options['search'], $this->_options['domain'], $this->_options['attribute']
+                        );
+                } else {
+                        $result = $this->_service->getPrincipals(
+                            $this->_options['needle'], $this->_options['search'], array(
+                                'domain' => $this->_options['domain'],
+                                'limit'  => $this->_options['limit'],
+                                'attr'   => $this->_options['attribute']
+                        ));
+                }
                 print_r($result);
         }
 
@@ -146,7 +183,7 @@ class CatalogTask extends MainTask implements TaskInterface
         public function domainsAction($params = array())
         {
                 $this->setOptions($params, 'domains');
-                $result = $this->catalog->getDomains();
+                $result = $this->_service->getDomains();
                 print_r($result);
         }
 
@@ -157,11 +194,11 @@ class CatalogTask extends MainTask implements TaskInterface
         public function servicesAction($params = array())
         {
                 $this->setOptions($params, 'services');
-                $result = $this->catalog->getDomains();
+                $result = $this->_service->getDomains();
                 foreach ($result as $domain) {
                         $this->flash->notice(sprintf("%s ->", $domain));
-                        foreach ($this->catalog->getServices($domain) as $service) {
-                                $this->flash->notice(sprintf("\t%s", $service->getName()));
+                        foreach ($this->_service->getServices($domain) as $service) {
+                                $this->flash->notice(sprintf("\t%s", $service->getServiceName()));
                         }
                 }
         }
@@ -181,7 +218,7 @@ class CatalogTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'groups', 'group', 'members', 'principal', 'attribute', 'domain', 'service', 'limit', 'needle', 'search', 'domains', 'services');
+                $options = array('verbose', 'groups', 'group', 'members', 'principal', 'attribute', 'attributes', 'domain', 'service', 'limit', 'needle', 'search', 'domains', 'services');
                 $current = $action;
 
                 // 
@@ -212,6 +249,16 @@ class CatalogTask extends MainTask implements TaskInterface
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
+                }
+
+                if ($action == 'attributes') {
+                        $this->_options['attribute'] = $this->_options['attributes'];
+                        unset($this->_options['attributes']);
+                }
+                if ($this->_options['service']) {
+                        $this->_service = $this->catalog->getService($this->_options['service']);
+                } else {
+                        $this->_service = $this->catalog;
                 }
         }
 

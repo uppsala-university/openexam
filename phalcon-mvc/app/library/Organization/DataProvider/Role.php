@@ -260,14 +260,14 @@ abstract class RoleData extends Component
         {
                 for ($i = 0; $i < count($result); ++$i) {
                         if ($this->_decorate) {
-                                if (!($principals = $this->catalog->getPrincipal($result[$i]['user'], Principal::ATTR_PN))) {
+                                if (!($principal = $this->catalog->getPrincipal($result[$i]['user'], Principal::ATTR_PN))) {
                                         $result[$i]['name'] = '';
                                         $result[$i]['mail'] = '';
-                                } elseif ($principals[0]->mail) {
-                                        $result[$i]['name'] = $principals[0]->name;
-                                        $result[$i]['mail'] = $principals[0]->mail[0];
+                                } elseif ($principals->mail) {
+                                        $result[$i]['name'] = $principals->name;
+                                        $result[$i]['mail'] = $principals->mail[0];
                                 } else {
-                                        $result[$i]['name'] = $principals[0]->name;
+                                        $result[$i]['name'] = $principals->name;
                                         $result[$i]['mail'] = '';
                                 }
                         }

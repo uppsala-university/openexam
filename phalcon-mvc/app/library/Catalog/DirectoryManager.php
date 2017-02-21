@@ -260,23 +260,93 @@ class DirectoryManager extends Component implements DirectoryService
         }
 
         /**
-         * Get attribute (Principal::ATTR_XXX) for user.
+         * Get single attribute (Principal::ATTR_XXX) for user.
+         * 
+         * Returns first found attribute from directory service. Use 
+         * getAttributes() to get full set of attributes from all directory 
+         * serices.
+         * 
+         * If $principal argument is missing, then it defaults to calling
+         * user that has to be authenticated.
          * 
          * <code>
-         * // Get all email addresses:
-         * $service->getAttribute('user@example.com', Principal::ATTR_MAIL);
+         * // Get email address of caller:
+         * $service->getAttribute(Principal::ATTR_MAIL);
          * 
-         * // Get user given name:
+         * // Get email address for user@example.com:
+         * $service->getAttribute(Principal::ATTR_MAIL, 'user@example.com');
+         * 
+         * // Get given name for user@example.com:
          * $service->getAttribute('user@example.com', Principal::ATTR_GN);
          * </code>
          * 
-         * @param string $principal The user principal name.
          * @param string $attribute The attribute to return.
-         * @return array
+         * @param string $principal The user principal name (defaults to caller).
+         * @return string
+         * 
+         * @see getAttributes()
          */
-        public function getAttribute($principal, $attribute)
+        public function getAttribute($attribute, $principal = null)
         {
-                if (($result = $this->_cache->getAttribute($principal, $attribute))) {
+                if (!isset($principal)) {
+                        $principal = $this->user->getPrincipalName();
+                }
+                if (($result = $this->_cache->getAttribute($attribute, $principal))) {
+                        return $result;
+                }
+                
+                $domain = $this->getDomain($principal);
+                $result = null;
+
+                if (isset($this->_services[$domain])) {
+                        foreach ($this->_services[$domain] as $name => $service) {
+                                try {
+                                        if (($result = $service->getAttribute($attribute, $principal)) != null) {
+                                                break;
+                                        }
+                                } catch (Exception $exception) {
+                                        $this->report($exception, $service, $name);
+                                }
+                        }
+                }
+                
+                $this->_cache->setAttribute($attribute, $principal, serialize($result));
+                return $result;
+        }
+
+        /**
+         * Get multiple attributes (Principal::ATTR_XXX) for user.
+         * 
+         * Returns all attribute from all directory services. A single user
+         * might occure in multiple directory services. Each service might also
+         * return multiple attributes (mail addresses is a typical case).
+         * 
+         * If $principal argument is missing, then it defaults to calling
+         * user that has to be authenticated.
+         * 
+         * <code>
+         * // Get email addresses of caller:
+         * $service->getAttributes(Principal::ATTR_MAIL);
+         * 
+         * // Get email addresses for user@example.com:
+         * $service->getAttributes(Principal::ATTR_MAIL, 'user@example.com');
+         * 
+         * // Get given names for user@example.com:
+         * $service->getAttributes(Principal::ATTR_GN, 'user@example.com');
+         * </code>
+         * 
+         * @param string $attribute The attribute to return.
+         * @param string $principal The user principal name (defaults to caller).
+         * @return array
+         * 
+         * @see getAttribute()
+         */
+        public function getAttributes($attribute, $principal = null)
+        {
+                if (!isset($principal)) {
+                        $principal = $this->user->getPrincipalName();
+                }
+                if (($result = $this->_cache->getAttributes($attribute, $principal))) {
                         return $result;
                 }
 
@@ -286,7 +356,7 @@ class DirectoryManager extends Component implements DirectoryService
                 if (isset($this->_services[$domain])) {
                         foreach ($this->_services[$domain] as $name => $service) {
                                 try {
-                                        if (($attributes = $service->getAttribute($principal, $attribute)) != null) {
+                                        if (($attributes = $service->getAttributes($attribute, $principal)) != null) {
                                                 $result = array_merge($result, $attributes);
                                         }
                                 } catch (Exception $exception) {
@@ -295,42 +365,52 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
-                $this->_cache->setAttribute($principal, $attribute, $result);
+                $this->_cache->setAttributes($attribute, $principal, $result);
                 return $result;
         }
 
         /**
-         * Get user principal object.
+         * Get multiple user principal objects.
          * 
+         * The $needle defines the search string and $search defines the search
+         * type. The options parameter defines common search options (i.e. limit
+         * on returned records) or which attributes to return.
+         * 
+         * Supported options are:
          * <code>
-         * // Search three first Tomas in example.com domain:
-         * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
-         * 
-         * // Get email for user tomas:
-         * $manager->getPrincipal('thomas', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
-         * 
-         * // Get email for user principal name tomas@example.com:
-         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
-         * </code>
-         * 
-         * The $options parameter is an array containing zero or more of 
-         * these fields:
-         * 
-         * <code>
-         * array(
-         *       'attr'   => array(),   // attributes to return
-         *       'limit'  => 0,         // limit number of entries
-         *       'domain' => null,      // restrict to domain
-         *       'data'   => true       // append search data in attr member
+         * $options = array(
+         *       'attr'   => array(),   // An string or array
+         *       'limit'  => 0,         // Use 0 for unlimited
+         *       'domain' => null       // The domain filter
          * )
          * </code>
          * 
+         * The attr in $options defines which properties to set in returned
+         * user principal objects. Non-standard attributes are populated in
+         * the attr member of the user principal class.
+         * 
+         * Some examples:
+         * <code>
+         * // Search for users named Thomas in all domains:
+         * $manager->getPrincipal('Thomas');
+         * 
+         * // Search three first Tomas in example.com domain:
+         * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
+         * 
+         * // Get email attributes for user thomas:
+         * $manager->getPrincipal('thomas', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
+         * 
+         * // Get email attributes for user principal name thomas@example.com:
+         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
+         * </code>
+         * 
          * @param string $needle The attribute search string.
-         * @param string $search The attribute to query.
-         * @param array $options Various search options.
+         * @param string $search The attribute to query (optional).
+         * @param array $options Various search options (optional).
+         * 
          * @return Principal[] Matching user principal objects.
          */
-        public function getPrincipal($needle, $search = self::DEFAULT_SEARCH, $options = array(
+        public function getPrincipals($needle, $search = self::DEFAULT_SEARCH, $options = array(
                 'attr'   => null,
                 'limit'  => self::DEFAULT_LIMIT,
                 'domain' => null,
@@ -350,7 +430,7 @@ class DirectoryManager extends Component implements DirectoryService
                         $options['attr'] = array($options['attr']);
                 }
 
-                if (($result = $this->_cache->getPrincipal($needle, $search, $options))) {
+                if (($result = $this->_cache->getPrincipals($needle, $search, $options))) {
                         return $result;
                 }
 
@@ -360,7 +440,7 @@ class DirectoryManager extends Component implements DirectoryService
                         if (!isset($options['domain']) || $domain == $options['domain']) {
                                 foreach ($services as $name => $service) {
                                         try {
-                                                if (($res = $service->getPrincipal($needle, $search, $options)) != null) {
+                                                if (($res = $service->getPrincipals($needle, $search, $options)) != null) {
                                                         if ($options['limit'] == 0) {
                                                                 $result = array_merge($result, $res);
                                                         } elseif (count($res) + count($result) < $options['limit']) {
@@ -378,28 +458,77 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
-                $this->_cache->setPrincipal($needle, $search, $options, $result);
+                $this->_cache->setPrincipals($needle, $search, $options, $result);
+                return $result;
+        }
+
+        /**
+         * Get single user principal object.
+         * 
+         * Similar to getPrincipals(), but only returns null (not found) or
+         * a single principal object. Use $domain to restrict search scope.
+         * The $attr array is the attributes to fetch and populate in the
+         * principal object returned.
+         * 
+         * @param string $needle The attribute search string.
+         * @param string $search The attribute to query (optional).
+         * @param string $domain The search domain (optional).
+         * @param array|string $attr The attributes to return (optional).
+         * 
+         * @return Principal The matching user principal object.
+         */
+        public function getPrincipal($needle, $search = null, $domain = null, $attr = null)
+        {
+                if (!isset($attr)) {
+                        $attr = self::$DEFAULT_ATTR;
+                }
+                if (!isset($domain)) {
+                        $domain = $this->_domain;
+                }
+                if (!is_array($attr)) {
+                        $attr = array($attr);
+                }
+
+                if (($result = $this->_cache->getPrincipal($needle, $search, $domain, $attr))) {
+                        return $result;
+                }
+
+                foreach ($this->_services as $dom => $services) {
+                        if (!isset($domain) || $domain == $dom) {
+                                foreach ($services as $name => $service) {
+                                        try {
+                                                if (($res = $service->getPrincipal($needle, $search, $domain, $attr)) != null) {
+                                                        break;
+                                                }
+                                        } catch (Exception $exception) {
+                                                $this->report($exception, $service, $name);
+                                        }
+                                }
+                        }
+                }
+
+                $this->_cache->setPrincipal($needle, $search, $domain, $attr, $result);
                 return $result;
         }
 
         /**
          * Specialization of getAttribute() for email addresses.
-         * @param string $principal The user principal.
-         * @return array
+         * @param string $principal The user principal (defaults to caller).
+         * @return string
          */
-        public function getAttributeMail($principal)
+        public function getMail($principal = null)
         {
-                return $this->getAttribute($principal, Principal::ATTR_MAIL);
+                return $this->getAttribute(Principal::ATTR_MAIL, $principal);
         }
 
         /**
          * Specialization of getAttribute() for common name.
-         * @param string $principal The user principal.
-         * @return array
+         * @param string $principal The user principal (defaults to caller).
+         * @return string
          */
-        public function getAttributeName($principal)
+        public function getName($principal = null)
         {
-                return $this->getAttribute($principal, Principal::ATTR_NAME);
+                return $this->getAttribute(Principal::ATTR_NAME, $principal);
         }
 
         /**
@@ -457,7 +586,7 @@ class DirectoryManager extends Component implements DirectoryService
          * Get service name.
          * @return string
          */
-        public function getName()
+        public function getServiceName()
         {
                 return 'manager';
         }

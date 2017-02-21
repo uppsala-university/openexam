@@ -66,7 +66,7 @@ abstract class ServiceAdapter extends Component implements DirectoryService
          * Get service name.
          * @return string
          */
-        public function getName()
+        public function getServiceName()
         {
                 return $this->_name;
         }
@@ -88,40 +88,70 @@ abstract class ServiceAdapter extends Component implements DirectoryService
          * 2. The cache key don't exists.
          * 
          * @param string $key The cache key.
-         * @param array $result The result data.
-         * @return array
+         * @param mixed $result The result data.
+         * @return mixed
          */
         protected function setCacheData($key, $result)
         {
+                // 
+                // Check if this service has disabled cache:
+                // 
                 if ($this->_lifetime == 0) {
                         return $result;
                 }
+
+                // 
+                // Require cache key (obvious):
+                // 
                 if (!isset($key)) {
                         return $result;
                 }
-                if (!$this->cache->exists($key, $this->_lifetime)) {
+
+                // 
+                // Don't cache if valid content exists:
+                // 
+                if ($this->cache->exists($key, $this->_lifetime)) {
+                        return $result;
+                }
+
+                // 
+                // Ensure that strings are serialized!
+                // 
+                if (is_string($result)) {
+                        $this->cache->save($key, serialize($result), $this->_lifetime);
+                } else {
                         $this->cache->save($key, $result, $this->_lifetime);
                 }
-                
+
                 return $result;
         }
 
-        public function getGroups($principal, $attributes)
+        public function getGroups($principal, $attributes = null)
         {
                 return null;
         }
 
-        public function getMembers($group, $domain, $attributes)
+        public function getMembers($group, $domain = null, $attributes = null)
         {
                 return null;
         }
 
-        public function getAttribute($principal, $attr)
+        public function getAttributes($attribute, $principal = null)
         {
                 return null;
         }
 
-        public function getPrincipal($needle, $search, $options)
+        public function getAttribute($attribute, $principal = null)
+        {
+                return null;
+        }
+
+        public function getPrincipals($needle, $search = null, $options = null)
+        {
+                return null;
+        }
+
+        public function getPrincipal($needle, $search = null, $domain = null, $attr = null)
         {
                 return null;
         }

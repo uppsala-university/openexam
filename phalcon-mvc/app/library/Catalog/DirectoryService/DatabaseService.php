@@ -116,22 +116,18 @@ class DatabaseService extends AttributeService
         }
 
         /**
-         * Get attribute (Principal::ATTR_XXX) for user.
+         * Get multiple attribute (Principal::ATTR_XXX) for user.
          * 
-         * <code>
-         * // Get all email addresses:
-         * $service->getAttribute('user@example.com', Principal::ATTR_MAIL);
-         * 
-         * // Get user given name:
-         * $service->getAttribute('user@example.com', Principal::ATTR_GN);
-         * </code>
-         * 
-         * @param string $principal The user principal name.
          * @param string $attribute The attribute to return.
+         * @param string $principal The user principal name.
          * @return array
          */
-        public function getAttribute($principal, $attribute)
+        public function getAttributes($attribute, $principal = null)
         {
+                if (!isset($principal)) {
+                        $principal = $this->user->getPrincipalName();
+                }
+
                 if (($user = User::findFirst(array(
                             'conditions' => 'principal = :principal:',
                             'bind'       => array(
@@ -165,48 +161,85 @@ class DatabaseService extends AttributeService
         }
 
         /**
+         * Get single attribute (Principal::ATTR_XXX) for user.
+         * 
+         * @param string $attribute The attribute to return.
+         * @param string $principal The user principal name (optional).
+         * @return string
+         */
+        public function getAttribute($attribute, $principal = null)
+        {
+                if (!isset($principal)) {
+                        $principal = $this->user->getPrincipalName();
+                }
+
+                if (($user = User::findFirst(array(
+                            'conditions' => 'principal = :principal:',
+                            'bind'       => array(
+                                    'principal' => $principal
+                            )
+                    )))) {
+                        $data = $user->toArray();
+
+                        if (isset($this->_attrmap['person'][$attribute])) {
+                                $result = $data[$this->_attrmap['person'][$attribute]];
+                        } else {
+                                $result = $data[$attribute];
+                        }
+
+                        unset($user);
+                        unset($data);
+
+                        return $result;
+                }
+        }
+
+        /**
          * Get user principal objects.
          * 
-         * <code>
-         * // Search three first Tomas in example.com domain:
-         * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
-         * 
-         * // Get email for user tomas:
-         * $manager->getPrincipal('thomas', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
-         * 
-         * // Get email for user principal name tomas@example.com:
-         * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
-         * </code>
-         * 
-         * The $options parameter is an array containing zero or more of 
-         * these fields:
-         * 
-         * <code>
-         * array(
-         *       'attr'   => array(),
-         *       'limit'  => 0,
-         *       'domain' => null
-         * )
-         * </code>
-         * 
-         * The attr field defines which attributes to return. The limit field 
-         * limits the number of returned user principal objects (use 0 for 
-         * unlimited). The query can be restricted to a single domain by 
-         * setting the domain field.
-         * 
          * @param string $needle The attribute search string.
-         * @param string $search The attribute to query.
-         * @param array $options Various search options.
+         * @param string $search The attribute to query (optional).
+         * @param array $options Various search options (optional).
          * 
          * @return Principal[] Matching user principal objects.
          */
-        public function getPrincipal($needle, $search, $options)
+        public function getPrincipals($needle, $search = null, $options = null)
         {
                 $query = $this->getPrincipalQuery($needle, $search, $options);
                 $array = $this->getPrincipalArray($query, $options);
 
                 unset($query);
                 return $array;
+        }
+
+        /**
+         * Get user principal object.
+         * 
+         * @param string $needle The attribute search string.
+         * @param string $search The attribute to query (optional).
+         * @param string $domain The search domain (optional).
+         * @param array|string $attr The attributes to return (optional).
+         * 
+         * @return Principal The matching user principal object.
+         */
+        function getPrincipal($needle, $search = null, $domain = null, $attr = null)
+        {
+                $options = array(
+                        'domain' => $domain,
+                        'attr'   => $attr,
+                        'limit'  => 1
+                );
+
+                $query = $this->getPrincipalQuery($needle, $search, $options);
+                $array = $this->getPrincipalArray($query, $options);
+
+                unset($query);
+                
+                if (is_array($array)) {
+                        return $array[0];
+                } else {
+                        return null;
+                }
         }
 
         /**

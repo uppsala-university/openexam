@@ -72,12 +72,13 @@ class UppdokService extends ServiceAdapter
 
         /**
          * Get members of group.
+         * 
          * @param string $group The group name.
-         * @param string $domain Restrict search to domain.
-         * @param array $attributes The attributes to return.
+         * @param string $domain Restrict search to domain (optional).
+         * @param array $attributes The attributes to return (optional).
          * @return Principal[]
          */
-        public function getMembers($group, $domain, $attributes)
+        public function getMembers($group, $domain = null, $attributes = null)
         {
                 // 
                 // Return entry from cache if existing:
@@ -93,7 +94,7 @@ class UppdokService extends ServiceAdapter
                 $group = trim($group, '*');
 
                 foreach ($this->_data->members($group) as $member) {
-                        $principal = $member->getPrincipal($domain, $attributes);
+                        $principal = $member->getPrincipals($domain, $attributes);
                         $principal->attr = array(
                                 'svc' => array(
                                         'name' => $this->_name,
