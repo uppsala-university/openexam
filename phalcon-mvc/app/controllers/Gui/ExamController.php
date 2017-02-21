@@ -204,9 +204,9 @@ class ExamController extends GuiController
                 }
 
                 // 
-                // Check if required role has been passed:
+                // Check if minimum required access for requested role pass:
                 // 
-                if ($this->capabilities->hasPermission($role, 'exam', ObjectAccess::UPDATE)) {
+                if ($this->capabilities->hasPermission($role, 'exam', ObjectAccess::READ)) {
                         $this->user->setPrimaryRole($role);
                 } else {
                         throw new \Exception("Invalid URL.", Error::BAD_REQUEST);
