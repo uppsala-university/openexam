@@ -1,13 +1,22 @@
 <?php
+
+use OpenExam\Library\Security\Roles;
+
 $qParts = json_decode($question->quest, true);
 $totalQParts = count($qParts);
+
+if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
+        $exam->show_correctors = true;
+} else {
+        $exam->show_correctors = false;
+}
 
 ?>
 
 <!-- Add / Edit question form that appears in light box -->
 
 <div  id="question-form" style="padding-top:20px; ">
-    <div id="qPartTabs" style="<?= (in_array("published", $exam->flags)) ? 'display:none' : ''; ?>">
+    <div id="qPartTabs" style="<?= $exam->published ? 'display:none' : ''; ?>">
         <?php $tabCounter = 1 ?>
         <ul id="q-part-tabs" style=" <?= ($totalQParts <= 1 ? "display:none" : "") ?>">
             <li><a href="#q-part-<?= $tabCounter ?>">Part a</a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
@@ -21,7 +30,6 @@ $totalQParts = count($qParts);
             <?php
             $i = 1;
             do {
-
                     $qPartTitle = chr($i + 96);
 
                     ?>
@@ -186,25 +194,17 @@ $totalQParts = count($qParts);
         </div>
     </div>
     <br style="clear:both" />
-    <?php
-    $showCorrectors = $this->user->getPrincipalName() == $exam->creator || $this->user->acquire(array(OpenExam\Library\Security\Roles::ADMIN)) ? true : false;
-    /* if(is_object($question)):
-      $showCorrectors = $this->capabilities->hasCapability($question, 'update');
-      else:
-      $showCorrectors = $this->user->getPrincipalName() == $exam->creator;
-      endif; */
-
-    ?>
-    <div style="margin:25px 10px; <?= (!$showCorrectors ? "display:none" : "") ?>" id="q_correctors">
+    <div style="margin:25px 10px; <?= ($exam->show_correctors ? "" : "display:none") ?>" id="q_correctors">
         <article class="ac-large">
             <?php
-            if ($showCorrectors) {
+            if ($exam->show_correctors) {
                     $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name') . " [" . $this->user->getUser() . "]");
             } else {
                     $correctors = is_object($question) ? $question->correctors : array();
             }
 
             ?>
+
             <div style="font-weight:bold"> Question Correctors: <a href="#" onClick="return false;">
                     <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "id" => "uu-id4")); ?>
                 </a> <br>
@@ -231,7 +231,6 @@ $totalQParts = count($qParts);
                     </ul>
                 </div>
             </div>
-
         </article>
     </div>
     <?php $topics = $exam->getTopics(); ?>
