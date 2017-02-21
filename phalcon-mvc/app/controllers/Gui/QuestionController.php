@@ -147,15 +147,15 @@ class QuestionController extends GuiController
                 // Using corrector instead of contributor might be a better option.
                 // 
                 if (!$exam) {
-                        $role = $this->user->setPrimaryRole(Roles::STUDENT);
-                        $exam = Exam::findFirst($eid);
-                }
-                if (!$exam) {
                         $role = $this->user->setPrimaryRole(Roles::CREATOR);
                         $exam = Exam::findFirst($eid);
                 }
                 if (!$exam) {
                         $role = $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
+                        $exam = Exam::findFirst($eid);
+                }
+                if (!$exam) {
+                        $role = $this->user->setPrimaryRole(Roles::STUDENT);
                         $exam = Exam::findFirst($eid);
                 }
                 if (!$exam) {
