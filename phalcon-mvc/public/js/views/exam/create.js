@@ -82,7 +82,7 @@ $(document).ready(function () {
                 // Send AJAX request to update question's topic:
                 // 
                 ajax(
-                        baseURL + 'ajax/core/creator/topic/update',
+                        baseURL + 'ajax/core/' + role + '/topic/update',
                         JSON.stringify(topicArr),
                         function (qData) {
 
@@ -135,7 +135,7 @@ $(document).ready(function () {
         // Send AJAX request to update question's names as per new sorting order.
         // 
         ajax(
-                baseURL + 'ajax/core/creator/question/update',
+                baseURL + 'ajax/core/' + role + '/question/update',
                 JSON.stringify(qArr),
                 function (qData) {
                     qsJson = JSON.parse(JSON.stringify(tmpJson));
@@ -147,7 +147,7 @@ $(document).ready(function () {
 
     $('body').on('click', "#publish_exam", function () {
         ajax(
-                baseURL + 'ajax/core/creator/exam/update',
+                baseURL + 'ajax/core/' + role + '/exam/update',
                 {"id": examId, "published": 1},
         function (json) {
             location.href = baseURL + "exam/index";
@@ -239,7 +239,7 @@ $(document).ready(function () {
                             // Send AJAX request to add selected corrector in question:
                             // 
                             ajax(
-                                    baseURL + 'ajax/core/creator/corrector/create',
+                                    baseURL + 'ajax/core/' + role + '/corrector/create',
                                     {"question_id": qId, "user": ui.item.id},
                             function (status) {
                                 $('.q_corrector_list').append(cloned);
@@ -257,7 +257,7 @@ $(document).ready(function () {
                         // 
                         model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
                         ajax(
-                                baseURL + 'ajax/core/creator/' + model + '/create',
+                                baseURL + 'ajax/core/' + role + '/' + model + '/create',
                                 {"exam_id": examId, "user": ui.item.id},
                         function (userData) {
 
@@ -266,22 +266,31 @@ $(document).ready(function () {
                             // 
                             tempItem = $("#" + addBtnId)
                                     .closest('li')
-                                    // hide default message, if it was visible
+                                    // 
+                                    // Hide default message, if it was visible:
+                                    // 
                                     .find('.menuLevel1')
                                     .find('.left-col-def-msg')
                                     .hide()
                                     .end()
 
-                                    // find template item and prepare it to add
+                                    // 
+                                    // Find template item and prepare it to add:
+                                    // 
                                     .find('li:first')
                                     .clone()
 
-                                    // update data-ref attribute; helpful in deletion
+                                    // 
+                                    // Update data-ref attribute; helpful in deletion:
+                                    // 
                                     .find('.deluuid')
                                     .attr('data-ref', userData.id)
                                     .end()
                                     .show()
-                                    //update username data
+
+                                    // 
+                                    // Update username data:
+                                    // 
                                     .find('.left-col-user')
                                     .attr('data-user', ui.item.id)
                                     .html(usernameText)
@@ -300,7 +309,7 @@ $(document).ready(function () {
                 return false;
             },
             close: function (event, ui) {
-                // do nothing for now
+                // Do nothing for now.
             }
         });
     });
@@ -318,7 +327,7 @@ $(document).ready(function () {
         // Send AJAX request to delete this record:
         // 
         model = $(this).closest('.menuLevel1').parent().find('a').attr('data-model');
-        reqUrl = baseURL + 'ajax/core/creator/' + model + '/delete';
+        reqUrl = baseURL + 'ajax/core/' + role + '/' + model + '/delete';
         thisItem = $(this);
         ajax(reqUrl, {"id": $(this).attr('data-ref')}, function (json) {
             $(thisItem).closest('li').remove();
@@ -348,9 +357,11 @@ $(document).ready(function () {
         }
     });
 
-    $('body').on('blur', '.editabletextbox', function () { // replace field with text
+    $('body').on('blur', '.editabletextbox', function () {
+        // 
+        // Replace field with text:
+        // 
         var tmp = (!$(this).val().length) ? $(this).parent().attr("default") : $(this).val().replace("\n", "<br />", "g");
-        //$(this).parent().hide().html(tmp).slideDown(300);
         $(this).parent().html(tmp);
     });
 
@@ -511,7 +522,7 @@ $(document).ready(function () {
         }
 
         ajax(
-                baseURL + 'ajax/core/creator/exam/update',
+                baseURL + 'ajax/core/' + role + '/exam/update',
                 data,
                 function (examData) {
                     closeTooltips();
@@ -635,23 +646,33 @@ $(document).ready(function () {
         var totalScore = 0;
         var aPartQtxt = '';
 
-        // get data of each question part
+        // 
+        // Get data of each question part:
+        // 
         $("#question-form").find('.q-part').each(function (index, qPart) {
-            // make questiom part title e.g a/b/c
+            // 
+            // Make questiom part title e.g a/b/c:
+            // 
             qPartTitle = String.fromCharCode(96 + (index + 1));
 
-            // initiate js object that will populate later on
+            // 
+            // Initiate js object that will populate later on:
+            // 
             qJson[qPartTitle] = {};
             qJson[qPartTitle]["ans_area"] = {};
             qJson[qPartTitle]["resources"] = {};
 
-            //get question text (html)
+            // 
+            // Get question text (html):
+            // 
             var qText = jQuery.trim(
                     CKEDITOR.instances[$(qPart).find('.write_q_ckeditor').attr('id')].getData());
             qJson[qPartTitle]["q_text"] = qText;
             aPartQtxt = aPartQtxt == '' ? qText : aPartQtxt;
 
-            // get question resources
+            // 
+            // Get question resources:
+            // 
             var qResourcesList = $(qPart).find('.q_resources > ul');
             if ($(qResourcesList).find('li').length) {
                 qJson[qPartTitle]["resources"] = {};
@@ -662,11 +683,15 @@ $(document).ready(function () {
                 qJson[qPartTitle]["resources"] = [];
             }
 
-            // get answer type
+            // 
+            // Get answer type:
+            // 
             var ansType = $(qPart).find('input[class=ans_type_selector]:checked');
             qJson[qPartTitle]["ans_area"]["type"] = $(ansType).val();
 
-            // populate answer area related data in Json object
+            // 
+            // Populate answer area related data in Json object:
+            // 
             if ($(ansType).val() === 'choicebox') {
                 qJson[qPartTitle]["ans_area"]["data"] = {};
                 $(ansType).parent().parent().find('.ans_type').find('.question_opts > div > span').each(function (i, optElement) {
@@ -680,7 +705,9 @@ $(document).ready(function () {
                 qJson[qPartTitle]["ans_area"]["data"] = [];
             }
 
-            // find and sum up score for this part
+            // 
+            // Find and sum up score for this part:
+            // 
             qPartScore = Number($(qPart).find('.q-part-points').val());
             qJson[qPartTitle]["q_points"] = qPartScore;
             totalScore += qPartScore;
@@ -706,10 +733,14 @@ $(document).ready(function () {
                 baseURL + 'ajax/core/contributor/question/' + (qId ? 'update' : 'create'),
                 data,
                 function (qData) {
-                    // question was successfully added, save question id in json object
+                    // 
+                    // Question was successfully added, save question id in JSON object:
+                    // 
                     qJson["questId"] = qId ? qsJson[qId]["questId"] : qData.id;
 
-                    // save correctors against this question in database and in json object
+                    // 
+                    // Save correctors against this question in database and in JSON object:
+                    // 
                     var qCorrectorsArr = [];
                     var qCorrectorList = $('.q_corrector_list');
                     qsCorrectorsJson[qIndex] = {};
@@ -719,32 +750,45 @@ $(document).ready(function () {
                         if (!qId) {
                             qCorrectorsArr.push({'question_id': qData.id, "user": $(rElem).attr('data-user')});
                         }
-
-                        // add correct to json for on page manuplation
+                        // 
+                        // Add correct to json for on page manuplation:
+                        // 
                         qsCorrectorsJson[qIndex][i] = $(rElem).html();
                     });
 
-                    if (!qId && qCorrectorsArr.length) {
+                    // 
+                    // Only creator can add correctors!
+                    // 
+                    if (role == 'creator') {
+                        if (!qId && qCorrectorsArr.length) {
 
-                        // send ajax request to save correctors for this question
-                        ajax(
-                                baseURL + 'ajax/core/creator/corrector/create',
-                                JSON.stringify(qCorrectorsArr),
-                                function (userData) {
-                                    //do nothing for now
-                                }
-                        );
+                            // 
+                            // Send AJAX request to save correctors for this question:
+                            // 
+                            ajax(
+                                    baseURL + 'ajax/core/' + role + '/corrector/create',
+                                    JSON.stringify(qCorrectorsArr),
+                                    function (userData) {
+                                        //do nothing for now
+                                    }
+                            );
+                        }
                     }
 
-
-                    // finally, add this question to qsJson
+                    // 
+                    // Finally, add this question to qsJson:
+                    // 
                     qJson["canUpdate"] = 1;
                     qsJson[qIndex] = qJson;
 
-                    // refresh main question area
+                    // 
+                    // Refresh main question area:
+                    // 
                     refreshQs();
 
-                    // 	show this question in left menu
+                    // 
+                    // Show this question in left menu:
+                    // 
                     qTxtLeftMenu = aPartQtxt.replace(/(<([^>]+)>)/ig, "").substring(0, 75);
                     if (!qId) {
                         newQ = $('.sortable-q-topic > li:last').find('.sortable-qs > li:first')
@@ -774,10 +818,14 @@ $(document).ready(function () {
 
     var refreshQs = function () {
 
-        // lets remove all questions
+        // 
+        // Remove all questions:
+        // 
         $('.qs_area_line:visible').remove();
 
-        // hide default message now 
+        // 
+        // Hide default message now:
+        // 
         totalQs = objectLength(qsJson);
         if (totalQs) {
             $('#default_msg_qs').hide();
@@ -787,10 +835,13 @@ $(document).ready(function () {
             $('#exam_op_btns').hide();
         }
 
-        // get data of each question part
+        // 
+        // Get data of each question part:
+        // 
         jQuery.each(qsJson, function (qNo, qData) {
-
-            // clone first line that was kept hidden
+            // 
+            // Clone first line that was kept hidden:
+            // 
             var qLine = $('.qs_area_line:first').clone();
             $(qLine).attr('q-no', qNo).find('.q_no').html('Q' + qNo + ':').end();
 
@@ -801,11 +852,17 @@ $(document).ready(function () {
 
             var totalScore = 0;
             var firstPartQText = '';
-            var totalQParts = objectLength(qData) - 2; //we have 2 extra nodes in qParts json (on page, not in db): questId,canUpdate
+
+            // 
+            // We have 2 extra nodes in qParts json (on page, not in db): questId, canUpdate
+            // 
+            var totalQParts = objectLength(qData) - 2;
 
             jQuery.each(qData, function (qPartTitle, qPartData) {
 
-                // skip extra node
+                // 
+                // Skip extra node:
+                // 
                 if (qPartTitle == 'questId' || qPartTitle == 'canUpdate') {
                     if (qPartTitle == 'questId') {
                         $(qLine).attr('q-id', qPartData);
@@ -813,22 +870,30 @@ $(document).ready(function () {
                     return;
                 }
 
-                //get question text (html)
+                // 
+                // Get question text (html):
+                // 
                 var qText = qPartData.q_text;
 
-                // get question resources
-
-                // get answer type
+                // 
+                // Get answer type:
+                // 
                 var ansType = qPartData.ans_area["type"];
 
-                // clone question part line
+                // 
+                // Clone question part line:
+                // 
                 var qPartLine = $(qLine).find('.qs_area_line_q').filter(':first').clone();
 
-                // find and sum up score for this part
+                // 
+                // Find and sum up score for this part:
+                // 
                 qPartScore = qPartData.q_points;
                 totalScore += qPartScore;
 
-                //get answer fields
+                // 
+                // Get answer fields:
+                // 
                 ansTypeHtml = '';
                 if (ansType == 'textbox') {
                     ansTypeHtml = '<input disabled type="text" style="width:350px">';
@@ -840,8 +905,6 @@ $(document).ready(function () {
                                            ' + (optionStatus ? '<i class="fa fa-check-circle fa-lg"></i>' : '<input type="checkbox" ' + (optionStatus ? 'checked' : '') + ' disabled>') + '\
                                             <span>' + optTitle + '</span>\
                                        </div>';
-
-
 
                         if (optionStatus) {
                             totalCorrect++;

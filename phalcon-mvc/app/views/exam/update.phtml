@@ -32,7 +32,7 @@ use OpenExam\Library\Core\Exam\Check;
 <?php $canUpdateExam = $this->capabilities->hasCapability($exam, 'update'); ?>
 <div id="container" class="left_menu_space" style="">
 
-    <?php if ($status != Check::STATUS_IS_READY) : ?>
+    <?php if ($canUpdateExam && $status != Check::STATUS_IS_READY) : ?>
             <div style="margin-left: 20px; float: left">
                 <?php if ($status == Check::STATUS_NEED_ATTENTION) : ?>
                         <i class="fa fa-2x fa-exclamation-circle" style="color: blue"></i>
@@ -89,15 +89,17 @@ use OpenExam\Library\Core\Exam\Check;
 
         <h1>
             <?= trim($exam->name) != '' ? $exam->name : 'Untitled exam' ?>
-            <a href="#" class="prevent exam-settings">
-                <i class="fa fa-gear" id="exam-settings" style="float:right;padding:3px"></i>
-            </a> 
-            <a href="#" class="prevent exam-security">
-                <i class="fa fa-lock" id="exam-security" style="float:right;padding:3px"></i>
-            </a>                
-            <a href="#" class="prevent exam-check">
-                <i class="fa fa-check-square" id="exam-check" style="float:right;padding:3px"></i>
-            </a>                
+            <?php if ($canUpdateExam) : ?>
+                    <a href="#" class="prevent exam-settings">
+                        <i class="fa fa-gear" id="exam-settings" style="float:right;padding:3px"></i>
+                    </a> 
+                    <a href="#" class="prevent exam-security">
+                        <i class="fa fa-lock" id="exam-security" style="float:right;padding:3px"></i>
+                    </a>                
+                    <a href="#" class="prevent exam-check">
+                        <i class="fa fa-check-square" id="exam-check" style="float:right;padding:3px"></i>
+                    </a>                
+            <?php endif; ?>
         </h1>
 
         <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("contributable", $exam->flags)): ?>
@@ -229,6 +231,7 @@ $combinedJson = (!count($combinedJson) ? "JSON.parse('{}')" : json_encode($combi
         var mngr = '<?= $exam->creator ?>';
         var user = '<?= $this->user->getPrincipalName() ?>';
         var mode = '<?= $mode ?>';
+        var role = '<?= $role ?>';
         var examId = <?= $exam->id ?>;
         var qsJson = <?= $combinedJson ?>;
         var qsCorrectorsJson = {};

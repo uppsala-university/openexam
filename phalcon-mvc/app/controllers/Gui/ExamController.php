@@ -230,6 +230,7 @@ class ExamController extends GuiController
                 $this->view->setVars(array(
                         'exam'     => $exam,
                         'mode'     => $mode,
+                        'role'     => $role,
                         'status'   => $check->getStatus(),
                         'task'     => $check->getRemainingTask(),
                         'security' => $check->getSecurity()
