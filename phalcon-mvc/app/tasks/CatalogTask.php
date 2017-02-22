@@ -67,6 +67,7 @@ class CatalogTask extends MainTask implements TaskInterface
                                 '--limit=num'       => 'Limit number of records returned from user principal search.',
                                 '--domains'         => 'List all directory domains in catalog manager.',
                                 '--services'        => 'List all services in catalog manager.',
+                                '--format'          => 'Set output format (serialize,export,dump,json).',
                                 '--verbose'         => 'Be more verbose.'
                         ),
                         'examples' => array(
@@ -110,7 +111,7 @@ class CatalogTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'group');
                 $result = $this->_service->getGroups($this->_options['principal']);
-                print_r($result);
+                $this->format($result);
         }
 
         /**
@@ -121,7 +122,7 @@ class CatalogTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'members');
                 $result = $this->_service->getMembers($this->_options['group']);
-                print_r($result);
+                $this->format($result);
         }
 
         /**
@@ -132,7 +133,7 @@ class CatalogTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'attribute');
                 $result = $this->_service->getAttribute($this->_options['attribute'], $this->_options['principal']);
-                print_r($result);
+                $this->format($result);
         }
 
         /**
@@ -143,7 +144,7 @@ class CatalogTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'attributes');
                 $result = $this->_service->getAttributes($this->_options['attribute'], $this->_options['principal']);
-                print_r($result);
+                $this->format($result);
         }
 
         /**
@@ -173,7 +174,7 @@ class CatalogTask extends MainTask implements TaskInterface
                                 'attr'   => $this->_options['attribute']
                         ));
                 }
-                print_r($result);
+                $this->format($result);
         }
 
         /**
@@ -184,7 +185,7 @@ class CatalogTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'domains');
                 $result = $this->_service->getDomains();
-                print_r($result);
+                $this->format($result);
         }
 
         /**
@@ -204,6 +205,28 @@ class CatalogTask extends MainTask implements TaskInterface
         }
 
         /**
+         * Format output.
+         * @param array|string $result The result to format.
+         */
+        private function format($result)
+        {
+                switch ($this->_options['format']) {
+                        case 'serialize':
+                                echo serialize($result);
+                                break;
+                        case 'dump':
+                                print_r($result);
+                                break;
+                        case 'export':
+                                echo var_export($result);
+                                break;
+                        case 'json':
+                                echo json_encode($result);
+                                break;
+                }
+        }
+
+        /**
          * Set options from task action parameters.
          * @param array $params The task action parameters.
          * @param string $action The calling action.
@@ -213,12 +236,12 @@ class CatalogTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false);
+                $this->_options = array('verbose' => false, 'format' => 'dump');
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'groups', 'group', 'members', 'principal', 'attribute', 'attributes', 'domain', 'service', 'limit', 'needle', 'search', 'domains', 'services');
+                $options = array('verbose', 'groups', 'group', 'members', 'principal', 'attribute', 'attributes', 'domain', 'service', 'limit', 'needle', 'search', 'domains', 'services', 'format');
                 $current = $action;
 
                 // 
