@@ -80,18 +80,18 @@ class Enumerator
                 'gn'             => Principal::ATTR_GN,
                 'givenname'      => Principal::ATTR_GN,
                 'firstname'      => Principal::ATTR_GN,
-                'mail'           => Principal::ATTR_MAIL,
-                'email'          => Principal::ATTR_MAIL,
+                'sn'             => Principal::ATTR_SN,
+                'sirname'        => Principal::ATTR_SN,
+                'lastname'       => Principal::ATTR_SN,
                 'name'           => Principal::ATTR_NAME,
                 'commonname'     => Principal::ATTR_NAME,
+                'mail'           => Principal::ATTR_MAIL,
+                'email'          => Principal::ATTR_MAIL,
                 'pnr'            => Principal::ATTR_PNR,
                 'persnr'         => Principal::ATTR_PNR,
                 'personalnumber' => Principal::ATTR_PNR,
                 'social'         => Principal::ATTR_PNR,
                 'socialnumber'   => Principal::ATTR_PNR,
-                'sn'             => Principal::ATTR_SN,
-                'sirname'        => Principal::ATTR_SN,
-                'lastname'       => Principal::ATTR_SN,
                 'uid'            => Principal::ATTR_UID,
                 'user'           => Principal::ATTR_UID,
                 'userid'         => Principal::ATTR_UID
@@ -113,7 +113,7 @@ class Enumerator
 
         public function __get($name)
         {
-                return $this->_service->getAttribute($name);
+                return $this->getAttribute($name, null);
         }
 
         public function getAttribute($name, $arguments)
