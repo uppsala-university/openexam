@@ -157,8 +157,17 @@ class LdapService extends AttributeService
                 if ($attributes == false) {
                         $attributes = array();
                 }
+                if ($attributes == '*') {
+                        $attributes = array();
+                }
                 if (is_string($attributes)) {
                         $attributes = array($attributes);
+                }
+                if (isset($attributes[0]) && $attributes[0] == '*') {
+                        $attributes = array();
+                }
+                if (count($attributes) == 0) {
+                        $attributes = array_keys($this->_attrmap[$class]);
                 }
 
                 // 
