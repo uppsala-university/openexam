@@ -16,19 +16,19 @@ namespace OpenExam\Library\Core\Exam;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Exam;
+use OpenExam\Models\Role;
 use Phalcon\Mvc\User\Component;
 
 /**
  * Information about exam staff.
  * 
  * Provides basic information about staff working on an exam. For finer 
- * grained details, use the model instead. 
+ * grained details, use the model instead.
  * 
- * The data maintained by this class is organized as two-dimensional array
- * where the first dimension is keyed by role (creator, contributor, corrector,
- * decoder or invigilator) and and the second is keyed by their username.
- * 
- * The user data is just name and email address.
+ * The data is organized in two main sections: users and roles. The roles 
+ * section lists all roles and their users. The users list all users with
+ * their assigned roles as an array. The user data is just name and email 
+ * addresses.
  * 
  * @property-read array $contributors Get all contributors.
  * @property-read array $correctors Get all correctors.
@@ -36,10 +36,16 @@ use Phalcon\Mvc\User\Component;
  * @property-read array $decoders Get all decoders.
  * @property-read array $invigilators Get all invigilators.
  * 
+ * @property-read array $users Get all users.
+ * @property-read array $roles Get all roles.
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Staff extends Component
 {
+
+        const SECTION_USERS = 'users';
+        const SECTION_ROLES = 'roles';
 
         /**
          * @var Exam 
@@ -72,7 +78,7 @@ class Staff extends Component
                 $this->_lifetime = 24 * 3600;
                 $this->setData();
         }
-        
+
         /**
          * Destructor.
          */
@@ -88,12 +94,22 @@ class Staff extends Component
                 if (isset($this->_data[$property])) {
                         return count($this->_data[$property]) != 0;
                 }
+                if (isset($this->_data['roles'][$property])) {
+                        return count($this->_data['roles'][$property]) != 0;
+                }
+                if (isset($this->_data['users'][$property])) {
+                        return count($this->_data['users'][$property]) != 0;
+                }
         }
 
         public function __get($property)
         {
                 if (isset($this->_data[$property])) {
                         return $this->_data[$property];
+                } elseif (isset($this->_data['roles'][$property])) {
+                        return $this->_data['roles'][$property];
+                } elseif (isset($this->_data['users'][$property])) {
+                        return $this->_data['users'][$property];
                 } else {
                         return parent::__get($property);
                 }
@@ -101,36 +117,76 @@ class Staff extends Component
 
         /**
          * Get staff data.
+         * 
+         * The default is to return all data from all section. The section can
+         * be filtered. The subkey depends on its section, for roles its one of
+         * the standard roles and for users its the user principal.
+         * 
+         * @param string $section The main section (either on of the SECTION_XXX constants).
+         * @param string $subkey The sub section withing main section.
          * @return array
          */
-        public function getData($role = null, $user = null)
+        public function getData($section = null, $subkey = null)
         {
-                if (!isset($role)) {
-                        return $this->_data;
-                } elseif (!isset($user)) {
-                        return $this->_data[$role];
+                if (!isset($section)) {
+                        if (isset($this->_data)) {
+                                return $this->_data;
+                        }
+                } elseif (!isset($subkey)) {
+                        if (isset($this->_data[$section])) {
+                                return $this->_data[$section];
+                        }
                 } else {
-                        return $this->_data[$role][$user];
+                        if (isset($this->_data[$section][$subkey])) {
+                                return $this->_data[$section][$subkey];
+                        }
                 }
         }
 
         /**
          * Get all roles.
+         * 
+         * By default all roles and their user data is returned.
+         * 
+         * @param bool $keys Return only the role names.
          * @return array
          */
-        public function getRoles()
+        public function getRoles($keys = false)
         {
-                return array_keys($this->_data);
+                if ($keys) {
+                        return array_keys($this->_data['roles']);
+                } else {
+                        $this->_data['roles'];
+                }
         }
 
         /**
-         * Get all users having role.
-         * @param string $role The role name.
+         * Get all users.
+         * 
+         * By default all users and their roles is returned.
+         * 
+         * @param bool $keys Return only the user principals.
          * @return array
          */
-        public function getUsers($role)
+        public function getUsers($keys = false)
         {
-                return array_keys($this->_data[$role]);
+                if ($keys) {
+                        return array_keys($this->_data['users']);
+                } else {
+                        $this->_data['users'];
+                }
+        }
+
+        /**
+         * Get user data.
+         * @param string $user The user principal name.
+         * @return array
+         */
+        public function getUser($user)
+        {
+                if (isset($this->_data['users'][$user])) {
+                        return $this->_data['users'][$user];
+                }
         }
 
         /**
@@ -140,83 +196,114 @@ class Staff extends Component
          */
         public function hasRole($role)
         {
-                return count($this->_data[$role]) != 0;
+                return count($this->_data['roles'][$role]) != 0;
         }
 
+        /**
+         * Get role data.
+         * 
+         * @param string $role The role name.
+         * @return array
+         */
+        public function getRole($role)
+        {
+                return $this->_data['roles'][$role];
+        }
+
+        /**
+         * Create cache key.
+         * @return string
+         */
         private function createCacheKey()
         {
                 return sprintf("staff-exam-%d", $this->_exam->id);
         }
 
+        /**
+         * Set staff data (from cache or aggregated).
+         */
         private function setData()
         {
                 if ($this->cache->exists($this->_cachekey, $this->_lifetime)) {
                         $this->_data = $this->cache->get($this->_cachekey);
                 } else {
-                        $this->_data = $this->getStaff();
+                        $this->setStaff();
                         $this->cache->save($this->_cachekey, $this->_data, $this->_lifetime);
                 }
         }
 
         /**
-         * Get staff data.
-         * @return array
+         * Set staff data.
          */
-        private function getStaff()
+        private function setStaff()
         {
-                $staff = array(
-                        Roles::CREATOR     => array(),
-                        Roles::INVIGILATOR => array(),
-                        Roles::CONTRIBUTOR => array(),
-                        Roles::DECODER     => array(),
-                        Roles::CORRECTOR   => array()
-                );
-
                 foreach ($this->_exam->contributors as $role) {
-                        $staff[Roles::CONTRIBUTOR][$role->user] = array(
-                                'name' => $role->name,
-                                'mail' => $role->mail
-                        );
+                        $this->setRole(Roles::CONTRIBUTOR, $role);
                 }
 
                 foreach ($this->_exam->decoders as $role) {
-                        $staff[Roles::DECODER][$role->user] = array(
-                                'name' => $role->name,
-                                'mail' => $role->mail
-                        );
+                        $this->setRole(Roles::DECODER, $role);
                 }
 
                 foreach ($this->_exam->invigilators as $role) {
-                        $staff[Roles::INVIGILATOR][$role->user] = array(
-                                'name' => $role->name,
-                                'mail' => $role->mail
-                        );
+                        $this->setRole(Roles::INVIGILATOR, $role);
                 }
 
                 foreach ($this->_exam->questions as $question) {
                         foreach ($question->correctors as $role) {
-                                if (!in_array($role->user, $staff[Roles::CORRECTOR])) {
-                                        $staff[Roles::CORRECTOR][$role->user] = array(
-                                                'name' => $role->name,
-                                                'mail' => $role->mail
-                                        );
-                                }
+                                $this->setRole(Roles::CORRECTOR, $role);
                         }
                 }
 
-                $principal = $this->catalog->getPrincipal(
-                    $this->_exam->creator, Principal::ATTR_PN, array(
-                        'attr' => array(
-                                Principal::ATTR_NAME,
-                                Principal::ATTR_MAIL
-                        )
-                ));
-                $staff[Roles::CREATOR][$this->_exam->creator] = array(
-                        'name' => $principal->name,
-                        'mail' => $principal->mail
-                );
+                $principal = current($this->catalog->getPrincipal(
+                        $this->_exam->creator, Principal::ATTR_PN, array(
+                            'attr' => array(
+                                    Principal::ATTR_NAME,
+                                    Principal::ATTR_MAIL
+                            )
+                )));
+                $this->setRole(Roles::CREATOR, $principal, $this->_exam->creator);
+        }
 
-                return $staff;
+        /**
+         * Set user role data.
+         * @param string $name The role name.
+         * @param Role $role The role model.
+         * @param string $user The optional user principal name.
+         */
+        private function setRole($name, $role, $user = null)
+        {
+                if (isset($user)) {
+                        $role->user = $user;
+                }
+
+                // 
+                // Insert roles data:
+                // 
+                if (!isset($this->_data['roles'][$name][$role->user])) {
+                        $this->_data['roles'][$name][$role->user] = array(
+                                'name' => $role->name,
+                                'mail' => $role->mail
+                        );
+                }
+
+                // 
+                // Insert users data:
+                // 
+                if (!isset($this->_data['users'][$role->user])) {
+                        $this->_data['users'][$role->user] = array(
+                                'name' => $role->name,
+                                'mail' => $role->mail,
+                                'role' => array()
+                        );
+                }
+
+                // 
+                // Insert user role if not exist.
+                // 
+                if (!in_array($name, $this->_data['users'][$role->user]['role'])) {
+                        $this->_data['users'][$role->user]['role'][] = $name;
+                }
         }
 
 }
