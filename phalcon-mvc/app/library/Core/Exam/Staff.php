@@ -255,13 +255,12 @@ class Staff extends Component
                         }
                 }
 
-                $principal = current($this->catalog->getPrincipal(
-                        $this->_exam->creator, Principal::ATTR_PN, array(
-                            'attr' => array(
-                                    Principal::ATTR_NAME,
-                                    Principal::ATTR_MAIL
-                            )
-                )));
+                $principal = $this->catalog->getPrincipal(
+                    $this->_exam->creator, Principal::ATTR_PN, null, array(
+                        Principal::ATTR_NAME,
+                        Principal::ATTR_MAIL
+                ));
+
                 $this->setRole(Roles::CREATOR, $principal, $this->_exam->creator);
         }
 
