@@ -119,6 +119,15 @@ class DirectoryManager extends Component implements DirectoryService
                 return $this->_enumerator->getAttribute($name, $arguments);
         }
 
+        public function __get($propertyName)
+        {
+                if ($propertyName == 'attrib') {
+                        return $this->_enumerator;
+                } else {
+                        return parent::__get($propertyName);
+                }
+        }
+
         /**
          * Register an directory service.
          * 
@@ -333,18 +342,29 @@ class DirectoryManager extends Component implements DirectoryService
                 }
 
                 $domain = $this->getDomain($principal);
-                $result = null;
+                $result = array();
 
                 if (isset($this->_services[$domain])) {
                         foreach ($this->_services[$domain] as $name => $service) {
                                 try {
-                                        if (($result = $service->getAttribute($attribute, $principal)) != null) {
-                                                break;
+                                        if (($attributes = $service->getAttribute($attribute, $principal)) != null) {
+                                                if (is_array($attributes)) {
+                                                        $result = array_merge($result, $attributes);
+                                                } elseif (count($result) != 0) {
+                                                        $result[] = $attributes;
+                                                } else {
+                                                        $result = $attributes;
+                                                        break;
+                                                }
                                         }
                                 } catch (Exception $exception) {
                                         $this->report($exception, $service, $name);
                                 }
                         }
+                }
+
+                if (is_array($result)) {
+                        $result = array_unique($result);
                 }
 
                 $this->_cache->setAttribute($attribute, $principal, serialize($result));
