@@ -101,6 +101,13 @@ abstract class ServiceAdapter extends Component implements DirectoryService
                 }
 
                 // 
+                // Don't cache nulls:
+                // 
+                if (!isset($result)) {
+                        return $result;
+                }
+
+                // 
                 // Require cache key (obvious):
                 // 
                 if (!isset($key)) {
