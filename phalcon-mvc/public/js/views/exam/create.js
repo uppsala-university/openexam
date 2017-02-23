@@ -145,167 +145,274 @@ $(document).ready(function () {
 
     }
 
-    $('body').on('click', "#publish_exam", function () {
-        ajax(
-                baseURL + 'ajax/core/' + role + '/exam/update',
-                {"id": examId, "published": 1},
-        function (json) {
-            location.href = baseURL + "exam/index";
-        }
-        );
-    });
-
-    // 
-    // Initialize tooltips in left menu:
-    // 
-    $('.search-ldap').each(function (index, element) {
-        new Opentip(element,
-                'Search by name: <input type="text" class="uu-user-search" isfor="uu-id' + (index + 1) + '">',
-                {style: "drops", tipJoint: "top left"});
-    });
-
     if (showAddQuestionView && $('.add_new_qs').length) {
         loadQuestionDialog(0);
     }
 
     // 
-    // AJAX request for searching user:
+    // Store tooltips in array for dynamic content update:
     // 
-    var userSelected = false;
-    $(document).on("keyup.autocomplete", '.uu-user-search', function () {
+    var opentips = [];
 
-        $(this).autocomplete({
-            //source: "search.php",
-            source: function (request, response) {
-                respObj = [];
-                userList = [];
-                ajax(
-                        baseURL + 'ajax/catalog/principal',
-                        {"data": {"name": request.term + "*"}, "params": {"attr": ["name", "uid", "principal"], "limit": 10}},
-                function (json) {
+    // 
+    // Initialize opentip for adding users for roles:
+    // 
+    $('.search-catalog-service').each(function (index, element) {
+        var opentip = $(this).opentip({style: "drops", tipJoint: "top left"});
+        var userman = $("#user-insert-box").clone();
 
-                    $.each(json, function (i, result) {
-                        if (userList.indexOf(result.principal) < 0) {
-                            respObj.push({"id": result.principal, "label": result.name + " [" + result.uid + "]", "value": result.uid})
-                            userList.push(result.principal);
-                        }
+        opentip.isfor = 'uu-id' + (index + 1);
+        userman.find('input.user-search').attr('isfor', opentip.isfor);
+        opentip.setContent(userman.html());
+
+        opentips.push(opentip);
+    });
+
+    // 
+    // Add user top menu from list:
+    // 
+    $(document).on('click', '.user-staff-add', function () {
+        var elem = $(this).closest('.user-insert-staff').parent().find('input.user-search');
+        var item = {
+            id: $(this).attr('data-user'),
+            name: $(this).attr('data-name')
+        };
+
+        insertCatalogUser(item, elem);
+        return false;
+    });
+
+    // 
+    // Add user top menu from input textbox:
+    // 
+    $(document).on('click', '.user-search-add', function () {
+        var elem = $(this).parent().find('input.user-search');
+        var item = {
+            id: elem.val(),
+            name: elem.val()
+        };
+
+        insertCatalogUser(item, elem);
+        return false;
+    });
+
+    // 
+    // Insert new staff user in tooltip dialog.
+    // 
+    function insertStaffUser(item) {
+        if (item.mail === undefined) {
+            item.mail = '';
+        }
+        if (item.name === undefined) {
+            item.name = item.id;
+        }
+
+        // 
+        // Check if already present:
+        // 
+        $('#user-insert-box').find('.user-staff-add').each(function () {
+            if ($(this).attr('data-user') === item.id) {
+                item.exist = true;
+                return false;
+            }
+        });
+
+        if (item.exist !== undefined) {
+            return;
+        }
+
+        // 
+        // Create new user entry and append to user-insert-box template:
+        // 
+        var insert = $('#user-insert-box').find('.user-insert-staff');
+        var uentry = insert.find(".user-staff-entry").first().clone();
+        var anchor = uentry.find('.user-staff-add');
+
+        anchor.attr('data-mail', item.mail);
+        anchor.attr('data-user', item.id);
+        anchor.attr('data-name', item.name);
+        anchor.text(item.name + ' [' + item.id + ']');
+
+        insert.append(uentry);
+
+        // 
+        // Refresh tooltip content from user-insert-box template:
+        // 
+        for (var i = 0; i < opentips.length; ++i) {
+            var opentip = opentips[i];
+            var userman = $("#user-insert-box").clone();
+
+            userman.find('input.user-search').attr('isfor', opentip.isfor);
+            opentip.setContent(userman.html());
+        }
+
+    }
+
+    function removeStaffUser(item) {
+        $(".user-insert-staff").each(function () {
+
+        });
+    }
+
+    // 
+    // Search users in catalog. Return in response callback.
+    // 
+    function searchCatalogUser(term, response) {
+        var respObj = [];
+        var userList = [];
+
+        ajax(
+                baseURL + 'ajax/catalog/principal',
+                {
+                    data: {
+                        name: term + "*"
+                    },
+                    params: {
+                        attr: ["name", "uid", "principal"],
+                        limit: 10
+                    }
+                },
+        function (json) {
+
+            $.each(json, function (i, result) {
+                if (userList.indexOf(result.principal) < 0) {
+                    respObj.push({
+                        id: result.principal,
+                        label: result.name + ' [' + result.principal + ']',
+                        value: result.principal,
+                        name: result.name,
+                        mail: result.mail
                     });
+                    userList.push(result.principal);
+                }
+            });
 
-                    response(respObj);
+            response(respObj);
+        });
+
+    }
+
+    // 
+    // Insert user from catalog. The item contains data and element is the target menu list.
+    // 
+    function insertCatalogUser(item, element)
+    {
+        element.val('');
+        var addBtnId = element.attr('isfor');
+
+        var alreadyExists = false;
+
+        if (element.hasClass('q-correctors')) {
+            $(".q_corrector_list").find('li').each(function (index, element) {
+                if ($(element).find('span').attr('data-user') == item.id) {
+                    alreadyExists = true;
+                }
+            });
+        } else {
+            $("#" + addBtnId).closest('li').find('.menuLevel1').find('.left-col-user').each(function (index, element) {
+                if ($(element).attr('data-user') == item.id) {
+                    alreadyExists = true;
+                }
+            });
+        }
+
+        if (alreadyExists) {
+            return;
+        }
+
+        if (element.hasClass('q-correctors')) {
+            cloned = $('.q_corrector_list > li:first').clone()
+                    .find('.left-col-user')
+                    .attr('data-user', item.id)
+                    .html(item.name)
+                    .end();
+
+            if (qId) {
+
+                // 
+                // Send AJAX request to add selected corrector in question:
+                // 
+                ajax(
+                        baseURL + 'ajax/core/' + role + '/corrector/create',
+                        {"question_id": qId, "user": item.id},
+                function (status) {
+                    $('.q_corrector_list').append(cloned);
                 }
                 );
+
+            } else {
+                $('.q_corrector_list').append(cloned);
+            }
+
+        } else {
+
+            // 
+            // Send AJAX request to save added role:
+            // 
+            model = $("#" + element.attr('isfor')).closest('a').attr('data-model');
+            ajax(
+                    baseURL + 'ajax/core/' + role + '/' + model + '/create',
+                    {"exam_id": examId, "user": item.id},
+            function (userData) {
+
+                // 
+                // Prepare item to be added:
+                // 
+                tempItem = $("#" + addBtnId)
+                        .closest('li')
+                        // 
+                        // Hide default message, if it was visible:
+                        // 
+                        .find('.menuLevel1')
+                        .find('.left-col-def-msg')
+                        .hide()
+                        .end()
+
+                        // 
+                        // Find template item and prepare it to add:
+                        // 
+                        .find('li:first')
+                        .clone()
+
+                        // 
+                        // Update data-ref attribute; helpful in deletion:
+                        // 
+                        .find('.deluuid')
+                        .attr('data-ref', userData.id)
+                        .end()
+                        .show()
+
+                        // 
+                        // Update username data:
+                        // 
+                        .find('.left-col-user')
+                        .attr('data-user', item.id)
+                        .html(item.name)
+                        .show()
+                        .end();
+
+                // 
+                // Add item to the menu:
+                // 
+                $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
+            }
+            );
+        }
+
+        insertStaffUser(item);
+    }
+
+    // 
+    // Handle incremental catalog user search.
+    // 
+    $(document).on("keyup.autocomplete", '.user-search', function () {
+
+        $(this).autocomplete({
+            source: function (request, response) {
+                searchCatalogUser(request.term, response);
             },
             select: function (event, ui) {
-
-                // 
-                // Empty text box:
-                // 
-                $(this).val('');
-
-                // 
-                // Format user's name to be added:
-                // 
-                var usernameText = ui.item.label + " [" + ui.item.value + "]";
-
-                addBtnId = $(this).attr('isfor');
-
-                var alreadyExists = false;
-                if ($(this).hasClass('q-correctors')) {
-                    $(".q_corrector_list").find('li').each(function (index, element) {
-                        if ($(element).find('span').attr('data-user') == ui.item.id) {
-                            alreadyExists = true;
-                        }
-                    });
-                } else {
-                    $("#" + addBtnId).closest('li').find('.menuLevel1').find('.left-col-user').each(function (index, element) {
-                        if ($(element).attr('data-user') == ui.item.id) {
-                            alreadyExists = true;
-                        }
-                    });
-                }
-
-                if (!alreadyExists) {
-
-                    if ($(this).hasClass('q-correctors')) {
-                        cloned = $('.q_corrector_list > li:first').clone()
-                                .find('.left-col-user')
-                                .attr('data-user', ui.item.id)
-                                .html(usernameText)
-                                .end();
-
-                        if (qId) {
-
-                            // 
-                            // Send AJAX request to add selected corrector in question:
-                            // 
-                            ajax(
-                                    baseURL + 'ajax/core/' + role + '/corrector/create',
-                                    {"question_id": qId, "user": ui.item.id},
-                            function (status) {
-                                $('.q_corrector_list').append(cloned);
-                            }
-                            );
-
-                        } else {
-                            $('.q_corrector_list').append(cloned);
-                        }
-
-                    } else {
-
-                        // 
-                        // Send AJAX request to save added role:
-                        // 
-                        model = $("#" + $(this).attr('isfor')).closest('a').attr('data-model');
-                        ajax(
-                                baseURL + 'ajax/core/' + role + '/' + model + '/create',
-                                {"exam_id": examId, "user": ui.item.id},
-                        function (userData) {
-
-                            // 
-                            // Prepare item to be added:
-                            // 
-                            tempItem = $("#" + addBtnId)
-                                    .closest('li')
-                                    // 
-                                    // Hide default message, if it was visible:
-                                    // 
-                                    .find('.menuLevel1')
-                                    .find('.left-col-def-msg')
-                                    .hide()
-                                    .end()
-
-                                    // 
-                                    // Find template item and prepare it to add:
-                                    // 
-                                    .find('li:first')
-                                    .clone()
-
-                                    // 
-                                    // Update data-ref attribute; helpful in deletion:
-                                    // 
-                                    .find('.deluuid')
-                                    .attr('data-ref', userData.id)
-                                    .end()
-                                    .show()
-
-                                    // 
-                                    // Update username data:
-                                    // 
-                                    .find('.left-col-user')
-                                    .attr('data-user', ui.item.id)
-                                    .html(usernameText)
-                                    .show()
-                                    .end();
-
-                            // 
-                            // Add item to the menu:
-                            // 
-                            $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
-                        }
-                        );
-                    }
-                }
-
+                insertCatalogUser(ui.item, $(this));
                 return false;
             },
             close: function (event, ui) {
@@ -690,7 +797,7 @@ $(document).ready(function () {
             qJson[qPartTitle]["ans_area"]["type"] = $(ansType).val();
 
             // 
-            // Populate answer area related data in Json object:
+            // Populate answer area related data in JSON object:
             // 
             if ($(ansType).val() === 'choicebox') {
                 qJson[qPartTitle]["ans_area"]["data"] = {};

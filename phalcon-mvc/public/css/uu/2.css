@@ -4960,6 +4960,7 @@ select[name=program] {
 
 .opentip-container {
     font-size:10px;
+    min-width: 400px;
 }
 
 .template {

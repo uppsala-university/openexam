@@ -16,6 +16,7 @@ namespace OpenExam\Controllers\Gui;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Core\Exam\Check;
+use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\DateTime;
 use OpenExam\Library\Gui\Component\Exam\Phase;
@@ -223,6 +224,7 @@ class ExamController extends GuiController
                 // Exam status check:
                 // 
                 $check = new Check($exam);
+                $staff = new Staff($exam);
 
                 // 
                 // Set view data:
@@ -233,7 +235,8 @@ class ExamController extends GuiController
                         'role'     => $role,
                         'status'   => $check->getStatus(),
                         'task'     => $check->getRemainingTask(),
-                        'security' => $check->getSecurity()
+                        'security' => $check->getSecurity(),
+                        'staff'    => $staff
                 ));
         }
 

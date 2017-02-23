@@ -1,292 +1,292 @@
-<?php 
+<?php
 
 use \OpenExam\Library\Security\Roles;
 
-$oBullet = Phalcon\Tag::image(array("img/openeopt.png", "class" => "bullet-opened")); 
+$oBullet = Phalcon\Tag::image(array("img/openeopt.png", "class" => "bullet-opened"));
 $userRoles = array('contributor' => 'Contributors', 'decoder' => 'Decoders', 'invigilator' => 'Invigilators');
 $i = 1;
-$canUpdateExam = $this->capabilities->hasCapability($exam, 'update'); 
+$canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
+
 ?>
 <!-- Left Column -->
 
 <div id="leftCol">
-        <div class="treeMenuContainer componentContainer">
-                <ul class="menuLevel0">
-                        <?php foreach($userRoles as $model => $role):?>
-                        <li> 
-				<?php $roleData =  $exam->$role;?>
-                                <a href="#" class="bullet-open" rel="menuLevel1" data-model="<?=$model?>" id="uu-id<?=$i++?>">
-					<?=$oBullet?> &nbsp; <?=$role?>
-                                </a>
-				
-				<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)):?>
-				<?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "search-ldap", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
-				<?php endif;?>
-                                
-                                <ul class="menuLevel1">
-                                        <?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'delete') && in_array("editable", $exam->flags)):?>
-                                        <li style="display:none">
-                                                <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> "")); ?>
-                                                <a href="#" class="prevent"><span class="left-col-user" data-user=""></span></a> 
-                                        </li>
-                                        <?php endif;?>
-                                        
-                                        <li style=" <?=(count($roleData) ? 'display:none' : '')?>" class="left-col-def-msg"> 
-                                        	<a href="#" class="prevent">&nbsp;<span class="left-col-def-msg">No user has been added</span></a> 
-                                        </li>
-                                        
-                                        <?php foreach( $roleData as $data ):?>
-                                        <li>
-                                        	<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'delete') && in_array("editable", $exam->flags)):?>
-                                                <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref"=> $data->id)); ?>
-                                                <?php endif;?>
-                                                
-                                                <a href="#" class="prevent"> 
-                                                        <span class="left-col-user" data-user="<?=$data->user?>">
- 	                                                       <?=(/*$myRole == Roles::CONTRIBUTOR ||*/ !in_array("editable", $exam->flags)) ? '&#10004;':''?> 
-							       <?=$this->helper->getCatalogAttribute($data->user, 'name').
-							       ' ['.$this->helper->getCatalogAttribute($data->user, 'uid').']'?>
-                                                	</span> 
-                                                </a> 
-                                        </li>
-                                        <?php endforeach?>
-                                </ul>
-                        </li>
-                        <?php endforeach;?>
-                        
-			<!-- students listing section -->
-			<?php if($this->user->getPrimaryRole()==Roles::CREATOR):?>
-                        <li> 
-                        	<a href="#" class="bullet-open manage-students">
-                                <?=Phalcon\Tag::image(array("img/closedopt.png"))?>
-				&nbsp;Students (<span class="total-exam-students"><?=count($exam->getStudents())?></span>)
-                                </a>
-				
-				<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)):?>
-					<?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "manage-students", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
-				<?php endif;?>
-                        </li>
-			<?php endif;?>
-			
-                        <!-- question listing section -->
-                        <?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'topic', 'update') && in_array("editable", $exam->flags)):?>
-                        <li> 
-                        	<a href="#" class="bullet-open" rel="menuLevel1">
-                                <?=$oBullet?>
-                                &nbsp;Questions &nbsp;
-                                </a>
-				
-				
-				<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)):?>
-				<?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "add_new_qs", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
-				<?php endif;?>
-				
+    <div class="treeMenuContainer componentContainer">
+        <ul class="menuLevel0">
+            <?php foreach ($userRoles as $model => $role): ?>
+                    <li> 
+                        <?php $roleData = $exam->$role; ?>
+                        <a href="#" class="bullet-open" rel="menuLevel1" data-model="<?= $model ?>" id="uu-id<?= $i++ ?>">
+                            <?= $oBullet ?> &nbsp; <?= $role ?>
+                        </a>
 
-				<a href="#" class="prevent add-q-topic" style="margin: 0px; padding:0px 30px"> 
-					<span style="color:#99001d; font-size:9px;">
-						<?=Phalcon\Tag::image(array("img/plus-circle.png", "height" => "10"))?>
-						Add new question section 
-					</span> 
-				</a> 
-                                <?php $questionNo = 1;?>
-                                <?php $topics = $exam->getTopics(array("order" => "slot"));?>
-                                <ul class="menuLevel1 sortable-q-topic">
-                                        <?php foreach($topics as $key => $topic):?>
-                                        <?php $topicQs = $topic->getQuestions(array("order" => "slot"));?>
-                                        <li> 
-						<span class="bullet-open" rel="menuLevel2" style="cursor:pointer">
-							<?=Phalcon\Tag::image(array("img/openeopt.png", "class" => "bullet-opened", "style" => "float:left; margin-left: 25px; margin-top:3px"))?>
-						</span>
-                                        	<a href="#" class="topic-line prevent" style=" <?=(count($topics) == 1 ? 'display:none': '')?>">
-                                                        <div>
-                                                                &nbsp; 
-                                                                <span style="color:#004276" class="topic-name" data-id="<?=$topic->id?>"><?=$topic->name?></span> 
-                                                                <i class="fa fa-gear topic-settings" data-randomize="<?=$topic->randomize?>"></i> 
-                                                                <i class="fa fa-trash topic-del"></i> 
-                                                        </div>
-                                                        <div class="section-default-msg" style=" <?=(count($topicQs)?'display:none':'')?>"> 
-                                                                <span style="padding-top: 0px; color: grey; "> 
-                                                                        <i class="fa fa-arrows"></i> Drag and drop questions here 
-                                                                </span> 
-                                                        </div>
-                                                </a>
-                                                <ul class="menuLevel2 sortable-qs" topic-id="<?=$topic->id?>">
-                                                        <?php foreach($topicQs as $key => $question):?>
-                                                        <?php $questArr = json_decode($question->quest, true);?>
-                                                        <li q-id="<?=$question->id?>"> 
-                                                        	<span class="q" q-no="<?=$questionNo?>">Q<?=$questionNo?>:</span> 
-                                                                <span class="q-txt"><?=substr(strip_tags($questArr['a']['q_text']), 0, 75)?></span> 
-                                                        </li>
-							<?php $questionNo++?>
-                                                        <?php endforeach;?>
-							<li style="display:none"> <span class="q" q-no=""></span> <span class="q-txt"></span> </li>                                                </ul>
-                                        </li>
-                                        <?php endforeach; ?>
-                                </ul>
-                        </li>
-                        <?php else:?>
-                        <?php $topic = $exam->getTopics()->getFirst();?>
-                        <input type="hidden" id="default_topic_id" value="<?=$topic->id?>" />
-                        <?php endif;?>
-                </ul>
-        </div>
+                        <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)): ?>
+                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "search-catalog-service", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+                        <?php endif; ?>
+
+                        <ul class="menuLevel1">
+                            <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'delete') && in_array("editable", $exam->flags)): ?>
+                                    <li style="display:none">
+                                        <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref" => "")); ?>
+                                        <a href="#" class="prevent"><span class="left-col-user" data-user=""></span></a> 
+                                    </li>
+                            <?php endif; ?>
+
+                            <li style=" <?= (count($roleData) ? 'display:none' : '') ?>" class="left-col-def-msg"> 
+                                <a href="#" class="prevent">&nbsp;<span class="left-col-def-msg">No user has been added</span></a> 
+                            </li>
+
+                            <?php foreach ($roleData as $data): ?>
+                                    <li>
+                                        <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'delete') && in_array("editable", $exam->flags)): ?>
+                                                <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "10", "class" => "deluuid", "data-ref" => $data->id)); ?>
+                                        <?php endif; ?>
+
+                                        <a href="#" class="prevent"> 
+                                            <span class="left-col-user" data-user="<?= $data->user ?>" data-mail="<?= $data->mail[0] ?>">
+                                                <?= (!in_array("editable", $exam->flags)) ? '&#10004;' : '' ?>
+                                                <?= isset($data->name) ? $data->name : $data->user ?>
+                                            </span> 
+                                        </a> 
+                                    </li>
+                            <?php endforeach ?>
+                        </ul>
+                    </li>
+            <?php endforeach; ?>
+
+            <!-- students listing section -->
+            <?php if ($this->user->getPrimaryRole() == Roles::CREATOR): ?>
+                    <li> 
+                        <a href="#" class="bullet-open manage-students">
+                            <?= Phalcon\Tag::image(array("img/closedopt.png")) ?>
+                            &nbsp;Students (<span class="total-exam-students"><?= count($exam->getStudents()) ?></span>)
+                        </a>
+
+                        <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)): ?>
+                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "manage-students", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+                        <?php endif; ?>
+                    </li>
+            <?php endif; ?>
+
+            <!-- question listing section -->
+            <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'topic', 'update') && in_array("editable", $exam->flags)): ?>
+                    <li> 
+                        <a href="#" class="bullet-open" rel="menuLevel1">
+                            <?= $oBullet ?>
+                            &nbsp;Questions &nbsp;
+                        </a>
+
+
+                        <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)): ?>
+                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "add_new_qs", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+                        <?php endif; ?>
+
+
+                        <a href="#" class="prevent add-q-topic" style="margin: 0px; padding:0px 30px"> 
+                            <span style="color:#99001d; font-size:9px;">
+                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "10")) ?>
+                                Add new question section 
+                            </span> 
+                        </a> 
+                        <?php $questionNo = 1; ?>
+                        <?php $topics = $exam->getTopics(array("order" => "slot")); ?>
+                        <ul class="menuLevel1 sortable-q-topic">
+                            <?php foreach ($topics as $key => $topic): ?>
+                                    <?php $topicQs = $topic->getQuestions(array("order" => "slot")); ?>
+                                    <li> 
+                                        <span class="bullet-open" rel="menuLevel2" style="cursor:pointer">
+                                            <?= Phalcon\Tag::image(array("img/openeopt.png", "class" => "bullet-opened", "style" => "float:left; margin-left: 25px; margin-top:3px")) ?>
+                                        </span>
+                                        <a href="#" class="topic-line prevent" style=" <?= (count($topics) == 1 ? 'display:none' : '') ?>">
+                                            <div>
+                                                &nbsp; 
+                                                <span style="color:#004276" class="topic-name" data-id="<?= $topic->id ?>"><?= $topic->name ?></span> 
+                                                <i class="fa fa-gear topic-settings" data-randomize="<?= $topic->randomize ?>"></i> 
+                                                <i class="fa fa-trash topic-del"></i> 
+                                            </div>
+                                            <div class="section-default-msg" style=" <?= (count($topicQs) ? 'display:none' : '') ?>"> 
+                                                <span style="padding-top: 0px; color: grey; "> 
+                                                    <i class="fa fa-arrows"></i> Drag and drop questions here 
+                                                </span> 
+                                            </div>
+                                        </a>
+                                        <ul class="menuLevel2 sortable-qs" topic-id="<?= $topic->id ?>">
+                                            <?php foreach ($topicQs as $key => $question): ?>
+                                                    <?php $questArr = json_decode($question->quest, true); ?>
+                                                    <li q-id="<?= $question->id ?>"> 
+                                                        <span class="q" q-no="<?= $questionNo ?>">Q<?= $questionNo ?>:</span> 
+                                                        <span class="q-txt"><?= substr(strip_tags($questArr['a']['q_text']), 0, 75) ?></span> 
+                                                    </li>
+                                                    <?php $questionNo++ ?>
+                                            <?php endforeach; ?>
+                                            <li style="display:none"> <span class="q" q-no=""></span> <span class="q-txt"></span> </li>                                                </ul>
+                                    </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </li>
+            <?php else: ?>
+                    <?php $topic = $exam->getTopics()->getFirst(); ?>
+                    <input type="hidden" id="default_topic_id" value="<?= $topic->id ?>" />
+            <?php endif; ?>
+        </ul>
+    </div>
 </div>
 
 <!--------------- Hidden Divs -----------------> 
-<?php if($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'topic', 'update') && in_array("editable", $exam->flags)):?>
-<!-- Question topic settings -->
-<div style="display:none" id="question-topic-settings-box">
-        <div style="font-size:8px"> If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. This value is used for duggor, leave it as zero for ordinary examinations (use all questions). </div>
-        <div style="padding-top:10px"> Randomize:
+<?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'topic', 'update') && in_array("editable", $exam->flags)): ?>
+        <!-- Question topic settings -->
+        <div style="display:none" id="question-topic-settings-box">
+            <div style="font-size:8px"> If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. This value is used for duggor, leave it as zero for ordinary examinations (use all questions). </div>
+            <div style="padding-top:10px"> Randomize:
                 <input type="text" size="5" value="0" style="border:1px solid #CCCCCC" class="topic-rand-val">
                 <input class="topic-settings-save" type="submit" value="Save" data-id="">
+            </div>
         </div>
-</div>
-<script language="javascript">
-	$(function() {
-		
-		var refreshTopicSettingsTooltips = function () {
-			$('.topic-settings').each(function(index, element) {
-				$('#question-topic-settings-box')
-					.find('.topic-rand-val').attr('value', ($(this).attr('data-randomize'))).end()
-					.find('.topic-settings-save').attr('data-id', ($(this).parent().find('.topic-name').attr('data-id'))).end();
-				
-				new Opentip(
-					  element, 
-					  $('#question-topic-settings-box').html(), 
-					  {style: "drops", tipJoint: "top left", showOn: "click", }
-				  );
-				
-			});
-		};
-		refreshTopicSettingsTooltips();
-		
-		// add topic
-		$(document).on('click', '.add-q-topic', function() {
-			$('.topic-line').show();
-			newTopic = $('.sortable-q-topic > li:last').clone()
-						.show()
-						.find('.section-default-msg')
-							.show()
-							.end();
-			
-			// send ajax requedt to add this topic in db
-			ajax(
-				baseURL + 'ajax/core/creator/topic/create', 
-				{"exam_id": examId, "name": 'Click to edit title', "randomize" : "0"}, 
-				function(topicData) {
-					
-					// prepare cloned row to add in menu
-					newTopic.find('.topic-name')
-							.html(topicData.name)
-							.attr('data-id', topicData.id)
-							.end()
-						.find('.topic-settings').attr('data-randomize', topicData.randomize).end()
-						.find('a').show();
-						
-					newTopic.find('.sortable-qs > li').not(':last').remove().end();
-					
-					
-					// show it in menu now
-					$(".sortable-q-topic > li:nth-child(1)").after(newTopic);
-					//$(".sortable-q-topic > li:nth-child(2)").find('input').focus();
-					
-					// make it sortable
-					makeQsSortable();
-					
-					// connect tooltip with newly added
-					refreshTopicSettingsTooltips();
-				}
-			);
-			
-			return false;
-			
-		});
-		
-		// delet topic
-		$(document).on('click', '.topic-del', function() {
-			
-			topicToDel = $(this);
-			
-			if($(this).closest('li').find('ul > li:visible').length) {
-				alert("There are some questions under this section! \n\r Please drag and drop all the questions from this section to some other section before you delete this section. \n\r You can also rename this section title by clicking on the title.");
-			} else {
+        <script language="javascript">
+                $(function () {
 
-				// send ajax requedt to update topic name in db
-				ajax(
-					baseURL + 'ajax/core/creator/topic/delete', 
-					{"id": $(this).parent().find('.topic-name').attr('data-id')}, 
-					function(topicData) {
-						
-						// remove this section now from left menu
-						$(topicToDel).closest('li').slideUp(500, function() {
-							
-							$(this).remove();
-							
-							if($('.sortable-q-topic').find('.topic-line').length <= 1)
-								$('.sortable-q-topic').find('.topic-line').hide();
-							
-						})
-						
-					}
-				);
+                    var refreshTopicSettingsTooltips = function () {
+                        $('.topic-settings').each(function (index, element) {
+                            $('#question-topic-settings-box')
+                                    .find('.topic-rand-val').attr('value', ($(this).attr('data-randomize'))).end()
+                                    .find('.topic-settings-save').attr('data-id', ($(this).parent().find('.topic-name').attr('data-id'))).end();
 
-			}
-			
-		});
-		
-		// edit topic
-		$(document).on('blur', '.q-topic-txtbox', function() {
+                            new Opentip(
+                                    element,
+                                    $('#question-topic-settings-box').html(),
+                                    {style: "drops", tipJoint: "top left", showOn: "click", }
+                            );
 
-			$this = $(this);
-			valToBeUpdated = $(this).val() != '' ? $(this).val() : 'Click to edit title';
-			
-			// send ajax requedt to update topic name in db
-			ajax(
-				baseURL + 'ajax/core/creator/topic/update', 
-				{"id": $(this).parent().attr('data-id'), "name": valToBeUpdated, "exam_id" : examId}, 
-				function(topicData) {
-					// update topic title
-					$this.parent().html(valToBeUpdated);
-				}
-			);
-			
-		});
-		$(document).on('keyup', '.q-topic-txtbox', function(e) {
-			if(e.keyCode == 13)
-			{
-				$(this).trigger('blur');
-			}
-		});		
-		$(document).on('click', '.topic-name', function() {
-			
-			if(!$(this).find('.q-topic-txtbox').length) {
-				$(this).html('<input type="text" class="q-topic-txtbox" value="'+$(this).html()+'" placeholder="Write section title here">');
-				$(this).find('input').focus().select();
-			}
-			
-		});
-		
-		// save topic settings
-		$(document).on('click', '.topic-settings-save', function() {
+                        });
+                    };
+                    refreshTopicSettingsTooltips();
 
-			randomize = $(this).parent().find('.topic-rand-val').val();
-			
-			// send ajax requedt to update randomize value of topic
-			ajax(
-				baseURL + 'ajax/core/creator/topic/update', 
-				{"id": $(this).attr('data-id'), "randomize": randomize, "exam_id" : examId}, 
-				function(topicData) {
-					
-					// update on page randomize value
-					$('.topic-name[data-id="'+$(this).attr('data-id')+'"]').parent().find('.topic-settings').attr('data-randomize', randomize);
-				}
-			);
-			
-			closeTooltips();
-		});
-		
-		
-	});
-</script> 
-<?php endif;?>
+                    // add topic
+                    $(document).on('click', '.add-q-topic', function () {
+                        $('.topic-line').show();
+                        newTopic = $('.sortable-q-topic > li:last').clone()
+                                .show()
+                                .find('.section-default-msg')
+                                .show()
+                                .end();
+
+                        // send ajax requedt to add this topic in db
+                        ajax(
+                                baseURL + 'ajax/core/creator/topic/create',
+                                {"exam_id": examId, "name": 'Click to edit title', "randomize": "0"},
+                        function (topicData) {
+
+                            // prepare cloned row to add in menu
+                            newTopic.find('.topic-name')
+                                    .html(topicData.name)
+                                    .attr('data-id', topicData.id)
+                                    .end()
+                                    .find('.topic-settings').attr('data-randomize', topicData.randomize).end()
+                                    .find('a').show();
+
+                            newTopic.find('.sortable-qs > li').not(':last').remove().end();
+
+
+                            // show it in menu now
+                            $(".sortable-q-topic > li:nth-child(1)").after(newTopic);
+                            //$(".sortable-q-topic > li:nth-child(2)").find('input').focus();
+
+                            // make it sortable
+                            makeQsSortable();
+
+                            // connect tooltip with newly added
+                            refreshTopicSettingsTooltips();
+                        }
+                        );
+
+                        return false;
+
+                    });
+
+                    // delet topic
+                    $(document).on('click', '.topic-del', function () {
+
+                        topicToDel = $(this);
+
+                        if ($(this).closest('li').find('ul > li:visible').length) {
+                            alert("There are some questions under this section! \n\r Please drag and drop all the questions from this section to some other section before you delete this section. \n\r You can also rename this section title by clicking on the title.");
+                        } else {
+
+                            // send ajax requedt to update topic name in db
+                            ajax(
+                                    baseURL + 'ajax/core/creator/topic/delete',
+                                    {"id": $(this).parent().find('.topic-name').attr('data-id')},
+                            function (topicData) {
+
+                                // remove this section now from left menu
+                                $(topicToDel).closest('li').slideUp(500, function () {
+
+                                    $(this).remove();
+
+                                    if ($('.sortable-q-topic').find('.topic-line').length <= 1)
+                                        $('.sortable-q-topic').find('.topic-line').hide();
+
+                                })
+
+                            }
+                            );
+
+                        }
+
+                    });
+
+                    // edit topic
+                    $(document).on('blur', '.q-topic-txtbox', function () {
+
+                        $this = $(this);
+                        valToBeUpdated = $(this).val() != '' ? $(this).val() : 'Click to edit title';
+
+                        // send ajax requedt to update topic name in db
+                        ajax(
+                                baseURL + 'ajax/core/creator/topic/update',
+                                {"id": $(this).parent().attr('data-id'), "name": valToBeUpdated, "exam_id": examId},
+                        function (topicData) {
+                            // update topic title
+                            $this.parent().html(valToBeUpdated);
+                        }
+                        );
+
+                    });
+                    $(document).on('keyup', '.q-topic-txtbox', function (e) {
+                        if (e.keyCode == 13)
+                        {
+                            $(this).trigger('blur');
+                        }
+                    });
+                    $(document).on('click', '.topic-name', function () {
+
+                        if (!$(this).find('.q-topic-txtbox').length) {
+                            $(this).html('<input type="text" class="q-topic-txtbox" value="' + $(this).html() + '" placeholder="Write section title here">');
+                            $(this).find('input').focus().select();
+                        }
+
+                    });
+
+                    // save topic settings
+                    $(document).on('click', '.topic-settings-save', function () {
+
+                        randomize = $(this).parent().find('.topic-rand-val').val();
+
+                        // send ajax requedt to update randomize value of topic
+                        ajax(
+                                baseURL + 'ajax/core/creator/topic/update',
+                                {"id": $(this).attr('data-id'), "randomize": randomize, "exam_id": examId},
+                        function (topicData) {
+
+                            // update on page randomize value
+                            $('.topic-name[data-id="' + $(this).attr('data-id') + '"]').parent().find('.topic-settings').attr('data-randomize', randomize);
+                        }
+                        );
+
+                        closeTooltips();
+                    });
+
+
+                });
+        </script> 
+<?php endif; ?>
