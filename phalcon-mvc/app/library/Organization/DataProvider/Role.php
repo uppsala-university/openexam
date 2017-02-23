@@ -263,11 +263,14 @@ abstract class RoleData extends Component
                                 if (!($principal = $this->catalog->getPrincipal($result[$i]['user'], Principal::ATTR_PN))) {
                                         $result[$i]['name'] = '';
                                         $result[$i]['mail'] = '';
-                                } elseif ($principals->mail) {
-                                        $result[$i]['name'] = $principals->name;
-                                        $result[$i]['mail'] = $principals->mail[0];
+                                } elseif (is_array($principal->mail)) {
+                                        $result[$i]['name'] = $principal->name;
+                                        $result[$i]['mail'] = $principal->mail[0];
+                                } elseif ($principal->mail) {
+                                        $result[$i]['name'] = $principal->name;
+                                        $result[$i]['mail'] = $principal->mail;
                                 } else {
-                                        $result[$i]['name'] = $principals->name;
+                                        $result[$i]['name'] = $principal->name;
                                         $result[$i]['mail'] = '';
                                 }
                         }
