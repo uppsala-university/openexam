@@ -14,6 +14,7 @@
 namespace OpenExam\Console\Tasks;
 
 use OpenExam\Library\Catalog\DirectoryService;
+use OpenExam\Library\Catalog\Principal;
 
 /**
  * Catalog service task.
@@ -76,6 +77,10 @@ class CatalogTask extends MainTask implements TaskInterface
                                         'command' => '--catalog --services'
                                 ),
                                 array(
+                                        'descr'   => 'Look at yourself',
+                                        'command' => '--catalog --principal=user@example.com'
+                                ),
+                                array(
                                         'descr'   => 'Get user principals with given name in domain user.uu.se',
                                         'command' => '--catalog --principal --search=gn --needle=Anders --domain=user.uu.se'
                                 ),
@@ -98,7 +103,7 @@ class CatalogTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Get all mail attribute for user',
                                         'command' => '--catalog --attributes=mail --principal=user@example.com'
-                                ),
+                                )
                         )
                 );
         }
@@ -158,8 +163,27 @@ class CatalogTask extends MainTask implements TaskInterface
                 if ($this->_options['domain']) {
                         $this->_service->setDefaultDomain($this->_options['domain']);
                 }
-                if ($this->_options['attributes'] && strstr($this->_options['attributes'], ',')) {
-                        $this->_options['attribute'] = explode(',', $this->_options['attributes']);
+
+                if ($this->_options['attributes']) {
+                        if (strstr($this->_options['attributes'], ',')) {
+                                $this->_options['attribute'] = explode(',', $this->_options['attributes']);
+                        } else {
+                                $this->_options['attribute'] = $this->_options['attributes'];
+                        }
+                }
+
+                // 
+                // Look at yourself:
+                // 
+                if (is_string($this->_options['principal'])) {
+                        $this->_options['needle'] = $this->_options['principal'];
+                        $this->_options['search'] = Principal::ATTR_PN;
+                        if (!$this->_options['limit']) {
+                                $this->_options['limit'] = 1;
+                        }
+                        if (!$this->_options['attribute']) {
+                                $this->_options['attribute'] = Principal::ATTR_ALL;
+                        }
                 }
 
                 if ($this->_options['limit'] == 1) {
@@ -174,6 +198,7 @@ class CatalogTask extends MainTask implements TaskInterface
                                 'attr'   => $this->_options['attribute']
                         ));
                 }
+
                 $this->format($result);
         }
 
