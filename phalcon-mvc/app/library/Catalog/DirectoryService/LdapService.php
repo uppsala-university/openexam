@@ -41,6 +41,16 @@ class LdapService extends AttributeService
          * @var string 
          */
         private $_base;
+        /**
+         * The primary attribute value.
+         * @var string 
+         */
+        private $_primary = DirectoryService::PRIMARY_ATTR_VALUE;
+        /**
+         * The primary language value.
+         * @var string 
+         */
+        private $_language = DirectoryService::PRIMARY_LANG_ENGLISH;
 
         /**
          * Constructor.
@@ -97,6 +107,24 @@ class LdapService extends AttributeService
         public function setBase($basedn)
         {
                 $this->_base = $basedn;
+        }
+
+        /**
+         * Set primary attribute value.
+         * @param string $attr The primary attribute value.
+         */
+        public function setPrimaryAttribute($attr)
+        {
+                $this->_primary = $attr;
+        }
+
+        /**
+         * Set prefered language (i.e. lang-sv).
+         * @param string $attr The primary language value.
+         */
+        public function setPrimaryLanguage($attr)
+        {
+                $this->_language = $attr;
         }
 
         /**
@@ -368,14 +396,14 @@ class LdapService extends AttributeService
                 // 
                 // Flatten array to scalar. Detect x-primary (i.e. mail) attribute:
                 // 
-                if (is_string($output[0][$attribute][0])) {
+                if (isset($output[0][$attribute][$this->_primary])) {
+                        $attrib = $output[0][$attribute][$this->_primary];
+                } elseif (isset($output[0][$attribute][$this->_language])) {
+                        $attrib = $output[0][$attribute][$this->_language];
+                } elseif (count($output[0][$attribute]) == 1) {
                         $attrib = $output[0][$attribute][0];
-                } elseif (isset($output[0][$attribute][0][DirectoryService::PRIMARY_ATTR_VALUE])) {
-                        $attrib = $output[0][$attribute][0][DirectoryService::PRIMARY_ATTR_VALUE];
-                } elseif (is_array($output[0][$attribute][0])) {
-                        $attrib = current($output[0][$attribute][0]);
                 } else {
-                        $attrib = $output[0][$attribute][0];
+                        $attrib = $output[0][$attribute];
                 }
 
                 if (isset($cachekey)) {

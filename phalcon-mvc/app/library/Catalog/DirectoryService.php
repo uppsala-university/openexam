@@ -24,6 +24,14 @@ interface DirectoryService
          * Identifier of prefered value in attribute collection.
          */
         const PRIMARY_ATTR_VALUE = 'x-primary';
+        /**
+         * Identifier of english translation attribute value.
+         */
+        const PRIMARY_LANG_ENGLISH = 'lang-en';
+        /**
+         * Identifier of swedish translation attribute value.
+         */
+        const PRIMARY_LANG_SWEDISH = 'lang-en';
 
         /**
          * Get groups for user.
@@ -161,7 +169,7 @@ interface DirectoryService
          * @return Principal The matching user principal object.
          */
         function getPrincipal($needle, $search = null, $domain = null, $attr = null);
-        
+
         /**
          * Get service connection.
          * @return ServiceConnection 

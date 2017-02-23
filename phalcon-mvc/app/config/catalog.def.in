@@ -50,6 +50,7 @@ return array(
                         ));
                         $service->setBase('ou=employees,dc=example,dc=com');
                         $service->setCacheLifetime(1800);
+                        $service->setPrimaryLanguage('lang-sv');
                         return $service;
                 },
                 'domains' => array(
