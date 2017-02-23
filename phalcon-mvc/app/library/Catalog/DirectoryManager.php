@@ -26,23 +26,18 @@ use Phalcon\Mvc\User\Component;
  * too, i.e. getName(...) vs. name(...). The user principal defaults to caller
  * if unset.
  * 
- * @method array getAll(string $principal = null, boolean $single = true) Get all attributes (Principal::ATTR_ALL).
  * @method array getAffiliation(string $principal = null, boolean $single = true) Get user affiliation (Principal::ATTR_AFFIL).
  * @method array getAssurance(string $principal = null, boolean $single = true) Get data assurance (Principal::ATTR_ASSUR).
- * @method array|string getGivenName(string $principal = null, boolean $single = true) Get firstname of user (Principal::ATTR_GN).
- * @method array|string getFirstName(string $principal = null, boolean $single = true) Get firstname of user (Principal::ATTR_GN).
- * @method array|string getMail(string $principal = null, boolean $single = true) Get email address(es) for user (Principal::ATTR_MAIL).
- * @method array|string getEmail(string $principal = null, boolean $single = true) Get email address(es) for user (Principal::ATTR_MAIL).
- * @method array|string getEmail(boolean $single DESCR) Get email address(es) for user (Principal::ATTR_MAIL).
  * @method array|string getName(string $principal = null, boolean $single = true) Get name of user (Principal::ATTR_NAME).
- * @method array|string getCommonName(string $principal = null, boolean $single = true) Get name of user (Principal::ATTR_NAME).
+ * @method array|string getFirstName(string $principal = null, boolean $single = true) Get firstname of user (Principal::ATTR_GN).
+ * @method array|string getLastName(string $principal = null, boolean $single = true) Get lastname of user (Principal::ATTR_SN).
+ * @method array|string getMail(string $principal = null, boolean $single = true) Get email address(es) for user (Principal::ATTR_MAIL).
  * @method array|string getPersonalNumber(string $principal = null, boolean $single = true) Get peronal number of user (Principal::ATTR_PNR).
  * @method array|string getSocialNumber(string $principal = null, boolean $single = true) Get social number of user (Principal::ATTR_PNR).
- * @method array|string getSirName(string $principal = null, boolean $single = true) Get lastname of user (Principal::ATTR_SN).
- * @method array|string getLastName(string $principal = null, boolean $single = true) Get lastname of user (Principal::ATTR_SN).
- * @method array|string getUserName(string $principal = null, boolean $single = true) Get username of user (Principal::ATTR_UID).
  * @method array|string getUID(string $principal = null, boolean $single = true) Get username of user (Principal::ATTR_UID).
  *
+ * @property-read Attribute\Enumerator $attrib Get attribute enumerator.
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class DirectoryManager extends Component implements DirectoryService
@@ -77,6 +72,11 @@ class DirectoryManager extends Component implements DirectoryService
          * @var DirectoryCache 
          */
         private $_cache;
+        /**
+         * The attribute enumerator.
+         * @var Attribute\Enumerator 
+         */
+        private $_enumerator;
 
         /**
          * Constructor.
@@ -85,6 +85,7 @@ class DirectoryManager extends Component implements DirectoryService
         public function __construct($services = array())
         {
                 $this->_services = $services;
+                $this->_enumerator = new Attribute\Enumerator($this);
         }
 
         /**
@@ -110,96 +111,12 @@ class DirectoryManager extends Component implements DirectoryService
 
                 unset($this->_domain);
                 unset($this->_services);
+                unset($this->_enumerator);
         }
 
         public function __call($name, $arguments)
         {
-                // 
-                // Support attribute calls:
-                // 
-                // 1. getName()                         -> single, caller
-                // 2. getName($principal)               -> single, principal
-                // 3. getName($principal, true)         -> single, principal
-                // 4. getName($principal, false)        -> multi, principal
-                // 5. getName(true)                     -> single, caller
-                // 6. getName(false)                    -> multi, caller
-                // 
-                // This section also supports using short name equivalents
-                // like name(true) or name($principal, false).
-                // 
-                $map = array(
-                        'all'            => Principal::ATTR_ALL,
-                        'affiliation'    => Principal::ATTR_AFFIL,
-                        'assurance'      => Principal::ATTR_ASSUR,
-                        'gn'             => Principal::ATTR_GN,
-                        'givenname'      => Principal::ATTR_GN,
-                        'firstname'      => Principal::ATTR_GN,
-                        'mail'           => Principal::ATTR_MAIL,
-                        'email'          => Principal::ATTR_MAIL,
-                        'name'           => Principal::ATTR_NAME,
-                        'commonname'     => Principal::ATTR_NAME,
-                        'pnr'            => Principal::ATTR_PNR,
-                        'persnr'         => Principal::ATTR_PNR,
-                        'personalnumber' => Principal::ATTR_PNR,
-                        'social'         => Principal::ATTR_PNR,
-                        'socialnumber'   => Principal::ATTR_PNR,
-                        'sn'             => Principal::ATTR_SN,
-                        'sirname'        => Principal::ATTR_SN,
-                        'lastname'       => Principal::ATTR_SN,
-                        'uid'            => Principal::ATTR_UID,
-                        'user'           => Principal::ATTR_UID,
-                        'userid'         => Principal::ATTR_UID
-                );
-
-                // 
-                // Decide on using single/multi and caller/principal.
-                // 
-                $single = true;
-                $caller = true;
-
-                if (isset($arguments[0])) {
-                        if (is_bool($arguments[0])) {
-                                $single = $arguments[0];
-                        } elseif (is_string($arguments[0])) {
-                                $caller = $arguments[0];
-                        }
-                }
-
-                if (isset($arguments[1])) {
-                        if (is_bool($arguments[1])) {
-                                $single = $arguments[1];
-                        }
-                }
-
-                // 
-                // Method name is attribute:
-                // 
-                if (strncmp($name, 'get', 3) == 0) {
-                        $attrib = strtolower(substr($name, 3));
-                } else {
-                        $attrib = strtolower($name);  // i.e. uid(...)
-                }
-
-                // 
-                // Remap custom attributes:
-                // 
-                if (in_array($attrib, array_keys($map))) {
-                        $attrib = $map[$attrib];
-                }
-
-                if ($single) {
-                        if (is_string($caller)) {
-                                return $this->getAttribute($attrib, $caller);
-                        } else {
-                                return $this->getAttribute($attrib);
-                        }
-                } else {
-                        if (is_string($caller)) {
-                                return $this->getAttributes($attrib, $caller);
-                        } else {
-                                return $this->getAttributes($attrib);
-                        }
-                }
+                return $this->_enumerator->getAttribute($name, $arguments);
         }
 
         /**
@@ -251,6 +168,15 @@ class DirectoryManager extends Component implements DirectoryService
         public function getCache()
         {
                 return $this->_cache;
+        }
+
+        /**
+         * Get attributes enumerator.
+         * @return Attribute\Enumerator
+         */
+        public function getEnumerator()
+        {
+                return $this->_enumerator;
         }
 
         /**

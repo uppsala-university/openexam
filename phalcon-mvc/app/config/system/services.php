@@ -173,7 +173,7 @@ $di->set('dbcache', function() use($config) {
                 $lower = \OpenExam\Library\Database\Cache\Backend::create($config->dbcache->lower->backend, $frontend, $options);
         }
 
-        if (($upper) && isset($lower)) {
+        if (isset($upper) && isset($lower)) {
                 $distributed = new \OpenExam\Library\Database\Cache\Strategy\Distributed($frontend);
                 $distributed->setUpperBackend($upper);
                 $distributed->setLowerBackend($lower);
