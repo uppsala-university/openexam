@@ -119,12 +119,12 @@ class DirectoryManager extends Component implements DirectoryService
                 return $this->_enumerator->getAttribute($name, $arguments);
         }
 
-        public function __get($propertyName)
+        public function __get($name)
         {
                 if ($propertyName == 'attrib') {
                         return $this->_enumerator;
                 } else {
-                        return parent::__get($propertyName);
+                        return parent::__get($name);
                 }
         }
 
@@ -467,20 +467,21 @@ class DirectoryManager extends Component implements DirectoryService
          * 
          * @return Principal[] Matching user principal objects.
          */
-        public function getPrincipals($needle, $search = self::DEFAULT_SEARCH, $options = array(
-                'attr'   => null,
-                'limit'  => self::DEFAULT_LIMIT,
-                'domain' => null,
-                'data'   => false
-        ))
+        public function getPrincipals($needle, $search = null, $options = null)
         {
-                if (!isset($options['attr'])) {
+                if (!isset($search) || $search == false) {
+                        $search = self::DEFAULT_SEARCH;
+                }
+                if (!isset($options) || $options == false) {
+                        $options = array();
+                }
+                if (!isset($options['attr']) || $options['attr'] == false) {
                         $options['attr'] = self::$DEFAULT_ATTR;
                 }
-                if (!isset($options['limit'])) {
+                if (!isset($options['limit']) || $options['limit'] == false) {
                         $options['limit'] = self::DEFAULT_LIMIT;
                 }
-                if (!isset($options['domain'])) {
+                if (!isset($options['domain']) || $options['domain'] == false) {
                         $options['domain'] = $this->_domain;
                 }
                 if (!is_array($options['attr'])) {
@@ -536,10 +537,13 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getPrincipal($needle, $search = null, $domain = null, $attr = null)
         {
-                if (!isset($attr)) {
+                if (!isset($search) || $search == false) {
+                        $search = self::DEFAULT_SEARCH;
+                }
+                if (!isset($attr) || $attr == false) {
                         $attr = self::$DEFAULT_ATTR;
                 }
-                if (!isset($domain)) {
+                if (!isset($domain) || $domain == false) {
                         $domain = $this->_domain;
                 }
                 if (!is_array($attr)) {
@@ -554,7 +558,7 @@ class DirectoryManager extends Component implements DirectoryService
                         if (!isset($domain) || $domain == $dom) {
                                 foreach ($services as $name => $service) {
                                         try {
-                                                if (($res = $service->getPrincipal($needle, $search, $domain, $attr)) != null) {
+                                                if (($result = $service->getPrincipal($needle, $search, $domain, $attr)) != null) {
                                                         break;
                                                 }
                                         } catch (Exception $exception) {
