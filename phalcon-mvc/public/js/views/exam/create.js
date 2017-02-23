@@ -197,6 +197,20 @@ $(document).ready(function () {
     });
 
     // 
+    // Show email address instead of username in user saerch dialog:
+    // 
+    $(document).on('click', '.user-insert-show-mail', function () {
+        var checked = $(this).is(':checked');
+        $('.user-staff-add').each(function () {
+            if (checked) {
+                $(this).text($(this).attr('data-name') + ' [' + $(this).attr('data-mail') + ']');
+            } else {
+                $(this).text($(this).attr('data-name') + ' [' + $(this).attr('data-user') + ']');
+            }
+        });
+    });
+
+    // 
     // Insert new staff user in tooltip dialog.
     // 
     function insertStaffUser(item) {
@@ -224,7 +238,7 @@ $(document).ready(function () {
         // 
         // Create new user entry and append to user-insert-box template:
         // 
-        var insert = $('#user-insert-box').find('.user-insert-staff');
+        var insert = $('#user-insert-box').find('.user-insert-staff > div');
         var uentry = insert.find(".user-staff-entry").first().clone();
         var anchor = uentry.find('.user-staff-add');
 
@@ -268,7 +282,7 @@ $(document).ready(function () {
                         name: term + "*"
                     },
                     params: {
-                        attr: ["name", "uid", "principal"],
+                        attr: ["name", "uid", "principal", "mail"],
                         limit: 10
                     }
                 },
@@ -281,7 +295,7 @@ $(document).ready(function () {
                         label: result.name + ' [' + result.principal + ']',
                         value: result.principal,
                         name: result.name,
-                        mail: result.mail
+                        mail: result.mail[0]
                     });
                     userList.push(result.principal);
                 }

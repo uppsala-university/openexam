@@ -206,7 +206,8 @@ use OpenExam\Library\Core\Exam\Check;
 <!-- User search box -->
 <div id="user-insert-box" class="user-insert-box" style="display:none" title="User insert and catalog service search" >
     <div class="user-search-box">
-        <span>Search: </span><input class="user-search" placeholder="Search for user or add username" style="min-width: 250px">
+        <label for="user-search">Search:</label>
+        <input class="user-search" placeholder="Search for user or add username" style="min-width: 300px">
         <a href="#" class="user-search-add">
             <div style="display: block; float: right">
                 <span class="btn btn-success" style="padding:2px; margin-left: 5px; font-size:11px; width: 5em">
@@ -219,7 +220,7 @@ use OpenExam\Library\Core\Exam\Check;
     <hr>
     <div class="user-insert-staff">
         <span>Insert existing user:</span>
-        <div style="margin-top: 5px">
+        <div style="margin-top: 5px; margin-left: 15px">
             <?php foreach ($staff->users as $user => $data) : ?>
                     <div class="user-staff-entry">
                         <i class="fa fa-user"></i> 
@@ -227,6 +228,9 @@ use OpenExam\Library\Core\Exam\Check;
                     </div>
             <?php endforeach; ?>
         </div>
+    </div>
+    <div style="margin-top: 10px; margin-left: 15px">
+        <input type="checkbox" class="user-insert-show-mail"><span style="margin-left: 10px">Display email address instead of username</span>
     </div>
 </div>
 
