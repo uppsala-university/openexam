@@ -764,11 +764,14 @@ class Exam extends ModelBase
         private function setOrganization()
         {
                 if (!isset($this->orgunit)) {
-                        $this->orgunit = $this->getDI()->get('user')->getDepartment();
+                        if (($service = $this->getDI()->get('user'))) {
+                                $this->orgunit = $service->getDepartment();
+                        }
                 }
                 if (!isset($this->orgunit)) {
-                        $config = $this->getDI()->get('config');
-                        $this->orgunit = $config->user->orgname;
+                        if (($service = $this->getDI()->get('config'))) {
+                                $this->orgunit = $service->user->orgname;
+                        }
                 }
 
                 $parts = explode(";", $this->orgunit);
