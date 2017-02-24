@@ -210,7 +210,7 @@ $examsPerPage = 5;
 <div id="container" class="left_menu_space container" style="width:100%">
 
     <div class="hero-unit" style="margin:15px">
-        <h1>Hi <?= $this->catalog->getName() ?>!</h1>
+        <h1>Hi <?= $this->catalog->getFirstName() ?>!</h1>
         <div style="padding:10px 0px">
             The content of this page depends on the different roles you have. Information about the different roles (creator, contributor, corrector, invigilator, student) can be found <a href="<?= $this->url->get('/help/manual/teacher') ?>">teacher manual</a>.  
         </div>

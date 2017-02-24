@@ -112,8 +112,8 @@ if ($tdiff <= 0) {
 
             <li class="dropdown dark user-menu">
                 <a class='dropdown-toggle' data-toggle='dropdown' href="#">
-                    <span class="user-name"><?= $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name') ?> &nbsp;
-                        <span style="color:#f9c271"><?= $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'pnr') ?></span><!--#FFFF66--></span>
+                    <span class="user-name"><?= $this->catalog->getName() ?> &nbsp;
+                        <span style="color:#f9c271"><?= $this->catalog->getPersonalNumber() ?></span><!--#FFFF66--></span>
                     <b class='caret'></b>
                 </a>
                 <ul class='dropdown-menu' style="width:275px">

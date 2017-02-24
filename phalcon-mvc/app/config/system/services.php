@@ -368,11 +368,4 @@ $di->set('profiler', function() use ($config) {
         return new OpenExam\Library\Monitor\Performance\Profiler($config->profile);
 }, true);
 
-/**
- * Register a user component
- */
-$di->set('helper', function() {
-        return new OpenExam\Library\Gui\Helper();
-});
-
 return $di;

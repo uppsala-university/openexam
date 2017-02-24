@@ -277,19 +277,18 @@ if ($exam->decoded) {
                                             </td>
                                     <?php endif; ?>
                                     <?php if ($exam->decoded): ?>
-                                            <?php $stName = explode(' ', $this->helper->getCatalogAttribute($student->user, 'name'), 2); ?>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                     <!--<a class="fb fancybox.ajax" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">-->
-                                                <?= $stName[0] ?>
+                                                <?= $this->catalog->getFirstName($student->user) ?>
                                                 <!--</a>-->
                                             </td>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                     <!--<a class="fb fancybox.ajax" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">-->
-                                                <?= $stName[1] ?>
+                                                <?= $this->catalog->getLastName($student->user) ?>
                                                 <!--</a>-->
                                             </td>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                <?= substr(substr_replace($this->helper->getCatalogAttribute($student->user, 'pnr'), "-", 8, 0), 2); ?>
+                                                <?= substr(substr_replace($this->catalog->getPersonalNumber($student->user), "-", 8, 0), 2); ?>
                                             </td>
                                     <?php endif; ?>
                                     <?php if ($exam->show_percent): ?>

@@ -198,7 +198,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
         <article class="ac-large">
             <?php
             if ($exam->show_correctors) {
-                    $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name') . " [" . $this->user->getUser() . "]");
+                    $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->catalog->getName() . " [" . $this->user->getUser() . "]");
             } else {
                     $correctors = is_object($question) ? $question->correctors : array();
             }
@@ -215,11 +215,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                     <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
                                     <?php if (is_object($corrector)): ?>
                                             <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
-                                                <?=
-                                                $this->helper->getCatalogAttribute($corrector->user, 'name') .
-                                                " [" . $this->helper->getCatalogAttribute($corrector->user, 'uid') . "]"
-
-                                                ?>
+                                                <?= $this->catalog->getName($corrector->user) . " [" . $this->catalog->getUID($corrector->user) . "]" ?>
                                             </span>
                                     <?php else: ?>
                                             <span data-user="<?= $k ?>" class="left-col-user" style="font-size:11px">

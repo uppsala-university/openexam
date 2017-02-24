@@ -139,9 +139,9 @@
                                         <div style="margin-top:35px">
                                             <center>
                                                 <h3>
-                                                    <span style="color:#3d749b"><?= $this->helper->getCatalogAttribute($student->user, 'name') ?></span>
+                                                    <span style="color:#3d749b"><?= $this->catalog->getName($student->user) ?></span>
                                                 </h3>
-                                                <span style="font-weight:normal"><?= $this->helper->getCatalogAttribute($student->user, 'pnr') ?></span>
+                                                <span style="font-weight:normal"><?= $this->catalog->getPersonalNumber($student->user) ?></span>
                                             </center>
                                         </div>
                                 <?php endif; ?>
@@ -522,7 +522,7 @@
                                             This section lists those people who have been involved in this examination.<br>
                                             <div style="margin-top:15px">
                                                 <span style="font-size:15px; color:#3d749b">Responsable for examination:</span><br>
-                                                <span class="uu-color">Main responsible person for the examination is <a href="mailto:<?= $this->helper->getCatalogAttribute($exam->creator, 'mail', true) ?>" style="color:#990000; text-decoration:none"><?= $this->helper->getCatalogAttribute($exam->creator, 'name') ?></a></span><br>
+                                                <span class="uu-color">Main responsible person for the examination is <a href="mailto:<?= $this->catalog->getMail($exam->creator) ?>" style="color:#990000; text-decoration:none"><?= $this->catalog->getName($exam->creator) ?></a></span><br>
                                             </div>
 
                                             <?php if (($exam->details & Exam::RESULT_EXPOSE_EMPLOYEES) != 0): ?>
@@ -532,7 +532,7 @@
                                                         <ul class="uu-color">
                                                             <?php foreach ($data['qCorrectors'] as $corrector => $qList): ?>
                                                                     <li style="padding-bottom:10px">
-                                                                        <a href="mailto:<?= $this->helper->getCatalogAttribute($corrector, 'mail', true) ?>" style="color:#990000; text-decoration:none"><?= $this->helper->getCatalogAttribute($corrector, 'name') ?></a>                                                                                <div>
+                                                                        <a href="mailto:<?= $this->catalog->getMail($corrector) ?>" style="color:#990000; text-decoration:none"><?= $this->catalog->getName($corrector) ?></a>                                                                                <div>
                                                                             <span style="color:#000">Corrected questions:</span> 
                                                                             <ul>
                                                                                 <?php foreach ($qList as $qName): ?>

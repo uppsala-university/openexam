@@ -41,7 +41,7 @@ $actionName = $this->dispatcher->getActionName();
                 <br>
                 <h1 class="siteName"> <a href="http://www.bmc.uu.se/">OpenExam</a> - online examination system </h1>
                 <div style="color: #c1002b; float: right; padding-top: 22px;">
-                    <?= $this->helper->getCatalogAttribute($this->user->getPrincipalName(), 'name') ?>
+                    <?= $this->catalog->getName() ?>
                 </div>
             </div>
         </div>
