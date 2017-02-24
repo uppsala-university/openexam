@@ -363,6 +363,9 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
+                if (count($result) == 0) {
+                        $result = null;
+                }
                 if (is_array($result)) {
                         $result = array_unique($result);
                 }
