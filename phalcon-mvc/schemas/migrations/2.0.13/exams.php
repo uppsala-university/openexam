@@ -192,7 +192,7 @@ class ExamsMigration_2013 extends Migration
                         'lockdown',
                         array(
                             'type' => Column::TYPE_VARCHAR,
-                            'default' => "{"enable":true}",
+                            'default' => '{"enable":true}',
                             'notNull' => true,
                             'size' => 500,
                             'after' => 'testcase'
