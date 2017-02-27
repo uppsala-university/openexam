@@ -36,7 +36,10 @@ use UUP\Authentication\Validator\LdapBindValidator;
  * );
  * 
  * A second key ('ldap') in options array can be used for passing LDAP options. 
- * Use the numeric value of LDAP option as array keys.
+ * Use the numeric value of LDAP option as array keys. 
+ * 
+ * Supports default user domain for unqualified usernames, see user->domain in 
+ * the system config. 
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -61,15 +64,19 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin, Re
          * @param int $port The LDAP service port.
          * @param array $options Options for form and LDAP.
          */
-        public function __construct($config, $server, $port = 636, $options = array(
-                'form' => array(
-                        'login' => null,
-                        'name'  => null,
-                        'user'  => null,
-                        'pass'  => null
-                )
-        ))
+        public function __construct($config, $server, $port = 636, $options = null)
         {
+                if (!isset($options)) {
+                        $options = array(
+                                'form' => array(
+                                        'login' => null,
+                                        'name'  => null,
+                                        'user'  => null,
+                                        'pass'  => null
+                                )
+                        );
+                }
+
                 // 
                 // Keep for future reference:
                 // 
@@ -81,9 +88,10 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin, Re
                 // 
                 $defaults = array(
                         'form' => array(
-                                'name' => 'msad',
-                                'user' => 'user',
-                                'pass' => 'pass'
+                                'name'   => 'msad',
+                                'user'   => 'user',
+                                'pass'   => 'pass',
+                                'domain' => $config->user->domain
                         ),
                         'ldap' => array(
                                 LDAP_OPT_REFERRALS        => false,
