@@ -205,8 +205,8 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
 
             ?>
 
-            <div style="font-weight:bold"> Question Correctors: <a href="#" onClick="return false;">
-                    <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "id" => "uu-id4")); ?>
+            <div style="font-weight:bold"> Question Correctors: <a href="#" id="uu-id4" data-model="corrector" qid='<?= $question->id ?>'>
+                    <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "class" => "search-catalog-service")); ?>
                 </a> <br>
                 <div class="q-corrector-area">
                     <ul class="q_corrector_list" style="list-style:none; margin:0px">
@@ -244,11 +244,17 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
     </div>
 </div>
 
-<!-- dialog for resource selection from Library -->
+<!-- Dialog for resource selection -->
 <div  id="media_selector" style="padding-top:20px; display:none" title="Select or upload supplementary material"></div>
 <script language="javascript">
         var tabId = tabCounter = <?= ($totalQParts ? $totalQParts + 1 : 2) ?>;
         var qId = <?= $question->id ? $question->id : 0 ?>;
-        var isExamPublished = <?= (in_array("published", $exam->flags)) ? "1" : "0"; ?>
+        var isExamPublished = <?= (in_array("published", $exam->flags)) ? "1" : "0"; ?>;
+        var role = '<?= $role ?>';        
 </script>
+
+<!-- User search support -->
+<?php $this->partial("partials/user-search", array('staff' => $staff)) ?>
+
+<!-- Include question form javascript -->
 <?= Phalcon\Tag::javascriptInclude('js/views/question/form.js') ?>

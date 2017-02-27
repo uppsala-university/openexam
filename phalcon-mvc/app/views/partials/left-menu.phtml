@@ -13,6 +13,8 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 <div id="leftCol">
     <div class="treeMenuContainer componentContainer">
         <ul class="menuLevel0">
+
+            <!-- Roles listing section -->
             <?php foreach ($userRoles as $model => $role): ?>
                     <li> 
                         <?php $roleData = $exam->$role; ?>
@@ -54,7 +56,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                     </li>
             <?php endforeach; ?>
 
-            <!-- students listing section -->
+            <!-- Students listing section -->
             <?php if ($this->user->getPrimaryRole() == Roles::CREATOR): ?>
                     <li> 
                         <a href="#" class="bullet-open manage-students">
@@ -68,7 +70,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                     </li>
             <?php endif; ?>
 
-            <!-- question listing section -->
+            <!-- Question listing section -->
             <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'topic', 'update') && in_array("editable", $exam->flags)): ?>
                     <li> 
                         <a href="#" class="bullet-open" rel="menuLevel1">
@@ -132,7 +134,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
     </div>
 </div>
 
-<!--------------- Hidden Divs -----------------> 
+<!-- Hidden div's --> 
 <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'topic', 'update') && in_array("editable", $exam->flags)): ?>
         <!-- Question topic settings -->
         <div style="display:none" id="question-topic-settings-box">
@@ -161,7 +163,9 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                     };
                     refreshTopicSettingsTooltips();
 
-                    // add topic
+                    // 
+                    // Add topic:
+                    // 
                     $(document).on('click', '.add-q-topic', function () {
                         $('.topic-line').show();
                         newTopic = $('.sortable-q-topic > li:last').clone()
@@ -169,14 +173,16 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                                 .find('.section-default-msg')
                                 .show()
                                 .end();
-
-                        // send ajax requedt to add this topic in db
+                        // 
+                        // Send AJAX request to add this topic in DB:
+                        // 
                         ajax(
                                 baseURL + 'ajax/core/creator/topic/create',
                                 {"exam_id": examId, "name": 'Click to edit title', "randomize": "0"},
                         function (topicData) {
-
-                            // prepare cloned row to add in menu
+                            // 
+                            // Prepare cloned row to add in menu:
+                            // 
                             newTopic.find('.topic-name')
                                     .html(topicData.name)
                                     .attr('data-id', topicData.id)
@@ -186,15 +192,19 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 
                             newTopic.find('.sortable-qs > li').not(':last').remove().end();
 
-
-                            // show it in menu now
+                            // 
+                            // Show it in menu now:
+                            // 
                             $(".sortable-q-topic > li:nth-child(1)").after(newTopic);
-                            //$(".sortable-q-topic > li:nth-child(2)").find('input').focus();
 
-                            // make it sortable
+                            // 
+                            // Make it sortable:
+                            // 
                             makeQsSortable();
 
-                            // connect tooltip with newly added
+                            // 
+                            // Connect tooltip with newly added:
+                            // 
                             refreshTopicSettingsTooltips();
                         }
                         );
@@ -203,7 +213,9 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 
                     });
 
-                    // delet topic
+                    // 
+                    // Delete topic:
+                    // 
                     $(document).on('click', '.topic-del', function () {
 
                         topicToDel = $(this);
@@ -212,13 +224,17 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                             alert("There are some questions under this section! \n\r Please drag and drop all the questions from this section to some other section before you delete this section. \n\r You can also rename this section title by clicking on the title.");
                         } else {
 
-                            // send ajax requedt to update topic name in db
+                            // 
+                            // Send AJAX request to delete topic name in DB:
+                            // 
                             ajax(
                                     baseURL + 'ajax/core/creator/topic/delete',
                                     {"id": $(this).parent().find('.topic-name').attr('data-id')},
                             function (topicData) {
 
-                                // remove this section now from left menu
+                                //                
+                                // Remove this section now from left menu:
+                                // 
                                 $(topicToDel).closest('li').slideUp(500, function () {
 
                                     $(this).remove();
@@ -235,29 +251,37 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 
                     });
 
-                    // edit topic
+                    // 
+                    // Edit topic:
+                    // 
                     $(document).on('blur', '.q-topic-txtbox', function () {
 
                         $this = $(this);
                         valToBeUpdated = $(this).val() != '' ? $(this).val() : 'Click to edit title';
 
-                        // send ajax requedt to update topic name in db
+                        // 
+                        // Send AJAX request to update topic name in DB:
+                        // 
                         ajax(
                                 baseURL + 'ajax/core/creator/topic/update',
                                 {"id": $(this).parent().attr('data-id'), "name": valToBeUpdated, "exam_id": examId},
                         function (topicData) {
-                            // update topic title
+                            // 
+                            // Update topic title:
+                            // 
                             $this.parent().html(valToBeUpdated);
                         }
                         );
 
                     });
+
                     $(document).on('keyup', '.q-topic-txtbox', function (e) {
                         if (e.keyCode == 13)
                         {
                             $(this).trigger('blur');
                         }
                     });
+
                     $(document).on('click', '.topic-name', function () {
 
                         if (!$(this).find('.q-topic-txtbox').length) {
@@ -267,25 +291,29 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 
                     });
 
-                    // save topic settings
+                    // 
+                    // Save topic settings:
+                    // 
                     $(document).on('click', '.topic-settings-save', function () {
 
                         randomize = $(this).parent().find('.topic-rand-val').val();
 
-                        // send ajax requedt to update randomize value of topic
+                        // 
+                        // Send AJAX request to update randomize value of topic:
+                        // 
                         ajax(
                                 baseURL + 'ajax/core/creator/topic/update',
                                 {"id": $(this).attr('data-id'), "randomize": randomize, "exam_id": examId},
                         function (topicData) {
-
-                            // update on page randomize value
+                            // 
+                            // Update on page randomize value:
+                            // 
                             $('.topic-name[data-id="' + $(this).attr('data-id') + '"]').parent().find('.topic-settings').attr('data-randomize', randomize);
                         }
                         );
 
                         closeTooltips();
                     });
-
 
                 });
         </script> 

@@ -213,7 +213,7 @@ $(function () {
             $('#lib-item-' + mediaId).find('.lib-item-title').html(title);
             $('#lib-items-added > ul').find('li[media-id="lib-item-' + mediaId + '"] > .title-box').find('input').val(title);
             // close tooltip
-            close_tooltips();
+            closeToolTips();
         }
         );
 
@@ -233,7 +233,7 @@ $(function () {
                 $('#lib-item-' + mediaId).remove();
                 $('#lib-items-added > ul').find('li[media-id="lib-item-' + mediaId + '"]').remove();
                 // close tooltip
-                close_tooltips();
+                closeToolTips();
             }
             );
         }

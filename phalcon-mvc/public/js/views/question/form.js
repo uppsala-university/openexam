@@ -8,11 +8,18 @@ var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-ic
 var libJs = '';
 
 // 
-// Question parts management (Tabs)
+// Initialize opentip for adding question correctors:
 // 
+$('.search-catalog-service').each(function (index, element) {
+    attachCatalogSearch(index, element);
+});
+
+// ----------------------------------------
+// Question parts management (Tabs)
+// ----------------------------------------
 
 // 
-// Add new question part
+// Add new question part:
 // 
 var addQuestPartTab = function () {
 
@@ -24,15 +31,16 @@ var addQuestPartTab = function () {
             .filter(':first')
             .html()
             .replace('checked="checked"', "");  // Clear selected answer type
-    
+
     qPartTabs.find(".ui-tabs-nav").append(li);
     qPartTabs.find("#q-parts-wrapper").append("<div id='" + id + "' class='q-part'>" + tabContentHtml + "</div>");
 
-    //refresh  plugins on newly added content
+    // 
+    // Refresh plugins on newly added content:
+    // 
     qPartTabs.tabs("refresh");
     qPartTabs.tabs({active: tabCounter - 1});
     $(".accordion").accordion({heightStyle: "content"});
-    //refreshCKEditor();
 
     if (tabCounter == 2) {
         qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel").css('padding', '1em 1.4em');
@@ -41,50 +49,44 @@ var addQuestPartTab = function () {
     tabId++;
     tabCounter++;
 
-    //enable CkEditor
+    //
+    // Enable CKEditor:
+    // 
     $('#' + id).find('.write_q_ckeditor').attr('id', 'q_text' + tabId).val('');
     $('#' + id).find('.ans_type').hide();
     $('#' + id).find('.lib_resources_list').empty();
     $('#' + id).find('#cke_q_text1').remove();
     CKEDITOR.replace('q_text' + tabId, {
         height: '100px'
-    } /*{
-     height: '100px'}*/);
+    });
 }
 
 /*------------------------------------------*/
-/*	Events binding area						*/
+/*	Events binding area                 */
 /*------------------------------------------*/
 $(document).ready(function () {
 
-    /*======== Accordion ==========*/
+    // 
+    // Accordion:
+    // 
     $(".accordion").accordion({
         heightStyle: "content"
     });
 
-    /*========  Bind CKEDITORs ==========*/
-//    setTimeout(function () {
-
+    // 
+    // CKEditors:
+    // 
     for (var i = 1; i < tabCounter; i++) {
         CKEDITOR.replace('q_text' + i, {
-            height: '100px'/*,
-             toolbar: [
-             ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-',
-             'Undo', 'Redo', 'Outdent', 'Indent', '-',
-             'Bold', 'Italic', 'Underline', '-',
-             'NumberedList', 'BulletedList'
-             ]
-             ]*/
+            height: '100px'
         });
 
     }
-    ;
-
-//    }, 100);
     CKEDITOR.config.autoParagraph = false;
 
-    /*========  binding question tooltips  ==========*/
-    // prepare list
+    // 
+    // Prepare correctors list:
+    // 
     var tmp = '<option value="">Choose a corrector for question</option>';
     $('.left-col-user').each(function (index, element) {
         if ($(element).html().replace(/\s/g, '') != '' && tmp.replace(/\s/g, '').indexOf($(element).html().replace(/\s/g, '')) < 0) {
@@ -92,32 +94,23 @@ $(document).ready(function () {
         }
     });
 
-    // show list in openTip
-    new Opentip('#uu-id4',
-            'Search by name: <input type="text" class="uu-user-search q-correctors" isfor="uu-id4box">',
-            {style: "drops", tipJoint: "top left"});
-
-
     setTimeout(
             function ()
             {
                 if (isExamPublished) {
-
                     $("#question-form-dialog-wrap").dialog("option", "buttons",
                             [
                                 {
                                     text: "Cancel",
                                     click: function () {
-                                        close_tooltips();
+                                        closeToolTips();
                                         $(this).dialog('destroy');
                                     }
                                 }
                             ]
                             );
-
                 }
             }, 500);
-
 
     if (formJs == 'loaded') {
         return;
@@ -125,7 +118,9 @@ $(document).ready(function () {
         formJs = 'loaded';
     }
 
-    /*======== Removing the tab on click ==========*/
+    // 
+    // Removing the tab on click:
+    // 
     qPartTabs.delegate("span.ui-icon-close", "click", function () {
         var panelId = $(this).closest("li").remove().attr("aria-controls");
         $("#" + panelId).remove();
@@ -141,7 +136,9 @@ $(document).ready(function () {
         }
     });
 
-    /*======== answer type selector: input/textarea/drawingarea etc  ==========*/
+    // 
+    // Answer type selector (single input, textarea, drawingarea, ...
+    // 
     $('body').on('change', '.ans_type_selector', function () {
         $(this).closest('.q-part').find('.ans_type').hide();
         $(this).closest('.ans_type_selector_box_wrap').parent().find('.ans_type_selector').prop('checked', false);
@@ -149,7 +146,9 @@ $(document).ready(function () {
         $(this).closest('.ans_type_selector_box_wrap').find('.ans_type').show();
     });
 
-    /*======== Add resources to the question from Library dialog ==========*/
+    // 
+    // Add resources to the question from media library dialog:
+    // 
     $('body').on('click', '.add_media', function () {
         $.ajax({
             url: baseURL + 'utility/media/library',
@@ -172,28 +171,26 @@ $(document).ready(function () {
                                                             <a href="#" file-path="' + $(this).attr('file-path') + '" target="_blank">' + $(itemTitle).find('input').val() + '</a>\
                                                     </li>'
                                                 );
-
                             });
-
                             $(this).dialog('destroy');
                         },
                         Cancel: function () {
-                            close_tooltips();
+                            closeToolTips();
                             $(this).dialog('destroy');
                         }
                     },
                     close: function () {
-                        close_tooltips();
-                        //allFields.val( "" ).removeClass( "ui-state-error" );
+                        closeToolTips();
                     }
-
                 });
             }
         });
         return false;
     });
 
-    /*========  add/del new sortable option in option type of questions ==========*/
+    // 
+    // Add or delele new sortable option in option type of questions:
+    // 
     $('body').on('click', '.addNewSortable', function () {
         $(this).closest('.choice_q').find('.question_opts').append(
                 '<div style="padding-top:5px">\
@@ -209,48 +206,26 @@ $(document).ready(function () {
         });
     });
 
-    /*========  delete selected library resource ==========*/
+
+    // 
+    // Delete selected library resource:
+    // 
     $('body').on('click', ".q_resources > ul > li > i", function () {
         $(this).parent().remove();
     });
 
-
-    /*========  Managing question correctors  ==========*/
-    // on corrector selection		
-    $(document).on('change', '.q-correctors', function () {
-        if ($(this).val() != '' && $('.q_corrector_list').html().indexOf($(this).val()) < 0) {
-
-            userName = $(this).val();
-            cloned = $('.q_corrector_list > li:first').clone()
-                    .find('.left-col-user')
-                    .attr('data-user', userName)
-                    .html($(this).find('option').filter(':selected').text())
-                    .end();
-
-            if (qId) {
-                // send ajax request to add selected corrector in question
-                ajax(
-                        baseURL + 'ajax/core/creator/corrector/create',
-                        {"question_id": qId, "user": userName},
-                function (status) {
-                    $('.q_corrector_list').append(cloned);
-                }
-                );
-
-            } else {
-                $('.q_corrector_list').append(cloned);
-            }
-
-        }
-    });
-    // on corrector delete
+    // 
+    // On corrector delete:
+    // 
     $(document).on('click', '.del-corrector', function () {
 
         delCorrector = $(this);
         if ($('.q_corrector_list').find('li').length > 1) {
 
             if (qId) {
-                // send ajax request to delete selected corrector
+                // 
+                // Send AJAX request to delete selected corrector:
+                // 
                 ajax(
                         baseURL + 'ajax/core/creator/corrector/delete',
                         {"id": $(delCorrector).parent().find('span').attr('data-rec')},
@@ -260,15 +235,13 @@ $(document).ready(function () {
                     });
                 }
                 );
-
             } else {
                 $(this).parent().slideUp(500, function () {
                     $(this).remove();
                 });
             }
-
         } else {
-            alert("A question must has atleast one corrector");
+            alert("A question must have at least one corrector");
         }
     });
 

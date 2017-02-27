@@ -66,7 +66,7 @@ var showMessage = function (message, type) {
 
     type = typeof type !== 'undefined' ? type : 'info';
 
-    if (type == 'success') {
+    if (type === 'success') {
         $('#msg-box')
                 .attr('class', 'alert alert-' + type)
                 .html(message)
@@ -81,11 +81,8 @@ var showMessage = function (message, type) {
     }
 }
 
-/**
- * Helper to close all opened tooltips
- * @returns 
- */
-var closeTooltips = function () {
+var closeToolTips = function ()
+{
     for (var i = 0; i < Opentip.tips.length; i++) {
         Opentip.tips[i].hide();
     }
@@ -106,17 +103,6 @@ function objectLength(object)
         }
     }
     return length;
-}
-
-/**
- * Closes all opened opentip instances
- * 
- */
-function close_tooltips()
-{
-    for (var i = 0; i < Opentip.tips.length; i++) {
-        Opentip.tips[i].hide();
-    }
 }
 
 /**

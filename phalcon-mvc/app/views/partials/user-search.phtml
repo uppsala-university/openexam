@@ -1,0 +1,44 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    user-search.phtml
+// Created: 2017-02-23 04:07:09
+// 
+// Author:  Anders Lövgren (QNET/BMC CompDept)
+// 
+
+?>
+
+<!-- User search/add/select box -->
+<div id="user-insert-box" class="user-insert-box" style="display:none" title="User insert and catalog service search" >
+    <div class="user-search-box">
+        <label for="user-search">Search:</label>
+        <input class="user-search" placeholder="Search for user or add username" style="min-width: 300px">
+        <a href="#" class="user-search-add">
+            <div style="display: block; float: right">
+                <span class="btn btn-success" style="padding:2px; margin-left: 5px; font-size:11px; width: 5em">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Add</span>
+                </span>
+            </div>                        
+        </a>
+    </div>
+    <hr>
+    <div class="user-insert-staff">
+        <span>Insert existing user:</span>
+        <div style="margin-top: 5px; margin-left: 15px">
+            <?php foreach ($staff->users as $user => $data) : ?>
+                    <div class="user-staff-entry">
+                        <i class="fa fa-user"></i> 
+                        <a href="#" class="user-staff-add left-col-user" data-mail="<?= $data['mail'][0] ?>" data-user="<?= $user ?>" data-name="<?= $data['name'] ?>"><?= $data['name'] ?> [<?= $user ?>]</a>
+                    </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <div style="margin-top: 10px; margin-left: 15px">
+        <input type="checkbox" class="user-insert-show-mail"><span style="margin-left: 10px">Display email address instead of username</span>
+    </div>
+</div>

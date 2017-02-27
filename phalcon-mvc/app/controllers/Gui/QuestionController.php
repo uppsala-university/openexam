@@ -15,6 +15,7 @@ namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
+use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Core\Exam\Student\Access;
 use OpenExam\Library\Security\Roles;
@@ -46,6 +47,9 @@ class QuestionController extends GuiController
                 if (!($eid = $this->request->getPost('exam_id', "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
+                if (!($role = $this->request->getPost('role', "string"))) {
+                        throw new \Exception("Missing required role", Error::PRECONDITION_FAILED);
+                }
 
                 // 
                 // Try to find exam in request parameter:
@@ -57,7 +61,11 @@ class QuestionController extends GuiController
                 // 
                 // Set view data:
                 // 
-                $this->view->setVar('exam', Exam::findFirst($eid));
+                $this->view->setVars(array(
+                        'exam'  => $exam,
+                        'role'  => $role,
+                        'staff' => new Staff($exam)
+                ));
 
                 // 
                 // Disable main layout:
@@ -78,16 +86,14 @@ class QuestionController extends GuiController
          */
         public function updateAction()
         {
-
-                if (!$this->request->hasPost('q_id')) {
-                        throw new \Exception('Invalid data provided');
-                }
-
                 // 
                 // Sanitize:
                 // 
                 if (!($qid = $this->request->getPost('q_id', "int"))) {
                         throw new \Exception("Missing or invalid question ID", Error::PRECONDITION_FAILED);
+                }
+                if (!($role = $this->request->getPost('role', "string"))) {
+                        throw new \Exception("Missing required role", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -106,8 +112,14 @@ class QuestionController extends GuiController
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                 $this->view->setVars(array(
                         'question' => $question,
-                        'exam'     => $exam
+                        'exam'     => $exam,
+                        'role'     => $role,
+                        'staff'    => new Staff($exam)
                 ));
+
+                // 
+                // Pickup question form (non-standard path):
+                // 
                 $this->view->pick("question/form");
         }
 

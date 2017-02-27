@@ -11,32 +11,14 @@ var exam = exam || {};
 var formJs = '';
 var stEvents = '';
 
-// 
-// Initialize tool tip theme.
-// 
-Opentip.styles.drops = {
-    className: "drops",
-    borderWidth: 1,
-    stemLength: 5,
-    stemBase: 10,
-    borderRadius: 5,
-    background: "#F6F6F6",
-    borderColor: "#CCCCCC",
-    target: true,
-    tipJoint: "bottom",
-    targetJoint: "top",
-    containInViewport: false,
-    showOn: "click",
-    hideOn: "click",
-    closeButtonOffset: [3, 3],
-    closeButtonCrossColor: "#CF3B18",
-    closeButtonCrossSize: 5,
-    closeButtonCrossLineWidth: 2,
-    group: "tags",
-    hideTrigger: 'closeButton'
-};
-
 $(document).ready(function () {
+
+    // 
+    // Initialize opentip for adding users for roles:
+    // 
+    $('.search-catalog-service').each(function (index, element) {
+        attachCatalogSearch(index, element);
+    });
 
     // 
     // Fix document location when mode has been passed in URL:
@@ -148,292 +130,6 @@ $(document).ready(function () {
     if (showAddQuestionView && $('.add_new_qs').length) {
         loadQuestionDialog(0);
     }
-
-    // 
-    // Store tooltips in array for dynamic content update:
-    // 
-    var opentips = [];
-
-    // 
-    // Initialize opentip for adding users for roles:
-    // 
-    $('.search-catalog-service').each(function (index, element) {
-        var opentip = $(this).opentip({style: "drops", tipJoint: "top left"});
-        var userman = $("#user-insert-box").clone();
-
-        opentip.isfor = 'uu-id' + (index + 1);
-        userman.find('input.user-search').attr('isfor', opentip.isfor);
-        opentip.setContent(userman.html());
-
-        opentips.push(opentip);
-    });
-
-    // 
-    // Add user top menu from list:
-    // 
-    $(document).on('click', '.user-staff-add', function () {
-        var elem = $(this).closest('.user-insert-staff').parent().find('input.user-search');
-        var item = {
-            id: $(this).attr('data-user'),
-            name: $(this).attr('data-name')
-        };
-
-        insertCatalogUser(item, elem);
-        return false;
-    });
-
-    // 
-    // Add user top menu from input textbox:
-    // 
-    $(document).on('click', '.user-search-add', function () {
-        var elem = $(this).parent().find('input.user-search');
-        var item = {
-            id: elem.val(),
-            name: elem.val()
-        };
-
-        insertCatalogUser(item, elem);
-        return false;
-    });
-
-    // 
-    // Show email address instead of username in user saerch dialog:
-    // 
-    $(document).on('click', '.user-insert-show-mail', function () {
-        var checked = $(this).is(':checked');
-        $('.user-staff-add').each(function () {
-            if (checked) {
-                $(this).text($(this).attr('data-name') + ' [' + $(this).attr('data-mail') + ']');
-            } else {
-                $(this).text($(this).attr('data-name') + ' [' + $(this).attr('data-user') + ']');
-            }
-        });
-    });
-
-    // 
-    // Insert new staff user in tooltip dialog.
-    // 
-    function insertStaffUser(item) {
-        if (item.mail === undefined) {
-            item.mail = '';
-        }
-        if (item.name === undefined) {
-            item.name = item.id;
-        }
-
-        // 
-        // Check if already present:
-        // 
-        $('#user-insert-box').find('.user-staff-add').each(function () {
-            if ($(this).attr('data-user') === item.id) {
-                item.exist = true;
-                return false;
-            }
-        });
-
-        if (item.exist !== undefined) {
-            return;
-        }
-
-        // 
-        // Create new user entry and append to user-insert-box template:
-        // 
-        var insert = $('#user-insert-box').find('.user-insert-staff > div');
-        var uentry = insert.find(".user-staff-entry").first().clone();
-        var anchor = uentry.find('.user-staff-add');
-
-        anchor.attr('data-mail', item.mail);
-        anchor.attr('data-user', item.id);
-        anchor.attr('data-name', item.name);
-        anchor.text(item.name + ' [' + item.id + ']');
-
-        insert.append(uentry);
-
-        // 
-        // Refresh tooltip content from user-insert-box template:
-        // 
-        for (var i = 0; i < opentips.length; ++i) {
-            var opentip = opentips[i];
-            var userman = $("#user-insert-box").clone();
-
-            userman.find('input.user-search').attr('isfor', opentip.isfor);
-            opentip.setContent(userman.html());
-        }
-
-    }
-
-    function removeStaffUser(item) {
-        $(".user-insert-staff").each(function () {
-
-        });
-    }
-
-    // 
-    // Search users in catalog. Return in response callback.
-    // 
-    function searchCatalogUser(term, response) {
-        var respObj = [];
-        var userList = [];
-
-        ajax(
-                baseURL + 'ajax/catalog/principal',
-                {
-                    data: {
-                        name: term + "*"
-                    },
-                    params: {
-                        attr: ["name", "uid", "principal", "mail"],
-                        limit: 10
-                    }
-                },
-        function (json) {
-
-            $.each(json, function (i, result) {
-                if (userList.indexOf(result.principal) < 0) {
-                    respObj.push({
-                        id: result.principal,
-                        label: result.name + ' [' + result.principal + ']',
-                        value: result.principal,
-                        name: result.name,
-                        mail: result.mail[0]
-                    });
-                    userList.push(result.principal);
-                }
-            });
-
-            response(respObj);
-        });
-
-    }
-
-    // 
-    // Insert user from catalog. The item contains data and element is the target menu list.
-    // 
-    function insertCatalogUser(item, element)
-    {
-        element.val('');
-        var addBtnId = element.attr('isfor');
-
-        var alreadyExists = false;
-
-        if (element.hasClass('q-correctors')) {
-            $(".q_corrector_list").find('li').each(function (index, element) {
-                if ($(element).find('span').attr('data-user') == item.id) {
-                    alreadyExists = true;
-                }
-            });
-        } else {
-            $("#" + addBtnId).closest('li').find('.menuLevel1').find('.left-col-user').each(function (index, element) {
-                if ($(element).attr('data-user') == item.id) {
-                    alreadyExists = true;
-                }
-            });
-        }
-
-        if (alreadyExists) {
-            return;
-        }
-
-        if (element.hasClass('q-correctors')) {
-            cloned = $('.q_corrector_list > li:first').clone()
-                    .find('.left-col-user')
-                    .attr('data-user', item.id)
-                    .html(item.name)
-                    .end();
-
-            if (qId) {
-
-                // 
-                // Send AJAX request to add selected corrector in question:
-                // 
-                ajax(
-                        baseURL + 'ajax/core/' + role + '/corrector/create',
-                        {"question_id": qId, "user": item.id},
-                function (status) {
-                    $('.q_corrector_list').append(cloned);
-                }
-                );
-
-            } else {
-                $('.q_corrector_list').append(cloned);
-            }
-
-        } else {
-
-            // 
-            // Send AJAX request to save added role:
-            // 
-            model = $("#" + element.attr('isfor')).closest('a').attr('data-model');
-            ajax(
-                    baseURL + 'ajax/core/' + role + '/' + model + '/create',
-                    {"exam_id": examId, "user": item.id},
-            function (userData) {
-
-                // 
-                // Prepare item to be added:
-                // 
-                tempItem = $("#" + addBtnId)
-                        .closest('li')
-                        // 
-                        // Hide default message, if it was visible:
-                        // 
-                        .find('.menuLevel1')
-                        .find('.left-col-def-msg')
-                        .hide()
-                        .end()
-
-                        // 
-                        // Find template item and prepare it to add:
-                        // 
-                        .find('li:first')
-                        .clone()
-
-                        // 
-                        // Update data-ref attribute; helpful in deletion:
-                        // 
-                        .find('.deluuid')
-                        .attr('data-ref', userData.id)
-                        .end()
-                        .show()
-
-                        // 
-                        // Update username data:
-                        // 
-                        .find('.left-col-user')
-                        .attr('data-user', item.id)
-                        .html(item.name)
-                        .show()
-                        .end();
-
-                // 
-                // Add item to the menu:
-                // 
-                $("#" + addBtnId).closest('li').find('.menuLevel1').show().append(tempItem);
-            }
-            );
-        }
-
-        insertStaffUser(item);
-    }
-
-    // 
-    // Handle incremental catalog user search.
-    // 
-    $(document).on("keyup.autocomplete", '.user-search', function () {
-
-        $(this).autocomplete({
-            source: function (request, response) {
-                searchCatalogUser(request.term, response);
-            },
-            select: function (event, ui) {
-                insertCatalogUser(ui.item, $(this));
-                return false;
-            },
-            close: function (event, ui) {
-                // Do nothing for now.
-            }
-        });
-    });
 
     // 
     // Delete selected UUID:
@@ -646,7 +342,7 @@ $(document).ready(function () {
                 baseURL + 'ajax/core/' + role + '/exam/update',
                 data,
                 function (examData) {
-                    closeTooltips();
+                    closeToolTips();
                 }
         );
     });
@@ -708,7 +404,11 @@ $(document).ready(function () {
 
         $.ajax({
             type: "POST",
-            data: {'q_id': qDbId, 'exam_id': examId},
+            data: {
+                'q_id': qDbId,
+                'exam_id': examId,
+                'role': role
+            },
             url: baseURL + 'question/' + action,
             success: function (content) {
 
@@ -730,12 +430,12 @@ $(document).ready(function () {
                             $(this).dialog('destroy');
                         },
                         Cancel: function () {
-                            close_tooltips();
+                            closeToolTips();
                             $(this).dialog('destroy');
                         }
                     },
                     close: function () {
-                        close_tooltips();
+                        closeToolTips();
                         $(this).dialog('destroy');
                     }
 
