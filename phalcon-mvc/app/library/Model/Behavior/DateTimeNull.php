@@ -16,7 +16,11 @@ namespace OpenExam\Library\Model\Behavior;
 use Phalcon\Mvc\ModelInterface;
 
 /**
- * Description of DateTimeNull
+ * DateTime null behavior.
+ * 
+ * Converts "null" datetime values on requested fields to true null values 
+ * to fix problem arising from javascript passing i.e. literal 'null' instead
+ * of null. 
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
