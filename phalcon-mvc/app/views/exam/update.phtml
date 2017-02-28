@@ -62,7 +62,7 @@ use OpenExam\Library\Core\Exam\Check;
         </h1>
 
         <?php if ($canUpdateExam && $status != Check::STATUS_IS_READY) : ?>
-                <div style="float: left">
+                <div style="float: left; border: 1px dashed #ddddee; padding: 2px 6px 2px 6px">
                     <?php if ($status == Check::STATUS_NEED_ATTENTION) : ?>
                             <i class="fa fa-2x fa-exclamation-circle" style="color: blue"></i>
                             <span style="vertical-align: top">Suggested task: 
