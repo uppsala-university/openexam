@@ -233,6 +233,9 @@ class Question extends ModelBase
                 if (!isset($this->slot)) {
                         $this->slot = self::count(sprintf("exam_id = %d", $this->exam_id)) + 1;
                 }
+                if (!isset($this->topic_id)) {
+                        $this->topic_id = $this->exam->topics->getFirst()->id;
+                }
         }
 
         /**
