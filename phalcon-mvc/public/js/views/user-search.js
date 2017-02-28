@@ -134,12 +134,14 @@ function searchCatalogUser(term, response)
                 }
             },
     function (json) {
+        
+        var checked = $('.user-insert-show-mail').is(':checked');
 
         $.each(json, function (i, result) {
             if (userList.indexOf(result.principal) < 0) {
                 respObj.push({
                     id: result.principal,
-                    label: result.name + ' [' + result.principal + ']',
+                    label: checked ? (result.name + ' [' + result.mail[0] + ']') : (result.name + ' [' + result.principal + ']'),
                     value: result.principal,
                     name: result.name,
                     mail: result.mail[0]
