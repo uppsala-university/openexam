@@ -77,4 +77,22 @@ class Corrector extends Role
                 );
         }
 
+        /**
+         * Called after model is created.
+         */
+        protected function afterCreate()
+        {
+                parent::afterCreate();
+                $this->question->exam->getStaff()->addRole($this);
+        }
+
+        /**
+         * Called after model is deleted.
+         */
+        protected function afterDelete()
+        {
+                parent::afterDelete();
+                $this->question->exam->getStaff()->removeRole($this);
+        }
+
 }

@@ -73,4 +73,22 @@ class Invigilator extends Role
                 );
         }
 
+        /**
+         * Called after model is created.
+         */
+        protected function afterCreate()
+        {
+                parent::afterCreate();
+                $this->exam->getStaff()->addRole($this);
+        }
+
+        /**
+         * Called after model is deleted.
+         */
+        protected function afterDelete()
+        {
+                parent::afterDelete();
+                $this->exam->getStaff()->removeRole($this);
+        }
+
 }

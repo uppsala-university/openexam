@@ -102,6 +102,14 @@ class Role extends ModelBase
                 $this->setAttributes();
                 parent::afterFetch();
         }
+        
+        /**
+         * Called after the model was created.
+         */
+        protected function afterCreate()
+        {
+                $this->setAttributes();
+        }
 
         /**
          * Called after the model was deleted.

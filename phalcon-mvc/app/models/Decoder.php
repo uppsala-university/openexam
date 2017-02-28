@@ -75,5 +75,23 @@ class Decoder extends Role
                         'user'    => 'user'
                 );
         }
-        
+
+        /**
+         * Called after model is created.
+         */
+        protected function afterCreate()
+        {
+                parent::afterCreate();
+                $this->exam->getStaff()->addRole($this);
+        }
+
+        /**
+         * Called after model is deleted.
+         */
+        protected function afterDelete()
+        {
+                parent::afterDelete();
+                $this->exam->getStaff()->removeRole($this);
+        }
+
 }

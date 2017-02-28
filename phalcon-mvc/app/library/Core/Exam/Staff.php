@@ -211,6 +211,26 @@ class Staff extends Component
         }
 
         /**
+         * Add user role.
+         * @param Role $role The user role.
+         */
+        public function addRole($role)
+        {
+                $this->setRole($role->getResourceName(), $role);
+                $this->cache->save($this->_cachekey, $this->_data, $this->_lifetime);
+        }
+
+        /**
+         * Remove user role.
+         * @param Role $role The user role.
+         */
+        public function removeRole($role)
+        {
+                $this->clearRole($role->getResourceName(), $role);
+                $this->cache->save($this->_cachekey, $this->_data, $this->_lifetime);
+        }
+
+        /**
          * Create cache key.
          * @return string
          */
@@ -266,9 +286,10 @@ class Staff extends Component
 
         /**
          * Set user role data.
+         * 
          * @param string $name The role name.
          * @param Role $role The role model.
-         * @param string $user The optional user principal name.
+         * @param string $user The user principal name (optional).
          */
         private function setRole($name, $role, $user = null)
         {
@@ -302,6 +323,44 @@ class Staff extends Component
                 // 
                 if (!in_array($name, $this->_data['users'][$role->user]['role'])) {
                         $this->_data['users'][$role->user]['role'][] = $name;
+                }
+        }
+
+        /**
+         * Clear user role data.
+         * 
+         * @param string $name The role name.
+         * @param Role $role The role model.
+         * @param string $user The user principal name (optional).
+         */
+        private function clearRole($name, $role, $user = null)
+        {
+                if (isset($user)) {
+                        $role->user = $user;
+                }
+
+                // 
+                // Remove roles data:
+                // 
+                if (isset($this->_data['roles'][$name][$role->user])) {
+                        unset($this->_data['roles'][$name][$role->user]);
+                }
+
+                // 
+                // Remove users data:
+                // 
+                if (($key = array_search($name, $this->_data['users'][$role->user]['role'])) !== false) {
+                        unset($this->_data['users'][$role->user]['role'][$key]);
+                }
+
+                // 
+                // Remove user role if empty.
+                //                 
+                if (count($this->_data['users'][$role->user]['role']) == 0) {
+                        unset($this->_data['users'][$role->user]);
+                }
+                if (count($this->_data['roles'][$name]) == 0) {
+                        unset($this->_data['roles'][$name]);
                 }
         }
 
