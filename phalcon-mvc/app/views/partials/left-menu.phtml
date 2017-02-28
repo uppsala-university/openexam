@@ -147,6 +147,13 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
         <script language="javascript">
                 $(function () {
 
+                    // 
+                    // Initialize opentip for adding users for roles:
+                    // 
+                    $('.search-catalog-service').each(function (index, element) {
+                        attachCatalogSearch(index, element);
+                    });
+
                     var refreshTopicSettingsTooltips = function () {
                         $('.topic-settings').each(function (index, element) {
                             $('#question-topic-settings-box')
