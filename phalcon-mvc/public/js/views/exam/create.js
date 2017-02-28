@@ -535,15 +535,23 @@ $(document).ready(function () {
 
         });
 
-        /////////// Send ajax request to add/update this question in database ///////////////////
-        //	prepare exam data and send request. Add/update qJson to global qsJson if successful
-        /////////////////////////////////////////////////////////////////////////////////////////
+        // 
+        // Send AJAX request to add/update this question in database. Prepare question
+        // data and send request. Add or update qJson to global qsJson if successful.
+        // 
+
+        // 
+        // Use selected topic or default:
+        // 
         if ($('#q-topic-sel').length) {
             topicId = $('#q-topic-sel').val();
         } else {
-            topicId = $('#default_topic_id').val();
+            topicId = $('.topic-name').first().attr('data-id');
         }
 
+        // 
+        // Set data for create (qId missing) or question update:
+        // 
         if (!qId) {
             data = {"exam_id": examId, "topic_id": topicId, "score": totalScore, "name": qIndex, "quest": JSON.stringify(qJson), "status": 'active'};
         } else {
@@ -610,9 +618,11 @@ $(document).ready(function () {
                     // 
                     // Show this question in left menu:
                     // 
-                    qTxtLeftMenu = aPartQtxt.replace(/(<([^>]+)>)/ig, "").substring(0, 75);
+                    var qTxtLeftMenu = aPartQtxt.replace(/(<([^>]+)>)/ig, "").substring(0, 75);
+                    var qTopic = $('ul[topic-id="' + topicId + '"]');
+
                     if (!qId) {
-                        newQ = $('.sortable-q-topic > li:last').find('.sortable-qs > li:first')
+                        var newQ = qTopic.find('li:first')
                                 .clone()
                                 .show()
                                 .find('.q')
@@ -622,11 +632,10 @@ $(document).ready(function () {
                                 .find('.q-txt')
                                 .html(qTxtLeftMenu)
                                 .end();
-                        $('.sortable-q-topic > li:last').find('.sortable-qs').append(newQ);
+                        qTopic.append(newQ);
                     } else {
-                        $('.sortable-qs').find('span[q-no="' + qId + '"]').parent().find('.q-txt').html(qTxtLeftMenu);
+                        qTopic.find('span[q-no="' + qId + '"]').parent().find('.q-txt').html(qTxtLeftMenu);
                     }
-
                 }
         );
 
