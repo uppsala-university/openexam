@@ -15,10 +15,10 @@ namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
-use OpenExam\Library\Core\Exam\Check;
 use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\DateTime;
+use OpenExam\Library\Gui\Component\Exam\Check;
 use OpenExam\Library\Gui\Component\Exam\Phase;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Corrector;
@@ -230,13 +230,11 @@ class ExamController extends GuiController
                 // Set view data:
                 // 
                 $this->view->setVars(array(
-                        'exam'     => $exam,
-                        'mode'     => $mode,
-                        'role'     => $role,
-                        'status'   => $check->getStatus(),
-                        'task'     => $check->getRemainingTask(),
-                        'security' => $check->getSecurity(),
-                        'staff'    => $staff
+                        'exam'  => $exam,
+                        'mode'  => $mode,
+                        'role'  => $role,
+                        'check' => $check,
+                        'staff' => $staff
                 ));
         }
 
