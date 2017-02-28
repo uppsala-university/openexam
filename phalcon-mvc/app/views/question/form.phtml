@@ -198,7 +198,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
         <article class="ac-large">
             <?php
             if ($exam->show_correctors) {
-                    $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->catalog->getName() . " [" . $this->user->getUser() . "]");
+                    $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->catalog->getName());
             } else {
                     $correctors = is_object($question) ? $question->correctors : array();
             }
@@ -215,7 +215,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                     <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
                                     <?php if (is_object($corrector)): ?>
                                             <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
-                                                <?= $this->catalog->getName($corrector->user) . " [" . $this->catalog->getUID($corrector->user) . "]" ?>
+                                                <?= $this->catalog->getName($corrector->user) ?>
                                             </span>
                                     <?php else: ?>
                                             <span data-user="<?= $k ?>" class="left-col-user" style="font-size:11px">
@@ -229,19 +229,6 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
             </div>
         </article>
     </div>
-    <?php $topics = $exam->getTopics(); ?>
-    <div style="margin:25px 10px; <?= (count($topics) <= 1 ? "display:none" : "") ?>" id="q_topic">
-        <article class="ac-large">
-            <div style="font-weight:bold"> 
-                Question section: <br />
-                <select id="q-topic-sel">
-                    <?php foreach ($topics as $topic): ?>
-                            <option value="<?= $topic->id ?>" <?= ($question->topic_id == $topic->id) ? 'selected' : '' ?>><?= $topic->name ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </article>
-    </div>
 </div>
 
 <!-- Dialog for resource selection -->
@@ -250,7 +237,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
         var tabId = tabCounter = <?= ($totalQParts ? $totalQParts + 1 : 2) ?>;
         var qId = <?= $question->id ? $question->id : 0 ?>;
         var isExamPublished = <?= (in_array("published", $exam->flags)) ? "1" : "0"; ?>;
-        var role = '<?= $role ?>';        
+        var role = '<?= $role ?>';
 </script>
 
 <!-- User search support -->
