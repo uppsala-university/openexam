@@ -206,7 +206,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
             ?>
 
             <div style="font-weight:bold"> Question Correctors: <a href="#" id="uu-id4" data-model="corrector" qid='<?= $question->id ?>'>
-                    <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "class" => "search-catalog-service")); ?>
+                    <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "class" => "search-catalog-service prevent")); ?>
                 </a> <br>
                 <div class="q-corrector-area">
                     <ul class="q_corrector_list" style="list-style:none; margin:0px">
