@@ -355,4 +355,30 @@ class ModelBase extends Model
                 return $result;
         }
 
+        /**
+         * Check if related records exists.
+         */
+        public function hasRelatedRecords()
+        {
+                return count($this->_related) > 0;
+        }
+
+        /**
+         * Get related records.
+         * @return array
+         * @see getRelated()
+         */
+        public function getRelatedRecords()
+        {
+                return $this->_related;
+        }
+
+        /**
+         * Reset the array of related records for this model.
+         */
+        public function resetRelatedRecords()
+        {
+                $this->_related = array();
+        }
+
 }

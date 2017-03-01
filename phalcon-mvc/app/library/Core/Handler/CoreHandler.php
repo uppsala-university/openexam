@@ -197,17 +197,11 @@ class CoreHandler extends Component
                 }
                 if ($model->create() == false) {
                         $this->error($model, ObjectAccess::CREATE);
-                } else {
-                        foreach ($model as $key => $val) {
-                                if (!is_object($val)) {
-                                        continue;
-                                }
-                                if (!($val instanceof \stdClass)) {
-                                        unset($model->$key);    // strip relations
-                                }
-                        }
-                        return $model;
                 }
+                if ($model->hasRelatedRecords()) {
+                        $model->resetRelatedRecords();
+                }
+                return $model;
         }
 
         /**
@@ -224,6 +218,12 @@ class CoreHandler extends Component
                 }
                 if (isset($transaction)) {
                         $model->setTransaction($transaction);
+                }
+                if ($model->hasRelatedRecords()) {
+                        $model->resetRelatedRecords();
+                }
+                if (!$this->changed($model)) {
+                        return true;
                 }
                 if ($model->update() == false) {
                         $this->error($model, ObjectAccess::UPDATE);
@@ -447,6 +447,28 @@ class CoreHandler extends Component
                         return false;
                 } else {
                         return $cache->delete($model->getSource());
+                }
+        }
+
+        /**
+         * Check if model has changed.
+         * @param Model $model The model object.
+         */
+        private function changed($model)
+        {
+                if (!$model->hasSnapshotData()) {
+                        return true;
+                }
+                if ($model->hasChanged() == false) {
+                        return false;
+                }
+                if (count($model->getChangedFields()) == 0) {
+                        return false;
+                }
+                if (!($changed = $model->getChangedFields())) {
+                        return false;
+                } else {
+                        return true;
                 }
         }
 
