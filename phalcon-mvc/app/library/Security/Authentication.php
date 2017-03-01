@@ -260,4 +260,13 @@ class Authentication implements Authenticator, Restrictor
                 $this->_normalizer = $normalizer;
         }
 
+        /**
+         * Get username normalizer callback.
+         * @return callable
+         */
+        public function getNormalizer()
+        {
+                return $this->_normalizer;
+        }
+
 }

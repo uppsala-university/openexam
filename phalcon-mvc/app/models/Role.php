@@ -102,7 +102,7 @@ class Role extends ModelBase
                 $this->setAttributes();
                 parent::afterFetch();
         }
-        
+
         /**
          * Called after the model was created.
          */
@@ -130,7 +130,8 @@ class Role extends ModelBase
          */
         protected function beforeValidation()
         {
-                $this->setDomain();
+                $this->setUserDomain();
+                $this->setUserNormalized();
         }
 
         /**
@@ -218,7 +219,7 @@ class Role extends ModelBase
         /**
          * Apply default domain to user principal name if missing.
          */
-        private function setDomain()
+        private function setUserDomain()
         {
                 while ($this->user[0] == '@') {         // Someones gonna try...
                         $this->user = substr($this->user, 1);
@@ -235,6 +236,16 @@ class Role extends ModelBase
                         $this->user = sprintf("%s@%s", $this->user, $domain);
                 } elseif (($domain = $config->user->domain) != false) {
                         $this->user = sprintf("%s@%s", $this->user, $domain);
+                }
+        }
+
+        /**
+         * Set normalized username.
+         */
+        private function setUserNormalized()
+        {
+                if (($normalizer = $this->getDI()->getAuth()->getNormalizer())) {
+                        $this->user = call_user_func($normalizer, $this->user);
                 }
         }
 

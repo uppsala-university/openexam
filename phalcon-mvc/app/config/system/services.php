@@ -160,10 +160,10 @@ $di->set('dbcache', function() use($config) {
         $frontend = new \Phalcon\Cache\Frontend\Data(array(
                 'lifetime' => $config->dbcache->lifetime
         ));
-        
+
         if ($config->dbcache->upper) {
                 $options = $config->dbcache->upper->options->toArray();
-                $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';                
+                $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
                 $upper = \OpenExam\Library\Database\Cache\Backend::create($config->dbcache->upper->backend, $frontend, $options);
         }
 
