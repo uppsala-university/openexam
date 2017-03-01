@@ -366,9 +366,13 @@ class LdapService extends AttributeService
         /**
          * Get single attribute (Principal::ATTR_XXX) for user.
          * 
+         * Notice that affiliation and assurance are always returned as
+         * array. For assurance its questionalble if it should return any
+         * value at all.
+         * 
          * @param string $attribute The attribute to return.
          * @param string $principal The user principal name (defaults to caller).
-         * @return string
+         * @return string|array
          * 
          * @see getAttribute()
          */
@@ -413,6 +417,16 @@ class LdapService extends AttributeService
                         $attrib = $output[0][$attribute][0];
                 } else {
                         $attrib = $output[0][$attribute];
+                }
+
+                // 
+                // The affiliation and assurance attribute should always be array.
+                // 
+                if ($attribute == Principal::ATTR_AFFIL ||
+                    $attribute == Principal::ATTR_ASSUR) {
+                        if (is_string($attrib)) {
+                                $attrib = array($attrib);
+                        }
                 }
 
                 if (isset($cachekey)) {

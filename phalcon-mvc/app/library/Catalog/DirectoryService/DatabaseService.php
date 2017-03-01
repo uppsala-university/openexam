@@ -163,9 +163,13 @@ class DatabaseService extends AttributeService
         /**
          * Get single attribute (Principal::ATTR_XXX) for user.
          * 
+         * Notice that affiliation and assurance are always returned as
+         * array. For assurance its questionalble if it should return any
+         * value at all.
+         * 
          * @param string $attribute The attribute to return.
          * @param string $principal The user principal name (optional).
-         * @return string
+         * @return string|array
          */
         public function getAttribute($attribute, $principal = null)
         {
