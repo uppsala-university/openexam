@@ -45,6 +45,10 @@ class SessionHandler extends Component implements DispatchHelper
          */
         private $_remote;
         /**
+         * The target server.
+         */
+        private $_server;
+        /**
          * The session data.
          * @var array 
          */
@@ -70,6 +74,7 @@ class SessionHandler extends Component implements DispatchHelper
                 $this->_listener = $listener;
                 $this->_service = $service;
                 $this->_remote = $this->request->getClientAddress(true);
+                $this->_server = $this->request->getServerName();
                 $this->_data = $this->session->get(self::ENTRY, array());
 
                 $this->_expires = $this->config->session->expires;
@@ -120,6 +125,7 @@ class SessionHandler extends Component implements DispatchHelper
         {
                 $this->set('expire', time() + $this->_expires);
                 $this->set('remote', $this->_remote);
+                $this->set('server', $this->_server);                
 
                 $this->logger->auth->debug(sprintf(
                         "Register session data: %s", print_r($this->_data, true)
@@ -217,6 +223,7 @@ class SessionHandler extends Component implements DispatchHelper
                         'refresh' => $this->_refresh,
                         'data'    => $this->_data,
                         'remote'  => $this->_remote,
+                        'server'  => $this->_server,
                         'service' => $this->_service
                 );
         }
