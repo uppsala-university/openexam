@@ -326,9 +326,13 @@ class DirectoryManager extends Component implements DirectoryService
          * $service->getAttribute('user@example.com', Principal::ATTR_GN);
          * </code>
          * 
+         * Notice that affiliation and assurance are always returned as
+         * array. For assurance its questionalble if it should return any
+         * value at all.
+         * 
          * @param string $attribute The attribute to return.
          * @param string $principal The user principal name (defaults to caller).
-         * @return string
+         * @return string|array
          * 
          * @see getAttributes()
          */
