@@ -183,12 +183,16 @@ class ModelBase extends Model
          * behavior trying to persist the model 4 times during a total period 
          * of 3 sec before failing.
          * 
+         * Returns true if successful saved or false if validation fails or
+         * if unsaved after all retries.
+         * 
          * <code>
          * // Creating a new robot 
          * $robot = new Robots(); 
          * $robot->type = 'mechanical'; 
          * $robot->name = 'Astro Boy'; 
-         * $robot->year = 1952; $robot->save();  
+         * $robot->year = 1952; 
+         * $robot->save();  
          * </code>
          * 
          * <code>
@@ -210,7 +214,11 @@ class ModelBase extends Model
                         if (parent::save($data, $whiteList)) {
                                 return true;
                         }
-                        usleep($retry[$i]);
+                        if (parent::validationHasFailed()) {
+                                return false;
+                        } else {
+                                usleep($retry[$i]);
+                        }
                 }
 
                 return false;
