@@ -171,4 +171,51 @@ class Answer extends ModelBase
                 parent::afterFetch();
         }
 
+        /**
+         * Updates a model instance.
+         * 
+         * This method overides parent method to convert values for boolean
+         * properties to real boolean values. It also checks whether any data
+         * has changes and by-passes update otherwise.
+         * 
+         * @param mixed $data
+         * @param mixed $whiteList
+         * @return boolean
+         */
+        public function update($data = null, $whiteList = null)
+        {
+                // 
+                // Convert AJAX property values to bool:
+                // 
+                if (is_int($this->answered)) {
+                        if ($this->answered == 0) {
+                                $this->answered = false;
+                        } else {
+                                $this->answered = true;
+                        }
+                }
+
+                // 
+                // Assign data if requested:
+                // 
+                if (isset($data)) {
+                        $this->assign($data, null, $whiteList);
+                }
+
+                // 
+                // Call parent update() on modified:
+                // 
+                if (!$this->hasSnapshotData()) {
+                        return parent::update();
+                }
+                if ($this->hasChanged()) {
+                        return parent::update();
+                }
+
+                // 
+                // No update is a success:
+                // 
+                return true;
+        }
+
 }
