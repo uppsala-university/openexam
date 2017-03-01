@@ -25,6 +25,7 @@ return array(
         'permissions' => array(
                 '*'      => '*',
                 'read'   => 'read',
+                'add'    => array('create', 'read'),
                 'modify' => array('read', 'update'),
                 'manage' => array('read', 'update', 'delete'),
                 'full'   => array('create', 'read', 'update', 'delete')
@@ -39,7 +40,7 @@ return array(
         'roles'       => array(
                 'admin'       => '*',
                 'teacher'     => array(
-                        'exam' => '*'
+                        'exam' => 'add'
                 ),
                 'creator'     => array(
                         'exam'        => 'manage',
