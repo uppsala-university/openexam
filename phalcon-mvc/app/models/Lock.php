@@ -15,6 +15,7 @@ namespace OpenExam\Models;
 
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * The lock model.
@@ -116,7 +117,7 @@ class Lock extends ModelBase
                         'student_id'  => 'student_id',
                         'computer_id' => 'computer_id',
                         'exam_id'     => 'exam_id',
-                        'acquired'     => 'acquired',
+                        'acquired'    => 'acquired',
                         'status'      => 'status'
                 );
         }
@@ -127,10 +128,19 @@ class Lock extends ModelBase
          */
         protected function validation()
         {
-                $this->validate(new Inclusionin(array(
+                $this->validate(new Inclusionin(
+                    array(
                         'field'  => 'status',
                         'domain' => array(self::STATUS_PENDING, self::STATUS_APPROVED)
-                )));
+                    )
+                ));
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array('student_id', 'computer_id', 'exam_id'),
+                        'message' => "The exam lock already exist"
+                    )
+                ));
+                
                 if ($this->validationHasFailed() == true) {
                         return false;
                 }

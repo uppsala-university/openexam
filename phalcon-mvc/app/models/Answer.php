@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\FilterText;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * The answer model.
@@ -115,6 +116,24 @@ class Answer extends ModelBase
                         'answer'      => 'answer',
                         'comment'     => 'comment'
                 );
+        }
+
+        /**
+         * Validates business rules.
+         * @return boolean
+         */
+        protected function validation()
+        {
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array('question_id', 'student_id'),
+                        'message' => "Student answer has already been inserted"
+                    )
+                ));
+
+                if ($this->validationHasFailed() == true) {
+                        return false;
+                }
         }
 
         /**

@@ -13,6 +13,8 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Validator\Uniqueness;
+
 /**
  * The file model.
  * 
@@ -88,6 +90,30 @@ class File extends ModelBase
                         'type'      => 'type',
                         'subtype'   => 'subtype'
                 );
+        }
+
+        /**
+         * Validates business rules.
+         * @return boolean
+         */
+        protected function validation()
+        {
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array('answer_id', 'name'),
+                        'message' => "This answer already has an file named $this->name"
+                    )
+                ));
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array('answer_id', 'path'),
+                        'message' => "This answer already has an file at this location"
+                    )
+                ));
+
+                if ($this->validationHasFailed() == true) {
+                        return false;
+                }
         }
 
 }

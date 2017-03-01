@@ -121,6 +121,12 @@ class Topic extends ModelBase
                         "message" => "This topic has already been added"
                     )
                 ));
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array('exam_id', 'slot'),
+                        'message' => "This question slot is already in use on exam"
+                    )
+                ));
                 return $this->validationHasFailed() != true;
         }
 

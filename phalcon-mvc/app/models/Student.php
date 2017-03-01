@@ -17,6 +17,7 @@ use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Model\Behavior\DateTimeNull;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
+use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
 use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -156,12 +157,18 @@ class Student extends Role
                         "message" => "The code '$this->code' is already in use on this exam"
                     )
                 ));
-
                 $this->validate(new RegexValidator(
                     array(
                         "field"   => "code",
                         "message" => "The anonymous code '$this->code' is not matching expected format",
                         "pattern" => Pattern::get(Pattern::MATCH_CODE)
+                    )
+                ));
+                $this->validate(new SequenceValidator(
+                    array(
+                        "field"   => array("starttime", "endtime"),
+                        "message" => "Start time can't come after end time",
+                        "type"    => "datetime"
                     )
                 ));
 

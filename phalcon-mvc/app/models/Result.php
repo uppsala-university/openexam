@@ -134,14 +134,18 @@ class Result extends ModelBase
          */
         protected function validation()
         {
-                $this->validate(new Inclusionin(array(
+                $this->validate(new Inclusionin(
+                    array(
                         'field'  => 'correction',
                         'domain' => array(self::CORRECTION_WAITING, self::CORRECTION_PARTIAL, self::CORRECTION_COMPLETED, self::CORRECTION_FINALIZED)
-                )));
-                $this->validate(new Uniqueness(array(
+                    )
+                ));
+                $this->validate(new Uniqueness(
+                    array(
                         'field'   => 'answer_id',
                         'message' => "The answer $this->answer_id has already an result."
-                )));
+                    )
+                ));
 
                 if ($this->validationHasFailed() == true) {
                         return false;

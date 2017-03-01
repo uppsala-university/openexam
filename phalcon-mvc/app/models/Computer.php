@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use Phalcon\Mvc\Model\Behavior\Timestampable;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * The computer model.
@@ -126,6 +127,24 @@ class Computer extends ModelBase
                         'created'  => 'created',
                         'updated'  => 'updated'
                 );
+        }
+
+        /**
+         * Validates business rules.
+         * @return boolean
+         */
+        protected function validation()
+        {
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => 'hostname',
+                        'message' => "The hostname already exists"
+                    )
+                ));
+
+                if ($this->validationHasFailed() == true) {
+                        return false;
+                }
         }
 
 }

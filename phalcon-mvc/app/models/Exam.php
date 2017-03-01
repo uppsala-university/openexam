@@ -29,6 +29,7 @@ use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Query\Builder;
 use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
+use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
 
 /**
  * The exam model.
@@ -346,6 +347,13 @@ class Exam extends ModelBase
                         "field"   => "creator",
                         "message" => "The username '$this->creator' is not matching expected format",
                         "pattern" => Pattern::get(Pattern::MATCH_USER)
+                    )
+                ));
+                $this->validate(new SequenceValidator(
+                    array(
+                        "field"   => array("starttime", "endtime"),
+                        "message" => "Start time can't come after end time",
+                        "type"    => "datetime"
                     )
                 ));
                 if ($this->validationHasFailed() == true) {

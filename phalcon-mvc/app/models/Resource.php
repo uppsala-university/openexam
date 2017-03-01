@@ -150,10 +150,12 @@ class Resource extends ModelBase
          */
         protected function validation()
         {
-                $this->validate(new Inclusionin(array(
+                $this->validate(new Inclusionin(
+                    array(
                         'field'  => 'shared',
                         'domain' => array(self::NOT_SHARED, self::SHARED_EXAM, self::SHARED_GLOBAL, self::SHARED_GROUP)
-                )));
+                    )
+                ));
                 if ($this->validationHasFailed() == true) {
                         return false;
                 }

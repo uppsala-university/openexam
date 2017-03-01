@@ -13,6 +13,8 @@
 
 namespace OpenExam\Models;
 
+use Phalcon\Mvc\Model\Validator\Uniqueness;
+
 /**
  * The access definition model.
  * 
@@ -100,6 +102,30 @@ class Access extends ModelBase
                         'name'    => 'name',
                         'addr'    => 'addr'
                 );
+        }
+
+        /**
+         * Validates business rules.
+         * @return boolean
+         */
+        protected function validation()
+        {
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array('exam_id', 'addr'),
+                        'message' => "The address $this->addr is already in use on this exam."
+                    )
+                ));
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array('exam_id', 'name'),
+                        'message' => "The name $this->name is already in use on this exam."
+                    )
+                ));
+
+                if ($this->validationHasFailed() == true) {
+                        return false;
+                }
         }
 
 }

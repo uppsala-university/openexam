@@ -22,6 +22,7 @@ use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Query\Builder;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * The question model.
@@ -213,10 +214,24 @@ class Question extends ModelBase
          */
         protected function validation()
         {
-                $this->validate(new Inclusionin(array(
+                $this->validate(new Inclusionin(
+                    array(
                         'field'  => 'status',
                         'domain' => array(self::STATUS_ACTIVE, self::STATUS_REMOVED)
-                )));
+                    )
+                ));
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array("slot", "topic_id"),
+                        'message' => "This question slot is already in use on exam"
+                    )
+                ));
+                $this->validate(new Uniqueness(
+                    array(
+                        'field'   => array("name", "exam_id"),
+                        'message' => "This question name is already in use on exam"
+                    )
+                ));
                 if ($this->validationHasFailed() == true) {
                         return false;
                 }
