@@ -92,6 +92,15 @@ class Mediator extends Proxy
         }
 
         /**
+         * Get query cache.
+         * @return Backend
+         */
+        public function getCache()
+        {
+                return $this->_cache;
+        }
+
+        /**
          * Set database adapter.
          * @param AdapterInterface $adapter The database adapter.
          */

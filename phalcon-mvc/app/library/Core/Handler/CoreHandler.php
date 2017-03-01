@@ -172,6 +172,7 @@ class CoreHandler extends Component
                 } catch (Exception $exception) {
                         $this->report($exception, $model, $action);
                         if (isset($transaction)) {
+                                $this->cleanup($model, $action);
                                 $transaction->rollback($exception->getMessage());
                         } else {
                                 throw $exception;
@@ -420,6 +421,33 @@ class CoreHandler extends Component
                         ), true
                     )
                 );
+        }
+
+        /**
+         * Cleanup database cache after failed model transaction.
+         * 
+         * @param Model $model The model object.
+         * @param string $action The model action.
+         */
+        private function cleanup($model, $action)
+        {
+                // 
+                // Transaction will set write connection as read connection.
+                // 
+                if (!($adapter = $model->getReadConnection())) {
+                        return false;
+                }
+                if (!($adapter instanceof \OpenExam\Library\Database\Cache\Mediator)) {
+                        return false;
+                }
+                if (!$adapter->hasCache()) {
+                        return false;
+                }
+                if (!($cache = $adapter->getCache())) {
+                        return false;
+                } else {
+                        return $cache->delete($model->getSource());
+                }
         }
 
 }
