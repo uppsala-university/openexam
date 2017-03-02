@@ -35,11 +35,12 @@
     <?php if (!$testMode && $viewMode == 'all'): ?>
             <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
                 <a href="#" data-dismiss="alert" class="close">×</a>
-                Here you can preview all of your answers. Please <a href="<?= $this->url->get('auth/logout') ?>">sign out</a> and close all opened browser windows, once you are satisfied with your answers.
+                <p>Careful preview all of your answers before quitting!</p>
+                <p>All answers seen below has been read directly from the database. If something is wrong, then contact the invigilator immediately. Please <a href="<?= $this->url->get('auth/logout') ?>">sign out</a> and close all opened browser windows once you are satisfied with your answers.</p>
             </div>
             <div style="position: fixed; z-index: 5000; bottom: 0px; left:30%">
                 <a class="sync-answer" href="#" hlink="<?= $this->url->get('auth/logout') ?>">
-                    <button class="btn btn-xs btn-success btn-prev" style="height: 42px; font-size:15px"><i class="icon-check"></i> I have previewed all my answers here and i am satisfied. Quit my exam.</button>
+                    <button class="btn btn-xs btn-success btn-prev" style="height: 42px; font-size:15px"><i class="icon-check"></i> I have previewed all my answers here and I am satisfied. Quit my exam.</button>
                 </a>
             </div>        
     <?php endif; ?>
