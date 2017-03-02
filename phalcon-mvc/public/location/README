@@ -1,0 +1,7 @@
+** About location aware documents **
+
+Put documents about different exam locations in this directory. Add address ranges
+in app/config/location.def and the relevant (location specific) document will show 
+up for students while waiting for the exam to start.
+
+// Anders L, 2017-03-02

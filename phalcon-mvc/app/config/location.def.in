@@ -56,8 +56,13 @@ return array(
                                 )
                         ),
                         'A6:0'  => array(
-                                'desc' => 'Side A and B',
+                                'desc' => 'Mediateket (Side A and B)',
                                 'addr' => '192.168.38.0/26;192.168.38.128/26'
+                        ),
+                        'A4:2'  => array(
+                                'desc' => 'Mediateket (Room A4:214b)',
+                                'info' => 'location/a4_214b.txt',
+                                'addr' => '192.168.37.61-192.168.37.85'                                
                         )
                 ),
                 'OSC' => array(
