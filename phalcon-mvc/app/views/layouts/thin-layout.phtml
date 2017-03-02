@@ -76,6 +76,15 @@ if ($tdiff <= 0) {
         $tdisp = sprintf("%02d:%02d:%02d", $tt->hh, $tt->mm, $tt->ss);
 }
 
+// 
+// Set auto-hide mode on clock from cookie:
+// 
+if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
+        $tt->sc = false;
+} else {
+        $tt->sc = true;
+}
+
 ?>
 
 <header>
@@ -113,11 +122,10 @@ if ($tdiff <= 0) {
             <li class="dropdown dark user-menu">
                 <a class='dropdown-toggle' data-toggle='dropdown' href="#">
                     <span class="user-name"><?= $this->catalog->getName() ?> &nbsp;
-                        <span style="color:#f9c271"><?= $this->catalog->getPersonalNumber() ?></span><!--#FFFF66--></span>
+                        <span style="color:#f9c271"><?= $this->catalog->getPersonalNumber() ?></span></span>
                     <b class='caret'></b>
                 </a>
                 <ul class='dropdown-menu' style="width:275px">
-                    <!--<li class='divider'></li>-->
                     <li>
                         <a href='<?= $this->url->get('auth/logout') ?>'>
                             <i class='icon-signout'></i>
@@ -128,10 +136,17 @@ if ($tdiff <= 0) {
             </li>
         </ul>
 
-        <div style="float:right; padding:5px 1%; font-size:20px; color:#F9C271; background-color:#BE2435"><!--#F8A325-->
-            <i class="icon-time"></i>
-            <span style="margin-top:25px" id="timer"><?= $tdisp ?></span>
-        </div>        
+        <?php if ($tt->sc) : ?>
+                <div id="show-clock" style="float:right; padding:5px 1%; font-size:20px; color:#F9C271; background-color:#BE2435; cursor: pointer" title="Click to set auto-hide mode on clock">
+                    <i class="icon-time"></i>
+                    <span id="timer" style="margin-top:25px; display: inline" ><?= $tdisp ?></span>
+                </div>        
+        <?php else : ?>
+                <div id="show-clock" style="float:right; padding:5px 1%; font-size:20px; color:#F9C271; background-color:#BE2435; cursor: pointer" title="Click to pin clock always visible">
+                    <i class="icon-time"></i>
+                    <span id="timer" style="margin-top:25px; display: none" class="auto-hide"><?= $tdisp ?></span>
+                </div>        
+        <?php endif; ?>
     </nav>
 </header>
 <!-- page header ends -->
@@ -142,7 +157,7 @@ if ($tdiff <= 0) {
     <?php if (isset($viewMode)): ?>
             <div id='main-nav-bg'></div>
             <!-- main navigation -->
-            <nav id='main-nav' class='<?= is_object($allQs) && $allQs->count() <= 8 ? 'main-nav-fixed' : '' ?>'> <!--class='main-nav-fixed'-->
+            <nav id='main-nav' class='<?= is_object($allQs) && $allQs->count() <= 8 ? 'main-nav-fixed' : '' ?>'>
                 <div class='navigation'>
                     <ul class='nav nav-stacked'>
                         <li class=''>
@@ -208,25 +223,24 @@ if ($tdiff <= 0) {
 <script type="text/javascript">
         $("document").ready(function () {
             $("#demo").zoom({
-                path: "#content-wrapper"
-                        //show/hide				
-                , show_zoom: true //font-size
-                , show_alignment: false //text-align
-                , show_font_family: false //font-family
-                , show_bold: true //font-weight
-                , show_colors: true //color
-                , show_reset: true //reset
-
-                        //default properties
-                , font_size: "14"
-                , font_family: "Arial"
-                , font_weight: "normal"
-                , line_height_step: 3
-                , text_align: "left"
-                , color: "#333333"
-                , cookies: true
-                , expiration: -1 //cookies expiration in days (-1 = cookies expire when browser is closed)
-                , colors: ["#333333", "#000000", "#006300", "#774500", "#2918C9", "#4F2C7A", "#518E2D", "#96122C"]
+                path: "#content-wrapper", // Show/hide				
+                show_zoom: true, // Font-size
+                show_alignment: false, // Text-align
+                show_font_family: false, // Font-family
+                show_bold: true, // Font-weight
+                show_colors: true, // Color
+                show_reset: true, // Reset
+                //
+                // Default properties:
+                // 
+                font_family: "Arial",
+                font_weight: "normal",
+                line_height_step: 3,
+                text_align: "left",
+                color: "#333333",
+                cookies: true,
+                expiration: -1, // Cookies expiration in days (-1 = cookies expire when browser is closed)
+                colors: ["#333333", "#000000", "#006300", "#774500", "#2918C9", "#4F2C7A", "#518E2D", "#96122C"]
             });
 
             $(document).on('click', '.fullscreen', function () {
@@ -244,6 +258,42 @@ if ($tdiff <= 0) {
                     docElm.webkitRequestFullScreen();
                 }
             });
+
+            // 
+            // Toggle clock always visible:
+            // 
+            $('#show-clock').click(function () {
+                if ($('#timer').hasClass('auto-hide')) {
+                    $('#timer').removeClass('auto-hide');
+                    $('#timer').fadeIn(500);
+                } else {
+                    $('#timer').addClass('auto-hide');
+                    $('#timer').fadeOut(500);
+                }
+
+                if ($('#timer').hasClass('auto-hide')) {
+                    $.cookie('sc', 0, '/');
+                } else {
+                    $.cookie('sc', 1, '/');
+                }
+            });
+
+            // 
+            // Show clock on hover (if having auto-hide class):
+            // 
+            $('#show-clock').hover(
+                    function () {
+                        if ($('#timer').hasClass('auto-hide')) {
+                            $('#timer').fadeIn(500);
+                        }
+                    },
+                    function () {
+                        if ($('#timer').hasClass('auto-hide')) {
+                            $('#timer').fadeOut(500);
+                        }
+                    }
+            );
+
         });
 
         // 
@@ -279,14 +329,12 @@ if ($tdiff <= 0) {
                     if (tsec <= 0) {
                         return '--:--:--';
                     }
-
                     var tt = {
                         dd: Math.floor((tsec / (3600 * 24))),
                         hh: Math.floor((tsec / 3600) % 24),
                         mm: Math.floor((tsec % 3600) / 60),
                         ss: Math.floor((tsec % 60))
                     };
-
                     if (tt.hh < 10) {
                         tt.hh = "0" + tt.hh;
                     }
