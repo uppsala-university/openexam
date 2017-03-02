@@ -187,11 +187,11 @@ class Answer extends ModelBase
                 // 
                 // Convert AJAX property values to bool:
                 // 
-                if (is_int($this->answered)) {
-                        if ($this->answered == 0) {
-                                $this->answered = false;
-                        } else {
+                if (!is_bool($this->answered)) {
+                        if (intval($this->answered) != 0) {
                                 $this->answered = true;
+                        } else {
+                                $this->answered = false;
                         }
                 }
 
