@@ -22,8 +22,12 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                             <?= $oBullet ?> &nbsp; <?= $role ?>
                         </a>
 
-                        <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)): ?>
-                                <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "search-catalog-service", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+                        <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create')) : ?>
+                                <?php if (in_array("editable", $exam->flags)) : ?>
+                                        <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "search-catalog-service", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+                                <?php else: ?>
+                                        <?= Phalcon\Tag::image(array("img/grey-bullet.gif", "height" => "12", "width" => "12", "class" => "search-catalog-service", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+                                <?php endif; ?>
                         <?php endif; ?>
 
                         <ul class="menuLevel1">
