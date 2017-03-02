@@ -222,12 +222,6 @@ class Question extends ModelBase
                 ));
                 $this->validate(new Uniqueness(
                     array(
-                        'field'   => array("slot", "topic_id"),
-                        'message' => "This question slot is already in use on exam"
-                    )
-                ));
-                $this->validate(new Uniqueness(
-                    array(
                         'field'   => array("name", "exam_id"),
                         'message' => "This question name is already in use on exam"
                     )
