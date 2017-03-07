@@ -94,7 +94,7 @@ class UppdokService extends ServiceAdapter
                 $group = trim($group, '*');
 
                 foreach ($this->_data->members($group) as $member) {
-                        $principal = $member->getPrincipals($domain, $attributes);
+                        $principal = $member->getPrincipal($domain, $attributes);
                         $principal->attr = array(
                                 'svc' => array(
                                         'name' => $this->_name,
