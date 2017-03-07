@@ -70,12 +70,10 @@ class Student extends ModelBehavior
 
         private function getUser($user, $persnr, $di)
         {
-                $result = $di->get('catalog')->getPrincipals(
-                    $persnr, Principal::ATTR_PNR, array('attr' => Principal::ATTR_PN)
-                );
-
-                if (count($result) != 0) {
-                        return $result[0]->principal;
+                if (($result = $di->get('catalog')->getPrincipal(
+                    $persnr, Principal::ATTR_PNR, null, Principal::ATTR_PN
+                    ))) {
+                        return $result->principal;
                 } else {
                         throw new Exception(sprintf("%s was recognized as a personal number, but username could not be looked up.", $user));
                 }
