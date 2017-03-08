@@ -40,15 +40,15 @@ class CodeLoginForm extends Form
                 $exams = Exam::find(sprintf("DATE(starttime) = '%s'", date('Y-m-d')));
 
                 $this->setAction($this->url->get('auth/login/' . $login->name));
-                
+
                 $this->setUserOption('description', $login->description);
                 $this->setUserOption('information', "Select your exam and use your anonymous code as login. Contact the invigilator if you don't know the code.<br><br>Example code: AB-39845");
-                
-                $this->add(new Password('fpass', array('name' => $login->pass, 'placeholder' => 'The anonymous code')));
-                $this->add(new Select('fexam', $exams, array('using' => array('id', 'name'), 'name' => $login->user)));
+
+                $this->add(new Password('fpass', array('name' => $login->fpass, 'placeholder' => 'The anonymous code')));
+                $this->add(new Select('fexam', $exams, array('using' => array('id', 'name'), 'name' => $login->fuser)));
                 $this->add(new Hidden('fcode', array('name' => 'secret', 'value' => $login->secret)));
                 $this->add(new Hidden("fembed", array('value' => $this->request->get("embed"))));
-                $this->add(new Submit('fsubmit', array('name' => $login->name, 'value' => 'Login', 'class' => 'btn-submit')));
+                $this->add(new Submit('fsubmit', array('name' => $login->fname, 'value' => 'Login', 'class' => 'btn-submit')));
         }
 
 }
