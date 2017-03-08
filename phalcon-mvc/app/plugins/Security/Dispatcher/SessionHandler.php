@@ -125,8 +125,11 @@ class SessionHandler extends Component implements DispatchHelper
         {
                 $this->set('expire', time() + $this->_expires);
                 $this->set('remote', $this->_remote);
-                $this->set('server', $this->_server);                
+                $this->set('server', $this->_server);
 
+                $this->logger->auth->notice(sprintf(
+                        "User %s logon on server %s (%s)", $this->get('user'), $this->_server, $this->get('type')
+                ));
                 $this->logger->auth->debug(sprintf(
                         "Register session data: %s", print_r($this->_data, true)
                 ));
@@ -169,6 +172,9 @@ class SessionHandler extends Component implements DispatchHelper
         public function remove()
         {
                 if ($this->session->has(self::ENTRY)) {
+                        $this->logger->auth->notice(sprintf(
+                                "User %s logoff on server %s (%s)", $this->get('user'), $this->_server, $this->get('type')
+                        ));
                         $this->logger->auth->debug(sprintf(
                                 "Removing session data: %s", print_r($this->_data, true)
                         ));
