@@ -250,8 +250,8 @@ class DispatchHandler extends Component implements DispatchHelper
                 // Handle logout request:
                 // 
                 if ($this->_target == "auth" && $this->_action == "logout") {
-                        $this->_auth->logout($this->_session->get('type'));
                         $this->_session->remove();
+                        $this->_auth->logout($this->_session->get('type'));
                         return true;            // pass thru controller -> action
                 }
 
