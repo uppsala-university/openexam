@@ -121,6 +121,8 @@ class AuthController extends GuiController
                 $auth = $this->auth->getAuthenticator();
                 $icon = $this->url->get("/img/tick-circle.png");
 
+                $this->view->setTemplateBefore('cardbox');
+                
                 $this->view->setVars(array(
                         'auth' => $auth,
                         'icon' => $icon
