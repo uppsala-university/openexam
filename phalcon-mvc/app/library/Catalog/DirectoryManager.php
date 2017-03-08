@@ -354,8 +354,8 @@ class DirectoryManager extends Component implements DirectoryService
                                         if (($attributes = $service->getAttribute($attribute, $principal)) != null) {
                                                 if (is_array($attributes)) {
                                                         $result = array_merge($result, $attributes);
-                                                } elseif (count($result) != 0) {
-                                                        $result[] = $attributes;
+                                                } elseif (is_null($attributes)) {
+                                                        continue;       // try next
                                                 } else {
                                                         $result = $attributes;
                                                         break;
@@ -367,9 +367,6 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
-                if (count($result) == 0) {
-                        $result = null;
-                }
                 if (is_array($result)) {
                         $result = array_unique($result);
                 }

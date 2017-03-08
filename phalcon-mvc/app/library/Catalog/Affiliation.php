@@ -159,7 +159,7 @@ class Affiliation extends Component
         }
 
         /**
-         * Get and set affilations data from catalog.
+         * Get and set affiliations data from catalog.
          */
         private function setAffilations()
         {
