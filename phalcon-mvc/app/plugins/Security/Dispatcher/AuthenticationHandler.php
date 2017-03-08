@@ -98,7 +98,14 @@ class AuthenticationHandler extends Component implements DispatchHelper
          */
         public function login()
         {
-                if (($method = $this->dispatcher->getParam(0))) {
+                if (($method = $this->request->get("auth", "string"))) {
+                        // 
+                        // Handle auth/select response:
+                        // 
+                        $this->logger->auth->info(sprintf(
+                                "User initiated login using method %s -> %s (select)", $this->_service, $method
+                        ));
+                } elseif (($method = $this->dispatcher->getParam(0))) {
                         // 
                         // Handle auth/login/<type> request:
                         // 
@@ -111,13 +118,6 @@ class AuthenticationHandler extends Component implements DispatchHelper
                         // 
                         $this->logger->auth->info(sprintf(
                                 "User initiated login using method %s -> %s (return)", $this->_service, $method
-                        ));
-                } elseif (($method = $this->request->get("auth", "string"))) {
-                        // 
-                        // Handle auth/select response:
-                        // 
-                        $this->logger->auth->info(sprintf(
-                                "User initiated login using method %s -> %s (select)", $this->_service, $method
                         ));
                 }
 
@@ -143,7 +143,7 @@ class AuthenticationHandler extends Component implements DispatchHelper
                 } else {
                         $backend = $this->attrstor->getBackend($method);
                 }
-                
+
                 // 
                 // Are current authenticator providing user attributes?
                 // 
