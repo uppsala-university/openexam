@@ -119,6 +119,9 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin, Re
                 if (!isset($options['form']['login'])) {
                         $options['form']['login'] = $config->application->baseUri . 'auth/form/' . $options['form']['name'];
                 }
+                if (!isset($options['form']['return'])) {
+                        $options['form']['return'] = false;     // Using return in session
+                }
 
                 if (!strstr($server, "://")) {
                         $server = "ldaps://" . $server;
