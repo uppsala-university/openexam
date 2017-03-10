@@ -367,8 +367,21 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
 
+                if (count($result) == 0) {
+                        $result = null;
+                }
                 if (is_array($result)) {
                         $result = array_unique($result);
+                }
+
+                // 
+                // Fix for attributes having multiple values:
+                // 
+                if ($attribute == Principal::ATTR_AFFIL ||
+                    $attribute == Principal::ATTR_ASSUR) {
+                        if (is_null($result)) {
+                                $result = array();
+                        }
                 }
 
                 $this->_cache->setAttribute($attribute, $principal, serialize($result));
