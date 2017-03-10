@@ -194,6 +194,8 @@ class CoreHandler extends Component
                 }
                 if (isset($transaction)) {
                         $model->setTransaction($transaction);
+                } else {
+                        $model->setReadConnectionService('dbwrite');
                 }
                 if ($model->create() == false) {
                         $this->error($model, ObjectAccess::CREATE);
@@ -218,6 +220,8 @@ class CoreHandler extends Component
                 }
                 if (isset($transaction)) {
                         $model->setTransaction($transaction);
+                } else {
+                        $model->setReadConnectionService('dbwrite');
                 }
                 if ($model->hasRelatedRecords()) {
                         $model->resetRelatedRecords();
@@ -246,6 +250,8 @@ class CoreHandler extends Component
                 }
                 if (isset($transaction)) {
                         $model->setTransaction($transaction);
+                } else {
+                        $model->setReadConnectionService('dbwrite');
                 }
                 if ($model->delete() == false) {
                         $this->error($model, ObjectAccess::DELETE);
