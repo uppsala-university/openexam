@@ -391,4 +391,36 @@ class ModelBase extends Model
                 return $this->_transaction;
         }
 
+        /**
+         * Set active transaction.
+         * @param TransactionInterface $transaction The active transaction.
+         */
+        public function setTransaction(TransactionInterface $transaction)
+        {
+                $this->setReadConnectionService('dbwrite');
+                parent::setTransaction($transaction);
+        }
+
+        /**
+         * Enable transaction mode for this model.
+         */
+        public function useTransaction()
+        {
+                $this->setReadConnectionService('dbwrite');
+        }
+
+        /**
+         * Enable transactions mode for all models.
+         */
+        public static function useTransactions()
+        {
+                // 
+                // This enables transaction mode for all models, even those
+                // that is not part of the transaction (use with care)!.
+                // 
+                if (!defined('MODEL_ALWAYS_USE_MASTER_CONNECTION')) {
+                        define('MODEL_ALWAYS_USE_MASTER_CONNECTION', true);
+                }
+        }
+
 }
