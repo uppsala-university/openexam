@@ -246,6 +246,12 @@ class ExamController extends GuiController
          */
         public function replicateAction($eid)
         {
+                // 
+                // Notice: 
+                // All roles have a default behavior. We need to filter out 
+                // caller from being assigned twice.
+                // 
+
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
@@ -359,6 +365,9 @@ class ExamController extends GuiController
                                         // Replicate question correctors:
                                         // 
                                         foreach ($oldQuest->correctors as $oldCorrector) {
+                                                if ($oldCorrector->user == $this->user->getPrincipalName()) {
+                                                        continue;
+                                                }
                                                 $newCorrector = new Corrector();
                                                 if ($newCorrector->save(array(
                                                             "question_id" => $newQuest->id,
