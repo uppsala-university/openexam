@@ -215,7 +215,7 @@ $(document).ready(function () {
 
     $(document).on('click', '.reuse-exam', function () {
         var examId = $(this).closest('.list-group-item').attr('data-id');
-        $("#reuse-exam-dialog").dialog({
+        var dialog = $("#reuse-exam-dialog").dialog({
             autoOpen: true,
             modal: true,
             buttons: {
@@ -238,8 +238,9 @@ $(document).ready(function () {
                             }
                         },
                         error: function (xhr) {
-                            $("#reuse-exam-dialog").html(xhr.responseText);
-                            $("#reuse-exam-dialog").show();
+                            dialog.dialog("option", "buttons", {});
+                            dialog.html(xhr.responseText);
+                            dialog.show();
                         }
                     });
                 },
