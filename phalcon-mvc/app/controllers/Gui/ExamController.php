@@ -316,7 +316,7 @@ class ExamController extends GuiController
                                         // Replicate topics. Keep track on new topics by
                                         // adding them to the topics map.
                                         // 
-                                        foreach ($oldExam->topics as $oldTopic) {
+                                        foreach ($oldExam->getTopics(array('order' => 'slot')) as $oldTopic) {
                                                 if ($oldTopic->name == 'default') {
                                                         $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
                                                         continue;
@@ -354,7 +354,7 @@ class ExamController extends GuiController
                                 // Replicate questions and correctors if selected:
                                 // 
                                 if (in_array('questions', $replicateOpts)) {
-                                        foreach ($oldExam->questions as $oldQuest) {
+                                        foreach ($oldExam->getQuestions(array('order' => 'slot')) as $oldQuest) {
 
                                                 // 
                                                 // Replicate question:
