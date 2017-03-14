@@ -273,6 +273,7 @@ class ExamController extends GuiController
                 // 
                 $transactionManager = new TransactionManager();
                 $transactionManager->setDbService('dbwrite');
+                
                 $transaction = $transactionManager->get();
 
                 try {
@@ -280,6 +281,7 @@ class ExamController extends GuiController
                         // Create new exam with inherited properties:
                         // 
                         $newExam = new Exam();
+                        $newExam->setTransaction($transaction);
 
                         if ($newExam->save(array(
                                     "name"    => $oldExam->name,
@@ -321,6 +323,8 @@ class ExamController extends GuiController
                                                 }
 
                                                 $newTopic = new Topic();
+                                                $newTopic->setTransaction($transaction);
+                                                
                                                 if ($newTopic->save(array(
                                                             "exam_id"   => $newExam->id,
                                                             "name"      => $oldTopic->name,
@@ -356,6 +360,7 @@ class ExamController extends GuiController
                                                 // Replicate question:
                                                 // 
                                                 $newQuest = new Question();
+                                                $newQuest->setTransaction($transaction);
 
                                                 if ($newQuest->save(array(
                                                             "exam_id"  => $newExam->id,
@@ -379,7 +384,10 @@ class ExamController extends GuiController
                                                         if ($oldCorrector->user == $this->user->getPrincipalName()) {
                                                                 continue;
                                                         }
+                                                        
                                                         $newCorrector = new Corrector();
+                                                        $newCorrector->setTransaction($transaction);
+                                                        
                                                         if ($newCorrector->save(array(
                                                                     "question_id" => $newQuest->id,
                                                                     "user"        => $oldCorrector->user
@@ -422,6 +430,8 @@ class ExamController extends GuiController
                                                         }
 
                                                         $newRole = new $class();
+                                                        $newRole->setTransaction($transaction);
+                                                        
                                                         if ($newRole->save(array(
                                                                     "exam_id" => $newExam->id,
                                                                     "user"    => $member->user
