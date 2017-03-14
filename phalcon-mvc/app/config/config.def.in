@@ -331,5 +331,15 @@ return array(
                         'storage' => 'ldap',
                         'domains' => array('bmc.uu.se', 'uu.se')
                 )
+        ),
+        /**
+         * Some tweaks of standard behavior.
+         */
+        'exam' => array(
+                /**
+                 * Allow exam reuse (if not seen by default). Possible values
+                 * are always or never.
+                 */
+                // 'reusable' => 'always'                
         )
 );

@@ -394,6 +394,17 @@ class State extends Component
                 if ($this->_state & self::FINISHED) {
                         $this->_state &= ~self::CONTRIBUTABLE;
                 }
+
+                // 
+                // Always enable resuse if defined in system config.
+                // 
+                if (isset($this->config->exam->reusable)) {
+                        if ($this->config->exam->reusable == 'always') {
+                                $this->_state |= self::REUSABLE;
+                        } elseif ($this->config->exam->reusable == 'never') {
+                                $this->_state &= ~self::REUSABLE;
+                        }
+                }
         }
 
         /**
