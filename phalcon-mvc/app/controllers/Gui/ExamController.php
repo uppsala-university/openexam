@@ -27,6 +27,9 @@ use OpenExam\Models\Question;
 use OpenExam\Models\Topic;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\View;
+use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
+use Phalcon\Mvc\Model\TransactionInterface;
 
 /**
  * Controller for loading Exam pages
@@ -266,167 +269,182 @@ class ExamController extends GuiController
                 }
 
                 // 
-                // Create new exam with inherited properties:
+                // Start transaction with rollback on error:
                 // 
-                $newExam = new Exam();
+                $transactionManager = new TransactionManager();
+                $transactionManager->setDbService('dbwrite');
+                $transaction = $transactionManager->get();
 
-                if ($newExam->save(array(
-                            "name"    => $oldExam->name,
-                            "descr"   => $oldExam->descr,
-                            "creator" => $oldExam->creator,
-                            "details" => $oldExam->details,
-                            "orgunit" => $oldExam->orgunit,
-                            "grades"  => $oldExam->grades
-                    )) == false) {
-                        throw new \Exception(
-                        sprintf("Failed save new exam (%s)", $newExam->getMessages()[0])
-                        );
-                }
-
-                // 
-                // Replicate other data if options are provided for replication.
-                // 
-
-                if ($this->request->hasPost('options')) {
-                        $replicateOpts = $this->request->getPost('options');
-
+                try {
                         // 
-                        // Map between old and new topics:
+                        // Create new exam with inherited properties:
                         // 
-                        $topicsMap = array();
+                        $newExam = new Exam();
 
-                        // 
-                        // Replicate topics if selected:
-                        // 
-                        if (in_array('topics', $replicateOpts)) {
-                                // 
-                                // Replicate topics. Keep track on new topics by
-                                // adding them to the topics map.
-                                // 
-                                foreach ($oldExam->topics as $oldTopic) {
-                                        if ($oldTopic->name == 'default') {
-                                                $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
-                                                continue;
-                                        }
-
-                                        $newTopic = new Topic();
-                                        if ($newTopic->save(array(
-                                                    "exam_id"   => $newExam->id,
-                                                    "name"      => $oldTopic->name,
-                                                    "randomize" => $oldTopic->randomize,
-                                                    "grades"    => $oldTopic->grades,
-                                                    "depend"    => $oldTopic->depend
-                                            )) == false) {
-                                                throw new \Exception(
-                                                sprintf("Failed duplicate topic (%s)", $newTopic->getMessages()[0])
-                                                );
-                                        }
-                                        $topicsMap[$oldTopic->id] = $newTopic->id;
-
-                                        unset($oldTopic);
-                                        unset($newTopic);
-                                }
-                        } else {
-                                // 
-                                // Map all topics to default topic:
-                                // 
-                                foreach ($oldExam->topics as $oldTopic) {
-                                        $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
-                                }
-                        }
-
-                        // 
-                        // Replicate questions and correctors if selected:
-                        // 
-                        if (in_array('questions', $replicateOpts)) {
-                                foreach ($oldExam->questions as $oldQuest) {
-
-                                        // 
-                                        // Replicate question:
-                                        // 
-                                        $newQuest = new Question();
-
-                                        if ($newQuest->save(array(
-                                                    "exam_id"  => $newExam->id,
-                                                    "topic_id" => $topicsMap[$oldQuest->topic_id],
-                                                    "score"    => $oldQuest->score,
-                                                    "name"     => $oldQuest->name,
-                                                    "quest"    => $oldQuest->quest,
-                                                    "status"   => $oldQuest->status,
-                                                    "comment"  => $oldQuest->comment,
-                                                    "grades"   => $oldQuest->grades
-                                            )) == false) {
-                                                throw new \Exception(
-                                                sprintf("Failed duplicate question (%s)", $newQuest->getMessages()[0])
-                                                );
-                                        }
-
-                                        // 
-                                        // Replicate question correctors:
-                                        // 
-                                        foreach ($oldQuest->correctors as $oldCorrector) {
-                                                if ($oldCorrector->user == $this->user->getPrincipalName()) {
-                                                        continue;
-                                                }
-                                                $newCorrector = new Corrector();
-                                                if ($newCorrector->save(array(
-                                                            "question_id" => $newQuest->id,
-                                                            "user"        => $oldCorrector->user
-                                                    )) == false) {
-                                                        throw new \Exception(
-                                                        sprintf("Failed duplicate corrector (%s)", $newCorrector->getMessages()[0])
-                                                        );
-                                                }
-
-                                                unset($newCorrector);
-                                                unset($oldCorrector);
-                                        }
-
-                                        unset($newQuest);
-                                        unset($oldQuest);
-                                }
-                        }
-
-                        // 
-                        // Replicate roles if selected.
-                        // 
-                        if (in_array('roles', $replicateOpts)) {
-                                // 
-                                // The roles to be replicated:
-                                // 
-                                $roles = array(
-                                        'contributors' => '\OpenExam\Models\Contributor',
-                                        'decoders'     => '\OpenExam\Models\Decoder',
-                                        'invigilators' => '\OpenExam\Models\Invigilator',
+                        if ($newExam->save(array(
+                                    "name"    => $oldExam->name,
+                                    "descr"   => $oldExam->descr,
+                                    "creator" => $oldExam->creator,
+                                    "details" => $oldExam->details,
+                                    "orgunit" => $oldExam->orgunit,
+                                    "grades"  => $oldExam->grades
+                            )) == false) {
+                                throw new \Exception(
+                                sprintf("Failed save new exam (%s)", $newExam->getMessages()[0])
                                 );
+                        }
 
-                                foreach ($roles as $role => $class) {
-                                        foreach ($oldExam->$role as $member) {
+                        // 
+                        // Replicate other data if options are provided for replication.
+                        // 
 
-                                                // 
-                                                // Skip user added by behavior.
-                                                // 
-                                                if ($member->user == $this->user->getPrincipalName()) {
+                        if ($this->request->hasPost('options')) {
+                                $replicateOpts = $this->request->getPost('options');
+
+                                // 
+                                // Map between old and new topics:
+                                // 
+                                $topicsMap = array();
+
+                                // 
+                                // Replicate topics if selected:
+                                // 
+                                if (in_array('topics', $replicateOpts)) {
+                                        // 
+                                        // Replicate topics. Keep track on new topics by
+                                        // adding them to the topics map.
+                                        // 
+                                        foreach ($oldExam->topics as $oldTopic) {
+                                                if ($oldTopic->name == 'default') {
+                                                        $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
                                                         continue;
                                                 }
 
-                                                $newRole = new $class();
-                                                if ($newRole->save(array(
-                                                            "exam_id" => $newExam->id,
-                                                            "user"    => $member->user
+                                                $newTopic = new Topic();
+                                                if ($newTopic->save(array(
+                                                            "exam_id"   => $newExam->id,
+                                                            "name"      => $oldTopic->name,
+                                                            "randomize" => $oldTopic->randomize,
+                                                            "grades"    => $oldTopic->grades,
+                                                            "depend"    => $oldTopic->depend
                                                     )) == false) {
                                                         throw new \Exception(
-                                                        sprintf("Failed duplicate role (%s)", $newRole->getMessages()[0])
+                                                        sprintf("Failed duplicate topic (%s)", $newTopic->getMessages()[0])
+                                                        );
+                                                }
+                                                $topicsMap[$oldTopic->id] = $newTopic->id;
+
+                                                unset($oldTopic);
+                                                unset($newTopic);
+                                        }
+                                } else {
+                                        // 
+                                        // Map all topics to default topic:
+                                        // 
+                                        foreach ($oldExam->topics as $oldTopic) {
+                                                $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
+                                        }
+                                }
+
+                                // 
+                                // Replicate questions and correctors if selected:
+                                // 
+                                if (in_array('questions', $replicateOpts)) {
+                                        foreach ($oldExam->questions as $oldQuest) {
+
+                                                // 
+                                                // Replicate question:
+                                                // 
+                                                $newQuest = new Question();
+
+                                                if ($newQuest->save(array(
+                                                            "exam_id"  => $newExam->id,
+                                                            "topic_id" => $topicsMap[$oldQuest->topic_id],
+                                                            "score"    => $oldQuest->score,
+                                                            "name"     => $oldQuest->name,
+                                                            "quest"    => $oldQuest->quest,
+                                                            "status"   => $oldQuest->status,
+                                                            "comment"  => $oldQuest->comment,
+                                                            "grades"   => $oldQuest->grades
+                                                    )) == false) {
+                                                        throw new \Exception(
+                                                        sprintf("Failed duplicate question (%s)", $newQuest->getMessages()[0])
                                                         );
                                                 }
 
-                                                unset($newRole);
+                                                // 
+                                                // Replicate question correctors:
+                                                // 
+                                                foreach ($oldQuest->correctors as $oldCorrector) {
+                                                        if ($oldCorrector->user == $this->user->getPrincipalName()) {
+                                                                continue;
+                                                        }
+                                                        $newCorrector = new Corrector();
+                                                        if ($newCorrector->save(array(
+                                                                    "question_id" => $newQuest->id,
+                                                                    "user"        => $oldCorrector->user
+                                                            )) == false) {
+                                                                throw new \Exception(
+                                                                sprintf("Failed duplicate corrector (%s)", $newCorrector->getMessages()[0])
+                                                                );
+                                                        }
+
+                                                        unset($newCorrector);
+                                                        unset($oldCorrector);
+                                                }
+
+                                                unset($newQuest);
+                                                unset($oldQuest);
                                         }
                                 }
-                        }
 
-                        unset($replicateOpts);
-                        unset($topicsMap);
+                                // 
+                                // Replicate roles if selected.
+                                // 
+                                if (in_array('roles', $replicateOpts)) {
+                                        // 
+                                        // The roles to be replicated:
+                                        // 
+                                        $roles = array(
+                                                'contributors' => '\OpenExam\Models\Contributor',
+                                                'decoders'     => '\OpenExam\Models\Decoder',
+                                                'invigilators' => '\OpenExam\Models\Invigilator',
+                                        );
+
+                                        foreach ($roles as $role => $class) {
+                                                foreach ($oldExam->$role as $member) {
+
+                                                        // 
+                                                        // Skip user added by behavior.
+                                                        // 
+                                                        if ($member->user == $this->user->getPrincipalName()) {
+                                                                continue;
+                                                        }
+
+                                                        $newRole = new $class();
+                                                        if ($newRole->save(array(
+                                                                    "exam_id" => $newExam->id,
+                                                                    "user"    => $member->user
+                                                            )) == false) {
+                                                                throw new \Exception(
+                                                                sprintf("Failed duplicate role (%s)", $newRole->getMessages()[0])
+                                                                );
+                                                        }
+
+                                                        unset($newRole);
+                                                }
+                                        }
+                                }
+
+                                unset($replicateOpts);
+                                unset($topicsMap);
+                        }
+                } catch (TransactionFailed $exception) {
+                        throw $exception;
+                } catch (\Exception $exception) {
+                        $transaction->rollback($exception->getMessage());
+                } finally {
+                        $transaction->commit();
                 }
 
                 $this->session->set('draft-exam-id', $newExam->id);
