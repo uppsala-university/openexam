@@ -22,6 +22,7 @@ use OpenExam\Library\Security\Roles;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Db\AdapterInterface;
 use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\TransactionInterface;
 use Phalcon\Mvc\ModelInterface;
 
 /**
@@ -379,6 +380,15 @@ class ModelBase extends Model
         public function resetRelatedRecords()
         {
                 $this->_related = array();
+        }
+
+        /**
+         * Get active transaction.
+         * @return TransactionInterface
+         */
+        public function getTransaction()
+        {
+                return $this->_transaction;
         }
 
 }
