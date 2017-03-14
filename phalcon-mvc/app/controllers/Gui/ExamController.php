@@ -444,7 +444,9 @@ class ExamController extends GuiController
                 } catch (\Exception $exception) {
                         $transaction->rollback($exception->getMessage());
                 } finally {
-                        $transaction->commit();
+                        if ($transactionManager->has()) {
+                                $transaction->commit();
+                        }
                 }
 
                 $this->session->set('draft-exam-id', $newExam->id);
