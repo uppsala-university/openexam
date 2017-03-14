@@ -86,7 +86,7 @@ class ModelBehavior extends Behavior implements BehaviorInterface
                         $this->setup($dependencyInjector);
                         $result = $callback($this->user, $this->role);
                 } catch (\Exception $exception) {
-                        $this->logger->access->error($exception);
+                        $this->logger->access->error($exception->getMessage());
                         throw $exception;
                 } finally {
                         $this->leave();
