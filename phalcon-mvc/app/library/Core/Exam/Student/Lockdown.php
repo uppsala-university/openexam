@@ -69,7 +69,7 @@ class Lockdown extends Component
                 $this->_student = $student;
                 $this->_remote = $this->request->getClientAddress(true);
         }
-        
+
         public function __destruct()
         {
                 unset($this->_exam);
@@ -113,8 +113,9 @@ class Lockdown extends Component
                         }
 
                         $this->logger->access->debug(sprintf("Granted access to exam to %s from %s (id=%d)", $this->_student->user, $this->_remote, $this->_exam->id));
-                        return Access::OPEN_APPROVED;
+                        return Access::OPEN_SETUP;
                 } catch (ModelException $exception) {
+                        $this->logger->system->error(sprintf("Failed query database (%s)", $exception->getMessage()));
                         throw new Exception("Failed query database", Error::SERVICE_UNAVAILABLE, $exception);
                 } catch (SecurityException $exception) {
                         $this->logger->access->notice(sprintf("Denied access to exam for %s from %s (%s)", $this->_student->user, $this->_remote, $exception->getMessage()));

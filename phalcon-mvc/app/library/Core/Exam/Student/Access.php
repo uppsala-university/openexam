@@ -68,6 +68,10 @@ class Access extends Component
          * Open exam denied.
          */
         const OPEN_DENIED = 3;
+        /**
+         * Open exam granted, but need setup.
+         */
+        const OPEN_SETUP = 4;
 
         /**
          * The current exam.
@@ -83,7 +87,7 @@ class Access extends Component
         {
                 $this->_exam = $exam;
         }
-        
+
         /**
          * Destructor.
          */
@@ -112,7 +116,7 @@ class Access extends Component
                 // Check that caller is student. Once verified, continue the
                 // process using the system role.
                 // 
-                if (($this->user->getPrimaryRole() != Roles::STUDENT)) {
+                if (!($this->user->roles->acquire(Roles::STUDENT, $this->_exam->id))) {
                         throw new SecurityException("Opening the exam requires the student role.", SecurityException::ROLE);
                 } else {
                         $role = $this->user->setPrimaryRole(Roles::SYSTEM);
@@ -136,15 +140,20 @@ class Access extends Component
                         // Check student access:
                         // 
                         $lockdown = new Lockdown($this->_exam, $student);
-                        if (($status = $lockdown->accepted()) != self::OPEN_APPROVED) {
-                                return $status;
+                        if (($status = $lockdown->accepted())) {
+                                if ($status != self::OPEN_APPROVED &&
+                                    $status != self::OPEN_SETUP) {
+                                        return $status;
+                                }
                         }
 
                         // 
-                        // Prepare exam for first use if needed:
+                        // Prepare exam for first use:
                         // 
-                        $setup = new Setup($this->_exam, $student);
-                        $setup->prepare();
+                        if ($status == self::OPEN_SETUP) {
+                                $setup = new Setup($this->_exam, $student);
+                                $setup->prepare();
+                        }
                 } catch (Exception $exception) {
                         $this->user->setPrimaryRole($role);
                         throw $exception;
@@ -166,7 +175,7 @@ class Access extends Component
          */
         public function close()
         {
-                if (($this->user->getPrimaryRole() != Roles::STUDENT)) {
+                if (!($this->user->roles->acquire(Roles::STUDENT, $this->_exam->id))) {
                         throw new SecurityException("Closing the exam requires the student role.", SecurityException::ROLE);
                 } else {
                         $role = $this->user->setPrimaryRole(Roles::SYSTEM);

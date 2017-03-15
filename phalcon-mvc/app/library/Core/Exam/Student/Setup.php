@@ -53,7 +53,7 @@ class Setup extends Component
         }
 
         /**
-         * 
+         * Prepare exam for first use.
          */
         public function prepare()
         {
