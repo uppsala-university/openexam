@@ -115,18 +115,22 @@ class Topic extends ModelBase
                         return true;
                 }
 
-                $this->validate(new Uniqueness(
-                    array(
-                        "field"   => array("name", "exam_id"),
-                        "message" => "This topic has already been added"
-                    )
-                ));
-                $this->validate(new Uniqueness(
-                    array(
-                        'field'   => array('exam_id', 'slot'),
-                        'message' => "This question slot is already in use on exam"
-                    )
-                ));
+                if ($this->id == 0) {
+                        $this->validate(new Uniqueness(
+                            array(
+                                "field"   => array("name", "exam_id"),
+                                "message" => "This topic name has already been added on exam"
+                            )
+                        ));
+                }
+                if ($this->id == 0) {
+                        $this->validate(new Uniqueness(
+                            array(
+                                'field'   => array("slot", "exam_id"),
+                                'message' => "This topic slot has already been added on exam"
+                            )
+                        ));
+                }
                 return $this->validationHasFailed() != true;
         }
 

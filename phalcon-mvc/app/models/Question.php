@@ -220,12 +220,23 @@ class Question extends ModelBase
                         'domain' => array(self::STATUS_ACTIVE, self::STATUS_REMOVED)
                     )
                 ));
-                $this->validate(new Uniqueness(
-                    array(
-                        'field'   => array("name", "exam_id"),
-                        'message' => "This question name is already in use on exam"
-                    )
-                ));
+                if ($this->id == 0) {
+                        $this->validate(new Uniqueness(
+                            array(
+                                "field"   => array("name", "exam_id"),
+                                "message" => "This question name has already been added on exam"
+                            )
+                        ));
+                }
+                if ($this->id == 0) {
+                        $this->validate(new Uniqueness(
+                            array(
+                                'field'   => array("slot", "exam_id"),
+                                'message' => "This question slot has already been added on exam"
+                            )
+                        ));
+                }
+                
                 if ($this->validationHasFailed() == true) {
                         return false;
                 }
