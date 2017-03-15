@@ -313,12 +313,12 @@ class ExamController extends GuiController
                                 // 
                                 $idmap = array(
                                         'q' => array(
-                                                'n' => array(),
-                                                's' => array()
+                                                'n' => 0,
+                                                's' => 0
                                         ),
                                         't' => array(
-                                                'n' => array(),
-                                                's' => array()
+                                                'n' => 0,
+                                                's' => 0
                                         )
                                 );
 
@@ -333,28 +333,14 @@ class ExamController extends GuiController
                                         foreach ($oldExam->getTopics(array('order' => 'slot,name')) as $oldTopic) {
 
                                                 // 
-                                                // Remap order if required:
+                                                // Remap name and slot order:
                                                 // 
-                                                if (in_array($oldTopic->name, $idmap['t']['n'])) {
-                                                        if (is_numeric($oldTopic->name)) {
-                                                                $oldTopic->name = count($idmap['t']['n']) + 1;
-                                                        } else {
-                                                                $oldTopic->name = sprintf("%s (%d)", $oldTopic->name, count($idmap['t']['n']) + 1);
-                                                        }
+                                                if (is_numeric($oldTopic->name)) {
+                                                        $oldTopic->name = ++$idmap['t']['n'];
                                                 }
-                                                if (in_array($oldTopic->slot, $idmap['t']['s'])) {
-                                                        if (is_numeric($oldTopic->slot)) {
-                                                                $oldTopic->slot = count($idmap['t']['s']) + 1;
-                                                        } else {
-                                                                $oldTopic->slot = sprintf("%s (%d)", $oldTopic->slot, count($idmap['t']['s']) + 1);
-                                                        }
+                                                if (is_numeric($oldTopic->slot)) {
+                                                        $oldTopic->slot = ++$idmap['t']['s'];
                                                 }
-
-                                                // 
-                                                // Add old topic to idmap:
-                                                // 
-                                                $idmap['t']['n'][$oldTopic->id] = $oldTopic->name;
-                                                $idmap['t']['s'][$oldTopic->id] = $oldTopic->slot;
 
                                                 // 
                                                 // Don't insert default topic. It will be added
@@ -400,28 +386,14 @@ class ExamController extends GuiController
                                         foreach ($oldExam->getQuestions(array('order' => 'slot,name')) as $oldQuest) {
 
                                                 // 
-                                                // Remap order if required:
+                                                // Remap name and slot order:
                                                 // 
-                                                if (in_array($oldQuest->name, $idmap['q']['n'])) {
-                                                        if (is_numeric($oldQuest->name)) {
-                                                                $oldQuest->name = count($idmap['q']['n']) + 1;
-                                                        } else {
-                                                                $oldQuest->name = sprintf("%s (%d)", $oldQuest->name, count($idmap['q']['n']) + 1);
-                                                        }
+                                                if (is_numeric($oldQuest->name)) {
+                                                        $oldQuest->name = ++$idmap['q']['n'];
                                                 }
-                                                if (in_array($oldQuest->slot, $idmap['q']['s'])) {
-                                                        if (is_numeric($oldQuest->slot)) {
-                                                                $oldQuest->slot = count($idmap['q']['s']) + 1;
-                                                        } else {
-                                                                $oldQuest->slot = sprintf("%s (%d)", $oldQuest->slot, count($idmap['q']['s']) + 1);
-                                                        }
+                                                if (is_numeric($oldQuest->slot)) {
+                                                        $oldQuest->slot = ++$idmap['q']['s'];
                                                 }
-
-                                                // 
-                                                // Add old question to idmap:
-                                                // 
-                                                $idmap['q']['n'][$oldQuest->id] = $oldQuest->name;
-                                                $idmap['q']['s'][$oldQuest->id] = $oldQuest->slot;
 
                                                 // 
                                                 // Replicate question:
