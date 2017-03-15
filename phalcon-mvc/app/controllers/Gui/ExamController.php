@@ -273,7 +273,7 @@ class ExamController extends GuiController
                 // 
                 $transactionManager = new TransactionManager();
                 $transactionManager->setDbService('dbwrite');
-                
+
                 $transaction = $transactionManager->get();
 
                 try {
@@ -309,6 +309,20 @@ class ExamController extends GuiController
                                 $topicsMap = array();
 
                                 // 
+                                // Keep track of used question and topics names and slots:
+                                // 
+                                $idmap = array(
+                                        'q' => array(
+                                                'n' => array(),
+                                                's' => array()
+                                        ),
+                                        't' => array(
+                                                'n' => array(),
+                                                's' => array()
+                                        )
+                                );
+
+                                // 
                                 // Replicate topics if selected:
                                 // 
                                 if (in_array('topics', $replicateOpts)) {
@@ -316,7 +330,36 @@ class ExamController extends GuiController
                                         // Replicate topics. Keep track on new topics by
                                         // adding them to the topics map.
                                         // 
-                                        foreach ($oldExam->getTopics(array('order' => 'slot')) as $oldTopic) {
+                                        foreach ($oldExam->getTopics(array('order' => 'slot,name')) as $oldTopic) {
+
+                                                // 
+                                                // Remap order if required:
+                                                // 
+                                                if (in_array($oldTopic->name, $idmap['t']['n'])) {
+                                                        if (is_numeric($oldTopic->name)) {
+                                                                $oldTopic->name = count($idmap['t']['n']) + 1;
+                                                        } else {
+                                                                $oldTopic->name = sprintf("%s (%d)", $oldTopic->name, count($idmap['t']['n']) + 1);
+                                                        }
+                                                }
+                                                if (in_array($oldTopic->slot, $idmap['t']['s'])) {
+                                                        if (is_numeric($oldTopic->slot)) {
+                                                                $oldTopic->slot = count($idmap['t']['s']) + 1;
+                                                        } else {
+                                                                $oldTopic->slot = sprintf("%s (%d)", $oldTopic->slot, count($idmap['t']['s']) + 1);
+                                                        }
+                                                }
+
+                                                // 
+                                                // Add old topic to idmap:
+                                                // 
+                                                $idmap['t']['n'][$oldTopic->id] = $oldTopic->name;
+                                                $idmap['t']['s'][$oldTopic->id] = $oldTopic->slot;
+
+                                                // 
+                                                // Don't insert default topic. It will be added
+                                                // by model behavior instead.
+                                                // 
                                                 if ($oldTopic->name == 'default') {
                                                         $topicsMap[$oldTopic->id] = $newExam->topics[0]->id;
                                                         continue;
@@ -324,7 +367,7 @@ class ExamController extends GuiController
 
                                                 $newTopic = new Topic();
                                                 $newTopic->setTransaction($transaction);
-                                                
+
                                                 if ($newTopic->save(array(
                                                             "exam_id"   => $newExam->id,
                                                             "name"      => $oldTopic->name,
@@ -354,7 +397,31 @@ class ExamController extends GuiController
                                 // Replicate questions and correctors if selected:
                                 // 
                                 if (in_array('questions', $replicateOpts)) {
-                                        foreach ($oldExam->getQuestions(array('order' => 'slot')) as $oldQuest) {
+                                        foreach ($oldExam->getQuestions(array('order' => 'slot,name')) as $oldQuest) {
+
+                                                // 
+                                                // Remap order if required:
+                                                // 
+                                                if (in_array($oldQuest->name, $idmap['q']['n'])) {
+                                                        if (is_numeric($oldQuest->name)) {
+                                                                $oldQuest->name = count($idmap['q']['n']) + 1;
+                                                        } else {
+                                                                $oldQuest->name = sprintf("%s (%d)", $oldQuest->name, count($idmap['q']['n']) + 1);
+                                                        }
+                                                }
+                                                if (in_array($oldQuest->slot, $idmap['q']['s'])) {
+                                                        if (is_numeric($oldQuest->slot)) {
+                                                                $oldQuest->slot = count($idmap['q']['s']) + 1;
+                                                        } else {
+                                                                $oldQuest->slot = sprintf("%s (%d)", $oldQuest->slot, count($idmap['q']['s']) + 1);
+                                                        }
+                                                }
+
+                                                // 
+                                                // Add old question to idmap:
+                                                // 
+                                                $idmap['q']['n'][$oldQuest->id] = $oldQuest->name;
+                                                $idmap['q']['s'][$oldQuest->id] = $oldQuest->slot;
 
                                                 // 
                                                 // Replicate question:
@@ -384,10 +451,10 @@ class ExamController extends GuiController
                                                         if ($oldCorrector->user == $this->user->getPrincipalName()) {
                                                                 continue;
                                                         }
-                                                        
+
                                                         $newCorrector = new Corrector();
                                                         $newCorrector->setTransaction($transaction);
-                                                        
+
                                                         if ($newCorrector->save(array(
                                                                     "question_id" => $newQuest->id,
                                                                     "user"        => $oldCorrector->user
@@ -431,7 +498,7 @@ class ExamController extends GuiController
 
                                                         $newRole = new $class();
                                                         $newRole->setTransaction($transaction);
-                                                        
+
                                                         if ($newRole->save(array(
                                                                     "exam_id" => $newExam->id,
                                                                     "user"    => $member->user
