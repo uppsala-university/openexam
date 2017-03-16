@@ -23,13 +23,13 @@ use OpenExam\Library\Gui\Component\Exam\Phase;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;
+use OpenExam\Models\Lock;
 use OpenExam\Models\Question;
 use OpenExam\Models\Topic;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
-use Phalcon\Mvc\View;
 use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
-use Phalcon\Mvc\Model\TransactionInterface;
+use Phalcon\Mvc\View;
 
 /**
  * Controller for loading Exam pages
@@ -834,6 +834,35 @@ class ExamController extends GuiController
 
                 $this->view->setVar('check', new Check($exam));
                 $this->view->setVar('exam_id', $eid);
+        }
+
+        /**
+         * Show exam lock status/manager panel.
+         */
+        public function lockAction()
+        {
+                // 
+                // Render view as popup page:
+                // 
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+
+                // 
+                // Load exam lock (if any) from request parameters:
+                // 
+                if (($lid = $this->request->getPost("id", "int"))) {
+                        $lock = Lock::findFirst("id = $lid");
+                }
+                if (($sid = $this->request->getPost("student_id", "int"))) {
+                        $lock = Lock::findFirst("student_id = $sid");
+                }
+
+                // 
+                // Set variables for view:
+                // 
+                $this->view->setVars(array(
+                        'lock' => $lock,
+                        'stud' => $sid
+                ));
         }
 
 }

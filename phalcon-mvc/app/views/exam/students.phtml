@@ -179,35 +179,7 @@ foreach ($exam->students as $student) {
                                         <td><?= $student->tag ?></td>
                                     </tr>
                                     <tr class="st-detail-rows" style="display:none;" id="st-detail-row<?= $student->id ?>">
-                                        <td colspan="10" style="background-color:#D9ECF2;">
-                                            <?php $studentLocks = $student->getLocks(); ?>
-                                            <h2>Connection</h2>
-                                            <div id="st-conn-details">
-                                                <?php
-                                                foreach ($studentLocks as $lock):
-                                                        $computer = $lock->getComputer();
-                                                        $room = $computer->getRoom();
-                                                        print "<b>FQHN:</b> " . $computer->hostname . " (" . $computer->ipaddr . ")<br>";
-                                                        print "<b>Place:</b> " . $room->name . " (" . $room->description . ")";
-                                                endforeach;
-
-                                                if (!count($studentLocks)):
-                                                        print "Student has not logged in to the OpenExam yet so no connections found.";
-                                                endif;
-
-                                                ?>
-                                            </div>
-                                            <br>
-                                            <div>
-                                                <?php if (count($studentLocks)): ?>
-                                                        <?php if ($studentLocks[0]->status == 'approved'): ?>
-                                                                <input id="unlock-student" data-id="<?= $studentLocks[0]->id ?>" type="button" value="Unlock"> 
-                                                        <?php else: ?>
-                                                                <input id="approve-student" data-id="<?= $studentLocks[0]->id ?>" type="button" value="Approve">
-                                                        <?php endif; ?>
-                                                <?php endif; ?>
-                                            </div>
-                                        </td>
+                                        <td colspan="10" style="background-color:#ffe;"></td>
                                     </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -327,8 +299,6 @@ foreach ($exam->students as $student) {
                             baseURL + 'ajax/core/invigilator/student/update',
                             JSON.stringify(stData),
                             function (userData) {
-                                //console.log(userData);
-                                //onStudentInserted(userData);
                             }
                     );
                 }
@@ -338,28 +308,43 @@ foreach ($exam->students as $student) {
 
             });
 
+            // 
+            // Unlock exam lock preventing student from using another computer.
+            // 
             $(document).on("click", "#unlock-student", function () {
+                var dataId = $(this).attr('data-id');
+                var studId = $(this).attr('stud-id');
+                
                 ajax(
                         baseURL + 'ajax/core/invigilator/lock/delete',
-                        {"id": $(this).attr('data-id')},
+                        {"id": dataId},
                 function (status) {
-                    $("#unlock-student").hide();
-                    $("#st-conn-details").html("No connection found.");
-                }
-                );
+                    $('a[data-id="' + studId + '"]').click();
+                });
             });
 
+            // 
+            // Approve prending student connection on exam.
+            // 
             $(document).on("click", "#approve-student", function () {
+                var dataId = $(this).attr('data-id');
+                var studId = $(this).attr('stud-id');
+
                 ajax(
                         baseURL + 'ajax/core/invigilator/lock/update',
                         {"id": $(this).attr('data-id'), "status": "approved"},
                 function (status) {
-                    $("#unlock-student").show();
-                    $("#approve-student").hide();
+                    $('a[data-id="' + studId + '"]').click();
                 }
                 );
             });
 
+            // 
+            // Reload exam lock status panel.
+            // 
+            $(document).on("click", "#lock-status-refresh", function () {
+                $('a[data-id="' + $(this).attr('data-id') + '"]').click();
+            });
 
             $(document).on("keyup", "#search-students", function () {
                 var value = jQuery.trim($(this).val());
@@ -372,7 +357,6 @@ foreach ($exam->students as $student) {
                             if (jQuery.trim($(elem).text()).indexOf(value) != 0) {
                                 $row.hide();
                             } else {
-                                //console.log(jQuery.trim($(elem).text()));
                                 $row.show();
                                 return false;
                             }
@@ -386,9 +370,19 @@ foreach ($exam->students as $student) {
             });
 
             $(document).on('click', '.st-exam-detail', function () {
-                $('.st-detail-rows').hide();
                 var row = $(this).closest("tr");
-                $('#st-detail-row' + $(this).attr('data-id')).show(500).insertAfter(row);
+                var sid = $(this).attr('data-id');
+
+                $.ajax({
+                    url: baseURL + 'exam/lock',
+                    type: 'POST',
+                    cache: false,
+                    data: {"student_id": $(this).attr('data-id')}
+                }).done(function (result) {
+                    $('.st-detail-rows').hide();
+                    $('#st-detail-row' + sid).show(500).insertAfter(row).find('td').html(result);
+                });
+
                 return false;
             });
 
@@ -407,15 +401,15 @@ foreach ($exam->students as $student) {
                             baseURL + 'ajax/core/invigilator/student/delete',
                             {"id": $(this).attr('data-id')},
                     function (status) {
-                        //console.log(studentList);
                         jQuery.each(studentList, function (i, sData) {
                             if (typeof sData !== 'undefined' && sData.id == $(student).attr('data-id')) {
                                 delete studentList[i];
                             }
                         });
-                        // hide from list
+                        // 
+                        // Hide from list:
+                        // 
                         $(student).parent().slideUp('500', function () {
-                            // hide
                             $(this).remove();
                         });
                         if ($('.total-exam-students')) {
@@ -433,7 +427,9 @@ foreach ($exam->students as $student) {
                 var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
                 if (examId) {
                     stList = jQuery.trim($('#student_list').val()).split("\n");
-                    //prepare data object
+                    //
+                    // Prepare data object:
+                    // 
                     $.each(stList, function (i, val) {
                         if (jQuery.trim(val) != '') {
                             st = jQuery.trim(val).split(/\s/g);
@@ -450,8 +446,9 @@ foreach ($exam->students as $student) {
                             stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
                         }
                     });
-                    //console.log(stData);
-                    // send ajax request to add these students to the exam
+                    // 
+                    // Send AJAX request to add these students to the exam:
+                    // 
                     ajax(
                             baseURL + 'ajax/core/invigilator/student/create',
                             JSON.stringify(stData),

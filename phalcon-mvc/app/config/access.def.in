@@ -137,7 +137,8 @@ return array(
                         'students'    => array('invigilator'),
                         'settings'    => array('creator'),
                         'security'    => array('creator', 'invigilator'),
-                        'check'       => array('creator', 'invigilator')
+                        'check'       => array('creator', 'invigilator'),
+                        'lock'        => array('creator', 'invigilator')
                 ),
                 'question' => array(
                         'create'      => array('creator', 'contributor'),

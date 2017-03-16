@@ -1,0 +1,59 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    lock.phtml
+// Created: 2017-03-15 22:30:58
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+if ($lock) {
+        $computer = $lock->computer;
+        $room = $computer->room;
+}
+
+?>
+
+<div style="padding: 0px 10px 20px 10px">
+    <?php if ($lock) : ?>
+            <!-- Connection status: -->
+            <h2><i class="fa fa-lock" style="color: orange"></i> Connection</h2>
+            <div style="padding-left: 20px">
+                <b>FQHN:  </b><?= $computer->hostname ?> (<?= $computer->ipaddr ?>)<br>
+                <b>Place: </b><?= $room->name ?> (<?= $room->description ?>)
+            </div>
+
+            <!-- Exam lock release or approve: -->
+            <div style="margin-top: 10px; padding-left: 20px">
+                <?php if ($lock->status == 'approved'): ?>
+                        <span class="btn btn-primary" id="unlock-student" data-id="<?= $lock->id ?>" stud-id="<?= $lock->student_id ?>">
+                            <i class="fa fa-unlock"></i>
+                            <span>Unlock</span>
+                        </span>
+                <?php else: ?>
+                        <span class="btn btn-primary" id="approve-student" data-id="<?= $lock->id ?>" stud-id="<?= $lock->student_id ?>" title="<?= $message['approve'] ?>">
+                            <i class="fa fa-shield"></i>
+                            <span>Approve</span>
+                        </span>
+                <?php endif; ?>
+                <span class="btn btn-default" id="lock-status-refresh" data-id="<?= $lock->student_id ?>">
+                    <i class="fa fa-refresh"></i>
+                    <span>Refresh</span>
+                </span>
+            </div>
+    <?php else: ?>
+            <h2><i class="fa fa-unlock-alt" style="color: orange"></i> Unlocked</h2>
+            <div style="padding-left: 20px">
+                This student has no computer lock established for this exam
+            </div>
+            <div style="margin-top: 10px; padding-left: 20px">
+                <span class="btn btn-default" id="lock-status-refresh" data-id="<?= $stud ?>">
+                    <i class="fa fa-refresh"></i>
+                    <span>Refresh</span>
+                </span>
+            </div>
+    <?php endif; ?>
+</div>
