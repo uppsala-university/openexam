@@ -142,6 +142,49 @@ class Backend
         }
 
         /**
+         * Invalidate cache entries.
+         * 
+         * Use this method to invalidate all cache entries on $table 
+         * with $id as primary key. Similar to delete() but more selective 
+         * and intended to be used in response to a cache hit miss.
+         * 
+         * @param string $table The table name.
+         * @param int $id The primary key ID.
+         * @return boolean
+         */
+        public function invalidate($table, $id)
+        {
+                // 
+                // Nothing to do if index is missing:
+                // 
+                if (!$this->_cache->exists($table)) {
+                        return false;
+                }
+                if (!($data = $this->_cache->get($table))) {
+                        return false;
+                }
+
+                // 
+                // Delete matching entries in cache:
+                // 
+                foreach ($data as $keyName) {
+                        if (($result = $this->_cache->get($keyName))) {
+                                if ($result->numRows() == 0) {
+                                        continue;
+                                } elseif (!($record = $result->fetch())) {
+                                        continue;
+                                } elseif (!isset($record['id'])) {
+                                        continue;
+                                } elseif ($record['id'] == $id) {
+                                        $this->_cache->delete($keyName);
+                                }
+                        }
+                }
+
+                return true;
+        }
+
+        /**
          * Create cache backend.
          * 
          * @param string $type The cache type.

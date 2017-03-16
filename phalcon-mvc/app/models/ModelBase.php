@@ -423,4 +423,17 @@ class ModelBase extends Model
                 }
         }
 
+        /**
+         * Invalidate this model.
+         */
+        public function invalidate()
+        {
+                if (($adapter = $this->getReadConnection())) {
+                        if ($adapter instanceof Mediator) {
+                                $backend = $adapter->getCache();
+                                $backend->invalidate($this->getSource(), $this->id);
+                        }
+                }
+        }
+
 }

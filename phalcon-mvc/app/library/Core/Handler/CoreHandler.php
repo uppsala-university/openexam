@@ -13,9 +13,10 @@
 
 namespace OpenExam\Library\Core\Handler;
 
+use OpenExam\Library\Database\Cache\Mediator as CacheMediator;
+use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\ModelBase;
-use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use PDO;
 use Phalcon\Mvc\Model;
@@ -94,6 +95,7 @@ class CoreHandler extends Component
                 if (isset($data['id'])) {
                         $model = $class::findFirstById($data['id']);
                         if ($model == false) {
+                                $this->invalidate($name, $data['id']);
                                 throw new Exception("Failed find target $name");
                         }
                         $model->assign($data);
@@ -475,6 +477,34 @@ class CoreHandler extends Component
                         return false;
                 } else {
                         return true;
+                }
+        }
+
+        /**
+         * Invalidate cache records.
+         * @param string $name The model name (lower case).
+         * @param int $id The model ID.
+         */
+        private function invalidate($name, $id)
+        {
+                // 
+                // This method should never be needed ;-) 
+                // 
+                // It only exists as a last restort to fix cache inconsistance 
+                // caused by entries being present in the cache, while record 
+                // has been deleted in the database.
+                // 
+                // Request thru the normal interfaces using the mediator will 
+                // take care of cache invalidation. Notice that this method 
+                // will only take care of deleting cache entries having $id as 
+                // its primary key.
+                // 
+                if ($this->dbread instanceof CacheMediator) {
+                        if ($name == 'access' || $name == 'profile') {
+                                $this->dbread->getCache()->invalidate($name, $id);
+                        } else {
+                                $this->dbread->getCache()->invalidate(sprintf("%ss", $name), $id);
+                        }
                 }
         }
 
