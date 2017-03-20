@@ -142,7 +142,7 @@ class Role extends ModelBase
         protected function getAttribute($name)
         {
                 if (($catalog = $this->getDI()->getCatalog()) != false) {
-                        return $catalog->getAttributes($name, $this->user);
+                        return $catalog->getAttribute($name, $this->user);
                 }
         }
 
