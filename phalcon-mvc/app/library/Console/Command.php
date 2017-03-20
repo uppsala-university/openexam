@@ -65,6 +65,11 @@ class Command
          * @var string 
          */
         private $_errfile;
+        /**
+         * Use passthru() if unbuffered.
+         * @var boolean 
+         */
+        private $_buffered = true;
 
         /**
          * Constructor.
@@ -84,6 +89,15 @@ class Command
                 unset($this->_errfile);
                 unset($this->_error);
                 unset($this->_output);
+        }
+
+        /**
+         * Set unbuffered mode.
+         * @param boolean $enable Set passthru mode.
+         */
+        public function setBuffered($enable)
+        {
+                $this->_buffered = $enable;
         }
 
         /**
@@ -175,6 +189,8 @@ class Command
         {
                 if (filesize($this->_errfile) > 0) {
                         $this->_error = file_get_contents($this->_errfile);
+                } elseif ($this->_status != 0) {
+                        $this->_error = sprintf("Command %s exited with non-zero status", $this->_command);
                 }
                 if (unlink($this->_errfile) == false) {
                         trigger_error("Failed unlink error file $this->_errfile");
@@ -262,12 +278,18 @@ class Command
                 // 
                 // Execute program.
                 // 
-                exec($cmd, $this->_output, $this->_status);
+                if ($this->_buffered) {
+                        exec($cmd, $this->_output, $this->_status);
+                } else {
+                        passthru($cmd, $this->_status);
+                }
 
                 // 
                 // Check for errors:
                 // 
                 if (file_exists($this->_errfile)) {
+                        $this->setError();
+                } elseif ($this->_status != 0) {
                         $this->setError();
                 }
 

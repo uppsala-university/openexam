@@ -90,6 +90,7 @@ class RenderPdfDocument implements Renderer
 
                 $execute = sprintf("%s %s -", $this->_command, self::getPages($objects));
                 $command = new Command($execute);
+                $command->setBuffered(false);
 
                 return $command->execute();
         }
