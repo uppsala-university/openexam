@@ -84,7 +84,7 @@ class ExportController extends GuiController
                 // 
                 // Exam contact information.
                 // 
-                $contact = $this->catalog->getPrincipal(Principal::ATTR_PN, $exam->creator);
+                $contact = $this->catalog->getPrincipal($exam->creator, Principal::ATTR_PN);
 
                 $this->view->setVar('students', $students);
                 $this->view->setVar('exam', $exam);
