@@ -249,7 +249,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getGroups($principal, $attributes = array(Group::ATTR_NAME))
         {
-                if (($result = $this->_cache->getGroups($principal, $attributes))) {
+                if (($result = $this->_cache->getGroups($principal, $attributes)) !== false) {
                         return $result;
                 }
 
@@ -281,7 +281,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getMembers($group, $domain = null, $attributes = array(Principal::ATTR_PN, Principal::ATTR_NAME, Principal::ATTR_MAIL))
         {
-                if (($result = $this->_cache->getMembers($group, $domain, $attributes))) {
+                if (($result = $this->_cache->getMembers($group, $domain, $attributes)) !== false) {
                         return $result;
                 }
 
@@ -341,7 +341,7 @@ class DirectoryManager extends Component implements DirectoryService
                 if (!isset($principal)) {
                         $principal = $this->user->getPrincipalName();
                 }
-                if (($result = $this->_cache->getAttribute($attribute, $principal))) {
+                if (($result = $this->_cache->getAttribute($attribute, $principal)) !== false) {
                         return $result;
                 }
 
@@ -420,7 +420,7 @@ class DirectoryManager extends Component implements DirectoryService
                 if (!isset($principal)) {
                         $principal = $this->user->getPrincipalName();
                 }
-                if (($result = $this->_cache->getAttributes($attribute, $principal))) {
+                if (($result = $this->_cache->getAttributes($attribute, $principal)) !== false) {
                         return $result;
                 }
 
@@ -505,7 +505,7 @@ class DirectoryManager extends Component implements DirectoryService
                         $options['attr'] = array($options['attr']);
                 }
 
-                if (($result = $this->_cache->getPrincipals($needle, $search, $options))) {
+                if (($result = $this->_cache->getPrincipals($needle, $search, $options)) !== false) {
                         return $result;
                 }
 
@@ -567,7 +567,7 @@ class DirectoryManager extends Component implements DirectoryService
                         $attr = array($attr);
                 }
 
-                if (($result = $this->_cache->getPrincipal($needle, $search, $domain, $attr))) {
+                if (($result = $this->_cache->getPrincipal($needle, $search, $domain, $attr)) !== false) {
                         return $result;
                 }
 
