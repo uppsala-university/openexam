@@ -72,11 +72,11 @@ class Location extends Component
                 if (!isset($address)) {
                         $address = $this->request->getClientAddress(true);
                 }
-                
+
                 foreach ($this->_locations as $okey => $oval) {
                         foreach ($oval as $ckey => $cval) {
                                 foreach ($cval as $pkey => $pval) {
-                                        if (is_numeric($pval['addr'][0])) {
+                                        if (is_numeric($pval['addr'][0]) || is_array($pval['addr'])) {
                                                 $validator = new AddressRestrictor($pval['addr']);
                                                 if ($validator->match($address)) {
                                                         return array_merge($pval, array(
