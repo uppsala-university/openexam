@@ -136,7 +136,7 @@ class Lock extends ModelBase
                 ));
                 $this->validate(new Uniqueness(
                     array(
-                        'field'   => array('student_id', 'computer_id', 'exam_id'),
+                        'field'   => array('student_id', 'computer_id', 'exam_id', 'status'),
                         'message' => "The exam lock already exist"
                     )
                 ));
