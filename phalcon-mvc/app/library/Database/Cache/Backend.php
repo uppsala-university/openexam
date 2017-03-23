@@ -36,16 +36,36 @@ use Phalcon\Cache\FrontendInterface;
  * Calling delete() for an table is potential costly as it invalidates all
  * result sets cached for that table based on its index.
  * 
+ * The TTL for table index should always be > than the TTL for result set 
+ * cache or we might suffer from not result set that is never invalidated on
+ * insert(), update() or delete() because they are missing in the table index
+ * but still found by hashed queries.
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Backend
 {
 
         /**
+         * Cleanup index interval.
+         */
+        const HOUSEKEEP_INTERVAL = 900;
+
+        /**
          * The real cache backend.
          * @var BackendInterface 
          */
         private $_cache;
+        /**
+         * Time to live for cache entries (query result set).
+         * @var int 
+         */
+        private $_ttlres;
+        /**
+         * Time to live for cache entry index (the table set index).
+         * @var int 
+         */
+        private $_ttlidx;
 
         /**
          * Constructor.
@@ -54,6 +74,9 @@ class Backend
         public function __construct($cache)
         {
                 $this->_cache = $cache;
+
+                $this->_ttlres = $this->_cache->getFrontend()->getLifetime();
+                $this->_ttlidx = $this->_cache->getFrontend()->getLifetime() + 86400;
         }
 
         /**
@@ -69,10 +92,10 @@ class Backend
                 // 
                 // Nothing to do if index is missing:
                 // 
-                if (!$this->_cache->exists($table)) {
+                if (!$this->_cache->exists($table, $this->_ttlidx)) {
                         return false;
                 }
-                if (!($data = $this->_cache->get($table))) {
+                if (!($data = $this->_cache->get($table, $this->_ttlidx))) {
                         return false;
                 }
 
@@ -95,7 +118,7 @@ class Backend
          */
         public function exists($keyName)
         {
-                return $this->_cache->exists($keyName);
+                return $this->_cache->exists($keyName, $this->_ttlidx);
         }
 
         /**
@@ -104,7 +127,7 @@ class Backend
          */
         public function get($keyName)
         {
-                return $this->_cache->get($keyName);
+                return $this->_cache->get($keyName, $this->_ttlidx);
         }
 
         /**
@@ -122,21 +145,38 @@ class Backend
                 // 
                 // Save result set:
                 // 
-                $this->_cache->save($keyName, $content);
+                $this->_cache->save($keyName, $content, $this->_ttlres);
 
                 // 
                 // Update cache key index:
                 // 
                 foreach ($tables as $table) {
-                        if ($this->_cache->exists($table)) {
-                                $data = $this->_cache->get($table);
+                        $active = array();
+                        $remove = array();
+                        $insert = false;
+
+                        // 
+                        // Running the housekeep routine might cleanup cache data.
+                        // 
+                        if (!($insert = $this->housekeep($table, $active, $remove))) {
+                                if ($this->_cache->exists($table, $this->_ttlidx)) {
+                                        $active = $this->_cache->get($table, $this->_ttlidx);
+                                }
                         }
-                        if (!isset($data)) {
-                                $data = array();
+                        
+                        // 
+                        // Only update result set index if result set was removed or
+                        // our key is missing in the table index.
+                        // 
+                        if (count($remove) > 0) {
+                                $insert = true;
                         }
-                        if (!in_array($keyName, $data)) {
-                                $data[] = $keyName;
-                                $this->_cache->save($table, $data);
+                        if (!in_array($keyName, $active)) {
+                                $active[] = $keyName;
+                                $insert = true;
+                        }
+                        if ($insert) {
+                                $this->_cache->save($table, $active, $this->_ttlidx);
                         }
                 }
         }
@@ -157,10 +197,10 @@ class Backend
                 // 
                 // Nothing to do if index is missing:
                 // 
-                if (!$this->_cache->exists($table)) {
+                if (!$this->_cache->exists($table, $this->_ttlidx)) {
                         return false;
                 }
-                if (!($data = $this->_cache->get($table))) {
+                if (!($data = $this->_cache->get($table, $this->_ttlidx))) {
                         return false;
                 }
 
@@ -168,7 +208,7 @@ class Backend
                 // Delete matching entries in cache:
                 // 
                 foreach ($data as $keyName) {
-                        if (($result = $this->_cache->get($keyName))) {
+                        if (($result = $this->_cache->get($keyName, $this->_ttlres))) {
                                 if ($result->numRows() == 0) {
                                         continue;
                                 } elseif (!($record = $result->fetch())) {
@@ -181,6 +221,78 @@ class Backend
                         }
                 }
 
+                return true;
+        }
+
+        /**
+         * Table index maintenance.
+         * 
+         * Cleanup expired result set keys from table index. Returns true if
+         * housekeeping where performed. The remaining (and possibly active) 
+         * results sets are returned by reference.
+         * 
+         * The cleanup is potential costly, so its only run at periodical 
+         * interval.
+         * 
+         * @param string $table The table name.
+         * @param array $active The remaining result sets.
+         * @param array $remove The removed result sets.
+         * @return boolean
+         */
+        private function housekeep($table, &$active, &$remove)
+        {
+                // 
+                // Make sure we are dealing with arrays:
+                // 
+                if (!is_array($active)) {
+                        $active = array();
+                }
+                if (!is_array($remove)) {
+                        $remove = array();
+                }
+
+                // 
+                // Don't continue if housekeep key exist:
+                // 
+                if ($this->_cache->exists(sprintf("%s-housekeep", $table), self::HOUSEKEEP_INTERVAL)) {
+                        return false;
+                }
+
+                // 
+                // Get existing result set:
+                // 
+                if ($this->_cache->exists($table, $this->_ttlidx)) {
+                        $exists = $this->_cache->get($table, $this->_ttlidx);
+                } else {
+                        $exists = array();
+                }
+
+                // 
+                // Find expired result set:
+                // 
+                foreach ($exists as $res) {
+                        if (!$this->_cache->exists($res, $this->_ttlres)) {
+                                $remove[] = $res;
+                        } else {
+                                $active[] = $res;
+                        }
+                }
+
+                // 
+                // Cleanup expired result set:
+                // 
+                foreach ($remove as $res) {
+                        $this->_cache->delete($res);
+                }
+
+                // 
+                // Set housekeep locker key:
+                // 
+                $this->_cache->save(sprintf("%s-housekeep", $table), (int) time(), self::HOUSEKEEP_INTERVAL);
+
+                // 
+                // This table has been housekeeped:
+                // 
                 return true;
         }
 
