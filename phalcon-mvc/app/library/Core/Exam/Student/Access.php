@@ -132,7 +132,7 @@ class Access extends Component
                                             'exam' => $this->_exam->id,
                                             'user' => $this->user->getPrincipalName()
                                     )
-                            ))) == false) {
+                            ))) === false) {
                                 throw new SecurityException("You are not subscribed on this exam", SecurityException::ACCESS);
                         }
 
@@ -191,7 +191,7 @@ class Access extends Component
                                             'exam' => $this->_exam->id,
                                             'user' => $this->user->getPrincipalName()
                                     )
-                            ))) == false) {
+                            ))) === false) {
                                 throw new SecurityException("You are not subscribed on this exam", SecurityException::ACCESS);
                         }
                         // 
@@ -202,7 +202,7 @@ class Access extends Component
                                     'bind'       => array(
                                             'ipaddr' => $this->request->getClientAddress(true)
                                     )
-                            ))) == false) {
+                            ))) === false) {
                                 throw new SecurityException("Failed lookup client computer", SecurityException::ACCESS);
                         }
                         // 
@@ -215,7 +215,7 @@ class Access extends Component
                                             'comp' => $computer->id,
                                             'exam' => $this->_exam->id
                                     )
-                            ))) == false) {
+                            ))) === false) {
                                 throw new SecurityException("Failed lookup exam lock", SecurityException::ACCESS);
                         }
 

@@ -121,7 +121,7 @@ class Approve extends Component
                 if (($this->_lock = Lock::findFirst(array(
                             'conditions' => 'exam_id = ?0 AND student_id = ?1',
                             'bind'       => array($this->_exam->id, $this->_student->id)
-                    ))) == false) {
+                    ))) === false) {
                         return false;
                 }
 
@@ -161,7 +161,7 @@ class Approve extends Component
                             'columns'    => 'addr',
                             'conditions' => 'exam_id = ?0',
                             'bind'       => array($this->_exam->id)
-                    ))) == false) {
+                    ))) === false) {
                         throw new ModelException(sprintf("Failed lookup access list for exam (id=%d)", $this->_exam->id));
                 }
 

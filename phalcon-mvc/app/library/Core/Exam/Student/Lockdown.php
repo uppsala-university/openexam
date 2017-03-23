@@ -126,15 +126,15 @@ class Lockdown extends Component
                         }
 
                         // 
-                        // Connection has been approved:
+                        // Connection should be approved:
                         // 
-                        $this->logger->access->debug(sprintf("Granted access to exam to %s from %s (id=%d)", $this->_student->user, $this->_remote, $this->_exam->id));
                         $this->setLock(Lock::STATUS_APPROVED);
+                        $this->logger->access->debug(sprintf("Granted access to exam to %s from %s (id=%d)", $this->_student->user, $this->_remote, $this->_exam->id));
 
                         return Access::OPEN_SETUP;
                 } catch (ModelException $exception) {
-                        $this->logger->system->error(sprintf("Failed query database (%s)", $exception->getMessage()));
-                        throw new Exception("Failed query database", Error::SERVICE_UNAVAILABLE, $exception);
+                        $this->logger->system->error(sprintf("Failed update database (%s)", $exception->getMessage()));
+                        throw new Exception("Failed update database", Error::SERVICE_UNAVAILABLE, $exception);
                 } catch (SecurityException $exception) {
                         $this->logger->access->notice(sprintf("Denied access to exam for %s from %s (%s)", $this->_student->user, $this->_remote, $exception->getMessage()));
                         throw $exception;
@@ -166,7 +166,7 @@ class Lockdown extends Component
         {
                 $computer = $this->getComputer();
 
-                if (($lock = $this->_approve->getLock()) == false) {
+                if (($lock = $this->_approve->getLock()) === false) {
                         $lock = new Lock();
                         $lock->exam_id = $this->_exam->id;
                         $lock->student_id = $this->_student->id;
@@ -177,10 +177,10 @@ class Lockdown extends Component
                         $lock->status = $status;
                 }
 
-                if ($lock->save() == false) {
-                        throw new ModelException($lock->getMessages()[0]);
-                } else {
+                if ($lock->save() == true) {
                         $this->logger->access->debug(sprintf("Wrote %s exam access lock for %s from %s (id=%d)", $status, $this->_student->user, $this->_remote, $this->_exam->id));
+                } else {
+                        throw new ModelException($lock->getMessages()[0]);
                 }
         }
 

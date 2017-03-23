@@ -108,7 +108,7 @@ class Computer extends Component
                 if (($this->_computer = ComputerModel::findFirst(array(
                             'conditions' => 'ipaddr = ?0',
                             'bind'       => array($remote)
-                    ))) != false) {
+                    ))) !== false) {
                         // 
                         // Move computer to new location if changed:
                         // 
@@ -163,7 +163,7 @@ class Computer extends Component
                 if (($this->_room = RoomModel::findFirst(array(
                             'conditions' => 'name = ?0',
                             'bind'       => array($location['name'])
-                    ))) != false) {
+                    ))) !== false) {
                         return;
                 }
 
