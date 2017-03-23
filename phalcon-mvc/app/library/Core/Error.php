@@ -203,7 +203,11 @@ class Error
          */
         public function getMessage()
         {
-                return $this->_exception->getMessage();
+                if (($prev = $this->_exception->getPrevious())) {
+                        return $this->_exception->getMessage() . ' (' . $prev->getMessage() . ')';
+                } else {
+                        return $this->_exception->getMessage();
+                }
         }
 
         /**
