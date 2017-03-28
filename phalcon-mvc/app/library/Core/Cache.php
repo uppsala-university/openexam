@@ -143,7 +143,7 @@ class Cache extends Multiple
         }
 
         /**
-         * {@inheritdoc}
+         * Get cache content
          *
          * @param string $keyName The cache key.
          * @param int $lifetime The cache entry lifetime.
@@ -155,7 +155,7 @@ class Cache extends Multiple
         }
 
         /**
-         * {@inheritdoc}
+         * Store cache content.
          *
          * @param  string $keyName The cache key.
          * @param  string $content The data to cache.
@@ -195,7 +195,7 @@ class Cache extends Multiple
         {
                 if (!is_string($data)) {
                         return $data;
-                } elseif (($result = unserialize($data))) {
+                } elseif (($result = unserialize($data)) !== false) {
                         return $result;
                 } else {
                         return $data;
