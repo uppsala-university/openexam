@@ -44,7 +44,15 @@ return array(
                                 'deferred'   => true                                
                         ),
                         'cache'   => array(
-                                'exclude' => array('answers'),
+//                                'exclude'   => array(
+//                                        'tables' => array('answers'),
+//                                        'result' => array('count' => true, 'false' => false, 'null' => false)
+//                                ),
+//                                'coherence' => array(
+//                                        'resolve'   => 'ignore',
+//                                        'housekeep' => 450
+//                                ),
+//                                'limits'    => array('min' => 1, 'max' => 20),
                                 'backend' => 'dbcache'  // Use the shared service                                
                         )
                 )
@@ -71,8 +79,15 @@ return array(
                                 'deferred'   => true                                
                         ),
                         'cache'   => array(
-                                'exclude' => array('answers'),
-                                'limits'  => array('min' => 1, 'max' => 20),
+//                                'exclude'   => array(
+//                                        'tables' => array('answers'),
+//                                        'result' => array('count' => true, 'false' => false, 'null' => false)
+//                                ),
+//                                'coherence' => array(
+//                                        'resolve'   => 'ignore',
+//                                        'housekeep' => 450
+//                                ),
+//                                'limits'    => array('min' => 1, 'max' => 20),
                                 'backend' => 'dbcache'  // Use the shared service                                
                         )
                 )

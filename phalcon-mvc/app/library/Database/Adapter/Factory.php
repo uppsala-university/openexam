@@ -359,9 +359,12 @@ class Factory implements InjectionAwareInterface
                 if (!$mediator->hasCache()) {
                         return $adapter;
                 }
-
+                
                 if (isset($this->_params->cache->exclude)) {
                         $mediator->setFilter($this->_params->cache->exclude->toArray());
+                }
+                if (isset($this->_params->cache->coherence)) {
+                        $mediator->setCoherence($this->_params->cache->coherence->toArray());
                 }
                 if (isset($this->_params->cache->limits->min)) {
                         $mediator->setMinimun($this->_params->cache->limits->min);

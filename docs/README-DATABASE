@@ -76,6 +76,30 @@
                 )
         ),
 
+    o) QUICK START:
+
+    The default setting should give you an configuration that works well in most setups.
+    Use deferred and cached database adapter (mediator) with dbcache as backend. For the
+    dbcache backend use i.e. redis. 
+
+        'dbwrite'     => array(
+                'config' => array(
+                    ...
+                ),
+                'params' => array(
+                        'adapter' => array(
+                                'cached'     => true,
+                                'deferred'   => true                                
+                        ),
+                        'cache'   => array(
+                                'backend' => 'dbcache'  // Use the shared service                                
+                        )
+                )
+        ),
+
+    The performance gain of using a cache stack is almost none (approx. 5-10 ms) while 
+    adding a second point of failure with possible data inconsistency.
+
     o) RETRY:
 
     Database connection are defined to fail on first connection error. It's possible 
@@ -132,8 +156,14 @@
                                 'cached'     => true,   // Cached database adapter
                         ),                        
                         'cache'   => array(
-                                'exclude' => array('answers'),
-                                'limits'  => array('min' => 1, 'max' => 25),
+                                'exclude' => array(
+                                    'tables' => array('answers'),
+                                    'result' => array('count' => true)  // Don't cache counters
+                                 )
+                                'limits'  => array(
+                                    'min' => 1, 
+                                    'max' => 25
+                                ),
                                 'backend' => 'xcache',
                                 'options' => array(
                                         'prefix' => 'adapter-cache'
@@ -185,7 +215,7 @@
                                 'deferred'   => true                                
                         ),                        
                         'cache'   => array(
-                                'exclude' => array('answers'),
+                                'exclude' => array('tables' => array('answers')),
                                 'backend' => 'dbcache'  // Use the shared service
                         )
                 )   
@@ -213,6 +243,43 @@
     Your custom class (MyComplexCache) needs to implement the exists(), get(), save()
     and delete() methods from Phalcon\Cache\BackendInterface
 
+    o) MAINTENANCE:
+
+    The cache can be configured to check coherence and doing housekeeping (cleanup) by 
+    defining coherence settings:
+
+        // 
+        // Cache options:
+        // 
+        'dbread' => array(
+                    ...
+                'params' => array(
+                    ...
+                        'adapter' => array(
+                                    ...
+                                'cached'     => true,   // Cached database adapter
+                        ),                        
+                        'cache'   => array(
+                                'coherence' => array(
+                                        'resolve'   => 'delete',    // Strategy
+                                        'housekeep' => 450          // Interval
+                                ),
+                                'backend' => 'dbcache'  // Use the shared service                                
+                        )
+                )
+
+    Possible values for strategy are 'ignore','readd','delete','clean' and 'purge'. See 
+    class Coherence for details. The housekeep setting defines the interval at which the
+    table index (array of result set) should be rebuilt and only affected that single 
+    table.
+
+    The coherence check comes at an expense. In general, the default settings should be
+    fine and you don't need to configure coherence, leaving it disabled. Leaving coherence
+    unconfigured both saves CPU, memory and cache space. 
+
+    If you don't know whether you need it, then you don't!
+    
+
     o) EXAMPLES:
 
     These examples should serve as a guideline when configure caching. You should run some
@@ -231,7 +298,7 @@
                                     'deferred'   => true                                
                             ),                        
                             'cache'   => array(
-                                    'exclude' => array('answers'),
+                                    'exclude' => array('tables' => array('answers')),
                                     'backend' => 'xcache',
                                     'options' => array(
                                             'prefix' => 'adapter-cache'

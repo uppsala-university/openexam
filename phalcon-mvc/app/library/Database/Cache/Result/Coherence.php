@@ -25,6 +25,10 @@ class Coherence
 {
 
         /**
+         * Cleanup index interval.
+         */
+        const HOUSEKEEP_INTERVAL = 900;
+        /**
          * Ignore conflict in cache consistence.
          */
         const ON_CONFLICT_IGNORE = 0;
@@ -69,6 +73,11 @@ class Coherence
          * @var int 
          */
         private $_resolve = self::ON_CONFLICT_DELETE;
+        /**
+         * The housekeep interval.
+         * @var int 
+         */
+        private $_interval = self::HOUSEKEEP_INTERVAL;
 
         /**
          * Constructor.
@@ -83,22 +92,6 @@ class Coherence
 
                 $this->_ttlres = $ttlres;
                 $this->_ttlidx = $ttlidx;
-        }
-
-        /**
-         * Set cache conflict resolve mode (one of the ON_CONFLICT_XXX constants).
-         * 
-         * @param int $mode The conflict resolve mode.
-         * @throws Exception
-         */
-        public function setResolveMode($mode)
-        {
-                if ($mode < self::ON_CONFLICT_IGNORE ||
-                    $mode > self::ON_CONFLICT_PURGE) {
-                        throw new Exception("Invalid cache conflict resolve mode $mode");
-                } else {
-                        $this->_resolve = $mode;
-                }
         }
 
         /**
@@ -127,7 +120,7 @@ class Coherence
                 if ($this->_resolve == 0) {
                         return true;
                 }
-
+                
                 // 
                 // Perform entry validation if not yet done:
                 // 
@@ -137,14 +130,14 @@ class Coherence
                 if ($entry->isInvalid() == false) {
                         return true;    // Nothing to do
                 }
-
+                
                 // 
                 // Requires table indexes:
                 // 
                 if (!is_array($entry->tables)) {
                         throw new Exception("Table indexes is missing");
                 }
-
+                
                 // 
                 // Resolve conflict using prefered strategy:
                 // 
@@ -275,6 +268,142 @@ class Coherence
                                 $this->_cache->delete($table);
                         }
                 }
+        }
+
+        /**
+         * Table index maintenance.
+         * 
+         * Cleanup expired result set keys from table index. Returns true if
+         * housekeeping where performed. The remaining (and possibly active) 
+         * results sets are returned by reference.
+         * 
+         * The cleanup is potential costly, so its only run at periodical 
+         * interval.
+         * 
+         * @param string $table The table name.
+         * @param array $active The remaining result sets.
+         * @param array $remove The removed result sets.
+         * @return boolean
+         */
+        public function housekeep($table, &$active, &$remove)
+        {                
+                // 
+                // Make sure we are dealing with arrays:
+                // 
+                if (!is_array($active)) {
+                        $active = array();
+                }
+                if (!is_array($remove)) {
+                        $remove = array();
+                }
+
+                // 
+                // Don't continue if housekeep key exist or if housekeeping
+                // has been disabled.
+                // 
+                if ($this->_interval == 0) {
+                        return false;
+                }
+                if ($this->_cache->exists(sprintf("%s-housekeep", $table), $this->_interval)) {
+                        return false;
+                }
+
+                // 
+                // Get existing result set:
+                // 
+                if ($this->_cache->exists($table, $this->_ttlidx)) {
+                        $exists = $this->_cache->get($table, $this->_ttlidx);
+                } else {
+                        $exists = array();
+                }
+
+                // 
+                // Find expired result set:
+                // 
+                foreach ($exists as $res) {
+                        if (!$this->_cache->exists($res, $this->_ttlres)) {
+                                $remove[] = $res;
+                        } else {
+                                $active[] = $res;
+                        }
+                }
+
+                // 
+                // Set housekeep locker key:
+                // 
+                $this->_cache->save(sprintf("%s-housekeep", $table), (int) time(), $this->_interval);
+
+                // 
+                // This table should be housekeeped:
+                // 
+                return true;
+        }
+
+        /**
+         * Set cache coherence options.
+         * @param array $options The cache coherence options.
+         */
+        public function setOptions($options)
+        {
+                if (isset($options['resolve'])) {
+                        $this->setMode($options['resolve']);
+                }
+                if (isset($options['housekeep'])) {
+                        $this->setInterval($options['housekeep']);
+                }
+        }
+
+        /**
+         * Set cache conflict resolve mode (one of the ON_CONFLICT_XXX constants).
+         * 
+         * @param int|string $mode The conflict resolve mode.
+         * @throws Exception
+         */
+        public function setMode($mode)
+        {
+                if (is_string($mode)) {
+                        switch ($mode) {
+                                case 'ignore':
+                                        $mode = self::ON_CONFLICT_IGNORE;
+                                        break;
+                                case 'readd':
+                                        $mode = self::ON_CONFLICT_READD;
+                                        break;
+                                case 'restore':
+                                        $mode = self::ON_CONCLICT_RESTORE;
+                                        break;
+                                case 'delete':
+                                        $mode = self::ON_CONFLICT_DELETE;
+                                        break;
+                                case 'clean':
+                                        $mode = self::ON_CONFLICT_CLEAN;
+                                        break;
+                                case 'purge':
+                                        $mode = self::ON_CONFLICT_PURGE;
+                                        break;
+                                default:
+                                        throw new Exception("Unknown cache conflict resolve mode $mode");
+                        }
+                }
+                if (is_int($mode)) {
+                        if ($mode < self::ON_CONFLICT_IGNORE ||
+                            $mode > self::ON_CONFLICT_PURGE) {
+                                throw new Exception("Invalid cache conflict resolve mode $mode");
+                        }
+                }
+
+                $this->_resolve = $mode;
+        }
+
+        /**
+         * Set housekeeping interval.
+         * Use 0 to disable housekeeping of all table indexes.
+         * 
+         * @param int $seconds The interval in seconds.
+         */
+        public function setInterval($seconds)
+        {
+                $this->_interval = (int) $seconds;
         }
 
 }

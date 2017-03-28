@@ -49,11 +49,6 @@ class Backend
 {
 
         /**
-         * Cleanup index interval.
-         */
-        const HOUSEKEEP_INTERVAL = 900;
-
-        /**
          * The real cache backend.
          * @var BackendInterface 
          */
@@ -69,7 +64,7 @@ class Backend
          */
         private $_ttlidx;
         /**
-         * Conflict resolve mode.
+         * The cache conflict resolver.
          * @var Coherence 
          */
         private $_coherence;
@@ -86,21 +81,16 @@ class Backend
 
                 $this->_ttlres = $cache->getFrontend()->getLifetime();
                 $this->_ttlidx = $cache->getFrontend()->getLifetime() + 86400;
-
-                $this->_coherence = new Coherence($this->_cache, $this->_ttlres, $this->_ttlidx);
         }
 
         /**
-         * Set conflict resolve mode.
-         * 
-         * Use either one of the Coherence::ON_CONFLICT_XXX constants. Use 
-         * ON_CONFLICT_IGNORE to disable cache conflict resolution.
-         * 
-         * @param int $mode The conflict resolve mode.
+         * Set cache coherence options.
+         * @param array $options The cache coherence options.
          */
-        public function setResolveMode($mode)
+        public function setCoherence($options)
         {
-                $this->_coherence->setResolveMode($mode);
+                $this->_coherence = new Coherence($this->_cache, $this->_ttlres, $this->_ttlidx);
+                $this->_coherence->setOptions($options);
         }
 
         /**
@@ -157,6 +147,13 @@ class Backend
                 }
 
                 // 
+                // Simply return entry:
+                // 
+                if (!isset($this->_coherence)) {
+                        return $entry;
+                }
+
+                // 
                 // Fixup cache entry if requested and needed. Return content
                 // if entry is valid:
                 // 
@@ -180,12 +177,17 @@ class Backend
         public function save($keyName, $content, $tables)
         {
                 // 
-                // Save result set:
+                // We don't need the extra functionality of the cache  
+                // entry class if not dealing with cache coherence.
                 // 
-                $entry = new Entry($keyName);
-                $entry->setContent($content);
-                $entry->setTables($tables);
-                $entry->save($this->_cache, $this->_ttlres);
+                if (isset($this->_coherence)) {
+                        $entry = new Entry($keyName);
+                        $entry->setContent($content);
+                        $entry->setTables($tables);
+                        $entry->save($this->_cache, $this->_ttlres);
+                } else {
+                        $this->_cache->save($keyName, $content, $this->_ttlres);
+                }
 
                 // 
                 // Update cache key index:
@@ -193,15 +195,24 @@ class Backend
                 foreach ($tables as $table) {
                         $active = array();
                         $remove = array();
-                        $insert = false;
 
                         // 
                         // Find active and expired result sets:
                         // 
-                        if ($this->housekeep($table, $active, $remove)) {
-                                $insert = true;
-                        } elseif ($this->_cache->exists($table, $this->_ttlidx)) {
+                        if (isset($this->_coherence)) {
+                                $insert = $this->_coherence->housekeep($table, $active, $remove);
+                        } else {
+                                $insert = false;
+                        }
+
+                        // 
+                        // Get currently active table indexes:
+                        // 
+                        if ($insert === false) {
                                 $active = $this->_cache->get($table, $this->_ttlidx);
+                        }
+                        if (is_null($active)) {
+                                $active = array();
                         }
 
                         // 
@@ -268,71 +279,6 @@ class Backend
                         }
                 }
 
-                return true;
-        }
-
-        /**
-         * Table index maintenance.
-         * 
-         * Cleanup expired result set keys from table index. Returns true if
-         * housekeeping where performed. The remaining (and possibly active) 
-         * results sets are returned by reference.
-         * 
-         * The cleanup is potential costly, so its only run at periodical 
-         * interval.
-         * 
-         * @param string $table The table name.
-         * @param array $active The remaining result sets.
-         * @param array $remove The removed result sets.
-         * @return boolean
-         */
-        private function housekeep($table, &$active, &$remove)
-        {
-                // 
-                // Make sure we are dealing with arrays:
-                // 
-                if (!is_array($active)) {
-                        $active = array();
-                }
-                if (!is_array($remove)) {
-                        $remove = array();
-                }
-
-                // 
-                // Don't continue if housekeep key exist:
-                // 
-                if ($this->_cache->exists(sprintf("%s-housekeep", $table), self::HOUSEKEEP_INTERVAL)) {
-                        return false;
-                }
-
-                // 
-                // Get existing result set:
-                // 
-                if ($this->_cache->exists($table, $this->_ttlidx)) {
-                        $exists = $this->_cache->get($table, $this->_ttlidx);
-                } else {
-                        $exists = array();
-                }
-
-                // 
-                // Find expired result set:
-                // 
-                foreach ($exists as $res) {
-                        if (!$this->_cache->exists($res, $this->_ttlres)) {
-                                $remove[] = $res;
-                        } else {
-                                $active[] = $res;
-                        }
-                }
-
-                // 
-                // Set housekeep locker key:
-                // 
-                $this->_cache->save(sprintf("%s-housekeep", $table), (int) time(), self::HOUSEKEEP_INTERVAL);
-
-                // 
-                // This table should be housekeeped:
-                // 
                 return true;
         }
 

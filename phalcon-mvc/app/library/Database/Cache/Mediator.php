@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Database\Cache;
 
+use OpenExam\Library\Database\Cache\Result\Coherence;
 use OpenExam\Library\Database\Cache\Result\Serializable as SerializableResultSet;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Db as PhalconDb;
@@ -44,14 +45,14 @@ class Mediator extends Proxy
          * Tables to exclude.
          * @var array 
          */
-        private $_exclude = array('answers');
+        private $_exclude;
         /**
          * The minimum number of records.
          * @var int 
          */
         private $_min = 0;
         /**
-         * The minimum number of records.
+         * The maximum number of records.
          * @var int 
          */
         private $_max = 0;
@@ -69,6 +70,16 @@ class Mediator extends Proxy
                 if (isset($adapter)) {
                         $this->_adapter = $adapter;
                 }
+
+                $this->_exclude = array(
+                        'tables' => array('answers'),
+                        'result' => array(
+                                'count' => false,
+                                'null'  => false,
+                                'false' => false,
+                                'empty' => true
+                        )
+                );
         }
 
         /**
@@ -131,11 +142,45 @@ class Mediator extends Proxy
 
         /**
          * Set tables to exclude.
+         * 
+         * If merge is true, then tables will be replaced while result
+         * settings will be merged.
+         * 
+         * <code>
+         * // 
+         * // Exclude table locks and settings (replace). All count queries
+         * // are no longer cached in addition to default empty.
+         * // 
+         * $mediator->setFilter(array(
+         *      'tables' => array('locks', 'settings'),
+         *      'result' => array('count' => true)
+         * );
+         * </code>
+         * 
          * @param array $exclude The array of tables.
+         * @param boolean $merge Merge with existing filter options.
          */
-        public function setFilter($exclude)
+        public function setFilter($exclude, $merge = true)
         {
-                $this->_exclude = $exclude;
+                if ($merge) {
+                        if (isset($exclude['tables'])) {
+                                $this->_exclude['tables'] = $exclude['tables'];
+                        }
+                        if (isset($exclude['result'])) {
+                                $this->_exclude['result'] = array_merge($this->_exclude['result'], $exclude['result']);
+                        }
+                } else {
+                        $this->_exclude = $exclude;
+                }
+        }
+
+        /**
+         * Set cache coherence options.
+         * @param array $options The cache coherence options.
+         */
+        public function setCoherence($options)
+        {
+                $this->_cache->setCoherence($options);
         }
 
         /**
@@ -231,17 +276,43 @@ class Mediator extends Proxy
                 // 
                 // Check table exclude filter.
                 // 
-                if (in_array($cached[0], $this->_exclude)) {
+                if (in_array($cached[0], $this->_exclude['tables'])) {
                         return $data;
+                }
+                
+                // 
+                // Check result exclude filter.
+                // 
+                if (isset($this->_exclude['result'])) {
+                        if ($this->_exclude['result']['count']) {
+                                if (strncmp($sqlStatement, 'SELECT COUNT', 12) == 0) {
+                                        return $data;
+                                }
+                        }
+                        if ($this->_exclude['result']['null']) {
+                                if (is_null($data)) {
+                                        return $data;
+                                }
+                        }
+                        if ($this->_exclude['result']['false']) {
+                                if (is_bool($data) && $data === false) {
+                                        return $data;
+                                }
+                        }
+                        if ($this->_exclude['result']['empty']) {
+                                if ($data->numRows() == 0) {
+                                        return $data;
+                                }
+                        }
                 }
 
                 // 
                 // Check record number limit.
                 // 
-                if (($this->_min != 0) && (count($data) < $this->_min)) {
+                if (($this->_min != 0) && ($data->numRows() < $this->_min)) {
                         return $data;
                 }
-                if (($this->_max != 0) && (count($data) > $this->_max)) {
+                if (($this->_max != 0) && ($data->numRows() > $this->_max)) {
                         return $data;
                 }
 
