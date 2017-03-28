@@ -14,6 +14,8 @@
 namespace OpenExam\Library\Database\Cache;
 
 use OpenExam\Library\Core\Cache\Backend\Xcache as XcacheBackend;
+use OpenExam\Library\Database\Cache\Result\Coherence;
+use OpenExam\Library\Database\Cache\Result\Entry;
 use OpenExam\Library\Database\Exception;
 use Phalcon\Cache\Backend\Aerospike as AerospikeBackend;
 use Phalcon\Cache\Backend\Apc as ApcBackend;
@@ -66,17 +68,39 @@ class Backend
          * @var int 
          */
         private $_ttlidx;
+        /**
+         * Conflict resolve mode.
+         * @var Coherence 
+         */
+        private $_coherence;
 
         /**
          * Constructor.
+         * 
          * @param BackendInterface $cache The real cache backend.
+         * @param int $resolve How to resolve cache conflicts (Coherence::ON_CONFLICT_XXX or 0).
          */
-        public function __construct($cache)
+        public function __construct($cache, $resolve = 0)
         {
                 $this->_cache = $cache;
 
-                $this->_ttlres = $this->_cache->getFrontend()->getLifetime();
-                $this->_ttlidx = $this->_cache->getFrontend()->getLifetime() + 86400;
+                $this->_ttlres = $cache->getFrontend()->getLifetime();
+                $this->_ttlidx = $cache->getFrontend()->getLifetime() + 86400;
+
+                $this->_coherence = new Coherence($this->_cache, $this->_ttlres, $this->_ttlidx);
+        }
+
+        /**
+         * Set conflict resolve mode.
+         * 
+         * Use either one of the Coherence::ON_CONFLICT_XXX constants. Use 
+         * ON_CONFLICT_IGNORE to disable cache conflict resolution.
+         * 
+         * @param int $mode The conflict resolve mode.
+         */
+        public function setResolveMode($mode)
+        {
+                $this->_coherence->setResolveMode($mode);
         }
 
         /**
@@ -92,10 +116,7 @@ class Backend
                 // 
                 // Nothing to do if index is missing:
                 // 
-                if (!$this->_cache->exists($table, $this->_ttlidx)) {
-                        return false;
-                }
-                if (!($data = $this->_cache->get($table, $this->_ttlidx))) {
+                if (($data = $this->_cache->get($table, $this->_ttlidx)) == null) {
                         return false;
                 }
 
@@ -118,16 +139,32 @@ class Backend
          */
         public function exists($keyName)
         {
-                return $this->_cache->exists($keyName, $this->_ttlidx);
+                return $this->_cache->exists($keyName, $this->_ttlres);
         }
 
         /**
          * Get cache data.
          * @param string $keyName The cache key.
+         * @return mixed
          */
         public function get($keyName)
         {
-                return $this->_cache->get($keyName, $this->_ttlidx);
+                // 
+                // Return null if cache entry is missing:
+                // 
+                if (($entry = $this->_cache->get($keyName, $this->_ttlres)) == null) {
+                        return null;
+                }
+
+                // 
+                // Fixup cache entry if requested and needed. Return content
+                // if entry is valid:
+                // 
+                if ($this->_coherence->resolve($entry)) {
+                        return $entry->content;
+                } else {
+                        return null;
+                }
         }
 
         /**
@@ -145,7 +182,10 @@ class Backend
                 // 
                 // Save result set:
                 // 
-                $this->_cache->save($keyName, $content, $this->_ttlres);
+                $entry = new Entry($keyName);
+                $entry->setContent($content);
+                $entry->setTables($tables);
+                $entry->save($this->_cache, $this->_ttlres);
 
                 // 
                 // Update cache key index:
@@ -156,25 +196,32 @@ class Backend
                         $insert = false;
 
                         // 
-                        // Running the housekeep routine might cleanup cache data.
+                        // Find active and expired result sets:
                         // 
-                        if (!($insert = $this->housekeep($table, $active, $remove))) {
-                                if ($this->_cache->exists($table, $this->_ttlidx)) {
-                                        $active = $this->_cache->get($table, $this->_ttlidx);
-                                }
+                        if ($this->housekeep($table, $active, $remove)) {
+                                $insert = true;
+                        } elseif ($this->_cache->exists($table, $this->_ttlidx)) {
+                                $active = $this->_cache->get($table, $this->_ttlidx);
                         }
-                        
+
                         // 
-                        // Only update result set index if result set was removed or
-                        // our key is missing in the table index.
+                        // Update if result set has expired:
                         // 
                         if (count($remove) > 0) {
                                 $insert = true;
                         }
+
+                        // 
+                        // Update if key is missing in table index:
+                        // 
                         if (!in_array($keyName, $active)) {
                                 $active[] = $keyName;
                                 $insert = true;
                         }
+
+                        // 
+                        // Check whether table index should be updated:
+                        // 
                         if ($insert) {
                                 $this->_cache->save($table, $active, $this->_ttlidx);
                         }
@@ -279,19 +326,12 @@ class Backend
                 }
 
                 // 
-                // Cleanup expired result set:
-                // 
-                foreach ($remove as $res) {
-                        $this->_cache->delete($res);
-                }
-
-                // 
                 // Set housekeep locker key:
                 // 
                 $this->_cache->save(sprintf("%s-housekeep", $table), (int) time(), self::HOUSEKEEP_INTERVAL);
 
                 // 
-                // This table has been housekeeped:
+                // This table should be housekeeped:
                 // 
                 return true;
         }
