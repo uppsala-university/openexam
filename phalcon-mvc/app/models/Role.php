@@ -199,7 +199,9 @@ class Role extends ModelBase
                         }
                 }
 
-                $this->setPrimaryMail(DirectoryService::PRIMARY_ATTR_VALUE);
+                if (count($this->mail) != 0) {
+                        $this->setPrimaryMail(DirectoryService::PRIMARY_ATTR_VALUE);
+                }
         }
 
         /**
