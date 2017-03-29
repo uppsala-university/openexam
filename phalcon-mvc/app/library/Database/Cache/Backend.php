@@ -258,18 +258,37 @@ class Backend
          * 
          * @param string $table The table name.
          * @param int $id The primary key ID.
+         * @param boolean $scan Scan for match in all result set keys.
          * @return boolean
          */
-        public function invalidate($table, $id)
+        public function invalidate($table, $id, $scan = true)
         {
                 // 
-                // Nothing to do if index is missing:
+                // Get all result set keys if scan mode is used:
                 // 
-                if (!$this->_cache->exists($table, $this->_ttlidx)) {
-                        return false;
-                }
-                if (!($data = $this->_cache->get($table, $this->_ttlidx))) {
-                        return false;
+                if ($scan) {
+                        $data = array();
+                        $keys = $this->_cache->queryKeys();
+
+                        $prefix = $this->_cache->getOptions()['prefix'];
+                        $length = strlen($prefix);
+
+                        foreach ($keys as $full) {
+                                $key = substr($full, $length);
+                                if (is_numeric($key)) {
+                                        array_push($data, $key);
+                                }
+                        }
+                } else {
+                        // 
+                        // Nothing to do if index is missing:
+                        // 
+                        if (!$this->_cache->exists($table, $this->_ttlidx)) {
+                                return false;
+                        }
+                        if (!($data = $this->_cache->get($table, $this->_ttlidx))) {
+                                return false;
+                        }
                 }
 
                 // 
