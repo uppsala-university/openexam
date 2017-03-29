@@ -169,28 +169,49 @@ class Factory implements InjectionAwareInterface
          */
         public function getAdapter()
         {
+                // 
+                // Set connect, adapter and cache defaults:
+                // 
                 $this->setDefaults();
 
+                // 
+                // Get adapter factory:
+                // 
                 $factory = $this->getFactory();
 
+                // 
+                // Use params section:
+                // 
+                $config = $this->_params;
+
+                // 
+                // Try to establish database connection with retry. If using
+                // deferred adapter, then no connection is established here.
+                // 
                 while (true) {
                         try {
-                                if ($this->_params->adapter->deferred) {
-                                        $adapter = $factory->createAdapter($this->_config, $this->_params->connect);
+                                // 
+                                // Create deferred database adapter if requested:
+                                // 
+                                if ($config->adapter->deferred) {
+                                        $adapter = $factory->createAdapter($this->_config, $config->connect);
                                 } else {
                                         $adapter = $factory->createAdapter($this->_config);
                                 }
 
-                                if ($this->_params->adapter->cached) {
+                                // 
+                                // Use adapter/cache mediator if requested:
+                                // 
+                                if ($config->adapter->cached) {
                                         return $this->getMediator($adapter);
                                 } else {
                                         return $adapter;
                                 }
                         } catch (\Exception $exception) {
-                                if (--$this->_params->connect->retry < 0) {
+                                if (--$config->connect->retry < 0) {
                                         throw $exception;
                                 } else {
-                                        sleep($this->_params->connect->sleep);
+                                        sleep($config->connect->sleep);
                                 }
                         }
                 }
@@ -204,16 +225,21 @@ class Factory implements InjectionAwareInterface
         public function getFactory()
         {
                 // 
+                // Use config section:
+                // 
+                $config = $this->_config;
+
+                // 
                 // First option is to use adapter:
                 // 
-                if (isset($this->_config->adapter)) {
-                        if ($this->_config->adapter == self::MYSQL) {
+                if (isset($config->adapter)) {
+                        if ($config->adapter == self::MYSQL) {
                                 return new Factory\Mysql();
-                        } elseif ($this->_config->adapter == self::ORACLE) {
+                        } elseif ($config->adapter == self::ORACLE) {
                                 return new Factory\Oracle();
-                        } elseif ($this->_config->adapter == self::POSTGRE) {
+                        } elseif ($config->adapter == self::POSTGRE) {
                                 return new Factory\Postgresql();
-                        } elseif ($this->_config->adapter == self::SQLITE) {
+                        } elseif ($config->adapter == self::SQLITE) {
                                 return new Factory\Sqlite();
                         }
                 }
@@ -221,14 +247,14 @@ class Factory implements InjectionAwareInterface
                 //  
                 // Second option is to use DSN:
                 // 
-                if (isset($this->_config->dsn)) {
-                        if (strstr($this->_config->dsn, 'mysql:')) {
+                if (isset($config->dsn)) {
+                        if (strstr($config->dsn, 'mysql:')) {
                                 return new Factory\Mysql();
-                        } elseif (strstr($this->_config->dsn, 'oci:')) {
+                        } elseif (strstr($config->dsn, 'oci:')) {
                                 return new Factory\Oracle();
-                        } elseif (strstr($this->_config->dsn, 'pgsql:')) {
+                        } elseif (strstr($config->dsn, 'pgsql:')) {
                                 return new Factory\Postgresql();
-                        } elseif (strstr($this->_config->dsn, 'sqlite:')) {
+                        } elseif (strstr($config->dsn, 'sqlite:')) {
                                 return new Factory\Sqlite();
                         }
                 }
@@ -254,46 +280,51 @@ class Factory implements InjectionAwareInterface
          */
         private function setDefaults()
         {
+                // 
+                // Use params section:
+                // 
+                $config = $this->_params;
+
                 //  
                 // Set connection defaults:
                 // 
-                if (!isset($this->_params->connect)) {
-                        $this->_params->connect = new Config();
+                if (!isset($config->connect)) {
+                        $config->connect = new Config();
                 }
-                if (!isset($this->_params->connect->retry)) {
-                        $this->_params->connect->retry = self::CONNECT_RETRY;
+                if (!isset($config->connect->retry)) {
+                        $config->connect->retry = self::CONNECT_RETRY;
                 }
-                if (!isset($this->_params->connect->sleep)) {
-                        $this->_params->connect->sleep = self::CONNECT_SLEEP;
+                if (!isset($config->connect->sleep)) {
+                        $config->connect->sleep = self::CONNECT_SLEEP;
                 }
 
                 // 
                 // Set adapter defaults:
                 // 
-                if (!isset($this->_params->adapter)) {
-                        $this->_params->adapter = new Config();
+                if (!isset($config->adapter)) {
+                        $config->adapter = new Config();
                 }
-                if (!isset($this->_params->adapter->cached)) {
-                        $this->_params->adapter->cached = self::ADAPTER_CACHED;
+                if (!isset($config->adapter->cached)) {
+                        $config->adapter->cached = self::ADAPTER_CACHED;
                 }
-                if (!isset($this->_params->adapter->deferred)) {
-                        $this->_params->adapter->deferred = self::ADAPTER_DEFERRED;
+                if (!isset($config->adapter->deferred)) {
+                        $config->adapter->deferred = self::ADAPTER_DEFERRED;
                 }
 
                 // 
                 // Set caching defaults:
                 // 
-                if (!isset($this->_params->cache)) {
-                        $this->_params->cache = new Config();
+                if (!isset($config->cache)) {
+                        $config->cache = new Config();
                 }
-                if (!isset($this->_params->cache->backend)) {
-                        $this->_params->cache->backend = self::CACHE_BACKEND;
+                if (!isset($config->cache->backend)) {
+                        $config->cache->backend = self::CACHE_BACKEND;
                 }
-                if (!isset($this->_params->cache->lifetime)) {
-                        $this->_params->cache->lifetime = self::CACHE_LIFETIME;
+                if (!isset($config->cache->lifetime)) {
+                        $config->cache->lifetime = self::CACHE_LIFETIME;
                 }
-                if (!isset($this->_params->cache->options)) {
-                        $this->_params->cache->options = new Config();
+                if (!isset($config->cache->options)) {
+                        $config->cache->options = new Config();
                 }
         }
 
@@ -303,32 +334,37 @@ class Factory implements InjectionAwareInterface
         private function setBackend()
         {
                 // 
+                // Use params section:
+                // 
+                $config = $this->_params;
+
+                // 
                 // Use dbcache service:
                 // 
-                if ($this->_di->has($this->_params->cache->backend)) {
-                        $this->_cache = $this->_di->get($this->_params->cache->backend);
+                if ($this->_di->has($config->cache->backend)) {
+                        $this->_cache = $this->_di->get($config->cache->backend);
                         return;
                 }
 
                 // 
                 // Use user defined callback:
                 // 
-                if (is_callable($this->_params->cache->backend)) {
-                        $this->_cache = call_user_func($this->_params->cache->backend);
+                if (is_callable($config->cache->backend)) {
+                        $this->_cache = call_user_func($config->cache->backend);
                         return;
                 }
 
                 // 
                 // Use backend factory function:
                 // 
-                $options = $this->_params->cache->options->toArray();
+                $options = $config->cache->options->toArray();
                 $options['prefix'] = $this->_instance . '-' . $options['prefix'] . '-';
 
                 $frontend = new DataFrontend(array(
-                        'lifetime' => $this->_params->cache->lifetime
+                        'lifetime' => $config->cache->lifetime
                 ));
 
-                $this->_cache = Backend::create($this->_params->cache->backend, $frontend, $options);
+                $this->_cache = Backend::create($config->cache->backend, $frontend, $options);
         }
 
         /**
@@ -353,27 +389,38 @@ class Factory implements InjectionAwareInterface
          */
         private function getMediator($adapter)
         {
+                // 
+                // Create cache mediator using prefered cache:
+                // 
                 $mediator = new Mediator($adapter);
                 $mediator->setCache($this->useCache());
 
+                // 
+                // Use plain database adapter if cache is missing:
+                // 
                 if (!$mediator->hasCache()) {
                         return $adapter;
                 }
 
-                if (!isset($this->_params->cache->exclude->merge)) {
-                        $this->_params->cache->exclude->merge = true;
+                // 
+                // Use cache section:
+                // 
+                $config = $this->_params->cache;
+
+                // 
+                // Set special cache options:
+                // 
+                if (isset($config->exclude)) {
+                        $mediator->setFilter($config->exclude->toArray(), $config->exclude->merge);
                 }
-                if (isset($this->_params->cache->exclude)) {
-                        $mediator->setFilter($this->_params->cache->exclude->toArray(), $this->_params->cache->exclude->merge);
+                if (isset($config->coherence)) {
+                        $mediator->setCoherence($config->coherence->toArray());
                 }
-                if (isset($this->_params->cache->coherence)) {
-                        $mediator->setCoherence($this->_params->cache->coherence->toArray());
+                if (isset($config->limits->min)) {
+                        $mediator->setMinimun($config->limits->min);
                 }
-                if (isset($this->_params->cache->limits->min)) {
-                        $mediator->setMinimun($this->_params->cache->limits->min);
-                }
-                if (isset($this->_params->cache->limits->max)) {
-                        $mediator->setMaximun($this->_params->cache->limits->max);
+                if (isset($config->limits->max)) {
+                        $mediator->setMaximun($config->limits->max);
                 }
 
                 return $mediator;
