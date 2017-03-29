@@ -226,11 +226,19 @@ class ModelBase extends Model
         }
 
         /**
+         * Called after model was deleted.
+         */
+        protected function afterDelete()
+        {
+                $this->invalidate();
+        }
+
+        /**
          * Called before validation on update.
          * 
-         * This function allowes update of sparse model objects (not having
+         * This function allows update of sparse model objects (not having
          * all required attributes) as these are fetched from existing model
-         * if reuired.
+         * if required.
          * 
          * If this model has all required attributes, then except for overhead
          * of validating this is a noop with minimal performance hit.
@@ -425,15 +433,20 @@ class ModelBase extends Model
 
         /**
          * Invalidate this model.
+         * @return boolean True if invalidated.
          */
         public function invalidate()
         {
                 if (($adapter = $this->getReadConnection())) {
                         if ($adapter instanceof Mediator) {
-                                $backend = $adapter->getCache();
-                                $backend->invalidate($this->getSource(), $this->id);
+                                $cache = $adapter->getCache();
+                                $table = $this->getSource();
+
+                                return $cache->invalidate($table, $this->id);
                         }
                 }
+
+                return true;
         }
 
 }
