@@ -13,11 +13,11 @@
 
 namespace OpenExam\Library\Database\Cache;
 
-use OpenExam\Library\Database\Cache\Result\Coherence;
 use OpenExam\Library\Database\Cache\Result\Serializable as SerializableResultSet;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Db as PhalconDb;
 use Phalcon\Db\AdapterInterface;
+use Phalcon\Db\ResultInterface;
 use Phalcon\Kernel as PhalconKernel;
 
 /**

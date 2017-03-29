@@ -47,7 +47,8 @@ return array(
 //                                'exclude'   => array(
 //                                        'tables' => array('answers'),
 //                                        'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false),
-//                                        'filter' => array('locks' => array('empty', 'false'))
+//                                        'filter' => array('locks' => array('empty', 'false')),
+//                                        'merge'  => true
 //                                ),
 //                                'coherence' => array(
 //                                        'resolve'   => 'ignore',
@@ -84,6 +85,7 @@ return array(
 //                                        'tables' => array('answers'),
 //                                        'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false)
 //                                        'filter' => array('locks' => array('empty', 'false'))
+//                                        'merge'  => true
 //                                ),
 //                                'coherence' => array(
 //                                        'resolve'   => 'ignore',

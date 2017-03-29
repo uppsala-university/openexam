@@ -225,9 +225,34 @@
     cache combined with a local cache. If either upper or lower backend is defined, then the 
     service creates a shared cache (system local or networked).
 
-    Defining a distributed cache is probably most interesting if the cache needs to be slit 
+    Defining a distributed cache is probably most interesting if the cache needs to be split 
     among different physical locations. In a distributed system within a single organization, 
     its probably better to use redis or memcache.
+
+    To replace exclude settings (in cache mediator) rather that merging with defaults, set
+    merge == false:
+
+        // 
+        // Cache options:
+        // 
+        'dbread' => array(
+                    ...
+                'params' => array(
+                    ...
+                        'adapter' => array(
+                                'cached'     => true,
+                                'deferred'   => true                                
+                        ),                        
+                        'cache'   => array(
+                                'exclude' => array(
+                                    'tables' => array(),    // Cache all tables
+                                    'result' => array('empty' => false),
+                                    'merge'  => false       // Replace instead of merge!
+                                ),
+                                'backend' => 'dbcache'      // Use the shared service
+                        )
+                )   
+     )
 
     Need a more complex caching strategy? Consider modify the config/system/services.php to 
     set your own cache object:
