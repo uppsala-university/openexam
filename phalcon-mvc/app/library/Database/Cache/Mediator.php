@@ -277,6 +277,13 @@ class Mediator extends Proxy
         public function query($sqlStatement, $bindParams = null, $bindTypes = null)
         {
                 // 
+                // Can't cache queries not using SQL string:
+                // 
+                if (!is_string($sqlStatement)) {
+                        return $this->_adapter->query($sqlStatement, $bindParams, $bindTypes);
+                }
+
+                // 
                 // Compute cache key:
                 // 
                 if (is_array($bindParams)) {
