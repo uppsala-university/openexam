@@ -72,13 +72,7 @@ class Mediator extends Proxy
                 }
 
                 $this->_exclude = array(
-                        'tables' => array('answers'),
-                        'result' => array(
-                                'count' => false,
-                                'null'  => false,
-                                'false' => false,
-                                'empty' => true
-                        )
+                        'tables' => array('answers', 'locks')
                 );
         }
 
