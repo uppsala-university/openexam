@@ -163,7 +163,9 @@ class Mediator extends Proxy
          */
         public function setFilter($exclude, $merge = true)
         {
-                if ($merge) {
+                if ($merge === false) {
+                        $this->_exclude = $exclude;
+                } else {
                         if (isset($exclude['tables'])) {
                                 $this->_exclude['tables'] = $exclude['tables'];
                         }
@@ -173,8 +175,6 @@ class Mediator extends Proxy
                         if (isset($exclude['filter'])) {
                                 $this->_exclude['filter'] = $exclude['filter'];
                         }
-                } else {
-                        $this->_exclude = $exclude;
                 }
         }
 
