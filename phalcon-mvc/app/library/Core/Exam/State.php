@@ -422,7 +422,7 @@ class State extends Component
                 // result cache if possible.
                 // 
                 if (($resultset = $connection->query("
-        SELECT  a.id
+        SELECT  COUNT(a.id)
         FROM    questions q, students s, answers a
                 LEFT JOIN results r ON 
                 (a.id = r.answer_id AND r.correction NOT IN ('waiting','partial'))
@@ -432,7 +432,7 @@ class State extends Component
                 q.status != 'removed' AND 
                 a.answered = 'Y' AND
                 r.id IS NULL", array('examid' => $this->_exam->id)))) {
-                        return $resultset->numRows();
+                        return current($resultset->fetch());
                 } else {
                         throw new DatabaseException("Failed query uncorrected answers.");
                 }
@@ -453,7 +453,7 @@ class State extends Component
                 // result cache if possible.
                 // 
                 if (($resultset = $connection->query("
-        SELECT  a.id
+        SELECT  COUNT(a.id)
         FROM    questions q, students s, answers a
                 LEFT JOIN results r ON a.id = r.answer_id
         WHERE   s.exam_id = :examid AND
@@ -461,7 +461,7 @@ class State extends Component
                 q.id = a.question_id AND 
                 q.status != 'removed' AND 
                 a.answered = 'Y'", array('examid' => $this->_exam->id)))) {
-                        return $resultset->numRows();
+                        return current($resultset->fetch());
                 } else {
                         throw new DatabaseException("Failed query answers on exam.");
                 }
