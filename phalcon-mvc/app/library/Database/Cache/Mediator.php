@@ -216,24 +216,64 @@ class Mediator extends Proxy
                 $this->_max = $max;
         }
 
+        /**
+         * Inserts data into a table using custom RDBMS SQL syntax.
+         * 
+         * @param string|array $table The target table(s).
+         * @param array $values The field values.
+         * @param array $fields The field names (optional).
+         * @param array $dataTypes The field datatype mapping (optional).
+         * @return boolean
+         */
         public function insert($table, array $values, $fields = null, $dataTypes = null)
         {
                 $this->_cache->delete($table);
                 return $this->_adapter->insert($table, $values, $fields, $dataTypes);
         }
 
+        /**
+         * Updates data on a table using custom RBDM SQL syntax.
+         * 
+         * @param string|array $table The target table(s).
+         * @param array $fields The field names.
+         * @param array $values The field values.
+         * @param array|string $whereCondition The affected records selection (optional).
+         * @param array $dataTypes The field datatype mapping (optional).
+         * @return boolean
+         */
         public function update($table, $fields, $values, $whereCondition = null, $dataTypes = null)
         {
                 $this->_cache->delete($table);
                 return $this->_adapter->update($table, $fields, $values, $whereCondition, $dataTypes);
         }
 
+        /**
+         * Deletes data from a table using custom RBDM SQL syntax.
+         * 
+         * @param string|array $table The target table(s).
+         * @param array|string $whereCondition The affected records selection (optional).
+         * @param array $placeholders The bind parameters (optional).
+         * @param array $dataTypes The field datatype mapping (optional).
+         * @return boolean
+         */
         public function delete($table, $whereCondition = null, $placeholders = null, $dataTypes = null)
         {
                 $this->_cache->delete($table);
                 return $this->_adapter->delete($table, $whereCondition, $placeholders, $dataTypes);
         }
 
+        /**
+         * Query data from database.
+         * 
+         * Sends SQL statements to the database server returning the success 
+         * state. Use this method only when the SQL statement sent to the 
+         * server is returning rows.
+         * 
+         * @param mixed $sqlStatement The SQL query.
+         * @param mixed $bindParams The bind parameters (optional).
+         * @param mixed $bindTypes The parameter type mapping (optional).
+         * @return boolean|SerializableResultSet
+         */
         public function query($sqlStatement, $bindParams = null, $bindTypes = null)
         {
                 // 
@@ -279,7 +319,7 @@ class Mediator extends Proxy
                 if (in_array($cached[0], $this->_exclude['tables'])) {
                         return $data;
                 }
-                
+
                 // 
                 // Check result exclude filter.
                 // 
