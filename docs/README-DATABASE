@@ -243,6 +243,56 @@
     Your custom class (MyComplexCache) needs to implement the exists(), get(), save()
     and delete() methods from Phalcon\Cache\BackendInterface
 
+    o) FILTERING:
+
+    Per table result set cache filtering can be enabled using the "cache -> exclude -> filter"
+    config setting. The setting value is either an callback function or an array keyed by the 
+    table name with an array of result types to exclude:
+
+        'cache'   => array(
+                'exclude'   => array(
+                        'filter' => array('locks' => array('empty'), 'users' => array('false'))
+                ),
+                'backend' => 'dbcache'  // Use the shared service                                
+        )
+        
+
+    Exempel 1: 
+
+        // 
+        // Exclude caching of empty locks:
+        // 
+        'cache'   => array(
+                'exclude'   => array(
+                        'filter' => array('locks' => array('empty'))
+                ),
+                'backend' => 'dbcache'  // Use the shared service                                
+        )
+
+    Exempel 2: 
+
+        // 
+        // Same as example 1, but using a closure:
+        // 
+        'cache'   => array(
+                'exclude'   => array(
+                        'filter' => function($table, $data) { 
+                            return $table == 'locks' && $data->numRows() == 0; 
+                        }
+                ),
+                'backend' => 'dbcache'  // Use the shared service                                
+        )
+
+    Default behavior is to filter empty locks. Pass "cache -> exclude -> filter == null" to
+    disable all per table filtering:
+
+        'cache'   => array(
+                'exclude'   => array(
+                        'filter' => null
+                ),
+                'backend' => 'dbcache'  // Use the shared service                                
+        )
+
     o) MAINTENANCE:
 
     The cache can be configured to check coherence and doing housekeeping (cleanup) by 

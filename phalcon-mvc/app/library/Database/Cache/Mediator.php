@@ -72,7 +72,14 @@ class Mediator extends Proxy
                 }
 
                 $this->_exclude = array(
-                        'tables' => array('answers', 'locks')
+                        'tables' => array('answers'),
+                        'filter' => function($table, $data) {
+                                if ($table == 'locks' && $data->numRows() == 0) {
+                                        return true;
+                                } else {
+                                        return false;
+                                }
+                        }
                 );
         }
 
@@ -162,6 +169,9 @@ class Mediator extends Proxy
                         }
                         if (isset($exclude['result'])) {
                                 $this->_exclude['result'] = array_merge($this->_exclude['result'], $exclude['result']);
+                        }
+                        if (isset($exclude['filter'])) {
+                                $this->_exclude['filter'] = $exclude['filter'];
                         }
                 } else {
                         $this->_exclude = $exclude;
@@ -303,6 +313,16 @@ class Mediator extends Proxy
                 }
 
                 // 
+                // Check record number limit.
+                // 
+                if (($this->_min != 0) && ($data->numRows() < $this->_min)) {
+                        return $data;
+                }
+                if (($this->_max != 0) && ($data->numRows() > $this->_max)) {
+                        return $data;
+                }
+
+                // 
                 // Collect jointed tables in array:
                 // 
                 $tables = array('access', 'admins', 'audit', 'computers', 'contributors', 'correctors', 'decoders', 'exams', 'files', 'invigilators', 'locks', 'notify', 'performance', 'profile', 'questions', 'resources', 'results', 'rooms', 'sessions', 'settings', 'students', 'teachers', 'topics', 'users', 'answers');
@@ -348,13 +368,19 @@ class Mediator extends Proxy
                 }
 
                 // 
-                // Check record number limit.
+                // Check primary table filter.
                 // 
-                if (($this->_min != 0) && ($data->numRows() < $this->_min)) {
-                        return $data;
-                }
-                if (($this->_max != 0) && ($data->numRows() > $this->_max)) {
-                        return $data;
+                if (isset($this->_exclude['filter'])) {
+                        if (is_callable($this->_exclude['filter'])) {
+                                if (call_user_func($this->_exclude['filter'], $cached[0], $data)) {
+                                        return $data;
+                                }
+                        }
+                        if (is_array($this->_exclude['filter']) && isset($this->_exclude['filter'][$cached[0]])) {
+                                if ($this->filter($sqlStatement, $data, $this->_exclude['filter'][$cached[0]])) {
+                                        return $data;
+                                }
+                        }
                 }
 
                 // 
@@ -377,6 +403,42 @@ class Mediator extends Proxy
                 } else {
                         $this->_cache->save($keyName, $data, $cached);
                         return false;
+                }
+        }
+
+        /**
+         * Result set filter.
+         * 
+         * Check whether the result set (data) matches any of the filter 
+         * preferences and should be excluded from caching. Returns false
+         * if no filter matched.
+         * 
+         * @param string $sql The SQL query.
+         * @param boolean|ResultInterface $data The result set.
+         * @param array $match The filter preferences.
+         * @return boolean
+         */
+        private function filter($sql, $data, $match)
+        {
+                if (in_array('count', $match)) {
+                        if (strncmp($sql, 'SELECT COUNT', 12) == 0) {
+                                return true;
+                        }
+                }
+                if (in_array('null', $match)) {
+                        if (is_null($data)) {
+                                return true;
+                        }
+                }
+                if (in_array('false', $match)) {
+                        if (is_bool($data) && $data === false) {
+                                return true;
+                        }
+                }
+                if (in_array('empty', $match)) {
+                        if ($data->numRows() == 0) {
+                                return true;
+                        }
                 }
         }
 

@@ -45,8 +45,9 @@ return array(
                         ),
                         'cache'   => array(
 //                                'exclude'   => array(
-//                                        'tables' => array('answers', 'locks'),
-//                                        'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false)
+//                                        'tables' => array('answers'),
+//                                        'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false),
+//                                        'filter' => array('locks' => array('empty', 'false'))
 //                                ),
 //                                'coherence' => array(
 //                                        'resolve'   => 'ignore',
@@ -80,8 +81,9 @@ return array(
                         ),
                         'cache'   => array(
 //                                'exclude'   => array(
-//                                        'tables' => array('answers', 'locks'),
+//                                        'tables' => array('answers'),
 //                                        'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false)
+//                                        'filter' => array('locks' => array('empty', 'false'))
 //                                ),
 //                                'coherence' => array(
 //                                        'resolve'   => 'ignore',
