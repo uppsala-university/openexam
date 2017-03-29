@@ -482,28 +482,49 @@ class CoreHandler extends Component
 
         /**
          * Invalidate cache records.
+         * 
          * @param string $name The model name (lower case).
          * @param int $id The model ID.
+         * @return boolean True if successful invalidated.
          */
         private function invalidate($name, $id)
         {
-                // 
-                // This method should never be needed ;-) 
-                // 
-                // It only exists as a last restort to fix cache inconsistance 
-                // caused by entries being present in the cache, while record 
-                // has been deleted in the database.
-                // 
-                // Request thru the normal interfaces using the mediator will 
-                // take care of cache invalidation. Notice that this method 
-                // will only take care of deleting cache entries having $id as 
-                // its primary key.
-                // 
+                /**
+                 * This method should never be needed ;-) 
+                 * 
+                 * This is a last resort to fix cache inconsistence caused by
+                 * by entries being present in the cache, while record in the
+                 * database or cache table index has been deleted.
+                 * 
+                 * Normal request thru the mediator will take care of cache 
+                 * invalidation. This method will delete any cache entries 
+                 * having $id as its primary key.
+                 * 
+                 * If this method gets called, then it implies that something
+                 * needs to be fixed in cache settings. For example, setting
+                 * longer TTL in table indexes or don't delete these entries 
+                 * in the first place!
+                 */
                 if ($this->dbread instanceof CacheMediator) {
+                        // 
+                        // Set proper table name:
+                        // 
                         if ($name == 'access' || $name == 'profile') {
-                                $this->dbread->getCache()->invalidate($name, $id);
+                                $table = $name;
+                                $cache = $this->dbread->getCache();
                         } else {
-                                $this->dbread->getCache()->invalidate(sprintf("%ss", $name), $id);
+                                $table = sprintf("%ss", $name);
+                                $cache = $this->dbread->getCache();
+                        }
+
+                        // 
+                        // Try to invalidate cache entries:
+                        // 
+                        if ($cache->invalidate($table, $id)) {
+                                return true;
+                        }
+                        if ($cache->invalidate($table, $id, true)) {
+                                return true;
                         }
                 }
         }
