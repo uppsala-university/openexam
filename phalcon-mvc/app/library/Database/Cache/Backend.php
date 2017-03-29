@@ -99,33 +99,43 @@ class Backend
          * Calling this method will delete all cached result set related to
          * table as well as the cache key index for named table.
          * 
-         * @param string $table The table name.
+         * @param string|array $table The table name.
+         * @return boolean
          */
         public function delete($table)
         {
                 // 
-                // Nothing to do if index is missing:
+                // Single call if operating on a one table:
                 // 
-                if (($data = $this->_cache->get($table, $this->_ttlidx)) == null) {
-                        return false;
+                if (is_string($table)) {
+                        return $this->cleanup($table);
                 }
 
                 // 
-                // Delete all cached result set:
+                // The return status variable:
                 // 
-                foreach ($data as $keyName) {
-                        $this->_cache->delete($keyName);
+                $status = true;
+
+                // 
+                // Process all tables. Set status to false if any fails.
+                // 
+                foreach ($table as $t) {
+                        if ($this->cleanup($t) == false) {
+                                $status = false;
+                        }
                 }
 
                 // 
-                // Delete the cache key index itself:
+                // Return cleanup status:
                 // 
-                return $this->_cache->delete($table);
+                return $status;
         }
 
         /**
          * Check if cache key exists.
+         * 
          * @param string $keyName The cache key.
+         * @return boolean
          */
         public function exists($keyName)
         {
@@ -315,6 +325,48 @@ class Backend
                         default:
                                 throw new Exception("Unsupported cache backend $type");
                 }
+        }
+
+        /**
+         * Cleanup table index cache.
+         * 
+         * @param string $table The table name.
+         * @return boolean
+         */
+        private function cleanup($table)
+        {
+                // 
+                // The cleanup status:
+                // 
+                $status = true;
+
+                // 
+                // Nothing to do if index is missing:
+                // 
+                if (($data = $this->_cache->get($table, $this->_ttlidx)) == null) {
+                        return false;
+                }
+
+                // 
+                // Delete all cached result set:
+                // 
+                foreach ($data as $keyName) {
+                        if ($this->_cache->delete($keyName) == false) {
+                                $status = false;
+                        }
+                }
+
+                // 
+                // Delete the cache key index itself:
+                // 
+                if ($this->_cache->delete($table) == false) {
+                        $status = false;
+                }
+
+                // 
+                // Return complete cleanup status:
+                // 
+                return $status;
         }
 
 }
