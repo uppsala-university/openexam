@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Catalog;
 
+use OpenExam\Library\Catalog\Attribute\Normalizer\PersonalNumber;
+
 /**
  * The user principal class.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -132,6 +134,60 @@ class Principal
         public function __construct()
         {
                 $this->protection = false;
+        }
+
+        /**
+         * Normalize user principal data.
+         */
+        public function normalize()
+        {
+                if (!empty($this->pnr)) {
+                        $persnr = new PersonalNumber($this->pnr);
+                        $this->pnr = $persnr->getNormalized();
+                }
+                if (!empty($this->gn) && !empty($this->sn)) {
+                        $this->name = sprintf("%s %s", $this->gn, $this->sn);
+                }
+        }
+
+        /**
+         * Generate UID (username) and principal name.
+         * 
+         * @param string|callable $format The username formatter.
+         * @param string $domain The user domain.
+         */
+        public function generate($format, $domain = null)
+        {
+                if (is_string($format)) {
+                        // 
+                        // Replace swedish characters:
+                        // 
+                        $replace = array('å' => 'a', 'ä' => 'a', 'ö' => 'o');
+
+                        // 
+                        // Use sub string of first and last name:
+                        // 
+                        $gnd = strtr(mb_strtolower(mb_substr($this->gn, 0, 2)), $replace);
+                        $snd = strtr(mb_strtolower(mb_substr($this->sn, 0, 2)), $replace);
+
+                        // 
+                        // Personal number might be empty:
+                        // 
+                        if (($pnd = substr($this->pnr, -4)) == false) {
+                                $pnd = substr(sprintf("%s%s", ord($gnd[0]), ord($snd[0])), 0, 4);
+                        }
+
+                        // 
+                        // Format UID based on sub strings:
+                        // 
+                        $this->uid = sprintf($format, $gnd, $snd, $pnd);
+                }
+                if (is_callable($format)) {
+                        $this->uid = call_user_func($format, $this->gn, $this->sn, $this->pnr);
+                }
+                if (isset($domain)) {
+                        $this->principal = sprintf("%s@%s", $this->uid, $domain);
+                }
         }
 
 }
