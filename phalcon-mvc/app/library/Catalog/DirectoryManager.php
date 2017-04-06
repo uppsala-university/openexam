@@ -222,7 +222,7 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
         }
-        
+
         /**
          * Check if service is defined.
          * @param string $name The service name.
@@ -237,7 +237,7 @@ class DirectoryManager extends Component implements DirectoryService
                                 }
                         }
                 }
-                
+
                 return false;
         }
 
@@ -516,8 +516,8 @@ class DirectoryManager extends Component implements DirectoryService
                 if (!isset($options['limit']) || $options['limit'] == false) {
                         $options['limit'] = self::DEFAULT_LIMIT;
                 }
-                if (!isset($options['domain']) || $options['domain'] == false) {
-                        $options['domain'] = $this->_domain;
+                if ($search == Principal::ATTR_PN) {
+                        $options['domain'] = $this->getDomain($needle);
                 }
                 if (!is_array($options['attr'])) {
                         $options['attr'] = array($options['attr']);
@@ -530,23 +530,24 @@ class DirectoryManager extends Component implements DirectoryService
                 $result = array();
 
                 foreach ($this->_services as $domain => $services) {
-                        if (!isset($options['domain']) || $domain == $options['domain']) {
-                                foreach ($services as $name => $service) {
-                                        try {
-                                                if (($res = $service->getPrincipals($needle, $search, $options)) != null) {
-                                                        if ($options['limit'] == 0) {
-                                                                $result = array_merge($result, $res);
-                                                        } elseif (count($res) + count($result) < $options['limit']) {
-                                                                $result = array_merge($result, $res);
-                                                        } else {
-                                                                $num = $options['limit'] - count($result);
-                                                                $result = array_merge($result, array_slice($res, 0, $num));
-                                                                return $result;
-                                                        }
+                        if (!empty($options['domain']) && $domain != $options['domain']) {
+                                continue;
+                        }
+                        foreach ($services as $name => $service) {
+                                try {
+                                        if (($res = $service->getPrincipals($needle, $search, $options)) != null) {
+                                                if ($options['limit'] == 0) {
+                                                        $result = array_merge($result, $res);
+                                                } elseif (count($res) + count($result) < $options['limit']) {
+                                                        $result = array_merge($result, $res);
+                                                } else {
+                                                        $num = $options['limit'] - count($result);
+                                                        $result = array_merge($result, array_slice($res, 0, $num));
+                                                        return $result;
                                                 }
-                                        } catch (Exception $exception) {
-                                                $this->report($exception, $service, $name);
                                         }
+                                } catch (Exception $exception) {
+                                        $this->report($exception, $service, $name);
                                 }
                         }
                 }
@@ -578,8 +579,8 @@ class DirectoryManager extends Component implements DirectoryService
                 if (!isset($attr) || $attr == false) {
                         $attr = self::$DEFAULT_ATTR;
                 }
-                if (!isset($domain) || $domain == false) {
-                        $domain = $this->_domain;
+                if ($search == Principal::ATTR_PN) {
+                        $domain = $this->getDomain($needle);
                 }
                 if (!is_array($attr)) {
                         $attr = array($attr);
@@ -590,15 +591,16 @@ class DirectoryManager extends Component implements DirectoryService
                 }
 
                 foreach ($this->_services as $dom => $services) {
-                        if (!isset($domain) || $domain == $dom) {
-                                foreach ($services as $name => $service) {
-                                        try {
-                                                if (($result = $service->getPrincipal($needle, $search, $domain, $attr)) != null) {
-                                                        break;
-                                                }
-                                        } catch (Exception $exception) {
-                                                $this->report($exception, $service, $name);
+                        if (!empty($domain) && $dom != $domain) {
+                                continue;
+                        }
+                        foreach ($services as $name => $service) {
+                                try {
+                                        if (($result = $service->getPrincipal($needle, $search, $domain, $attr)) != null) {
+                                                break;
                                         }
+                                } catch (Exception $exception) {
+                                        $this->report($exception, $service, $name);
                                 }
                         }
                 }
