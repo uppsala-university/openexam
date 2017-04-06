@@ -145,6 +145,12 @@ class Principal
                         $persnr = new PersonalNumber($this->pnr);
                         $this->pnr = $persnr->getNormalized();
                 }
+                if (!empty($this->gn)) {
+                        $this->gn = ucwords(strtolower($this->gn));
+                }
+                if (!empty($this->sn)) {
+                        $this->sn = ucwords(strtolower($this->sn));
+                }
                 if (!empty($this->gn) && !empty($this->sn)) {
                         $this->name = sprintf("%s %s", $this->gn, $this->sn);
                 }
