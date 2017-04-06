@@ -299,14 +299,24 @@ class CatalogTask extends MainTask implements TaskInterface
                         }
                 }
 
+                // 
+                // Pluralis form is more or less a convenient option:
+                // 
                 if ($action == 'attributes') {
                         $this->_options['attribute'] = $this->_options['attributes'];
                         unset($this->_options['attributes']);
                 }
+
+                // 
+                // Use specific service if requested:
+                // 
                 if ($this->_options['service']) {
                         $this->_service = $this->catalog->getService($this->_options['service']);
                 } else {
                         $this->_service = $this->catalog;
+                }
+                if (is_null($this->_service)) {
+                        throw new Exception("Undefined service requested");
                 }
         }
 

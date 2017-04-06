@@ -222,6 +222,24 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                 }
         }
+        
+        /**
+         * Check if service is defined.
+         * @param string $name The service name.
+         * @return boolean 
+         */
+        public function hasService($name)
+        {
+                foreach ($this->_services as $services) {
+                        foreach ($services as $sname => $service) {
+                                if ($sname == $name) {
+                                        return true;
+                                }
+                        }
+                }
+                
+                return false;
+        }
 
         /**
          * Set default search domain.
