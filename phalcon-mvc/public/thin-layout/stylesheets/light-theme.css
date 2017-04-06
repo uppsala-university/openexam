@@ -5338,13 +5338,14 @@ pre {
 /*** student page related ***/ 
 
 .q-part-ans-area {
-	padding-right: 8.33333%; 
+	padding-right: 60px; 
 	margin-left:0px; 
 }
 
 .q-part-resource-area {
 	border-left:1px dashed #dedede;
-	width:40.3333%;
+	width: 365px;
+        max-width: 365px;
 }
 
 .q-no {
@@ -5355,9 +5356,6 @@ pre {
 	padding:8px; 
 	border:1px solid #dedede; 
 	border-radius:5px 5px 0;
-	/*-webkit-box-shadow: -6px 3px 6px -5px rgba(0,0,0,0.75);
-	-moz-box-shadow: -6px 3px 6px -5px rgba(0,0,0,0.75);
-	box-shadow: -6px 3px 6px -5px rgba(0,0,0,0.75);	*/
 }
 
 
@@ -5386,17 +5384,11 @@ pre {
 
 
 .q-part-text label {
-/*	font-weight:normal;
-	font-size:12px;*/
 	font-family:Verdana, Geneva, sans-serif;
 }
 
 .q-part-text p {
 	word-wrap: break-word !important;
-}
-
-.checkbox label {
-	/*font-size:11px;*/
 }
 
 .ans-sync-msg {
@@ -5409,13 +5401,12 @@ pre {
 }
 .exam-descr {
 	font-family:Verdana, Geneva, sans-serif;
-	/*font-size:12px*/
 }
 .q-actions {
 	background-color: #FBFBFB; margin-top:25px; padding:15px; border-top: 1px solid #eee
 }
 .q-highlight {
-	background-color:#FEFF99 !important;/*#FBC676*/
+	background-color:#FEFF99 !important;
 }
 
 .hero-unit {
@@ -5442,7 +5433,7 @@ pre {
 }
 
 #main-nav .navigation > .nav > .active {
-	border-left: 10px solid #d1d1d1;/* #BE2435 #797C80*/
+	border-left: 10px solid #d1d1d1;
 }
 
 .literally {
@@ -5457,9 +5448,6 @@ pre {
         width:100%;
         height:100%;
         z-index:10000000;
-        /*background-color:grey;
-        opacity: .8;*/
-        /*display:none;*/
 }
 
 .exam-start-wait {
