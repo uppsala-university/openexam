@@ -128,7 +128,7 @@ class PersonalNumber
          */
         public function getFormatted()
         {
-                return sprintf("%s-%s", substr($this->_persnr, 2, 6), substr($this->_persnr, 8, 4));
+                return self::format($this->_persnr);
         }
 
         /**
@@ -138,6 +138,21 @@ class PersonalNumber
         public function getNormalized()
         {
                 return $this->_persnr;
+        }
+
+        /**
+         * Get common format (YYMMDD-NNNN).
+         * 
+         * The input format should be on the standard format YYYYMMDDNNNN. It's
+         * the same format being used internal by this class and returned from 
+         * getNormalized().
+         * 
+         * @param string $persnr The personal number string.
+         * @return string
+         */
+        public static function format($persnr)
+        {
+                return sprintf("%s-%s", substr($persnr, 2, 6), substr($persnr, 8, 4));
         }
 
 }

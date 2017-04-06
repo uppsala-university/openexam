@@ -174,4 +174,17 @@ class PersonalNumberTest extends \PHPUnit_Framework_TestCase
                 self::assertTrue(is_string($actual));
                 self::assertEquals($expect, $actual);
         }
+
+        /**
+         * @covers OpenExam\Library\Catalog\Attribute\Normalizer\PersonalNumber::format($persnr)
+         * @group catalog
+         */
+        public function testFormat()
+        {
+                $expect = $this->_persnr;
+                $actual = $this->object->format($this->_fullnr);
+                self::assertNotNull($actual);
+                self::assertTrue(is_string($actual));
+                self::assertEquals($expect, $actual);
+        }
 }
