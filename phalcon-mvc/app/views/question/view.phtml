@@ -94,7 +94,7 @@
 
                                     <div style="margin-bottom: 0;" class="form q-part" data-id="<?= $qPart ?>" >
                                         <fieldset>
-                                            <div class="q-part-ans-area col-sm-8 col-sm-offset-1" <?= !count($qPartData['resources']) ? 'style="width:100%"' : '' ?>>
+                                            <div class="q-part-ans-area col-sm-7 col-sm-offset-1" <?= !count($qPartData['resources']) ? 'style="width:100%"' : '' ?>>
                                                 <div class="q-part-text" style="padding-bottom:10px">
                                                     <label><?= $qPartData['q_text'] ?></label>
                                                 </div>
@@ -166,10 +166,10 @@
                                                     <div class="q-part-resource-area col-sm-2">
                                                         <div class="box">
                                                             <div class="lead" style="font-size:15px"> 
-                                                                <i class="icon-file-text-alt text-contrast"></i> Supplementary material 
+                                                                <i class="icon-file-text-alt text-contrast resource-file" style="cursor: pointer" title="Hide resource files"></i> Supplementary material 
                                                             </div>
                                                             <?php foreach ($qPartData['resources'] as $resTitle => $resUrl) : ?>
-                                                                    <div style="margin-bottom: 10px; border-radius: 3px; width: 330px; padding: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
+                                                                    <div class="resource-file-box" style="margin-bottom: 10px; border-radius: 3px; width: 330px; padding: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
                                                                         <?php
                                                                         $type = basename(dirname($resUrl)) . 's';
                                                                         $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));

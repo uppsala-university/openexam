@@ -360,8 +360,8 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
         borderColour: "#dedede",
         cursor: "crosshair",
         scrollZoom: true,
-        cursor:"pointer",
-                zoomWindowFadeIn: 500,
+        cursor: "pointer",
+        zoomWindowFadeIn: 500,
         zoomWindowFadeOut: 750
     });
 
@@ -372,8 +372,8 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
         borderColour: "#dedede",
         cursor: "crosshair",
         scrollZoom: true,
-        cursor:"pointer",
-                zoomWindowFadeIn: 500,
+        cursor: "pointer",
+        zoomWindowFadeIn: 500,
         zoomWindowFadeOut: 750
     });
 
@@ -394,4 +394,18 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
     if ($.cookie('qs-menu')) {
         $(document).trigger($.cookie('qs-menu'));
     }
+
+    // 
+    // Handle resource file display on/off:
+    // 
+    $('.resource-file').on('click', function () {
+        $('.resource-file-box').toggle();
+        if ($('.resource-file-box').is(':visible')) {
+            $('.q-part-ans-area').addClass("col-sm-7").removeClass("col-sm-11");
+            $(this).attr("title", "Hide resource files");
+        } else {
+            $('.q-part-ans-area').addClass("col-sm-11").removeClass("col-sm-7");
+            $(this).attr("title", "Display resource files");
+        }
+    });
 });
