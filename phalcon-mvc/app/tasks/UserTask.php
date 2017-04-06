@@ -127,9 +127,6 @@ class UserTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'generate');
 
-                print_r($this->_options);
-                printf("FORMAT: %s, DOMAIN: %s, SOURCE: %s", $this->_format, $this->_domain, $this->_source);
-
                 if (!file_exists($this->_options['input'])) {
                         $this->flash->error("The input file is missing");
                         return false;
@@ -152,7 +149,6 @@ class UserTask extends MainTask implements TaskInterface
                         } else {
                                 $gecos = preg_split('/\s+/', trim($line));
                         }
-                        printf("GECOS: %s\n", print_r($gecos, true));
 
                         $user = $this->getUser($this->getPrincipal($gecos));
 
@@ -223,8 +219,6 @@ class UserTask extends MainTask implements TaskInterface
                 $principal->normalize();
                 $principal->generate($this->_format, $this->_domain);
 
-                print_r($principal);
-
                 return $principal;
         }
 
@@ -241,7 +235,7 @@ class UserTask extends MainTask implements TaskInterface
                         fwrite($handle, $data);
                 }
                 if ($this->_options['verbose']) {
-                        $this->flash->info(sprintf("User %s\t[%s]", $user->principal, $action));
+                        $this->flash->notice(sprintf("User %s\t[%s]", $user->principal, $action));
                 }
         }
 
@@ -275,8 +269,6 @@ class UserTask extends MainTask implements TaskInterface
 
                 $user->source = $this->_source;
                 $user->domain = $this->_domain;
-
-                print_r($user->dump());
 
                 return $user;
         }
