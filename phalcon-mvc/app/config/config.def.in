@@ -152,7 +152,16 @@ return array(
                 /**
                  * Default organization name.
                  */
-                'orgname' => 'This Organization'
+                'orgname' => 'This Organization',
+                /**
+                 * User account generation options (see user task). The format can 
+                 * also be a callback function($fname, $lname, $pnr).
+                 */
+                'generate' => array(
+                        'format' => 'oe%1$s%2$s%3$s',
+                        'domain' => 'openexam.io',
+                        'source' => 'usertask'
+                )
         ),
         /**
          * Default application settings.
