@@ -95,13 +95,11 @@ class DatabaseService extends AttributeService
                 }
 
                 if (($domains = User::find(array(
-                            'conditions' => array(
-                                    'source = :source:',
-                                    'bind' => array(
-                                            'source' => $this->_source
-                                    )
+                            'conditions' => 'source = :source:',
+                            'bind'       => array(
+                                    'source' => $this->_source
                             ),
-                            'distinct'   => 'domain',
+                            'group'      => 'domain',
                             'columns'    => 'domain'
                     ))) != null) {
                         $this->_domains = array();
@@ -238,7 +236,7 @@ class DatabaseService extends AttributeService
                 $array = $this->getPrincipalArray($query, $options);
 
                 unset($query);
-                
+
                 if (is_array($array)) {
                         return $array[0];
                 } else {
@@ -346,7 +344,7 @@ class DatabaseService extends AttributeService
                 // Add another filter on domain if requested. The database attribute 
                 // service are typical multi-domain.
                 // 
-                if (isset($options['domain'])) {
+                if (!empty($options['domain'])) {
                         $query->andWhere(sprintf(
                                 "domain = :domain:"
                             ), array(
@@ -368,7 +366,7 @@ class DatabaseService extends AttributeService
                 // 
                 // Map formal principal attribute names to model specific:
                 // 
-                if (isset($options['attr'])) {
+                if (!empty($options['attr'])) {
                         $attrmap = $this->_attrmap['person'];
 
                         $insert = array_diff($options['attr'], array_keys($attrmap));
@@ -382,10 +380,10 @@ class DatabaseService extends AttributeService
                         }
                 }
 
-                if (isset($options['attr'])) {
+                if (!empty($options['attr'])) {
                         $query->columns($attrmap);
                 }
-                if (isset($options['limit'])) {
+                if (!empty($options['limit'])) {
                         $query->limit($options['limit']);
                 }
 

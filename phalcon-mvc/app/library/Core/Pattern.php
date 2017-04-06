@@ -215,7 +215,8 @@ class Pattern extends Component
          * Match string against regex pattern.
          * 
          * @param string $name The pattern name (i.e. year).
-         * @param string $str The regex pattern (i.e. /^((19|20)?[0-9]{2})$/)
+         * @param string $str The subject string.
+         * @param array $matches The result from match (optional).
          * @return boolean
          */
         public static function match($name, $str, &$matches = null)
