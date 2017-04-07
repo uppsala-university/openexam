@@ -61,7 +61,7 @@ class UserTask extends MainTask implements TaskInterface
                 if (isset($this->config->user->generate->format)) {
                         $this->_format = $this->config->user->generate->format;
                 } else {
-                        $this->_format = 'oe%s';
+                        $this->_format = 'oe%1$s%2$s%3$s';
                 }
 
                 if (isset($this->config->user->generate->domain)) {
