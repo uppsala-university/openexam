@@ -279,16 +279,16 @@ if ($exam->decoded) {
                                     <?php if ($exam->decoded): ?>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                     <!--<a class="fb fancybox.ajax" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">-->
-                                                <?= $this->catalog->getFirstName($student->user) ?>
+                                                <?= $student->fname ?>
                                                 <!--</a>-->
                                             </td>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                     <!--<a class="fb fancybox.ajax" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">-->
-                                                <?= $this->catalog->getLastName($student->user) ?>
+                                                <?= $student->lname ?>
                                                 <!--</a>-->
                                             </td>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                <?= substr(substr_replace($this->catalog->getPersonalNumber($student->user), "-", 8, 0), 2); ?>
+                                                <?= substr(substr_replace($student->persnr, "-", 8, 0), 2); ?>
                                             </td>
                                     <?php endif; ?>
                                     <?php if ($exam->show_percent): ?>

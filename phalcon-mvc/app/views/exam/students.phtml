@@ -160,11 +160,11 @@ foreach ($exam->students as $student) {
                                         <td><input name="students[]" type="checkbox" value="<?= $student->id ?>"></td>
                                         <td>
                                             <a href="#" data-id="<?= $student->id ?>" class="st-exam-detail" style="color:blue">
-                                                <?= $this->catalog->getName($student->user) ?>
+                                                <?= $student->display ?>
                                             </a>
                                         </td>
                                         <td><?= $student->user ?></td>
-                                        <td><?= $this->catalog->getPersonalNumber($student->user) ?></td>
+                                        <td><?= $student->persnr ?></td>
                                         <td>
                                             <span style="color:blue; cursor: pointer" class="st-exam-time" for="starttime" exam-date="<?= !empty($exam->starttime) ? date("Y-m-d", strtotime($exam->starttime)) : ""; ?>">
                                                 <?= !empty($student->starttime) ? date("H:i", strtotime($student->starttime)) : "---" ?>

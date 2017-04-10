@@ -215,7 +215,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                     <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
                                     <?php if (is_object($corrector)): ?>
                                             <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
-                                                <?= $this->catalog->getName($corrector->user) ?>
+                                                <?= $corrector->display ?>
                                             </span>
                                     <?php else: ?>
                                             <span data-user="<?= $k ?>" class="left-col-user" style="font-size:11px">

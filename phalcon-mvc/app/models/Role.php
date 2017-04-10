@@ -48,6 +48,11 @@ class Role extends ModelBase
          * @var string 
          */
         public $lname;
+        /**
+         * The display name (real name or user).
+         * @var string 
+         */
+        public $display;
 
         protected function initialize()
         {
@@ -171,6 +176,7 @@ class Role extends ModelBase
         protected function setAttributes()
         {
                 if (!($principals = $this->getAttributes())) {
+                        $this->display = $this->user;
                         return;
                 }
 
@@ -201,6 +207,11 @@ class Role extends ModelBase
 
                 if (count($this->mail) != 0) {
                         $this->setPrimaryMail(DirectoryService::PRIMARY_ATTR_VALUE);
+                }
+                if (isset($this->name)) {
+                        $this->display = $this->name;
+                } else {
+                        $this->display = $this->user;
                 }
         }
 

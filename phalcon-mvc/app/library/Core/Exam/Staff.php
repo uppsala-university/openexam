@@ -302,8 +302,9 @@ class Staff extends Component
                 // 
                 if (!isset($this->_data['roles'][$name][$role->user])) {
                         $this->_data['roles'][$name][$role->user] = array(
-                                'name' => $role->name,
-                                'mail' => $role->mail
+                                'display' => $role->display,
+                                'name'    => $role->name,
+                                'mail'    => $role->mail
                         );
                 }
 
@@ -312,9 +313,10 @@ class Staff extends Component
                 // 
                 if (!isset($this->_data['users'][$role->user])) {
                         $this->_data['users'][$role->user] = array(
-                                'name' => $role->name,
-                                'mail' => $role->mail,
-                                'role' => array()
+                                'display' => $role->display,
+                                'name'    => $role->name,
+                                'mail'    => $role->mail,
+                                'role'    => array()
                         );
                 }
 
