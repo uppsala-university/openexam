@@ -121,7 +121,7 @@ class DirectoryManager extends Component implements DirectoryService
 
         public function __get($name)
         {
-                if ($propertyName == 'attrib') {
+                if ($name == 'attrib') {
                         return $this->_enumerator;
                 } else {
                         return parent::__get($name);
@@ -131,7 +131,7 @@ class DirectoryManager extends Component implements DirectoryService
         /**
          * Register an directory service.
          * 
-         * This function register an direcory service as a catalog for
+         * This function register an directory service as a catalog for
          * one or more domains.
          *  
          * @param ServiceAdapter $service The directory service.
@@ -596,12 +596,15 @@ class DirectoryManager extends Component implements DirectoryService
                         }
                         foreach ($services as $name => $service) {
                                 try {
-                                        if (($result = $service->getPrincipal($needle, $search, $domain, $attr)) != null) {
+                                        if (($result = $service->getPrincipal($needle, $search, $domain, $attr)) !== null) {
                                                 break;
                                         }
                                 } catch (Exception $exception) {
                                         $this->report($exception, $service, $name);
                                 }
+                        }
+                        if ($result !== null) {
+                                break;
                         }
                 }
 
