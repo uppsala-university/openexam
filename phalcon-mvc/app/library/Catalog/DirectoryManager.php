@@ -46,16 +46,16 @@ class DirectoryManager extends Component implements DirectoryService
         /**
          * Default list of attributes returned.
          */
-        static $DEFAULT_ATTR = array(Principal::ATTR_UID, Principal::ATTR_NAME, Principal::ATTR_MAIL);
+        static $DEFAULT_RESULT_ATTR_LIST = array(Principal::ATTR_UID, Principal::ATTR_NAME, Principal::ATTR_MAIL);
 
         /**
          * Default search attribute.
          */
-        const DEFAULT_SEARCH = Principal::ATTR_NAME;
+        const DEFAULT_SEARCH_ATTRIB = Principal::ATTR_NAME;
         /**
          * Default limit on number of returned user principal objects.
          */
-        const DEFAULT_LIMIT = 5;
+        const DEFAULT_RESULT_LIMIT = 5;
 
         /**
          * The collection of directory services.
@@ -93,7 +93,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function __destruct()
         {
-                foreach ($this->_services as $domain => $services) {
+                foreach ($this->_services as $services) {
                         foreach ($services as $name => $service) {
                                 if (($backend = $service->getConnection()) != null) {
                                         try {
@@ -199,12 +199,37 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Get services registered for domain.
+         * 
+         * If $domain is null or '*', then all services are returned.
+         * 
          * @param string $domain The domain name.
          * @return DirectoryService[]
          */
         public function getServices($domain)
         {
-                return $this->_services[$domain];
+                if (isset($this->_services[$domain])) {
+                        return $this->_services[$domain];
+                } elseif (isset($domain) && $domain != '*') {
+                        return array();
+                }
+
+                $result = array();
+
+                foreach ($this->_services as $services) {
+                        $result = array_merge($result, $services);
+                }
+
+                return $result;
+        }
+
+        /**
+         * Check if services is registered for domain.
+         * @param string $domain The domain name.
+         * @return boolean 
+         */
+        public function hasServices($domain)
+        {
+                return isset($this->_services[$domain]);
         }
 
         /**
@@ -231,10 +256,8 @@ class DirectoryManager extends Component implements DirectoryService
         public function hasService($name)
         {
                 foreach ($this->_services as $services) {
-                        foreach ($services as $sname => $service) {
-                                if ($sname == $name) {
-                                        return true;
-                                }
+                        if (array_key_exists($name, $services)) {
+                                return true;
                         }
                 }
 
@@ -256,7 +279,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getDefaultAttributes()
         {
-                return self::$DEFAULT_ATTR;
+                return self::$DEFAULT_RESULT_ATTR_LIST;
         }
 
         /**
@@ -265,26 +288,14 @@ class DirectoryManager extends Component implements DirectoryService
          * @param array $attributes The attributes to return.
          * @return array
          */
-        public function getGroups($principal, $attributes = array(Group::ATTR_NAME))
+        public function getGroups($principal, $attributes = null)
         {
                 if (($result = $this->_cache->getGroups($principal, $attributes)) !== false) {
                         return $result;
                 }
 
-                $domain = $this->getDomain($principal);
-                $result = array();
-
-                if (isset($this->_services[$domain])) {
-                        foreach ($this->_services[$domain] as $name => $service) {
-                                try {
-                                        if (($groups = $service->getGroups($principal, $attributes)) != null) {
-                                                $result = array_merge($result, $groups);
-                                        }
-                                } catch (Exception $exception) {
-                                        $this->report($exception, $service, $name);
-                                }
-                        }
-                }
+                $search = new DirectorySearch($this);
+                $result = $search->getGroups($principal, $attributes);
 
                 $this->_cache->setGroups($principal, $attributes, $result);
                 return $result;
@@ -297,27 +308,14 @@ class DirectoryManager extends Component implements DirectoryService
          * @param array $attributes The attributes to return.
          * @return Principal[]
          */
-        public function getMembers($group, $domain = null, $attributes = array(Principal::ATTR_PN, Principal::ATTR_NAME, Principal::ATTR_MAIL))
+        public function getMembers($group, $domain = null, $attributes = null)
         {
                 if (($result = $this->_cache->getMembers($group, $domain, $attributes)) !== false) {
                         return $result;
                 }
 
-                $result = array();
-
-                foreach ($this->_services as $dom => $services) {
-                        if (!isset($domain) || $dom == $domain) {
-                                foreach ($services as $name => $service) {
-                                        try {
-                                                if (($members = $service->getMembers($group, $dom, $attributes)) != null) {
-                                                        $result = array_merge($result, $members);
-                                                }
-                                        } catch (Exception $exception) {
-                                                $this->report($exception, $service, $name);
-                                        }
-                                }
-                        }
-                }
+                $search = new DirectorySearch($this);
+                $result = $search->getMembers($group, $domain, $attributes);
 
                 $this->_cache->setMembers($group, $domain, $attributes, $result);
                 return $result;
@@ -345,7 +343,7 @@ class DirectoryManager extends Component implements DirectoryService
          * </code>
          * 
          * Notice that affiliation and assurance are always returned as
-         * array. For assurance its questionalble if it should return any
+         * array. For assurance its questionable if we should return any
          * value at all.
          * 
          * @param string $attribute The attribute to return.
@@ -363,44 +361,8 @@ class DirectoryManager extends Component implements DirectoryService
                         return $result;
                 }
 
-                $domain = $this->getDomain($principal);
-                $result = array();
-
-                if (isset($this->_services[$domain])) {
-                        foreach ($this->_services[$domain] as $name => $service) {
-                                try {
-                                        if (($attributes = $service->getAttribute($attribute, $principal)) != null) {
-                                                if (is_array($attributes)) {
-                                                        $result = array_merge($result, $attributes);
-                                                } elseif (is_null($attributes)) {
-                                                        continue;       // try next
-                                                } else {
-                                                        $result = $attributes;
-                                                        break;
-                                                }
-                                        }
-                                } catch (Exception $exception) {
-                                        $this->report($exception, $service, $name);
-                                }
-                        }
-                }
-
-                if (count($result) == 0) {
-                        $result = null;
-                }
-                if (is_array($result)) {
-                        $result = array_unique($result);
-                }
-
-                // 
-                // Fix for attributes having multiple values:
-                // 
-                if ($attribute == Principal::ATTR_AFFIL ||
-                    $attribute == Principal::ATTR_ASSUR) {
-                        if (is_null($result)) {
-                                $result = array();
-                        }
-                }
+                $search = new DirectorySearch($this);
+                $result = $search->getAttribute($attribute, $principal);
 
                 $this->_cache->setAttribute($attribute, $principal, serialize($result));
                 return $result;
@@ -442,20 +404,8 @@ class DirectoryManager extends Component implements DirectoryService
                         return $result;
                 }
 
-                $domain = $this->getDomain($principal);
-                $result = array();
-
-                if (isset($this->_services[$domain])) {
-                        foreach ($this->_services[$domain] as $name => $service) {
-                                try {
-                                        if (($attributes = $service->getAttributes($attribute, $principal)) != null) {
-                                                $result = array_merge($result, $attributes);
-                                        }
-                                } catch (Exception $exception) {
-                                        $this->report($exception, $service, $name);
-                                }
-                        }
-                }
+                $search = new DirectorySearch($this);
+                $result = $search->getAttributes($attribute, $principal);
 
                 $this->_cache->setAttributes($attribute, $principal, $result);
                 return $result;
@@ -497,62 +447,25 @@ class DirectoryManager extends Component implements DirectoryService
          * </code>
          * 
          * @param string $needle The attribute search string.
-         * @param string $search The attribute to query (optional).
+         * @param string $attrib The attribute to query (optional).
          * @param array $options Various search options (optional).
          * 
          * @return Principal[] Matching user principal objects.
          */
-        public function getPrincipals($needle, $search = null, $options = null)
+        public function getPrincipals($needle, $attrib = null, $options = null)
         {
-                if (!isset($search) || $search == false) {
-                        $search = self::DEFAULT_SEARCH;
-                }
-                if (!isset($options) || $options == false) {
-                        $options = array();
-                }
-                if (!isset($options['attr']) || $options['attr'] == false) {
-                        $options['attr'] = self::$DEFAULT_ATTR;
-                }
-                if (!isset($options['limit']) || $options['limit'] == false) {
-                        $options['limit'] = self::DEFAULT_LIMIT;
-                }
-                if ($search == Principal::ATTR_PN) {
-                        $options['domain'] = $this->getDomain($needle);
-                }
-                if (!is_array($options['attr'])) {
-                        $options['attr'] = array($options['attr']);
-                }
+                $search = new Search\Principals($this, $needle, $attrib, $options);
 
-                if (($result = $this->_cache->getPrincipals($needle, $search, $options)) !== false) {
+                $attrib = $search->getAttribute();
+                $params = $search->getOptions();
+
+                if (($result = $this->_cache->getPrincipals($needle, $attrib, $params)) !== false) {
                         return $result;
                 }
 
-                $result = array();
+                $result = $search->getResult($this);
 
-                foreach ($this->_services as $domain => $services) {
-                        if (!empty($options['domain']) && $domain != $options['domain']) {
-                                continue;
-                        }
-                        foreach ($services as $name => $service) {
-                                try {
-                                        if (($res = $service->getPrincipals($needle, $search, $options)) != null) {
-                                                if ($options['limit'] == 0) {
-                                                        $result = array_merge($result, $res);
-                                                } elseif (count($res) + count($result) < $options['limit']) {
-                                                        $result = array_merge($result, $res);
-                                                } else {
-                                                        $num = $options['limit'] - count($result);
-                                                        $result = array_merge($result, array_slice($res, 0, $num));
-                                                        return $result;
-                                                }
-                                        }
-                                } catch (Exception $exception) {
-                                        $this->report($exception, $service, $name);
-                                }
-                        }
-                }
-
-                $this->_cache->setPrincipals($needle, $search, $options, $result);
+                $this->_cache->setPrincipals($needle, $attrib, $params, $result);
                 return $result;
         }
 
@@ -565,50 +478,27 @@ class DirectoryManager extends Component implements DirectoryService
          * principal object returned.
          * 
          * @param string $needle The attribute search string.
-         * @param string $search The attribute to query (optional).
+         * @param string $attrib The attribute to query (optional).
          * @param string $domain The search domain (optional).
-         * @param array|string $attr The attributes to return (optional).
+         * @param array|string $inject The attributes to return (optional).
          * 
          * @return Principal The matching user principal object.
          */
-        public function getPrincipal($needle, $search = null, $domain = null, $attr = null)
+        public function getPrincipal($needle, $attrib = null, $domain = null, $inject = null)
         {
-                if (!isset($search) || $search == false) {
-                        $search = self::DEFAULT_SEARCH;
-                }
-                if (!isset($attr) || $attr == false) {
-                        $attr = self::$DEFAULT_ATTR;
-                }
-                if ($search == Principal::ATTR_PN) {
-                        $domain = $this->getDomain($needle);
-                }
-                if (!is_array($attr)) {
-                        $attr = array($attr);
-                }
+                $search = new Search\Principal($this, $needle, $attrib, $domain, $inject);
 
-                if (($result = $this->_cache->getPrincipal($needle, $search, $domain, $attr)) !== false) {
+                $attrib = $search->getAttribute();
+                $domain = $search->getDomain();
+                $inject = $search->getFilter();
+
+                if (($result = $this->_cache->getPrincipal($needle, $attrib, $domain, $inject)) !== false) {
                         return $result;
                 }
 
-                foreach ($this->_services as $dom => $services) {
-                        if (!empty($domain) && $dom != $domain) {
-                                continue;
-                        }
-                        foreach ($services as $name => $service) {
-                                try {
-                                        if (($result = $service->getPrincipal($needle, $search, $domain, $attr)) !== null) {
-                                                break;
-                                        }
-                                } catch (Exception $exception) {
-                                        $this->report($exception, $service, $name);
-                                }
-                        }
-                        if ($result !== null) {
-                                break;
-                        }
-                }
+                $result = $search->getResult($this);
 
-                $this->_cache->setPrincipal($needle, $search, $domain, $attr, $result);
+                $this->_cache->setPrincipal($needle, $attrib, $domain, $inject, $result);
                 return $result;
         }
 
@@ -617,7 +507,7 @@ class DirectoryManager extends Component implements DirectoryService
          * @param string $principal The user principal name.
          * @return string
          */
-        private function getDomain($principal)
+        public function getDomain($principal)
         {
                 if (($pos = strpos($principal, '@'))) {
                         return substr($principal, ++$pos);
@@ -632,7 +522,7 @@ class DirectoryManager extends Component implements DirectoryService
          * @param DirectoryService $service The directory service.
          * @param string $name The directory service name (from config).
          */
-        private function report($exception, $service, $name)
+        public function report($exception, $service, $name)
         {
                 $this->logger->system->begin();
                 $this->logger->system->error(

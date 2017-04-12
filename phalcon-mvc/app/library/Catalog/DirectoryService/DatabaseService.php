@@ -208,7 +208,7 @@ class DatabaseService extends AttributeService
         public function getPrincipals($needle, $search = null, $options = null)
         {
                 $query = $this->getPrincipalQuery($needle, $search, $options);
-                $array = $this->getPrincipalArray($query, $options);
+                $array = $this->getPrincipalArray($query, $options, true);
 
                 unset($query);
                 return $array;
@@ -233,7 +233,7 @@ class DatabaseService extends AttributeService
                 );
 
                 $query = $this->getPrincipalQuery($needle, $search, $options);
-                $array = $this->getPrincipalArray($query, $options);
+                $array = $this->getPrincipalArray($query, $options, false);
 
                 unset($query);
 
@@ -249,16 +249,17 @@ class DatabaseService extends AttributeService
          * 
          * @param Criteria $query The query criteria.
          * @param array $options Various search options.
+         * @param boolean $addref Add service reference.
          * 
          * @return Principal[]
          */
-        private function getPrincipalArray($query, $options)
+        private function getPrincipalArray($query, $options, $addref)
         {
                 $principals = array();
 
                 if (($data = $query->execute())) {
                         foreach ($data->toArray() as $d) {
-                                $principals[] = $this->getPrincipalObject($d, $options);
+                                $principals[] = $this->getPrincipalObject($d, $options, $addref);
                         }
                 }
                 return $principals;
@@ -269,10 +270,11 @@ class DatabaseService extends AttributeService
          * 
          * @param array $data The principal data.
          * @param array $options Various search options.
+         * @param boolean $addref Add service reference.
          * 
          * @return Principal
          */
-        private function getPrincipalObject($data, $options)
+        private function getPrincipalObject($data, $options, $addref)
         {
                 $principal = new Principal();
 
@@ -300,8 +302,16 @@ class DatabaseService extends AttributeService
                 // 
                 if ($options) {
                         $principal->attr = $data;
-                } else {
-                        $principal->attr['svc'] = $data['svc'];
+                }
+                if ($addref) {
+                        $principal->attr['svc'] = array(
+                                'name' => $this->_name,
+                                'type' => $this->_type,
+                                'ref'  => $principal->attr['id']
+                        );
+                }
+                if (isset($principal->attr['id'])) {
+                        unset($principal->attr['id']);
                 }
 
                 if (isset($principal->attr[Principal::ATTR_ASSUR])) {
@@ -380,6 +390,9 @@ class DatabaseService extends AttributeService
                         }
                 }
 
+                if (!isset($attrmap['id'])) {
+                        $attrmap['id'] = 'id';
+                }
                 if (!empty($options['attr'])) {
                         $query->columns($attrmap);
                 }

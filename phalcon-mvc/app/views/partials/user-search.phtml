@@ -31,7 +31,6 @@
         <span>Insert existing user:</span>
         <div style="margin-top: 5px; margin-left: 15px">
             <?php foreach ($staff->users as $user => $data) : ?>
-            <?php error_log(print_r($data, true)) ?>
                     <div class="user-staff-entry">
                         <i class="fa fa-user"></i> 
                         <a href="#" class="user-staff-add left-col-user" data-mail="<?= $data['mail'][0] ?>" data-user="<?= $user ?>" data-name="<?= $data['display'] ?>"><?= $data['display'] ?> [<?= $user ?>]</a>
