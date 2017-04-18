@@ -107,6 +107,9 @@ class DateTime implements Component
                 if (!isset($this->class)) {
                         $this->class = 'datetime';
                 }
+                if (!isset($this->style)) {
+                        $this->style = '';
+                }
 
                 if ($this->display == false) {
                         $this->display = 'none';
