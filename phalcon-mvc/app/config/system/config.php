@@ -95,8 +95,8 @@ $config = new Config(
          * System locale settings.
          */
         'locale'      => array(
-                'request' => 'lang', // Detect from request parameter 'lang'
-                'default' => 'sv_SE.UTF-8' // Default locale if not detected.
+                'request' => 'locale', // Detect from request parameter 'locale'
+                'default' => 'en_US.UTF-8' // Default locale if not detected.
         ),
         /**
          * Settings for GNU gettext (setup only).

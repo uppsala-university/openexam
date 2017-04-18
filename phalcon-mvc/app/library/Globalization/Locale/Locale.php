@@ -14,7 +14,7 @@
 namespace OpenExam\Library\Globalization\Locale;
 
 use DirectoryIterator;
-use Locale as LocaleSystem;
+use Locale as SystemLocale;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -41,6 +41,10 @@ use Phalcon\Mvc\User\Component;
  * // ...
  * $locale->detect('locale', 'en_US');    // 
  * </code>
+ * 
+ * This class affects the behavior of other functions (i.e. setlocale() and 
+ * strftime()) that depends on current system locale. To force locale detection 
+ * by the locale service, call $this->locale->detect(null) at least once.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -121,10 +125,12 @@ class Locale extends Component
 
                 if (!$this->setDefault($locale)) {
                         return false;
-                } elseif (!setlocale(LC_ALL, $locale)) {
+                }
+                if (!setlocale(LC_ALL, $locale)) {
                         $this->setDefault($default);    // restore
                         return false;
-                } elseif ($this->session->isStarted()) {
+                }
+                if ($this->session->isStarted()) {
                         $this->session->set($name, $locale);
                 }
 
@@ -134,14 +140,14 @@ class Locale extends Component
         private function getDefault()
         {
                 if (extension_loaded('intl')) {
-                        return LocaleSystem::getDefault();
+                        return SystemLocale::getDefault();
                 }
         }
 
         private function setDefault($locale)
         {
                 if (extension_loaded('intl')) {
-                        return LocaleSystem::setDefault($locale);
+                        return SystemLocale::setDefault($locale);
                 } else {
                         return true;
                 }
@@ -178,7 +184,7 @@ class Locale extends Component
         public function getDisplayLanguage($locale)
         {
                 if (extension_loaded('intl')) {
-                        return LocaleSystem::getDisplayLanguage($locale);
+                        return SystemLocale::getDisplayLanguage($locale);
                 } elseif (extension_loaded('gettext')) {
                         return $this->tr->_($locale);
                 } else {
@@ -196,7 +202,7 @@ class Locale extends Component
         public function getRegion($locale)
         {
                 if (extension_loaded('intl')) {
-                        return LocaleSystem::getRegion($locale);
+                        return SystemLocale::getRegion($locale);
                 } else {
                         return substr($locale, 3, 2);
                 }
@@ -212,14 +218,15 @@ class Locale extends Component
         public function getLanguage($locale)
         {
                 if (extension_loaded('intl')) {
-                        return LocaleSystem::getPrimaryLanguage($locale);
+                        return SystemLocale::getPrimaryLanguage($locale);
                 } else {
                         return substr($locale, 0, 2);
                 }
         }
 
         /**
-         * Detect prefered locale.
+         * Detect preferred locale.
+         * 
          * @param string $name The request parameter name.
          * @param string $default The default locale.
          * @param bool $apply Set locale to detected or default.
@@ -227,6 +234,10 @@ class Locale extends Component
          */
         public function detect($name = 'locale', $default = 'C', $apply = false)
         {
+                if (is_null($name)) {
+                        return $this->getLocale();
+                }
+
                 $locale = null;
 
                 if ($this->_sapi != "cli") {
@@ -262,7 +273,7 @@ class Locale extends Component
                 }
 
                 if ($apply) {
-                        $this->setLocale($locale);
+                        $this->setLocale($locale, $name);
                 }
 
                 return $locale;
@@ -285,7 +296,7 @@ class Locale extends Component
                 foreach ($iterator as $dir) {
                         $locale = $dir->getBasename();
                         if (extension_loaded('intl')) {
-                                $lang = LocaleSystem::getDisplayLanguage($locale);
+                                $lang = SystemLocale::getDisplayLanguage($locale);
                         } else {
                                 $lang = $locale;
                         }
