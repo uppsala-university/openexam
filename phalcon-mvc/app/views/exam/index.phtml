@@ -306,7 +306,7 @@ $examsPerPage = 5;
                                                                 </span>
                                                                 <span class="exam-name">
                                                                     <?= trim($exam->name) != "" ? $exam->name : 'Untitled exam' ?>
-                                                                    <?= !empty($exam->code) ? " (" . $exam->code . ") " : "" ?>
+                                                                    <?= !empty($exam->course) ? " (" . $exam->course . ") " : "" ?>
                                                                 </span>
                                                             </a>
                                                         </div>
