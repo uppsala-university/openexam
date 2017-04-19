@@ -318,6 +318,14 @@ class CatalogTask extends MainTask implements TaskInterface
                 if (is_null($this->_service)) {
                         throw new Exception("Undefined service requested");
                 }
+
+                // 
+                // Overcome limitation in options parsing when the the search
+                // argument is the same as the option name:
+                // 
+                if ($this->_options['search'] && $this->_options['principal']) {
+                        $this->_options['search'] = 'principal';
+                }
         }
 
 }
