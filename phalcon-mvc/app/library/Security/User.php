@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Security;
 
 use OpenExam\Library\Catalog\Affiliation;
+use OpenExam\Library\Catalog\Departments;
 use OpenExam\Library\Core\Settings;
 use Phalcon\Mvc\User\Component;
 
@@ -39,6 +40,7 @@ use Phalcon\Mvc\User\Component;
  * @property Settings $settings The user settings.
  * @property-read Impersonation $impersonation The current impersonation.
  * @property-read Affiliation $affiliation The user affiliation.
+ * @property-read Departments $departments The user departments.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -121,6 +123,8 @@ class User extends Component
                                 return $this->getRoles();
                         case 'affiliation':
                                 return $this->getAffiliation();
+                        case 'departments':
+                                return $this->getDepartments();
                         case 'settings':
                                 return $this->getSettings();
                         default:
@@ -314,6 +318,17 @@ class User extends Component
         {
                 if (isset($this->_user)) {
                         return $this->settings = new Settings($this->getPrincipalName());
+                }
+        }
+
+        /**
+         * Get user departments.
+         * @return Departments
+         */
+        public function getDepartments()
+        {
+                if (isset($this->_user)) {
+                        return $this->departments = new Departments($this->getPrincipalName());
                 }
         }
 

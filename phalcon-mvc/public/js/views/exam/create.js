@@ -14,6 +14,31 @@ var stEvents = '';
 $(document).ready(function () {
 
     // 
+    // Handle organization change:
+    // 
+    $(document).on('input', "input[list='user-department-list']", function () {
+        var depart = $(this).val();
+        $("#user-department-select > option").each(function () {
+            if (depart === $(this).val()) {
+                $("input[name='exam-code']").val($(this).attr('data-code'));
+            }
+        });
+    });
+
+    // 
+    // Compatibility for non HTML5 browsers:
+    // 
+    $(document).on('change', '#user-department-select', function () {
+        var depart = $(this).val();
+        $("#user-department-select > option").each(function () {
+            if (depart === $(this).val()) {
+                $("input[name='exam-code']").val($(this).attr('data-code'));
+            }
+        });
+        $("input[list='user-department-list']").val(depart);
+    });
+
+    // 
     // Initialize opentip for adding users for roles:
     // 
     $('.search-catalog-service').each(function (index, element) {
@@ -260,10 +285,10 @@ $(document).ready(function () {
             ajax(
                     baseURL + 'ajax/core/' + role + '/question/delete',
                     {"id": qsJson[qNo]["questId"]},
-            function (status) {
-                location.reload();
-                $(qAreaLine).slideUp('500');
-            }
+                    function (status) {
+                        location.reload();
+                        $(qAreaLine).slideUp('500');
+                    }
             );
         }
         return false;

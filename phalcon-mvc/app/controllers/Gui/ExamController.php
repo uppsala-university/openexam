@@ -647,11 +647,17 @@ class ExamController extends GuiController
                 if (!($exam = Exam::findFirst($eid))) {
                         throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
+                
+                // 
+                // Need department information:
+                // 
+                $departments = $this->user->departments->getDepartments();
 
                 // 
                 // Set data for view:
                 // 
                 $this->view->setVar("exam", $exam);
+                $this->view->setVar("departments", $departments);
         }
 
         /**

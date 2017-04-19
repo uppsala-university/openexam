@@ -97,8 +97,17 @@ endforeach;
             </div>
             <div class="st-line">
                 <label for="unit"><b>Organization:</b> <span style="color:#F02222">*</span></label>
+                <datalist id="user-department-list">
+                    <select id="user-department-select">
+                        <?php foreach ($departments as $code => $values) : ?>
+                                <?php foreach ($values as $value) : ?>
+                                        <option value="<?= $value ?>" data-code="<?= $code ?>"><?= $value ?></option>
+                                <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </select>
+                </datalist>
                 <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                        <input title="The organization name from directory service (don't edit unless told so)" type="text" value="<?= $exam->orgunit ?>" name="unit" class="validate[required]">
+                        <input title="The organization name from directory service (don't edit unless told so)" type="text" value="<?= $exam->orgunit ?>" name="unit" class="validate[required]" list="user-department-list" onclick="this.value = '';">
                 <?php else: ?>
                         <span style="border: 1px solid #cecece; padding:5px"><?= $exam->orgunit ?></span>
                 <?php endif; ?>

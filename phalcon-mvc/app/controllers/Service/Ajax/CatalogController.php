@@ -89,7 +89,7 @@ use OpenExam\Library\WebService\Handler\CatalogHandler;
  * // The default is to only list group names:
  * input: '{"principal":"user@example.com"}'
  * 
- * // Select attriubutes to include:
+ * // Select attributes to include:
  * input: '{"principal":"user@example.com","attributes":["cn","name","gidnumber","distinguishedName","description"]}'
  * 
  * // Format output. Possible arguments are strip, object, array or compact:
