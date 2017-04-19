@@ -390,6 +390,14 @@ class DatabaseService extends AttributeService
                         }
                 }
 
+                // 
+                // Match attribute map agains user models column map:
+                // 
+                if (!empty($options['attr'])) {
+                        $model = new User();
+                        $attrmap = array_intersect_key($attrmap, $model->columnMap());
+                }
+
                 if (!isset($attrmap['id'])) {
                         $attrmap['id'] = 'id';
                 }
