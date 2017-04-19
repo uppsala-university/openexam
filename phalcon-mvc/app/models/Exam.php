@@ -773,12 +773,17 @@ class Exam extends ModelBase
         {
                 if (!isset($this->orgunit)) {
                         if (($service = $this->getDI()->get('user'))) {
-                                $this->orgunit = $service->getDepartment();
+                                $this->orgunit = $service->departments->name;
                         }
                 }
                 if (!isset($this->orgunit)) {
                         if (($service = $this->getDI()->get('config'))) {
                                 $this->orgunit = $service->user->orgname;
+                        }
+                }
+                if (!isset($this->code)) {
+                        if (($service = $this->getDI()->get('user'))) {
+                                $this->code = $service->departments->code;
                         }
                 }
 
