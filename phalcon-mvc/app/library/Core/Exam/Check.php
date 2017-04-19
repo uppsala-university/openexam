@@ -127,7 +127,7 @@ class Check
          */
         public function hasName()
         {
-                return isset($this->_exam->name) && strlen($this->_exam->name) != 0;
+                return isset($this->_exam->name) && strlen(trim($this->_exam->name)) != 0;
         }
 
         /**
