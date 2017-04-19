@@ -20,6 +20,9 @@ use Phalcon\Mvc\User\Component;
  * 
  * Some users have multiple departments. This class tries to ease the pain
  * of querying and collecting that information.
+ * 
+ * @property-read string $name The primary department name.
+ * @property-read string $code The primary department code.
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
@@ -45,6 +48,11 @@ class Departments extends Component
          * @var string 
          */
         private $_principal;
+        /**
+         *
+         * @var array 
+         */
+        private $_first;
 
         /**
          * Constructor.
@@ -61,6 +69,9 @@ class Departments extends Component
                 } else {
                         $this->_principal = $this->user->getPrincipalName();
                 }
+
+                $this->setDepartments();
+                $this->setFirst();
         }
 
         /**
@@ -72,6 +83,18 @@ class Departments extends Component
                 unset($this->_principal);
         }
 
+        public function __get($propertyName)
+        {
+                switch ($propertyName) {
+                        case 'name':
+                                return $this->_first['name'];
+                        case 'code':
+                                return $this->_first['code'];
+                        default:
+                                return parent::__get($propertyName);
+                }
+        }
+
         /**
          * Get all departments.
          * 
@@ -81,10 +104,6 @@ class Departments extends Component
          */
         public function getDepartments()
         {
-                if (!isset($this->_departments)) {
-                        $this->setDepartments();
-                }
-
                 return $this->_departments;
         }
 
@@ -94,11 +113,38 @@ class Departments extends Component
          */
         public function getCodes()
         {
-                if (!isset($this->_departments)) {
-                        $this->setDepartments();
-                }
-
                 return array_keys($this->_departments);
+        }
+
+        /**
+         * Get first code/name entry.
+         * @return array
+         */
+        public function getFirst()
+        {
+                return $this->_first;
+        }
+
+        /**
+         * Set primary department and department code.
+         */
+        private function setFirst()
+        {
+                if (count($this->_departments) == 0) {
+                        $this->_first = array(
+                                'code' => null,
+                                'name' => null
+                        );
+                } else {
+
+                        $code = key($this->_departments);
+                        $name = current($this->_departments[$code]);
+
+                        $this->_first = array(
+                                'code' => $code,
+                                'name' => $name
+                        );
+                }
         }
 
         /**
@@ -108,10 +154,6 @@ class Departments extends Component
          */
         public function getDepartment($code)
         {
-                if (!isset($this->_departments)) {
-                        $this->setDepartments();
-                }
-
                 if (isset($this->_departments[$code])) {
                         return $this->_departments[$code];
                 }
@@ -123,10 +165,6 @@ class Departments extends Component
          */
         public function hasMultiple()
         {
-                if (!isset($this->_departments)) {
-                        $this->setDepartments();
-                }
-
                 return count($this->_departments) > 1;
         }
 
