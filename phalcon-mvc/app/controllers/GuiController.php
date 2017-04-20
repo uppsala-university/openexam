@@ -37,36 +37,24 @@ class GuiController extends ControllerBase
 
         public function initialize()
         {
-                // 
-                // Warning: 
-                // -------------
-                // Normal exception handling don't apply to exceptions thrown
-                // at dispatch time. We need to use try/catch with forward to 
-                // error page.
-                // 
+                parent::initialize();
 
-                try {
-                        parent::initialize();
-
-                        if ($this->request->isAjax()) {
-                                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
-                        } else {
-                                $this->view->setLayout('main');
-                        }
-
-                        $this->checkAccess(
-                            $this->dispatcher->getControllerName(), $this->dispatcher->getActionName()
-                        );
-
-                        $this->view->setVar("authenticators", $this->auth->getChain("web"));
-                        $this->user->acquire(array(
-                                Roles::TEACHER, Roles::CREATOR, Roles::CONTRIBUTOR,
-                                Roles::CORRECTOR, Roles::INVIGILATOR, Roles::DECODER, 
-                                Roles::STUDENT
-                        ));
-                } catch (\Exception $exception) {
-                        return $this->exceptionAction($exception);
+                if ($this->request->isAjax()) {
+                        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+                } else {
+                        $this->view->setLayout('main');
                 }
+
+                $this->checkAccess(
+                    $this->dispatcher->getControllerName(), $this->dispatcher->getActionName()
+                );
+
+                $this->view->setVar("authenticators", $this->auth->getChain("web"));
+                $this->user->acquire(array(
+                        Roles::TEACHER, Roles::CREATOR, Roles::CONTRIBUTOR,
+                        Roles::CORRECTOR, Roles::INVIGILATOR, Roles::DECODER,
+                        Roles::STUDENT
+                ));
         }
 
         /**
@@ -75,6 +63,11 @@ class GuiController extends ControllerBase
          */
         public function exceptionAction($exception)
         {
+                // 
+                // See https://github.com/phalcon/cphalcon/issues/2851 for discussion under
+                // which circumstances forward to error page will fail.
+                // 
+                echo $exception->getMessage();
                 $error = new Error($exception);
 
                 if ($exception instanceof DispatcherException) {
