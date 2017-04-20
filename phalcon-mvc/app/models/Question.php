@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\FilterText;
+use OpenExam\Library\Model\Behavior\Maximum;
 use OpenExam\Library\Model\Behavior\Ownership;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
 use OpenExam\Library\Model\Behavior\UUID;
@@ -139,6 +140,12 @@ class Question extends ModelBase
                         'reusable'   => true
                 ));
 
+                $this->addBehavior(new Maximum(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => 'slot',
+                                'limit' => 'exam_id'
+                        )
+                )));
                 $this->addBehavior(new Ownership(array(
                         'beforeValidationOnCreate' => array(
                                 'field' => 'user',
@@ -236,7 +243,7 @@ class Question extends ModelBase
                             )
                         ));
                 }
-                
+
                 if ($this->validationHasFailed() == true) {
                         return false;
                 }
@@ -250,9 +257,13 @@ class Question extends ModelBase
                 if (!isset($this->status)) {
                         $this->status = self::STATUS_ACTIVE;
                 }
-                if (!isset($this->slot)) {
-                        $this->slot = self::count(sprintf("exam_id = %d", $this->exam_id)) + 1;
+
+                if (!isset($this->name)) {
+                        $this->name = sprintf("QCSN%d", time());
+                } elseif (self::count(sprintf("exam_id = %d AND name = '%s'", $this->exam_id, $this->name)) != 0) {
+                        $this->name = sprintf("QCSN%d", time());
                 }
+
                 if (!isset($this->topic_id)) {
                         $this->topic_id = $this->exam->topics->getFirst()->id;
                 }

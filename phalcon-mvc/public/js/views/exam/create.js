@@ -578,7 +578,7 @@ $(document).ready(function () {
         // Set data for create (qId missing) or question update:
         // 
         if (!qId) {
-            data = {"exam_id": examId, "topic_id": topicId, "score": totalScore, "name": qIndex, "quest": JSON.stringify(qJson), "status": 'active'};
+            data = {"exam_id": examId, "topic_id": topicId, "score": totalScore, "slot": qIndex, "quest": JSON.stringify(qJson), "status": 'active'};
         } else {
             data = {"id": qsJson[qId]["questId"], "score": totalScore, "quest": JSON.stringify(qJson)};
         }

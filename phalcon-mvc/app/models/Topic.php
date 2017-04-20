@@ -13,6 +13,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\Maximum;
 use OpenExam\Library\Model\Behavior\UUID;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -97,6 +98,12 @@ class Topic extends ModelBase
                         'reusable'   => true
                 ));
 
+                $this->addBehavior(new Maximum(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => 'slot',
+                                'limit' => 'exam_id'
+                        )
+                )));
                 $this->addBehavior(new UUID(array(
                         'beforeCreate' => array(
                                 'field' => 'uuid',
@@ -142,8 +149,11 @@ class Topic extends ModelBase
                 if (!isset($this->randomize)) {
                         $this->randomize = 0;
                 }
-                if (!isset($this->slot)) {
-                        $this->slot = self::count(sprintf("exam_id = %d", $this->exam_id)) + 1;
+
+                if (!isset($this->name)) {
+                        $this->name = sprintf("TCSN%d", time());
+                } elseif (self::count(sprintf("exam_id = %d AND name = '%s'", $this->exam_id, $this->name)) != 0) {
+                        $this->name = sprintf("TCSN%d", time());
                 }
         }
 
