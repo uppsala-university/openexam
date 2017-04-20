@@ -17,6 +17,7 @@ use OpenExam\Library\Model\Behavior\FilterText;
 use OpenExam\Library\Model\Behavior\Maximum;
 use OpenExam\Library\Model\Behavior\Ownership;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
+use OpenExam\Library\Model\Behavior\Unique;
 use OpenExam\Library\Model\Behavior\UUID;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
@@ -144,6 +145,13 @@ class Question extends ModelBase
                         'beforeValidationOnCreate' => array(
                                 'field' => 'slot',
                                 'limit' => 'exam_id'
+                        )
+                )));
+                $this->addBehavior(new Unique(array(
+                        'beforeValidationOnCreate' => array(
+                                'field'  => 'name',
+                                'limit'  => 'exam_id',
+                                'format' => 'QCSN%d'
                         )
                 )));
                 $this->addBehavior(new Ownership(array(

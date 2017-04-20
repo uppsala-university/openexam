@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Maximum;
+use OpenExam\Library\Model\Behavior\Unique;
 use OpenExam\Library\Model\Behavior\UUID;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -104,6 +105,13 @@ class Topic extends ModelBase
                                 'limit' => 'exam_id'
                         )
                 )));
+                $this->addBehavior(new Unique(array(
+                        'beforeValidationOnCreate' => array(
+                                'field'  => 'name',
+                                'limit'  => 'exam_id',
+                                'format' => 'TCSN%d'
+                        )
+                )));
                 $this->addBehavior(new UUID(array(
                         'beforeCreate' => array(
                                 'field' => 'uuid',
@@ -148,12 +156,6 @@ class Topic extends ModelBase
         {
                 if (!isset($this->randomize)) {
                         $this->randomize = 0;
-                }
-
-                if (!isset($this->name)) {
-                        $this->name = sprintf("TCSN%d", time());
-                } elseif (self::count(sprintf("exam_id = %d AND name = '%s'", $this->exam_id, $this->name)) != 0) {
-                        $this->name = sprintf("TCSN%d", time());
                 }
         }
 
