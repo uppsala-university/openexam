@@ -13,7 +13,7 @@
 
 namespace OpenExam\Models;
 
-use OpenExam\Library\Model\Behavior\FilterText;
+use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**

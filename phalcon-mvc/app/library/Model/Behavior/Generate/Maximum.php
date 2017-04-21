@@ -11,12 +11,13 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Model\Behavior;
+namespace OpenExam\Library\Model\Behavior\Generate;
 
+use OpenExam\Library\Model\Behavior\ModelBehavior;
 use Phalcon\Mvc\ModelInterface;
 
 /**
- * Compute maximum unique value for field.
+ * Maximum unique value generator.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */

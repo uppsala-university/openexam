@@ -11,8 +11,9 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Model\Behavior;
+namespace OpenExam\Library\Model\Behavior\Generate;
 
+use OpenExam\Library\Model\Behavior\ModelBehavior;
 use Phalcon\Mvc\ModelInterface;
 
 /**

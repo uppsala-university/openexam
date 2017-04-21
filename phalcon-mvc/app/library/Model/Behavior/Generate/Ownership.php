@@ -11,12 +11,13 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Model\Behavior;
+namespace OpenExam\Library\Model\Behavior\Generate;
 
+use OpenExam\Library\Model\Behavior\ModelBehavior;
 use Phalcon\Mvc\ModelInterface;
 
 /**
- * Ownership behavior for models.
+ * Model ownership generator.
  * 
  * This behavior can be used to set an ownership property in the model to
  * either supplied owner or the current authenticated user if the owner 

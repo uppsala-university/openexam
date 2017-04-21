@@ -17,19 +17,19 @@ use OpenExam\Library\Core\Exam\Grades;
 use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Core\Pattern;
-use OpenExam\Library\Model\Behavior\DateTimeNull;
 use OpenExam\Library\Model\Behavior\Exam as ExamBehavior;
-use OpenExam\Library\Model\Behavior\FilterText;
-use OpenExam\Library\Model\Behavior\Ownership;
+use OpenExam\Library\Model\Behavior\Generate\Ownership;
+use OpenExam\Library\Model\Behavior\Transform\DateTimeNull;
+use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Model\Exception;
 use OpenExam\Library\Model\Filter;
+use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Query\Builder;
 use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
-use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
 
 /**
  * The exam model.

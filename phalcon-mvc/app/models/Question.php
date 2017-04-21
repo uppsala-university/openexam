@@ -13,12 +13,12 @@
 
 namespace OpenExam\Models;
 
-use OpenExam\Library\Model\Behavior\FilterText;
-use OpenExam\Library\Model\Behavior\Maximum;
-use OpenExam\Library\Model\Behavior\Ownership;
+use OpenExam\Library\Model\Behavior\Generate\Maximum;
+use OpenExam\Library\Model\Behavior\Generate\Ownership;
+use OpenExam\Library\Model\Behavior\Generate\Unique;
+use OpenExam\Library\Model\Behavior\Generate\UUID;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
-use OpenExam\Library\Model\Behavior\Unique;
-use OpenExam\Library\Model\Behavior\UUID;
+use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;

@@ -13,7 +13,7 @@
 
 namespace OpenExam\Models;
 
-use OpenExam\Library\Model\Behavior\Ownership;
+use OpenExam\Library\Model\Behavior\Generate\Ownership;
 
 /**
  * User settings.

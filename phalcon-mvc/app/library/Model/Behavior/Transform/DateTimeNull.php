@@ -11,8 +11,9 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Model\Behavior;
+namespace OpenExam\Library\Model\Behavior\Transform;
 
+use OpenExam\Library\Model\Behavior\ModelBehavior;
 use Phalcon\Mvc\ModelInterface;
 
 /**
@@ -81,13 +82,13 @@ class DateTimeNull extends ModelBehavior
                                 // 
                                 if (is_string($input)) {
                                         if (!($time = strtotime($input))) {
-                                                throw new \Exception("Failed parse datetime string '$input' for $field");
+                                                throw new Exception("Failed parse datetime string '$input' for $field");
                                         }
                                         if (!($value = date($format, $time))) {
-                                                throw new \Exception("Failed print datetime string '$input' for $field");
+                                                throw new Exception("Failed print datetime string '$input' for $field");
                                         }
                                         if (is_null($value)) {
-                                                throw new \Exception("Input datetime '$input' was translated to null for $field");
+                                                throw new Exception("Input datetime '$input' was translated to null for $field");
                                         }
                                 }
 

@@ -13,9 +13,9 @@
 
 namespace OpenExam\Models;
 
-use OpenExam\Library\Model\Behavior\Maximum;
-use OpenExam\Library\Model\Behavior\Unique;
-use OpenExam\Library\Model\Behavior\UUID;
+use OpenExam\Library\Model\Behavior\Generate\Maximum;
+use OpenExam\Library\Model\Behavior\Generate\Unique;
+use OpenExam\Library\Model\Behavior\Generate\UUID;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
