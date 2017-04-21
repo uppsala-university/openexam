@@ -192,10 +192,10 @@ endforeach;
                 <br>
                 
                 <?php if ($canUpdateExam): ?>
-                        <input type="checkbox" value="64" title="Don't include student grade in rendered PDF. Useful if the actual grading is finalized outside of the system." <?= ((($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                        Hide student grade section in result.
+                        <input type="checkbox" value="64" title="Don't include student grade calculated by the system. This option is useful when the actual grading is finalized outside of the system." <?= ((($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                        Hide student grade section.
                 <?php else: ?>
-                        <?= (($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? '&#10004; Hide student grade section in result.' : '' ?>
+                        <?= (($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? '&#10004; Hide student grade section.' : '' ?>
                 <?php endif; ?>
                 <br>
 
