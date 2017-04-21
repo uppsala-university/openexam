@@ -89,6 +89,10 @@ class Exam extends ModelBase
          * Expose anonymous code for correctors during correction.
          */
         const SHOW_CODE_DURING_CORRECTION = 32;
+        /**
+         * Don't include student grade in generated result.
+         */
+        const HIDE_STUDENT_GRADE_IN_RESULT = 64;
 
         /**
          * This object ID.

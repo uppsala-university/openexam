@@ -190,6 +190,14 @@ endforeach;
                         <?= (($exam->details & Exam::RESULT_OTHERS_STATISTICS) != 0) ? '&#10004; Include section with statistics.' : '' ?>
                 <?php endif; ?>
                 <br>
+                
+                <?php if ($canUpdateExam): ?>
+                        <input type="checkbox" value="64" title="Don't include student grade in rendered PDF. Useful if the actual grading is finalized outside of the system." <?= ((($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                        Hide student grade section in result.
+                <?php else: ?>
+                        <?= (($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? '&#10004; Hide student grade section in result.' : '' ?>
+                <?php endif; ?>
+                <br>
 
                 <?php if ($canUpdateExam): ?>
                         <input type="checkbox" value="16" title="Forge (blur/hide) media content like images when rendering the PDF with student results. Select this option if media content should only be viewable by students during the exam." <?= ((($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) ? 'checked="checked"' : '') ?> name="details[]" >

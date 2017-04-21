@@ -174,10 +174,12 @@
                                         You scored total <strong><?= sprintf("%1.1f", $data['studentScore'][$student->id]) ?></strong> of maximum <strong><?= sprintf("%1.1f", $data['examScore']) ?></strong> points (<strong><?= sprintf("%1.1f", ($data['studentScore'][$student->id] / $data['examScore']) * 100) ?>%</strong>) on this examination.<br>
                                     </div>
 
-                                    <h2>Graduation</h2>
-                                    <div>
-                                        Your graduation on this examination is: <strong><?= $data['studentGrade'][$student->id] ?></strong>
-                                    </div>
+                                    <?php if (($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) == 0): ?>
+                                            <h2>Graduation</h2>
+                                            <div>
+                                                Your graduation on this examination is: <strong><?= $data['studentGrade'][$student->id] ?></strong>
+                                            </div>
+                                    <?php endif; ?>
 
                                     <h2>Score Table</h2>
                                     <div>
@@ -436,72 +438,7 @@
                                                     <td>-----</td>
                                                 </tr>
                                             </table>
-                                            <!--
-                                            <div>
-                                                    This table shows the distribution of scores by student on this examination.
-                                            </div>
-                                            <table>
-                                                    <tr>
-                                                            <th>Score</th>
-                                                            <th>Percent</th>
-                                                            <th>Students</th>
-                                                    </tr>
-                                                    <tr>
-                                                            <td class="uu-color">95.0</td>
-                                                            <td class="uu-color">263.9</td>
-                                                            <td class="uu-color">1</td>
-                                                    </tr>
-                                                    <tr class="summary-row">
-                                                            <td>Summary:</td>
-                                                            <td>&nbsp;</td>
-                                                            <td>3</td>
-                                                    </tr>
-                                                    <tr>
-                                                            <td>Mean Value:</td>
-                                                            <td colspan="3" style="text-align:left" class="uu-color">31.5 (52.7) 87.5% (146.3%)</td>
-                                                    </tr>
-                                                    <tr>
-                                                            <td>Standard Deviation:</td>
-                                                            <td colspan="3" style="text-align:left" class="uu-color">1.5 (30.0)</td>
-                                                    </tr>
-                                            </table>
-                                            <div>
-                                            The mean value, standard deviation and percentage within paranthesis '()' is calculated on all values. The other<br>
-                                            values are calculated by first removing the highest and lowest scores.
-                                            </div>-->
                                         </div>
-                                        <!--
-                                        <div style="padding-left:35px">
-                                                <h2>Ranges</h2>
-                                                <div>
-                                                        <div>
-                                                        This table shows the number of student in each range of percentage correct answers.<br>
-                                                        </div>
-                                                        <table>
-                                                                <tr>
-                                                                        <th>Range</th>
-                                                                        <th>Students</th>
-                                                                </tr>
-                                                                <tr>
-                                                                        <td>260 - 269 %</td>
-                                                                        <td  class="uu-color">1</td>
-                                                                </tr>
-                                                                <tr>
-                                                                        <td >&gt; 90 %</td>
-                                                                        <td class="uu-color">1</td>
-                                                                </tr>
-                                                                <tr>
-                                                                        <td>80 - 89</td>
-                                                                        <td class="uu-color">1</td>
-                                                                </tr>
-                                                                <tr class="summary-row">
-                                                                        <td>Summary:</td>
-                                                                        <td>3</td>
-                                                                </tr>
-                                                        </table>
-                                                </div>
-                                        </div>
-                                        -->
                                     </div>         
                                 </div>
                             </div>
@@ -547,18 +484,6 @@
                                             <?php endif; ?>
                                         </div>	
                                     </div>
-                                    <!--
-                                    <div>
-                                            <h2>Document Information</h2>
-                                            <div>
-                                            This document was generated by OpenExam PHP installed on https://openexam.bmc.uu.se/v2/rc1/<br>
-                                            <div class="uu-color">
-                                            OpenExam PHP is a secure examination system developed at Uppsala Biomedical Centre, Uppsala<br>
-                                            University.
-                                            </div>
-                                            </div>
-                                    </div>
-                                    -->
                                 </div>
                             </div>         
                         </div>
