@@ -5,21 +5,20 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    LdapService.php
+// File:    Ldap.php
 // Created: 2014-10-22 04:21:36
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\DirectoryService;
+namespace OpenExam\Library\Catalog\Service\Adapter;
 
 use OpenExam\Library\Catalog\DirectoryService;
-use OpenExam\Library\Catalog\DirectoryService\Ldap\Connection;
-use OpenExam\Library\Catalog\DirectoryService\Ldap\Result;
 use OpenExam\Library\Catalog\Exception;
 use OpenExam\Library\Catalog\Group;
 use OpenExam\Library\Catalog\Principal;
-use OpenExam\Library\Catalog\ServiceConnection;
+use OpenExam\Library\Catalog\Service\Adapter\Ldap\Connection;
+use OpenExam\Library\Catalog\Service\Adapter\Ldap\Result;
 
 /**
  * LDAP directory service.
@@ -28,7 +27,7 @@ use OpenExam\Library\Catalog\ServiceConnection;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class LdapService extends AttributeService
+class Ldap extends AttributeService
 {
 
         /**
@@ -93,7 +92,7 @@ class LdapService extends AttributeService
 
         /**
          * Get service connection.
-         * @return ServiceConnection
+         * @return Connection
          */
         public function getConnection()
         {

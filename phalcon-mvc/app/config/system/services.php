@@ -317,7 +317,7 @@ $di->set('catalog', function() use($config, $di) {
                 $domains = $data['domains'];
                 $manager->register($service(), $domains, $name);
         }
-        $manager->setDefaultDomain($config->user->domain);     // Set default domain.
+        $manager->setDomain($config->user->domain);     // Set default domain.
         $manager->setCache(new \OpenExam\Library\Catalog\DirectoryCache());
         return $manager;
 }, true);

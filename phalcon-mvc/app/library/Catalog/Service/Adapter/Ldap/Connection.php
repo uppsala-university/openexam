@@ -11,10 +11,9 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\DirectoryService\Ldap;
+namespace OpenExam\Library\Catalog\Service\Adapter\Ldap;
 
-use OpenExam\Library\Catalog\Exception;
-use OpenExam\Library\Catalog\ServiceConnection;
+use OpenExam\Library\Catalog\Service\Connection as ServiceConnection;
 
 /**
  * LDAP server connection class.

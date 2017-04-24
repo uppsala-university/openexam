@@ -5,23 +5,26 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    Principal.php
-// Created: 2017-04-12 01:37:22
+// File:    Principals.php
+// Created: 2017-04-12 00:10:14
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\Search;
+namespace OpenExam\Library\Catalog\Manager\Search;
 
 use OpenExam\Library\Catalog\DirectoryManager;
+use OpenExam\Library\Catalog\DirectoryService;
+use OpenExam\Library\Catalog\Exception;
+use OpenExam\Library\Catalog\Manager\Search;
 use OpenExam\Library\Catalog\Principal as UserPrincipal;
 
 /**
- * Directory principal search.
+ * Directory principals search.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Principal implements ManagerSearch
+class Principals implements Search
 {
 
         /**
@@ -35,15 +38,10 @@ class Principal implements ManagerSearch
          */
         private $_attrib;
         /**
-         * The search domain.
-         * @var string 
-         */
-        private $_domain;
-        /**
-         * The attributes to return.
+         * Miscellanous search options
          * @var array 
          */
-        private $_inject;
+        private $_options;
 
         /**
          * Constructor.
@@ -51,28 +49,32 @@ class Principal implements ManagerSearch
          * @param DirectoryManager $manager The directory manager.
          * @param string $needle The attribute search string.
          * @param string $attrib The attribute to query (optional).
-         * @param string $domain The search domain (optional).
-         * @param array|string $inject The attributes to return (optional).
+         * @param array $options Miscellanous search options (optional).
          */
-        public function __construct($manager, $needle, $attrib = null, $domain = null, $inject = null)
+        public function __construct($manager, $needle, $attrib = null, $options = null)
         {
                 if (!isset($attrib) || $attrib == false) {
                         $attrib = DirectoryManager::DEFAULT_SEARCH_ATTRIB;
                 }
-                if (!isset($inject) || $inject == false) {
-                        $inject = DirectoryManager::$DEFAULT_RESULT_ATTR_LIST;
+                if (!isset($options) || $options == false) {
+                        $options = array();
+                }
+                if (!isset($options['attr']) || $options['attr'] == false) {
+                        $options['attr'] = DirectoryManager::$DEFAULT_RESULT_ATTR_LIST;
+                }
+                if (!isset($options['limit']) || $options['limit'] == false) {
+                        $options['limit'] = DirectoryManager::DEFAULT_RESULT_LIMIT;
                 }
                 if ($attrib == UserPrincipal::ATTR_PN) {
-                        $domain = $manager->getDomain($needle);
+                        $options['domain'] = $manager->getRealm($needle);
                 }
-                if (!is_array($inject)) {
-                        $inject = array($inject);
+                if (!is_array($options['attr'])) {
+                        $options['attr'] = array($options['attr']);
                 }
-                
+
                 $this->_needle = $needle;
                 $this->_attrib = $attrib;
-                $this->_domain = $domain;
-                $this->_inject = $inject;
+                $this->_options = $options;
         }
 
         /**
@@ -103,12 +105,12 @@ class Principal implements ManagerSearch
         }
 
         /**
-         * Get search domain.
-         * @return string
+         * Get search options.
+         * @return array
          */
-        public function getDomain()
+        public function getOptions()
         {
-                return $this->_domain;
+                return $this->_options;
         }
 
         /**
@@ -117,16 +119,7 @@ class Principal implements ManagerSearch
          */
         public function setDomain($domain)
         {
-                $this->_domain = $domain;
-        }
-
-        /**
-         * Get attributes filter.
-         * @return array
-         */
-        public function getFilter()
-        {
-                return $this->_inject;
+                $this->_options['domain'] = $domain;
         }
 
         /**
@@ -135,7 +128,7 @@ class Principal implements ManagerSearch
          */
         public function setFilter($attributes)
         {
-                $this->_inject = $attributes;
+                $this->_options['attr'] = $attributes;
         }
 
         /**
@@ -145,11 +138,26 @@ class Principal implements ManagerSearch
          */
         public function getResult($manager)
         {
-                foreach ($manager->getServices($this->_domain) as $name => $service) {
-                        if (($result = $this->getPrincipal($manager, $service, $name)) != null) {
-                                return $result;
+                $result = array();
+                $domain = $this->_options['domain'];
+
+                $limit = $this->_options['limit'];
+
+                foreach ($manager->getServices($domain) as $name => $service) {
+                        if (($principals = $this->getPrincipals($manager, $service, $name)) != null) {
+                                if ($limit == 0) {
+                                        $result = array_merge($result, $principals);
+                                } elseif (count($principals) + count($result) < $limit) {
+                                        $result = array_merge($result, $principals);
+                                } else {
+                                        $insert = $limit - count($result);
+                                        $result = array_merge($result, array_slice($principals, 0, $insert));
+                                        return $result;
+                                }
                         }
                 }
+
+                return $result;
         }
 
         /**
@@ -160,10 +168,10 @@ class Principal implements ManagerSearch
          * @param string $name The service name.
          * @return array
          */
-        private function getPrincipal($manager, $service, $name)
+        private function getPrincipals($manager, $service, $name)
         {
                 try {
-                        return $service->getPrincipal($this->_needle, $this->_attrib, $this->_domain, $this->_inject);
+                        return $service->getPrincipals($this->_needle, $this->_attrib, $this->_options);
                 } catch (Exception $exception) {
                         $manager->report($exception, $service, $name);
                 }

@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\DirectoryService\Ldap;
+namespace OpenExam\Library\Catalog\Service\Adapter\Ldap;
 
 /**
  * LDAP result class.
@@ -162,9 +162,9 @@ class Result
                 for ($i = 0; $i < $entry['count']; $i++) {
                         $name = $entry[$i];
                         $attr = $entry[$name];
-                        
+
                         $this->addAttribute($index, $name, $attr);
-                        
+
                         unset($name);
                         unset($attr);
                 }

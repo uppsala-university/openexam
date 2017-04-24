@@ -5,19 +5,19 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    ServiceConnection.php
+// File:    Connection.php
 // Created: 2014-11-05 20:18:44
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog;
+namespace OpenExam\Library\Catalog\Service;
 
 /**
  * The service backend connection.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface ServiceConnection
+interface Connection
 {
 
         /**

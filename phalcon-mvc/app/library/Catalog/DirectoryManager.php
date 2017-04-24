@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Catalog;
 
+use OpenExam\Library\Catalog\Service\Adapter;
+use OpenExam\Library\Catalog\Service\Connection;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -63,10 +65,15 @@ class DirectoryManager extends Component implements DirectoryService
          */
         private $_services;
         /**
-         * Default search domain.
+         * The user domain.
          * @var string 
          */
         private $_domain;
+        /**
+         * The attributes filter.
+         * @var array 
+         */
+        private $_filter;
         /**
          * The directory cache.
          * @var DirectoryCache 
@@ -134,7 +141,7 @@ class DirectoryManager extends Component implements DirectoryService
          * This function register an directory service as a catalog for
          * one or more domains.
          *  
-         * @param ServiceAdapter $service The directory service.
+         * @param Adapter $service The directory service.
          * @param array|string $domains The domains.
          * @param string $name Directory service name (optional)
          */
@@ -265,22 +272,49 @@ class DirectoryManager extends Component implements DirectoryService
         }
 
         /**
-         * Set default search domain.
+         * Set user domain.
          * @param string $domain The domain name.
          */
-        public function setDefaultDomain($domain)
+        public function setDomain($domain)
         {
                 $this->_domain = $domain;
         }
 
         /**
-         * Get array of default attributes for user principal searches.
+         * Set attribute filter.
+         * @param array $attributes The attribute filter.
+         */
+        public function setFilter($attributes)
+        {
+                $this->_filter = $attributes;
+        }
+
+        /**
+         * Get user domain.
+         * @return string
+         */
+        public function getDomain()
+        {
+                return $this->_domain;
+        }
+
+        /**
+         * Get attributes filter.
          * @return array
          */
-        public function getDefaultAttributes()
+        public function getFilter()
         {
-                return self::$DEFAULT_RESULT_ATTR_LIST;
+                return $this->_filter;
         }
+
+//        /**
+//         * Get array of default attributes for user principal searches.
+//         * @return array
+//         */
+//        public function getDefaultAttributes()
+//        {
+//                return self::$DEFAULT_RESULT_ATTR_LIST;
+//        }
 
         /**
          * Get groups for user.
@@ -454,7 +488,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getPrincipals($needle, $attrib = null, $options = null)
         {
-                $search = new Search\Principals($this, $needle, $attrib, $options);
+                $search = new Manager\Search\Principals($this, $needle, $attrib, $options);
 
                 $attrib = $search->getAttribute();
                 $params = $search->getOptions();
@@ -486,7 +520,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getPrincipal($needle, $attrib = null, $domain = null, $inject = null)
         {
-                $search = new Search\Principal($this, $needle, $attrib, $domain, $inject);
+                $search = new Manager\Search\Principal($this, $needle, $attrib, $domain, $inject);
 
                 $attrib = $search->getAttribute();
                 $domain = $search->getDomain();
@@ -507,7 +541,7 @@ class DirectoryManager extends Component implements DirectoryService
          * @param string $principal The user principal name.
          * @return string
          */
-        public function getDomain($principal)
+        public function getRealm($principal)
         {
                 if (($pos = strpos($principal, '@'))) {
                         return substr($principal, ++$pos);
@@ -543,10 +577,10 @@ class DirectoryManager extends Component implements DirectoryService
          * Get service connection.
          * 
          * This method will always return null as the service connection is not
-         * unique withing the manager, its a container for multiple directory 
+         * unique within the manager, its a container for multiple directory 
          * services delivering catalog data for one or more domains.
          * 
-         * @return ServiceConnection
+         * @return Connection
          */
         public function getConnection()
         {

@@ -11,10 +11,12 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\Search;
+namespace OpenExam\Library\Catalog\Manager\Search;
 
 use OpenExam\Library\Catalog\DirectoryManager;
+use OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\Exception;
+use OpenExam\Library\Catalog\Manager\Search;
 use OpenExam\Library\Catalog\Principal as UserPrincipal;
 use Phalcon\Mvc\User\Component;
 
@@ -23,7 +25,7 @@ use Phalcon\Mvc\User\Component;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Attribute extends Component implements ManagerSearch
+class Attribute extends Component implements Search
 {
 
         /**
@@ -77,7 +79,7 @@ class Attribute extends Component implements ManagerSearch
          */
         public function getResult($manager)
         {
-                $domain = $manager->getDomain($this->_principal);
+                $domain = $manager->getRealm($this->_principal);
                 $result = array();
 
                 foreach ($manager->getServices($domain) as $name => $service) {

@@ -5,16 +5,16 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    DatabaseService.php
+// File:    Database.php
 // Created: 2016-11-14 03:13:10
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\DirectoryService;
+namespace OpenExam\Library\Catalog\Service\Adapter;
 
 use OpenExam\Library\Catalog\Principal;
-use OpenExam\Library\Catalog\ServiceConnection;
+use OpenExam\Library\Catalog\Connection as ServiceConnection;
 use OpenExam\Models\User;
 use Phalcon\Mvc\Model\Criteria;
 
@@ -27,7 +27,7 @@ use Phalcon\Mvc\Model\Criteria;
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class DatabaseService extends AttributeService
+class Database extends AttributeService
 {
 
         /**

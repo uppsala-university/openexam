@@ -5,14 +5,15 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    ServiceAdapter.php
+// File:    Adapter.php
 // Created: 2014-10-22 04:17:43
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog;
+namespace OpenExam\Library\Catalog\Service;
 
+use OpenExam\Library\Catalog\DirectoryService;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -24,7 +25,7 @@ use Phalcon\Mvc\User\Component;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-abstract class ServiceAdapter extends Component implements DirectoryService
+abstract class Adapter extends Component implements DirectoryService
 {
 
         /**
@@ -42,6 +43,16 @@ abstract class ServiceAdapter extends Component implements DirectoryService
          * @var long 
          */
         protected $_lifetime = 0;
+        /**
+         * The search domain.
+         * @var string 
+         */
+        protected $_domain;
+        /**
+         * The attribute filter.
+         * @var array 
+         */
+        protected $_filter;
 
         /**
          * Destructor.
@@ -49,8 +60,12 @@ abstract class ServiceAdapter extends Component implements DirectoryService
         public function __destruct()
         {
                 unset($this->_lifetime);
+
                 unset($this->_name);
                 unset($this->_type);
+
+                unset($this->_domain);
+                unset($this->_filter);
         }
 
         /**
@@ -166,6 +181,42 @@ abstract class ServiceAdapter extends Component implements DirectoryService
         public function getDomains()
         {
                 return null;
+        }
+
+        /**
+         * Set user domain.
+         * @param string $domain The search domain.
+         */
+        public function setDomain($domain)
+        {
+                $this->_domain = $domain;
+        }
+
+        /**
+         * Set attributes filter.
+         * @param array $attributes The returned attributes.
+         */
+        public function setFilter($attributes)
+        {
+                $this->_filter = $attributes;
+        }
+
+        /**
+         * Get user domain.
+         * @return string
+         */
+        public function getDomain()
+        {
+                return $this->_domain;
+        }
+
+        /**
+         * Get attributes filter.
+         * @return array
+         */
+        public function getFilter()
+        {
+                return $this->_filter;
         }
 
         /**

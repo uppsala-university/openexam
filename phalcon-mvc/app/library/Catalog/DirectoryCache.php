@@ -21,7 +21,7 @@ use Phalcon\Mvc\User\Component;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class DirectoryCache extends Component implements DirectoryService
+class DirectoryCache extends Component implements DirectoryQuery
 {
 
         /**
@@ -50,16 +50,6 @@ class DirectoryCache extends Component implements DirectoryService
         public function setBackend($cache)
         {
                 $this->_cache = $cache;
-        }
-
-        public function getConnection()
-        {
-                return null;
-        }
-
-        public function getDomains()
-        {
-                return null;
         }
 
         public function getServiceName()

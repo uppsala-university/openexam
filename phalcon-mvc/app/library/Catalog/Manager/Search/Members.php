@@ -11,11 +11,12 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\Search;
+namespace OpenExam\Library\Catalog\Manager\Search;
 
 use OpenExam\Library\Catalog\DirectoryManager;
 use OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\Exception;
+use OpenExam\Library\Catalog\Manager\Search;
 use OpenExam\Library\Catalog\Principal as UserPrincipal;
 
 /**
@@ -23,7 +24,7 @@ use OpenExam\Library\Catalog\Principal as UserPrincipal;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Members implements ManagerSearch
+class Members implements Search
 {
 
         /**
@@ -40,7 +41,7 @@ class Members implements ManagerSearch
          * The attribute filter.
          * @var array 
          */
-        private $_attributes;
+        private $_filter;
 
         /**
          * Constructor.
@@ -56,7 +57,7 @@ class Members implements ManagerSearch
 
                 $this->_group = $group;
                 $this->_domain = $domain;
-                $this->_attributes = $attributes;
+                $this->_filter = $attributes;
         }
 
         /**
@@ -83,7 +84,7 @@ class Members implements ManagerSearch
          */
         public function setFilter($attributes)
         {
-                $this->_attributes = $attributes;
+                $this->_filter = $attributes;
         }
 
         /**
@@ -115,7 +116,7 @@ class Members implements ManagerSearch
         private function getMembers($manager, $service, $name)
         {
                 try {
-                        return $service->getMembers($this->_group, $this->_domain, $this->_attributes);
+                        return $service->getMembers($this->_group, $this->_domain, $this->_filter);
                 } catch (Exception $exception) {
                         $manager->report($exception, $service, $name);
                 }

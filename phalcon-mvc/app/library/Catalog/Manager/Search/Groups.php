@@ -5,64 +5,65 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    Attributes.php
-// Created: 2017-04-11 23:51:49
+// File:    Groups.php
+// Created: 2017-04-11 22:26:45
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\Search;
+namespace OpenExam\Library\Catalog\Manager\Search;
 
 use OpenExam\Library\Catalog\DirectoryManager;
 use OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\Exception;
-use Phalcon\Mvc\User\Component;
+use OpenExam\Library\Catalog\Group;
+use OpenExam\Library\Catalog\Manager\Search;
 
 /**
- * Directory attributes search.
+ * Directory groups search.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Attributes extends Component implements ManagerSearch
+class Groups implements Search
 {
 
-        /**
-         * The attribute filter.
-         * @var string 
-         */
-        private $_attribute;
         /**
          * The user principal name.
          * @var string 
          */
         private $_principal;
+        /**
+         * The attributes filter.
+         * @var array 
+         */
+        private $_filter;
 
         /**
          * Constructor.
-         * @param string $attribute The attribute filter.
-         * @param string $principal The user principal name (defaults to caller).
+         * @param string $principal The user principal name.
+         * @param array $attributes The attribute filter.
          */
-        public function __construct($attribute, $principal = null)
+        public function __construct($principal, $attributes = null)
         {
-                if (!isset($principal)) {
-                        $principal = $this->user->getPrincipalName();
+                if (empty($attributes)) {
+                        $attributes = array(Group::ATTR_NAME);
                 }
 
-                $this->_attribute = $attribute;
                 $this->_principal = $principal;
+                $this->_filter = $attributes;
         }
 
         /**
-         * Set attribute filter.
-         * @param string $attribute The attribute filter.
+         * Set attributes filter.
+         * @param array $attributes The returned attributes.
          */
-        public function setFilter($attribute)
+        public function setFilter($attributes)
         {
-                $this->_attribute = $attribute;
+                $this->_filter = $attributes;
         }
 
         /**
-         * Set user principal name.
+         * Set user principal.
          * @param string $principal The user principal name.
          */
         public function setPrincipal($principal)
@@ -73,16 +74,16 @@ class Attributes extends Component implements ManagerSearch
         /**
          * Get directory manager search result.
          * @param DirectoryManager $manager The directory manager.
-         * @return string|array
+         * @return array
          */
         public function getResult($manager)
         {
-                $domain = $manager->getDomain($this->_principal);
+                $domain = $manager->getRealm($this->_principal);
                 $result = array();
 
                 foreach ($manager->getServices($domain) as $name => $service) {
-                        if (($attributes = $this->getAttributes($manager, $service, $name)) != null) {
-                                $result = array_merge($result, $attributes);
+                        if (($groups = $this->getGroups($manager, $service, $name)) != null) {
+                                $result = array_merge($result, $groups);
                         }
                 }
 
@@ -90,17 +91,17 @@ class Attributes extends Component implements ManagerSearch
         }
 
         /**
-         * Get directory attributes.
+         * Get directory groups.
          * 
          * @param DirectoryManager $manager The directory manager.
          * @param DirectoryService $service The directory service.
          * @param string $name The service name.
          * @return array
          */
-        private function getAttributes($manager, $service, $name)
+        private function getGroups($manager, $service, $name)
         {
                 try {
-                        return $service->getAttributes($this->_attribute, $this->_principal);
+                        return $service->getGroups($this->_principal, $this->_filter);
                 } catch (Exception $exception) {
                         $manager->report($exception, $service, $name);
                 }

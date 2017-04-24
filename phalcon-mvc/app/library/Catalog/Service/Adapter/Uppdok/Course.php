@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\DirectoryService\Uppdok;
+namespace OpenExam\Library\Catalog\Service\Adapter\Uppdok;
 
 if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
         define('INFO_CGI_RECORD_SEPARATOR', "\n");

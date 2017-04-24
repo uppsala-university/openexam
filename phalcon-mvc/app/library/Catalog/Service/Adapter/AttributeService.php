@@ -11,16 +11,16 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\DirectoryService;
+namespace OpenExam\Library\Catalog\Service\Adapter;
 
-use OpenExam\Library\Catalog\ServiceAdapter;
+use OpenExam\Library\Catalog\Service\Adapter;
 
 /**
  * Abstract base class for attribute services.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-abstract class AttributeService extends ServiceAdapter
+abstract class AttributeService extends Adapter
 {
 
         /**

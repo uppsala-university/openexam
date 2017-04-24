@@ -5,18 +5,18 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    UppdokService.php
+// File:    Uppdok.php
 // Created: 2014-10-22 04:20:31
 // 
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-namespace OpenExam\Library\Catalog\DirectoryService;
+namespace OpenExam\Library\Catalog\Service\Adapter;
 
-use OpenExam\Library\Catalog\DirectoryService\Uppdok\Connection;
-use OpenExam\Library\Catalog\DirectoryService\Uppdok\Data;
 use OpenExam\Library\Catalog\Principal;
-use OpenExam\Library\Catalog\ServiceAdapter;
+use OpenExam\Library\Catalog\Service\Adapter\Uppdok\Connection;
+use OpenExam\Library\Catalog\Service\Adapter\Uppdok\Data;
+use OpenExam\Library\Catalog\Service\Adapter;
 use OpenExam\Library\Catalog\ServiceConnection;
 
 /**
@@ -24,7 +24,7 @@ use OpenExam\Library\Catalog\ServiceConnection;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class UppdokService extends ServiceAdapter
+class Uppdok extends Adapter
 {
 
         /**
@@ -90,6 +90,7 @@ class UppdokService extends ServiceAdapter
                         }
                 }
 
+                $domain = $this->getDomain();
                 $result = array();
                 $group = trim($group, '*');
 
