@@ -240,7 +240,7 @@ class CatalogHandler extends ServiceHandler
 
                 if ($action == "members") {
                         if (!isset($this->_request->data['attributes'])) {
-                                $this->_request->data['attributes'] = DirectoryManager::$DEFAULT_RESULT_ATTR_LIST;
+                                $this->_request->data['attributes'] = null;
                         }
                         if (!isset($this->_request->data['domain'])) {
                                 $this->_request->data['domain'] = null;

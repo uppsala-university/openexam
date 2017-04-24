@@ -94,6 +94,10 @@ class Uppdok extends Adapter
                 $result = array();
                 $group = trim($group, '*');
 
+                if (!isset($attributes)) {
+                        $attributes = $this->getFilter();
+                }
+
                 foreach ($this->_data->members($group) as $member) {
                         $principal = $member->getPrincipal($domain, $attributes);
                         $principal->attr = array(

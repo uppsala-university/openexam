@@ -46,11 +46,6 @@ class DirectoryManager extends Component implements DirectoryService
 {
 
         /**
-         * Default list of attributes returned.
-         */
-        static $DEFAULT_RESULT_ATTR_LIST = array(Principal::ATTR_UID, Principal::ATTR_NAME, Principal::ATTR_MAIL);
-
-        /**
          * Default search attribute.
          */
         const DEFAULT_SEARCH_ATTRIB = Principal::ATTR_NAME;
@@ -93,6 +88,7 @@ class DirectoryManager extends Component implements DirectoryService
         {
                 $this->_services = $services;
                 $this->_enumerator = new Attribute\Enumerator($this);
+                $this->_filter = array(Principal::ATTR_PN, Principal::ATTR_UID, Principal::ATTR_NAME, Principal::ATTR_MAIL);
         }
 
         /**
@@ -155,6 +151,9 @@ class DirectoryManager extends Component implements DirectoryService
                 }
                 if (isset($name)) {
                         $service->setName($name);
+                }
+                if (empty($service->getFilter())) {
+                        $service->setFilter($this->_filter);
                 }
                 foreach ($domains as $domain) {
                         if (!isset($this->_services[$domain])) {

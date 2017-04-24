@@ -49,7 +49,7 @@ class Principals implements Search
          * @param DirectoryManager $manager The directory manager.
          * @param string $needle The attribute search string.
          * @param string $attrib The attribute to query (optional).
-         * @param array $options Miscellanous search options (optional).
+         * @param array $options Miscellaneous search options (optional).
          */
         public function __construct($manager, $needle, $attrib = null, $options = null)
         {
@@ -60,7 +60,7 @@ class Principals implements Search
                         $options = array();
                 }
                 if (!isset($options['attr']) || $options['attr'] == false) {
-                        $options['attr'] = DirectoryManager::$DEFAULT_RESULT_ATTR_LIST;
+                        $options['attr'] = $manager->getFilter();
                 }
                 if (!isset($options['limit']) || $options['limit'] == false) {
                         $options['limit'] = DirectoryManager::DEFAULT_RESULT_LIMIT;

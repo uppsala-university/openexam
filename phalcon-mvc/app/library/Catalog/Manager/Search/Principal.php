@@ -63,7 +63,7 @@ class Principal implements Search
                         $attrib = DirectoryManager::DEFAULT_SEARCH_ATTRIB;
                 }
                 if (!isset($inject) || $inject == false) {
-                        $inject = DirectoryManager::$DEFAULT_RESULT_ATTR_LIST;
+                        $inject = $manager->getFilter();
                 }
                 if ($attrib == UserPrincipal::ATTR_PN) {
                         $domain = $manager->getRealm($needle);
