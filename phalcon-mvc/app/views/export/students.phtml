@@ -67,17 +67,18 @@
     </tr>
     <tr><td><br/></td></tr>
     <tr>
-        <th>Name</th><th>Pers Nr</th><th>Code</th><th>Tag</th><th>ID</th><th>Finished</th><th class="notes">Notes</th>
+        <th>Name</th><th>Pers Nr</th><th>Code</th><th>User</th><th>Tag</th><th>ID</th><th>Finished</th><th class="notes">Notes</th>
     </tr>
     <?php foreach ($students as $student) { ?>
             <tr class="student">
                 <td><?= $student->lname ?>, <?= $student->fname ?></td>
                 <td><?= $student->persnr ?></td>
                 <td><?= $student->code ?></td>
+                <td><?= $student->user ?></td>
                 <td><?= $student->tag ?></td>
                 <td></td>
                 <td><?= $student->finished ?></td>
-                <td></td>
+                <td><br><br></td>
             </tr>
     <?php } ?>
 </table>
