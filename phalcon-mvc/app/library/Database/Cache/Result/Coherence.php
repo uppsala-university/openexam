@@ -143,7 +143,7 @@ class Coherence
                 // 
                 switch ($this->_resolve) {
                         case self::ON_CONFLICT_READD:
-                                return $this->readd($entry);
+                                return $this->read($entry);
                         case self::ON_CONCLICT_RESTORE:
                                 return $this->restore($entry);
                         case self::ON_CONFLICT_DELETE:
@@ -161,7 +161,7 @@ class Coherence
          * Use re-add strategy to resolve conflict.
          * @param Entry $entry The cache entry.
          */
-        private function readd($entry)
+        private function read($entry)
         {
                 // 
                 // Insert result set cache entry:
