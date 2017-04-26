@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Database\Cache;
 
 use OpenExam\Library\Core\Cache\Backend\Xcache as XcacheBackend;
+use OpenExam\Library\Core\Synchronize\Mutex;
 use OpenExam\Library\Database\Cache\Result\Coherence;
 use OpenExam\Library\Database\Cache\Result\Entry;
 use OpenExam\Library\Database\Exception;
@@ -80,7 +81,7 @@ class Backend
                 $this->_cache = $cache;
 
                 $this->_ttlres = $cache->getFrontend()->getLifetime();
-                $this->_ttlidx = $cache->getFrontend()->getLifetime() + 86400;
+                $this->_ttlidx = $cache->getFrontend()->getLifetime() + 604800;
         }
 
         /**
@@ -105,10 +106,17 @@ class Backend
         public function delete($table)
         {
                 // 
+                // Use mutex lock on table:
+                // 
+                $mutex = new Mutex($this->_cache);
+
+                // 
                 // Single call if operating on a one table:
                 // 
                 if (is_string($table)) {
-                        return $this->cleanup($table);
+                        return $mutex->open($table, function() use($table) {
+                                    return $this->cleanup($table);
+                            });
                 }
 
                 // 
@@ -120,7 +128,9 @@ class Backend
                 // Process all tables. Set status to false if any fails.
                 // 
                 foreach ($table as $t) {
-                        if ($this->cleanup($t) == false) {
+                        if ($mutex->open($table, function() use($t) {
+                                    return $this->cleanup($t);
+                            }) == false) {
                                 $status = false;
                         }
                 }
@@ -187,6 +197,11 @@ class Backend
         public function save($keyName, $content, $tables)
         {
                 // 
+                // Use mutex lock on table:
+                // 
+                $mutex = new Mutex($this->_cache);
+
+                // 
                 // We don't need the extra functionality of the cache  
                 // entry class if not dealing with cache coherence.
                 // 
@@ -203,6 +218,17 @@ class Backend
                 // Update cache key index:
                 // 
                 foreach ($tables as $table) {
+                        // 
+                        // Remove cache key if failing to acquire mutex lock
+                        // on any one of the affected tables. We do this to
+                        // prevent dangling result set keys not present in the
+                        // table index -> not invalidated.
+                        // 
+                        if (!$mutex->acquire($table)) {
+                                $this->_cache->delete($keyName);
+                                return;
+                        }
+
                         $active = array();
                         $remove = array();
 
@@ -246,6 +272,11 @@ class Backend
                         if ($insert) {
                                 $this->_cache->save($table, $active, $this->_ttlidx);
                         }
+
+                        // 
+                        // Release mutex lock:
+                        // 
+                        $mutex->release();
                 }
         }
 
@@ -367,19 +398,19 @@ class Backend
                 }
 
                 // 
+                // Delete the cache key index itself:
+                // 
+                if ($this->_cache->delete($table) == false) {
+                        $status = false;
+                }
+
+                // 
                 // Delete all cached result set:
                 // 
                 foreach ($data as $keyName) {
                         if ($this->_cache->delete($keyName) == false) {
                                 $status = false;
                         }
-                }
-
-                // 
-                // Delete the cache key index itself:
-                // 
-                if ($this->_cache->delete($table) == false) {
-                        $status = false;
                 }
 
                 // 
