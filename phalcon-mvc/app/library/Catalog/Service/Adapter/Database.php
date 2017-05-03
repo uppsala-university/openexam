@@ -52,8 +52,8 @@ class Database extends AttributeService
                         'person' => array(
                                 Principal::ATTR_UID   => 'uid',
                                 Principal::ATTR_SN    => 'sn',
-                                Principal::ATTR_NAME  => 'display_name',
-                                Principal::ATTR_GN    => 'given_name',
+                                Principal::ATTR_NAME  => 'displayName',
+                                Principal::ATTR_GN    => 'givenName',
                                 Principal::ATTR_MAIL  => 'mail',
                                 Principal::ATTR_PNR   => 'pnr',
                                 Principal::ATTR_PN    => 'principal',
@@ -395,7 +395,7 @@ class Database extends AttributeService
                 // 
                 if (!empty($options['attr'])) {
                         $model = new User();
-                        $attrmap = array_intersect_key($attrmap, $model->columnMap());
+                        $attrmap = array_intersect($attrmap, $model->columnMap());
                 }
 
                 if (!isset($attrmap['id'])) {
