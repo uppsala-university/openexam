@@ -182,9 +182,9 @@ $decoded = $exam->decoded;
                                                                 <div style="color:orange; margin-left:35px"><i class="fa fa-warning"></i>  Student's answer is partially correct </div>
                                                         <?php endif; ?>
 
-                                                        <div class="q-part-student-score" style="padding-bottom: 10px; padding-left:35px">
+                                                        <div class="q-part-student-score" style="padding-bottom: 10px; padding-left:35px; display: <?= $qPart['q_points'] == 0 ? 'none' : '' ?>">
                                                             <i class="fa fa-certificate" style="color:#D84B4B"></i>
-                                                            <span style="color:#000;">
+                                                            <span style="color:#000">
                                                                 Points:<br />
                                                                 <span style="margin-left: 15px">
                                                                     <?php
@@ -328,7 +328,7 @@ $decoded = $exam->decoded;
                                                                         </ul>
                                                                     </div>
 
-                                                                    <div class="q-part-student-score" style="padding-top: 10px; padding-left:35px">
+                                                                    <div class="q-part-student-score" style="padding-top: 10px; padding-left:35px; display: <?= $qPart['q_points'] == 0 ? 'none' : '' ?>">
                                                                         <i class="fa fa-certificate" style="color:#D84B4B"></i>
                                                                         <span style="color:#000;">
                                                                             Points:<br />
