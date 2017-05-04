@@ -93,7 +93,7 @@ use OpenExam\Library\Core\Exam\State;
                     printf("<li>%s</li>\n", "Exam has been published");
             }
             if ($state->has(State::REUSABLE)) {
-                    printf("<li>%s</li>\n", "Can be reused as new exam (not seen by students)");
+                    printf("<li>%s</li>\n", "Can be reused as new exam");
             }
             if ($state->has(State::TESTCASE)) {
                     printf("<li>%s</li>\n", "Marked as testcase (always deletable)");
