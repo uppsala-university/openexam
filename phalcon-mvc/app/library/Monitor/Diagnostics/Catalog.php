@@ -137,10 +137,8 @@ class Catalog extends Component implements ServiceCheck
 
                         foreach ($this->catalog->getServices($domain) as $service) {
                                 if (($connection = $service->getConnection()) == null) {
-                                        continue;
-                                }
-
-                                if ($connection->connected()) {
+                                        $this->_result[$domain][$service->getServiceName()]['working'] = true;
+                                } elseif ($connection->connected()) {
                                         $this->_result[$domain][$service->getServiceName()]['working'] = true;
                                 } elseif ($connection->open()) {
                                         $this->_result[$domain][$service->getServiceName()]['working'] = true;
