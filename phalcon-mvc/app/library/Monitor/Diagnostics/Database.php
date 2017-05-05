@@ -23,7 +23,11 @@ use Phalcon\Mvc\User\Component;
  *
  * In addition to checking that slave and master database (if appropriate) 
  * is online, this class will also perform read and write on the database 
- * service (dbread/dbwrite) to test its fully working.
+ * service (dbread/dbwrite) to test it's fully working. 
+ * 
+ * For dbaudit, the diagnostics is limited to checking online status and
+ * performing an count query. If query fails, then it means that dbaudit
+ * is missing or improperly configured.
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
