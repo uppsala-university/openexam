@@ -42,6 +42,10 @@ class Database extends Component implements ServiceCheck
                 'dbwrite' => array(
                         'online'  => true,
                         'working' => true
+                ),
+                'dbaudit' => array(
+                        'online'  => true,
+                        'working' => true
                 )
         );
         /**
@@ -78,9 +82,13 @@ class Database extends Component implements ServiceCheck
                 if (!$this->config->dbwrite) {
                         throw new Exception("The dbwrite config is missing");
                 }
+                if (!$this->config->dbaudit) {
+                        throw new Exception("The dbaudit config is missing");
+                }
 
                 $dbr = new OnlineStatus($this->config->dbread->config->host);
                 $dbw = new OnlineStatus($this->config->dbwrite->config->host);
+                $dba = new OnlineStatus($this->config->dbaudit->config->host);
 
                 if ($dbr->checkStatus()) {
                         $this->_result['dbread']['online'] = $dbr->getResult();
@@ -93,6 +101,13 @@ class Database extends Component implements ServiceCheck
                         $this->_result['dbwrite']['online'] = $dbw->getResult();
                 } else {
                         $this->_result['dbwrite']['online'] = $dbw->getResult();
+                        $this->_failed = true;
+                }
+
+                if ($dba->checkStatus()) {
+                        $this->_result['dbaudit']['online'] = $dba->getResult();
+                } else {
+                        $this->_result['dbaudit']['online'] = $dba->getResult();
                         $this->_failed = true;
                 }
 
@@ -123,6 +138,11 @@ class Database extends Component implements ServiceCheck
                         $this->_failed = true;
                 } elseif (isset($id)) {
                         $this->dbwrite->delete("performance", "id = $id");
+                }
+
+                if (!($result = $this->dbaudit->query("SELECT COUNT(*) FROM audit"))) {
+                        $this->_result['dbaudit']['working'] = false;
+                        $this->_failed = true;
                 }
 
                 return $this->_failed != true;
