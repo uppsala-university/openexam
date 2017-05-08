@@ -16,6 +16,7 @@ namespace OpenExam\Library\Monitor;
 use OpenExam\Library\Monitor\Diagnostics\Authenticator as AuthServiceCheck;
 use OpenExam\Library\Monitor\Diagnostics\Catalog as CatalogServiceCheck;
 use OpenExam\Library\Monitor\Diagnostics\Database as DatabaseServiceCheck;
+use OpenExam\Library\Monitor\Diagnostics\WebServer as WebServerCheck;
 use OpenExam\Library\Monitor\Diagnostics\ServiceCheck;
 
 /**
@@ -57,6 +58,7 @@ class Diagnostics implements ServiceCheck
                 $this->register('auth', AuthServiceCheck::class);
                 $this->register('catalog', CatalogServiceCheck::class);
                 $this->register('database', DatabaseServiceCheck::class);
+                $this->register('web', WebServerCheck::class);
         }
 
         /**

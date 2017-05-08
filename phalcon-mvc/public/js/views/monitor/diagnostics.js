@@ -102,6 +102,35 @@ diagnostics = (function () {
     }
 
     // 
+    // Show web server status details.
+    // 
+    function web(parent, content) {
+        var html = "<div class='title'>Web Server</div>";
+        var head = {frontend: "Frontend", backend: "Backend", balancer: "Load Balancer"};
+
+        for (var s in content) {
+            html += "<div><span class='head'>" + head[s] + "</span></div>";
+
+            if (content[s].working) {
+                html += "<div><span class='item'> Working: " + content[s].working + "</span></div>";
+            } else {
+                html += "<div><span class='item failed'><i class='fa fa-arrow-right'></i> Working: " + content[s].working + "</span></div>";
+                failure();
+            }
+            for (var h in content[s].online) {
+                if (content[s].online[h]) {
+                    html += "<div><span class='item'> Online: " + h + "</span></div>";
+                } else {
+                    html += "<div><span class='item failed'><i class='fa fa-arrow-right'></i> Offline: " + h + "</span></div>";
+                    failure();
+                }
+            }
+        }
+
+        parent.append("<div class='card'>" + html + "</div>");
+    }
+
+    // 
     // Called on failure.
     // 
     function failure() {
@@ -145,6 +174,9 @@ diagnostics = (function () {
         }
         if (content.catalog !== undefined) {
             catalog(context, content.catalog);
+        }
+        if (content.web !== undefined) {
+            web(context, content.web);
         }
     }
 

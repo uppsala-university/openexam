@@ -369,5 +369,23 @@ return array(
                  * are always or never.
                  */
                 // 'reusable' => 'always'                
-        )
+        ),
+        /**
+         * Web server diagnostics.
+         */
+//        'diagnostics' => array(
+//                'web' => array(
+//                        'frontend' => array(
+//                                'host' => 'openexam.bmc.uu.se',
+//                                'port' => array(80 => 'http', 443 => 'https')
+//                        ),
+//                        'backend'  => array(
+//                                'host' => 'openexam-www.bmc.uu.se',
+//                                'port' => array(80 => 'http')
+//                        ),
+//                        'balancer' => array(
+//                                'host' => array('ws12.bmc.uu.se', 'ws13.bmc.uu.se')
+//                        )
+//                )
+//        )
 );
