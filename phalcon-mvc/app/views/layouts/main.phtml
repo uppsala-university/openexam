@@ -1,3 +1,11 @@
+<?php
+// 
+// Add profiling check point:
+// 
+$this->profiler->add("view");
+
+?>
+
 <!-- Css -->
 <?= Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap.css'); ?>
 <?= Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap-responsive.css'); ?>
@@ -13,6 +21,7 @@
 <?= Phalcon\Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('bootstrap/js/bootstrap.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('js/views/layouts/supermenu.js'); ?>
+
 <?php
 $controllerName = $this->dispatcher->getControllerName();
 $actionName = $this->dispatcher->getActionName();

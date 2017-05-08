@@ -1,3 +1,11 @@
+<?php
+// 
+// Add profiling check point:
+// 
+$this->profiler->add("view");
+
+?>
+
 <!-- / bootstrap -->
 <?= Phalcon\Tag::stylesheetLink('thin-layout/stylesheets/bootstrap/bootstrap.css'); ?>
 
@@ -247,14 +255,11 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
                 var docElm = document.getElementById($(this).attr('isfor'));
                 if (docElm.requestFullscreen) {
                     docElm.requestFullscreen();
-                }
-                else if (docElm.msRequestFullscreen) {
+                } else if (docElm.msRequestFullscreen) {
                     docElm.msRequestFullscreen();
-                }
-                else if (docElm.mozRequestFullScreen) {
+                } else if (docElm.mozRequestFullScreen) {
                     docElm.mozRequestFullScreen();
-                }
-                else if (docElm.webkitRequestFullScreen) {
+                } else if (docElm.webkitRequestFullScreen) {
                     docElm.webkitRequestFullScreen();
                 }
             });
