@@ -279,8 +279,6 @@ class WebServer extends Component implements ServiceCheck
                 } else {
                         $this->_servers = $servers;
                 }
-
-                error_log(print_r($this->_servers, true));
         }
 
 }
