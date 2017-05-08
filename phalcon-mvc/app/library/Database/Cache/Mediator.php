@@ -72,7 +72,7 @@ class Mediator extends Proxy
                 }
 
                 $this->_exclude = array(
-                        'tables' => array('answers'),
+                        'tables' => array('answers', 'audit', 'profile'),
                         'filter' => function($table, $data) {
                                 if ($table == 'locks' && $data->numRows() == 0) {
                                         return true;
@@ -231,7 +231,7 @@ class Mediator extends Proxy
          */
         public function insert($table, array $values, $fields = null, $dataTypes = null)
         {
-                $this->_cache->delete($table);
+                $this->onChanged($table);
                 return $this->_adapter->insert($table, $values, $fields, $dataTypes);
         }
 
@@ -247,7 +247,7 @@ class Mediator extends Proxy
          */
         public function update($table, $fields, $values, $whereCondition = null, $dataTypes = null)
         {
-                $this->_cache->delete($table);
+                $this->onChanged($table);
                 return $this->_adapter->update($table, $fields, $values, $whereCondition, $dataTypes);
         }
 
@@ -262,7 +262,7 @@ class Mediator extends Proxy
          */
         public function delete($table, $whereCondition = null, $placeholders = null, $dataTypes = null)
         {
-                $this->_cache->delete($table);
+                $this->onChanged($table);
                 return $this->_adapter->delete($table, $whereCondition, $placeholders, $dataTypes);
         }
 
@@ -438,6 +438,26 @@ class Mediator extends Proxy
                 if (in_array('empty', $match)) {
                         if ($data->numRows() == 0) {
                                 return true;
+                        }
+                }
+        }
+
+        /**
+         * Handle on table changed call.
+         * @param string|array $table The table name(s).
+         */
+        private function onChanged($table)
+        {
+                if (is_string($table)) {
+                        if (!in_array($table, $this->_exclude['tables'])) {
+                                $this->_cache->delete($table);
+                        }
+                }
+                if (is_array($table)) {
+                        foreach ($table as $t) {
+                                if (!in_array($t, $this->_exclude['tables'])) {
+                                        $this->_cache->delete($t);
+                                }
                         }
                 }
         }
