@@ -1,6 +1,6 @@
 CXX      = g++
 CXXFLAGS = -g -Wall -O -std=c++0x -pthread
-LIBS     = -pthread
+LIBS     = -pthread -lcurl
 
 INSTALL  = install
 BINDIR   = /usr/local/bin
@@ -10,7 +10,8 @@ PROGRAMS = simulate
 .PHONY : all clean all-clean distclean install
 
 all : $(PROGRAMS)
-simulate : application.o main.o options.o task.o
+simulate : application.o main.o options.o output.o request.o \
+           response.o result.o task.o
 	$(CXX) -o $@ $+ $(LIBS)
 
 clean :
