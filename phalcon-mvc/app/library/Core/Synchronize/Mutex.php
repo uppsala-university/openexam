@@ -70,11 +70,11 @@ class Mutex
         /**
          * Default retry delay.
          */
-        const LOCK_DELAY = 200;
+        const LOCK_DELAY = 100;
         /**
          * Default retry times.
          */
-        const LOCK_RETRY = 3;
+        const LOCK_RETRY = 2;
         /**
          * Default TTL for lock.
          */
@@ -105,7 +105,7 @@ class Mutex
          * Constructor.
          * @param BackendInterface $cache The cache backend.
          */
-        public function __construct($cache, $delay = 200, $retry = 3)
+        public function __construct($cache, $delay = 100, $retry = 2)
         {
                 $this->_cache = $cache;
 
@@ -175,10 +175,10 @@ class Mutex
         {
                 $lock = sprintf("%s-lock", $resource);
 
-                for ($i = 0; $i < $this->_retry; ++$i) {
+                for ($i = 0; $i <= $this->_retry; ++$i) {
                         if ($this->lock($lock, $ttl)) {
                                 return true;
-                        } else {
+                        } elseif ($i != $this->_retry) {
                                 usleep($this->_delay);
                         }
                 }
