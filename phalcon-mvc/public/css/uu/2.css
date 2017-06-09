@@ -4845,7 +4845,7 @@ select[name=program] {
 }
 
 #q-part-tabs .ui-icon-close {
-    background-image: url("<?=$this->url->get('plugins/jqueryui/themes/blitzer/images/ui-icons_004276_256x240.png')?>");
+    background-image: url("../../plugins/jqueryui/themes/blitzer/images/ui-icons_004276_256x240.png");
 }
 .write_q_ckeditor {
     margin-top:26px;
