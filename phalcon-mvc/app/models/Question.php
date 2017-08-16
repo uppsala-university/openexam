@@ -278,6 +278,16 @@ class Question extends ModelBase
         }
 
         /**
+         * Called before model is persisted.
+         */
+        protected function beforeValidation()
+        {
+                if (isset($this->score)) {
+                        $this->score = str_replace(",", ".", $this->score);
+                }
+        }
+
+        /**
          * Specialization of findFirst() for the question model.
          * 
          * @param array $parameters The query parameters.

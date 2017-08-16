@@ -128,6 +128,16 @@ class Profile extends ModelBase
                 );
         }
 
+        /**
+         * Called before model is persisted.
+         */
+        protected function beforeValidation()
+        {
+                if (isset($this->time)) {
+                        $this->time = str_replace(",", ".", $this->time);
+                }
+        }
+
         protected function beforeSave()
         {
                 $this->data = serialize($this->data);
