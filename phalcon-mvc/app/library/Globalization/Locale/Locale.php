@@ -159,7 +159,7 @@ class Locale extends Component
          */
         public function getLocale()
         {
-                return setlocale(LC_ALL, "0");
+                return setlocale(LC_CTYPE, "0");
         }
 
         /**
