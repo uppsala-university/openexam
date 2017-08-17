@@ -647,7 +647,7 @@ class ExamController extends GuiController
                 if (!($exam = Exam::findFirst($eid))) {
                         throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
-                
+
                 // 
                 // Need department information:
                 // 
@@ -755,18 +755,27 @@ class ExamController extends GuiController
         public function startAction()
         {
                 // 
-                // Get ongoing or upcoming exams:
+                // Get exams since one week ago:
                 // 
                 $this->user->setPrimaryRole(Roles::STUDENT);
                 if (!($exams = Exam::find(array(
                             'conditions' => "published = 'Y' AND OpenExam\Models\Exam.endtime > :endtime:",
                             'order'      => 'starttime DESC',
                             'bind'       => array(
-                                    'endtime' => strftime("%F %T")
+                                    'endtime' => strftime("%F", time() - 604800)
                             )
                     )))) {
                         throw new \Exception("Failed query student exams");
                 }
+
+                // 
+                // Filter exams on upcoming and ongoing state:
+                // 
+                $exams = $exams->filter(function($exam) {
+                        if ($exam->state & State::UPCOMING || $exam->state & State::RUNNING) {
+                                return $exam;
+                        }
+                });
 
                 // 
                 // Bypass exam selection if only one active exam.
