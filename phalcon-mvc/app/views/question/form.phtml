@@ -181,7 +181,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                             <h3>Points</h3>
                             <div>
                                 <div style="min-height:200px"> Maximum points:
-                                    <input type="text" class="q-part-points" style="width:50px" value="<?= $qParts[$qPartTitle]['q_points'] ?>" />
+                                    <input type="text" class="q-part-points" style="width:50px" value="<?= floatval($qParts[$qPartTitle]['q_points']) ?>" />
                                 </div>
                             </div>
                         </div>

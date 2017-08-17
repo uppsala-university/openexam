@@ -198,11 +198,11 @@ $decoded = $exam->decoded;
 
                                                                     ?>
                                                                     <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                            <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['ans_area']['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>" max-pt="<?= $qPart['q_points'] ?>">								
+                                                                    <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= floatval(isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['ans_area']['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '')) ?>" max-pt="<?= floatval($qPart['q_points']) ?>">								
                                                                     <?php else: ?>
-                                                                            <?= sprintf("%1.1f", $scoreData[$qPartTitle]) ?>
+                                                                            <?= floatval($scoreData[$qPartTitle]) ?>
                                                                     <?php endif; ?>	
-                                                                    [Max: <?= $qPart['q_points'] ?>]
+                                                                    [Max: <?= floatval($qPart['q_points']) ?>]
                                                                 </span>
                                                             </span>
                                                         </div>
@@ -344,9 +344,9 @@ $decoded = $exam->decoded;
                                                                             ?>
 
                                                                             <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                                    <input type="text" class="q-points changeable" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height:12px; border-radius:0px; width:50px; margin-left:15px" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= $questParts[$qPartTitle]['q_points'] ?>">
+                                                                                    <input type="text" class="q-points changeable" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height:12px; border-radius:0px; width:50px; margin-left:15px" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= floatval($questParts[$qPartTitle]['q_points']) ?>">
                                                                             <?php else: ?>
-                                                                                    <?= sprintf("%1.1f", $scoreData[$qPartTitle]) ?>
+                                                                                    <?= floatval($scoreData[$qPartTitle]) ?>
                                                                             <?php endif; ?>
 
                                                                             [Max: <?= $questParts[$qPartTitle]['q_points'] ?>]

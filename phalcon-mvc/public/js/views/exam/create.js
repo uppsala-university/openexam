@@ -475,7 +475,7 @@ $(document).ready(function () {
     // data in JSON (on page storage).
     // 
     var saveQuestionToExam = function (qId) {
-
+        
         /////////// Create Json object for Q ///////////
         //	initializations
         ///////////////////////////////////////////////
@@ -554,7 +554,7 @@ $(document).ready(function () {
             // 
             // Find and sum up score for this part:
             // 
-            qPartScore = Number($(qPart).find('.q-part-points').val());
+            qPartScore = $(qPart).find('.q-part-points').val().parsefloat();
             qJson[qPartTitle]["q_points"] = qPartScore;
             totalScore += qPartScore;
 
@@ -718,8 +718,8 @@ $(document).ready(function () {
                 // 
                 // Skip extra node:
                 // 
-                if (qPartTitle == 'questId' || qPartTitle == 'canUpdate') {
-                    if (qPartTitle == 'questId') {
+                if (qPartTitle === 'questId' || qPartTitle === 'canUpdate') {
+                    if (qPartTitle === 'questId') {
                         $(qLine).attr('q-id', qPartData);
                     }
                     return;
@@ -781,20 +781,20 @@ $(document).ready(function () {
 
                 if (totalQParts > 1) {
                     $(qPartLine).find('.q_part_no').html(qPartTitle + '.');
-                    $(qPartLine).find('.q_part_pt').html("(" + qPartData.q_points + ' pt.)');
+                    $(qPartLine).find('.q_part_pt').html("(" + qPartData.q_points.floatval() + ' pt.)');
                 }
 
 
                 $(qLine).find('.qs_area_line_q_parts').append($(qPartLine).show());
 
-                if (firstPartQText == '') {
+                if (firstPartQText === '') {
                     firstPartQText = qText;
                 }
 
             });
-
+            
             $(qLine).find('.qs_area_line_q:last').css('border-bottom', '2px solid #fbeed5');
-            $(qLine).find('.q_score').html('[' + totalScore + ' pt.]');
+            $(qLine).find('.q_score').html('[' + totalScore.floatval() + ' pt.]');
 
             $('#qs_area').append($(qLine).show());
 

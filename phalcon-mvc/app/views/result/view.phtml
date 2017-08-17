@@ -172,7 +172,7 @@
                                         <div>
                                             <h2>Summary</h2>
                                             <div>
-                                                You scored total <strong><?= sprintf("%1.1f", $data['studentScore'][$student->id]) ?></strong> of maximum <strong><?= sprintf("%1.1f", $data['examScore']) ?></strong> points (<strong><?= sprintf("%1.1f", ($data['studentScore'][$student->id] / $data['examScore']) * 100) ?>%</strong>) on this examination.<br>
+                                                You scored total <strong><?= floatval($data['studentScore'][$student->id]) ?></strong> of maximum <strong><?= floatval($data['examScore']) ?></strong> points (<strong><?= sprintf("%1.1f", ($data['studentScore'][$student->id] / $data['examScore']) * 100) ?>%</strong>) on this examination.<br>
                                             </div>
 
                                             <?php if (($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) == 0): ?>
@@ -214,16 +214,16 @@
                                                                             </td>        
                                                                             <td>
                                                                                 <span class="uu-color">
-                                                                                    <?= sprintf("%1.1f", $data['results'][$student->id][$question->id][$pTitle]) ?>
+                                                                                    <?= floatval($data['results'][$student->id][$question->id][$pTitle]) ?>
                                                                                 </span>
                                                                             </td>
                                                                             <td>
                                                                                 <span class="uu-color">
-                                                                                    <?= sprintf("%1.1f", $pData["q_points"]) ?>
+                                                                                    <?= floatval($pData["q_points"]) ?>
                                                                                 </span>
                                                                             <td>
                                                                                 <span class="uu-color">
-                                                                                    <?= sprintf("%1.1f", (($data['results'][$student->id][$question->id][$pTitle] / $pData["q_points"]) * 100)) ?>%
+                                                                                    <?= sprintf("%1.1f", ($data['results'][$student->id][$question->id][$pTitle] / $pData["q_points"]) * 100) ?>%
                                                                                 </span>
                                                                             </td>
                                                                             <td></td>
@@ -232,8 +232,8 @@
                                                         <?php endforeach; ?>
                                                         <tr class="summary-row">
                                                             <td>Summary:</td>
-                                                            <td><?= sprintf("%1.1f", $data['studentScore'][$student->id]) ?></td>
-                                                            <td><?= sprintf("%1.1f", $data['examScore']) ?></td>
+                                                            <td><?= floatval($data['studentScore'][$student->id]) ?></td>
+                                                            <td><?= floatval($data['examScore']) ?></td>
                                                             <td><?= sprintf("%1.1f", ($data['studentScore'][$student->id] / $data['examScore']) * 100) ?>%</td>
                                                             <td></td>
                                                         </tr>
@@ -390,7 +390,7 @@
                                                             <?php if ($data['qData'][$question->id]['qParts'][$pTitle]['q_points'] > 0) : ?>
                                                                     <div style="padding-bottom: 20px;">
                                                                         <div style="font-size:14px"> 
-                                                                            <strong>Your score:</strong> <span class="uu-color"><?= sprintf("%1.1f", $data['results'][$student->id][$question->id][$pTitle]) ?> (<em>Max score: <?= sprintf("%1.1f", $data['qData'][$question->id]['qParts'][$pTitle]['q_points']) ?></em>)</span>
+                                                                            <strong>Your score:</strong> <span class="uu-color"><?= floatval($data['results'][$student->id][$question->id][$pTitle]) ?> (<em>Max score: <?= floatval($data['qData'][$question->id]['qParts'][$pTitle]['q_points']) ?></em>)</span>
                                                                         </div> 
                                                                     </div>
                                                             <?php endif; ?>
@@ -429,7 +429,7 @@
                                                 <?php foreach ($data['examGrades'] as $grade => $threshold): ?>
                                                         <tr>
                                                             <td><?= $grade ?></td>
-                                                            <td class="uu-color"><?= sprintf("%1.1f", $threshold) ?>%</td>
+                                                            <td class="uu-color"><?= floatval($threshold) ?>%</td>
                                                             <td class="uu-color"><?= $data['studentGrade'][$grade] ?></td>
                                                             <td class="uu-color"><?= sprintf("%1.1f", ($data['studentGrade'][$grade] / $allStudents->count()) * 100) ?>%</td>
                                                         </tr>

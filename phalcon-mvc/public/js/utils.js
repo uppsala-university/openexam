@@ -89,7 +89,7 @@ var closeToolTips = function ()
 }
 
 /**
- * Returns length of json object
+ * Returns length of JSON object
  * 
  * @param {json} object
  * @returns {Number}
@@ -130,4 +130,46 @@ $(document).ready(function () {
         return false;
     });
 
+    // 
+    // Support for localize float point numbers. Uses the language setting in
+    // browser to set locale/language for formatting.
+    // 
+    // ++ Anders L, 2017-08-17
+    // 
+    if (String.prototype.parsefloat === undefined) {
+        String.prototype.parsefloat = function () {
+            return Number.parseFloat(this.replace(',', '.'));
+        }
+    }
+
+    if (Number.prototype.parsefloat === undefined) {
+        Number.prototype.parsefloat = function () {
+            return Number.parseFloat(String(this).replace(',', '.'));   // Questionable
+        }
+    }
+
+    if (String.prototype.floatval === undefined) {
+        String.prototype.floatval = function () {
+            if (navigator.languages[0] !== undefined) {
+                return Number(this).toLocaleString(navigator.languages[0]);
+            } else if (navigator.language !== undefined) {
+                return Number(this).toLocaleString(navigator.language);
+            } else {
+                return this;
+            }
+        }
+    }
+
+    if (Number.prototype.floatval === undefined) {
+        Number.prototype.floatval = function () {
+            if (navigator.languages[0] !== undefined) {
+                return Number(this).toLocaleString(navigator.languages[0]);
+            } else if (navigator.language !== undefined) {
+                return Number(this).toLocaleString(navigator.language);
+            } else {
+                return this;
+            }
+        }
+    }
 });
+

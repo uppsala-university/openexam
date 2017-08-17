@@ -145,7 +145,7 @@ if ($exam->decoded) {
                                     ?>
                                     <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
                                         <div style="text-align: center">
-                                            <a class="fb fancybox.ajax fill" href="<?= $href ?>" title="<?= $desc ?>">Q<?= $question->slot ?><br>Max. <?= $question->score ?></a>
+                                            <a class="fb fancybox.ajax fill" href="<?= $href ?>" title="<?= $desc ?>">Q<?= $question->slot ?><br>Max. <?= floatval($question->score) ?></a>
                                         </div>
 
                                     </th>
@@ -175,7 +175,7 @@ if ($exam->decoded) {
                                     <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sortable">
                                         <div style="text-align: center">
                                             Total score
-                                            <div>Max. <?= $totalExamScore ?></div>
+                                            <div>Max. <?= floatval($totalExamScore) ?></div>
                                         </div>
                                     </th> 
                                     <th class="sortable" style="background-color:#EAEAEA; width:25px; max-width: 25px; text-align:center">%</th>
@@ -311,9 +311,9 @@ if ($exam->decoded) {
                                             <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
                                                 <?= sprintf("%1.1f", ($totalStudentScore / $totalExamScore) * 100) ?>%
                                                 <?php
-                                                if ($answer):
-                                                        $avgPercentage[] = sprintf("%1.1f", ($totalStudentScore / $totalExamScore) * 100);
-                                                endif;
+                                                if ($answer) {
+                                                        $avgPercentage[] = floatval(($totalStudentScore / $totalExamScore) * 100);
+                                                }
 
                                                 ?>
                                             </td>
@@ -348,7 +348,7 @@ if ($exam->decoded) {
 
                                             ?>
                                             <td class="gru" style="border-bottom:1px #dedede solid; text-align:center; font-weight:bold; <?= $colorScheme ?>">
-                                                <?= $grade ?> <?= ($needGraceMarks) ? "(" . sprintf("%1.1f", (($passAt / 100) * $totalExamScore) - $totalStudentScore) . " pt. less)" : '' ?>
+                                                <?= $grade ?> <?= ($needGraceMarks) ? "(" . floatval((($passAt / 100) * $totalExamScore) - $totalStudentScore) . " pt. less)" : '' ?>
                                             </td>
                                     <?php endif; ?>
                                 </tr>
@@ -380,7 +380,7 @@ if ($exam->decoded) {
                                                     $sumScores = 0;
                                                     $numScores = 1;
                                             }
-                                            $avgScores = sprintf("%1.1f", $sumScores / $numScores);
+                                            $avgScores = floatval($sumScores / $numScores);
 
                                             // 
                                             // Tooltip:
@@ -390,11 +390,11 @@ if ($exam->decoded) {
                                             ?>
                                             <?php if ($q->score == 0) : ?>
                                                     <td title="Corrected: <?= $ansCount ?> Percent: 0%" class="cc aa">
-                                                        <?= $avgScores ?> (<?= $q->score ?>)
+                                                        <?= $avgScores ?> (<?= floatval($q->score) ?>)
                                                     </td>
                                             <?php else: ?>
                                                     <td title="Corrected: <?= $ansCount ?> Percent: <?= sprintf("%.02d", ($avgScores / $q->score) * 100) ?>%" class="cc aa">
-                                                        <?= $avgScores ?> (<?= $q->score ?>)
+                                                        <?= $avgScores ?> (<?= floatval($q->score) ?>)
                                                     </td>
                                             <?php endif; ?>
                                     <?php endforeach; ?>
@@ -410,7 +410,7 @@ if ($exam->decoded) {
                                     <?php endif; ?>
                                     <?php if ($exam->show_percent): ?>
                                             <td class="cc aa">
-                                                <?= sprintf("%1.1f", array_sum($avgScore) / count($avgScore)) ?> (<?= $totalExamScore ?>)
+                                                <?= floatval(array_sum($avgScore) / count($avgScore)) ?> (<?= floatval($totalExamScore) ?>)
                                             </td>
                                             <td class="cc aa">
                                                 <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
@@ -598,11 +598,11 @@ if ($exam->decoded) {
                 // Save result with values, but not yet saved by default. Give
                 // caller an option to force save all result.
                 // 
-                if (resyncableResults.length == 0) {
+                if (resyncableResults.length === 0) {
                     resyncableResults = getSyncableResults('unsaved');
                 }
 
-                if (resyncableResults.length == 0) {
+                if (resyncableResults.length === 0) {
                     if (confirm('No result need to be saved. Save anyway?')) {
                         resyncableResults = getSyncableResults('complete');
                     } else {
@@ -619,14 +619,18 @@ if ($exam->decoded) {
             });
 
             $(document).on('blur', '.q-points', function () {
-                if ($(this).val() != '' && !$.isNumeric($(this).val())) {
-                    alert("Error: Question points must be numeric");
+                if (isNaN($(this).val().parsefloat()) === false) {
+                    $(this).val($(this).val().parsefloat().floatval()); // localize
+                }
+
+                if ($(this).val() !== '' && !$.isNumeric($(this).val().parsefloat())) {
+                    alert("Error: Question points must be numeric (" + $(this).val() + " is not accepted)");
                     $(this).val($(this).attr('reset'));
                     return false;
                 }
 
-                if (Number($(this).val()) > Number($(this).attr('max-pt'))) {
-                    alert("Error: Maximum points for this part are:" + $(this).attr('max-pt'));
+                if ($(this).val().parsefloat() > $(this).attr('max-pt').parsefloat()) {
+                    alert("Error: Maximum points for this part are: " + $(this).attr('max-pt'));
                     $(this).val($(this).attr('reset'));
                     return false;
                 }
@@ -645,7 +649,7 @@ if ($exam->decoded) {
                     data: {score_board: '<table border="1">' + $(source).html() + '</table>'}
                 })
                         .done(function (resp) {
-                            if (resp == 'exported') {
+                            if (resp === 'exported') {
                                 location.href = baseURL + 'result/exportScoreBoard/' + examId + "/1";
                             }
                         });
@@ -662,21 +666,21 @@ if ($exam->decoded) {
             // complete - Return all results excluding any unset.
             // 
             var getSyncableResults = function (mode) {
-                if (mode == 'changed') {
+                if (mode === 'changed') {
                     return resyncableResults;
-                } else if (mode == 'unsaved') {
+                } else if (mode === 'unsaved') {
                     $('.q-points').each(function () {
                         if (resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
-                            if ($(this).val() != '' && $(this).attr('res-id') == 0) {
+                            if ($(this).val() !== '' && $(this).attr('res-id') == 0) {
                                 resyncableResults.push($(this).attr('ans-id'));
                             }
                         }
                     });
                     return resyncableResults;
-                } else if (mode == 'complete') {
+                } else if (mode === 'complete') {
                     $('.q-points').each(function () {
                         if (resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
-                            if ($(this).val() != '') {
+                            if ($(this).val() !== '') {
                                 resyncableResults.push($(this).attr('ans-id'));
                             }
                         }
@@ -710,17 +714,19 @@ if ($exam->decoded) {
                     var resId = ansId = 0;
                     var correctionStatus = 'completed';
                     $(saveResultBtn).closest('.q-body').find('.q-points').each(function (index, element) {
-                        if ($.isNumeric($(element).val())) {
-                            resultJson[$(element).attr('q-part')] = $(element).val();
-                            ansId = $(element).attr('ans-id');
-                            resId = $(element).attr('res-id');
+                        if ($.isNumeric($(element).val().parsefloat())) {
+                            resultJson[$(element).attr('q-part')] = $(element).val().parsefloat();
+                            ansId = parseInt($(element).attr('ans-id'));
+                            resId = parseInt($(element).attr('res-id'));
                         } else {
                             correctionStatus = 'partial';
                         }
                     });
 
-                    // send ajax requedt to update student's socre
-                    if (resId != 0) {
+                    // 
+                    // Send AJAX request to update student's score:
+                    // 
+                    if (resId !== 0) {
                         resultsUpdate.push({id: resId, "answer_id": ansId, "score": JSON.stringify(resultJson), "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
                     } else {
                         resultsCreate.push({"answer_id": ansId, "score": JSON.stringify(resultJson), "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
@@ -753,11 +759,11 @@ if ($exam->decoded) {
 
                                         var tScore = 0;
                                         $.each(jQuery.parseJSON(e.score), function (j, sc) {
-                                            tScore = tScore + parseFloat(sc);
+                                            tScore = tScore + sc.parsefloat();
                                         });
 
                                         $('a[ans-id="' + e.answer_id + '"]').parent().removeClass('nc').addClass('ac');
-                                        $('a[ans-id="' + e.answer_id + '"]').html(tScore);
+                                        $('a[ans-id="' + e.answer_id + '"]').html(tScore.floatval());
 
                                     })
                                 } else {
@@ -765,14 +771,14 @@ if ($exam->decoded) {
 
                                     var tScore = 0;
                                     $.each(jQuery.parseJSON(rData.score), function (j, sc) {
-                                        tScore = tScore + parseFloat(sc);
+                                        tScore = tScore + sc.parsefloat();
                                     });
 
                                     $('a[ans-id="' + rData.answer_id + '"]').parent().removeClass('nc').addClass('ac');
-                                    $('a[ans-id="' + rData.answer_id + '"]').html(tScore);
+                                    $('a[ans-id="' + rData.answer_id + '"]').html(tScore.floatval());
 
                                     resyncableResults = jQuery.grep(resyncableResults, function (value) {
-                                        return value != rData.answer_id;
+                                        return value !== rData.answer_id;
                                     });
                                 }
                             }
@@ -785,21 +791,21 @@ if ($exam->decoded) {
                             JSON.stringify(resultsUpdate),
                             function (rData) {
                                 resyncableResults = jQuery.grep(resyncableResults, function (value) {
-                                    return value != rData.answer_id;
+                                    return value !== rData.answer_id;
                                 });
 
                                 $.each(resultsUpdate, function (i, rec) {
 
                                     var tScore = 0;
                                     $.each(jQuery.parseJSON(rec.score), function (j, sc) {
-                                        tScore = tScore + parseFloat(sc);
+                                        tScore = tScore + sc.parsefloat();
                                     });
 
                                     if (tScore < 0) {
                                         tScore = 0;
                                     }
 
-                                    $('a[ans-id="' + rec.answer_id + '"]').html(tScore);
+                                    $('a[ans-id="' + rec.answer_id + '"]').html(tScore.floatval());
 
                                     if (rec.correction === 'waiting' || rec.correction === 'partial') {
                                         $('a[ans-id="' + rec.answer_id + '"]').parent().removeClass('ac').addClass('nc');
