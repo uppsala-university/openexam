@@ -150,7 +150,7 @@ $(document).ready(function () {
 
     if (String.prototype.floatval === undefined) {
         String.prototype.floatval = function () {
-            if (navigator.languages[0] !== undefined) {
+            if (navigator.languages !== undefined) {
                 return Number(this).toLocaleString(navigator.languages[0]);
             } else if (navigator.language !== undefined) {
                 return Number(this).toLocaleString(navigator.language);
@@ -162,7 +162,7 @@ $(document).ready(function () {
 
     if (Number.prototype.floatval === undefined) {
         Number.prototype.floatval = function () {
-            if (navigator.languages[0] !== undefined) {
+            if (navigator.languages !== undefined) {
                 return Number(this).toLocaleString(navigator.languages[0]);
             } else if (navigator.language !== undefined) {
                 return Number(this).toLocaleString(navigator.language);
