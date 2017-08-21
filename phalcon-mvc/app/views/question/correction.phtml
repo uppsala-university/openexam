@@ -387,16 +387,18 @@ if ($exam->decoded) {
                                             // 
                                             $ansCount = count($overallQuestScore[$q->id]);
 
+                                            // 
+                                            // Load correction status HTML fragment:
+                                            // 
+                                            $this->partial("partials/question-info", array(
+                                                    'question'  => $q,
+                                                    'corrected' => $ansCount,
+                                                    'percent'   => $q->score == 0 ? 0 : sprintf("%.02d", ($avgScores / $q->score) * 100),
+                                                    'avarage'   => $avgScores
+                                                )
+                                            );
+
                                             ?>
-                                            <?php if ($q->score == 0) : ?>
-                                                    <td title="Corrected: <?= $ansCount ?> Percent: 0%" class="cc aa">
-                                                        <?= $avgScores ?> (<?= floatval($q->score) ?>)
-                                                    </td>
-                                            <?php else: ?>
-                                                    <td title="Corrected: <?= $ansCount ?> Percent: <?= sprintf("%.02d", ($avgScores / $q->score) * 100) ?>%" class="cc aa">
-                                                        <?= $avgScores ?> (<?= floatval($q->score) ?>)
-                                                    </td>
-                                            <?php endif; ?>
                                     <?php endforeach; ?>
 
                                     <th  class="cc aa" align="right" style="vertical-align:top;">Average:</th>
@@ -474,6 +476,13 @@ if ($exam->decoded) {
 <?= Phalcon\Tag::stylesheetLink('css/tablesorter.default.css'); ?>
 <?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
+
+<?= Phalcon\Tag::stylesheetLink('css/opentip.css'); ?>
+
+<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('js/opentip-style.js'); ?>
+
 <style>
     #progressbar {
         margin-top: 20px;
@@ -552,6 +561,13 @@ if ($exam->decoded) {
                 sortList: [[0, 0]]
             });
 
+            $(".q-info-btn").each(function (index, element) {
+                new Opentip(
+                        element,
+                        $(this).parent().children('div').html(),
+                        {style: "drops", tipJoint: "top left", showOn: "click"}
+                );
+            });
 
             $(document).on('click', '.save-result', function () {
                 var tmp = [];

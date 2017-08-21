@@ -11,32 +11,6 @@
 // 
 
 // 
-// Initialize tool tip theme.
-// 
-Opentip.styles.drops = {
-    className: "drops",
-    borderWidth: 1,
-    stemLength: 5,
-    stemBase: 10,
-    borderRadius: 5,
-    background: "#F6F6F6",
-    borderColor: "#CCCCCC",
-    target: true,
-    tipJoint: "bottom",
-    targetJoint: "top",
-    containInViewport: false,
-    showOn: "click",
-    hideOn: "click",
-    closeButtonOffset: [3, 3],
-    closeButtonCrossColor: "#CF3B18",
-    closeButtonCrossSize: 5,
-    closeButtonCrossLineWidth: 2,
-    group: "tags",
-    hideTrigger: 'closeButton',
-    removeElementsOnHide: false
-};
-
-// 
 // Store tooltips in array for dynamic content update:
 // 
 var opentips = [];
