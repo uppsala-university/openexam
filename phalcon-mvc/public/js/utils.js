@@ -144,7 +144,7 @@ $(document).ready(function () {
             } else {
                 return parseFloat(input);
             }
-        }
+        };
     }
 
     if (Number.prototype.parsefloat === undefined) {
@@ -155,7 +155,7 @@ $(document).ready(function () {
             } else {
                 return parseFloat(input);
             }
-        }
+        };
     }
 
     if (String.prototype.floatval === undefined) {
@@ -167,7 +167,7 @@ $(document).ready(function () {
             } else {
                 return this;
             }
-        }
+        };
     }
 
     if (Number.prototype.floatval === undefined) {
@@ -179,7 +179,6 @@ $(document).ready(function () {
             } else {
                 return this;
             }
-        }
+        };
     }
 });
-
