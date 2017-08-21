@@ -138,13 +138,23 @@ $(document).ready(function () {
     // 
     if (String.prototype.parsefloat === undefined) {
         String.prototype.parsefloat = function () {
-            return Number.parseFloat(this.replace(',', '.'));
+            var input = this.replace(',', '.');
+            if (Number.parseFloat !== undefined) {
+                return Number.parseFloat(input);
+            } else {
+                return parseFloat(input);
+            }
         }
     }
 
     if (Number.prototype.parsefloat === undefined) {
         Number.prototype.parsefloat = function () {
-            return Number.parseFloat(String(this).replace(',', '.'));   // Questionable
+            var input = String(this).replace(',', '.');
+            if (Number.parseFloat !== undefined) {
+                return Number.parseFloat(input);
+            } else {
+                return parseFloat(input);
+            }
         }
     }
 
