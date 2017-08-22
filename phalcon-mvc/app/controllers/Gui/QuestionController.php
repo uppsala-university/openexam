@@ -347,13 +347,13 @@ class QuestionController extends GuiController
 
         /**
          * Question correction
-         * Allows correctors to check student answers in exam
+         * Allows corrector's to check student answers in exam.
          * 
          * exam/{exam_id}/correction/{correction-by}/{question_id}
          * 
-         * Allowed to Roles: correctors, decoder
+         * Allowed to Roles: corrector, decoder
          */
-        public function correctionAction($eid, $loadAnswersBy = null)
+        public function correctionAction($eid, $loadAnswersBy = null, $loadBy = array())
         {
                 //
                 // Sanitize:
