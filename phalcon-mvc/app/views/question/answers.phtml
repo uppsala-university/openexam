@@ -13,6 +13,21 @@ $decoded = $exam->decoded;
 
 ?>
 
+<style>
+    div.correction-section-box {
+        border-radius: 5px; 
+        margin-left: 10px; 
+        margin-top: 10px; 
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);    
+        overflow: hidden;
+    }
+    div.correction-section-head {
+        background-color: #e0e0e0;
+        padding: 10px;
+        border-bottom: 5px solid #999999;        
+    }
+</style>
+
 <div class="hero-unit">
     <h2>
         <?= Phalcon\Tag::image(array("img/uu_logo.svg", "height" => "55px", "style" => "padding-right:20px")); ?><?= $exam->name ?></h2>
@@ -29,12 +44,12 @@ $decoded = $exam->decoded;
 
                 ?>
 
-                <div class="q-wrapper" style="border: 1px solid #dedede; padding: 2px; margin-bottom:15px" correction="" >
+                <div class="q-wrapper correction-section-box" correction="" >
 
                     <?php if (!$decoded && $loadBy != 'question'): ?>
-                            <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 15px; width: 5%;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
+                            <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 15px; width: 5%;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
                     <?php endif; ?>
-                    <div class="q-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #999999">
+                    <div class="q-heading correction-section-head">
                         <span style="color:#333333; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?= $question->slot ?></span>
                     </div>
 
@@ -45,7 +60,7 @@ $decoded = $exam->decoded;
                     endif;
 
                     ?>
-                    <div class="q-body" style="padding:5px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6" : "") ?>; <?= ($loadBy != 'question') ? 'background-color: #E7FFE7' : '' ?>">
+                    <div class="q-body" style="padding:10px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6" : "") ?>; <?= ($loadBy != 'question') ? 'background-color: #E7FFE7' : '' ?>">
                         <?php
                         $qPartCounter = 1;
                         $perOptPoints = array();
@@ -198,7 +213,7 @@ $decoded = $exam->decoded;
 
                                                                     ?>
                                                                     <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                    <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= floatval(isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['ans_area']['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '')) ?>" max-pt="<?= floatval($qPart['q_points']) ?>">								
+                                                                            <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= floatval(isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['ans_area']['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '')) ?>" max-pt="<?= floatval($qPart['q_points']) ?>">								
                                                                     <?php else: ?>
                                                                             <?= floatval($scoreData[$qPartTitle]) ?>
                                                                     <?php endif; ?>	
@@ -247,16 +262,16 @@ $decoded = $exam->decoded;
                         <?php endforeach; ?>        
 
                         <?php if ($loadBy == 'question'): ?>
-                                <div class="st-ans-box" style="border: 1px solid #dedede; padding: 2px; margin:15px">
+                                <div class="st-ans-box">
                                     <?php foreach ($answers as $answer): ?>
                                             <?php $result = $answer->getResult(); ?>
                                             <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array()); ?>
-                                            <div correction="<?= $result->correction ?>">
+                                            <div class="correction-section-box" style="margin-top: 15px" correction="<?= $result->correction ?>">
                                                 <?php if (!$decoded && (count($scoreData) == 0 || !in_array($result->correction, array('completed', 'finalized')))): ?>
-                                                        <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 40px; width: 5%;", "class" => "not-corrected")); ?>
+                                                        <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 25px; width: 5%;", "class" => "not-corrected")); ?>
                                                 <?php endif; ?>
                                                 <?php $student = $answer->student; ?>
-                                                <div class="st-ans-box-heading" style="background-color: #EAEAEA; padding: 5px; border-top:5px solid #999999">
+                                                <div class="st-ans-box-heading correction-section-head">
                                                     <span style="color:#514E4E; font-weight:normal">
                                                         <i class="fa fa-user"></i>
                                                         <?php if ($exam->show_code): ?>
@@ -277,8 +292,8 @@ $decoded = $exam->decoded;
 
                                                 ?>
 
-                                                <div class="st-ans-box-body q-body" style="padding:15px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6;" : "") ?> <?= (!$decoded && !count($scoreData)) ? 'background-color: #E7FFE7' : '' ?>">
-                                                    <div class="st-ans-parts-wrapper" style="padding-bottom:15px; margin-bottom:10px;">
+                                                <div class="st-ans-box-body q-body" style="padding-top:15px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6;" : "") ?> <?= (!$decoded && !count($scoreData)) ? 'background-color: #E7FFE7' : '' ?>">
+                                                    <div class="st-ans-parts-wrapper" style="padding-bottom:15px;">
                                                         <?php $qPartCounter = 1; ?>
                                                         <?php foreach ($ansData as $qPartTitle => $qPart): ?>
                                                                 <div class="st-ans-part" style="padding-bottom:5px">
