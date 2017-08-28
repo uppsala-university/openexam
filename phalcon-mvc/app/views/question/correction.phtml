@@ -712,6 +712,7 @@ if ($exam->decoded) {
                 var resultsCreate = [];
                 var resultsUpdate = [];
                 var totalCreated = 0;
+
                 ansIds = ansIds.filter(function (aid) {
                     if (typeof (aid) === 'string') {
                         aid = parseInt(aid);
@@ -722,23 +723,30 @@ if ($exam->decoded) {
                         return aid !== 0;
                     }
                 });
+
                 $.each(ansIds, function (i, ansId) {
                     var saveResultBtn = $('.ans-id' + ansId);
                     var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
                     var correctorId = parseInt($(saveResultBtn).attr('corrector-id'));
                     var resultJson = {};
-                    var resId = ansId = 0;
+                    var resId = 0, ansId = 0;
                     var correctionStatus = 'completed';
+
                     $(saveResultBtn).closest('.q-body').find('.q-points').each(function (index, element) {
-                        if ($.isNumeric($(element).val().parsefloat())) {
-                            resultJson[$(element).attr('q-part')] = $(element).val().parsefloat();
+                        if (resId === 0 && ansId === 0) {
                             ansId = parseInt($(element).attr('ans-id'));
                             resId = parseInt($(element).attr('res-id'));
-                        } else {
-                            correctionStatus = 'partial';
                         }
                         if (isNaN(resId)) {
                             resId = 0;
+                        }
+
+                        if ($(element).attr('max-pt').parsefloat() === 0) {
+                            resultJson[$(element).attr('q-part')] = 0;
+                        } else if ($(element).val().length > 0) {
+                            resultJson[$(element).attr('q-part')] = $(element).val().parsefloat();
+                        } else {
+                            correctionStatus = 'partial';
                         }
                     });
 
