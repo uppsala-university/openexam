@@ -725,7 +725,7 @@ if ($exam->decoded) {
                 $.each(ansIds, function (i, ansId) {
                     var saveResultBtn = $('.ans-id' + ansId);
                     var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
-                    var correctorId = $(saveResultBtn).attr('corrector-id');
+                    var correctorId = parseInt($(saveResultBtn).attr('corrector-id'));
                     var resultJson = {};
                     var resId = ansId = 0;
                     var correctionStatus = 'completed';
@@ -736,6 +736,9 @@ if ($exam->decoded) {
                             resId = parseInt($(element).attr('res-id'));
                         } else {
                             correctionStatus = 'partial';
+                        }
+                        if (isNaN(resId)) {
+                            resId = 0;
                         }
                     });
 
