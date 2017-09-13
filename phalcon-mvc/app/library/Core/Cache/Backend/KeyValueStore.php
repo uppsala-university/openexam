@@ -128,4 +128,9 @@ class KeyValueStore
                 }
         }
 
+        public function getBackends()
+        {
+                return $this->_backend->getBackends();
+        }
+
 }
