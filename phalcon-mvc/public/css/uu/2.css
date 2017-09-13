@@ -5362,6 +5362,7 @@ a.selected-lib-img .lib-img {
     float:left; 
     width:90%;
     line-height:1.5;
+    overflow-wrap: break-word;
 }
 
 .lib-item-settings {
