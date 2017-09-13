@@ -269,7 +269,7 @@ $config = new Config(
                  * Enable these extensions (if available):
                  */
                 'enable'   => array(
-                        'memory'   => true,
+                        'memory'   => false,
                         'xcache'   => true,
                         'apc'      => true,
                         'memcache' => true,
