@@ -168,7 +168,7 @@ class Result extends Component
         /**
          * Create PDF for this student.
          * 
-         * @param type $sid
+         * @param int|Student $sid The student ID or model.
          * @return boolean True if new file was created.
          * @throws \Exception
          */
@@ -265,7 +265,7 @@ class Result extends Component
          */
         public function createFiles()
         {
-                foreach ($this->_exam->students->fi as $student) {
+                foreach ($this->_exam->students as $student) {
                         $this->createFile($student);
                 }
         }
