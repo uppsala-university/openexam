@@ -16,6 +16,7 @@ namespace OpenExam\Controllers\Utility;
 
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
+use OpenExam\Library\Core\Size;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Resource;
 use Phalcon\Mvc\View;
@@ -177,7 +178,12 @@ class MediaController extends GuiController
                 // Check number of uploaded files:
                 // 
                 if (count($files) == 0) {
-                        throw new \RuntimeException("Failed upload file");
+                        $maxsize = Size::minimum(array(
+                                    ini_get('post_max_size'),
+                                    ini_get('upload_max_filesize')
+                        ));
+
+                        throw new \RuntimeException(sprintf("Failed upload file (maximum allowed filesize size is %s)", $maxsize));
                 }
 
                 // 

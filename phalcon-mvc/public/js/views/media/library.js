@@ -94,7 +94,7 @@ $(function () {
             });
         },
         error: function (err) {
-            alert(err.responseText + " (" + err.statusText + "). Perhaps the file exceeds the maximum file size?");
+            alert(err.responseText + " (" + err.statusText + ")");
         }
     }).prop('disabled', !$.support.fileInput)
             .parent().addClass($.support.fileInput ? undefined : 'disabled');
