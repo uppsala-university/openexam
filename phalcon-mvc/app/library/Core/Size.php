@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Core;
 
+use InvalidArgumentException;
+
 /**
  * Size limit calculator.
  * 
@@ -77,7 +79,7 @@ class Size
                         $this->_size = substr($value, 0, -1);
                         $this->_suffix = substr($value, -1);
                 } else {
-                        throw new \InvalidArgumentException('Unhandled value type');
+                        throw new InvalidArgumentException('Unhandled value type');
                 }
 
                 if (!isset($this->_suffix)) {
@@ -94,7 +96,7 @@ class Size
                                 $this->_size *= self::$_sizes[$this->_suffix];
                                 break;
                         default:
-                                throw new \InvalidArgumentException('Unknown suffix type');
+                                throw new InvalidArgumentException('Unknown suffix type');
                 }
         }
 
@@ -137,6 +139,50 @@ class Size
                         'size'   => $last,
                         'suffix' => $suff
                 ));
+        }
+
+        /**
+         * Get maximum size.
+         * @param array $values The values to compare.
+         * @return Size
+         */
+        public static function maximum($values)
+        {
+                $result = null;
+
+                foreach ($values as $value) {
+                        $size = new Size($value);
+
+                        if (!isset($result)) {
+                                $result = $size;
+                        } elseif ($result->size < $size->size) {
+                                $result = $size;
+                        }
+                }
+
+                return $result;
+        }
+
+        /**
+         * Get minimum size.
+         * @param array $values The values to compare.
+         * @return Size
+         */
+        public static function minimum($values)
+        {
+                $result = null;
+
+                foreach ($values as $value) {
+                        $size = new Size($value);
+
+                        if (!isset($result)) {
+                                $result = $size;
+                        } elseif ($result->size > $size->size) {
+                                $result = $size;
+                        }
+                }
+
+                return $result;
         }
 
 }

@@ -147,4 +147,50 @@ class SizeTest extends \PHPUnit_Framework_TestCase
                 self::assertEquals($expect, (string) $actual);
         }
 
+        /**
+         * @covers OpenExam\Library\Core\Size::maximum
+         * @group core
+         */
+        public function testMaximum()
+        {
+                $expect = '4M';
+                $actual = Size::maximum(array('4M', '3M', '1M'));
+                self::assertEquals($expect, (string) $actual);
+
+                $expect = '4M';
+                $actual = Size::maximum(array('4M', '4096K'));
+                self::assertEquals($expect, (string) $actual);
+
+                $expect = '4M';
+                $actual = Size::maximum(array('4M', '4095K'));
+                self::assertEquals($expect, (string) $actual);
+
+                $expect = '4097K';
+                $actual = Size::maximum(array('4M', '4097K'));
+                self::assertEquals($expect, (string) $actual);
+        }
+
+        /**
+         * @covers OpenExam\Library\Core\Size::minimum
+         * @group core
+         */
+        public function testMinimum()
+        {
+                $expect = '4M';
+                $actual = Size::minimum(array('4M', '6M', '7M'));
+                self::assertEquals($expect, (string) $actual);
+
+                $expect = '4M';
+                $actual = Size::minimum(array('4M', '4096K'));
+                self::assertEquals($expect, (string) $actual);
+
+                $expect = '4M';
+                $actual = Size::minimum(array('4M', '4097K'));
+                self::assertEquals($expect, (string) $actual);
+
+                $expect = '4095K';
+                $actual = Size::minimum(array('4M', '4095K'));
+                self::assertEquals($expect, (string) $actual);
+        }
+
 }
