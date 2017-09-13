@@ -47,43 +47,43 @@ $(function () {
                         ajax(
                                 baseURL + 'ajax/core/contributor/resource/create',
                                 {"exam_id": examId, "name": file.name, "path": file.url, "type": fType[0], "subtype": fType[1], "user": user},
-                        function (rData) {
-                            fType[0] = fType[0] + 's';
-                            var tabId = ($('#' + fType[0] + '-tab').length) ? '#' + fType[0] + '-tab' : '#other-files-tab';
+                                function (rData) {
+                                    fType[0] = fType[0] + 's';
+                                    var tabId = ($('#' + fType[0] + '-tab').length) ? '#' + fType[0] + '-tab' : '#other-files-tab';
 
-                            // show this image in library on right side
-                            var newItem = $(tabId).find(".recent-uploads").clone();
-                            newItem.attr('id', 'lib-item-' + rData.id)
-                                    .find('.selected-lib-img')
-                                    .find('img')
-                                    .attr('src', file.url)
-                                    .attr('file-path', file.url)
-                                    .end()
-                                    .end()
-                                    .find('.lib-img')
-                                    .attr('src', (fType[0] == 'images' ? file.url : baseURL + "img/file-icon.png"))
-                                    .attr('file-path', file.url)
-                                    .end()
-                                    .find('.lib-item-title')
-                                    .html(file.name)
-                                    .end()
-                                    .find('.lib-item-settings > i')
-                                    .attr('item-title', file.name)
-                                    .attr('media-id', rData.id)
-                                    .end()
-                                    .show();
-                            newItem.addClass('lib-shared-' + rData.shared);
-                            $(tabId).find(".lib-tab-area").append(newItem);
+                                    // show this image in library on right side
+                                    var newItem = $(tabId).find(".recent-uploads").clone();
+                                    newItem.attr('id', 'lib-item-' + rData.id)
+                                            .find('.selected-lib-img')
+                                            .find('img')
+                                            .attr('src', file.url)
+                                            .attr('file-path', file.url)
+                                            .end()
+                                            .end()
+                                            .find('.lib-img')
+                                            .attr('src', (fType[0] == 'images' ? file.url : baseURL + "img/file-icon.png"))
+                                            .attr('file-path', file.url)
+                                            .end()
+                                            .find('.lib-item-title')
+                                            .html(file.name)
+                                            .end()
+                                            .find('.lib-item-settings > i')
+                                            .attr('item-title', file.name)
+                                            .attr('media-id', rData.id)
+                                            .end()
+                                            .show();
+                                    newItem.addClass('lib-shared-' + rData.shared);
+                                    $(tabId).find(".lib-tab-area").append(newItem);
 
-                            // update media id of image previously added on left side
-                            $('#lib-items-added')
-                                    .find('.title-box[file-path="' + file.url + '"]')
-                                    .closest('li')
-                                    .attr('media-id', 'lib-item-' + rData.id);
+                                    // update media id of image previously added on left side
+                                    $('#lib-items-added')
+                                            .find('.title-box[file-path="' + file.url + '"]')
+                                            .closest('li')
+                                            .attr('media-id', 'lib-item-' + rData.id);
 
-                            refreshSettingsTooltips();
+                                    refreshSettingsTooltips();
 
-                        }
+                                }
                         );
                     }
 
@@ -92,6 +92,9 @@ $(function () {
                     alert("Unable to upload file '" + file.name + "': " + file.error)
                 }
             });
+        },
+        error: function (err) {
+            alert(err.responseText + " (" + err.statusText + "). Perhaps the file exceeds the maximum file size?");
         }
     }).prop('disabled', !$.support.fileInput)
             .parent().addClass($.support.fileInput ? undefined : 'disabled');
@@ -208,13 +211,13 @@ $(function () {
         ajax(
                 baseURL + 'ajax/core/contributor/resource/update',
                 {"id": mediaId, "name": title, "shared": shared},
-        function (rData) {
-            // update dom as per the changes
-            $('#lib-item-' + mediaId).find('.lib-item-title').html(title);
-            $('#lib-items-added > ul').find('li[media-id="lib-item-' + mediaId + '"] > .title-box').find('input').val(title);
-            // close tooltip
-            closeToolTips();
-        }
+                function (rData) {
+                    // update dom as per the changes
+                    $('#lib-item-' + mediaId).find('.lib-item-title').html(title);
+                    $('#lib-items-added > ul').find('li[media-id="lib-item-' + mediaId + '"] > .title-box').find('input').val(title);
+                    // close tooltip
+                    closeToolTips();
+                }
         );
 
     });
@@ -228,13 +231,13 @@ $(function () {
             ajax(
                     baseURL + 'ajax/core/contributor/resource/delete',
                     {"id": mediaId},
-            function (rData) {
-                // update dom as per the changes
-                $('#lib-item-' + mediaId).remove();
-                $('#lib-items-added > ul').find('li[media-id="lib-item-' + mediaId + '"]').remove();
-                // close tooltip
-                closeToolTips();
-            }
+                    function (rData) {
+                        // update dom as per the changes
+                        $('#lib-item-' + mediaId).remove();
+                        $('#lib-items-added > ul').find('li[media-id="lib-item-' + mediaId + '"]').remove();
+                        // close tooltip
+                        closeToolTips();
+                    }
             );
         }
     });

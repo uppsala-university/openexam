@@ -170,17 +170,24 @@ class MediaController extends GuiController
                 // 
                 // Find media type of this file to set file upload directory:
                 // 
-                $files = $this->request->getUploadedFiles();
+                $files = $this->request->getUploadedFiles(true);
                 $media = array();
+
+                // 
+                // Check number of uploaded files:
+                // 
+                if (count($files) == 0) {
+                        throw new \RuntimeException("Failed upload file");
+                }
 
                 // 
                 // Extract MIME type:
                 // 
                 preg_match('/(.*)\/.*/', $files[0]->getRealType(), $media);
-                
+
                 // 
                 // Set target URL and path:
-                //                 
+                // 
                 $uploadDir = $this->config->application->mediaDir . $media[1] . "s/";
                 $uploadUrl = $this->url->get('utility/media/view/' . $media[1]);
 
