@@ -25,6 +25,7 @@ use Phalcon\Cache\Frontend\Data as DataFrontend;
 use Phalcon\Cache\Multiple;
 use Phalcon\Config;
 use Phalcon\Version as PhalconVersion;
+use RuntimeException;
 
 /**
  * Cache service configurator.
@@ -123,7 +124,9 @@ class Cache extends Multiple
                         }
 
                         if (!file_exists($options['file']['cacheDir'])) {
-                                mkdir($options['file']['cacheDir']);
+                                if (!mkdir($options['file']['cacheDir'], 0750, true)) {
+                                        throw new RuntimeException(sprintf("Failed create cache directory %s", $options['file']['cacheDir']));
+                                }
                         }
 
                         if (count($backends) != 0) {
