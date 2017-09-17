@@ -181,7 +181,7 @@ class State extends Component
          */
         private function hasCache()
         {
-                return $this->modelsCache->exists($this->_ckey, self::CACHE_LIFETIME);
+                return $this->cache->exists($this->_ckey, self::CACHE_LIFETIME);
         }
 
         /**
@@ -189,7 +189,7 @@ class State extends Component
          */
         private function getCache()
         {
-                $data = $this->modelsCache->get($this->_ckey, self::CACHE_LIFETIME);
+                $data = $this->cache->get($this->_ckey, self::CACHE_LIFETIME);
 
                 $this->_state = $data['state'];
                 $this->_flags = $data['flags'];
@@ -204,7 +204,7 @@ class State extends Component
         {
                 $this->refresh();
 
-                $this->modelsCache->save($this->_ckey, array(
+                $this->cache->save($this->_ckey, array(
                         'state' => $this->_state,
                         'flags' => $this->_flags
                     ), self::CACHE_LIFETIME);
