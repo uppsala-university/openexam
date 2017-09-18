@@ -156,7 +156,8 @@
                                 'cached'     => true,   // Cached database adapter
                         ),                        
                         'cache'   => array(
-                                'exclude' => array(
+                                'mediator' => 'request',
+                                'exclude'  => array(
                                     'tables' => array('answers'),
                                     'result' => array('count' => true)  // Don't cache counters
                                  )
@@ -198,6 +199,55 @@
                                         'index' => 0,
                                 )
                         )
+                    ...
+
+    The mediator setting defines how cache is handled. Which one to use depends on the 
+    application. For example: If client side is maintaining state, then it's not critical if
+    database and cache is in sync. Choose a cache method that gives most performance (which 
+    is simple) in this particular scenario.
+
+                    ...
+                        'cache'   => array(
+                                'mediator' => 'request',
+                        )
+                    ...
+
+    The following mediator handlers can be used:
+
+        o) complex:  
+            Keeps per table indexes containing all cache keys related to queries on that 
+            table. Upon modify in one table, all related cache keys are invalidated and
+            the index is purged.
+
+        o) direct:
+            This is the same as disable cache. All queries are direct on database and no
+            query results are cached.
+
+        o) readonce:
+            Cache entries are read once. The query result gets cached and is deleted
+            upon being fetched next time.
+
+        o) request:
+            All queries are cached until the request finished. Each script keeps track of
+            cache keys used and cleans them up on terminate. This is a safe bet, but not the
+            most performant.
+
+        o) simple:
+            This is the handler that gives optimal performance. All queries are simply
+            cached and left to the cache backend to cleanup when the TTL for each cache
+            entry expires.
+
+    The default mediator handler is request and gives a good mix between keeping cache
+    in sync with database while giving sufficient performance for frequent access to the
+    same query data. The complex handler has under some rare conditions left dangling cache 
+    entries (that being said, it might have be solved during the mediator handlers rework).
+
+    For the simple handler adjust the dbcache -> lifetime setting to set the wanted 
+    time to live (TTL) for cache entries:
+
+                    ...
+        'dbcache'     => array(
+                'lifetime' => 9200,
                     ...
 
     It's also possible to use the distributed/shared cache (configured by dbcache). Options 

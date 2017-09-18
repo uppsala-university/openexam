@@ -320,7 +320,7 @@ class ModelBase extends Model
                 // Get database adapter if using cache mediator:
                 // 
                 if ($connection instanceof Mediator) {
-                        $adapter = $connection->getAdapter();
+                        $adapter = $connection->getHandler()->getAdapter();
                 } else {
                         $adapter = $connection;
                 }
@@ -437,16 +437,18 @@ class ModelBase extends Model
          */
         public function invalidate()
         {
-                if (($adapter = $this->getReadConnection())) {
-                        if ($adapter instanceof Mediator) {
-                                $cache = $adapter->getCache();
-                                $table = $this->getSource();
-
-                                return $cache->invalidate($table, $this->id);
-                        }
+                if (!($adapter = $this->getWriteConnection())) {
+                        return true;
+                } elseif (!($adapter instanceof Mediator)) {
+                        return true;
+                } elseif (!$adapter->getHandler()->canInvalidate()) {
+                        return true;
                 }
 
-                return true;
+                $cache = $adapter->getHandler()->getCache();
+                $table = $this->getSource();
+
+                return $cache->invalidate($table, $this->id);
         }
 
 }

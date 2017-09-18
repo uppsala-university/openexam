@@ -13,10 +13,12 @@
 
 namespace OpenExam\Library\Database\Cache;
 
+use OpenExam\Library\Database\Cache\Mediator\MediatorHandler;
+use OpenExam\Library\Database\Cache\Mediator\MediatorInterface;
 use OpenExam\Library\Database\Cache\Result\Serializable as SerializableResultSet;
+use OpenExam\Library\Database\Exception as DatabaseException;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Db as PhalconDb;
-use Phalcon\Db\AdapterInterface;
 use Phalcon\Db\ResultInterface;
 use Phalcon\Kernel as PhalconKernel;
 
@@ -37,15 +39,10 @@ class Mediator extends Proxy
 {
 
         /**
-         * The query cache.
-         * @var Backend
+         * The mediator handler.
+         * @var MediatorHandler 
          */
-        private $_cache;
-        /**
-         * Tables to exclude.
-         * @var array 
-         */
-        private $_exclude;
+        private $_handler;
         /**
          * The minimum number of records.
          * @var int 
@@ -59,19 +56,11 @@ class Mediator extends Proxy
 
         /**
          * Constructor.
-         * @param AdapterInterface $adapter The database adapter.
-         * @param BackendInterface $cache The query cache.
+         * @param MediatorHandler $handler The mediator handler.
          */
-        public function __construct($adapter = null, $cache = null)
+        public function __construct($handler)
         {
-                if (isset($cache)) {
-                        $this->_cache = new Backend($cache);
-                }
-                if (isset($adapter)) {
-                        $this->_adapter = $adapter;
-                }
-
-                $this->_exclude = array(
+                $exclude = array(
                         'tables' => array('answers', 'audit', 'profile'),
                         'filter' => function($table, $data) {
                                 if ($table == 'locks' && $data->numRows() == 0) {
@@ -81,110 +70,44 @@ class Mediator extends Proxy
                                 }
                         }
                 );
+
+                $this->_adapter = $handler->getAdapter();
+                $this->_handler = $handler;
+                $this->_handler->setFilter($exclude);
         }
 
         /**
-         * Set query cache.
-         * @param BackendInterface $cache The query cache.
+         * Check if mediator can invalidate cache.
+         * @return boolean
          */
-        public function setCache($cache)
+        public function canInvalidate()
         {
-                if (isset($cache)) {
-                        $this->_cache = new Backend($cache);
-                }
-        }
-
-        /**
-         * Check if cache is set.
-         * @return bool
-         */
-        public function hasCache()
-        {
-                return isset($this->_cache);
-        }
-
-        /**
-         * Get query cache.
-         * @return Backend
-         */
-        public function getCache()
-        {
-                return $this->_cache;
-        }
-
-        /**
-         * Set database adapter.
-         * @param AdapterInterface $adapter The database adapter.
-         */
-        public function setAdapter($adapter)
-        {
-                if (isset($adapter)) {
-                        $this->_adapter = $adapter;
-                }
-        }
-
-        /**
-         * Get database adapter.
-         * @return AdapterInterface
-         */
-        public function getAdapter()
-        {
-                return $this->_adapter;
-        }
-
-        /**
-         * Check if adapter is set.
-         * @return bool
-         */
-        public function hasAdapter()
-        {
-                return isset($this->_adapter);
-        }
-
-        /**
-         * Set tables to exclude.
-         * 
-         * If merge is true, then tables will be replaced while result
-         * settings will be merged.
-         * 
-         * <code>
-         * // 
-         * // Exclude table locks and settings (replace). All count queries
-         * // are no longer cached in addition to default empty.
-         * // 
-         * $mediator->setFilter(array(
-         *      'tables' => array('locks', 'settings'),
-         *      'result' => array('count' => true)
-         * );
-         * </code>
-         * 
-         * @param array $exclude The array of tables.
-         * @param boolean $merge Merge with existing filter options.
-         */
-        public function setFilter($exclude, $merge = true)
-        {
-                if ($merge === false) {
-                        $this->_exclude = $exclude;
-                } else {
-                        if (isset($exclude['tables'])) {
-                                $this->_exclude['tables'] = $exclude['tables'];
-                        }
-                        if (isset($exclude['result'])) {
-                                $this->_exclude['result'] = array_merge($this->_exclude['result'], $exclude['result']);
-                        }
-                        if (isset($exclude['filter'])) {
-                                $this->_exclude['filter'] = $exclude['filter'];
+                if ($this->_handler->canCache() &&
+                    $this->_handler->hasCache()) {
+                        if ($this->_handler->getCache() instanceof Backend\Indexed) {
+                                return true;
+                        } else {
+                                return false;
                         }
                 }
         }
 
         /**
-         * Set cache coherence options.
-         * @param array $options The cache coherence options.
+         * Set mediator handler.
+         * @param MediatorInterface $handler
          */
-        public function setCoherence($options)
+        public function setHandler($handler)
         {
-                $this->_cache->setCoherence($options);
+                $this->_handler = $handler;
+        }
+
+        /**
+         * Get mediator handler.
+         * @return MediatorInterface
+         */
+        public function getHandler()
+        {
+                return $this->_handler;
         }
 
         /**
@@ -231,8 +154,7 @@ class Mediator extends Proxy
          */
         public function insert($table, array $values, $fields = null, $dataTypes = null)
         {
-                $this->onChanged($table);
-                return $this->_adapter->insert($table, $values, $fields, $dataTypes);
+                return $this->_handler->insert($table, $values, $fields, $dataTypes);
         }
 
         /**
@@ -247,8 +169,7 @@ class Mediator extends Proxy
          */
         public function update($table, $fields, $values, $whereCondition = null, $dataTypes = null)
         {
-                $this->onChanged($table);
-                return $this->_adapter->update($table, $fields, $values, $whereCondition, $dataTypes);
+                return $this->_handler->update($table, $fields, $values, $whereCondition, $dataTypes);
         }
 
         /**
@@ -262,8 +183,7 @@ class Mediator extends Proxy
          */
         public function delete($table, $whereCondition = null, $placeholders = null, $dataTypes = null)
         {
-                $this->onChanged($table);
-                return $this->_adapter->delete($table, $whereCondition, $placeholders, $dataTypes);
+                return $this->_handler->delete($table, $whereCondition, $placeholders, $dataTypes);
         }
 
         /**
@@ -281,9 +201,9 @@ class Mediator extends Proxy
         public function query($sqlStatement, $bindParams = null, $bindTypes = null)
         {
                 // 
-                // Can't cache queries not using SQL string:
+                // Bypass if query is not string or handler is not caching:
                 // 
-                if (!is_string($sqlStatement)) {
+                if (!is_string($sqlStatement) || !$this->_handler->canCache()) {
                         return $this->_adapter->query($sqlStatement, $bindParams, $bindTypes);
                 }
 
@@ -299,8 +219,8 @@ class Mediator extends Proxy
                 // 
                 // Get result set from cache if existing:
                 // 
-                if ($this->_cache->exists($keyName)) {
-                        if (($data = $this->_cache->get($keyName)) !== null) {
+                if ($this->_handler->exist($keyName)) {
+                        if (($data = $this->_handler->fetch($keyName)) !== null) {
                                 return $data;
                         }
                 }
@@ -323,7 +243,7 @@ class Mediator extends Proxy
                 }
 
                 // 
-                // Collect jointed tables in array:
+                // Collect joined tables in array:
                 // 
                 $tables = array('access', 'admins', 'audit', 'computers', 'contributors', 'correctors', 'decoders', 'exams', 'files', 'invigilators', 'locks', 'notify', 'performance', 'profile', 'questions', 'resources', 'results', 'rooms', 'sessions', 'settings', 'students', 'teachers', 'topics', 'users', 'answers');
                 $cached = array();
@@ -335,32 +255,37 @@ class Mediator extends Proxy
                 }
 
                 // 
+                // Get table filter:
+                // 
+                $exclude = $this->_handler->getFilter();
+
+                // 
                 // Check table exclude filter.
                 // 
-                if (in_array($cached[0], $this->_exclude['tables'])) {
+                if (in_array($cached[0], $exclude['tables'])) {
                         return $data;
                 }
 
                 // 
                 // Check result exclude filter.
                 // 
-                if (isset($this->_exclude['result'])) {
-                        if ($this->_exclude['result']['count']) {
+                if (isset($exclude['result'])) {
+                        if ($exclude['result']['count']) {
                                 if (strncmp($sqlStatement, 'SELECT COUNT', 12) == 0) {
                                         return $data;
                                 }
                         }
-                        if ($this->_exclude['result']['null']) {
+                        if ($exclude['result']['null']) {
                                 if (is_null($data)) {
                                         return $data;
                                 }
                         }
-                        if ($this->_exclude['result']['false']) {
+                        if ($exclude['result']['false']) {
                                 if (is_bool($data) && $data === false) {
                                         return $data;
                                 }
                         }
-                        if ($this->_exclude['result']['empty']) {
+                        if ($exclude['result']['empty']) {
                                 if ($data->numRows() == 0) {
                                         return $data;
                                 }
@@ -370,14 +295,14 @@ class Mediator extends Proxy
                 // 
                 // Check primary table filter.
                 // 
-                if (isset($this->_exclude['filter'])) {
-                        if (is_callable($this->_exclude['filter'])) {
-                                if (call_user_func($this->_exclude['filter'], $cached[0], $data)) {
+                if (isset($exclude['filter'])) {
+                        if (is_callable($exclude['filter'])) {
+                                if (call_user_func($exclude['filter'], $cached[0], $data)) {
                                         return $data;
                                 }
                         }
-                        if (is_array($this->_exclude['filter']) && isset($this->_exclude['filter'][$cached[0]])) {
-                                if ($this->filter($sqlStatement, $data, $this->_exclude['filter'][$cached[0]])) {
+                        if (is_array($exclude['filter']) && isset($exclude['filter'][$cached[0]])) {
+                                if ($this->filter($sqlStatement, $data, $exclude['filter'][$cached[0]])) {
                                         return $data;
                                 }
                         }
@@ -397,11 +322,11 @@ class Mediator extends Proxy
                         }
 
                         $result = new SerializableResultSet($data);
-                        $this->_cache->save($keyName, $result, $cached);
+                        $this->_handler->store($keyName, $result, $cached);
 
                         return $result;
                 } else {
-                        $this->_cache->save($keyName, $data, $cached);
+                        $this->_handler->store($keyName, $data, $cached);
                         return false;
                 }
         }
@@ -443,22 +368,28 @@ class Mediator extends Proxy
         }
 
         /**
-         * Handle on table changed call.
-         * @param string|array $table The table name(s).
+         * Create mediator handler.
+         * @param string $type The mediator name.
+         * @param PhalconDb\AdapterInterface $adapter The database adapter.
+         * @param BackendInterface $cache The cache object.
+         * @return MediatorHandler
+         * @throws DatabaseException
          */
-        private function onChanged($table)
+        public static function create($type, $adapter, $cache)
         {
-                if (is_string($table)) {
-                        if (!in_array($table, $this->_exclude['tables'])) {
-                                $this->_cache->delete($table);
-                        }
-                }
-                if (is_array($table)) {
-                        foreach ($table as $t) {
-                                if (!in_array($t, $this->_exclude['tables'])) {
-                                        $this->_cache->delete($t);
-                                }
-                        }
+                switch ($type) {
+                        case 'complex':
+                                return new Mediator\Complex($adapter, $cache);
+                        case 'direct':
+                                return new Mediator\Direct($adapter, $cache);
+                        case 'readonce':
+                                return new Mediator\ReadOnce($adapter, $cache);
+                        case 'request':
+                                return new Mediator\Request($adapter, $cache);
+                        case 'simple':
+                                return new Mediator\Simple($adapter, $cache);
+                        default:
+                                throw new DatabaseException(sprintf("Unknown database mediator %s", $type));
                 }
         }
 

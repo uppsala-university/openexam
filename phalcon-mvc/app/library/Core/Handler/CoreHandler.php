@@ -445,13 +445,16 @@ class CoreHandler extends Component
                 if (!($adapter = $model->getReadConnection())) {
                         return false;
                 }
-                if (!($adapter instanceof \OpenExam\Library\Database\Cache\Mediator)) {
+                if (!($adapter instanceof CacheMediator)) {
                         return false;
                 }
-                if (!$adapter->hasCache()) {
+                if (!($handler = $adapter->getHandler())) {
                         return false;
                 }
-                if (!($cache = $adapter->getCache())) {
+                if (!$handler->hasCache()) {
+                        return false;
+                }
+                if (!($cache = $handler->getCache())) {
                         return false;
                 } else {
                         return $cache->delete($model->getSource());
@@ -505,28 +508,47 @@ class CoreHandler extends Component
                  * longer TTL in table indexes or don't delete these entries 
                  * in the first place!
                  */
-                if ($this->dbread instanceof CacheMediator) {
-                        // 
-                        // Set proper table name:
-                        // 
-                        if ($name == 'access' || $name == 'profile') {
-                                $table = $name;
-                                $cache = $this->dbread->getCache();
-                        } else {
-                                $table = sprintf("%ss", $name);
-                                $cache = $this->dbread->getCache();
-                        }
-
-                        // 
-                        // Try to invalidate cache entries:
-                        // 
-                        if ($cache->invalidate($table, $id)) {
-                                return true;
-                        }
-                        if ($cache->invalidate($table, $id, true)) {
-                                return true;
-                        }
+                // 
+                // Check if current mediator can do cache invalidation:
+                // 
+                if (!($this->dbread instanceof CacheMediator)) {
+                        return false;
                 }
+                if (!$this->dbread->canInvalidate()) {
+                        return false;
+                }
+                if (!($handler = $this->dbread->getHandler())) {
+                        return false;
+                }
+                if (!$handler->hasCache()) {
+                        return false;
+                }
+
+                // 
+                // Set proper table name:
+                // 
+                if ($name == 'access' || $name == 'profile') {
+                        $table = $name;
+                        $cache = $handler->getCache();
+                } else {
+                        $table = sprintf("%ss", $name);
+                        $cache = $handler->getCache();
+                }
+
+                // 
+                // Try to invalidate cache entries:
+                // 
+                if ($cache->invalidate($table, $id)) {
+                        return true;
+                }
+                if ($cache->invalidate($table, $id, true)) {
+                        return true;
+                }
+
+                // 
+                // Nothing was invalidated:
+                // 
+                return false;
         }
 
 }

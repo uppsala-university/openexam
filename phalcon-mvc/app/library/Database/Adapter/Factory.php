@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Database\Adapter;
 
+use OpenExam\Library\Database\Adapter\Factory\AdapterFactory;
 use OpenExam\Library\Database\Cache\Backend;
 use OpenExam\Library\Database\Cache\Mediator;
 use OpenExam\Library\Database\Exception;
@@ -55,6 +56,10 @@ class Factory implements InjectionAwareInterface
          * Default cache lifetime.
          */
         const CACHE_LIFETIME = 7200;
+        /**
+         * Default mediator handler.
+         */
+        const MEDIATOR_TYPE = 'request';
         /**
          * MySQL adapter identifier.
          */
@@ -219,7 +224,7 @@ class Factory implements InjectionAwareInterface
 
         /**
          * Get adapter factory.
-         * @return Factory\AdapterFactory
+         * @return AdapterFactory
          * @throws Exception
          */
         public function getFactory()
@@ -317,6 +322,9 @@ class Factory implements InjectionAwareInterface
                 if (!isset($config->cache)) {
                         $config->cache = new Config();
                 }
+                if (!isset($config->cache->mediator)) {
+                        $config->cache->mediator = self::MEDIATOR_TYPE;
+                }
                 if (!isset($config->cache->backend)) {
                         $config->cache->backend = self::CACHE_BACKEND;
                 }
@@ -390,40 +398,59 @@ class Factory implements InjectionAwareInterface
         private function getMediator($adapter)
         {
                 // 
-                // Create cache mediator using prefered cache:
-                // 
-                $mediator = new Mediator($adapter);
-                $mediator->setCache($this->useCache());
-
-                // 
-                // Use plain database adapter if cache is missing:
-                // 
-                if (!$mediator->hasCache()) {
-                        return $adapter;
-                }
-
-                // 
                 // Use cache section:
                 // 
                 $config = $this->_params->cache;
 
                 // 
+                // Get database cache:
+                // 
+                $cache = $this->useCache();
+
+                // 
+                // Get mediator handler:
+                // 
+                $handler = $this->getHandler($config->mediator, $adapter, $cache);
+
+                // 
                 // Set special cache options:
                 // 
-                if (isset($config->exclude)) {
-                        $mediator->setFilter($config->exclude->toArray(), $config->exclude->merge);
-                }
                 if (isset($config->coherence)) {
-                        $mediator->setCoherence($config->coherence->toArray());
+                        $cache->setCoherence($config->coherence->toArray());
+                }
+
+                // 
+                // Create cache mediator using prefered cache:
+                // 
+                $mediator = new Mediator($handler);
+
+                // 
+                // Set mediator handler options:
+                // 
+                if (isset($config->exclude)) {
+                        $handler->setFilter($config->exclude->toArray(), $config->exclude->merge);
                 }
                 if (isset($config->limits->min)) {
-                        $mediator->setMinimun($config->limits->min);
+                        $handler->setMinimun($config->limits->min);
                 }
                 if (isset($config->limits->max)) {
                         $mediator->setMaximun($config->limits->max);
                 }
 
                 return $mediator;
+        }
+
+        /**
+         * Create mediator handler.
+         * 
+         * @param string $type The mediator name.
+         * @param PhalconDb\AdapterInterface $adapter The database adapter.
+         * @param BackendInterface $cache The cache object.
+         * @return Mediator\MediatorHandler
+         */
+        private function getHandler($type, $adapter, $cache)
+        {
+                return Mediator::create($type, $adapter, $cache);
         }
 
 }

@@ -26,7 +26,7 @@ interface AdapterFactory
         /**
          * Get database adapter.
          * 
-         * @param Config $config The adapter config.
+         * @param Config $config The adapter configuration.
          * @param Config $params The connection parameters.
          * @return AdapterInterface 
          */

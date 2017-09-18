@@ -18,6 +18,10 @@ use Phalcon\Db\DialectInterface;
 
 /**
  * Abstract database adapter proxy.
+ * 
+ * Call methods in the database adapter. Solves the problem with missing 
+ * methods in the mediator class by proxy them to the wrapped database
+ * adapter using magic call.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
