@@ -36,26 +36,27 @@ return array(
                 ),
                 'params' => array(
                         'connect' => array(
-                                'retry'      => 3,
-                                'sleep'      => 1,
+                                'retry'     => 3,
+                                'sleep'     => 1,
                         ),
                         'adapter' => array(
-                                'cached'     => true,
-                                'deferred'   => true                                
+                                'cached'    => true,
+                                'deferred'  => true                                
                         ),
                         'cache'   => array(
-//                                'exclude'   => array(
-//                                        'tables' => array('answers'),
-//                                        'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false),
-//                                        'filter' => array('locks' => array('empty', 'false')),
-//                                        'merge'  => true
-//                                ),
-//                                'coherence' => array(
-//                                        'resolve'   => 'ignore',
-//                                        'housekeep' => 450
-//                                ),
-//                                'limits'    => array('min' => 1, 'max' => 20),
-                                'backend' => 'dbcache'  // Use the shared service                                
+                                'mediator'  => 'request',
+                                'backend'   => 'dbcache',       // Use the shared service
+//                              'exclude'   => array(
+//                                      'tables' => array('answers'),
+//                                      'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false),
+//                                      'filter' => array('locks' => array('empty', 'false')),
+//                                      'merge'  => true
+//                              ),
+//                              'coherence' => array(
+//                                      'resolve'   => 'ignore',
+//                                      'housekeep' => 450
+//                              ),
+//                              'limits'    => array('min' => 1, 'max' => 20),
                         )
                 )
         ),
@@ -73,26 +74,27 @@ return array(
                 ),
                 'params' => array(
                         'connect' => array(
-                                'retry'      => 3,
-                                'sleep'      => 1,
+                                'retry'     => 3,
+                                'sleep'     => 1,
                         ),
                         'adapter' => array(
-                                'cached'     => true,
-                                'deferred'   => true                                
+                                'cached'    => true,
+                                'deferred'  => true                                
                         ),
                         'cache'   => array(
-//                                'exclude'   => array(
-//                                        'tables' => array('answers'),
-//                                        'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false)
-//                                        'filter' => array('locks' => array('empty', 'false'))
-//                                        'merge'  => true
-//                                ),
-//                                'coherence' => array(
-//                                        'resolve'   => 'ignore',
-//                                        'housekeep' => 450
-//                                ),
-//                                'limits'    => array('min' => 1, 'max' => 20),
-                                'backend' => 'dbcache'  // Use the shared service                                
+                                'mediator'  => 'request',
+                                'backend'   => 'dbcache',       // Use the shared service
+//                              'exclude'   => array(
+//                                      'tables' => array('answers'),
+//                                      'result' => array('count' => true, 'false' => false, 'null' => false, 'empty' => false)
+//                                      'filter' => array('locks' => array('empty', 'false'))
+//                                      'merge'  => true
+//                              ),
+//                              'coherence' => array(
+//                                      'resolve'   => 'ignore',
+//                                      'housekeep' => 450
+//                              ),
+//                              'limits'    => array('min' => 1, 'max' => 20)
                         )
                 )
         ),
