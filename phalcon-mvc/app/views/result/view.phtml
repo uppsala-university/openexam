@@ -16,17 +16,18 @@
         }
         .body {
             left: -50%; position: relative; text-align: left;
+
         }
         .body-content {
             left: 50%; 
             position:relative; 
-            background:rgba(255, 255, 255, 0.7); 
-            padding:30px;
+            background: rgba(255, 255, 255, 0.95);
+            height: 100%;
         }
         .main-box {
             left: 50%; 
             position:relative; 
-            background:rgba(255, 255, 255, 0.7); 
+            background: rgba(255, 255, 255, 0.9);
             border-radius:5px; 
             border: 5px solid #f0f0f0; 
             padding:30px; 
@@ -66,15 +67,20 @@
             background-color:white; 
             margin-bottom:15px
         }
-        .quest-part h2{
+        .quest-part h2 {
             border-bottom:1px solid #990000;
+        }
+        .page-first {
+            background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 80px 30px transparent;
+        }
+        .page-inner {
+            background:url("<?= $this->url->get("img/seal.png") ?>") center center / 600px 600px no-repeat scroll padding-box transparent;
         }
         .page {
             page-break-after: always !important;
-            min-height: 1012px; 
-            background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll -50% -150% transparent; 
+            min-height: 270mm;
+            min-width: 200mm;
             border-top:5px solid #990000; 
-            border-bottom:5px solid #f0f0f0	
         }
         .blue-txt {
             font-size:14px;
@@ -92,6 +98,8 @@
             display: inline-block;
             border-radius: 5px;
             box-shadow: 1px 2px 15px grey;
+            margin: 5px;
+            width: 45%;
         }
         .resource-content {
             padding: 10px;
@@ -116,7 +124,7 @@
             });
         </script>
         <?= Phalcon\Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
-        
+
         <?php
 
         use OpenExam\Models\Exam;
@@ -127,10 +135,10 @@
         <?php foreach ($data['students'] as $student): ?>
                 <div class="student-result">
                     <!-- Main page -->
-                    <div class="page" style='min-height: 1017px; border-bottom:none' >
+                    <div class="page page-first" style='min-height: 1017px; border-bottom:none' >
                         <div class="header">
-                            <div style="padding-top: 45%;">
-                                <img src="<?= $this->url->get("img/Logo_UU.jpg") ?>" style="width:100%" />
+                            <div>
+                                <img src="<?= $this->url->get("img/Logo_UU.jpg") ?>" style="width:200%; z-index: 0" />
                             </div>
                         </div>
                         <div class="body" style="float: right;  margin-top: 35%; margin-left: 10%;">
@@ -159,7 +167,7 @@
                     </div>
 
                     <!-- Description page -->   
-                    <div class="page">
+                    <div class="page page-inner">
                         <div class="body" >
                             <div class="body-content" style="height:950px">
                                 <h1>Exam description</h1>
@@ -174,7 +182,7 @@
 
                     <!-- Examination Result page -->   
                     <?php if ($data['examScore'] > 0) : ?>
-                            <div class="page">
+                            <div class="page page-inner">
                                 <div class="body" >
                                     <div class="body-content">
                                         <h1>Examination result</h1>
@@ -257,7 +265,7 @@
 
                     <!-- Questions and Answers pages -->
                     <?php foreach ($data['questions'] as $questNo => $question): ?>
-                            <div class="page">
+                            <div class="page page-inner">
                                 <div class="body" >
                                     <div class="body-content">
                                         <div class="quest">
@@ -414,7 +422,7 @@
 
                     <!-- Statistics page -->
                     <?php if (($exam->details & Exam::RESULT_OTHERS_STATISTICS) != 0): ?>
-                            <div class="page">
+                            <div class="page page-inner">
                                 <div class="body" >
                                     <div class="body-content" style="height:950px">
                                         <h1>Statistics</h1>
@@ -458,7 +466,7 @@
                     <?php endif; ?>
 
                     <!-- Reference page -->
-                    <div class="page">
+                    <div class="page page-inner">
                         <div class="body" >
                             <div class="body-content" style="height:950px">
                                 <h1>Reference</h1>
