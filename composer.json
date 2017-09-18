@@ -1,6 +1,7 @@
 {
     "name": "bmc/openexam-phalcon-mvc",
-    "description": "Description of project openexam-phalcon-mvc.",
+    "version": "2.0.4",
+    "description": "Online system for electronic exams (CBE).",
     "repositories": [
         {
             "type": "composer",
