@@ -110,12 +110,40 @@ class Archive extends Component
          */
         public function send()
         {
+                // 
+                // Flush output buffering to get chunked mode:
+                // 
+                while (ob_get_level()) {
+                        ob_end_clean();
+                        ob_end_flush();
+                }
+
+                // 
+                // Required by some browsers for actually caching:
+                // 
+                $expires = new \DateTime();
+                $expires->modify("+2 months");
+
+                // 
+                // Disable view:
+                // 
                 $this->view->disable();
+                $this->view->finish();
 
-                $this->response->setFileToSend($this->_file, $this->_name);
+                // 
+                // Set headers for cache and chunked transfer mode:
+                // 
                 $this->response->setContentType('application/pdf', 'UTF-8');
+                $this->response->setHeader("Cache-Control", "max-age=86400");
+                $this->response->setHeader("Pragma", "public");
+                $this->response->setHeader("Content-Disposition", sprintf('filename="%s"', $this->_name));
+                $this->response->setExpires($expires);
 
+                // 
+                // Send response headers and file:
+                // 
                 $this->response->send();
+                readfile($this->_file);
         }
 
         /**
