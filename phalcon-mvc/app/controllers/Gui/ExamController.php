@@ -15,11 +15,13 @@ namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
+use OpenExam\Library\Core\Exam\Archive;
 use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\DateTime;
 use OpenExam\Library\Gui\Component\Exam\Check;
 use OpenExam\Library\Gui\Component\Exam\Phase;
+use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Corrector;
 use OpenExam\Models\Exam;
@@ -878,6 +880,111 @@ class ExamController extends GuiController
                         'lock' => $lock,
                         'stud' => $sid
                 ));
+        }
+
+        /**
+         * Create PDF for archive or paper exam.
+         */
+        public function archiveAction($eid, $download = false)
+        {
+                $data = array();
+
+                // 
+                // Sanitize request parameters:
+                // 
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
+                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check required parameters:
+                // 
+                if (empty($eid)) {
+                        throw new \Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Get exam data:
+                // 
+                if (!($exam = Exam::findFirst($eid))) {
+                        throw new ModelException("Failed find exam", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check access.
+                // 
+                $handler = new Archive($exam);
+                if (!$handler->accessable()) {
+                        throw new ModelException("You are not allowed to access exam archive.", Error::FORBIDDEN);
+                }
+
+                // 
+                // Send archive if requested.
+                // 
+                if ($download) {
+                        if (!$handler->exists()) {
+                                $handler->create();
+                        }
+                        if (!$handler->verify()) {
+                                throw new \Exception("Failed generate/verify PDF archive");
+                        } else {
+                                $handler->send();
+                                exit(0);
+                        }
+                }
+
+                // 
+                // Fetch question data:
+                // 
+                $data['examScore'] = 0;
+                $questions = $exam->getQuestions(array("order" => "slot", 'conditions' => "status = 'active'"));
+
+                foreach ($questions as $question) {
+
+                        $qScore = 0;
+                        $qParts = json_decode($question->quest, true);
+                        foreach ($qParts as $qPart) {
+                                $qScore += $qPart['q_points'];
+                        }
+                        $data['questions'][] = $question;
+
+                        // 
+                        // Question parts data to be passed to view:
+                        // 
+                        $data['qData'][$question->id]['qParts'] = $qParts;
+
+                        // 
+                        // Question correctors data:
+                        // 
+                        foreach ($question->getCorrectors() as $corrector) {
+                                $data['qCorrectors'][$corrector->user][] = $question->name;
+                        }
+
+                        // 
+                        // Exam score:
+                        // 
+                        $data['examScore'] += $qScore;
+
+                        unset($question);
+                        unset($qParts);
+                }
+
+                // 
+                // Calculate exam grades:
+                // 
+                $grades = preg_split('/[\r\n]+/', $exam->grades);
+                foreach ($grades as $grade) {
+                        $t = explode(":", $grade);
+                        $data['examGrades'][$t[0]] = $t[1];
+                }
+                arsort($data['examGrades']);
+
+                $this->view->setVars(array(
+                        'exam' => $exam,
+                        'data' => $data
+                    )
+                );
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
         }
 
 }
