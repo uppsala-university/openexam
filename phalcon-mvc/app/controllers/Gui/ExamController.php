@@ -926,6 +926,9 @@ class ExamController extends GuiController
                                 $handler->create();
                         }
                         if (!$handler->verify()) {
+                                $handler->create();
+                        }
+                        if (!$handler->verify()) {
                                 throw new \Exception("Failed generate/verify PDF archive");
                         } else {
                                 $handler->send();
