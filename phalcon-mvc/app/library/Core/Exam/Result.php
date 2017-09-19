@@ -11,7 +11,7 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
-namespace OpenExam\Library\Core;
+namespace OpenExam\Library\Core\Exam;
 
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Render\Renderer;

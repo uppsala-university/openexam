@@ -13,7 +13,7 @@
 
 namespace OpenExam\Console\Tasks;
 
-use OpenExam\Library\Core\Result as ResultHandler;
+use OpenExam\Library\Core\Exam\Result as ResultHandler;
 use OpenExam\Models\Exam;
 use Phalcon\Mvc\Model\Resultset\Simple as SimpleResultSet;
 

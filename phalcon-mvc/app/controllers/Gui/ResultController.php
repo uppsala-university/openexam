@@ -15,7 +15,7 @@ namespace OpenExam\Controllers\Gui;
 
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
-use OpenExam\Library\Core\Result as ResultHandler;
+use OpenExam\Library\Core\Exam\Result as ResultHandler;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Student;
