@@ -43,11 +43,11 @@ class ResultTask extends MainTask implements TaskInterface
          * The result directory.
          * @var string 
          */
-        private $_resdir;
+        private $_destdir;
 
         public function initialize()
         {
-                $this->_resdir = sprintf("%s/results", $this->config->application->cacheDir);
+                $this->_destdir = sprintf("%s/results", $this->config->application->cacheDir);
         }
 
         public function helpAction()
@@ -106,7 +106,7 @@ class ResultTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'create');
 
-                if (!file_exists($this->_resdir)) {
+                if (!file_exists($this->_destdir)) {
                         $this->flash->error("The result directory is missing");
                         return false;
                 }
@@ -145,7 +145,7 @@ class ResultTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'delete');
 
-                if (!file_exists($this->_resdir)) {
+                if (!file_exists($this->_destdir)) {
                         $this->flash->error("The result directory is missing");
                         return false;
                 }
