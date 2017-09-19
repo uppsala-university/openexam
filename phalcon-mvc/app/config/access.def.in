@@ -138,7 +138,8 @@ return array(
                         'settings'    => array('creator'),
                         'security'    => array('creator', 'invigilator'),
                         'check'       => array('creator', 'invigilator'),
-                        'lock'        => array('creator', 'invigilator')
+                        'lock'        => array('creator', 'invigilator'),
+                        'archive'     => array('creator')
                 ),
                 'question' => array(
                         'create'      => array('creator', 'contributor'),
