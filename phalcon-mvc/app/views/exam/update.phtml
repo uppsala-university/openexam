@@ -168,7 +168,36 @@ use OpenExam\Library\Core\Exam\Check;
 <div id="exam-check-box" style="display:none" title="Exam status check" ></div>
 
 <!-- Exam archive tool -->
-<div id="exam-archive-box" style="display:none" title="Exam archive tool" ></div>
+<div id="exam-archive-box" style="display:none" title="Offline tool for exam" >
+    <h1>Exam export and archive tool</h1>
+    <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+        Use this tool to access exam content (i.e. questions) in format suitable for printing or archiving. 
+        This is also the right tool to use if some students need to write this exam on paper.
+    </div>
+    <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id); ?>" id="exam-archive-action-online" target="_blank">ASDASD</a>
+    <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id) . '/download'; ?>" id="exam-archive-action-download">ASDASD</a>
+    <div class="st-line">
+        <center>
+            <span style="min-width: 9em" class="btn btn-default" id="exam-archive-online">
+                <i class="fa fa-external-link"></i>
+                <span>View Online</span>
+            </span>
+            <span style="min-width: 9em" class="btn btn-default" id="exam-archive-download">
+                <i class="fa fa-file-archive-o"></i>
+                <span>Download Archive</span>
+            </span>
+        </center>		
+    </div>
+    <hr>
+    <div class="st-line">
+        <center>
+            <span style="padding:2px; font-size:11px; min-width: 6em; float: right" class="btn btn-success" id="close-archive">
+                <i class="fa fa-undo"></i>
+                <span>Close</span>
+            </span>
+        </center>		
+    </div>
+</div>
 <?php
 // 
 // Combine question JSON to initialize exam.

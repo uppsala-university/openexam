@@ -326,6 +326,32 @@ $(document).ready(function () {
         $('.exam-check').trigger('click');
     });
 
+    // 
+    // The exam archive download/view online dialog and its related event handlers.
+    // 
+    $(document).on('click', '.exam-archive', function () {
+        $('#exam-archive-box').dialog({
+            autoOpen: true,
+            width: "50%",
+            modal: true,
+            close: function () {
+                $(this).dialog('destroy');
+            }
+        });
+    });
+
+    $(document).on('click', '#close-archive', function () {
+        $('#exam-archive-box').dialog('destroy');
+    });
+
+    $(document).on('click', '#exam-archive-download', function () {
+        document.getElementById('exam-archive-action-download').click();
+    });
+
+    $(document).on('click', '#exam-archive-online', function () {
+        document.getElementById('exam-archive-action-online').click();
+    });
+
     // TODO: Move this even handler to settings.phtm
 
     // 
@@ -475,7 +501,7 @@ $(document).ready(function () {
     // data in JSON (on page storage).
     // 
     var saveQuestionToExam = function (qId) {
-        
+
         /////////// Create Json object for Q ///////////
         //	initializations
         ///////////////////////////////////////////////
@@ -792,7 +818,7 @@ $(document).ready(function () {
                 }
 
             });
-            
+
             $(qLine).find('.qs_area_line_q:last').css('border-bottom', '2px solid #fbeed5');
             $(qLine).find('.q_score').html('[' + totalScore.floatval() + ' pt.]');
 
