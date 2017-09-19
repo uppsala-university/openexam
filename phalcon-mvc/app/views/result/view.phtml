@@ -22,8 +22,9 @@
         .body-content {
             left: 50%; 
             position:relative; 
-            background: rgba(255, 255, 255, 0.95);
-            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            min-height: 950px;
         }
         .main-box {
             left: 50%; 
@@ -75,12 +76,10 @@
             background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 80px 30px transparent;
         }
         .page-inner {
-            background:url("<?= $this->url->get("img/seal.png") ?>") center center / 600px 600px no-repeat scroll padding-box transparent;
+            background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 100px 200px transparent;
         }
         .page {
-            page-break-after: always !important;
-            min-height: 270mm;
-            min-width: 200mm;
+            page-break-before: always !important;
             border-top:5px solid #990000; 
         }
         .blue-txt {
@@ -90,7 +89,7 @@
         .blurred {
             font-size: 1.1em;
             color: #bbbbbb;
-            width: 100%;
+            width: 99%;
             text-align: center;
             margin-bottom: 10px;
         }
@@ -266,244 +265,246 @@
                     <?php endif; ?>
 
                     <!-- Questions and Answers pages -->
-                    <?php foreach ($data['questions'] as $questNo => $question): ?>
-                            <div class="page page-inner">
-                                <div class="body" >
-                                    <div class="body-content">
-                                        <div class="quest">
-                                            <h1 class="q-<?= $question->id ?>">Question <?= $question->slot ?> </h1>
+                    <?php if (is_array($data['questions'])) : ?>
+                            <?php foreach ($data['questions'] as $questNo => $question): ?>
+                                    <div class="page page-inner">
+                                        <div class="body" >
+                                            <div class="body-content">
+                                                <div class="quest">
+                                                    <h1 class="q-<?= $question->id ?>">Question <?= $question->slot ?> </h1>
 
-                                            <?php foreach ($data['qData'][$question->id]['qParts'] as $pTitle => $pData): ?>
-                                                    <div class="quest-part">
-                                                        <?php if (count($data['qData'][$question->id]['qParts']) > 1): ?>
-                                                                <h2>Part <?= $pTitle ?></h2>
-                                                        <?php endif; ?>
-                                                        <div style="padding: 10px 20px 0px 20px;">
+                                                    <?php foreach ($data['qData'][$question->id]['qParts'] as $pTitle => $pData): ?>
+                                                            <div class="quest-part">
+                                                                <?php if (count($data['qData'][$question->id]['qParts']) > 1): ?>
+                                                                        <h2>Part <?= $pTitle ?></h2>
+                                                                <?php endif; ?>
+                                                                <div style="padding: 10px 20px 0px 20px;">
 
-                                                            <!-- resources -->
-                                                            <?php foreach ($pData['resources'] as $resTitle => $resUrl): ?>
-                                                                    <div class="resource-file-box" style="margin-bottom: 10px; border-radius: 3px; width: 325px; padding: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
-                                                                        <?php
-                                                                        $type = basename(dirname($resUrl)) . 's';
-                                                                        $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
+                                                                    <!-- resources -->
+                                                                    <?php foreach ($pData['resources'] as $resTitle => $resUrl): ?>
+                                                                            <div class="resource-file-box" style="margin-bottom: 10px; border-radius: 3px; width: 325px; padding: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
+                                                                                <?php
+                                                                                $type = basename(dirname($resUrl)) . 's';
+                                                                                $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
 
-                                                                        if (file_exists($path)) {
-                                                                                $mime = mime_content_type($path);
-                                                                                $type = explode("/", $mime);
-                                                                        } else {
-                                                                                $mime = "application/octet-stream";
-                                                                                $type = explode("/", $mime);
-                                                                        }
+                                                                                if (file_exists($path)) {
+                                                                                        $mime = mime_content_type($path);
+                                                                                        $type = explode("/", $mime);
+                                                                                } else {
+                                                                                        $mime = "application/octet-stream";
+                                                                                        $type = explode("/", $mime);
+                                                                                }
 
-                                                                        switch ($type[0]) {
-                                                                                case 'audio':
-                                                                                        $icon = 'file-audio-o';
-                                                                                        $desc = 'Download audio file';
-                                                                                        break;
-                                                                                case 'video':
-                                                                                        $icon = 'file-video-o';
-                                                                                        $desc = 'Download video file';
-                                                                                        break;
-                                                                                case 'image':
-                                                                                        $icon = 'file-image-o';
-                                                                                        $desc = 'Download image file';
-                                                                                        break;
-                                                                                case 'application':
-                                                                                        switch ($type[1]) {
-                                                                                                case 'pdf':
-                                                                                                        $icon = 'file-pdf-o';
-                                                                                                        $desc = 'Download PDF';
-                                                                                                        break;
-                                                                                                case 'vnd.oasis.opendocument.spreadsheet':
-                                                                                                case 'octet-stream':
-                                                                                                case 'vnd.ms-office':
-                                                                                                        $icon = 'file-excel-o';
-                                                                                                        $desc = 'Download spreadsheet';
-                                                                                                        break;
-                                                                                                case 'vnd.openxmlformats-officedocument.wordprocessingml.document':
-                                                                                                case 'vnd.oasis.opendocument.text':
-                                                                                                case 'msword':
-                                                                                                        $icon = 'file-word-o';
-                                                                                                        $desc = 'Download text document';
-                                                                                                        break;
-                                                                                                case 'vnd.openxmlformats-officedocument.presentationml.presentation':
-                                                                                                case 'vnd.oasis.opendocument.presentation':
-                                                                                                case 'vnd.ms-powerpoint':
-                                                                                                        $icon = 'file-powerpoint-o';
-                                                                                                        $desc = 'Download presentation';
-                                                                                                        break;
-                                                                                                case 'zip':
-                                                                                                case 'x-gzip':
-                                                                                                case 'java-archive':
-                                                                                                        $icon = 'file-archive-o';
-                                                                                                        $desc = 'Download archive file';
-                                                                                                        break;
-                                                                                        }
-                                                                                        break;
-                                                                        }
+                                                                                switch ($type[0]) {
+                                                                                        case 'audio':
+                                                                                                $icon = 'file-audio-o';
+                                                                                                $desc = 'Download audio file';
+                                                                                                break;
+                                                                                        case 'video':
+                                                                                                $icon = 'file-video-o';
+                                                                                                $desc = 'Download video file';
+                                                                                                break;
+                                                                                        case 'image':
+                                                                                                $icon = 'file-image-o';
+                                                                                                $desc = 'Download image file';
+                                                                                                break;
+                                                                                        case 'application':
+                                                                                                switch ($type[1]) {
+                                                                                                        case 'pdf':
+                                                                                                                $icon = 'file-pdf-o';
+                                                                                                                $desc = 'Download PDF';
+                                                                                                                break;
+                                                                                                        case 'vnd.oasis.opendocument.spreadsheet':
+                                                                                                        case 'octet-stream':
+                                                                                                        case 'vnd.ms-office':
+                                                                                                                $icon = 'file-excel-o';
+                                                                                                                $desc = 'Download spreadsheet';
+                                                                                                                break;
+                                                                                                        case 'vnd.openxmlformats-officedocument.wordprocessingml.document':
+                                                                                                        case 'vnd.oasis.opendocument.text':
+                                                                                                        case 'msword':
+                                                                                                                $icon = 'file-word-o';
+                                                                                                                $desc = 'Download text document';
+                                                                                                                break;
+                                                                                                        case 'vnd.openxmlformats-officedocument.presentationml.presentation':
+                                                                                                        case 'vnd.oasis.opendocument.presentation':
+                                                                                                        case 'vnd.ms-powerpoint':
+                                                                                                                $icon = 'file-powerpoint-o';
+                                                                                                                $desc = 'Download presentation';
+                                                                                                                break;
+                                                                                                        case 'zip':
+                                                                                                        case 'x-gzip':
+                                                                                                        case 'java-archive':
+                                                                                                                $icon = 'file-archive-o';
+                                                                                                                $desc = 'Download archive file';
+                                                                                                                break;
+                                                                                                }
+                                                                                                break;
+                                                                                }
 
-                                                                        ?>
-                                                                        <?php if ($type[0] == 'video') : ?>
-                                                                                <video
-                                                                                    id="my-player"
-                                                                                    class="video-js"
-                                                                                    controls
-                                                                                    preload="auto"
-                                                                                    poster="<?= $this->url->get('img/pexels-photo-318540-video.jpeg') ?>"
-                                                                                    width="325" height="240"
-                                                                                    data-setup='{}'>
-                                                                                    <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
-                                                                                    <p class="vjs-no-js">
-                                                                                        To view this video file please enable JavaScript, and consider upgrading to a
-                                                                                        web browser that
-                                                                                        <a href="http://videojs.com/html5-video-support/" target="_blank">
-                                                                                            supports HTML5 video/audio
-                                                                                        </a>
-                                                                                    </p>
-                                                                                </video>
-                                                                        <?php elseif ($type[0] == 'audio') : ?>
-                                                                                <audio
-                                                                                    id="my-player"
-                                                                                    class="video-js"
-                                                                                    controls
-                                                                                    preload="auto"
-                                                                                    poster="<?= $this->url->get('img/pexels-photo-144429-audio.jpeg') ?>"
-                                                                                    width="325" height="240"
-                                                                                    data-setup='{}'>
-                                                                                    <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
-                                                                                    <p class="vjs-no-js">
-                                                                                        To listen to this audio file please enable JavaScript, and consider upgrading to a
-                                                                                        web browser that
-                                                                                        <a href="http://videojs.com/html5-video-support/" target="_blank">
-                                                                                            supports HTML5 audio/audio
-                                                                                        </a>
-                                                                                    </p>
-                                                                                </audio>
-                                                                        <?php elseif ($type[0] == 'image') : ?>
-                                                                                <?php if (($exam->details & Exam::BLUR_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
-                                                                                        <svg width="100%" height="550px"> 
-                                                                                        <defs> 
-                                                                                        <filter id="blur"> 
-                                                                                            <feGaussianBlur stdDeviation="8" /> 
-                                                                                        </filter> 
-                                                                                        </defs> 
-                                                                                        <text x="25px" y="55px" font-family="Verdana"
-                                                                                              style="font-family: Times New Roman;
-                                                                                              font-size: 35px;
-                                                                                              stroke: #eeeeee;
-                                                                                              fill: #ffffff;">
-                                                                                        The media content has been blurred by teacher request
-                                                                                        </text>      
-                                                                                        <image xlink:href="<?= $resUrl ?>" y="25px" width="500px" height="500px" filter="url(#blur)">  
-                                                                                        </image> 
-                                                                                        </svg>                                                                                                
-                                                                                        <div class="blurred">The media content has been blurred by request from teacher</div>
-                                                                                        <?php $resUrl = '#' ?>
-                                                                                <?php elseif (($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
-                                                                                        <div style="background-color: lightgray; max-width: 200px; text-align: center; color: white; padding: 35px">
-                                                                                            The media content has been hidden by teacher request
-                                                                                        </div>
-                                                                                        <?php $resUrl = '#' ?>
+                                                                                ?>
+                                                                                <?php if ($type[0] == 'video') : ?>
+                                                                                        <video
+                                                                                            id="my-player"
+                                                                                            class="video-js"
+                                                                                            controls
+                                                                                            preload="auto"
+                                                                                            poster="<?= $this->url->get('img/pexels-photo-318540-video.jpeg') ?>"
+                                                                                            width="325" height="240"
+                                                                                            data-setup='{}'>
+                                                                                            <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
+                                                                                            <p class="vjs-no-js">
+                                                                                                To view this video file please enable JavaScript, and consider upgrading to a
+                                                                                                web browser that
+                                                                                                <a href="http://videojs.com/html5-video-support/" target="_blank">
+                                                                                                    supports HTML5 video/audio
+                                                                                                </a>
+                                                                                            </p>
+                                                                                        </video>
+                                                                                <?php elseif ($type[0] == 'audio') : ?>
+                                                                                        <audio
+                                                                                            id="my-player"
+                                                                                            class="video-js"
+                                                                                            controls
+                                                                                            preload="auto"
+                                                                                            poster="<?= $this->url->get('img/pexels-photo-144429-audio.jpeg') ?>"
+                                                                                            width="325" height="240"
+                                                                                            data-setup='{}'>
+                                                                                            <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
+                                                                                            <p class="vjs-no-js">
+                                                                                                To listen to this audio file please enable JavaScript, and consider upgrading to a
+                                                                                                web browser that
+                                                                                                <a href="http://videojs.com/html5-video-support/" target="_blank">
+                                                                                                    supports HTML5 audio/audio
+                                                                                                </a>
+                                                                                            </p>
+                                                                                        </audio>
+                                                                                <?php elseif ($type[0] == 'image') : ?>
+                                                                                        <?php if (($exam->details & Exam::BLUR_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
+                                                                                                <svg width="100%" height="550px"> 
+                                                                                                <defs> 
+                                                                                                <filter id="blur"> 
+                                                                                                    <feGaussianBlur stdDeviation="8" /> 
+                                                                                                </filter> 
+                                                                                                </defs> 
+                                                                                                <text x="25px" y="55px" font-family="Verdana"
+                                                                                                      style="font-family: Times New Roman;
+                                                                                                      font-size: 35px;
+                                                                                                      stroke: #eeeeee;
+                                                                                                      fill: #ffffff;">
+                                                                                                The media content has been blurred by teacher request
+                                                                                                </text>      
+                                                                                                <image xlink:href="<?= $resUrl ?>" y="25px" width="500px" height="500px" filter="url(#blur)">  
+                                                                                                </image> 
+                                                                                                </svg>                                                                                                
+                                                                                                <div class="blurred">The media content has been blurred by request from teacher</div>
+                                                                                                <?php $resUrl = '#' ?>
+                                                                                        <?php elseif (($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
+                                                                                                <div style="background-color: lightgray; max-width: 200px; text-align: center; color: white; padding: 35px">
+                                                                                                    The media content has been hidden by teacher request
+                                                                                                </div>
+                                                                                                <?php $resUrl = '#' ?>
+                                                                                        <?php else : ?>
+                                                                                                <img src="<?= $resUrl ?>" style=" background-color:#f9f9f9; max-width:99%;">
+                                                                                        <?php endif; ?>
                                                                                 <?php else : ?>
-                                                                                        <img src="<?= $resUrl ?>" style=" background-color:#f9f9f9; max-width:100%;">
+                                                                                        <div>
+                                                                                            <a class="fancybox" rel="fancybox" href="<?= $resUrl ?>" title="<?= $resTitle ?>">
+                                                                                                <a class="media {width:320}" href="<?= $resUrl ?>"></a> 
+                                                                                            </a>    
+                                                                                        </div>
                                                                                 <?php endif; ?>
-                                                                        <?php else : ?>
-                                                                                <div>
-                                                                                    <a class="fancybox" rel="fancybox" href="<?= $resUrl ?>" title="<?= $resTitle ?>">
-                                                                                        <a class="media {width:320}" href="<?= $resUrl ?>"></a> 
-                                                                                    </a>    
-                                                                                </div>
-                                                                        <?php endif; ?>
 
-                                                                        <div class="resource-title" style="padding: 5px">
-                                                                            <a href="<?= $resUrl ?>" title="<?= $desc ?>" style="text-decoration: none">
-                                                                                <small class="text-muted" style="vertical-align: central">
-                                                                                    <i class="fa fa-<?= $icon ?> fa-2x"></i> 
-                                                                                    <?= $resTitle ?>
-                                                                                </small> <br />
-                                                                            </a>
+                                                                                <div class="resource-title" style="padding: 5px">
+                                                                                    <a href="<?= $resUrl ?>" title="<?= $desc ?>" style="text-decoration: none">
+                                                                                        <small class="text-muted" style="vertical-align: central">
+                                                                                            <i class="fa fa-<?= $icon ?> fa-2x"></i> 
+                                                                                            <?= $resTitle ?>
+                                                                                        </small> <br />
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+
+                                                                    <?php endforeach; ?>
+
+                                                                    <div style="padding: 20px 0; font-size:14px">
+                                                                        <?= $pData['q_text'] ?>
+                                                                        <?php if ($pData["ans_area"]["type"] == 'choicebox'): ?>
+                                                                                <?php $correctAnsArr = array(); ?>
+                                                                                <ul>
+                                                                                    <?php foreach ($pData["ans_area"]["data"] as $opt => $isCorrect): ?>
+                                                                                            <li>
+                                                                                                <?= $opt ?>
+                                                                                                <?php if ($isCorrect): ?>
+                                                                                                        <span style="color:green"> ✔</span>
+                                                                                                        <?php $correctAnsArr[] = $opt; ?>
+                                                                                                <?php endif; ?>
+                                                                                            </li>       
+                                                                                    <?php endforeach; ?>
+                                                                                </ul>
+                                                                        <?php endif; ?>
+                                                                    </div>
+
+
+                                                                    <div style="padding-bottom: 20px;">
+                                                                        <div class="blue-txt"> Your answer:</div> 
+
+                                                                        <div>
+                                                                            <?php if ($pData["ans_area"]["type"] == 'canvas'): ?>
+                                                                                    <img src="<?= $data['answers'][$student->id][$question->id][$pTitle]["ans"][0]["canvasUrl"] ?>" style=" background-color:#f9f9f9; max-width:99%;" >
+                                                                            <?php else: ?>
+                                                                                    <?php if (count($data['answers'][$student->id][$question->id][$pTitle]["ans"])): ?>
+                                                                                            <?php if ($pData["ans_area"]["type"] == 'choicebox'): ?>
+                                                                                                    <ul>
+                                                                                                        <?php foreach ($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans): ?>
+                                                                                                                <?php if (count($correctAnsArr)): ?>
+                                                                                                                        <li style="color:<?= in_array($ans, $correctAnsArr) ? 'green' : 'red' ?>">
+                                                                                                                            <?= $ans ?>
+                                                                                                                        </li>
+                                                                                                                <?php else: ?>
+                                                                                                                        <li><?= $ans ?></li>
+                                                                                                                <?php endif; ?>
+                                                                                                        <?php endforeach; ?>
+                                                                                                    </ul>
+                                                                                            <?php else: ?>
+                                                                                                    <?php if (is_array($data['answers'][$student->id][$question->id][$pTitle]["ans"])): ?>
+                                                                                                            <?php foreach ($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans): ?>
+                                                                                                                    <?= $ans ?>
+                                                                                                            <?php endforeach; ?>
+                                                                                                    <?php else: ?>
+                                                                                                            <?= $data['answers'][$student->id][$question->id][$pTitle]["ans"]; ?>
+                                                                                                    <?php endif; ?>	
+                                                                                            <?php endif; ?>
+                                                                                    <?php else: ?>
+                                                                                            <em>No answer was provided for this part.</em>
+                                                                                    <?php endif; ?>
+                                                                            <?php endif; ?>
                                                                         </div>
                                                                     </div>
 
-                                                            <?php endforeach; ?>
+                                                                    <?php if (isset($data['results'][$student->id][$question->id]["comments"]) && !empty($data['results'][$student->id][$question->id]["comments"])): ?>
+                                                                            <div style="padding-bottom: 20px;">
+                                                                                <div class="blue-txt"> Teacher's comments:</div> 
+                                                                                <div class="uu-color"><?= nl2br($data['results'][$student->id][$question->id]["comments"]) ?></div>
+                                                                            </div>
+                                                                    <?php endif; ?>
 
-                                                            <div style="padding: 20px 0; font-size:14px">
-                                                                <?= $pData['q_text'] ?>
-                                                                <?php if ($pData["ans_area"]["type"] == 'choicebox'): ?>
-                                                                        <?php $correctAnsArr = array(); ?>
-                                                                        <ul>
-                                                                            <?php foreach ($pData["ans_area"]["data"] as $opt => $isCorrect): ?>
-                                                                                    <li>
-                                                                                        <?= $opt ?>
-                                                                                        <?php if ($isCorrect): ?>
-                                                                                                <span style="color:green"> ✔</span>
-                                                                                                <?php $correctAnsArr[] = $opt; ?>
-                                                                                        <?php endif; ?>
-                                                                                    </li>       
-                                                                            <?php endforeach; ?>
-                                                                        </ul>
-                                                                <?php endif; ?>
-                                                            </div>
-
-
-                                                            <div style="padding-bottom: 20px;">
-                                                                <div class="blue-txt"> Your answer:</div> 
-
-                                                                <div>
-                                                                    <?php if ($pData["ans_area"]["type"] == 'canvas'): ?>
-                                                                            <img src="<?= $data['answers'][$student->id][$question->id][$pTitle]["ans"][0]["canvasUrl"] ?>" style=" background-color:#f9f9f9; max-width:100%;" >
-                                                                    <?php else: ?>
-                                                                            <?php if (count($data['answers'][$student->id][$question->id][$pTitle]["ans"])): ?>
-                                                                                    <?php if ($pData["ans_area"]["type"] == 'choicebox'): ?>
-                                                                                            <ul>
-                                                                                                <?php foreach ($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans): ?>
-                                                                                                        <?php if (count($correctAnsArr)): ?>
-                                                                                                                <li style="color:<?= in_array($ans, $correctAnsArr) ? 'green' : 'red' ?>">
-                                                                                                                    <?= $ans ?>
-                                                                                                                </li>
-                                                                                                        <?php else: ?>
-                                                                                                                <li><?= $ans ?></li>
-                                                                                                        <?php endif; ?>
-                                                                                                <?php endforeach; ?>
-                                                                                            </ul>
-                                                                                    <?php else: ?>
-                                                                                            <?php if (is_array($data['answers'][$student->id][$question->id][$pTitle]["ans"])): ?>
-                                                                                                    <?php foreach ($data['answers'][$student->id][$question->id][$pTitle]["ans"] as $ans): ?>
-                                                                                                            <?= $ans ?>
-                                                                                                    <?php endforeach; ?>
-                                                                                            <?php else: ?>
-                                                                                                    <?= $data['answers'][$student->id][$question->id][$pTitle]["ans"]; ?>
-                                                                                            <?php endif; ?>	
-                                                                                    <?php endif; ?>
-                                                                            <?php else: ?>
-                                                                                    <em>No answer was provided for this part.</em>
-                                                                            <?php endif; ?>
+                                                                    <?php if ($data['qData'][$question->id]['qParts'][$pTitle]['q_points'] > 0) : ?>
+                                                                            <div style="padding-bottom: 20px;">
+                                                                                <div style="font-size:14px"> 
+                                                                                    <strong>Your score:</strong> <span class="uu-color"><?= floatval($data['results'][$student->id][$question->id][$pTitle]) ?> (<em>Max score: <?= floatval($data['qData'][$question->id]['qParts'][$pTitle]['q_points']) ?></em>)</span>
+                                                                                </div> 
+                                                                            </div>
                                                                     <?php endif; ?>
                                                                 </div>
                                                             </div>
-
-                                                            <?php if (isset($data['results'][$student->id][$question->id]["comments"]) && !empty($data['results'][$student->id][$question->id]["comments"])): ?>
-                                                                    <div style="padding-bottom: 20px;">
-                                                                        <div class="blue-txt"> Teacher's comments:</div> 
-                                                                        <div class="uu-color"><?= nl2br($data['results'][$student->id][$question->id]["comments"]) ?></div>
-                                                                    </div>
-                                                            <?php endif; ?>
-
-                                                            <?php if ($data['qData'][$question->id]['qParts'][$pTitle]['q_points'] > 0) : ?>
-                                                                    <div style="padding-bottom: 20px;">
-                                                                        <div style="font-size:14px"> 
-                                                                            <strong>Your score:</strong> <span class="uu-color"><?= floatval($data['results'][$student->id][$question->id][$pTitle]) ?> (<em>Max score: <?= floatval($data['qData'][$question->id]['qParts'][$pTitle]['q_points']) ?></em>)</span>
-                                                                        </div> 
-                                                                    </div>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    </div>
-                                            <?php endforeach; ?>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>         
                                         </div>
-                                    </div>         
-                                </div>
-                            </div>
-                    <?php endforeach; ?>
+                                    </div>
+                            <?php endforeach; ?>
+                    <?php endif; ?>
 
                     <!-- Statistics page -->
                     <?php if (($exam->details & Exam::RESULT_OTHERS_STATISTICS) != 0): ?>
