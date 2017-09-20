@@ -441,7 +441,7 @@ class ModelBase extends Model
                         return true;
                 } elseif (!($adapter instanceof Mediator)) {
                         return true;
-                } elseif (!$adapter->getHandler()->canInvalidate()) {
+                } elseif (!$adapter->canInvalidate()) {
                         return true;
                 }
 
