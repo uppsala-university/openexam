@@ -86,11 +86,14 @@ td,th {
     margin-bottom: 10px;
 }
 .hidden {
-    background-color: lightgray; 
-/*    max-width: 200px; */
+    position: absolute;
+    background-color: transparent;
+    background: rgba(255,255,255,0.4);
     text-align: center; 
     color: white; 
     padding: 35px;
+    top: 25px;
+    left: 0;
 }
 .resource-wrapper,
 .resource-file-box {
