@@ -7,6 +7,7 @@
 // File:    answers.phtml
 // 
 // Author:  Ahsan Shahzad (MedfarmDoIT)
+//          Anders Lövgren (BMC-IT)
 // 
 
 $decoded = $exam->decoded;
@@ -16,6 +17,21 @@ $decoded = $exam->decoded;
 <?= Phalcon\Tag::stylesheetLink("css/pdf-rendering.css"); ?>
 
 <style>
+    div[correction="completed"] > div.q-body,
+    div[correction="finalized"] > div.q-body {
+        border-left: 10px solid white;
+        padding-left: 10px;
+    }
+    div[correction="partial"] > div.q-body {
+        border-left: 10px solid orange;
+        padding-left: 10px;
+    }
+    div[correction="waiting"] > div.q-body,
+    div[correction=""] > div.q-body {
+        border-left: 10px solid green;
+        padding-left: 10px;
+    }
+
     div.correction-section-box {
         border-radius: 5px; 
         margin-left: 10px; 
@@ -74,7 +90,7 @@ $decoded = $exam->decoded;
                         endif;
 
                         ?>
-                        <div class="q-body" style="padding:10px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6" : "") ?>; <?= ($loadBy != 'question') ? 'background-color: #E7FFE7' : '' ?>">
+                        <div class="q-body" style="padding:10px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6" : "") ?>">
                             <?php
                             $qPartCounter = 1;
                             $perOptPoints = array();
@@ -163,7 +179,6 @@ $decoded = $exam->decoded;
                                                                     ?>
                                                                     <script>
                                                                             $("#<?= $question->id ?>-corrected").hide();
-                                                                            $("#<?= $question->id ?>-corrected").parent().find('.q-body').css('background-color', '#fff');
                                                                             $("#<?= $question->id ?>-corrected").parent().find('.st-ans-ul').css('background-color', '#F9F9F9');
                                                                     </script>
                                                             <?php endif; ?>
@@ -227,9 +242,20 @@ $decoded = $exam->decoded;
                                                                                 printf("<script>resyncableResults.push('%d')</script>\n", $result->answer_id);
                                                                         }
 
+                                                                        // 
+                                                                        // Define answer result score. Make sure to watch out for floatval('') == 0 ...
+                                                                        // 
+                                                                        if (isset($scoreData[$qPartTitle])) {
+                                                                                $score = floatval($scoreData[$qPartTitle]);
+                                                                        } elseif ($qPart['ans_area']['type'] == 'choicebox') {
+                                                                                $score = round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2);
+                                                                        } else {
+                                                                                $score = '';
+                                                                        }
+
                                                                         ?>
                                                                         <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                                <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= floatval(isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['ans_area']['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '')) ?>" max-pt="<?= floatval($qPart['q_points']) ?>">								
+                                                                                <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>">								
                                                                         <?php else: ?>
                                                                                 <?= floatval($scoreData[$qPartTitle]) ?>
                                                                         <?php endif; ?>	
@@ -308,7 +334,7 @@ $decoded = $exam->decoded;
 
                                                     ?>
 
-                                                    <div class="st-ans-box-body q-body" style="padding-top:15px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6;" : "") ?> <?= (!$decoded && !count($scoreData)) ? 'background-color: #E7FFE7' : '' ?>">
+                                                    <div class="st-ans-box-body q-body" style="padding-top:15px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6;" : "") ?>">
                                                         <div class="st-ans-parts-wrapper" style="padding-bottom:15px;">
                                                             <?php $qPartCounter = 1; ?>
                                                             <?php foreach ($ansData as $qPartTitle => $qPart): ?>

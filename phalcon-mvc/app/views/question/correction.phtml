@@ -763,10 +763,10 @@ if ($exam->decoded) {
                     if (correctionStatus !== 'partial') {
                         $(saveResultBtn).closest('.q-body').parent().find('.not-corrected').hide('500');
                         $(saveResultBtn).closest('.q-body').css('background-color', '#fff');
-                        $(saveResultBtn).closest('.q-body').find('.st-ans-ul').css('background-color', '#F9F9F9');
+                    }
+                    if (correctionStatus !== '') {
                         $(saveResultBtn).closest('div[correction]').attr('correction', correctionStatus);
                     }
-
                     if (correctionStatus === 'completed') {
                         if ($('.hide-completed').is(':checked')) {
                             $(saveResultBtn).closest('div[correction]').hide(500);
@@ -875,8 +875,9 @@ if ($exam->decoded) {
                     downloadButton = $("#download-results")
                     .button()
                     .on("click", function () {
-
-                        //send ajax requests to generate results
+                        // 
+                        // Send AJAX requests to generate results:
+                        // 
                         $.each(stIds, function (i, stId) {
 
                             $.ajax({
