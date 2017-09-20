@@ -48,7 +48,6 @@ $(function () {
                                 baseURL + 'ajax/core/contributor/resource/create',
                                 {"exam_id": examId, "name": file.name, "path": file.url, "type": fType[0], "subtype": fType[1], "user": user},
                                 function (rData) {
-                                    fType[0] = fType[0] + 's';
                                     var tabId = ($('#' + fType[0] + '-tab').length) ? '#' + fType[0] + '-tab' : '#other-files-tab';
 
                                     // show this image in library on right side

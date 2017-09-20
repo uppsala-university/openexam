@@ -181,8 +181,9 @@
                                                                     <?php foreach ($pData['resources'] as $resTitle => $resUrl): ?>
                                                                             <div class="resource-file-box" style="margin-bottom: 10px; border-radius: 3px; width: 290px; padding: 3px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
                                                                                 <?php
-                                                                                $type = basename(dirname($resUrl)) . 's';
+                                                                                $type = basename(dirname($resUrl));
                                                                                 $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
+                                                                                $href = $this->url->get($resUrl);
 
                                                                                 if (file_exists($path)) {
                                                                                         $mime = mime_content_type($path);
@@ -249,7 +250,7 @@
                                                                                             poster="<?= $this->url->get('img/pexels-photo-318540-video.jpeg') ?>"
                                                                                             width="290" height="215"
                                                                                             data-setup='{}'>
-                                                                                            <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
+                                                                                            <source src="<?= $href ?>" type="<?= $mime ?>"></source>
                                                                                             <p class="vjs-no-js">
                                                                                                 To view this video file please enable JavaScript, and consider upgrading to a
                                                                                                 web browser that
@@ -267,7 +268,7 @@
                                                                                             poster="<?= $this->url->get('img/pexels-photo-144429-audio.jpeg') ?>"
                                                                                             width="290" height="215"
                                                                                             data-setup='{}'>
-                                                                                            <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
+                                                                                            <source src="<?= $href ?>" type="<?= $mime ?>"></source>
                                                                                             <p class="vjs-no-js">
                                                                                                 To listen to this audio file please enable JavaScript, and consider upgrading to a
                                                                                                 web browser that
@@ -291,29 +292,29 @@
                                                                                                       fill: #ffffff;">
                                                                                                 The media content has been blurred by teacher request
                                                                                                 </text>      
-                                                                                                <image xlink:href="<?= $resUrl ?>" y="25px" width="500px" height="500px" filter="url(#blur)">  
+                                                                                                <image xlink:href="<?= $href ?>" y="25px" width="500px" height="500px" filter="url(#blur)">  
                                                                                                 </image> 
                                                                                                 </svg>                                                                                                
                                                                                                 <div class="blurred">The media content has been blurred by request from teacher</div>
-                                                                                                <?php $resUrl = '#' ?>
+                                                                                                <?php $href = '#' ?>
                                                                                         <?php elseif (($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
                                                                                                 <div style="background-color: lightgray; max-width: 200px; text-align: center; color: white; padding: 35px">
                                                                                                     The media content has been hidden by teacher request
                                                                                                 </div>
-                                                                                                <?php $resUrl = '#' ?>
+                                                                                                <?php $href = '#' ?>
                                                                                         <?php else : ?>
-                                                                                                <img src="<?= $resUrl ?>" style=" background-color:#f9f9f9; max-width:99%;">
+                                                                                                <img src="<?= $href ?>" style=" background-color:#f9f9f9; max-width:99%;">
                                                                                         <?php endif; ?>
                                                                                 <?php else : ?>
                                                                                         <div>
-                                                                                            <a class="fancybox" rel="fancybox" href="<?= $resUrl ?>" title="<?= $resTitle ?>">
-                                                                                                <a class="media {width:320}" href="<?= $resUrl ?>"></a> 
+                                                                                            <a class="fancybox" rel="fancybox" href="<?= $href ?>" title="<?= $resTitle ?>">
+                                                                                                <a class="media {width:320}" href="<?= $href ?>"></a> 
                                                                                             </a>    
                                                                                         </div>
                                                                                 <?php endif; ?>
 
                                                                                 <div class="resource-title" style="padding: 5px">
-                                                                                    <a href="<?= $resUrl ?>" title="<?= $desc ?>" style="text-decoration: none">
+                                                                                    <a href="<?= $href ?>" title="<?= $desc ?>" style="text-decoration: none">
                                                                                         <small class="text-muted" style="vertical-align: central">
                                                                                             <i class="fa fa-<?= $icon ?> fa-2x"></i> 
                                                                                             <?= $resTitle ?>

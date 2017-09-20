@@ -233,7 +233,7 @@ class MediaController extends GuiController
                 // 
                 // Check that file exists:
                 // 
-                $path = sprintf("%s/%ss/%s", $this->config->application->mediaDir, $type, $file);
+                $path = sprintf("%s/%s/%s", $this->config->application->mediaDir, $type, $file);
 
                 if (!file_exists($path)) {
                         throw new \Exception("Can't located requested file", Error::NOT_FOUND);
