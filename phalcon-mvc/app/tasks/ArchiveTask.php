@@ -53,11 +53,13 @@ class ArchiveTask extends MainTask implements TaskInterface
                         'usage'    => array(
                                 '--create [--exam=num] [--start=date] [--end=date] [--all] [--force]',
                                 '--delete [--exam=num] [--start=date] [--end=date] [--all] [--force]',
+                                '--update [--exam=num] [--start=date] [--end=date] [--all] [--force]',
                                 '--list [--missing|--verify]',
                         ),
                         'options'  => array(
                                 '--create'     => 'Create exam archive files.',
                                 '--delete'     => 'Delete exam archive files.',
+                                '--update'     => 'Update exam archive files (if needed).',
                                 '--list'       => 'List exam archives.',
                                 '--missing'    => 'Find exams not archived.',
                                 '--verify'     => 'Verify exam archives.',
@@ -89,6 +91,10 @@ class ArchiveTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Create archive for single exam',
                                         'command' => '--create --exam=73624'
+                                ),
+                                array(
+                                        'descr'   => 'Update archive if associated exam has been modified',
+                                        'command' => '--update'
                                 ))
                 );
         }
@@ -136,6 +142,32 @@ class ArchiveTask extends MainTask implements TaskInterface
                         }
                         if ($this->_options['dry-run'] == false) {
                                 $archive->delete();
+                        }
+                }
+        }
+
+        /**
+         * Update exam archives action.
+         * @param array $params
+         */
+        public function updateAction($params = array())
+        {
+                $this->setOptions($params, 'update');
+
+                $exams = $this->getExams();
+                foreach ($exams as $exam) {
+                        $archive = new Archive($exam);
+                        if ($archive->exists() == false) {
+                                continue;
+                        }
+                        if (filemtime($archive->getFilename()) > strtotime($exam->updated)) {
+                                continue;
+                        }
+                        if ($this->_options['verbose']) {
+                                $this->flash->notice(sprintf("Updating archive for exam %d", $exam->id));
+                        }
+                        if ($this->_options['dry-run'] == false) {
+                                $archive->create();
                         }
                 }
         }
@@ -260,7 +292,7 @@ class ArchiveTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'dry-run', 'create', 'delete', 'list', 'missing', 'verify', 'start', 'end', 'exam', 'all');
+                $options = array('verbose', 'force', 'dry-run', 'create', 'delete', 'update', 'list', 'missing', 'verify', 'start', 'end', 'exam', 'all');
                 $current = $action;
 
                 // 

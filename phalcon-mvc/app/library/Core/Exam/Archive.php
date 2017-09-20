@@ -230,4 +230,13 @@ class Archive extends Component
                 }
         }
 
+        /**
+         * Get associated archive file.
+         * @return string
+         */
+        public function getFilename()
+        {
+                return $this->_file;
+        }
+
 }
