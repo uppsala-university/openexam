@@ -220,6 +220,16 @@ return array(
                 )        
         ),
         /**
+         * Configuration for the render service.
+         */
+        'render'      => array(
+                // 
+                // The fully qualified server name (strongly recommended to
+                // be explicit set):
+                // 
+                // 'server'    => 'server.example.com',
+        ),
+        /**
          * SMTP settings.
          */
         'smtp'        => array(
