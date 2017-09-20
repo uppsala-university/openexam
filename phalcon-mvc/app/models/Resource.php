@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Generate\Ownership;
+use OpenExam\Library\Model\Behavior\Transform\Remove;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
 /**
@@ -114,6 +115,14 @@ class Resource extends ModelBase
                                 'force' => false
                         )
                 )));
+
+                $this->addBehavior(new Remove(array(
+                        'beforeSave' => array(
+                                'field'  => 'path',
+                                'search' => $this->getDI()->getConfig()->application->baseUri
+                        )
+                    )
+                ));
         }
 
         /**

@@ -19,6 +19,7 @@ use OpenExam\Library\Model\Behavior\Generate\Unique;
 use OpenExam\Library\Model\Behavior\Generate\UUID;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
+use OpenExam\Library\Model\Behavior\Transform\Remove;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
@@ -174,6 +175,13 @@ class Question extends ModelBase
                                 'force' => false
                         )
                 )));
+                $this->addBehavior(new Remove(array(
+                        'beforeSave' => array(
+                                'field'  => 'quest',
+                                'search' => $this->getDI()->getConfig()->application->baseUri
+                        )
+                    )
+                ));
 
                 // 
                 // TODO: better do filtering on client side.

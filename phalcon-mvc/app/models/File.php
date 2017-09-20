@@ -13,6 +13,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\Transform\Remove;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
@@ -64,6 +65,14 @@ class File extends ModelBase
                 $this->belongsTo("answer_id", "OpenExam\Models\Answer", "id", array(
                         "foreignKey" => true,
                         "alias"      => 'answer'
+                ));
+
+                $this->addBehavior(new Remove(array(
+                        'beforeSave' => array(
+                                'field'  => 'path',
+                                'search' => $this->getDI()->getConfig()->application->baseUri
+                        )
+                    )
                 ));
         }
 
