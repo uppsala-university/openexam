@@ -116,7 +116,8 @@ return array(
                 'render' => array(
                         'method' => function() use($config) {
                                 return new SystemLogin(
-                                        $config->render->token
+                                        $config->render->token,
+                                        $config->render->server
                                     );
                         },
                         'desc' => 'Render Service',
