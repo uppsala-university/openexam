@@ -455,12 +455,14 @@ $decoded = $exam->decoded;
             <br />
         </div>
     </div>
-    <div style="position: fixed; top: 55px; right: 55px; padding: 10px; background-color: white; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
-        <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
-        <div style="padding-left: 10px; padding-top: 5px">
-            <input type="checkbox" class="hide-completed"><span style="margin-left: 10px">Hide fully corrected answers</span>
-        </div>
-    </div>
+    <?php if ($decoded == false) : ?>
+            <div style="position: fixed; top: 55px; right: 55px; padding: 10px; background-color: white; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
+                <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
+                <div style="padding-left: 10px; padding-top: 5px">
+                    <input type="checkbox" class="hide-completed"><span style="margin-left: 10px">Hide fully corrected answers</span>
+                </div>
+            </div>
+    <?php endif; ?>
 </div>
 <style>
     .hero-unit {
