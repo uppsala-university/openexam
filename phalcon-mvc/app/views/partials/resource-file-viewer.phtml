@@ -93,7 +93,7 @@
     <?php if (isset($hide[$type[0]]) && $hide[$type[0]] == 'hide') : ?>
             <div style="position: relative">
                 <img src="<?= $url->get('img/pexels-photo-87216-camera.jpeg') ?>" style="max-width:99%">
-                <div class="hidden">
+                <div class="resource-file-hidden">
                     <h3>The media content has been hidden on request from teacher</h3>
                 </div>
             </div>
@@ -146,7 +146,7 @@
                             <image xlink:href="<?= $href ?>" y="0px" x="15px" width="250px" height="250px" filter="url(#blur)">  
                             </image> 
                             </svg>                                                                                                
-                            <div class="blurred">The media content has been blurred on request from teacher</div>
+                            <div class="resource-file-blurred">The media content has been blurred on request from teacher</div>
                             <?php $href = '#' ?>
                     <?php else : ?>
                             <img src="<?= $href ?>" style=" background-color:#f9f9f9; max-width:99%;">

@@ -78,14 +78,14 @@ td,th {
     font-size:14px;
     color:#3d749b
 }
-.blurred {
+.resource-file-blurred {
     font-size: 1.1em;
     color: #bbbbbb;
     width: 99%;
     text-align: center;
     margin-bottom: 10px;
 }
-.hidden {
+.resource-file-hidden {
     position: absolute;
     background-color: transparent;
     background: rgba(255,255,255,0.4);
