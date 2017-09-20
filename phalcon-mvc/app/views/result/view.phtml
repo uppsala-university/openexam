@@ -178,152 +178,35 @@
                                                                 <div style="padding: 10px 20px 0px 20px;">
 
                                                                     <!-- resources -->
-                                                                    <?php foreach ($pData['resources'] as $resTitle => $resUrl): ?>
-                                                                            <div class="resource-file-box" style="margin-bottom: 10px; border-radius: 3px; width: 290px; padding: 3px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
-                                                                                <?php
-                                                                                $type = basename(dirname($resUrl));
-                                                                                $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
-                                                                                $href = $this->url->get($resUrl);
+                                                                    <?php
+                                                                    foreach ($pData['resources'] as $resTitle => $resUrl) {
+                                                                            $type = basename(dirname($resUrl));
+                                                                            $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
+                                                                            $href = $this->url->get($resUrl);
+                                                                            $name = $resTitle;
 
-                                                                                if (file_exists($path)) {
-                                                                                        $mime = mime_content_type($path);
-                                                                                        $type = explode("/", $mime);
-                                                                                } else {
-                                                                                        $mime = "application/octet-stream";
-                                                                                        $type = explode("/", $mime);
-                                                                                }
+                                                                            $hide = array();
 
-                                                                                switch ($type[0]) {
-                                                                                        case 'audio':
-                                                                                                $icon = 'file-audio-o';
-                                                                                                $desc = 'Download audio file';
-                                                                                                break;
-                                                                                        case 'video':
-                                                                                                $icon = 'file-video-o';
-                                                                                                $desc = 'Download video file';
-                                                                                                break;
-                                                                                        case 'image':
-                                                                                                $icon = 'file-image-o';
-                                                                                                $desc = 'Download image file';
-                                                                                                break;
-                                                                                        case 'application':
-                                                                                                switch ($type[1]) {
-                                                                                                        case 'pdf':
-                                                                                                                $icon = 'file-pdf-o';
-                                                                                                                $desc = 'Download PDF';
-                                                                                                                break;
-                                                                                                        case 'vnd.oasis.opendocument.spreadsheet':
-                                                                                                        case 'octet-stream':
-                                                                                                        case 'vnd.ms-office':
-                                                                                                                $icon = 'file-excel-o';
-                                                                                                                $desc = 'Download spreadsheet';
-                                                                                                                break;
-                                                                                                        case 'vnd.openxmlformats-officedocument.wordprocessingml.document':
-                                                                                                        case 'vnd.oasis.opendocument.text':
-                                                                                                        case 'msword':
-                                                                                                                $icon = 'file-word-o';
-                                                                                                                $desc = 'Download text document';
-                                                                                                                break;
-                                                                                                        case 'vnd.openxmlformats-officedocument.presentationml.presentation':
-                                                                                                        case 'vnd.oasis.opendocument.presentation':
-                                                                                                        case 'vnd.ms-powerpoint':
-                                                                                                                $icon = 'file-powerpoint-o';
-                                                                                                                $desc = 'Download presentation';
-                                                                                                                break;
-                                                                                                        case 'zip':
-                                                                                                        case 'x-gzip':
-                                                                                                        case 'java-archive':
-                                                                                                                $icon = 'file-archive-o';
-                                                                                                                $desc = 'Download archive file';
-                                                                                                                break;
-                                                                                                }
-                                                                                                break;
-                                                                                }
+                                                                            if (($exam->details & Exam::BLUR_MEDIA_CONTENT_IN_RESULT) != 0) {
+                                                                                    $hide['image'] = 'blur';
+                                                                            }
+                                                                            if (($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) {
+                                                                                    $hide['image'] = 'hide';
+                                                                                    $hide['video'] = 'hide';
+                                                                                    $hide['audio'] = 'hide';
+                                                                            }
 
-                                                                                ?>
-                                                                                <?php if ($type[0] == 'video') : ?>
-                                                                                        <video
-                                                                                            id="my-player"
-                                                                                            class="video-js"
-                                                                                            controls
-                                                                                            preload="auto"
-                                                                                            poster="<?= $this->url->get('img/pexels-photo-318540-video.jpeg') ?>"
-                                                                                            width="290" height="215"
-                                                                                            data-setup='{}'>
-                                                                                            <source src="<?= $href ?>" type="<?= $mime ?>"></source>
-                                                                                            <p class="vjs-no-js">
-                                                                                                To view this video file please enable JavaScript, and consider upgrading to a
-                                                                                                web browser that
-                                                                                                <a href="http://videojs.com/html5-video-support/" target="_blank">
-                                                                                                    supports HTML5 video/audio
-                                                                                                </a>
-                                                                                            </p>
-                                                                                        </video>
-                                                                                <?php elseif ($type[0] == 'audio') : ?>
-                                                                                        <audio
-                                                                                            id="my-player"
-                                                                                            class="video-js"
-                                                                                            controls
-                                                                                            preload="auto"
-                                                                                            poster="<?= $this->url->get('img/pexels-photo-144429-audio.jpeg') ?>"
-                                                                                            width="290" height="215"
-                                                                                            data-setup='{}'>
-                                                                                            <source src="<?= $href ?>" type="<?= $mime ?>"></source>
-                                                                                            <p class="vjs-no-js">
-                                                                                                To listen to this audio file please enable JavaScript, and consider upgrading to a
-                                                                                                web browser that
-                                                                                                <a href="http://videojs.com/html5-video-support/" target="_blank">
-                                                                                                    supports HTML5 audio/audio
-                                                                                                </a>
-                                                                                            </p>
-                                                                                        </audio>
-                                                                                <?php elseif ($type[0] == 'image') : ?>
-                                                                                        <?php if (($exam->details & Exam::BLUR_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
-                                                                                                <svg width="100%" height="550px"> 
-                                                                                                <defs> 
-                                                                                                <filter id="blur"> 
-                                                                                                    <feGaussianBlur stdDeviation="8" /> 
-                                                                                                </filter> 
-                                                                                                </defs> 
-                                                                                                <text x="25px" y="55px" font-family="Verdana"
-                                                                                                      style="font-family: Times New Roman;
-                                                                                                      font-size: 35px;
-                                                                                                      stroke: #eeeeee;
-                                                                                                      fill: #ffffff;">
-                                                                                                The media content has been blurred by teacher request
-                                                                                                </text>      
-                                                                                                <image xlink:href="<?= $href ?>" y="25px" width="500px" height="500px" filter="url(#blur)">  
-                                                                                                </image> 
-                                                                                                </svg>                                                                                                
-                                                                                                <div class="blurred">The media content has been blurred by request from teacher</div>
-                                                                                                <?php $href = '#' ?>
-                                                                                        <?php elseif (($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) : ?>
-                                                                                                <div style="background-color: lightgray; max-width: 200px; text-align: center; color: white; padding: 35px">
-                                                                                                    The media content has been hidden by teacher request
-                                                                                                </div>
-                                                                                                <?php $href = '#' ?>
-                                                                                        <?php else : ?>
-                                                                                                <img src="<?= $href ?>" style=" background-color:#f9f9f9; max-width:99%;">
-                                                                                        <?php endif; ?>
-                                                                                <?php else : ?>
-                                                                                        <div>
-                                                                                            <a class="fancybox" rel="fancybox" href="<?= $href ?>" title="<?= $resTitle ?>">
-                                                                                                <a class="media {width:320}" href="<?= $href ?>"></a> 
-                                                                                            </a>    
-                                                                                        </div>
-                                                                                <?php endif; ?>
+                                                                            // 
+                                                                            // Use resource viewer:
+                                                                            // 
+                                                                            $this->partial('partials/resource-file-viewer', array(
+                                                                                    'type' => $type, 'path' => $path,
+                                                                                    'href' => $href, 'name' => $name,
+                                                                                    'hide' => $hide, 'url'  => $this->url
+                                                                            ));
+                                                                    }
 
-                                                                                <div class="resource-title" style="padding: 5px">
-                                                                                    <a href="<?= $href ?>" title="<?= $desc ?>" style="text-decoration: none">
-                                                                                        <small class="text-muted" style="vertical-align: central">
-                                                                                            <i class="fa fa-<?= $icon ?> fa-2x"></i> 
-                                                                                            <?= $resTitle ?>
-                                                                                        </small> <br />
-                                                                                    </a>
-                                                                                </div>
-                                                                            </div>
-
-                                                                    <?php endforeach; ?>
+                                                                    ?>
 
                                                                     <div style="padding: 20px 0; font-size:14px">
                                                                         <?= $pData['q_text'] ?>

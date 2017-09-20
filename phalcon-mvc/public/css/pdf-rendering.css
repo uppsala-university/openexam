@@ -85,6 +85,13 @@ td,th {
     text-align: center;
     margin-bottom: 10px;
 }
+.hidden {
+    background-color: lightgray; 
+/*    max-width: 200px; */
+    text-align: center; 
+    color: white; 
+    padding: 35px;
+}
 .resource-wrapper,
 .resource-file-box {
     background-color: white;
