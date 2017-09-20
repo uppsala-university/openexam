@@ -2,120 +2,17 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <?= Phalcon\Tag::stylesheetLink("css/font-awesome.css"); ?>
+        <?= Phalcon\Tag::stylesheetLink("css/pdf-rendering.css"); ?>
         <title>View results</title>
     </head>
     <style>
-
-        body {
-            margin:0px; background-color:#F8F8F8; font-family:Verdana, Geneva, sans-serif; font-size:13px
-        }
-
-        .header {
-            margin-left:3%; 
-            background-color:#C91F3C; 
-            width:10%;
-        }
-        .body {
-            left: -50%; position: relative; text-align: left;
-
-        }
-        .body-content {
-            left: 50%; 
-            position:relative; 
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            min-height: 950px;
-        }
-        .main-box {
-            left: 50%; 
-            position:relative; 
-            background: rgba(255, 255, 255, 0.9);
-            border-radius:5px; 
-            border: 5px solid #f0f0f0; 
-            padding:30px; 
-            -webkit-box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
-            -moz-box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
-            box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
-        }
-        h1 {
-            font-weight:normal; 
-            border-bottom: 1px solid #bebebe; 
-            font-size:22px; 
-            color:#990000
-        }
-        h2 {
-            font-weight:normal;
-        }
-        table {
-            padding:5px;
-            margin:25px;
-        }
-        td,th {
-            text-align:right;
-            padding-right:25px;
-            font-size:13px
-        }
-
-        .summary-row td {
-            border-top:1px dashed #bebebe;
-        }
-
-        .uu-color {
-            color:#797C80;
-        }
-        .quest-part {
-            padding:5px; 
-            border:1px solid #dedede; 
-            background-color:white; 
-            margin-bottom:15px
-        }
-        .quest-part h2 {
-            border-bottom:1px solid #990000;
-        }
         .page-first {
             background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 80px 30px transparent;
         }
         .page-inner {
             background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 100px 200px transparent;
         }
-        .page {
-            page-break-before: always !important;
-            border-top:5px solid #990000; 
-        }
-        .blue-txt {
-            font-size:14px;
-            color:#3d749b
-        }
-        .blurred {
-            font-size: 1.1em;
-            color: #bbbbbb;
-            width: 99%;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .resource-wrapper,
-        .resource-file-box {
-            background-color: white;
-            display: inline-block;
-            border-radius: 5px;
-            box-shadow: 1px 2px 15px grey;
-            margin: 5px;
-            width: 45%;
-        }
-        .resource-content {
-            padding: 10px;
-            display: inline-block;
-        }
-        .resource-title a {
-            color: grey;
-            margin-bottom: 5px;
-        }
-        .resource-image {
-            border: 1px dashed #bebebe;
-            display: inline-block;
-        }
     </style>
-
     <body>
         <script type="text/x-mathjax-config">
             MathJax.Hub.Config({
@@ -282,7 +179,7 @@
 
                                                                     <!-- resources -->
                                                                     <?php foreach ($pData['resources'] as $resTitle => $resUrl): ?>
-                                                                            <div class="resource-file-box" style="margin-bottom: 10px; border-radius: 3px; width: 325px; padding: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
+                                                                            <div class="resource-file-box" style="margin-bottom: 10px; border-radius: 3px; width: 290px; padding: 3px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);">
                                                                                 <?php
                                                                                 $type = basename(dirname($resUrl)) . 's';
                                                                                 $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
@@ -350,7 +247,7 @@
                                                                                             controls
                                                                                             preload="auto"
                                                                                             poster="<?= $this->url->get('img/pexels-photo-318540-video.jpeg') ?>"
-                                                                                            width="325" height="240"
+                                                                                            width="290" height="215"
                                                                                             data-setup='{}'>
                                                                                             <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
                                                                                             <p class="vjs-no-js">
@@ -368,7 +265,7 @@
                                                                                             controls
                                                                                             preload="auto"
                                                                                             poster="<?= $this->url->get('img/pexels-photo-144429-audio.jpeg') ?>"
-                                                                                            width="325" height="240"
+                                                                                            width="290" height="215"
                                                                                             data-setup='{}'>
                                                                                             <source src="<?= $resUrl ?>" type="<?= $mime ?>"></source>
                                                                                             <p class="vjs-no-js">

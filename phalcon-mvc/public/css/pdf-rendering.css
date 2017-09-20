@@ -1,0 +1,107 @@
+/* 
+    Created on : Sep 20, 2017, 1:16:38 AM
+    Author     : Anders Lövgren (QNET/BMC CompDept)
+*/
+
+body {
+    margin:0px; background-color:#F8F8F8; font-family:Verdana, Geneva, sans-serif; font-size:13px
+}
+
+.header {
+    margin-left:3%; 
+    background-color:#C91F3C; 
+    width:10%;
+}
+.body {
+    left: -50%; position: relative; text-align: left;
+
+}
+.body-content {
+    left: 50%; 
+    position:relative; 
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    min-height: 950px;
+}
+.main-box {
+    left: 50%; 
+    position:relative; 
+    background: rgba(255, 255, 255, 0.9);
+    border-radius:5px; 
+    border: 5px solid #f0f0f0; 
+    padding:30px; 
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
+    box-shadow: 0px 0px 10px 1px rgba(206,206,206,1);
+}
+h1 {
+    font-weight:normal; 
+    border-bottom: 1px solid #bebebe; 
+    font-size:22px; 
+    color:#990000
+}
+h2 {
+    font-weight:normal;
+}
+table {
+    padding:5px;
+    margin:25px;
+}
+td,th {
+    text-align:right;
+    padding-right:25px;
+    font-size:13px
+}
+
+.summary-row td {
+    border-top:1px dashed #bebebe;
+}
+
+.uu-color {
+    color:#797C80;
+}
+.quest-part {
+    padding:5px; 
+    border:1px solid #dedede; 
+    border-radius: 5px;
+    background-color:white; 
+    margin-bottom:15px
+}
+.quest-part h2 {
+    border-bottom:1px solid #990000;
+}
+.page {
+    page-break-before: always !important;
+    border-top:5px solid #990000; 
+}
+.blue-txt {
+    font-size:14px;
+    color:#3d749b
+}
+.blurred {
+    font-size: 1.1em;
+    color: #bbbbbb;
+    width: 99%;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.resource-wrapper,
+.resource-file-box {
+    background-color: white;
+    display: inline-block;
+    border-radius: 5px;
+    box-shadow: 1px 2px 15px grey;
+    margin: 2px;
+}
+.resource-content {
+    padding: 10px;
+    display: inline-block;
+}
+.resource-title a {
+    color: grey;
+    margin-bottom: 5px;
+}
+.resource-image {
+    border: 1px dashed #bebebe;
+    display: inline-block;
+}
