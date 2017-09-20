@@ -13,6 +13,8 @@ $decoded = $exam->decoded;
 
 ?>
 
+<?= Phalcon\Tag::stylesheetLink("css/pdf-rendering.css"); ?>
+
 <style>
     div.correction-section-box {
         border-radius: 5px; 
@@ -94,22 +96,24 @@ $decoded = $exam->decoded;
                                             </div>
 
                                             <div class="q-part-resources">
-                                                <?php foreach ($qPart['resources'] as $resName => $resPath): ?>
-                                                        <?php
-                                                        $resFile = $this->config->application->mediaDir . basename(dirname($resPath)) . DIRECTORY_SEPARATOR . basename(urldecode($resPath));
-                                                        if (file_exists($resFile)) {
-                                                                $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $resFile);
-                                                        } else {
-                                                                $mimeType = "application/shitty-content";
-                                                        }
+                                                <?php
+                                                foreach ($qPart['resources'] as $resTitle => $resUrl) {
+                                                        $type = basename(dirname($resUrl));
+                                                        $path = $this->config->application->mediaDir . $type . DIRECTORY_SEPARATOR . basename(urldecode($resUrl));
+                                                        $href = $this->url->get($resUrl);
+                                                        $name = $resTitle;
 
-                                                        ?>
-                                                        <?php if (stristr($mimeType, "image")): ?>
-                                                                <img src="<?= $this->url->get($resPath) ?>" style="max-width:100%" />
-                                                        <?php else: ?>
-                                                                <a href="<?= $this->url->get($resPath) ?>" target="_blank"><?= $resName ?></a>
-                                                        <?php endif; ?>
-                                                <?php endforeach; ?>
+                                                        // 
+                                                        // Use resource viewer:
+                                                        // 
+                                                        $this->partial('partials/resource-file-viewer', array(
+                                                                'type' => $type, 'path' => $path,
+                                                                'href' => $href, 'name' => $name,
+                                                                'url'  => $this->url
+                                                        ));
+                                                }
+
+                                                ?>
                                             </div>
 
                                             <?php if ($qPart['ans_area']['type'] == 'choicebox'): ?>
