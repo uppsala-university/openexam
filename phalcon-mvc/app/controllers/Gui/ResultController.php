@@ -30,6 +30,19 @@ use Phalcon\Mvc\View;
 class ResultController extends GuiController
 {
 
+        public function initialize()
+        {
+                parent::initialize();
+
+                // 
+                // This controller is called from task. Configure URL service to
+                // return absolute URL:s instead of relative.
+                // 
+                $this->url->setBaseUri(
+                    sprintf("%s://%s/%s", $this->request->getScheme(), $this->request->getServerName(), $this->config->application->baseUri)
+                );
+        }
+
         /**
          * Generate and save student result in PDF format.
          * 

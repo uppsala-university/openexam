@@ -982,6 +982,14 @@ class ExamController extends GuiController
                 }
                 arsort($data['examGrades']);
 
+                // 
+                // This action is called from task. Configure URL service to
+                // return absolute URL:s
+                // 
+                $this->url->setBaseUri(
+                    sprintf("%s://%s/%s/", $this->request->getScheme(), $this->request->getServerName(), trim($this->config->application->baseUri, '/'))
+                );
+
                 $this->view->setVars(array(
                         'exam' => $exam,
                         'data' => $data
