@@ -242,8 +242,8 @@ $config = new Config(
                 // Options for wkhtmltoxxx command:
                 // 
                 'command'   => array(
-                        'image' => 'wkhtmltoimage --format png --quality 95 --enable-javascript --javascript-delay 500',
-                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --disable-forms --enable-javascript --javascript-delay 500'
+                        'image' => 'wkhtmltoimage --format png --quality 95 --enable-javascript --javascript-delay 1000',
+                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --disable-forms --enable-javascript --javascript-delay 1000'
                 )
         ),
         /**
