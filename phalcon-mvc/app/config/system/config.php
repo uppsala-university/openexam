@@ -217,7 +217,7 @@ $config = new Config(
                 // 
                 'local'     => false,
                 // 
-                // The results download server:
+                // The fully qualified server name:
                 // 
                 'server'    => 'localhost',
                 // 
@@ -242,8 +242,8 @@ $config = new Config(
                 // Options for wkhtmltoxxx command:
                 // 
                 'command'   => array(
-                        'image' => 'wkhtmltoimage --format png --quality 95 --enable-javascript',
-                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --disable-forms --enable-javascript'
+                        'image' => 'wkhtmltoimage --format png --quality 95 --enable-javascript --javascript-delay 500',
+                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --disable-forms --enable-javascript --javascript-delay 500'
                 )
         ),
         /**
