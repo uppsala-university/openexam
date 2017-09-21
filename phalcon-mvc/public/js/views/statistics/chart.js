@@ -16,7 +16,13 @@ $(document).ready(function () {
     // The organization chart object:
     // 
     var orgChart = (function () {
-        var data = {}, options = {};
+        var data = {}, options = {
+            responsive: true,
+            legend: {
+                display: false,
+                position: 'bottom'
+            }
+        };
 
         // 
         // Create color object with RGB composer.
@@ -83,10 +89,11 @@ $(document).ready(function () {
                 setTitle(content.name, false);
             },
             render: function (context) {
+
                 var pieChart = new Chart(context, {
                     type: 'pie',
                     data: this.data,
-                    options: this.options
+                    options: options
                 });
 
                 $("#organization-pie-chart").click(function (evt) {
