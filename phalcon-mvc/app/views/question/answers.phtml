@@ -52,6 +52,18 @@ $decoded = $exam->decoded;
         padding: 15px;
         margin-bottom: 20px;
     }
+
+    input.q-points {
+        height: 12px; 
+        border-radius: 3px; 
+        width: 50px;          
+    }
+    input.q-points:required {
+        background-color: #ffffff;
+    }
+    input.q-points:required:invalid {
+        background-color: #feff99;
+    }    
 </style>
 
 <div class="hero-unit">
@@ -265,7 +277,7 @@ $decoded = $exam->decoded;
 
                                                                             ?>
                                                                             <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                                    <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>">								
+                                                                                    <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>" required="required">								
                                                                             <?php else: ?>
                                                                                     <?= floatval($scoreData[$qPartTitle]) ?>
                                                                             <?php endif; ?>	
@@ -412,7 +424,7 @@ $decoded = $exam->decoded;
                                                                                 ?>
 
                                                                                 <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                                        <input type="text" class="q-points changeable" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height:12px; border-radius:0px; width:50px; margin-left:15px" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= floatval($questParts[$qPartTitle]['q_points']) ?>">
+                                                                                        <input type="text" class="q-points changeable" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= floatval($questParts[$qPartTitle]['q_points']) ?>" required="required">
                                                                                 <?php else: ?>
                                                                                         <?= floatval($scoreData[$qPartTitle]) ?>
                                                                                 <?php endif; ?>
